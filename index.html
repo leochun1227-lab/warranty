@@ -1434,6 +1434,64 @@
   text-align:center!important;
   margin-top:5px!important;
 }
+.analysisDateNote{
+  position:absolute!important;
+  top:20px!important;
+  right:22px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:3px 8px!important;
+  border:1px solid #dbe4ef!important;
+  border-radius:999px!important;
+  background:#f8fbff!important;
+  color:#64748b!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  vertical-align:middle!important;
+  white-space:nowrap!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel,
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel{
+  position:relative!important;
+}
+.durationDatePicker{
+  margin:0 0 8px!important;
+  display:flex!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+.durationDatePicker label{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  min-height:34px!important;
+  padding:5px 8px 5px 12px!important;
+  border:1px solid #dbe4ef!important;
+  border-radius:999px!important;
+  background:#f8fbff!important;
+  color:#52627a!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  box-shadow:0 8px 18px rgba(15,23,42,.04)!important;
+}
+.durationDatePicker input{
+  height:26px!important;
+  border:0!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  color:#0f172a!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  padding:0 7px!important;
+  outline:none!important;
+  box-shadow:inset 0 0 0 1px #e2e8f0!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRows{
+  align-content:start!important;
+  margin-top:18px!important;
+}
 @media(max-width:760px){
   .repairComboGrid{
     grid-template-columns:1fr!important;
@@ -1552,36 +1610,26 @@ function ticketLastUpdateDate(ticket){
   return dateKey(raw)||dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
 }
 function noUpdateAgingSummary(){
-  const end=latestDateForView();
-  const endDate=parseDate(end)||new Date();
-  const rows=[];
-  rawTicketEntries.forEach(({ticket,roles,id})=>{
-    if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
-    if(!isMappedCritical(ticket,statusMapping))return;
-    const last=ticketLastUpdateDate(ticket);
-    if(!last)return;
-    const days=Math.max(0,Math.floor((endDate-(parseDate(last)||endDate))/86400000));
-    if(days<10)return;
-    rows.push({
-      id:id||clean(ticket.TicketID||ticket.ticketID),
-      days,
-      customer:getField(ticket,["CustomerName","Customer Name","AccountName","Account Name","BuyerName","Buyer Name"])||"-",
-      claim:clean(getField(ticket,["TicketTypeText","Ticket Type Text","TicketType","Ticket Type","ClaimType","Claim Type"]))||claimKeyForTicket(ticket),
-      repair:getField(ticket,["RepairDescription","Repair Description","Subject","Description","TicketDescription","Ticket Description"])||"-",
-      last,
-      dealer:standardDealerName(rawDealerName(ticket,roles)),
-      owner:rawAssignToName(ticket,roles),
-      status:clean(ticket.TicketStatusText||ticket.statusText||mappedStatus(ticket,statusMapping))||"Critical"
-    });
-  });
+  const durationRows=criticalDurationRows();
+  const rows=durationRows.filter(r=>Number(r.days||0)>14).map(r=>({
+    id:clean(r.id)||"-",
+    days:Number(r.days||0),
+    customer:clean(r.customer)||"-",
+    claim:clean(r.claim)||"-",
+    repair:clean(r.repair)||"-",
+    last:clean(r.entered)||"",
+    dealer:clean(r.dealer)||"-",
+    owner:clean(r.owner)||"-",
+    status:clean(r.status)||"Critical"
+  }));
   rows.sort((a,b)=>b.days-a.days||clean(a.id).localeCompare(clean(b.id)));
-  return {count:rows.length,maxDays:rows[0]?.days||0,rows,baseTotal:currentTotalCritical(rawTicketEntries.filter(({ticket})=>(activeClaim==="all"||claimKeyForTicket(ticket)===activeClaim)&&isMappedCritical(ticket,statusMapping)).length)};
+  return {count:rows.length,maxDays:rows[0]?.days||0,rows,baseTotal:durationRows.length};
 }
 function noUpdateTip(summary){
-  if(!summary.rows.length)return "<b>No stale critical tickets</b>All critical tickets were updated within 10 days.";
-  const shown=summary.rows.slice(0,8).map(r=>`<div class="tipRow"><span class="tipLeft">#${esc(r.id)} - ${esc(r.owner)}</span><span class="tipRight"><span class="tipValue">${num(r.days)}d</span></span></div><div style="color:#64748b;font-size:12px;margin:-2px 0 6px">${esc(r.dealer)} - Last update ${esc(r.last)}</div>`).join("");
+  if(!summary.rows.length)return "<b>No stale critical tickets</b>All critical tickets are within 14 critical days.";
+  const shown=summary.rows.slice(0,8).map(r=>`<div class="tipRow"><span class="tipLeft">#${esc(r.id)} - ${esc(r.owner)}</span><span class="tipRight"><span class="tipValue">${num(r.days)}d</span></span></div><div style="color:#64748b;font-size:12px;margin:-2px 0 6px">${esc(r.dealer)} - Critical duration</div>`).join("");
   const more=summary.rows.length>8?`<div style="color:#64748b;margin-top:6px">+ ${num(summary.rows.length-8)} more tickets</div>`:"";
-  return `<b>Critical tickets without update for 10+ days</b>${shown}${more}`;
+  return `<b>Critical tickets in critical for >14 days</b>${shown}${more}`;
 }
 function clearKpiPreview(el){
   if(!el)return;
@@ -1790,6 +1838,7 @@ function renderKpis(){
   const prevApprovedAvg=prev.approvedTickets?prev.approvedAmount/prev.approvedTickets:0;
   const ratio=pctValue(s.unapprovedTickets,s.approvedTickets),prevRatio=pctValue(prev.unapprovedTickets,prev.approvedTickets);
   const totalTicketValue=filtered?s.totalTickets:s.criticalNow;
+  const todayMode=activePeriod==="day";
   setCardLabel(".totalCriticalCard",filtered?"Total Tickets Change":"Total Tickets");
   setCardLabel(".approvedTicketsCountCard",filtered?"Approved / Unapproved Tickets changes":"In Field Warranty Claims / Pre Delivery Warranty Claims");
   setCardLabel(".unapprovedTicketsCard","No Update Aging");
@@ -1799,17 +1848,17 @@ function renderKpis(){
   $("kpiCritical").textContent=num(totalTicketValue);
   if($("kpiApprovedTickets"))$("kpiApprovedTickets").textContent=filtered?`${num(s.approvedTickets)} / ${num(s.unapprovedTickets)}`:`${num(claimCounts.inField)} / ${num(claimCounts.preDelivery)}`;
   if($("kpiUnapproved"))$("kpiUnapproved").textContent=num(noUpdate.count);
-  if($("kpiBenchmark"))$("kpiBenchmark").textContent=`${numFixed(h.rate||0,1)}%`;
+  if($("kpiBenchmark"))$("kpiBenchmark").textContent=todayMode?"-":`${numFixed(h.rate||0,1)}%`;
   $("kpiRate").textContent=h.current<=0?"Clean":(h.clearDays==null?"-":formatClearTime(h.clearDays));
   if($("kpiApproved"))$("kpiApproved").textContent=money(s.approvedAmount);
   if($("kpiAvgCost"))$("kpiAvgCost").textContent=money(approvedAvg);
   if($("kpiUnapprovedAmount"))$("kpiUnapprovedAmount").textContent=money(s.unapprovedAmount);
-  if($("kpiUnapprovedRatio"))$("kpiUnapprovedRatio").textContent=pctText(ratio,2);
-  if($("kpiRatioBase"))$("kpiRatioBase").textContent=`${num(s.unapprovedTickets)} / ${num(s.approvedTickets)}`;
+  if($("kpiUnapprovedRatio"))$("kpiUnapprovedRatio").textContent=todayMode?"-":pctText(ratio,2);
+  if($("kpiRatioBase"))$("kpiRatioBase").textContent=todayMode?"":`${num(s.unapprovedTickets)} / ${num(s.approvedTickets)}`;
   setTrend("kpiCriticalTrend","totalTickets",s.totalTickets,prev.totalTickets,undefined,filtered);
   setTrend("kpiApprovedTicketsTrend","approvedTickets",s.approvedTickets,prev.approvedTickets,undefined,filtered);
-  if($("kpiUnapprovedTrend")){ $("kpiUnapprovedTrend").innerHTML=noUpdate.count?`${num(noUpdate.count)} / ${num(noUpdate.baseTotal)} critical need update`:`0 / ${num(noUpdate.baseTotal)} critical need update`; $("kpiUnapprovedTrend").className="kpiTrend "+(noUpdate.count?"bad":"good"); }
-  setTrend("kpiBenchmarkTrend","benchmarkRate",h.rate||0,prevH.rate||0,"percentPoint",filtered);
+  if($("kpiUnapprovedTrend")){ $("kpiUnapprovedTrend").innerHTML=`${num(noUpdate.count)} / ${num(noUpdate.baseTotal)} critical >14d`; $("kpiUnapprovedTrend").className="kpiTrend "+(noUpdate.count?"bad":"good"); }
+  setTrend("kpiBenchmarkTrend","benchmarkRate",h.rate||0,prevH.rate||0,"percentPoint",filtered&&!todayMode);
   clearKpiPreview(document.querySelector(".benchmarkRateCard"));
   const noUpdateCard=document.querySelector(".unapprovedTicketsCard");
   clearKpiPreview(document.querySelector(".exitedValueCard"));
@@ -1817,7 +1866,7 @@ function renderKpis(){
   setTrend("kpiApprovedTrend","approvedAmount",s.approvedAmount,prev.approvedAmount,"money",filtered);
   setTrend("kpiAvgCostTrend","avgCost",approvedAvg,prevApprovedAvg,"money",filtered);
   setTrend("kpiRateTrend","estimatedClearDays",h.clearDays||0,prevH.clearDays||0,"days",filtered);
-  setTrend("kpiRatioTrend","unapprovedRatio",ratio,prevRatio,"percent",filtered);
+  setTrend("kpiRatioTrend","unapprovedRatio",ratio,prevRatio,"percent",filtered&&!todayMode);
 }function formatClearTime(days){days=Number(days||0);if(!days)return "0d";return Math.ceil(days)+"d"}
 function speedDonutMarkup(rows,rate){
   const colors=["#2f6df6","#22c55e","#f59e0b","#fb7185","#94a3b8"];
@@ -1917,26 +1966,66 @@ function daysBetweenISO(start,end){
   const s=parseDate(start),e=parseDate(end);
   return s&&e?Math.max(0,(e-s)/86400000):null;
 }
+function rawCurrentCriticalDurationRows(end){
+  const rows=[];
+  const enterMap=criticalEnterDateByTicketId(end);
+  rawTicketEntries.forEach(({ticket,roles,id})=>{
+    if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
+    if(!isMappedCritical(ticket,statusMapping))return;
+    const entered=enterMap.get(clean(id));
+    const days=entered?daysBetweenISO(entered,end):criticalDurationDaysForRow(ticket,end);
+    rows.push({days:days==null?15:days,kind:"Current critical",id:id||clean(ticket.TicketID||ticket.ticketID),entered:entered||"",customer:getField(ticket,["CustomerName","Customer Name","AccountName","Account Name","BuyerName","Buyer Name"])||"-",claim:clean(getField(ticket,["TicketTypeText","Ticket Type Text","TicketType","Ticket Type","ClaimType","Claim Type"]))||claimKeyForTicket(ticket),repair:getField(ticket,["RepairDescription","Repair Description","Subject","Description","TicketDescription","Ticket Description"])||"-",dealer:standardDealerName(rawDealerName(ticket,roles)),owner:rawAssignToName(ticket,roles),status:clean(ticket.TicketStatusText||ticket.statusText||mappedStatus(ticket,statusMapping))||"Critical"});
+  });
+  return rows;
+}
+function durationRowFromSnapshot(r,end,enterMap,kind){
+  const id=clean(r.id);
+  const entered=id?enterMap.get(id):"";
+  const days=entered?daysBetweenISO(entered,end):criticalDurationDaysForRow(r,end);
+  return {days:days==null?15:days,kind,id:r.id,dealer:standardDealerName(r.dealer||""),status:clean(r.status)||"Critical",owner:clean(r.owner)||"-",customer:clean(r.customer)||"-",claim:clean(r.claim)||"-",repair:clean(r.repair)||"-",entered:entered||""};
+}
 function criticalDurationRows(){
   const {start,end}=periodBounds();
   const view=currentView();
   const rows=[];
+  if(rawTicketEntries.length&&end>=latestDateForView())return rawCurrentCriticalDurationRows(end);
   const enterMap=criticalEnterDateByTicketId(end);
-  if(rawTicketEntries.length){
-    rawTicketEntries.forEach(({ticket,roles,id})=>{
-      if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
-      if(!isMappedCritical(ticket,statusMapping))return;
-      const entered=enterMap.get(clean(id));
-      const days=entered?daysBetweenISO(entered,end):criticalDurationDaysForRow(ticket,end);
-      rows.push({days:days==null?15:days,kind:"Current critical"});
+  if(hasTicketFilter()){
+    teamRowsAtDate(end).filter(r=>isValidDealerForTeamTotal(r.dealer)).forEach(r=>{
+      rows.push(durationRowFromSnapshot(r,end,enterMap,"Selected critical"));
     });
+    return rows;
+  }
+  if(rawTicketEntries.length){
+    rows.push(...rawCurrentCriticalDurationRows(end));
   }else{
     teamRowsAtDate(end).forEach(r=>{
       if(!isValidDealerForTeamTotal(r.dealer))return;
-      const days=criticalDurationDaysForRow(r,end);
-      rows.push({days:days==null?15:days,kind:"Current critical"});
+      rows.push(durationRowFromSnapshot(r,end,enterMap,"Current critical"));
     });
   }
+  return rows;
+}
+function criticalSnapshotRowsAt(end){
+  const rows=[];
+  if(rawTicketEntries.length&&end>=latestDateForView()){
+    rawTicketEntries.forEach(({ticket,roles,id})=>{
+      if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
+      if(!isMappedCritical(ticket,statusMapping))return;
+      rows.push({
+        id:id||clean(ticket.TicketID||ticket.ticketID),
+        dealer:standardDealerName(rawDealerName(ticket,roles)),
+        owner:rawAssignToName(ticket,roles),
+        status:clean(ticket.TicketStatusText||ticket.statusText||mappedStatus(ticket,statusMapping))||"Unknown",
+        claim:claimKeyForTicket(ticket)
+      });
+    });
+    return rows;
+  }
+  teamRowsAtDate(end).forEach(r=>{
+    if(!isValidDealerForTeamTotal(r.dealer))return;
+    rows.push({...r,status:clean(r.status)||"Unknown"});
+  });
   return rows;
 }
 function criticalDurationBuckets(){
@@ -1947,7 +2036,8 @@ function criticalDurationBuckets(){
     {key:"eightToFourteenDays",label:"8-14 days",count:0},
     {key:"overFourteenDays",label:"> 14 days",count:0}
   ];
-  criticalDurationRows().forEach(row=>{
+  const durationRows=criticalDurationRows();
+  durationRows.forEach(row=>{
     if(row.days==null||!Number.isFinite(Number(row.days))){buckets[4].count++;return;}
     const d=Number(row.days);
     if(d<=1)buckets[0].count++;
@@ -1956,15 +2046,54 @@ function criticalDurationBuckets(){
     else if(d<=14)buckets[3].count++;
     else buckets[4].count++;
   });
-  const expected=currentTotalCritical(selectedPeriodCriticalTotal());
+  const expected=durationRows.length;
   const counted=buckets.reduce((sum,row)=>sum+Number(row.count||0),0);
   if(expected>counted)buckets[4].count+=expected-counted;
   return buckets;
+}
+function formatSnapshotDateLabel(dateStr){
+  if(!dateStr)return "";
+  const d=new Date(dateStr+"T00:00:00Z");
+  if(isNaN(d))return dateStr;
+  return d.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric",timeZone:"UTC"});
+}
+function setAnalysisDateNote(panelSelector,dateStr){
+  const panel=document.querySelector(panelSelector);
+  if(!panel)return;
+  let note=panel.querySelector(".analysisDateNote");
+  if(!note){
+    note=document.createElement("span");
+    note.className="analysisDateNote";
+    panel.appendChild(note);
+  }
+  note.textContent=formatSnapshotDateLabel(dateStr);
+  note.title=`Snapshot date: ${dateStr}`;
+}
+function renderAnalysisDateNotes(){
+  const end=periodEndDate();
+  setAnalysisDateNote(".featureSideStack .dashboardAnalysisGrid .speedPanel",end);
+  setAnalysisDateNote(".featureSideStack .dashboardAnalysisGrid .statusMixPanel",end);
+}
+function bindDurationDatePicker(){
+  const input=$("durationSnapshotDate");
+  if(!input)return;
+  input.min=earliestDateForView();
+  input.max=latestDateForView();
+  input.value=periodEndDate();
+  if(input.dataset.bound)return;
+  input.dataset.bound="1";
+  input.addEventListener("change",()=>{
+    const value=clean(input.value);
+    if(!value)return;
+    if($("dateTo"))$("dateTo").value=value;
+    renderAll();
+  });
 }
 function renderHandlingSpeed(){
   const rowsEl=$('speedRows');
   const h=periodHandlingSummary();
   const rows=criticalDurationBuckets();
+  renderAnalysisDateNotes();
   if($("speedRate"))$("speedRate").textContent=(h.rate||0)+"%";
   if($("speedAvg"))$("speedAvg").textContent=h.current<=0?"Clean":(h.clearDays==null?"-":formatClearTime(h.clearDays));
   if(rowsEl){
@@ -1972,13 +2101,15 @@ function renderHandlingSpeed(){
     const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
     const max=Math.max(1,...rows.map(row=>Number(row.count||0)));
     rowsEl.className="speedRows agingRows";
-    rowsEl.innerHTML=total?rows.map((row,i)=>{
+    const chartMarkup=total?rows.map((row,i)=>{
       const count=Number(row.count||0);
       const pct=total?Math.round(count/total*100):0;
       const width=Math.max(4,Math.round(count/max*100));
       const color=colors[i%colors.length];
       return `<div class="agingRow"><div class="agingLabel">${esc(row.label)}</div><div class="agingTrack"><div class="agingFill" style="width:${width}%;background:linear-gradient(90deg,${color},${color}cc)"></div></div><div class="agingValue">${num(count)}<small>${pct}%</small></div></div>`;
     }).join(""):`<div class="speedEmpty">No critical duration data found for this period.</div>`;
+    rowsEl.innerHTML=`<div class="durationDatePicker"><label>Snapshot To <input id="durationSnapshotDate" type="date" value="${esc(periodEndDate())}"></label></div>`+chartMarkup;
+    bindDurationDatePicker();
   }
 }
 
@@ -2132,17 +2263,25 @@ function repairCostBucketFor(amount,buckets){
   return buckets.find(b=>amount>=b.min&&amount<b.max)||buckets[buckets.length-1];
 }
 function repairCostDistributionRows(){
-  const {start,end}=periodBounds();
   const buckets=repairCostBucketDefs();
+  const filtered=hasTicketFilter();
+  const {start,end}=periodBounds();
   rawTicketEntries.forEach(({ticket})=>{
-    const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
-    if(!created||created<start||created>end)return;
     if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
+    if(filtered){
+      const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
+      if(!created||created<start||created>end)return;
+    }else if(!isMappedCritical(ticket,statusMapping))return;
     const amount=parseAmountIncludingTax(ticket.AmountIncludingTax);
     const bucket=repairCostBucketFor(amount,buckets);
     bucket.count++;
     bucket.total+=amount;
   });
+  const counted=buckets.reduce((sum,b)=>sum+Number(b.count||0),0);
+  if(!filtered){
+    const expected=currentTotalCritical(counted);
+    if(expected>counted)buckets[0].count+=expected-counted;
+  }
   return buckets.filter(b=>b.count>0).map(b=>({label:b.label,count:b.count,details:[{label:"Tickets",count:b.count},{label:"Total cost",count:money(b.total)}]}));
 }
 function repairCostDonutMarkup(rows){
@@ -2486,25 +2625,21 @@ function teamRowsForCards(){
 }
 function currentCriticalStatusRows(){
   const counts={};
-  if(rawTicketEntries.length){
-    rawTicketEntries.forEach(({ticket})=>{
-      if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
-      if(!isMappedCritical(ticket,statusMapping))return;
-      const st=clean(ticket.TicketStatusText||ticket.statusText||mappedStatus(ticket,statusMapping))||"Unknown";
-      counts[st]=(counts[st]||0)+1;
-    });
-  }else{
-    selectedPeriodCriticalRows().forEach(r=>{const st=clean(r.status)||"Unknown";counts[st]=(counts[st]||0)+1;});
-  }
-  const expected=currentTotalCritical(Object.values(counts).reduce((sum,v)=>sum+Number(v||0),0));
+  const end=periodEndDate();
+  criticalSnapshotRowsAt(end).forEach(r=>{
+    const st=clean(r.status)||"Unknown";
+    counts[st]=(counts[st]||0)+1;
+  });
   const counted=Object.values(counts).reduce((sum,v)=>sum+Number(v||0),0);
+  const expected=end>=latestDateForView()?currentTotalCritical(counted):counted;
   if(expected>counted)counts.Unknown=(counts.Unknown||0)+(expected-counted);
   return Object.entries(counts).map(([status,count])=>({label:status,count})).sort((a,b)=>b.count-a.count||a.label.localeCompare(b.label));
 }
 function renderLists(){const rawView=currentRawCriticalView();const rows=selectedPeriodCriticalRows();
+  const dealerTitle=document.querySelector(".dealerRankPanel .panelTitle");if(dealerTitle)dealerTitle.textContent=hasTicketFilter()?"Top Critical Tickets Change by Dealer":"Top Critical Tickets by Dealer";
   const grouped={};
   rows.forEach(x=>{const dealer=standardDealerName(x.dealer||'Unknown'); if(isValidDealerForTeamTotal(dealer)) grouped[dealer]=(grouped[dealer]||0)+1;});
-  const dealers=rawView?rawView.dealers:Object.entries(grouped).map(([dealer,criticalTickets])=>({dealer,criticalTickets})).sort((a,b)=>b.criticalTickets-a.criticalTickets||a.dealer.localeCompare(b.dealer));
+  const dealers=(!hasTicketFilter()&&rawView)?rawView.dealers:Object.entries(grouped).map(([dealer,criticalTickets])=>({dealer,criticalTickets})).sort((a,b)=>b.criticalTickets-a.criticalTickets||a.dealer.localeCompare(b.dealer));
   const max=Math.max(1,...dealers.map(x=>Number(x.criticalTickets||0)));
   const dealerColors=["#4f46e5","#60a5fa","#7c3aed","#f59e0b","#ec4899","#8b5cf6","#22c55e","#94a3b8"];
   const shownDealers=dealerListExpanded?dealers:dealers.slice(0,7);
