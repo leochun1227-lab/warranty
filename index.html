@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -732,6 +732,13 @@
 .dashboardMain .teamKpiGrid .kpiValue{
   font-size:26px!important;
 }
+.dashboardMain .teamKpiGrid .unapprovedTicketsCard{
+  cursor:pointer!important;
+}
+.dashboardMain .teamKpiGrid .unapprovedTicketsCard:hover{
+  border-color:#93c5fd!important;
+  box-shadow:0 14px 34px rgba(37,99,235,.13)!important;
+}
 .criticalLogPanel{
   padding:18px 18px 16px!important;
 }
@@ -932,9 +939,24 @@
   align-items:center!important;
   gap:12px!important;
   margin-bottom:6px!important;
+  position:relative!important;
+  min-height:34px!important;
+}
+.teamAssignPanel .panelHead>div:first-child{
+  position:absolute!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  text-align:center!important;
+  pointer-events:none!important;
+}
+.teamAssignPanel .panelHead .panelTitle{
+  margin:0!important;
+  text-align:center!important;
+  white-space:nowrap!important;
 }
 .teamAssignActions{
   margin-top:0!important;
+  margin-left:auto!important;
 }
 .teamAssignPanel .panelHead .teamAssignActions{
   margin-top:0!important;
@@ -947,14 +969,92 @@
 .teamAssignLegend{
   margin-top:8px!important;
 }
+.employeeStatusMapping{
+  margin-top:10px!important;
+  border-top:1px solid #e6edf6!important;
+  padding-top:10px!important;
+}
+.employeeStatusMappingHead{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+}
+.employeeStatusMappingTitle{
+  font-size:13px!important;
+  font-weight:700!important;
+  color:#18243a!important;
+}
+.employeeStatusEditBtn{
+  height:28px!important;
+  border:1px solid #dbe4ef!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  color:#4f46e5!important;
+  padding:0 10px!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  cursor:pointer!important;
+}
+.employeeStatusSummary{
+  margin-top:7px!important;
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:6px!important;
+  color:#66758f!important;
+  font-size:11px!important;
+}
+.employeeStatusPill,
+.teamAssignExitedBadge{
+  display:inline-flex!important;
+  align-items:center!important;
+  border:1px solid #fecdd3!important;
+  background:#fff1f2!important;
+  color:#e11d48!important;
+  border-radius:999px!important;
+  font-weight:800!important;
+}
+.employeeStatusPill{
+  padding:3px 8px!important;
+}
+.teamAssignExitedBadge{
+  margin-left:5px!important;
+  padding:1px 5px!important;
+  font-size:9px!important;
+  vertical-align:middle!important;
+}
+.employeeStatusEditGrid{
+  margin-top:8px!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:6px 10px!important;
+  max-height:118px!important;
+  overflow:auto!important;
+  padding-right:4px!important;
+}
+.employeeStatusEditRow{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  min-width:0!important;
+  font-size:11px!important;
+  color:#334155!important;
+}
+.employeeStatusEditRow span{
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
 @media(max-width:1150px){
   .teamAssignGrid{grid-template-columns:1fr!important}
+  .employeeStatusEditGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:760px){
   .teamAssignRow{grid-template-columns:1fr!important}
   .teamAssignName{text-align:left!important}
   .teamAssignValue{text-align:right!important}
   .teamAssignActions{justify-content:flex-start!important}
+  .employeeStatusEditGrid{grid-template-columns:1fr!important}
 }
 
 /* Align the lower Team Dashboard cards across the main and side columns */
@@ -1076,10 +1176,307 @@
   .claimSwitch.filterTools{width:auto!important;display:flex!important}
 }
 
+.teamKpiGrid .kpi,
+.teamKpiGrid .kpi:nth-child(n+5){
+  grid-column:span 3!important;
+}
+.teamKpiGrid .kpiTrend.is-hidden{
+  visibility:hidden!important;
+}
+.sidebar a[href="employee-workbench.html"]{display:none!important;}
+.employeeModalBackdrop{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:100;padding:22px}
+.employeeModalBackdrop.active{display:flex}
+.employeeModal{width:min(1180px,96vw);max-height:92vh;overflow:auto;background:#f7faff;border:1px solid #dbe4ef;border-radius:20px;box-shadow:0 30px 90px rgba(15,23,42,.28);padding:22px}
+.employeeModalHead{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:16px}
+.employeeModalTitle{font-size:22px;font-weight:650;color:#0f172a;margin:0}
+.employeePickerWrap{display:grid;gap:6px;min-width:260px}
+.employeePickerLabel{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#64748b;font-weight:700}
+.employeePicker{height:42px;border:1px solid #dbe4ef;border-radius:12px;background:#fff;color:#0f172a;padding:0 12px;font-weight:650;min-width:300px}
+.employeePicker:focus{outline:none;border-color:#93c5fd;box-shadow:0 0 0 4px rgba(59,130,246,.12)}
+.employeeModalControls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.employeeModalClose{width:36px;height:36px;border:1px solid #dbe4ef;border-radius:10px;background:#fff;color:#334155;font-weight:700;cursor:pointer}
+.employeeModalPeriod{display:inline-flex;padding:4px;border:1px solid #dbe4ef;background:#fff;border-radius:14px}
+.employeeModalPeriod button{height:32px;border:0;background:transparent;border-radius:10px;padding:0 12px;font-weight:600;color:#334155;cursor:pointer}
+.employeeModalPeriod button.active{background:#1677f2;color:#fff}
+.employeeModalKpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.employeeModalKpis .kpi{min-height:112px;padding:16px 17px;margin:0;background:linear-gradient(180deg,#fff,#fbfdff);border-color:#dfe8f3;display:flex;flex-direction:column;justify-content:space-between}
+.employeeModalKpis .kpiTop{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.employeeModalKpis .kpiMain{min-width:0}
+.employeeModalKpis .kpiLabel{letter-spacing:0;text-transform:none;font-size:12px;margin:0 0 8px;color:#344054;font-weight:600}
+.employeeModalKpis .kpiValue{font-size:24px;line-height:1;font-weight:650;letter-spacing:-.025em}
+.employeeModalKpis .kpiIcon{width:34px;height:34px;border-radius:12px;font-size:15px}
+.employeeModalGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.employeeMiniPanel{background:#fff;border:1px solid #dfe8f3;border-radius:16px;padding:16px;min-height:270px;box-shadow:0 12px 28px rgba(15,23,42,.045)}
+.employeeMiniPanel .panelTitle{font-size:15px;margin-bottom:12px}
+.employeeModal .statusPieLayout{display:grid!important;grid-template-columns:170px minmax(0,1fr)!important;gap:16px!important;align-items:center!important}
+.employeeModal .statusPieSvg{width:170px!important;height:170px!important}
+.employeeModal .statusPieWrap{width:170px!important;height:170px!important}
+.employeeModal .statusPieSlice{
+  cursor:pointer!important;
+  transform-origin:85px 85px!important;
+  transition:opacity .15s ease, transform .15s ease!important;
+}
+.employeeModal .statusPieSlice:hover{
+  opacity:.86!important;
+  transform:scale(1.015)!important;
+}
+.employeeModal .statusPiePct{
+  fill:#fff!important;
+  font-size:11px!important;
+  font-weight:750!important;
+  pointer-events:none!important;
+}
+.employeeModal .statusPieLegend{
+  display:grid!important;
+  gap:10px!important;
+  min-width:0!important;
+  align-self:center!important;
+}
+.employeeModal .statusPieLegendRow{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  gap:9px!important;
+  align-items:center!important;
+  min-height:18px!important;
+  color:#334155!important;
+  font-size:12px!important;
+  cursor:pointer!important;
+}
+.employeeModal .statusPieLegendDot{
+  width:9px!important;
+  height:9px!important;
+  border-radius:999px!important;
+  box-shadow:0 0 0 3px rgba(148,163,184,.10)!important;
+}
+.employeeModal .statusPieLegendLabel{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.employeeBarRows{display:grid;gap:11px;align-content:center;min-height:190px}
+.employeeBarRow{display:grid;grid-template-columns:118px minmax(0,1fr) 42px;gap:10px;align-items:center;font-size:12px;color:#334155}
+.employeeBarLabel{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;color:#475569}
+.employeeBarTrack{height:15px;border:1px solid #e1e9f2;background:#eef4fa;border-radius:999px;overflow:hidden}
+.employeeBarFill{height:100%;border-radius:999px;background:linear-gradient(90deg,#6366f1,#8b5cf6)}
+.employeeBarValue{font-weight:700;color:#0f172a;text-align:right}
+.employeeDistBars{min-height:210px;display:flex;align-items:center}
+.employeeDistBars .employeeBarRows{width:100%}
+@media(max-width:1100px){.employeeModalKpis{grid-template-columns:repeat(2,minmax(0,1fr))}.employeeModalGrid{grid-template-columns:1fr}}
+@media(max-width:620px){.employeeModalKpis{grid-template-columns:1fr}.employeeModal{padding:16px}.employeeModal .statusPieLayout{grid-template-columns:1fr!important}}
+.repairCostPanel{
+  justify-content:flex-start!important;
+}
+.repairCostPanel .repairCostPie{
+  flex:1 1 auto!important;
+  min-height:220px!important;
+  margin-top:12px!important;
+  align-items:center!important;
+}
+.repairComboGrid{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:18px!important;
+  align-items:stretch!important;
+  flex:1 1 auto!important;
+  margin-top:12px!important;
+}
+.repairComboItem{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+.repairComboTitle{
+  margin:0 0 12px!important;
+  color:#0f172a!important;
+  font-size:15px!important;
+  line-height:1.25!important;
+  font-weight:600!important;
+  letter-spacing:-.01em!important;
+  text-align:center!important;
+}
+.repairCostPanel .statusPieLayout{
+  display:grid!important;
+  grid-template-columns:170px minmax(0,1fr)!important;
+  gap:18px!important;
+  align-items:center!important;
+  margin-top:10px!important;
+}
+.repairCostPanel .statusPieLegend{
+  display:grid!important;
+  gap:9px!important;
+  align-self:center!important;
+  min-width:0!important;
+}
+.repairCostPanel .statusPieLegendRow{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  gap:9px!important;
+  align-items:center!important;
+  color:#334155!important;
+  font-size:12px!important;
+  cursor:pointer!important;
+}
+.repairCostPanel .statusPieLegendDot{
+  width:8px!important;
+  height:8px!important;
+  border-radius:999px!important;
+  box-shadow:0 0 0 3px rgba(148,163,184,.10)!important;
+}
+.repairCostPanel .statusPieLegendLabel{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.repairCostPanel .statusPiePct{
+  fill:#fff!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  pointer-events:none!important;
+}
+.repairCostPanel .statusPieSlice{
+  cursor:pointer!important;
+  transition:opacity .15s ease, transform .15s ease!important;
+  transform-origin:85px 85px!important;
+}
+.repairCostPanel .statusPieSlice:hover{
+  opacity:.86!important;
+  transform:scale(1.015)!important;
+}
+.approvedBarChart{
+  min-height:220px!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:16px!important;
+  align-items:end!important;
+  padding:14px 14px 10px!important;
+  margin-top:10px!important;
+  border:1px solid #edf2f7!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#ffffff,#f8fbff)!important;
+}
+.approvedBarItem{
+  min-width:0!important;
+  display:grid!important;
+  grid-template-rows:auto 140px auto!important;
+  gap:9px!important;
+  align-items:end!important;
+  text-align:center!important;
+  color:#0f172a!important;
+  cursor:pointer!important;
+}
+.approvedBarTop{
+  display:grid!important;
+  gap:3px!important;
+  justify-items:center!important;
+}
+.approvedBarCount{
+  font-size:24px!important;
+  line-height:1!important;
+  font-weight:750!important;
+  letter-spacing:-.02em!important;
+}
+.approvedBarPct{
+  font-size:12px!important;
+  font-weight:700!important;
+  color:#64748b!important;
+}
+.approvedBarTrack{
+  position:relative!important;
+  width:58px!important;
+  height:140px!important;
+  justify-self:center!important;
+  border-radius:999px!important;
+  background:#eef4fa!important;
+  border:1px solid #dfe8f3!important;
+  overflow:hidden!important;
+}
+.approvedBarFill{
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  bottom:0!important;
+  min-height:4px!important;
+  border-radius:999px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.38)!important;
+}
+.approvedBarLabel{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  min-width:0!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  color:#334155!important;
+}
+.approvedBarDot{
+  width:9px!important;
+  height:9px!important;
+  border-radius:999px!important;
+  flex:0 0 auto!important;
+}
+.approvedBarItem:hover .approvedBarTrack{
+  border-color:#bfdbfe!important;
+  box-shadow:0 12px 26px rgba(37,99,235,.13)!important;
+}
+.repairCostPanel>.panelTitle,
+.featureSideStack .dashboardAnalysisGrid .speedPanel .panelTitle,
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .panelTitle{
+  text-align:center!important;
+  width:100%!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .panelHead{
+  justify-content:center!important;
+  text-align:center!important;
+  margin-top:5px!important;
+}
+@media(max-width:760px){
+  .repairComboGrid{
+    grid-template-columns:1fr!important;
+  }
+  .repairCostPanel .statusPieLayout{
+    grid-template-columns:1fr!important;
+  }
+}
+@media(max-width:1280px){
+  .teamKpiGrid .kpi,
+  .teamKpiGrid .kpi:nth-child(n+5){
+    grid-column:span 6!important;
+  }
+}
+@media(max-width:760px){
+  .teamKpiGrid .kpi,
+  .teamKpiGrid .kpi:nth-child(n+5){
+    grid-column:1!important;
+  }
+}
 html{zoom:.8!important;}
 </style>
 </head>
-<body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></button><a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><a class="navLink" href="employee-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Internal Employees</span></a><a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a><div class="navDivider"></div><div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a></aside><main class="main"><div class="pageTop"><div><h1 class="pageTitle">After-Sales Team Dashboard</h1></div><div class="topActions"><div id="periodSwitch" class="changeSwitch"></div><div id="claimSwitch" class="claimSwitch"></div></div></div><div id="loadError" class="error"></div><section class="dashboardTop"><div class="dashboardMain"><section class="teamKpiGrid"><div class="kpi totalCriticalCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Total Tickets</div><div class="kpiValue" id="kpiCritical">0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8.2 4.5H5.8A1.8 1.8 0 0 0 4 6.3v2.4c0 .58.28 1.13.74 1.46L7.5 12l-2.76 1.84A1.8 1.8 0 0 0 4 15.3v2.4c0 1 .8 1.8 1.8 1.8h2.4c.58 0 1.13-.28 1.46-.74L12 16.5l1.84 2.26c.33.46.88.74 1.46.74h2.4c1 0 1.8-.8 1.8-1.8v-2.4c0-.58-.28-1.13-.74-1.46L16.5 12l2.26-1.84c.46-.33.74-.88.74-1.46V6.3A1.8 1.8 0 0 0 17.7 4.5h-2.4c-.58 0-1.13.28-1.46.74L12 7.5 10.16 5.24A1.8 1.8 0 0 0 8.7 4.5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiCriticalTrend"></div></div><div class="kpi approvedTicketsCountCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Tickets</div><div class="kpiValue" id="kpiApprovedTickets">0</div></div><div class="kpiIcon customGreen" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.2" stroke="currentColor" stroke-width="1.9"/><path d="M8.6 12.3l2.2 2.2 4.8-5.2" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTicketsTrend"></div></div><div class="kpi unapprovedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved Tickets</div><div class="kpiValue" id="kpiUnapproved">0</div></div><div class="kpiIcon customAmber" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.9"/><path d="M12 8.1v4.1l2.9 1.9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiUnapprovedTrend"></div></div><div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">2-week benchmark</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div><div class="kpi approvedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Amount</div><div class="kpiValue" id="kpiApproved">$0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6.4" rx="5.2" ry="2.3" stroke="currentColor" stroke-width="1.8"/><path d="M6.8 6.4v4.2c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3V6.4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 10.6v4.1c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-4.1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 14.7v2.9c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-2.9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTrend"></div></div><div class="kpi exitedValueCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Estimated clear time</div><div class="kpiValue" id="kpiRate">-</div></div><div class="kpiIcon customOrange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4.5" y="6.5" width="15" height="11" rx="2.4" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 10h8.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7.5 13.4h4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16.8" cy="13.8" r="1.8" stroke="currentColor" stroke-width="1.6"/></svg></div></div><div class="kpiTrend" id="kpiRateTrend"></div></div><div class="kpi ratioKpiCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved / Approved</div><div class="kpiValue" id="kpiUnapprovedRatio">0.00%</div><div class="ratioBase" id="kpiRatioBase">0 / 0</div></div><div class="kpiIcon">%</div></div><div class="kpiTrend" id="kpiRatioTrend"></div></div></section><section class="trendLogGrid"><section class="panel trendPanel"><div class="panelHead"><div><h2 class="panelTitle">Critical Status Trends by Date</h2></div><div class="controls"><label>From <input id="dateFrom" class="input" type="date"></label><label>To <input id="dateTo" class="input" type="date"></label></div></div><div class="chartWrap"><canvas id="trendChart"></canvas></div><div class="legend"><span><i class="dot blue"></i>Entered Critical cumulative</span><span><i class="dot orange"></i>Critical total - right axis</span><span><i class="dot green"></i>Exited Critical cumulative</span></div></section><section class="panel criticalLogPanel"><h2 class="panelTitle">Critical Status Change Log</h2><div id="criticalLogRows" class="criticalLogList"></div><a class="criticalLogLink" href="dealer-workbench.html#tickets">View full log -&gt;</a></section></section><section class="panel teamAssignPanel"><div class="panelHead"><div><h2 class="panelTitle">Critical Tickets by C4C Assign To</h2></div><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed</span><span><i style="background:#4f46e5"></i>Current critical tickets</span></div></section></div><aside class="featureSideStack"><div class="panel dealerRankPanel"><h2 class="panelTitle">Critical Tickets by Dealer</h2><div id="dealerBars" class="dealerCriticalList"></div></div><section class="dashboardAnalysisGrid"><div class="panel speedPanel"><div class="panelHead"><div><h2 class="panelTitle">Ticket Aging (Created On)</h2></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel statusMixPanel"><h2 class="panelTitle">Critical Status Mix</h2><div id="statusMix" class="mixRows"></div></div></section></aside></section></main></div><div id="tooltip" class="tooltip"></div>
+<body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></button><a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><a class="navLink" href="employee-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Internal Employees</span></a><a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a><div class="navDivider"></div><div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a></aside><main class="main"><div class="pageTop"><div><h1 class="pageTitle">After-Sales Team Dashboard</h1></div><div class="topActions"><div id="periodSwitch" class="changeSwitch"></div><div id="claimSwitch" class="claimSwitch"></div></div></div><div id="loadError" class="error"></div><section class="dashboardTop"><div class="dashboardMain"><section class="teamKpiGrid"><div class="kpi totalCriticalCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Total Tickets</div><div class="kpiValue" id="kpiCritical">0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8.2 4.5H5.8A1.8 1.8 0 0 0 4 6.3v2.4c0 .58.28 1.13.74 1.46L7.5 12l-2.76 1.84A1.8 1.8 0 0 0 4 15.3v2.4c0 1 .8 1.8 1.8 1.8h2.4c.58 0 1.13-.28 1.46-.74L12 16.5l1.84 2.26c.33.46.88.74 1.46.74h2.4c1 0 1.8-.8 1.8-1.8v-2.4c0-.58-.28-1.13-.74-1.46L16.5 12l2.26-1.84c.46-.33.74-.88.74-1.46V6.3A1.8 1.8 0 0 0 17.7 4.5h-2.4c-.58 0-1.13.28-1.46.74L12 7.5 10.16 5.24A1.8 1.8 0 0 0 8.7 4.5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiCriticalTrend"></div></div><div class="kpi approvedTicketsCountCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Tickets</div><div class="kpiValue" id="kpiApprovedTickets">0</div></div><div class="kpiIcon customGreen" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.2" stroke="currentColor" stroke-width="1.9"/><path d="M8.6 12.3l2.2 2.2 4.8-5.2" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTicketsTrend"></div></div><div class="kpi unapprovedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved Tickets</div><div class="kpiValue" id="kpiUnapproved">0</div></div><div class="kpiIcon customAmber" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.9"/><path d="M12 8.1v4.1l2.9 1.9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiUnapprovedTrend"></div></div><div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">2-week benchmark</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div><div class="kpi approvedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Cost</div><div class="kpiValue" id="kpiApproved">$0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6.4" rx="5.2" ry="2.3" stroke="currentColor" stroke-width="1.8"/><path d="M6.8 6.4v4.2c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3V6.4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 10.6v4.1c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-4.1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 14.7v2.9c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-2.9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTrend"></div></div><div class="kpi avgCostCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Avg Cost/Ticket</div><div class="kpiValue" id="kpiAvgCost">$0</div></div><div class="kpiIcon customGreen" aria-hidden="true">$</div></div><div class="kpiTrend" id="kpiAvgCostTrend"></div></div><div class="kpi exitedValueCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Estimated clear time</div><div class="kpiValue" id="kpiRate">-</div></div><div class="kpiIcon customOrange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4.5" y="6.5" width="15" height="11" rx="2.4" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 10h8.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7.5 13.4h4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16.8" cy="13.8" r="1.8" stroke="currentColor" stroke-width="1.6"/></svg></div></div><div class="kpiTrend" id="kpiRateTrend"></div></div><div class="kpi ratioKpiCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved / Approved</div><div class="kpiValue" id="kpiUnapprovedRatio">0.00%</div><div class="ratioBase" id="kpiRatioBase">0 / 0</div></div><div class="kpiIcon">%</div></div><div class="kpiTrend" id="kpiRatioTrend"></div></div></section><section class="trendLogGrid"><section class="panel trendPanel"><div class="panelHead"><div><h2 class="panelTitle">Critical Status Trends by Date</h2></div><div class="controls"><label>From <input id="dateFrom" class="input" type="date"></label><label>To <input id="dateTo" class="input" type="date"></label></div></div><div class="chartWrap"><canvas id="trendChart"></canvas></div><div class="legend"><span><i class="dot blue"></i>Entered Critical cumulative</span><span><i class="dot orange"></i>Critical total - right axis</span><span><i class="dot green"></i>Exited Critical cumulative</span></div></section><section class="panel criticalLogPanel repairCostPanel"><h2 class="panelTitle">Repair Analytics</h2><div class="repairComboGrid"><div class="repairComboItem"><h3 class="repairComboTitle">Tickets Repair Cost Distribution</h3><div id="criticalLogRows" class="statusPieLayout repairCostPie"></div></div><div class="repairComboItem"><h3 class="repairComboTitle">Approved vs Unapproved Tickets</h3><div id="approvedMixRows" class="statusPieLayout approvedMixPie"></div></div></div></section></section><section class="panel teamAssignPanel"><div class="panelHead"><div><h2 class="panelTitle">Owner Workload</h2></div><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed</span><span><i style="background:#4f46e5"></i>Current critical tickets</span></div><div id="employeeStatusMapping" class="employeeStatusMapping"></div></section></div><aside class="featureSideStack"><div class="panel dealerRankPanel"><h2 class="panelTitle">Top Critical Tickets by Dealer</h2><div id="dealerBars" class="dealerCriticalList"></div></div><section class="dashboardAnalysisGrid"><div class="panel speedPanel"><div class="panelHead"><div><h2 class="panelTitle">Critical Duration Distribution</h2></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel statusMixPanel"><h2 class="panelTitle">Critical Tickets Status Mix</h2><div id="statusMix" class="mixRows"></div></div></section></aside></section></main></div><div id="tooltip" class="tooltip"></div><div id="employeeModalBackdrop" class="employeeModalBackdrop">
+  <section class="employeeModal" role="dialog" aria-modal="true" aria-label="Employee workload details">
+    <div class="employeeModalHead">
+      <div class="employeePickerWrap"><label class="employeePickerLabel" for="employeePicker">Employee</label><select id="employeePicker" class="employeePicker"></select></div>
+      <div class="employeeModalControls"><div id="employeeModalPeriod" class="employeeModalPeriod"></div><button id="employeeModalClose" class="employeeModalClose" type="button">X</button></div>
+    </div>
+    <section class="employeeModalKpis">
+      <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Critical Tickets</div><div id="empKpiCritical" class="kpiValue">0</div></div><div class="kpiIcon customPurple" aria-hidden="true">!</div></div><div id="empKpiCriticalTrend" class="kpiTrend"></div></div>
+      <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Handled Tickets</div><div id="empKpiHandled" class="kpiValue">0</div></div><div class="kpiIcon customGreen" aria-hidden="true">OK</div></div><div id="empKpiHandledTrend" class="kpiTrend"></div></div>
+      <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Handling Speed</div><div id="empKpiWeeklyRate" class="kpiValue">-</div></div><div class="kpiIcon sky" aria-hidden="true">%</div></div><div id="empKpiWeeklyRateTrend" class="kpiTrend"></div></div>
+      <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Cost</div><div id="empKpiApprovedCost" class="kpiValue">$0</div></div><div class="kpiIcon customPurple" aria-hidden="true">$</div></div><div id="empKpiApprovedCostTrend" class="kpiTrend"></div></div>
+      <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Average Ticket Cost</div><div id="empKpiAvgCost" class="kpiValue">$0</div></div><div class="kpiIcon customAmber" aria-hidden="true">Avg</div></div><div id="empKpiAvgCostTrend" class="kpiTrend"></div></div>
+    </section>
+    <section class="employeeModalGrid">
+      <div class="employeeMiniPanel"><h3 class="panelTitle">Ticket Status Distribution</h3><div id="empStatusDist" class="statusPieLayout"></div></div>
+      <div class="employeeMiniPanel"><h3 class="panelTitle">Critical Duration Distribution</h3><div id="empDurationDist" class="statusPieLayout"></div></div>
+      <div class="employeeMiniPanel"><h3 class="panelTitle">Tickets Repair Cost Distribution</h3><div id="empCostDist" class="statusPieLayout"></div></div>
+    </section>
+  </section>
+</div>
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
 <script>
 
@@ -1096,12 +1493,17 @@ function hideCalcFloat(delay=250){setTimeout(()=>showCalcFloat(false),delay)}
 const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
 const MONITOR_ROOT="ctmTicketStatusMonitorV44";
 let team={views:{},defaultView:"all",claimOptions:[{key:"all",label:"All Claims"}]};
-let activeClaim="all", activeView=null, activePeriod="all", trendPoints=[], rawCritical={loaded:false,views:{}}, rawTicketEntries=[], statusMapping={}, dealerKeyLookup={exact:{},loose:{}}, employeeAnalytics=null, teamAssignMetric="totalRemoved";
+let activeClaim="all", activeView=null, activePeriod="all", trendPoints=[], rawCritical={loaded:false,views:{}}, rawTicketEntries=[], statusMapping={}, dealerKeyLookup={exact:{},loose:{}}, employeeAnalytics=null, teamAssignMetric="totalRemoved", selectedEmployeeName="", employeeModalPeriod="all", employeeStatusMapping={}, employeeStatusEdit=false;
 const DEFAULT_RANGE_START="2026-05-25";
 let dealerListExpanded=false;
 const $=id=>document.getElementById(id); const clean=v=>v==null?"":String(v).trim(); const num=v=>Number(v||0).toLocaleString();
 const esc=v=>clean(v).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
 const money=v=>Number(v||0).toLocaleString(undefined,{style:"currency",currency:"AUD",maximumFractionDigits:0});
+const EMPLOYEE_STATUS_STORAGE_KEY="warrantyEmployeeStatusMapping";
+function loadEmployeeStatusMapping(){try{employeeStatusMapping=JSON.parse(localStorage.getItem(EMPLOYEE_STATUS_STORAGE_KEY)||"{}")||{};}catch(e){employeeStatusMapping={};}}
+function saveEmployeeStatusMapping(){try{localStorage.setItem(EMPLOYEE_STATUS_STORAGE_KEY,JSON.stringify(employeeStatusMapping||{}));}catch(e){}}
+function employeeStatusKey(name){return clean(name).toLowerCase().replace(/\s+/g," ")}
+function isEmployeeExited(name){return clean(employeeStatusMapping[employeeStatusKey(name)]).toLowerCase()==="exited"}
 function fbUrl(path){return DEFAULT_FIREBASE.replace(/\/+$/,'')+"/"+path.replace(/^\/+/,'')+".json"}
 async function readJson(path){const r=await fetch(fbUrl(path),{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
 function arrayFromMaybe(v){if(Array.isArray(v))return v;if(v&&typeof v==="object")return Object.values(v);return []}
@@ -1119,6 +1521,81 @@ function isExitedTicket(ticket,mapping){const text=ticketOutcomeText(ticket,mapp
 function rawExitedTicketsTotalValue(start,end){if(!rawTicketEntries.length)return null;return rawTicketEntries.reduce((total,{ticket})=>{const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);if(!created||created<start||created>end)return total;if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return total;return isExitedTicket(ticket,statusMapping)?total+parseAmountIncludingTax(ticket.AmountIncludingTax):total},0)}
 function approvalBucket(ticket){const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status).toUpperCase();const text=clean(ticket.TicketStatusText||ticket.statusText).toLowerCase();if(code==="Z9"&&text==="sales order approved")return "approved";if(code==="Y8"&&text==="unapproved claims closed (closed)")return "unapproved";return "other"}
 function rawApprovalSummary(start,end){const summary={approved:0,unapproved:0,approvedAmount:0,unapprovedAmount:0};rawTicketEntries.forEach(({ticket})=>{const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);if(!created||created<start||created>end)return;if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;const bucket=approvalBucket(ticket);const amount=parseAmountIncludingTax(ticket.AmountIncludingTax);if(bucket==="approved"){summary.approved++;summary.approvedAmount+=amount}if(bucket==="unapproved"){summary.unapproved++;summary.unapprovedAmount+=amount}});return summary}
+function ticketEntryById(id){id=clean(id);return rawTicketEntries.find(x=>clean(x.id)===id)||null}
+function logClaimKey(e){const direct=clean(e.claimKey||e.claim||e.claimTypeKey);if(direct)return direct;const text=clean(e.claimType||e.ticketType||e.TicketTypeText).toLowerCase();if(text.includes("pre delivery"))return "preDelivery";if(text.includes("in field"))return "inField";const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);return entry?claimKeyForTicket(entry.ticket):"all"}
+function logMatchesClaim(e){return activeClaim==="all"||logClaimKey(e)===activeClaim}
+function logAmount(e){const direct=Number(e.amount??e.value??e.AmountIncludingTax??e.approvedAmount??0);if(Number.isFinite(direct)&&direct>0)return direct;const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);return entry?parseAmountIncludingTax(entry.ticket.AmountIncludingTax):0}
+function logIsUnapprovedExit(e){const code=clean(e.toCode||e.statusCode||e.TicketStatus).toUpperCase();const text=clean(e.toStatus||e.status||e.statusText||e.TicketStatusText||e.type).toLowerCase();return code==="Y8"||text.includes("unapproved claims closed")||text.includes("unapproved")}
+function changeApprovalSummary(start,end){const view=currentView();const logs=arrayFromMaybe(view.logs).filter(e=>{const d=eventDateKey(e.detectedAt||e.date);return d&&d>=start&&d<=end&&clean(e.cls).toLowerCase()==="exit"&&logMatchesClaim(e)});if(!logs.length)return rawApprovalSummary(start,end);let exited=0,exitedAmount=0,unapproved=0,unapprovedAmount=0;logs.forEach(e=>{const amount=logAmount(e);exited++;exitedAmount+=amount;if(logIsUnapprovedExit(e)){unapproved++;unapprovedAmount+=amount}});return {approved:Math.max(0,exited-unapproved),unapproved,approvedAmount:Math.max(0,exitedAmount-unapprovedAmount),unapprovedAmount}}
+function claimTypeCounts(){
+  if(rawCritical.loaded&&rawCritical.views){
+    return {
+      inField:Number(rawCritical.views.inField?.total||0),
+      preDelivery:Number(rawCritical.views.preDelivery?.total||0)
+    };
+  }
+  const out={inField:0,preDelivery:0};
+  rawTicketEntries.forEach(({ticket})=>{
+    if(!isMappedCritical(ticket,statusMapping))return;
+    const key=claimKeyForTicket(ticket);
+    if(key==="preDelivery")out.preDelivery++;else out.inField++;
+  });
+  return out;
+}
+function ticketLastUpdateDate(ticket){
+  const raw=getField(ticket,[
+    "LastUpdateDateTime","Last Update Date Time","LastUpdatedDateTime","Last Updated Date Time",
+    "LastUpdateOn","Last Update On","LastChangedOn","Last Changed On","LastChangeDateTime",
+    "Last Change Date Time","ChangedOn","Changed On","UpdatedOn","Updated On","ModifiedOn",
+    "Modified On","LastStatusChange","Last Status Change","CreationDateTime","CreatedOn","Created On"
+  ]);
+  return dateKey(raw)||dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
+}
+function noUpdateAgingSummary(){
+  const end=periodEndDate();
+  const endDate=parseDate(end)||new Date();
+  const rows=[];
+  rawTicketEntries.forEach(({ticket,roles,id})=>{
+    if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
+    if(!isMappedCritical(ticket,statusMapping))return;
+    const last=ticketLastUpdateDate(ticket);
+    if(!last)return;
+    const days=Math.max(0,Math.floor((endDate-(parseDate(last)||endDate))/86400000));
+    if(days<10)return;
+    rows.push({
+      id:id||clean(ticket.TicketID||ticket.ticketID),
+      days,
+      customer:getField(ticket,["CustomerName","Customer Name","AccountName","Account Name","BuyerName","Buyer Name"])||"-",
+      claim:clean(getField(ticket,["TicketTypeText","Ticket Type Text","TicketType","Ticket Type","ClaimType","Claim Type"]))||claimKeyForTicket(ticket),
+      repair:getField(ticket,["RepairDescription","Repair Description","Subject","Description","TicketDescription","Ticket Description"])||"-",
+      last,
+      dealer:standardDealerName(rawDealerName(ticket,roles)),
+      owner:rawAssignToName(ticket,roles),
+      status:clean(ticket.TicketStatusText||ticket.statusText||mappedStatus(ticket,statusMapping))||"Critical"
+    });
+  });
+  rows.sort((a,b)=>b.days-a.days||clean(a.id).localeCompare(clean(b.id)));
+  return {count:rows.length,maxDays:rows[0]?.days||0,rows};
+}
+function noUpdateTip(summary){
+  if(!summary.rows.length)return "<b>No stale critical tickets</b>All critical tickets were updated within 10 days.";
+  const shown=summary.rows.slice(0,8).map(r=>`<div class="tipRow"><span class="tipLeft">#${esc(r.id)} - ${esc(r.owner)}</span><span class="tipRight"><span class="tipValue">${num(r.days)}d</span></span></div><div style="color:#64748b;font-size:12px;margin:-2px 0 6px">${esc(r.dealer)} - Last update ${esc(r.last)}</div>`).join("");
+  const more=summary.rows.length>8?`<div style="color:#64748b;margin-top:6px">+ ${num(summary.rows.length-8)} more tickets</div>`:"";
+  return `<b>Critical tickets without update for 10+ days</b>${shown}${more}`;
+}
+function clearKpiPreview(el){
+  if(!el)return;
+  el.onmousemove=null;
+  el.onmouseleave=null;
+  el.onclick=null;
+}
+function bindKpiClickTip(el,html){
+  const tip=$("tooltip");
+  if(!el||!tip)return;
+  el.onmousemove=null;
+  el.onmouseleave=null;
+  el.onclick=e=>{e.preventDefault();e.stopPropagation();tip.innerHTML=html;tip.style.display="block";tip.style.left=(e.clientX+14)+"px";tip.style.top=(e.clientY+14)+"px";};
+}
 function rawTotalTickets(start,end){if(!rawTicketEntries.length)return null;let total=0;rawTicketEntries.forEach(({ticket})=>{const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);if(!created||created<start||created>end)return;if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;total++;});return total}
 function rawCurrentTotalTickets(){if(!rawTicketEntries.length)return null;let total=0;rawTicketEntries.forEach(({ticket})=>{if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;total++;});return total}
 function claimKeyForTicket(ticket){const raw=clean(getField(ticket,["TicketTypeText","Ticket Type Text","TicketType","Ticket Type","ClaimType","Claim Type"])).toLowerCase();return raw.includes("pre delivery")?"preDelivery":"inField"}
@@ -1165,9 +1642,26 @@ function prepareCanvas(c){const rect=c.getBoundingClientRect(),dpr=window.device
 function niceMax(v){v=Math.max(1,Number(v||0));if(v<=5)return 5;if(v<=25)return Math.ceil(v/5)*5;if(v<=120)return Math.ceil(v/20)*20;if(v<=500)return Math.ceil(v/50)*50;return Math.ceil(v/100)*100}
 function smoothPath(ctx,pts){if(!pts.length)return;ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++){const p0=pts[i-1],p1=pts[i];const mx=(p0.x+p1.x)/2;ctx.quadraticCurveTo(p0.x,p0.y,mx,(p0.y+p1.y)/2);ctx.quadraticCurveTo(p1.x,p1.y,p1.x,p1.y)}}function drawLine(ctx,pts,color,dashed=false,alpha=1){if(!pts.length)return;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=dashed?1.7:2.4;ctx.lineCap="round";ctx.lineJoin="round";if(dashed)ctx.setLineDash([7,6]);smoothPath(ctx,pts);ctx.stroke();ctx.setLineDash([]);pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,dashed?2.6:3.3,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();ctx.lineWidth=dashed?1.7:2.2;ctx.strokeStyle=color;ctx.stroke();});ctx.restore()}
 function renderPeriodButtons(){if(!$('periodSwitch'))return;const opts=[{key:"day",label:"Today"},{key:"week",label:"This Week"},{key:"month",label:"MTD"}];$("periodSwitch").innerHTML=opts.map(o=>`<button class="changeBtn ${o.key===activePeriod?'active':''}" data-key="${o.key}" type="button">${o.label}</button>`).join("");document.querySelectorAll(".changeBtn").forEach(b=>{let t=null;b.addEventListener("click",ev=>{if(ev.detail>=2){if(t)clearTimeout(t);activePeriod="all";setFullRange();renderAll();return;}if(t)clearTimeout(t);t=setTimeout(()=>{const key=b.dataset.key;if(activePeriod===key){activePeriod="all";setFullRange();}else{activePeriod=key;const end=latestDateForView();const start=periodStartDate(end);if($("dateFrom"))$("dateFrom").value=start;if($("dateTo"))$("dateTo").value=end;}renderAll();},180);});b.addEventListener("dblclick",ev=>{ev.preventDefault();if(t)clearTimeout(t);activePeriod="all";setFullRange();renderAll();});});}
-function latestDateForView(){const view=currentView();const pts=view.trend||[];return (pts.length?pts[pts.length-1].date:clean(view.generatedAt).slice(0,10)||clean(team.generatedAt).slice(0,10)||new Date().toISOString().slice(0,10));}
+function todayISO(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function trendThroughToday(view=currentView()){
+  const pts=arrayFromMaybe(view.trend).map(p=>({...p})).filter(p=>clean(p.date)).sort((a,b)=>clean(a.date).localeCompare(clean(b.date)));
+  const today=todayISO();
+  const last=pts[pts.length-1]||null;
+  if(last&&last.date>=today)return pts;
+  const daily=view.daily||{};
+  const enteredToday=Number((daily.entered||{})[today]||0);
+  const exitedToday=Number((daily.exited||{})[today]||0);
+  pts.push({
+    date:today,
+    entered:Number(last?.entered||0)+enteredToday,
+    exited:Number(last?.exited||0)+exitedToday,
+    critical:currentTotalCritical(Number(last?.critical||last?.criticalNow||0))
+  });
+  return pts;
+}
+function latestDateForView(){const view=currentView();const pts=trendThroughToday(view);return (pts.length?pts[pts.length-1].date:clean(view.generatedAt).slice(0,10)||clean(team.generatedAt).slice(0,10)||todayISO());}
 function earliestDateForView(){const view=currentView();const pts=view.trend||[];const first=(pts.length?pts[0].date:(view.minDate||team.minDate||latestDateForView()));return first&&first>DEFAULT_RANGE_START?first:DEFAULT_RANGE_START;}
-function setFullRange(){const view=currentView();const pts=view.trend||[];if(!pts.length)return;if($("dateFrom"))$("dateFrom").value=earliestDateForView();if($("dateTo"))$("dateTo").value=pts[pts.length-1].date;}
+function setFullRange(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;if($("dateFrom"))$("dateFrom").value=earliestDateForView();if($("dateTo"))$("dateTo").value=latestDateForView();}
 function periodEndDate(){return ($("dateTo")&&$("dateTo").value)||latestDateForView();}
 function periodStartDate(end){if(activePeriod==="all")return ($("dateFrom")&&$("dateFrom").value)||earliestDateForView();if(activePeriod==="day")return end;const d=new Date(end+"T00:00:00Z");d.setUTCDate(d.getUTCDate()-(activePeriod==="month"?29:6));const out=d.toISOString().slice(0,10);return out<earliestDateForView()?earliestDateForView():out;}
 function sumDaily(map,start,end){let total=0;Object.entries(map||{}).forEach(([k,v])=>{if(k>=start&&k<=end)total+=Number(v||0)});return total;}
@@ -1188,7 +1682,7 @@ function hasTicketFilter(){
 function teamRowsInSelectedRange(){
   const {start,end}=periodBounds();
   const view=currentView();
-  const dates=(view.trend||[]).map(p=>p.date).filter(d=>d&&d>=start&&d<=end);
+  const dates=trendThroughToday(view).map(p=>p.date).filter(d=>d&&d>=start&&d<=end);
   const map=new Map();
   (dates.length?dates:[end]).forEach(d=>{
     teamRowsAtDate(d).forEach(r=>{
@@ -1221,7 +1715,7 @@ function currentPeriodSummary(){
   const criticalNow=currentTotalCritical(selectedPeriodCriticalTotal());
   const totalTickets=rawTotalTickets(start,end);
   const rawExitedValue=rawExitedTicketsTotalValue(start,end);
-  const approvals=rawApprovalSummary(start,end);
+  const approvals=changeApprovalSummary(start,end);
   return {totalTickets:totalTickets==null?entered:totalTickets,criticalNow,enteredCritical:entered,exitedCritical:exited,exitedTicketsTotalValue:rawExitedValue==null?sumDaily(daily.exitedValue,start,end):rawExitedValue,approvedTickets:approvals.approved,unapprovedTickets:approvals.unapproved,approvedAmount:approvals.approvedAmount,unapprovedAmount:approvals.unapprovedAmount};
 }
 function numFixed(v,d=1){return Number(v||0).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d})}
@@ -1236,7 +1730,7 @@ function summaryForBounds(start,end){
   const entered=sumDaily(daily.entered,start,end),exited=sumDaily(daily.exited,start,end);
   const totalTickets=rawTotalTickets(start,end);
   const rawExitedValue=rawExitedTicketsTotalValue(start,end);
-  const approvals=rawApprovalSummary(start,end);
+  const approvals=changeApprovalSummary(start,end);
   return {totalTickets:totalTickets==null?entered:totalTickets,criticalNow:Number(criticalAtDate(view,end)||0),enteredCritical:entered,exitedCritical:exited,exitedTicketsTotalValue:rawExitedValue==null?sumDaily(daily.exitedValue,start,end):rawExitedValue,approvedTickets:approvals.approved,unapprovedTickets:approvals.unapproved,approvedAmount:approvals.approvedAmount,unapprovedAmount:approvals.unapprovedAmount};
 }
 function compareLabel(){if(activePeriod==="day")return "vs yesterday";if(activePeriod==="week")return "vs last week";if(activePeriod==="month")return "vs previous 30d";return "vs previous period"}
@@ -1258,8 +1752,21 @@ function refreshIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="curr
 function clearDashboardFilters(){activeClaim="all";activePeriod="all";setFullRange();renderAll();}
 function renderClaimButtons(){const opts=team.claimOptions||[{key:"all",label:"All Claims"},{key:"inField",label:"In Field Warranty Claims"},{key:"preDelivery",label:"Pre Delivery Warranty Claims"}];const box=$("claimSwitch");if(!box)return;box.className="claimSwitch filterTools";box.innerHTML=`<button class="filterIconBtn" id="clearClaimFilters" title="Clear filters" type="button">${refreshIcon()}</button><div class="filterDropdown"><button class="filterButton" type="button">${claimFilterIcon()}<span>Filters</span></button><div class="filterMenu">${opts.map(o=>`<button class="filterOption ${o.key===activeClaim?'active':''}" data-key="${esc(o.key)}" type="button">${esc(o.label)}</button>`).join("")}</div></div>`;box.querySelector("#clearClaimFilters").onclick=clearDashboardFilters;const dd=box.querySelector(".filterDropdown");box.querySelector(".filterButton").onclick=e=>{e.stopPropagation();dd.classList.toggle("open")};box.querySelectorAll(".filterOption").forEach(b=>b.onclick=()=>{activeClaim=b.dataset.key||"all";dd.classList.remove("open");renderAll()});}
 function currentView(){return (team.views&&team.views[activeClaim]) || team.views?.all || team;}
-function dailyCriticalTotalForTrend(p){const view=currentView();const rows=teamRowsAtDate(p.date).filter(r=>isValidDealerForTeamTotal(r.dealer));const canRebuild=Array.isArray(view.currentCriticalRows)||Array.isArray(view.logs);return canRebuild?rows.length:Number(p.critical||p.criticalNow||0)}
-function selectedTrend(){const view=currentView();const all=view.trend||[];const from=$("dateFrom").value,to=$("dateTo").value;return all.filter(p=>(!from||p.date>=from)&&(!to||p.date<=to)).map(p=>({...p,critical:dailyCriticalTotalForTrend(p)}));}
+function dailyCriticalTotalForTrend(p){const raw=Number(p.critical||p.criticalNow||0);return p.date===latestDateForView()?currentTotalCritical(raw):raw}
+function selectedTrend(){
+  const view=currentView();
+  const all=trendThroughToday(view).map(p=>({...p,critical:dailyCriticalTotalForTrend(p)}));
+  for(let i=1;i<all.length;i++){
+    const prev=all[i-1],cur=all[i];
+    const delta=Number(cur.critical||0)-Number(prev.critical||0);
+    const enteredBase=Math.max(Number(cur.entered||0),Number(prev.entered||0));
+    const exitedBase=Math.max(Number(cur.exited||0),Number(prev.exited||0));
+    cur.entered=delta>0?Math.max(enteredBase,Number(prev.entered||0)+delta):enteredBase;
+    cur.exited=delta<0?Math.max(exitedBase,Number(prev.exited||0)+Math.abs(delta)):exitedBase;
+  }
+  const from=$("dateFrom").value,to=$("dateTo").value;
+  return all.filter(p=>(!from||p.date>=from)&&(!to||p.date<=to));
+}
 function drawTodayBarsTeam(ctx,w,h){
   const s=currentPeriodSummary();
   const data=[['Entered',s.enteredCritical,'#3b82f6'],['Exited',s.exitedCritical,'#16a34a'],['Total Critical',s.criticalNow,'#fb6b1d']];
@@ -1268,8 +1775,50 @@ function drawTodayBarsTeam(ctx,w,h){
   data.forEach((d,i)=>{const bw=Math.min(100,plotW/(data.length*2));const gap=plotW/data.length;const x=left+gap*i+gap/2-bw/2;const bh=plotH*(d[1]/max);const y=top+plotH-bh;const g=ctx.createLinearGradient(0,y,0,y+bh);g.addColorStop(0,d[2]);g.addColorStop(1,'#7dd3fc');ctx.fillStyle=g;ctx.beginPath();ctx.roundRect?ctx.roundRect(x,y,bw,bh,8):(ctx.rect(x,y,bw,bh));ctx.fill();ctx.fillStyle='#0f172a';ctx.font='600 16px Inter, Segoe UI, Arial';ctx.fillText(num(d[1]),x+bw/2,y-12);ctx.fillStyle='#52627a';ctx.font='500 12px Inter, Segoe UI, Arial';ctx.fillText(d[0],x+bw/2,h-22);});
 }
 function drawTrend(){const c=$("trendChart");if(!c)return;const {ctx,w,h}=prepareCanvas(c);ctx.clearRect(0,0,w,h);if(activePeriod==="day"){drawTodayBarsTeam(ctx,w,h);return;}const pts=trendPoints;const left=58,right=62,top=24,bottom=56,plotW=w-left-right,plotH=h-top-bottom;const flowMax=niceMax(Math.max(1,...pts.flatMap(p=>[p.entered,p.exited])));const criticalMax=niceMax(Math.max(1,...pts.map(p=>p.critical)));ctx.save();ctx.font="12px Inter, Segoe UI, Arial";ctx.strokeStyle="#d8e2ee";ctx.setLineDash([2,4]);for(let i=0;i<=5;i++){const val=Math.round(flowMax*i/5),y=top+plotH-(plotH*i/5);ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillStyle="#64748b";ctx.textAlign="right";ctx.fillText(String(val),left-10,y+4);const rv=Math.round(criticalMax*i/5);ctx.fillStyle="#fb6b1d";ctx.textAlign="left";ctx.fillText(String(rv),w-right+10,y+4)}ctx.setLineDash([]);ctx.fillStyle="#64748b";ctx.textAlign="left";pts.forEach((p,i)=>{const x=left+(pts.length<=1?0:plotW*i/(pts.length-1));if(i===0||i===pts.length-1||pts.length<=7)ctx.fillText(p.date.slice(5),x-14,h-22)});ctx.restore();const xFor=i=>left+(pts.length<=1?0:plotW*i/(pts.length-1));const yFlow=v=>top+plotH-(plotH*(v/flowMax));const yCritical=v=>top+plotH-(plotH*(v/criticalMax));drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.entered)})),"#3b82f6");drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yCritical(p.critical)})),"#fb6b1d",true,.55);drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.exited)})),"#16a34a");c._points=pts.map((p,i)=>({x:xFor(i),p,idx:i}))}
-function renderKpis(){const s=currentPeriodSummary();const b=periodBounds(),pb=previousPeriodBounds(b.start,b.end),prev=summaryForBounds(pb.start,pb.end);const ratio=pctValue(s.unapprovedTickets,s.approvedTickets),prevRatio=pctValue(prev.unapprovedTickets,prev.approvedTickets);const h=periodHandlingSummary();const prevH=periodHandlingSummaryForBounds(pb.start,pb.end,prev.criticalNow);const ticketFiltered=hasTicketFilter();const totalTicketValue=ticketFiltered?s.totalTickets:s.criticalNow;const totalTicketLabel=document.querySelector(".totalCriticalCard .kpiLabel");if(totalTicketLabel)totalTicketLabel.textContent=ticketFiltered?"Total Tickets Change":"Total Tickets";$("kpiCritical").textContent=num(totalTicketValue);if($("kpiApprovedTickets"))$("kpiApprovedTickets").textContent=num(s.approvedTickets);if($("kpiBenchmark"))$("kpiBenchmark").textContent=`${numFixed(h.rate||0,1)}%`;$("kpiRate").textContent=h.current<=0?"Clean":(h.clearDays==null?"-":formatClearTime(h.clearDays));if($("kpiApproved"))$("kpiApproved").textContent=money(s.approvedAmount);if($("kpiUnapproved"))$("kpiUnapproved").textContent=num(s.unapprovedTickets);if($("kpiUnapprovedAmount"))$("kpiUnapprovedAmount").textContent=money(s.unapprovedAmount);if($("kpiUnapprovedRatio"))$("kpiUnapprovedRatio").textContent=pctText(ratio,2);if($("kpiRatioBase"))$("kpiRatioBase").textContent=`${num(s.unapprovedTickets)} / ${num(s.approvedTickets)}`;const trends=[["kpiCriticalTrend","totalTickets",s.totalTickets,prev.totalTickets],["kpiApprovedTicketsTrend","approvedTickets",s.approvedTickets,prev.approvedTickets],["kpiUnapprovedTrend","unapprovedTickets",s.unapprovedTickets,prev.unapprovedTickets],["kpiBenchmarkTrend","benchmarkRate",h.rate||0,prevH.rate||0,"percentPoint"],["kpiApprovedTrend","approvedAmount",s.approvedAmount,prev.approvedAmount,"money"],["kpiRateTrend","estimatedClearDays",h.clearDays||0,prevH.clearDays||0,"days"],["kpiRatioTrend","unapprovedRatio",ratio,prevRatio,"percent"]];trends.forEach(([id,key,c,p,fmt])=>{const el=$(id);if(!el)return;if(id==="kpiCriticalTrend"&&!ticketFiltered){el.innerHTML="";el.className="kpiTrend flat";return;}const html=trendMarkup(key,c,p,fmt);el.innerHTML=html;el.className=`kpiTrend ${html.includes('vs')?'' : ''}`;const diff=Number(c||0)-Number(p||0);const higherGood={totalTickets:true,criticalNow:false,enteredCritical:false,exitedCritical:true,exitedTicketsTotalValue:true,estimatedClearDays:false,benchmarkRate:true,approvedTickets:true,approvedAmount:true,unapprovedTickets:true,unapprovedRatio:true};el.classList.add(diff===0?"flat":((diff>0)===higherGood[key]?"good":"bad"));});}
-function formatClearTime(days){days=Number(days||0);if(!days)return "0d";return Math.ceil(days)+"d"}
+function setKpiTrendHidden(id,hidden){const el=$(id);if(!el)return;el.innerHTML="";el.className="kpiTrend flat"+(hidden?" is-hidden":"");}
+function setCardLabel(selector,label){const el=document.querySelector(selector+" .kpiLabel");if(el)el.textContent=label;}
+function setTrend(id,key,current,previous,fmt,show){const el=$(id);if(!el)return;if(!show){setKpiTrendHidden(id,true);return;}const html=trendMarkup(key,current,previous,fmt);el.innerHTML=html;el.className="kpiTrend";const diff=Number(current||0)-Number(previous||0);const higherGood={totalTickets:true,criticalNow:false,enteredCritical:false,exitedCritical:true,exitedTicketsTotalValue:true,estimatedClearDays:false,benchmarkRate:true,approvedTickets:true,approvedAmount:true,avgCost:true,unapprovedTickets:true,unapprovedRatio:true};el.classList.add(diff===0?"flat":((diff>0)===higherGood[key]?"good":"bad"));}
+function renderKpis(){
+  const s=currentPeriodSummary();
+  const b=periodBounds(),pb=previousPeriodBounds(b.start,b.end),prev=summaryForBounds(pb.start,pb.end);
+  const h=periodHandlingSummary();
+  const prevH=periodHandlingSummaryForBounds(pb.start,pb.end,prev.criticalNow);
+  const filtered=hasTicketFilter();
+  const claimCounts=claimTypeCounts();
+  const noUpdate=noUpdateAgingSummary();
+  const approvedAvg=s.approvedTickets?s.approvedAmount/s.approvedTickets:0;
+  const prevApprovedAvg=prev.approvedTickets?prev.approvedAmount/prev.approvedTickets:0;
+  const ratio=pctValue(s.unapprovedTickets,s.approvedTickets),prevRatio=pctValue(prev.unapprovedTickets,prev.approvedTickets);
+  const totalTicketValue=filtered?s.totalTickets:s.criticalNow;
+  setCardLabel(".totalCriticalCard",filtered?"Total Tickets Change":"Total Tickets");
+  setCardLabel(".approvedTicketsCountCard",filtered?"Approved / Unapproved Tickets changes":"In Field Warranty Claims / Pre Delivery Warranty Claims");
+  setCardLabel(".unapprovedTicketsCard","No Update Aging");
+  setCardLabel(".benchmarkRateCard","2-week benchmark");
+  setCardLabel(".approvedTicketsCard","Approved Cost");
+  setCardLabel(".exitedValueCard","Estimated clear time");
+  $("kpiCritical").textContent=num(totalTicketValue);
+  if($("kpiApprovedTickets"))$("kpiApprovedTickets").textContent=filtered?`${num(s.approvedTickets)} / ${num(s.unapprovedTickets)}`:`${num(claimCounts.inField)} / ${num(claimCounts.preDelivery)}`;
+  if($("kpiUnapproved"))$("kpiUnapproved").textContent=num(noUpdate.count);
+  if($("kpiBenchmark"))$("kpiBenchmark").textContent=`${numFixed(h.rate||0,1)}%`;
+  $("kpiRate").textContent=h.current<=0?"Clean":(h.clearDays==null?"-":formatClearTime(h.clearDays));
+  if($("kpiApproved"))$("kpiApproved").textContent=money(s.approvedAmount);
+  if($("kpiAvgCost"))$("kpiAvgCost").textContent=money(approvedAvg);
+  if($("kpiUnapprovedAmount"))$("kpiUnapprovedAmount").textContent=money(s.unapprovedAmount);
+  if($("kpiUnapprovedRatio"))$("kpiUnapprovedRatio").textContent=pctText(ratio,2);
+  if($("kpiRatioBase"))$("kpiRatioBase").textContent=`${num(s.unapprovedTickets)} / ${num(s.approvedTickets)}`;
+  setTrend("kpiCriticalTrend","totalTickets",s.totalTickets,prev.totalTickets,undefined,filtered);
+  setTrend("kpiApprovedTicketsTrend","approvedTickets",s.approvedTickets,prev.approvedTickets,undefined,filtered);
+  if($("kpiUnapprovedTrend")){ $("kpiUnapprovedTrend").innerHTML=noUpdate.count?`${num(noUpdate.count)} critical need update`:"All clear"; $("kpiUnapprovedTrend").className="kpiTrend "+(noUpdate.count?"bad":"good"); }
+  setTrend("kpiBenchmarkTrend","benchmarkRate",h.rate||0,prevH.rate||0,"percentPoint",filtered);
+  clearKpiPreview(document.querySelector(".benchmarkRateCard"));
+  const noUpdateCard=document.querySelector(".unapprovedTicketsCard");
+  clearKpiPreview(document.querySelector(".exitedValueCard"));
+  if(noUpdateCard)noUpdateCard.onclick=()=>{try{localStorage.setItem("dealerWorkbenchNoUpdateTickets",JSON.stringify(noUpdate.rows||[]));}catch(e){}window.location.href="dealer-workbench.html?noUpdate=1#tickets";};
+  setTrend("kpiApprovedTrend","approvedAmount",s.approvedAmount,prev.approvedAmount,"money",filtered);
+  setTrend("kpiAvgCostTrend","avgCost",approvedAvg,prevApprovedAvg,"money",filtered);
+  setTrend("kpiRateTrend","estimatedClearDays",h.clearDays||0,prevH.clearDays||0,"days",filtered);
+  setTrend("kpiRatioTrend","unapprovedRatio",ratio,prevRatio,"percent",filtered);
+}function formatClearTime(days){days=Number(days||0);if(!days)return "0d";return Math.ceil(days)+"d"}
 function speedDonutMarkup(rows,rate){
   const colors=["#2f6df6","#22c55e","#f59e0b","#fb7185","#94a3b8"];
   const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
@@ -1303,6 +1852,7 @@ function distributionDonutMarkup(rows,centerLabel){
   const colors=["#5b5cf6","#22c55e","#f59e0b","#fb7185","#8b5cf6","#94a3b8"];
   const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
   if(!total)return `<div class="speedEmpty">No status mix found for this claim type and selected period.</div>`;
+  const detailValue=v=>typeof v==="number"?num(v):esc(v);
   let cursor=0;
   const slices=rows.map((row,i)=>{
     const count=Number(row.count||0);
@@ -1313,7 +1863,7 @@ function distributionDonutMarkup(rows,centerLabel){
     const mid=(start+end)/2;
     const p=statusPiePoint(85,85,48,mid);
     const tip=(row.details&&row.details.length)
-      ? `<b>${esc(row.label)}: ${num(count)} (${Math.round(pct)}%)</b>${row.details.map(x=>`${esc(x.label)}: ${num(x.count)}`).join('<br>')}`
+      ? `<b>${esc(row.label)}: ${num(count)} (${Math.round(pct)}%)</b>${row.details.map(x=>`${esc(x.label)}: ${detailValue(x.count)}`).join('<br>')}`
       : `<b>${esc(row.label)}</b>${num(count)} tickets - ${Math.round(pct)}%`;
     return `<path class="statusPieSlice" d="${statusPiePath(85,85,72,start,end)}" fill="${colors[i%colors.length]}" data-status-tip="${esc(tip)}"></path>${pct>=7?`<text class="statusPiePct" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${Math.round(pct)}%</text>`:''}`;
   }).join("");
@@ -1321,15 +1871,17 @@ function distributionDonutMarkup(rows,centerLabel){
     const count=Number(row.count||0);
     const pct=total?Math.round(count/total*100):0;
     const tip=(row.details&&row.details.length)
-      ? `<b>${esc(row.label)}: ${num(count)} (${pct}%)</b>${row.details.map(x=>`${esc(x.label)}: ${num(x.count)}`).join('<br>')}`
+      ? `<b>${esc(row.label)}: ${num(count)} (${pct}%)</b>${row.details.map(x=>`${esc(x.label)}: ${detailValue(x.count)}`).join('<br>')}`
       : `<b>${esc(row.label)}</b>${num(count)} tickets - ${pct}%`;
     return `<div class="statusPieLegendRow" data-status-tip="${esc(tip)}"><span class="statusPieLegendDot" style="background:${colors[i%colors.length]}"></span><span class="statusPieLegendLabel">${esc(row.label)} (${num(count)})</span></div>`;
   }).join("");
   return `<div class="statusPieWrap"><svg class="statusPieSvg" viewBox="0 0 170 170" aria-label="${esc(centerLabel)} status distribution">${slices}</svg></div><div class="statusPieLegend">${legend}</div><div id="statusMixHoverTip" class="statusMixHoverTip"></div>`;
 }
 function bindStatusMixTips(){
-  const tip=$("statusMixHoverTip");
-  const box=$("statusMix");
+  bindStatusMixTipsFor($("statusMix"),$("statusMixHoverTip"));
+}
+function bindStatusMixTipsFor(box,tip){
+  tip=tip||$("statusMixHoverTip");
   if(!tip||!box)return;
   box.querySelectorAll("[data-status-tip]").forEach(el=>{
     el.onmousemove=e=>{
@@ -1341,10 +1893,80 @@ function bindStatusMixTips(){
     el.onmouseleave=()=>{tip.style.display="none";};
   });
 }
+function criticalDurationDaysForRow(row,endDate){
+  const end=new Date((endDate||periodEndDate())+"T00:00:00Z");
+  const start=new Date(row.enteredAt||row.enteredCriticalAt||row.firstEnteredAt||row.criticalSince||row.detectedAt||row.date||row.created||row.CreatedOn||row.createdOn||row.ticketCreatedOn||"");
+  if(!isNaN(start)&&!isNaN(end))return Math.max(0,(end-start)/86400000);
+  const direct=Number(row.durationDays??row.duration??row.daysInCritical??row.ageDays);
+  return Number.isFinite(direct)&&direct>=0?direct:null;
+}
+function criticalEnterDateByTicketId(end){
+  const view=currentView(), map=new Map();
+  arrayFromMaybe(view.logs).slice().sort((a,b)=>eventDateKey(a.detectedAt||a.date).localeCompare(eventDateKey(b.detectedAt||b.date))).forEach(e=>{
+    const d=eventDateKey(e.detectedAt||e.date);
+    if(!d||d>end||!logMatchesClaim(e))return;
+    const id=clean(e.id||e.ticketId||e.TicketID);
+    if(!id)return;
+    const cls=clean(e.cls).toLowerCase();
+    if(cls==="enter")map.set(id,d);
+    if(cls==="exit")map.delete(id);
+  });
+  return map;
+}
+function daysBetweenISO(start,end){
+  const s=parseDate(start),e=parseDate(end);
+  return s&&e?Math.max(0,(e-s)/86400000):null;
+}
+function criticalDurationRows(){
+  const {start,end}=periodBounds();
+  const view=currentView();
+  const rows=[];
+  const enterMap=criticalEnterDateByTicketId(end);
+  if(rawTicketEntries.length){
+    rawTicketEntries.forEach(({ticket,roles,id})=>{
+      if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
+      if(!isMappedCritical(ticket,statusMapping))return;
+      const entered=enterMap.get(clean(id))||dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt||ticket.CreationDateTime);
+      const days=daysBetweenISO(entered,end);
+      if(days!=null)rows.push({days,kind:"Current critical"});
+    });
+  }else{
+    teamRowsAtDate(end).forEach(r=>{
+      if(!isValidDealerForTeamTotal(r.dealer))return;
+      const days=criticalDurationDaysForRow(r,end);
+      if(days!=null)rows.push({days,kind:"Current critical"});
+    });
+  }
+  arrayFromMaybe(view.logs).forEach(e=>{
+    const d=eventDateKey(e.detectedAt||e.date);
+    if(!d||d<start||d>end||clean(e.cls).toLowerCase()!=="exit"||!logMatchesClaim(e))return;
+    const days=durationDaysForTeamLog(e);
+    if(days!=null)rows.push({days,kind:"Exited critical"});
+  });
+  return rows;
+}
+function criticalDurationBuckets(){
+  const buckets=[
+    {key:"leOneDay",label:"<= 1 day",count:0},
+    {key:"oneToThreeDays",label:"1-3 days",count:0},
+    {key:"threeToSevenDays",label:"3-7 days",count:0},
+    {key:"eightToFourteenDays",label:"8-14 days",count:0},
+    {key:"overFourteenDays",label:"> 14 days",count:0}
+  ];
+  criticalDurationRows().forEach(row=>{
+    const d=Number(row.days||0);
+    if(d<=1)buckets[0].count++;
+    else if(d<=3)buckets[1].count++;
+    else if(d<=7)buckets[2].count++;
+    else if(d<=14)buckets[3].count++;
+    else buckets[4].count++;
+  });
+  return buckets;
+}
 function renderHandlingSpeed(){
   const rowsEl=$('speedRows');
   const h=periodHandlingSummary();
-  const rows=h.buckets||[];
+  const rows=criticalDurationBuckets();
   if($("speedRate"))$("speedRate").textContent=(h.rate||0)+"%";
   if($("speedAvg"))$("speedAvg").textContent=h.current<=0?"Clean":(h.clearDays==null?"-":formatClearTime(h.clearDays));
   if(rowsEl){
@@ -1358,7 +1980,7 @@ function renderHandlingSpeed(){
       const width=Math.max(4,Math.round(count/max*100));
       const color=colors[i%colors.length];
       return `<div class="agingRow"><div class="agingLabel">${esc(row.label)}</div><div class="agingTrack"><div class="agingFill" style="width:${width}%;background:linear-gradient(90deg,${color},${color}cc)"></div></div><div class="agingValue">${num(count)}<small>${pct}%</small></div></div>`;
-    }).join(""):`<div class="speedEmpty">No ticket-aging analytics found for this period.</div>`;
+    }).join(""):`<div class="speedEmpty">No critical duration data found for this period.</div>`;
   }
 }
 
@@ -1499,6 +2121,273 @@ function bindCriticalTicketSearch(){
   };
   panel.insertBefore(form,link);
 }
+function repairCostBucketDefs(){
+  return [
+    {label:"$0 - $100",min:0,max:100,count:0,total:0},
+    {label:"$100 - $500",min:100,max:500,count:0,total:0},
+    {label:"$500 - $1k",min:500,max:1000,count:0,total:0},
+    {label:"$1k - $2.5k",min:1000,max:2500,count:0,total:0},
+    {label:">$2.5k",min:2500,max:Infinity,count:0,total:0}
+  ];
+}
+function repairCostBucketFor(amount,buckets){
+  return buckets.find(b=>amount>=b.min&&amount<b.max)||buckets[buckets.length-1];
+}
+function repairCostDistributionRows(){
+  const {start,end}=periodBounds();
+  const buckets=repairCostBucketDefs();
+  rawTicketEntries.forEach(({ticket})=>{
+    const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
+    if(!created||created<start||created>end)return;
+    if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
+    const amount=parseAmountIncludingTax(ticket.AmountIncludingTax);
+    const bucket=repairCostBucketFor(amount,buckets);
+    bucket.count++;
+    bucket.total+=amount;
+  });
+  return buckets.filter(b=>b.count>0).map(b=>({label:b.label,count:b.count,details:[{label:"Tickets",count:b.count},{label:"Total cost",count:money(b.total)}]}));
+}
+function repairCostDonutMarkup(rows){
+  const colors=["#5b5cf6","#22c55e","#f59e0b","#fb7185","#8b5cf6","#94a3b8"];
+  const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
+  if(!total)return `<div class="speedEmpty">No repair cost data found for this claim type and selected period.</div>`;
+  let cursor=0;
+  const slices=rows.map((row,i)=>{
+    const count=Number(row.count||0),pct=count/total*100,start=cursor,end=cursor+pct*3.6;
+    cursor=end;
+    const mid=(start+end)/2,p=statusPiePoint(85,85,48,mid);
+    const totalCost=(row.details||[]).find(x=>x.label==="Total cost")?.count||"$0";
+    const tip=`<b>${esc(row.label)}: ${num(count)} (${Math.round(pct)}%)</b>Total cost: ${esc(totalCost)}`;
+    return `<path class="statusPieSlice" d="${statusPiePath(85,85,72,start,end)}" fill="${colors[i%colors.length]}" data-status-tip="${esc(tip)}"></path>${pct>=7?`<text class="statusPiePct" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${Math.round(pct)}%</text>`:''}`;
+  }).join("");
+  const legend=rows.map((row,i)=>{
+    const count=Number(row.count||0),pct=Math.round(count/total*100);
+    const totalCost=(row.details||[]).find(x=>x.label==="Total cost")?.count||"$0";
+    const tip=`<b>${esc(row.label)}: ${num(count)} (${pct}%)</b>Total cost: ${esc(totalCost)}`;
+    return `<div class="statusPieLegendRow" data-status-tip="${esc(tip)}"><span class="statusPieLegendDot" style="background:${colors[i%colors.length]}"></span><span class="statusPieLegendLabel">${esc(row.label)} (${num(count)})</span></div>`;
+  }).join("");
+  return `<div class="statusPieWrap"><svg class="statusPieSvg" viewBox="0 0 170 170" aria-label="Repair cost distribution">${slices}</svg></div><div class="statusPieLegend">${legend}</div><div id="repairCostHoverTip" class="statusMixHoverTip"></div>`;
+}
+function simpleDonutMarkup(rows,emptyText){
+  return distributionDonutMarkup(rows, "tickets").replace("No status mix found for this claim type and selected period.", emptyText||"No data found.");
+}
+function employeeTicketEmployee(entry){
+  return rawAssignToName(entry.ticket,entry.roles);
+}
+function employeeBounds(){
+  const end=periodEndDate();
+  if(employeeModalPeriod==="day")return {start:end,end};
+  if(employeeModalPeriod==="week")return {start:addDaysISO(end,-6),end};
+  if(employeeModalPeriod==="month")return {start:addDaysISO(end,-29),end};
+  return periodBounds();
+}
+function employeeEntries(name,bounds){
+  return rawTicketEntries.filter(entry=>{
+    if(activeClaim!=="all"&&claimKeyForTicket(entry.ticket)!==activeClaim)return false;
+    if(clean(employeeTicketEmployee(entry))!==clean(name))return false;
+    const created=dateKey(entry.ticket.CreatedOn||entry.ticket.createdOn||entry.ticket.CreatedAt);
+    return !created || (created>=bounds.start&&created<=bounds.end);
+  });
+}
+function employeeLogs(name,bounds){
+  return arrayFromMaybe(currentView().logs).filter(e=>{
+    const d=eventDateKey(e.detectedAt||e.date);
+    if(!d||d<bounds.start||d>bounds.end||!logMatchesClaim(e))return false;
+    const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);
+    return entry&&clean(employeeTicketEmployee(entry))===clean(name);
+  });
+}
+function employeeApprovalSummary(name,bounds){
+  const logs=employeeLogs(name,bounds).filter(e=>clean(e.cls).toLowerCase()==="exit");
+  if(logs.length){
+    let exited=0,exitedAmount=0,unapproved=0,unapprovedAmount=0;
+    logs.forEach(e=>{const amount=logAmount(e);exited++;exitedAmount+=amount;if(logIsUnapprovedExit(e)){unapproved++;unapprovedAmount+=amount;}});
+    return {approved:Math.max(0,exited-unapproved),unapproved,approvedAmount:Math.max(0,exitedAmount-unapprovedAmount),unapprovedAmount};
+  }
+  const summary={approved:0,unapproved:0,approvedAmount:0,unapprovedAmount:0};
+  employeeEntries(name,bounds).forEach(({ticket})=>{const b=approvalBucket(ticket),amount=parseAmountIncludingTax(ticket.AmountIncludingTax);if(b==="approved"){summary.approved++;summary.approvedAmount+=amount;}if(b==="unapproved"){summary.unapproved++;summary.unapprovedAmount+=amount;}});
+  return summary;
+}
+function employeeCriticalEntries(name,bounds){
+  return rawTicketEntries.filter(entry=>{
+    if(activeClaim!=="all"&&claimKeyForTicket(entry.ticket)!==activeClaim)return false;
+    if(clean(employeeTicketEmployee(entry))!==clean(name))return false;
+    if(employeeModalPeriod!=="all"){
+      const created=dateKey(entry.ticket.CreatedOn||entry.ticket.createdOn||entry.ticket.CreatedAt);
+      if(created&&(created<bounds.start||created>bounds.end))return false;
+    }
+    return isMappedCritical(entry.ticket,statusMapping);
+  });
+}
+function employeeSummary(name,bounds){
+  const approvals=employeeApprovalSummary(name,bounds);
+  const critical=employeeCriticalEntries(name,bounds).length;
+  const handled=employeeLogs(name,bounds).filter(e=>clean(e.cls).toLowerCase()==="exit").length;
+  const days=daysInBounds(bounds.start,bounds.end);
+  const handlingSpeed=handled/days;
+  const avgCost=approvals.approved?approvals.approvedAmount/approvals.approved:0;
+  const ratio=pctValue(approvals.unapproved,approvals.approved);
+  return {...approvals,critical,handled,handlingSpeed,avgCost,ratio};
+}
+function bucketRowsFromCounts(counts){
+  return Object.entries(counts).map(([label,count])=>({label,count})).filter(x=>x.count>0).sort((a,b)=>b.count-a.count||a.label.localeCompare(b.label));
+}
+function employeeStatusRows(name,bounds){
+  const counts={};
+  employeeCriticalEntries(name,bounds).forEach(({ticket})=>{const status=clean(ticket.TicketStatusText||ticket.statusText||mappedStatus(ticket,statusMapping))||"Unknown";counts[status]=(counts[status]||0)+1;});
+  return bucketRowsFromCounts(counts);
+}
+function employeeDurationRows(name,bounds){
+  const buckets={"<= 1 day":0,"1-3 days":0,"3-7 days":0,"8-14 days":0,"> 14 days":0};
+  employeeCriticalEntries(name,bounds).forEach(entry=>{const d=criticalDurationDaysForRow({...entry.ticket,id:entry.id},bounds.end);if(d==null)return;if(d<=1)buckets["<= 1 day"]++;else if(d<=3)buckets["1-3 days"]++;else if(d<=7)buckets["3-7 days"]++;else if(d<=14)buckets["8-14 days"]++;else buckets["> 14 days"]++;});
+  employeeLogs(name,bounds).filter(e=>clean(e.cls).toLowerCase()==="exit").forEach(e=>{const d=durationDaysForTeamLog(e);if(d<=1)buckets["<= 1 day"]++;else if(d<=3)buckets["1-3 days"]++;else if(d<=7)buckets["3-7 days"]++;else if(d<=14)buckets["8-14 days"]++;else buckets["> 14 days"]++;});
+  return bucketRowsFromCounts(buckets);
+}
+function employeeCostRows(name,bounds){
+  const buckets=repairCostBucketDefs();
+  employeeCriticalEntries(name,bounds).forEach(({ticket})=>{
+    const amount=parseAmountIncludingTax(ticket.AmountIncludingTax);
+    repairCostBucketFor(amount,buckets).count++;
+  });
+  return buckets.filter(b=>b.count>0).map(b=>({label:b.label,count:b.count}));
+}
+function renderEmployeeModalPeriod(){
+  const box=$("employeeModalPeriod");if(!box)return;
+  if(employeeModalPeriod==="day")employeeModalPeriod="all";
+  const opts=[["week","This Week"],["month","MTD"]];
+  box.innerHTML=opts.map(([key,label])=>`<button class="${employeeModalPeriod===key?'active':''}" data-emp-period="${key}" type="button">${label}</button>`).join("");
+  box.querySelectorAll("[data-emp-period]").forEach(btn=>{btn.onclick=ev=>{const key=btn.dataset.empPeriod;employeeModalPeriod=employeeModalPeriod===key?"all":key;renderEmployeeModalWithLoading();};});
+}
+function employeeCompareLabel(){
+  if(employeeModalPeriod==="day")return "vs yesterday";
+  if(employeeModalPeriod==="week")return "vs last week";
+  if(employeeModalPeriod==="month")return "vs previous 30d";
+  if(activePeriod==="day")return "vs yesterday";
+  if(activePeriod==="week")return "vs last week";
+  if(activePeriod==="month")return "vs previous 30d";
+  return "vs selected prior range";
+}
+function modalTrendMarkup(key,current,previous,fmt="number"){
+  const diff=Number(current||0)-Number(previous||0);
+  const dir=diff>0?"up":diff<0?"down":"flat";
+  const value=fmt==="percentPoint"?`${diff>0?"+":""}${numFixed(diff,1)}pt`:previous?`${diff>0?"+":""}${numFixed(diff/Math.abs(previous)*100,1)}%`:(diff===0?"0":(fmt==="money"?money(diff):fmt==="days"?`${diff>0?"+":""}${num(diff)}d`:fmt==="percent"?`${diff>0?"+":""}${numFixed(diff,1)}pt`:`${diff>0?"+":""}${num(diff)}`));
+  return `${sparkSvg(dir)}<span>${value} ${employeeCompareLabel()}</span>`;
+}
+function setModalTrend(id,key,current,previous,fmt,show){
+  const el=$(id);if(!el)return;
+  if(!show){setKpiTrendHidden(id,true);return;}
+  el.innerHTML=modalTrendMarkup(key,current,previous,fmt);
+  el.className="kpiTrend";
+  const diff=Number(current||0)-Number(previous||0);
+  const higherGood={criticalNow:false,exitedCritical:true,benchmarkRate:true,approvedAmount:true,avgCost:true};
+  el.classList.add(diff===0?"flat":((diff>0)===higherGood[key]?"good":"bad"));
+}
+function employeeBarMarkup(rows,emptyText){
+  if(!rows.length)return `<div class="speedEmpty">${esc(emptyText||"No data found.")}</div>`;
+  const colors=["#5b5cf6","#22c55e","#f59e0b","#fb7185","#8b5cf6","#94a3b8"];
+  const max=Math.max(1,...rows.map(row=>Number(row.count||0)));
+  return `<div class="employeeBarRows">${rows.map((row,i)=>{
+    const count=Number(row.count||0);
+    const width=Math.max(3,count/max*100);
+    const tip=`<b>${esc(row.label)}</b>${num(count)} tickets`;
+    return `<div class="employeeBarRow" data-status-tip="${esc(tip)}"><span class="employeeBarLabel" title="${esc(row.label)}">${esc(row.label)}</span><span class="employeeBarTrack"><span class="employeeBarFill" style="width:${width}%;background:linear-gradient(90deg,${colors[i%colors.length]},#a855f7)"></span></span><span class="employeeBarValue">${num(count)}</span></div>`;
+  }).join("")}</div>`;
+}
+function renderEmployeeDistribution(id,rows,emptyText){
+  const box=$(id);if(!box)return;
+  const visibleRows=rows.filter(row=>Number(row.count||0)>0);
+  if(visibleRows.length<=2){
+    box.className="employeeDistBars";
+    box.innerHTML=employeeBarMarkup(visibleRows,emptyText);
+    bindStatusMixTipsFor(box,$("tooltip"));
+    return;
+  }
+  box.className="statusPieLayout";
+  box.innerHTML=simpleDonutMarkup(visibleRows,emptyText);
+  bindStatusMixTipsFor(box,$("tooltip"));
+}
+function employeeOptionNames(){
+  const rows=(teamAssignRowsFromAnalytics().length?teamAssignRowsFromAnalytics():teamAssignRowsFromRaw());
+  return rows.map(r=>clean(r.name)).filter(validAssignName).sort((a,b)=>a.localeCompare(b));
+}
+function renderEmployeePicker(){
+  const box=$("employeePicker");if(!box)return;
+  const names=employeeOptionNames();
+  if(selectedEmployeeName&&!names.includes(selectedEmployeeName))names.unshift(selectedEmployeeName);
+  box.innerHTML=names.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join("");
+  box.value=selectedEmployeeName;
+  box.onchange=()=>{selectedEmployeeName=box.value;renderEmployeeModalWithLoading();};
+}
+function renderEmployeeModalWithLoading(){
+  showCalcFloat(true,"Loading employee...");
+  setTimeout(()=>{renderEmployeeModal();hideCalcFloat(120);},30);
+}
+function renderEmployeeModal(){
+  if(!selectedEmployeeName)return;
+  renderEmployeeModalPeriod();
+  renderEmployeePicker();
+  const bounds=employeeBounds(),prev=previousPeriodBounds(bounds.start,bounds.end);
+  const s=employeeSummary(selectedEmployeeName,bounds),p=employeeSummary(selectedEmployeeName,prev);
+  const show=employeeModalPeriod!=="all"||hasTicketFilter();
+  const showSpeed=show&&employeeModalPeriod!=="day";
+  $("empKpiCritical").textContent=num(s.critical);
+  $("empKpiHandled").textContent=num(s.handled);
+  $("empKpiWeeklyRate").textContent=showSpeed?`${numFixed(s.handlingSpeed,1)}/day`:"-";
+  $("empKpiApprovedCost").textContent=money(s.approvedAmount);
+  $("empKpiAvgCost").textContent=money(s.avgCost);
+  setModalTrend("empKpiCriticalTrend","criticalNow",s.critical,p.critical,undefined,show);
+  setModalTrend("empKpiHandledTrend","exitedCritical",s.handled,p.handled,undefined,show);
+  setModalTrend("empKpiWeeklyRateTrend","benchmarkRate",s.handlingSpeed,p.handlingSpeed,undefined,showSpeed);
+  setModalTrend("empKpiApprovedCostTrend","approvedAmount",s.approvedAmount,p.approvedAmount,"money",show);
+  setModalTrend("empKpiAvgCostTrend","avgCost",s.avgCost,p.avgCost,"money",show);
+  renderEmployeeDistribution("empStatusDist",employeeStatusRows(selectedEmployeeName,bounds),"No ticket status data found.");
+  renderEmployeeDistribution("empDurationDist",employeeDurationRows(selectedEmployeeName,bounds),"No critical duration data found.");
+  renderEmployeeDistribution("empCostDist",employeeCostRows(selectedEmployeeName,bounds),"No repair cost data found.");
+}
+function openEmployeeModal(name){
+  selectedEmployeeName=clean(name);
+  employeeModalPeriod="all";
+  const modal=$("employeeModalBackdrop");
+  if(modal)modal.classList.add("active");
+  renderEmployeeModalWithLoading();
+}
+function closeEmployeeModal(){const modal=$("employeeModalBackdrop");if(modal)modal.classList.remove("active");selectedEmployeeName="";}
+function renderRepairCostDistribution(){
+  const box=$("criticalLogRows");
+  if(!box)return;
+  box.className="statusPieLayout repairCostPie";
+  box.innerHTML=repairCostDonutMarkup(repairCostDistributionRows());
+  bindStatusMixTipsFor(box,$("repairCostHoverTip"));
+}
+function approvedMixRows(){
+  const {start,end}=periodBounds();
+  const s=changeApprovalSummary(start,end);
+  return [
+    {label:"Approved Tickets",count:Number(s.approved||0),details:[{label:"Approved Cost",count:money(s.approvedAmount)}]},
+    {label:"Unapproved Tickets",count:Number(s.unapproved||0),details:[{label:"Unapproved Cost",count:money(s.unapprovedAmount)}]}
+  ].filter(x=>x.count>0);
+}
+function approvedBarChartMarkup(rows){
+  const colors=["#22c55e","#fb7185"];
+  const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
+  if(!total)return `<div class="speedEmpty">No approved or unapproved ticket changes found.</div>`;
+  const max=Math.max(1,...rows.map(row=>Number(row.count||0)));
+  return rows.map((row,i)=>{
+    const count=Number(row.count||0);
+    const pct=total?Math.round(count/total*100):0;
+    const height=Math.max(4,count/max*100);
+    const detail=(row.details||[]).map(x=>`${esc(x.label)}: ${esc(x.count)}`).join("<br>");
+    const tip=`<b>${esc(row.label)}: ${num(count)} (${pct}%)</b>${detail}`;
+    return `<div class="approvedBarItem" data-status-tip="${esc(tip)}"><div class="approvedBarTop"><span class="approvedBarCount">${num(count)}</span><span class="approvedBarPct">${pct}% of total</span></div><div class="approvedBarTrack"><span class="approvedBarFill" style="height:${height}%;background:linear-gradient(180deg,${colors[i%colors.length]},${i%2?"#e11d48":"#16a34a"})"></span></div><div class="approvedBarLabel"><span class="approvedBarDot" style="background:${colors[i%colors.length]}"></span><span>${esc(row.label)}</span></div></div>`;
+  }).join("");
+}
+function renderApprovedMix(){
+  const box=$("approvedMixRows");
+  if(!box)return;
+  box.className="approvedBarChart";
+  box.innerHTML=approvedBarChartMarkup(approvedMixRows());
+  bindStatusMixTipsFor(box,$("tooltip"));
+}
 function currentEmployeeAnalyticsView(){return (employeeAnalytics&&employeeAnalytics.views&&employeeAnalytics.views[activeClaim])?employeeAnalytics.views[activeClaim]:employeeAnalytics}
 function teamAssignRowsFromAnalytics(){
   const view=currentEmployeeAnalyticsView();
@@ -1534,6 +2423,30 @@ function renderTeamAssignActions(){
   box.innerHTML=opts.map(([key,label])=>`<button class="teamAssignBtn ${teamAssignMetric===key?'active':''}" data-assign-metric="${key}" type="button">${label}</button>`).join("");
   box.querySelectorAll("[data-assign-metric]").forEach(btn=>btn.onclick=()=>{teamAssignMetric=btn.dataset.assignMetric||"totalRemoved";renderTeamAssignChart();});
 }
+function renderEmployeeStatusMapping(){
+  const box=$("employeeStatusMapping");if(!box)return;
+  const names=employeeOptionNames();
+  const exited=names.filter(isEmployeeExited);
+  const summary=exited.length
+    ? exited.slice(0,10).map(name=>`<span class="employeeStatusPill">${esc(name)}</span>`).join("")+(exited.length>10?`<span class="employeeStatusPill">+${num(exited.length-10)} more</span>`:"")
+    : `<span>No exited employees marked.</span>`;
+  const editRows=employeeStatusEdit?`<div class="employeeStatusEditGrid">${names.map(name=>{
+    const checked=isEmployeeExited(name)?" checked":"";
+    return `<label class="employeeStatusEditRow" title="${esc(name)}"><input type="checkbox" data-employee-status="${esc(name)}"${checked}><span>${esc(name)}</span></label>`;
+  }).join("")}</div>`:"";
+  box.innerHTML=`<div class="employeeStatusMappingHead"><div class="employeeStatusMappingTitle">Employee Status Mapping</div><button class="employeeStatusEditBtn" type="button">${employeeStatusEdit?"Done":"Edit mapping"}</button></div><div class="employeeStatusSummary">${summary}</div>${editRows}`;
+  const btn=box.querySelector(".employeeStatusEditBtn");
+  if(btn)btn.onclick=e=>{e.stopPropagation();employeeStatusEdit=!employeeStatusEdit;renderTeamAssignChart();};
+  box.querySelectorAll("[data-employee-status]").forEach(input=>{
+    input.onchange=e=>{
+      const name=input.getAttribute("data-employee-status");
+      const key=employeeStatusKey(name);
+      if(input.checked)employeeStatusMapping[key]="exited";else delete employeeStatusMapping[key];
+      saveEmployeeStatusMapping();
+      renderTeamAssignChart();
+    };
+  });
+}
 function renderTeamAssignChart(){
   renderTeamAssignActions();
   const box=$("teamAssignGrid");
@@ -1541,7 +2454,7 @@ function renderTeamAssignChart(){
   const rows=(teamAssignRowsFromAnalytics().length?teamAssignRowsFromAnalytics():teamAssignRowsFromRaw())
     .sort((a,b)=>Math.max(b.total,teamAssignMetricValue(b))-Math.max(a.total,teamAssignMetricValue(a))||a.name.localeCompare(b.name))
     .slice(0,12);
-  if(!rows.length){box.innerHTML=`<div class="teamAssignEmpty">No C4C Assign To workload found for this period.</div>`;return;}
+  if(!rows.length){box.innerHTML=`<div class="teamAssignEmpty">No C4C Assign To workload found for this period.</div>`;renderEmployeeStatusMapping();return;}
   box.style.gridTemplateRows=`repeat(${Math.ceil(rows.length/2)}, minmax(28px, auto))`;
   const max=Math.max(1,...rows.map(r=>Math.max(Number(r.total||0),Number(teamAssignMetricValue(r)||0))));
   box.innerHTML=rows.map(row=>{
@@ -1555,17 +2468,20 @@ function renderTeamAssignChart(){
     const labelsOverlap=redValue>0&&blueValue>0&&Math.abs(redPct-bluePct)<8;
     const redInline=redValue&&!labelsOverlap?`<span class="teamAssignInline" style="left:${Math.max(redPct,8)}%">${redLabel}</span>`:"";
     const blueInline=blueValue&&!labelsOverlap?`<span class="teamAssignInline" style="left:${Math.max(bluePct,8)}%">${blueLabel}</span>`:"";
-    return `<div class="teamAssignRow"><div class="teamAssignName" title="${esc(row.name)}">${esc(row.name)}</div><div class="teamAssignTrack"><div class="${redIsBase?'teamAssignRed':'teamAssignBlue'}" style="width:${redIsBase?redPct:bluePct}%"></div><div class="${redIsBase?'teamAssignBlue':'teamAssignRed'}" style="width:${redIsBase?bluePct:redPct}%"></div>${redInline}${blueInline}</div><div class="teamAssignValue"><span class="redValue">${redLabel}</span> / <span class="blueValue">${blueLabel}</span></div></div>`;
+    const exited=isEmployeeExited(row.name);
+    const nameLabel=`${esc(row.name)}${exited?`<span class="teamAssignExitedBadge">Exited</span>`:""}`;
+    return `<div class="teamAssignRow" role="button" tabindex="0" data-employee="${esc(row.name)}"><div class="teamAssignName" title="${esc(row.name)}${exited?' - Exited':''}">${nameLabel}</div><div class="teamAssignTrack"><div class="${redIsBase?'teamAssignRed':'teamAssignBlue'}" style="width:${redIsBase?redPct:bluePct}%"></div><div class="${redIsBase?'teamAssignBlue':'teamAssignRed'}" style="width:${redIsBase?bluePct:redPct}%"></div>${redInline}${blueInline}</div><div class="teamAssignValue"><span class="redValue">${redLabel}</span> / <span class="blueValue">${blueLabel}</span></div></div>`;
   }).join("");
+  renderEmployeeStatusMapping();
+  box.querySelectorAll(".teamAssignRow[data-employee]").forEach(row=>{
+    row.onclick=()=>openEmployeeModal(row.dataset.employee);
+    row.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openEmployeeModal(row.dataset.employee);}};
+  });
 }
 function bindTeamAssignPanelLink(){
   const panel=document.querySelector(".teamAssignPanel");
   if(!panel||panel.dataset.linkBound)return;
   panel.dataset.linkBound="1";
-  panel.addEventListener("click",ev=>{
-    if(ev.target.closest("button"))return;
-    window.location.href="employee-workbench.html";
-  });
 }
 function teamRowsForCards(){
   return teamRowsForSelectedPeriod();
@@ -1591,11 +2507,11 @@ function renderLists(){const rawView=currentRawCriticalView();const rows=selecte
 function openDealerWorkbench(dealer){const key=dealerKeyForName(dealer);if(key)localStorage.setItem("dealerWorkspaceSelectedKey",key);localStorage.setItem("dealerWorkspaceSelectedName",dealer||"");window.location.href="dealer-workbench.html";}
 function toggleDealerList(){dealerListExpanded=!dealerListExpanded;renderLists();}
 
-function setDateDefaults(){const view=currentView();const pts=view.trend||[];if(!pts.length)return;$("dateFrom").min=pts[0].date;$("dateTo").min=pts[0].date;if(activePeriod==="all"&&(!$('dateFrom').value||!$('dateTo').value)){setFullRange();return;}if(!$("dateFrom").value||$("dateFrom").value<pts[0].date)$("dateFrom").value=pts[0].date;if(!$("dateTo").value||$("dateTo").value>pts[pts.length-1].date)$("dateTo").value=pts[pts.length-1].date;}
-function renderAll(){showCalcFloat(true,"Calculating...");renderPeriodButtons();renderClaimButtons();setDateDefaults();trendPoints=selectedTrend();renderKpis();renderHandlingSpeed();renderLists();renderCriticalLog();bindCriticalTicketSearch();renderTeamAssignChart();bindTeamAssignPanelLink();drawTrend();hideCalcFloat();}
+function setDateDefaults(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;$("dateFrom").min=pts[0].date;$("dateTo").min=pts[0].date;if(activePeriod==="all"&&(!$('dateFrom').value||!$('dateTo').value)){setFullRange();return;}if(!$("dateFrom").value||$("dateFrom").value<pts[0].date)$("dateFrom").value=pts[0].date;if(!$("dateTo").value||$("dateTo").value>latestDateForView())$("dateTo").value=latestDateForView();}
+function renderAll(){showCalcFloat(true,"Calculating...");renderPeriodButtons();renderClaimButtons();setDateDefaults();trendPoints=selectedTrend();renderKpis();renderHandlingSpeed();renderLists();renderRepairCostDistribution();renderApprovedMix();renderTeamAssignChart();bindTeamAssignPanelLink();drawTrend();hideCalcFloat();}
 function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(prev||0);if(delta===0)return{cls:"flat",arrow:"-",text:"0"};const isGood=(metric==="exited")?delta>0:delta<0;return{cls:isGood?"up":"down",arrow:delta>0?"^":"v",text:num(Math.abs(delta))};}
 function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}
 function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const enteredDelta=deltaInfoMetric("entered",hit.p.entered,prev?prev.entered:hit.p.entered);const criticalDelta=deltaInfoMetric("critical",hit.p.critical,prev?prev.critical:hit.p.critical);const exitedDelta=deltaInfoMetric("exited",hit.p.exited,prev?prev.exited:hit.p.exited);tip.innerHTML=`<b>Date: ${esc(hit.p.date)}</b>${tipRow("Entered cumulative","#3b82f6",hit.p.entered,enteredDelta)}${tipRow("Critical total","#fb6b1d",hit.p.critical,criticalDelta)}${tipRow("Exited cumulative","#16a34a",hit.p.exited,exitedDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
 async function load(){try{showCalcFloat(true,"Calculating...");$("loadError").style.display="none";const data=await readJson(MONITOR_ROOT+"/analytics/team");if(!data||typeof data!=="object")throw new Error("analytics/team is empty");team=data;activeClaim=team.defaultView||"all";await Promise.all([loadRawCritical().catch(()=>{rawCritical={loaded:false,views:{}}}),loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{employeeAnalytics=null})]);renderAll();hideCalcFloat()}catch(err){hideCalcFloat();$("loadError").innerHTML="Cannot load team analytics from Firebase. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll()}}
-$("dateFrom").addEventListener("change",()=>{renderAll()});$("dateTo").addEventListener("change",()=>{renderAll()});window.addEventListener("resize",drawTrend);bindTooltip();load();
+$("dateFrom").addEventListener("change",()=>{renderAll()});$("dateTo").addEventListener("change",()=>{renderAll()});if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",drawTrend);bindTooltip();loadEmployeeStatusMapping();load();
 </script></body></html>
