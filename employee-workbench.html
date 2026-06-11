@@ -2049,6 +2049,382 @@ body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitl
   color:#25364f!important;
   font-weight:650!important;
 }
+/* Final polish: align Internal Employees KPI cards and panel headings with Team Dashboard */
+body .app main.main > .kpis .kpi,
+body .app main.main > .partsGrid .kpi{
+  position:relative!important;
+  min-height:112px!important;
+  padding:18px 20px!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%)!important;
+  border-color:#dfe8f3!important;
+  box-shadow:0 12px 28px rgba(15,23,42,.045)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+}
+body .app main.main > .kpis .kpi:before,
+body .app main.main > .partsGrid .kpi:before{
+  right:18px!important;
+  top:18px!important;
+  width:38px!important;
+  height:38px!important;
+  border-radius:13px!important;
+  box-shadow:none!important;
+}
+body .app main.main > .kpis .kpi:after,
+body .app main.main > .partsGrid .kpi:after{
+  right:18px!important;
+  top:18px!important;
+  width:38px!important;
+  height:38px!important;
+  font-size:18px!important;
+  font-weight:700!important;
+  line-height:1!important;
+}
+body .app main.main > .kpis .kpi:nth-child(3):after{
+  content:"!"!important;
+  color:#f59e0b!important;
+}
+body .app main.main > .partsGrid .kpi:nth-child(3):after{
+  content:"%"!important;
+  color:#10b981!important;
+  font-size:18px!important;
+}
+body .app main.main > .kpis .kpiLabel,
+body .app main.main > .partsGrid .kpiLabel{
+  margin:0 52px 8px 0!important;
+  color:#344054!important;
+  font-size:13px!important;
+  line-height:1.25!important;
+  font-weight:500!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+}
+body .app main.main > .kpis .kpiValue,
+body .app main.main > .partsGrid .kpiValue{
+  color:#0f172a!important;
+  font-size:28px!important;
+  line-height:1!important;
+  font-weight:600!important;
+  letter-spacing:-.025em!important;
+  margin-top:0!important;
+}
+body .app main.main > .kpis .metricTrend,
+body .app main.main > .partsGrid .metricTrend,
+body .app main.main > .partsGrid .ratioBase{
+  margin-top:0!important;
+  min-height:20px!important;
+  color:#64748b!important;
+  font-size:12px!important;
+  font-weight:500!important;
+}
+body .app main.main > section.panel.employeePanel.employeePanel .panelHead,
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  padding:18px 20px 12px!important;
+  margin:0!important;
+  align-items:flex-start!important;
+}
+body .app main.main > section.panel.employeePanel.employeePanel .panelTitle,
+body .app main.main > section.panel.partsPanel.partsPanel .panelTitle,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  margin:0!important;
+  color:#132035!important;
+  font-size:16px!important;
+  line-height:1.2!important;
+  font-weight:600!important;
+  letter-spacing:-.01em!important;
+}
+body .app main.main > section.panel.employeePanel.employeePanel .employeeHeaderLegend{
+  color:#66758f!important;
+  font-size:12px!important;
+  font-weight:400!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelDesc{
+  margin-top:4px!important;
+  color:#667085!important;
+  font-size:12px!important;
+  font-weight:400!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  height:54px!important;
+  min-height:54px!important;
+  padding:18px 20px 10px!important;
+  display:flex!important;
+  align-items:flex-start!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead > div,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead > div{
+  display:block!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelTitle,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  height:20px!important;
+  line-height:20px!important;
+  display:block!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel{
+  align-self:start!important;
+  margin-top:0!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  box-sizing:border-box!important;
+  padding-top:18px!important;
+  padding-right:20px!important;
+  padding-bottom:10px!important;
+  padding-left:20px!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelTitle,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  padding:0!important;
+  transform:none!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  position:relative!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelTitle,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  position:static!important;
+  top:auto!important;
+  left:auto!important;
+  margin:0!important;
+}
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  padding:18px 20px 10px!important;
+}
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  display:block!important;
+  width:100%!important;
+  text-align:left!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  height:58px!important;
+  min-height:58px!important;
+  padding:0 20px!important;
+  margin:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead > div,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead > div{
+  width:100%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelTitle,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  position:static!important;
+  width:100%!important;
+  height:auto!important;
+  line-height:1.2!important;
+  margin:0!important;
+  padding:0!important;
+  display:block!important;
+  text-align:center!important;
+  transform:none!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelDesc{
+  display:none!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel{
+  position:relative!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  height:64px!important;
+  min-height:64px!important;
+  padding:0!important;
+  margin:0!important;
+  display:block!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead > div,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead > div{
+  display:block!important;
+  width:100%!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelTitle,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  position:absolute!important;
+  top:24px!important;
+  left:0!important;
+  right:0!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0 20px!important;
+  line-height:20px!important;
+  text-align:center!important;
+  transform:none!important;
+  box-sizing:border-box!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel{
+  padding:0!important;
+}
+body .app main.main > .employeeHero{
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  padding:4px 0 12px!important;
+  margin:0!important;
+}
+body .app main.main > .employeeHero .pageTitle{
+  font-size:28px!important;
+  line-height:1.15!important;
+  font-weight:600!important;
+  letter-spacing:-.02em!important;
+  margin:0!important;
+}
+body .app main.main > .employeeHero .employeeEyebrow{
+  margin-bottom:8px!important;
+  color:#66758f!important;
+  font-weight:500!important;
+}
+body .app main.main > .employeeHero .employeeHeroTop{
+  align-items:flex-start!important;
+}
+body .app main.main > .employeeHero .employeeHeroActions{
+  align-items:center!important;
+  gap:10px!important;
+}
+body .app main.main > .employeeHero .dateGroup{
+  display:none!important;
+}
+body .app main.main > .employeeHero .claimSwitch.filterTools{
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  width:auto!important;
+}
+.filterMenuSection{
+  display:grid!important;
+  gap:6px!important;
+  padding-bottom:8px!important;
+  border-bottom:1px solid #eef2f7!important;
+}
+.filterDateGrid{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+  padding-top:10px!important;
+}
+.filterDateGrid label{
+  display:grid!important;
+  gap:5px!important;
+  color:#66758f!important;
+  font-size:11px!important;
+  font-weight:600!important;
+}
+.filterDateGrid .input{
+  width:100%!important;
+  min-width:0!important;
+  height:36px!important;
+  border-radius:10px!important;
+  font-size:12px!important;
+  padding:0 9px!important;
+}
+body .app main.main > .employeeHero .filterMenu{
+  min-width:310px!important;
+}
+.employeePanel > #mappingPanel.mappingPanel{
+  grid-area:auto!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  width:auto!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:10px 14px 14px!important;
+  padding:10px 12px!important;
+  align-self:auto!important;
+  overflow:hidden!important;
+  border:1px solid #e6edf5!important;
+  border-radius:12px!important;
+  background:#f8fbff!important;
+  box-shadow:none!important;
+}
+.employeePanel > #mappingPanel.mappingPanel.collapsed{
+  padding-bottom:10px!important;
+}
+.employeePanel > #mappingPanel .panelHead{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+.employeePanel > #mappingPanel .panelTitle{
+  position:static!important;
+  width:auto!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:left!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+  font-weight:600!important;
+  letter-spacing:0!important;
+}
+.employeePanel > #mappingPanel .panelDesc{
+  display:none!important;
+}
+.employeePanel > #mappingPanel #mappingEditBtn{
+  height:28px!important;
+  padding:0 9px!important;
+  border-radius:9px!important;
+  font-size:11px!important;
+  flex:0 0 auto!important;
+}
+.employeePanel > #mappingPanel .mappingEditor{
+  margin-top:10px!important;
+}
+.employeePanel > #mappingPanel .employeeDirectoryActions{
+  gap:6px!important;
+}
+.employeePanel > #mappingPanel .employeeDirectoryActions .input{
+  min-width:150px!important;
+  height:30px!important;
+  border-radius:8px!important;
+  font-size:11px!important;
+  padding:0 9px!important;
+}
+.employeePanel > #mappingPanel .employeeDirectoryActions .btn{
+  height:30px!important;
+  padding:0 9px!important;
+  border-radius:8px!important;
+  font-size:11px!important;
+}
+.employeePanel > #mappingPanel .saveState{
+  font-size:11px!important;
+}
+.employeePanel > #mappingPanel .employeeDirectoryTable{
+  max-height:150px!important;
+  margin-top:8px!important;
+  border-radius:10px!important;
+}
+.employeePanel > #mappingPanel .employeeDirectoryTable th,
+.employeePanel > #mappingPanel .employeeDirectoryTable td{
+  padding:7px 9px!important;
+  font-size:11px!important;
+}
+.employeePanel > #mappingPanel .statusSelect{
+  height:28px!important;
+  border-radius:8px!important;
+  font-size:11px!important;
+}
+html{zoom:.8!important;}
 </style></head>
 <body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><a class="navLink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></a><a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Internal Employees</span></button><a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a><div class="navDivider"></div><div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a></aside><main class="main"><section class="employeeHero"><div class="employeeHeroTop"><div><div class="employeeEyebrow">Employee analytics</div><h1 class="pageTitle">Internal Employees</h1></div><div class="employeeHeroActions"><div id="periodSwitch" class="claimSwitch"></div><div id="claimSwitch" class="claimSwitch"></div><label class="dateGroup">From <input id="dateFrom" class="input" type="date" min="2026-05-25"></label><label class="dateGroup">To <input id="dateTo" class="input" type="date" min="2026-05-25"></label></div></div></section><div id="loadError" class="error"></div>
 <section id="calcStatus" class="calcStatus" aria-hidden="true"><div id="calcStep1"></div><div id="calcStep2"></div><div id="calcStep3"></div></section>
@@ -2058,7 +2434,7 @@ body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitl
 <section class="panel partsAmountPanel"><div class="panelHead"><div><h2 class="panelTitle">Approved amount total</h2></div></div><div id="partsAmountPieStandalone" class="partsAmountPie"></div></section>
 <section class="panel employeePanel"><div class="panelHead"><div class="employeePanelTitleLine"><h2 class="panelTitle">Critical Tickets by C4C Assign To</h2><div class="employeeHeaderLegend"><span><i class="dot red"></i> Removed</span><span><i class="dot blue"></i> Current critical tickets</span></div></div><div class="metricTabs"><button class="btn active" data-metric="totalRemoved" type="button">Total removed</button><button class="btn" data-metric="avgDaily" type="button">Avg daily</button><button class="btn" data-metric="avgWeekly" type="button">Avg weekly</button><button class="btn" data-metric="compare" type="button">Compare all</button><button class="btn" id="clearFilter" type="button">Clear filter</button></div></div><div class="employeeChartShell"><div id="employeeBarList" class="employeeBarList"></div><div id="employeeChartAxis" class="employeeChartAxis"></div></div><div class="legend"><span><i class="dot red"></i> Removed</span><span><i class="dot blue"></i> Current critical tickets</span></div></section>
 <section class="panel employeeDetailPanel"><div class="panelHead"><div><h2 class="panelTitle">Employee Ticket Detail</h2><p class="panelDesc">Ticket-level view for the selected employee or all employees.</p></div><div class="controls"><input id="searchBox" class="input" style="min-width:260px" placeholder="Search employee, ticket, dealer, status"></div></div><div id="nameFilter" class="nameFilter"></div><div class="tableWrap"><table><thead><tr><th>Employee</th><th>Ticket</th><th>Status</th><th>Dealer</th><th>Created On</th><th>Critical removed</th></tr></thead><tbody id="detailRows"></tbody></table></div></section>
-<section id="mappingPanel" class="panel mappingPanel collapsed"><div class="panelHead"><div><h2 class="panelTitle">Employee Status Mapping</h2><p class="panelDesc">Active employees are maintained here. Other employee names are marked Exited.</p></div><button id="mappingEditBtn" class="btn" type="button">Edit mapping</button></div><div class="mappingEditor"><div class="employeeDirectoryActions"><input id="employeeAddName" class="input" placeholder="Employee name"><button id="employeeAddBtn" class="btn" type="button">Add active employee</button><span id="employeeDirectorySaveState" class="saveState"></span></div><div class="tableWrap employeeDirectoryTable" style="margin-top:14px"><table><thead><tr><th>Employee</th><th>Status</th></tr></thead><tbody id="employeeDirectoryRows"></tbody></table></div></div></section>
+<section id="mappingPanel" class="panel mappingPanel collapsed"><div class="panelHead"><div><h2 class="panelTitle">Employee Status Mapping</h2></div><button id="mappingEditBtn" class="btn" type="button">Edit mapping</button></div><div class="mappingEditor"><div class="employeeDirectoryActions"><input id="employeeAddName" class="input" placeholder="Employee name"><button id="employeeAddBtn" class="btn" type="button">Add active employee</button><span id="employeeDirectorySaveState" class="saveState"></span></div><div class="tableWrap employeeDirectoryTable" style="margin-top:14px"><table><thead><tr><th>Employee</th><th>Status</th></tr></thead><tbody id="employeeDirectoryRows"></tbody></table></div></div></section>
 </main></div><div id="tooltip" class="tooltip"></div><div id="ticketModal" class="modalBackdrop"><div class="modal"><div class="modalHead"><div><div class="modalTitle" id="ticketModalTitle">Ticket details</div></div><button class="modalClose" id="ticketModalClose" type="button">x</button></div><div id="ticketModalBody"></div></div></div>
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
 <script>
@@ -2378,7 +2754,7 @@ function clearDaysText(v){if(!Number.isFinite(v)||v<=0)return '-'; if(v<=1)retur
 function claimFilterIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>`}
 function refreshIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>`}
 function clearEmployeeFilters(){activeClaim='all';selectedEmployee='';activePeriod='all';manualDateMode=false;setEmployeeFullRange();recalc();}
-function renderClaimButtons(){const opts=(analytics&&analytics.claimOptions)||[{key:"all",label:"All Claims"},{key:"inField",label:"In Field Warranty Claims"},{key:"preDelivery",label:"Pre Delivery Warranty Claims"}];const box=$("claimSwitch");if(!box)return;box.className="claimSwitch filterTools";box.innerHTML=`<button class="filterIconBtn" id="clearClaimFilters" title="Clear filters" type="button">${refreshIcon()}</button><div class="filterDropdown"><button class="filterButton" type="button">${claimFilterIcon()}<span>Filters</span></button><div class="filterMenu">${opts.map(o=>`<button class="filterOption ${o.key===activeClaim?'active':''}" data-key="${esc(o.key)}" type="button">${esc(o.label)}</button>`).join('')}</div></div>`;box.querySelector('#clearClaimFilters').onclick=clearEmployeeFilters;const dd=box.querySelector('.filterDropdown');box.querySelector('.filterButton').onclick=e=>{e.stopPropagation();dd.classList.toggle('open')};box.querySelectorAll('.filterOption').forEach(b=>b.onclick=()=>{activeClaim=b.dataset.key||'all';selectedEmployee='';dd.classList.remove('open');recalc()})}
+function renderClaimButtons(){const opts=(analytics&&analytics.claimOptions)||[{key:"all",label:"All Claims"},{key:"inField",label:"In Field Warranty Claims"},{key:"preDelivery",label:"Pre Delivery Warranty Claims"}];const box=$("claimSwitch");if(!box)return;const fromVal=$('dateFrom')?.value||'';const toVal=$('dateTo')?.value||'';box.className="claimSwitch filterTools";box.innerHTML=`<button class="filterIconBtn" id="clearClaimFilters" title="Clear filters" type="button">${refreshIcon()}</button><div class="filterDropdown"><button class="filterButton" type="button">${claimFilterIcon()}<span>Filters</span></button><div class="filterMenu"><div class="filterMenuSection">${opts.map(o=>`<button class="filterOption ${o.key===activeClaim?'active':''}" data-key="${esc(o.key)}" type="button">${esc(o.label)}</button>`).join('')}</div><div class="filterDateGrid"><label>From <input id="filterDateFrom" class="input" type="date" value="${esc(fromVal)}"></label><label>To <input id="filterDateTo" class="input" type="date" value="${esc(toVal)}"></label></div></div></div>`;box.querySelector('#clearClaimFilters').onclick=clearEmployeeFilters;const dd=box.querySelector('.filterDropdown');box.querySelector('.filterButton').onclick=e=>{e.stopPropagation();dd.classList.toggle('open')};box.querySelectorAll('.filterOption').forEach(b=>b.onclick=()=>{activeClaim=b.dataset.key||'all';selectedEmployee='';dd.classList.remove('open');recalc()});const syncDate=()=>{const f=$('filterDateFrom'),t=$('filterDateTo');if(f&&$('dateFrom'))$('dateFrom').value=f.value;if(t&&$('dateTo'))$('dateTo').value=t.value;manualEmployeeRangeChanged()};['filterDateFrom','filterDateTo'].forEach(id=>{const el=$(id);if(el)el.onchange=syncDate})}
 function sumTotalDaily(obj,from,to){
   if(!obj||typeof obj!=='object')return 0;
   let out=0;
@@ -2423,12 +2799,23 @@ function recalc(){
 
   const rawDetailRows=arrayFromMaybe(view.detailRows).filter(t=>!isExcludedEmployeeName(t.employee));
   const rawStats=arrayFromMaybe(view.stats).filter(s=>!isExcludedEmployeeName(s.name));
-  const invalidDetailRows=rawDetailRows.filter(t=>isNotAssignedEmployeeName(t.employee));
-  detailRows=rawDetailRows.filter(t=>isRealEmployeeName(t.employee));
+  const rangeDetailRows=rawDetailRows.filter(t=>{
+    const d=dateKey(t.created||t.createdOn||t.CreatedOn||t.detectedAt||t.date);
+    return !d || inRange(d,from,to);
+  });
+  const invalidDetailRows=rangeDetailRows.filter(t=>isNotAssignedEmployeeName(t.employee));
+  const rangeCriticalByEmployee=new Map();
+  rangeDetailRows.filter(t=>isRealEmployeeName(t.employee)&&t.isCritical!==false).forEach(t=>{
+    const key=normEmp(t.employee);
+    rangeCriticalByEmployee.set(key,(rangeCriticalByEmployee.get(key)||0)+1);
+  });
+  detailRows=rangeDetailRows.filter(t=>isRealEmployeeName(t.employee));
 
   employeeStats=rawStats.filter(s=>isRealEmployeeName(s.name)).map(s=>{
     const removed=sumDaily(s.removedDaily,from,to);
-    return {...s, total:Number(s.criticalTickets ?? s.totalTickets ?? 0), removed, avgDaily:removed/dayCount, avgWeekly:removed/dayCount*7};
+    const scopedTotal=rangeCriticalByEmployee.get(normEmp(s.name));
+    const total=scopedTotal==null?Number(s.criticalTickets ?? s.totalTickets ?? 0):scopedTotal;
+    return {...s, total, removed, avgDaily:removed/dayCount, avgWeekly:removed/dayCount*7};
   }).filter(s=>s.total>0 || s.removed>0).sort((a,b)=> selectedMetric==="compare" ? (b.total-a.total || b.removed-a.removed || clean(a.name).localeCompare(clean(b.name))) : (metricValue(b)-metricValue(a) || b.total-a.total || clean(a.name).localeCompare(clean(b.name))) );
 
   const summary=view.summary||{};
@@ -2526,12 +2913,31 @@ function renderPartsBars(id,rows,keys,colors,formatter,valueFormatter){
     row.onmouseleave=hideTooltip;
   });
 }
-function renderPartsAmountPie(rows){
+function renderPartsAmountPie(rows,totalAmount){
   const wrap=$('partsAmountPieStandalone')||$('partsAmountBars');
   if(!wrap)return;
-  const data=rows.filter(row=>Number(row.approvedAmount||0)>0).slice(0,8);
-  const total=data.reduce((sum,row)=>sum+Number(row.approvedAmount||0),0);
+  const source=rows.filter(row=>Number(row.approvedAmount||0)>0);
+  const total=Number(totalAmount||0) || source.reduce((sum,row)=>sum+Number(row.approvedAmount||0),0);
   if(!total){wrap.innerHTML='<div class="partsEmpty">No approved amount found.</div>';return;}
+  const ranked=source.slice().sort((a,b)=>Number(b.approvedAmount||0)-Number(a.approvedAmount||0));
+  const named=ranked.filter(row=>isRealEmployeeName(row.employeeName||row.employeeDisplayName));
+  const unnamed=ranked.filter(row=>!isRealEmployeeName(row.employeeName||row.employeeDisplayName));
+  const top=named.slice(0,7);
+  const hidden=[...named.slice(7),...unnamed];
+  const shownTotal=top.reduce((sum,row)=>sum+Number(row.approvedAmount||0),0);
+  const hiddenTotal=hidden.reduce((sum,row)=>sum+Number(row.approvedAmount||0),0);
+  const remainder=Math.max(0,total-shownTotal-hiddenTotal);
+  const otherTotal=hiddenTotal+remainder;
+  const data=top.slice();
+  if(otherTotal>0.005){
+    const hiddenNames=hidden.map(row=>clean(row.employeeDisplayName||row.employeeName)).filter(Boolean);
+    const details=[
+      hiddenTotal>0?`Other employees: ${money(hiddenTotal)}`:'',
+      remainder>0.005?`Unknown / unassigned difference: ${money(remainder)}`:'',
+      hiddenNames.length?`Included: ${esc(hiddenNames.slice(0,6).join(', '))}${hiddenNames.length>6?'...':''}`:''
+    ].filter(Boolean).join('<br>');
+    data.push({employeeName:'Others',employeeDisplayName:'Others',approvedAmount:otherTotal,otherTip:details||`Others<br>${money(otherTotal)}`});
+  }
   const colors=['#3b82f6','#22c55e','#f59e0b','#ec4899','#8b5cf6','#14b8a6','#94a3b8','#64748b'];
   let cursor=0;
   const segments=[];
@@ -2539,7 +2945,8 @@ function renderPartsAmountPie(rows){
     const value=Number(row.approvedAmount||0);
     const next=cursor+value/total*100;
     const name=clean(row.employeeDisplayName||row.employeeName);
-    segments.push({start:cursor,end:next,name,value});
+    const tip=row.otherTip||`${esc(name)}<br>${money(value)}`;
+    segments.push({start:cursor,end:next,name,value,tip});
     const stop=`${colors[i%colors.length]} ${cursor}% ${next}%`;
     cursor=next;
     return stop;
@@ -2548,7 +2955,8 @@ function renderPartsAmountPie(rows){
     const name=clean(row.employeeDisplayName||row.employeeName);
     const value=Number(row.approvedAmount||0);
     const pct=Math.round(value/total*100);
-    return `<div class="partsPieRow" data-tip="${esc(name)}<br>${money(value)}"><span class="partsPieDot" style="background:${colors[i%colors.length]}"></span><span class="partsPieName" title="${esc(name)}">${employeeNameHtml(row.employeeName||name)}</span><b>${pct}%</b></div>`;
+    const tip=row.otherTip||`${esc(name)}<br>${money(value)}`;
+    return `<div class="partsPieRow" data-tip="${tip.replace(/"/g,'&quot;')}"><span class="partsPieDot" style="background:${colors[i%colors.length]}"></span><span class="partsPieName" title="${esc(name)}">${name==="Others"?'Others':employeeNameHtml(row.employeeName||name)}</span><b>${pct}%</b></div>`;
   }).join('');
   wrap.className='partsAmountPie';
   wrap.innerHTML=`<div class="partsPieDonut" data-tip="Approved Amount Total<br>${money(total)}" style="background:conic-gradient(${stops})"><span>${money(total)}</span></div><div class="partsPieLegend">${legend}</div>`;
@@ -2567,7 +2975,7 @@ function renderPartsAmountPie(rows){
       }
       const pct=((Math.atan2(dy,dx)*180/Math.PI+90+360)%360)/360*100;
       const seg=segments.find(s=>pct>=s.start&&pct<=s.end)||segments[segments.length-1];
-      setTooltip(e,`${esc(seg.name)}<br>${money(seg.value)}`);
+      setTooltip(e,seg.tip||`${esc(seg.name)}<br>${money(seg.value)}`);
     };
     donut.onmouseleave=hideTooltip;
   }
@@ -2597,7 +3005,7 @@ function renderPartsApproval(from,to){
     const unapprovedPct=total?pctText(Number(row.unapprovedCount||0)/total*100,0):'0%';
     return `<span style="color:#16a34a">${approvedPct}</span> / <span style="color:#f59e0b">${unapprovedPct}</span>`;
   });
-  renderPartsAmountPie(summary.byEmployee);
+  renderPartsAmountPie(summary.byEmployee,summary.approvedAmount);
   renderPartsBars('partsUnapprovedBars',summary.byEmployee,['unapprovedCount'],['amber'],v=>num(v));
 }
 function selectEmployee(name){selectedEmployee=selectedEmployee===name?'':name;drawEmployeeChart();renderDetails()}
@@ -2673,8 +3081,16 @@ function bindSharedUi(){
   const modal=$('ticketModal');
   if(modal) modal.onclick=(e)=>{if(e.target===modal)modal.style.display='none'};
 }
+function placeMappingPanel(){
+  const panel=$('mappingPanel');
+  const host=document.querySelector('.employeePanel');
+  if(!panel||!host)return;
+  const desc=panel.querySelector('.panelDesc');
+  if(desc)desc.remove();
+  if(!host.contains(panel))host.appendChild(panel);
+}
 document.querySelectorAll('.btn[data-metric]').forEach(btn=>btn.addEventListener('click',()=>{selectedMetric=btn.dataset.metric;document.querySelectorAll('.btn[data-metric]').forEach(b=>b.classList.toggle('active',b===btn));recalc()}));
-$('clearFilter').addEventListener('click',()=>{selectedEmployee='';drawEmployeeChart();renderDetails()});function manualEmployeeRangeChanged(){manualDateMode=true;setCalcStatus(true,['Applying selected date range','Recomputing approved and unapproved tickets','Updating charts and employee rows']);recalc();finishCalcStatus()}$('dateFrom').addEventListener('change',manualEmployeeRangeChanged);$('dateTo').addEventListener('change',manualEmployeeRangeChanged);$('searchBox').addEventListener('input',renderDetails);$('mappingEditBtn').addEventListener('click',()=>setMappingEditor($('mappingPanel').classList.contains('collapsed')));$('employeeAddBtn').addEventListener('click',async()=>{const input=$('employeeAddName');const name=clean(input&&input.value);if(!name)return;employeeDirectory[employeeDirectoryKey(name)]={name,status:"active"};if(input)input.value='';await saveEmployeeDirectory();renderEmployeeDirectory();renderPartsApproval($('dateFrom').value,$('dateTo').value);drawEmployeeChart();renderDetails()});window.addEventListener('resize',drawEmployeeChart);bindSharedUi();bindChart();loadData();
+$('clearFilter').addEventListener('click',()=>{selectedEmployee='';drawEmployeeChart();renderDetails()});function manualEmployeeRangeChanged(){manualDateMode=true;setCalcStatus(true,['Applying selected date range','Recomputing approved and unapproved tickets','Updating charts and employee rows']);recalc();finishCalcStatus()}$('dateFrom').addEventListener('change',manualEmployeeRangeChanged);$('dateTo').addEventListener('change',manualEmployeeRangeChanged);$('searchBox').addEventListener('input',renderDetails);$('mappingEditBtn').addEventListener('click',()=>setMappingEditor($('mappingPanel').classList.contains('collapsed')));$('employeeAddBtn').addEventListener('click',async()=>{const input=$('employeeAddName');const name=clean(input&&input.value);if(!name)return;employeeDirectory[employeeDirectoryKey(name)]={name,status:"active"};if(input)input.value='';await saveEmployeeDirectory();renderEmployeeDirectory();renderPartsApproval($('dateFrom').value,$('dateTo').value);drawEmployeeChart();renderDetails()});window.addEventListener('resize',drawEmployeeChart);placeMappingPanel();bindSharedUi();bindChart();loadData();
 </script></body></html>
 
 

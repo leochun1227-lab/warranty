@@ -393,6 +393,15 @@
   color:#334155!important;
   font-weight:600!important;
   white-space:nowrap!important;
+  text-decoration:none!important;
+  cursor:pointer!important;
+  border-radius:8px!important;
+  padding:3px 5px!important;
+  margin:-3px -5px!important;
+}
+.criticalLogTicket:hover{
+  color:#4f46e5!important;
+  background:#eef4ff!important;
 }
 .criticalLogAmount{
   text-align:right!important;
@@ -410,6 +419,42 @@
   text-decoration:none!important;
   font-weight:600!important;
   font-size:12px!important;
+}
+.criticalTicketSearch{
+  margin-top:auto!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:8px!important;
+  align-items:center!important;
+  padding-top:14px!important;
+}
+.criticalTicketSearch input{
+  min-width:0!important;
+  width:100%!important;
+  height:36px!important;
+  border:1px solid #dbe4ef!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  padding:0 12px!important;
+  color:#0f172a!important;
+  font-size:12px!important;
+  outline:none!important;
+}
+.criticalTicketSearch input:focus{
+  border-color:#93c5fd!important;
+  box-shadow:0 0 0 3px rgba(59,130,246,.12)!important;
+}
+.criticalTicketSearch button{
+  height:36px!important;
+  border:0!important;
+  border-radius:11px!important;
+  background:#eef4ff!important;
+  color:#4f46e5!important;
+  padding:0 14px!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  cursor:pointer!important;
+  white-space:nowrap!important;
 }
 @media(max-width:1050px){
   .trendLogGrid{
@@ -854,6 +899,55 @@
   border-radius:14px!important;
   background:#f8fafc!important;
 }
+.teamAssignPanel{
+  display:flex!important;
+  flex-direction:column!important;
+}
+.teamAssignPanel .panelHead{
+  flex:0 0 auto!important;
+}
+.teamAssignGrid{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  align-content:space-evenly!important;
+  gap:16px 34px!important;
+  padding:10px 6px 14px!important;
+}
+.teamAssignRow{
+  min-height:36px!important;
+}
+.teamAssignTrack{
+  height:20px!important;
+}
+.teamAssignRed{
+  top:4px!important;
+}
+.teamAssignLegend{
+  flex:0 0 auto!important;
+  padding-top:8px!important;
+}
+.teamAssignPanel .panelHead{
+  margin-bottom:0!important;
+}
+.teamAssignActions{
+  margin-top:220px!important;
+}
+.teamAssignGrid{
+  padding-top:18px!important;
+}
+.teamAssignPanel .panelHead{
+  display:block!important;
+}
+.teamAssignPanel .panelHead .teamAssignActions{
+  margin-top:220px!important;
+}
+.teamAssignGrid{
+  flex:0 0 auto!important;
+  margin-top:18px!important;
+}
+.teamAssignLegend{
+  margin-top:8px!important;
+}
 @media(max-width:1150px){
   .teamAssignGrid{grid-template-columns:1fr!important}
 }
@@ -862,6 +956,40 @@
   .teamAssignName{text-align:left!important}
   .teamAssignValue{text-align:right!important}
   .teamAssignActions{justify-content:flex-start!important}
+}
+
+/* Align the lower Team Dashboard cards across the main and side columns */
+.dashboardTop{
+  align-items:stretch!important;
+}
+.dashboardTop .dashboardMain,
+.dashboardTop .featureSideStack{
+  height:100%!important;
+  min-height:0!important;
+}
+.featureSideStack{
+  justify-content:stretch!important;
+}
+.featureSideStack .dashboardAnalysisGrid{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  grid-template-rows:auto minmax(0,1fr)!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel{
+  height:100%!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRows{
+  align-content:center!important;
+}
+@media(max-width:1280px){
+  .dashboardTop .dashboardMain,
+  .dashboardTop .featureSideStack{
+    height:auto!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid{
+    flex:0 1 auto!important;
+    grid-template-rows:auto!important;
+  }
 }
 
 /* Compact claim filter control */
@@ -949,6 +1077,7 @@
   .claimSwitch.filterTools{width:auto!important;display:flex!important}
 }
 
+html{zoom:.8!important;}
 </style>
 </head>
 <body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></button><a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><a class="navLink" href="employee-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Internal Employees</span></a><a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a><div class="navDivider"></div><div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a></aside><main class="main"><div class="pageTop"><div><h1 class="pageTitle">After-Sales Team Dashboard</h1></div><div class="topActions"><div id="periodSwitch" class="changeSwitch"></div><div id="claimSwitch" class="claimSwitch"></div></div></div><div id="loadError" class="error"></div><section class="dashboardTop"><div class="dashboardMain"><section class="teamKpiGrid"><div class="kpi totalCriticalCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Total Tickets</div><div class="kpiValue" id="kpiCritical">0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8.2 4.5H5.8A1.8 1.8 0 0 0 4 6.3v2.4c0 .58.28 1.13.74 1.46L7.5 12l-2.76 1.84A1.8 1.8 0 0 0 4 15.3v2.4c0 1 .8 1.8 1.8 1.8h2.4c.58 0 1.13-.28 1.46-.74L12 16.5l1.84 2.26c.33.46.88.74 1.46.74h2.4c1 0 1.8-.8 1.8-1.8v-2.4c0-.58-.28-1.13-.74-1.46L16.5 12l2.26-1.84c.46-.33.74-.88.74-1.46V6.3A1.8 1.8 0 0 0 17.7 4.5h-2.4c-.58 0-1.13.28-1.46.74L12 7.5 10.16 5.24A1.8 1.8 0 0 0 8.7 4.5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiCriticalTrend"></div></div><div class="kpi approvedTicketsCountCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Tickets</div><div class="kpiValue" id="kpiApprovedTickets">0</div></div><div class="kpiIcon customGreen" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.2" stroke="currentColor" stroke-width="1.9"/><path d="M8.6 12.3l2.2 2.2 4.8-5.2" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTicketsTrend"></div></div><div class="kpi unapprovedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved Tickets</div><div class="kpiValue" id="kpiUnapproved">0</div></div><div class="kpiIcon customAmber" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.9"/><path d="M12 8.1v4.1l2.9 1.9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiUnapprovedTrend"></div></div><div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">2-week benchmark</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div><div class="kpi approvedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Amount</div><div class="kpiValue" id="kpiApproved">$0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6.4" rx="5.2" ry="2.3" stroke="currentColor" stroke-width="1.8"/><path d="M6.8 6.4v4.2c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3V6.4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 10.6v4.1c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-4.1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 14.7v2.9c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-2.9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTrend"></div></div><div class="kpi exitedValueCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Estimated clear time</div><div class="kpiValue" id="kpiRate">-</div></div><div class="kpiIcon customOrange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4.5" y="6.5" width="15" height="11" rx="2.4" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 10h8.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7.5 13.4h4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16.8" cy="13.8" r="1.8" stroke="currentColor" stroke-width="1.6"/></svg></div></div><div class="kpiTrend" id="kpiRateTrend"></div></div><div class="kpi ratioKpiCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved / Approved</div><div class="kpiValue" id="kpiUnapprovedRatio">0.00%</div><div class="ratioBase" id="kpiRatioBase">0 / 0</div></div><div class="kpiIcon">%</div></div><div class="kpiTrend" id="kpiRatioTrend"></div></div></section><section class="trendLogGrid"><section class="panel trendPanel"><div class="panelHead"><div><h2 class="panelTitle">Critical Status Trends by Date</h2></div><div class="controls"><label>From <input id="dateFrom" class="input" type="date"></label><label>To <input id="dateTo" class="input" type="date"></label></div></div><div class="chartWrap"><canvas id="trendChart"></canvas></div><div class="legend"><span><i class="dot blue"></i>Entered Critical cumulative</span><span><i class="dot orange"></i>Critical total - right axis</span><span><i class="dot green"></i>Exited Critical cumulative</span></div></section><section class="panel criticalLogPanel"><h2 class="panelTitle">Critical Status Change Log</h2><div id="criticalLogRows" class="criticalLogList"></div><a class="criticalLogLink" href="dealer-workbench.html#tickets">View full log -&gt;</a></section></section><section class="panel teamAssignPanel"><div class="panelHead"><div><h2 class="panelTitle">Critical Tickets by C4C Assign To</h2></div><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed</span><span><i style="background:#4f46e5"></i>Current critical tickets</span></div></section></div><aside class="featureSideStack"><div class="panel dealerRankPanel"><h2 class="panelTitle">Critical Tickets by Dealer</h2><div id="dealerBars" class="dealerCriticalList"></div></div><section class="dashboardAnalysisGrid"><div class="panel speedPanel"><div class="panelHead"><div><h2 class="panelTitle">Ticket Aging (Created On)</h2></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel statusMixPanel"><h2 class="panelTitle">Critical Status Mix</h2><div id="statusMix" class="mixRows"></div></div></section></aside></section></main></div><div id="tooltip" class="tooltip"></div>
@@ -1353,7 +1482,23 @@ function renderCriticalLog(){
   const box=$("criticalLogRows");
   if(!box)return;
   const logs=periodTeamLogs().slice().sort((a,b)=>clean(b.detectedAt||b.date).localeCompare(clean(a.detectedAt||a.date))).slice(0,8);
-  box.innerHTML=logs.length?logs.map(e=>`<div class="criticalLogRow"><span class="criticalLogTime">${esc(shortDateTime(e.detectedAt||e.date))}</span><span class="criticalLogStatus"><i class="criticalLogDot" style="background:${logColor(e)}"></i>${esc(logStatusLabel(e))}</span><span class="criticalLogTicket">#${esc(e.id||e.ticketId||"-")}</span><span class="criticalLogAmount">${money(e.amount||e.value||0)}</span></div>`).join(""):`<div class="panelDesc" style="padding:12px 0">No critical status changes in this period.</div>`;
+  box.innerHTML=logs.length?logs.map(e=>{const id=clean(e.id||e.ticketId||"-");return `<div class="criticalLogRow"><span class="criticalLogTime">${esc(shortDateTime(e.detectedAt||e.date))}</span><span class="criticalLogStatus"><i class="criticalLogDot" style="background:${logColor(e)}"></i>${esc(logStatusLabel(e))}</span><a class="criticalLogTicket" href="dealer-workbench.html?ticketSearch=${encodeURIComponent(id)}#tickets">#${esc(id)}</a><span class="criticalLogAmount">${money(e.amount||e.value||0)}</span></div>`}).join(""):`<div class="panelDesc" style="padding:12px 0">No critical status changes in this period.</div>`;
+}
+function bindCriticalTicketSearch(){
+  const panel=document.querySelector(".criticalLogPanel");
+  const link=document.querySelector(".criticalLogLink");
+  if(!panel||!link||document.getElementById("criticalTicketSearchForm"))return;
+  const form=document.createElement("form");
+  form.className="criticalTicketSearch";
+  form.id="criticalTicketSearchForm";
+  form.innerHTML='<input id="criticalTicketSearchInput" type="search" placeholder="Search tickets"><button type="submit">Search</button>';
+  form.onsubmit=e=>{
+    e.preventDefault();
+    const q=clean(document.getElementById("criticalTicketSearchInput")?.value);
+    if(!q)return;
+    window.location.href=`dealer-workbench.html?ticketSearch=${encodeURIComponent(q)}#tickets`;
+  };
+  panel.insertBefore(form,link);
 }
 function currentEmployeeAnalyticsView(){return (employeeAnalytics&&employeeAnalytics.views&&employeeAnalytics.views[activeClaim])?employeeAnalytics.views[activeClaim]:employeeAnalytics}
 function teamAssignRowsFromAnalytics(){
@@ -1448,7 +1593,7 @@ function openDealerWorkbench(dealer){const key=dealerKeyForName(dealer);if(key)l
 function toggleDealerList(){dealerListExpanded=!dealerListExpanded;renderLists();}
 
 function setDateDefaults(){const view=currentView();const pts=view.trend||[];if(!pts.length)return;$("dateFrom").min=pts[0].date;$("dateTo").min=pts[0].date;if(activePeriod==="all"&&(!$('dateFrom').value||!$('dateTo').value)){setFullRange();return;}if(!$("dateFrom").value||$("dateFrom").value<pts[0].date)$("dateFrom").value=pts[0].date;if(!$("dateTo").value||$("dateTo").value>pts[pts.length-1].date)$("dateTo").value=pts[pts.length-1].date;}
-function renderAll(){showCalcFloat(true,"Calculating...");renderPeriodButtons();renderClaimButtons();setDateDefaults();trendPoints=selectedTrend();renderKpis();renderHandlingSpeed();renderLists();renderCriticalLog();renderTeamAssignChart();bindTeamAssignPanelLink();drawTrend();hideCalcFloat();}
+function renderAll(){showCalcFloat(true,"Calculating...");renderPeriodButtons();renderClaimButtons();setDateDefaults();trendPoints=selectedTrend();renderKpis();renderHandlingSpeed();renderLists();renderCriticalLog();bindCriticalTicketSearch();renderTeamAssignChart();bindTeamAssignPanelLink();drawTrend();hideCalcFloat();}
 function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(prev||0);if(delta===0)return{cls:"flat",arrow:"-",text:"0"};const isGood=(metric==="exited")?delta>0:delta<0;return{cls:isGood?"up":"down",arrow:delta>0?"^":"v",text:num(Math.abs(delta))};}
 function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}
 function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const enteredDelta=deltaInfoMetric("entered",hit.p.entered,prev?prev.entered:hit.p.entered);const criticalDelta=deltaInfoMetric("critical",hit.p.critical,prev?prev.critical:hit.p.critical);const exitedDelta=deltaInfoMetric("exited",hit.p.exited,prev?prev.exited:hit.p.exited);tip.innerHTML=`<b>Date: ${esc(hit.p.date)}</b>${tipRow("Entered cumulative","#3b82f6",hit.p.entered,enteredDelta)}${tipRow("Critical total","#fb6b1d",hit.p.critical,criticalDelta)}${tipRow("Exited cumulative","#16a34a",hit.p.exited,exitedDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
