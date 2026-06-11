@@ -1552,7 +1552,7 @@ function ticketLastUpdateDate(ticket){
   return dateKey(raw)||dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
 }
 function noUpdateAgingSummary(){
-  const end=periodEndDate();
+  const end=latestDateForView();
   const endDate=parseDate(end)||new Date();
   const rows=[];
   rawTicketEntries.forEach(({ticket,roles,id})=>{
@@ -1575,7 +1575,7 @@ function noUpdateAgingSummary(){
     });
   });
   rows.sort((a,b)=>b.days-a.days||clean(a.id).localeCompare(clean(b.id)));
-  return {count:rows.length,maxDays:rows[0]?.days||0,rows};
+  return {count:rows.length,maxDays:rows[0]?.days||0,rows,baseTotal:currentTotalCritical(rawTicketEntries.filter(({ticket})=>(activeClaim==="all"||claimKeyForTicket(ticket)===activeClaim)&&isMappedCritical(ticket,statusMapping)).length)};
 }
 function noUpdateTip(summary){
   if(!summary.rows.length)return "<b>No stale critical tickets</b>All critical tickets were updated within 10 days.";
@@ -1808,7 +1808,7 @@ function renderKpis(){
   if($("kpiRatioBase"))$("kpiRatioBase").textContent=`${num(s.unapprovedTickets)} / ${num(s.approvedTickets)}`;
   setTrend("kpiCriticalTrend","totalTickets",s.totalTickets,prev.totalTickets,undefined,filtered);
   setTrend("kpiApprovedTicketsTrend","approvedTickets",s.approvedTickets,prev.approvedTickets,undefined,filtered);
-  if($("kpiUnapprovedTrend")){ $("kpiUnapprovedTrend").innerHTML=noUpdate.count?`${num(noUpdate.count)} critical need update`:"All clear"; $("kpiUnapprovedTrend").className="kpiTrend "+(noUpdate.count?"bad":"good"); }
+  if($("kpiUnapprovedTrend")){ $("kpiUnapprovedTrend").innerHTML=noUpdate.count?`${num(noUpdate.count)} / ${num(noUpdate.baseTotal)} critical need update`:`0 / ${num(noUpdate.baseTotal)} critical need update`; $("kpiUnapprovedTrend").className="kpiTrend "+(noUpdate.count?"bad":"good"); }
   setTrend("kpiBenchmarkTrend","benchmarkRate",h.rate||0,prevH.rate||0,"percentPoint",filtered);
   clearKpiPreview(document.querySelector(".benchmarkRateCard"));
   const noUpdateCard=document.querySelector(".unapprovedTicketsCard");
@@ -1895,7 +1895,7 @@ function bindStatusMixTipsFor(box,tip){
 }
 function criticalDurationDaysForRow(row,endDate){
   const end=new Date((endDate||periodEndDate())+"T00:00:00Z");
-  const start=new Date(row.enteredAt||row.enteredCriticalAt||row.firstEnteredAt||row.criticalSince||row.detectedAt||row.date||row.created||row.CreatedOn||row.createdOn||row.ticketCreatedOn||"");
+  const start=new Date(row.enteredAt||row.enteredCriticalAt||row.firstEnteredAt||row.criticalSince||row.detectedAt||row.date||"");
   if(!isNaN(start)&&!isNaN(end))return Math.max(0,(end-start)/86400000);
   const direct=Number(row.durationDays??row.duration??row.daysInCritical??row.ageDays);
   return Number.isFinite(direct)&&direct>=0?direct:null;
@@ -1926,23 +1926,17 @@ function criticalDurationRows(){
     rawTicketEntries.forEach(({ticket,roles,id})=>{
       if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
       if(!isMappedCritical(ticket,statusMapping))return;
-      const entered=enterMap.get(clean(id))||dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt||ticket.CreationDateTime);
-      const days=daysBetweenISO(entered,end);
-      if(days!=null)rows.push({days,kind:"Current critical"});
+      const entered=enterMap.get(clean(id));
+      const days=entered?daysBetweenISO(entered,end):criticalDurationDaysForRow(ticket,end);
+      rows.push({days:days==null?15:days,kind:"Current critical"});
     });
   }else{
     teamRowsAtDate(end).forEach(r=>{
       if(!isValidDealerForTeamTotal(r.dealer))return;
       const days=criticalDurationDaysForRow(r,end);
-      if(days!=null)rows.push({days,kind:"Current critical"});
+      rows.push({days:days==null?15:days,kind:"Current critical"});
     });
   }
-  arrayFromMaybe(view.logs).forEach(e=>{
-    const d=eventDateKey(e.detectedAt||e.date);
-    if(!d||d<start||d>end||clean(e.cls).toLowerCase()!=="exit"||!logMatchesClaim(e))return;
-    const days=durationDaysForTeamLog(e);
-    if(days!=null)rows.push({days,kind:"Exited critical"});
-  });
   return rows;
 }
 function criticalDurationBuckets(){
@@ -1954,13 +1948,17 @@ function criticalDurationBuckets(){
     {key:"overFourteenDays",label:"> 14 days",count:0}
   ];
   criticalDurationRows().forEach(row=>{
-    const d=Number(row.days||0);
+    if(row.days==null||!Number.isFinite(Number(row.days))){buckets[4].count++;return;}
+    const d=Number(row.days);
     if(d<=1)buckets[0].count++;
     else if(d<=3)buckets[1].count++;
     else if(d<=7)buckets[2].count++;
     else if(d<=14)buckets[3].count++;
     else buckets[4].count++;
   });
+  const expected=currentTotalCritical(selectedPeriodCriticalTotal());
+  const counted=buckets.reduce((sum,row)=>sum+Number(row.count||0),0);
+  if(expected>counted)buckets[4].count+=expected-counted;
   return buckets;
 }
 function renderHandlingSpeed(){
@@ -2486,6 +2484,23 @@ function bindTeamAssignPanelLink(){
 function teamRowsForCards(){
   return teamRowsForSelectedPeriod();
 }
+function currentCriticalStatusRows(){
+  const counts={};
+  if(rawTicketEntries.length){
+    rawTicketEntries.forEach(({ticket})=>{
+      if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
+      if(!isMappedCritical(ticket,statusMapping))return;
+      const st=clean(ticket.TicketStatusText||ticket.statusText||mappedStatus(ticket,statusMapping))||"Unknown";
+      counts[st]=(counts[st]||0)+1;
+    });
+  }else{
+    selectedPeriodCriticalRows().forEach(r=>{const st=clean(r.status)||"Unknown";counts[st]=(counts[st]||0)+1;});
+  }
+  const expected=currentTotalCritical(Object.values(counts).reduce((sum,v)=>sum+Number(v||0),0));
+  const counted=Object.values(counts).reduce((sum,v)=>sum+Number(v||0),0);
+  if(expected>counted)counts.Unknown=(counts.Unknown||0)+(expected-counted);
+  return Object.entries(counts).map(([status,count])=>({label:status,count})).sort((a,b)=>b.count-a.count||a.label.localeCompare(b.label));
+}
 function renderLists(){const rawView=currentRawCriticalView();const rows=selectedPeriodCriticalRows();
   const grouped={};
   rows.forEach(x=>{const dealer=standardDealerName(x.dealer||'Unknown'); if(isValidDealerForTeamTotal(dealer)) grouped[dealer]=(grouped[dealer]||0)+1;});
@@ -2494,9 +2509,7 @@ function renderLists(){const rawView=currentRawCriticalView();const rows=selecte
   const dealerColors=["#4f46e5","#60a5fa","#7c3aed","#f59e0b","#ec4899","#8b5cf6","#22c55e","#94a3b8"];
   const shownDealers=dealerListExpanded?dealers:dealers.slice(0,7);
   if($("dealerBars")){$("dealerBars").className="dealerCriticalList";$("dealerBars").innerHTML=dealers.length?shownDealers.map((x,i)=>`<div class="dealerCriticalRow" role="button" tabindex="0" data-dealer="${esc(x.dealer)}" title="Open ${esc(x.dealer)} in Dealer Workbench"><span class="dealerCriticalDot" style="background:${dealerColors[i%dealerColors.length]}"></span><span class="dealerCriticalLabel" title="${esc(x.dealer)}">${esc(x.dealer)}</span><span class="dealerCriticalValue">${num(x.criticalTickets)}</span></div>`).join("")+(dealers.length>7?`<button class="dealerCriticalToggle" type="button" onclick="toggleDealerList()">${dealerListExpanded?'Collapse dealers':'View all dealers ->'}</button>`:""):`<div class="panelDesc">No dealer analytics found for this claim type and selected period.</div>`;$("dealerBars").querySelectorAll(".dealerCriticalRow").forEach(row=>{row.onclick=()=>openDealerWorkbench(row.dataset.dealer);row.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDealerWorkbench(row.dataset.dealer);}}});}
-  const statusMap={};
-  rows.forEach(r=>{const st=clean(r.status)||'Unknown'; statusMap[st]=(statusMap[st]||0)+1;});
-  const statuses=Object.entries(statusMap).map(([status,count])=>({label:status,count})).sort((a,b)=>b.count-a.count||a.label.localeCompare(b.label));
+  const statuses=currentCriticalStatusRows();
   const statusDonutRows=statuses.length>6?statuses.slice(0,5).concat({label:"Others",count:statuses.slice(5).reduce((sum,x)=>sum+Number(x.count||0),0),details:statuses.slice(5)}):statuses;
   if($("statusMix")){$("statusMix").className="statusPieLayout";$("statusMix").innerHTML=distributionDonutMarkup(statusDonutRows,"tickets");bindStatusMixTips();}
   if($("criticalSideList")){
