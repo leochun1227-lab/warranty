@@ -1,0 +1,254 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Repairs</title>
+<style>
+:root{--bg:#f3f6fb;--card:#fff;--ink:#0f172a;--muted:#607089;--line:#dbe3ee;--nav:#0b1222;--blue:#3b82f6;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--shadow:0 10px 28px rgba(15,23,42,.06)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;font-size:14px}.app{min-height:100vh;display:grid;grid-template-columns:288px 1fr}.sidebar{background:#0b1222;color:#e5e7eb;min-height:100vh;padding:22px 16px;position:sticky;top:0}.brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 28px}.brandMark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#2563eb);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(37,99,235,.25)}.brandMark svg,.navBtn svg,.navLink svg{width:18px;height:18px;stroke-width:1.8}.brandText span{display:block;font-size:18px;font-weight:600}.brandText small{display:block;color:#9aa8bc;font-size:12px;margin-top:2px}.navSection{font-size:12px;letter-spacing:4px;color:#8ea0b8;text-transform:uppercase;margin:25px 8px 10px}.navBtn,.navLink{width:100%;display:flex;align-items:center;gap:13px;border:0;background:transparent;color:#d9e1ec;padding:13px 14px;border-radius:12px;font-weight:600;text-decoration:none;cursor:pointer;text-align:left}.navBtn.active,.navLink.active{background:rgba(255,255,255,.10);color:#fff}.navBtn:hover,.navLink:hover{background:rgba(255,255,255,.07)}.navDivider{height:1px;background:rgba(255,255,255,.10);margin:22px 8px}.main{min-width:0;padding:30px 40px 46px}.pageTop{display:flex;justify-content:space-between;gap:22px;align-items:flex-start;margin-bottom:18px}.pageTitle{font-size:30px;line-height:1.15;font-weight:650;margin:0 0 8px;letter-spacing:-.02em}.subTitle{color:#52627a;font-size:14px;margin:0}.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px 28px;margin-bottom:24px;overflow:hidden}.panelHead{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:16px}.panelTitle{font-size:21px;font-weight:560;margin:0 0 8px;letter-spacing:-.015em}.panelDesc{color:#5f6f86;margin:0;font-size:13px;line-height:1.45}.filters{display:grid;grid-template-columns:minmax(220px,1fr) minmax(220px,1fr) auto;gap:14px;align-items:end}.field label{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#64748b;font-weight:700;margin-bottom:8px}.input,.select,.btn{height:42px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 13px;color:#0f172a}.input,.select{width:100%}.btn{font-weight:700;cursor:pointer}.btn:hover{background:#f8fbff}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:0 0 24px}.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:21px 22px;box-shadow:var(--shadow);min-height:112px}.kpiLabel{font-weight:700;margin:0 0 14px;color:#52627a;font-size:11px;letter-spacing:.14em;text-transform:uppercase}.kpiValue{font-size:29px;font-weight:560;letter-spacing:-.025em}.chartGrid{display:grid;grid-template-columns:1fr 3fr;gap:24px}.chartWrap{height:338px;position:relative}canvas{width:100%;height:100%;display:block}.trendWrap{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px;align-items:stretch}.topList{border:1px solid var(--line);border-radius:14px;background:#fff;overflow:auto}.topRow{display:grid;grid-template-columns:1fr 46px;gap:10px;padding:10px 12px;border-bottom:1px solid #eef2f7;cursor:pointer}.topRow:last-child{border-bottom:0}.topRow.active{background:#eff6ff;color:#1d4ed8}.topName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tableWrap{border:1px solid var(--line);border-radius:16px;background:#fff;overflow:auto;max-height:620px}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}th{background:#f8fafc;color:#475569;font-weight:700;position:sticky;top:0;z-index:1;cursor:pointer;white-space:nowrap}td.num,th.num{text-align:right}tr:hover td{background:#f8fafc}.linkBtn{height:34px;border-radius:999px;border:1px solid #dbe3ee;background:#fff;padding:0 12px;font-weight:700;color:#1d4ed8;cursor:pointer}.pager{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;color:#52627a}.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin-bottom:16px}.empty{padding:28px;color:#64748b;text-align:center}.swatch{display:inline-block;width:10px;height:10px;border-radius:999px;margin-right:7px}@media(max-width:1120px){.app{grid-template-columns:250px 1fr}.kpis{grid-template-columns:repeat(2,1fr)}.chartGrid,.trendWrap,.filters{grid-template-columns:1fr}}@media(max-width:760px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}.kpis{grid-template-columns:1fr}}
+
+/* Center calculation overlay */
+.calcFloat{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);color:#155e9f;letter-spacing:0}.calcFloat.active{display:flex}.calcFloat:before{content:"";position:absolute;inset:0;background:rgba(248,251,255,.42);pointer-events:none}.calcFloat>*{position:relative}.calcSpinner{width:64px;height:64px;border-radius:999px;border:6px solid #dbeafe;border-top-color:#2563eb;border-right-color:#60a5fa;animation:calcSpin .78s linear infinite;flex:0 0 auto;box-shadow:0 10px 28px rgba(37,99,235,.16)}.calcFloatText{margin-top:18px;display:block;white-space:nowrap;font-size:16px;font-weight:650;color:#155e9f}.calcFloat{flex-direction:column}.calcFloat.active~.app,.calcFloat.active~main{filter:blur(1px);opacity:.68;pointer-events:none;user-select:none}@keyframes calcSpin{to{transform:rotate(360deg)}}@media(max-width:760px){.calcSpinner{width:54px;height:54px;border-width:5px}.calcFloatText{font-size:14px;margin-top:14px}}
+.calcFloat.active{display:flex}.calcSpinner{width:22px;height:22px;border-radius:999px;border:3px solid #dbeafe;border-top-color:#2563eb;animation:calcSpin .78s linear infinite;flex:0 0 auto}.calcFloatText{white-space:nowrap}@keyframes calcSpin{to{transform:rotate(360deg)}}@media(max-width:760px){.calcFloat{right:16px;bottom:16px;min-width:0;padding:10px 13px}.calcFloatText{font-size:12px}}
+
+
+/* Reference dashboard visual polish - layout only */
+.main,.wrap{background:#f6f8fc}.panel,.card,.kpi{border-color:#dde6f2!important;border-radius:16px!important;box-shadow:0 14px 34px rgba(15,23,42,.055)!important;background:#fff!important}.panelTitle,.cardTitle{font-size:16px!important;font-weight:600!important;letter-spacing:-.01em!important}.panelDesc,.desc,.cardDesc{font-size:12px!important;color:#66758f!important}.kpiLabel{letter-spacing:.08em!important;color:#66758f!important}.kpiValue{font-weight:600!important;letter-spacing:-.025em!important}.chartGrid,.kpis,.kpiGrid{gap:18px!important}.tableWrap{border-color:#dde6f2!important;border-radius:14px!important}.btn,.input,.search,.select,.dealerSelect{border-radius:12px!important}.claimSwitch,.changeSwitch{border-radius:14px!important;box-shadow:0 8px 22px rgba(15,23,42,.04)!important}.navBtn.active,.navLink.active{background:#1667d9!important;color:#fff!important;box-shadow:0 10px 24px rgba(37,99,235,.22)!important}
+/* Segmented button refinement */
+.changeSwitch,.claimSwitch{display:inline-flex!important;align-items:center!important;gap:0!important;height:46px!important;padding:5px!important;border:1px solid #dbe4ef!important;background:#fff!important;border-radius:15px!important;box-shadow:0 10px 24px rgba(15,23,42,.045)!important;overflow:hidden!important}.changeBtn,.claimBtn{height:36px!important;min-width:86px!important;border:0!important;border-radius:10px!important;background:transparent!important;color:#25364f!important;font-size:13px!important;font-weight:600!important;padding:0 16px!important;box-shadow:none!important;white-space:nowrap!important}.changeBtn:hover,.claimBtn:hover{background:#f3f7fc!important}.changeBtn.active,.claimBtn.active{background:#1677f2!important;color:#fff!important;box-shadow:0 8px 18px rgba(22,119,242,.26)!important}.btn,.tab,.chip{border-radius:12px!important;font-weight:600!important}.btn.active,.tab.active,.chip.active,.btn.dark{background:#1677f2!important;border-color:#1677f2!important;color:#fff!important;box-shadow:0 8px 18px rgba(22,119,242,.22)!important}</style>
+<style>
+/* Compact Repair Analysis filter bar */
+.repairFilterPanel{padding:14px 16px!important;margin-bottom:16px!important;border-radius:16px!important;}
+.repairFilterPanel .filters{display:grid!important;grid-template-columns:minmax(240px,1.1fr) minmax(260px,1.4fr) minmax(220px,.9fr)!important;gap:12px!important;align-items:center!important;}
+.repairFilterPanel .field{min-width:0;}
+.repairFilterPanel .field label{display:flex!important;align-items:center!important;gap:7px!important;margin:0 0 6px!important;font-size:11px!important;letter-spacing:.04em!important;text-transform:none!important;color:#475569!important;font-weight:750!important;}
+.repairFilterPanel .field label:before{content:"";width:8px;height:8px;border-radius:999px;background:#1677f2;box-shadow:0 0 0 4px #eaf4ff;}
+.repairFilterPanel .select,.repairFilterPanel .input{height:38px!important;border-radius:12px!important;background:#f8fbff!important;}
+.repairFilterPanel .filterHintPill{min-height:38px;display:flex;align-items:center;padding:8px 12px;border:1px solid #dbe6f3;border-radius:12px;background:#f8fbff;color:#334155!important;font-size:12px!important;font-weight:700;line-height:1.35;}
+@media(max-width:1120px){.repairFilterPanel .filters{grid-template-columns:1fr!important;}}
+/* KPI cards aligned with Team Dashboard visual language */
+.kpis .kpi,
+.partsGrid .kpi,
+.dealerHandlingKpis .kpi{
+  position:relative!important;
+  min-height:118px!important;
+  padding:20px 22px!important;
+  border:1px solid #dfe7f1!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,#fff 0%,#fbfdff 100%)!important;
+  box-shadow:0 14px 34px rgba(15,23,42,.055)!important;
+  overflow:hidden!important;
+}
+.kpis .kpi:before,
+.partsGrid .kpi:before,
+.dealerHandlingKpis .kpi:before{
+  content:"";
+  position:absolute;
+  right:18px;
+  top:18px;
+  width:42px;
+  height:42px;
+  border-radius:999px;
+  background:#eaf4ff;
+  box-shadow:inset 0 0 0 1px rgba(59,130,246,.12);
+}
+.kpis .kpi:after,
+.partsGrid .kpi:after,
+.dealerHandlingKpis .kpi:after{
+  content:"#";
+  position:absolute;
+  right:18px;
+  top:18px;
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  color:#1677f2;
+  font-size:20px;
+  font-weight:850;
+  line-height:1;
+}
+.kpis .kpi:nth-child(1):after{content:"#";}
+.kpis .kpi:nth-child(2):after{content:"✓";color:#10b981;}
+.kpis .kpi:nth-child(2):before{background:#dcfce7;}
+.kpis .kpi:nth-child(3):after{content:"!";color:#f59e0b;}
+.kpis .kpi:nth-child(3):before{background:#fff7ed;}
+.kpis .kpi:nth-child(4):after{content:"%";color:#6366f1;}
+.kpis .kpi:nth-child(4):before{background:#eef2ff;}
+.partsGrid .kpi:nth-child(1):after{content:"$";color:#7c3aed;}
+.partsGrid .kpi:nth-child(1):before{background:#f3e8ff;}
+.partsGrid .kpi:nth-child(2):after{content:"%";color:#1677f2;}
+.partsGrid .kpi:nth-child(3):after{content:"14";color:#10b981;font-size:16px;}
+.partsGrid .kpi:nth-child(3):before{background:#dcfce7;}
+.partsGrid .kpi:nth-child(4):after{content:"d";color:#f59e0b;}
+.partsGrid .kpi:nth-child(4):before{background:#fff7ed;}
+.dealerHandlingKpis .kpi:nth-child(1):after{content:"%";color:#10b981;}
+.dealerHandlingKpis .kpi:nth-child(1):before{background:#dcfce7;}
+.dealerHandlingKpis .kpi:nth-child(2):after{content:"d";color:#f59e0b;}
+.dealerHandlingKpis .kpi:nth-child(2):before{background:#fff7ed;}
+.kpiLabel{
+  margin:0 54px 10px 0!important;
+  color:#334155!important;
+  font-size:12px!important;
+  line-height:1.3!important;
+  font-weight:650!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+}
+.kpiValue{
+  color:#0b1220!important;
+  font-size:30px!important;
+  line-height:1.05!important;
+  font-weight:680!important;
+  letter-spacing:-.03em!important;
+}
+.metricTrend,
+.ratioBase{
+  margin-top:12px!important;
+  font-size:12px!important;
+  font-weight:650!important;
+}
+</style></head>
+<body>
+<div class="app">
+<aside class="sidebar">
+<div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div>
+<div class="navSection">Workspace</div>
+<a class="navLink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></a>
+<a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a>
+<a class="navLink" href="employee-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Internal Employees</span></a>
+<a class="navLink active" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a>
+<div class="navDivider"></div><div class="navSection">Tickets</div>
+<a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a>
+<a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a>
+</aside>
+<main class="main">
+<div class="pageTop"><div><h1 class="pageTitle">Repair Analysis</h1></div></div>
+<div id="loadError" class="error"></div>
+<section class="panel repairFilterPanel"><div class="filters"><div class="field"><label>Repair shop</label><select id="repairSelect" class="select"></select></div><div class="field"><label>Search</label><input id="searchBox" class="input" placeholder="Search repair name or shop ID"></div><div class="field"><label>Visible</label><div id="filterHint" class="filterHintPill">Loading...</div></div></div></section>
+<section class="kpis"><div class="kpi"><div class="kpiLabel">Total Repair Shops</div><div class="kpiValue" id="kpiShops">0</div></div><div class="kpi"><div class="kpiLabel">Total Cost</div><div class="kpiValue" id="kpiCost">$0</div></div><div class="kpi"><div class="kpiLabel">Total Tickets</div><div class="kpiValue" id="kpiTickets">0</div></div><div class="kpi"><div class="kpiLabel">Avg Cost/Ticket</div><div class="kpiValue" id="kpiAvg">$0</div></div></section>
+<section class="chartGrid"><div class="panel"><h2 class="panelTitle">Cost Range Breakdown</h2><p class="panelDesc">Low under $500, medium $500-$2,000, high over $2,000.</p><div class="chartWrap"><canvas id="rangeChart"></canvas></div></div><div class="panel"><div class="panelHead"><div><h2 class="panelTitle">Top Repair Shops by Ticket Trends</h2><p class="panelDesc">Top 10 is based on tickets created from 2025-01-01 onward.</p></div></div><div class="trendWrap"><div class="chartWrap"><canvas id="trendChart"></canvas></div><div id="topRepairs" class="topList"></div></div></div></section>
+<section class="panel"><div class="panelHead"><div><h2 class="panelTitle">Repair Shop Details</h2><p class="panelDesc">Click a header to sort. Advanced view opens the selected repair insight page.</p></div></div><div class="tableWrap"><table><thead><tr id="tableHead"></tr></thead><tbody id="repairRows"></tbody></table></div><div class="pager"><button id="prevPage" class="btn" type="button">Previous</button><span id="pageInfo"></span><button id="nextPage" class="btn" type="button">Next</button></div></section>
+</main></div>
+<div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
+<script>
+
+function showCalcFloat(active,text){
+  const el=document.getElementById('calcFloat');
+  if(!el)return;
+  const label=el.querySelector('.calcFloatText');
+  if(label&&text)label.textContent=text;
+  el.classList.toggle('active',!!active);
+}
+function hideCalcFloat(delay=250){setTimeout(()=>showCalcFloat(false),delay)}
+
+
+const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
+const PAGE_SIZE=50, START_2025="2025-01-01";
+let tickets=[], repairs=[], filtered=[], topRepairs=[], selectedRepairId="all", selectedTrendRepairId="", search="", page=1, sortKey="ticketCount", sortDir="desc";
+const $=id=>document.getElementById(id);
+const clean=v=>v==null?"":String(v).trim();
+const esc=v=>clean(v).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
+const num=(v,d=0)=>Number(v||0).toLocaleString(undefined,{maximumFractionDigits:d,minimumFractionDigits:d});
+const money=v=>Number(v||0).toLocaleString(undefined,{style:"currency",currency:"AUD",maximumFractionDigits:0});
+function fbUrl(path){return DEFAULT_FIREBASE.replace(/\/+$/,'')+"/"+path.replace(/^\/+/,'')+".json"}
+async function readJson(path){const r=await fetch(fbUrl(path),{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
+function parseAmount(v){const n=Number(clean(v).replace(/,/g,''));return Number.isFinite(n)?n:0}
+function parseDate(v){if(!v)return null;const s=clean(v);let m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m){const d=new Date(+m[3],+m[2]-1,+m[1]);return isNaN(d)?null:d}if(/^\d{8}$/.test(s)){const d=new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8));return isNaN(d)?null:d}const d=new Date(s);return isNaN(d)?null:d}
+function dateKey(v){const d=parseDate(v);return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`:""}
+function normalizeTicket(row,key){const raw=(row&&typeof row==="object")?row:{};const ticket=(raw.ticket&&typeof raw.ticket==="object")?raw.ticket:raw;const roles=(raw.roles&&typeof raw.roles==="object")?raw.roles:{};const id=clean(ticket.TicketID||key);return {id,ticket,roles}}
+function repairInfo(entry){const r=entry.roles&&entry.roles["43"]&&typeof entry.roles["43"]==="object"?entry.roles["43"]:null;const id=clean(r&&r.InvolvedPartyBusinessPartnerID)||"no-repair";const name=clean(r&&r.InvolvedPartyName)||"No Repair Shop Assigned";return {repairId:id,repairName:name}}
+function normalizedChassis(entry){const t=entry.ticket;let v=clean(t.SerialID)||clean(t.ChassisNumber);if(!v){const parts=clean(t.TicketName).split(/\s+/);v=parts[parts.length-1]||""}return v.replace(/-/g,"")}
+function emptyRepair(id,name){return {repairId:id,repairName:name,totalCost:0,avgCost:0,ticketCount:0,chassisTicketCount:0,uniqueChassisCount:0,chassisTicketRatio:0,uniqueChassisRatio:0,costByType:{},costRanges:{low:0,medium:0,high:0},_unique:new Set(),_latestDate:""}}
+function analyzeRepairs(rows){
+  const map=new Map(), latestName=new Map();
+  rows.forEach(entry=>{const info=repairInfo(entry), created=dateKey(entry.ticket.CreatedOn);if(info.repairName!=="No Repair Shop Assigned"){const old=latestName.get(info.repairId);if(!old||created>old.date)latestName.set(info.repairId,{name:info.repairName,date:created});}});
+  rows.forEach(entry=>{
+    const info=repairInfo(entry), name=info.repairName==="No Repair Shop Assigned"?(latestName.get(info.repairId)?.name||info.repairName):info.repairName;
+    const row=map.get(info.repairId)||emptyRepair(info.repairId,name);
+    const cost=parseAmount(entry.ticket.AmountIncludingTax), type=clean(entry.ticket.TicketTypeText)||"Unknown", chassis=normalizedChassis(entry);
+    row.totalCost+=cost; row.ticketCount++; row.costByType[type]=(row.costByType[type]||0)+cost;
+    if(chassis){row.chassisTicketCount++; row._unique.add(chassis)}
+    if(cost<500)row.costRanges.low++; else if(cost<2000)row.costRanges.medium++; else row.costRanges.high++;
+    map.set(info.repairId,row);
+  });
+  return Array.from(map.values()).map(r=>{r.avgCost=r.ticketCount?r.totalCost/r.ticketCount:0;r.uniqueChassisCount=r._unique.size;r.chassisTicketRatio=r.ticketCount?r.chassisTicketCount/r.ticketCount*100:0;r.uniqueChassisRatio=r.ticketCount?r.uniqueChassisCount/r.ticketCount*100:0;delete r._unique;return r}).sort((a,b)=>b.totalCost-a.totalCost);
+}
+function buildTopRepairs(){
+  const m=new Map();
+  tickets.forEach(entry=>{const d=dateKey(entry.ticket.CreatedOn);if(!d||d<START_2025)return;const info=repairInfo(entry);const row=m.get(info.repairId)||{repairId:info.repairId,repairName:info.repairName,ticketCount:0};row.ticketCount++;if(info.repairName!=="No Repair Shop Assigned")row.repairName=info.repairName;m.set(info.repairId,row)});
+  topRepairs=Array.from(m.values()).sort((a,b)=>b.ticketCount-a.ticketCount||a.repairName.localeCompare(b.repairName)).slice(0,10);
+  if(!topRepairs.some(x=>x.repairId===selectedTrendRepairId))selectedTrendRepairId=topRepairs[0]?.repairId||"";
+}
+function trendData(repairId){
+  const now=new Date(), months=[];for(let y=2025,m=0;y<now.getFullYear()||m<=now.getMonth();m++){if(m>11){m=0;y++}months.push(`${y}-${String(m+1).padStart(2,"0")}`);if(y===now.getFullYear()&&m===now.getMonth())break}
+  const by=Object.fromEntries(months.map(m=>[m,{month:m,totalCost:0,ticketCount:0,unique:new Set()}]));
+  tickets.forEach(entry=>{const info=repairInfo(entry);if(info.repairId!==repairId)return;const d=dateKey(entry.ticket.CreatedOn);if(!d||d<START_2025)return;const month=d.slice(0,7);if(!by[month])return;by[month].totalCost+=parseAmount(entry.ticket.AmountIncludingTax);by[month].ticketCount++;const ch=normalizedChassis(entry);if(ch)by[month].unique.add(ch)});
+  return months.map(m=>{const x=by[m];return {month:m,avgCost:x.ticketCount?x.totalCost/x.ticketCount:0,ticketCount:x.ticketCount,uniqueChassisPercent:x.ticketCount?x.unique.size/x.ticketCount*100:0}});
+}
+function applyFilters(){
+  const q=search.toLowerCase();
+  filtered=repairs.filter(r=>(selectedRepairId==="all"||r.repairId===selectedRepairId)&&(!q||r.repairName.toLowerCase().includes(q)||r.repairId.toLowerCase().includes(q)));
+  filtered.sort((a,b)=>{const av=valueForSort(a,sortKey),bv=valueForSort(b,sortKey);let out=typeof av==="string"?av.localeCompare(bv):Number(av||0)-Number(bv||0);return sortDir==="asc"?out:-out});
+  const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));if(page>pages)page=pages;
+}
+function valueForSort(r,k){if(k==="lowCost")return r.costRanges.low;if(k==="mediumCost")return r.costRanges.medium;if(k==="highCost")return r.costRanges.high;return r[k]??""}
+function prepare(c){const dpr=devicePixelRatio||1,w=c.clientWidth||600,h=c.clientHeight||300;c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);return {ctx,w,h}}
+function drawRange(){
+  const c=$("rangeChart"),{ctx,w,h}=prepare(c), source=selectedTrendRepairId?[repairs.find(r=>r.repairId===selectedTrendRepairId)].filter(Boolean):filtered;
+  const data=[["Low",source.reduce((s,r)=>s+r.costRanges.low,0),varColor("--green")],["Medium",source.reduce((s,r)=>s+r.costRanges.medium,0),varColor("--amber")],["High",source.reduce((s,r)=>s+r.costRanges.high,0),varColor("--red")]], total=data.reduce((s,x)=>s+x[1],0), max=Math.max(1,...data.map(x=>x[1]));
+  ctx.font="13px Segoe UI,Arial";data.forEach((d,i)=>{const y=44+i*72,bw=(w-150)*d[1]/max;ctx.fillStyle="#334155";ctx.textAlign="right";ctx.fillText(d[0],78,y+5);ctx.fillStyle="#eef2f7";ctx.fillRect(96,y-12,w-150,24);ctx.fillStyle=d[2];ctx.fillRect(96,y-12,bw,24);ctx.fillStyle="#0f172a";ctx.textAlign="left";ctx.fillText(`${num(d[1])} (${total?num(d[1]/total*100,1):"0.0"}%)`,106+bw,y+5)});
+}
+function varColor(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim()}
+function drawTrend(){
+  const c=$("trendChart"),{ctx,w,h}=prepare(c), data=trendData(selectedTrendRepairId), left=58,right=58,top=24,bottom=54,plotW=w-left-right,plotH=h-top-bottom;
+  const maxCost=Math.max(1,...data.map(x=>x.avgCost)),maxTicket=Math.max(1,...data.map(x=>x.ticketCount)),maxPct=100;
+  ctx.strokeStyle="#d8e2ee";ctx.setLineDash([2,4]);ctx.font="12px Segoe UI,Arial";for(let i=0;i<=4;i++){const y=top+plotH*i/4;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke()}ctx.setLineDash([]);
+  const x=i=>left+(data.length<=1?0:plotW*i/(data.length-1)), yVal=(v,max)=>top+plotH-plotH*(v/max);
+  line(data.map((p,i)=>({x:x(i),y:yVal(p.avgCost,maxCost)})),"#3b82f6");line(data.map((p,i)=>({x:x(i),y:yVal(p.ticketCount,maxTicket)})),"#10b981");line(data.map((p,i)=>({x:x(i),y:yVal(p.uniqueChassisPercent,maxPct)})),"#f59e0b");
+  ctx.fillStyle="#52627a";ctx.textAlign="center";data.forEach((p,i)=>{if(i%Math.ceil(data.length/8)===0||i===data.length-1)ctx.fillText(p.month.slice(2),x(i),h-24)});
+  ctx.textAlign="left";ctx.fillStyle="#3b82f6";ctx.fillText("Avg Cost",left,16);ctx.fillStyle="#10b981";ctx.fillText("Tickets",left+82,16);ctx.fillStyle="#f59e0b";ctx.fillText("Unique Chassis %",left+145,16);
+  function line(pts,color){ctx.strokeStyle=color;ctx.lineWidth=2.4;ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,2.7,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();ctx.strokeStyle=color;ctx.stroke()})}
+}
+const columns=[["repairName","Repair Shop Name"],["repairId","Shop ID"],["totalCost","Total Cost"],["avgCost","Avg Cost"],["ticketCount","Tickets"],["chassisTicketCount","Chassis Tickets"],["uniqueChassisCount","Unique Chassis"],["uniqueChassisRatio","Unique Chassis %"],["lowCost","Low Cost"],["mediumCost","Medium Cost"],["highCost","High Cost"],["insights","Insights"]];
+function renderTable(){
+  $("tableHead").innerHTML=columns.map(([k,l])=>`<th data-key="${k}" class="${k!=="repairName"&&k!=="repairId"&&k!=="insights"?"num":""}">${esc(l)} ${sortKey===k?(sortDir==="asc"?"up":"down"):""}</th>`).join("");
+  $("tableHead").querySelectorAll("th[data-key]").forEach(th=>th.onclick=()=>{const k=th.dataset.key;if(k==="insights")return;if(sortKey===k)sortDir=sortDir==="asc"?"desc":"asc";else{sortKey=k;sortDir="desc"}renderAll()});
+  const rows=filtered.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE);
+  $("repairRows").innerHTML=rows.map(r=>`<tr><td><b>${esc(r.repairName)}</b></td><td>${esc(r.repairId)}</td><td class="num">${money(r.totalCost)}</td><td class="num">${money(r.avgCost)}</td><td class="num">${num(r.ticketCount)}</td><td class="num">${num(r.chassisTicketCount)}</td><td class="num">${num(r.uniqueChassisCount)}</td><td class="num">${num(r.uniqueChassisRatio,1)}%</td><td class="num">${num(r.costRanges.low)}</td><td class="num">${num(r.costRanges.medium)}</td><td class="num">${num(r.costRanges.high)}</td><td><button class="linkBtn" data-id="${esc(r.repairId)}" type="button">Advanced view</button></td></tr>`).join("")||`<tr><td colspan="12"><div class="empty">No repair shops match the selected filters.</div></td></tr>`;
+  $("repairRows").querySelectorAll(".linkBtn").forEach(b=>b.onclick=ev=>{ev.stopPropagation();window.open(`repair-insights.html?repairId=${encodeURIComponent(b.dataset.id)}`,"_blank","noopener,noreferrer,width=1400,height=900")});
+  const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));$("pageInfo").textContent=`Page ${page} of ${pages} - ${num(filtered.length)} repair shops`;$("prevPage").disabled=page<=1;$("nextPage").disabled=page>=pages;
+}
+function renderTop(){
+  $("topRepairs").innerHTML=topRepairs.map(r=>`<div class="topRow ${r.repairId===selectedTrendRepairId?"active":""}" data-id="${esc(r.repairId)}"><div class="topName" title="${esc(r.repairName)}">${esc(r.repairName)}</div><b>${num(r.ticketCount)}</b></div>`).join("")||`<div class="empty">No 2025 repair trend data.</div>`;
+  $("topRepairs").querySelectorAll(".topRow").forEach(r=>r.onclick=()=>{selectedTrendRepairId=r.dataset.id;drawTrend();drawRange();renderTop()});
+}
+function renderSelect(){
+  const opts=[`<option value="all">All repair shops</option>`].concat(repairs.map(r=>`<option value="${esc(r.repairId)}">${esc(r.repairName)} (${esc(r.repairId)})</option>`));
+  $("repairSelect").innerHTML=opts.join("");$("repairSelect").value=selectedRepairId;
+}
+function renderKpis(){
+  const totalCost=filtered.reduce((s,r)=>s+r.totalCost,0), totalTickets=filtered.reduce((s,r)=>s+r.ticketCount,0);
+  $("kpiShops").textContent=num(filtered.length);$("kpiCost").textContent=money(totalCost);$("kpiTickets").textContent=num(totalTickets);$("kpiAvg").textContent=money(totalTickets?totalCost/totalTickets:0);
+  const avgRatio=filtered.length?filtered.reduce((s,r)=>s+r.chassisTicketRatio,0)/filtered.length:0;$("filterHint").textContent=`${num(filtered.length)} visible repairs / avg chassis ticket ratio ${num(avgRatio,1)}%`;
+}
+function renderAll(){showCalcFloat(true,"Calculating...");applyFilters();renderKpis();renderTop();drawRange();drawTrend();renderTable();hideCalcFloat()}
+async function load(){
+  try{showCalcFloat(true,"Calculating...");$("loadError").style.display="none";const node=await readJson("c4cTickets_test/tickets");tickets=Object.entries(node||{}).map(([k,r])=>normalizeTicket(r,k)).filter(x=>x.id&&x.ticket);repairs=analyzeRepairs(tickets);buildTopRepairs();renderSelect();renderAll()}
+  catch(e){hideCalcFloat();$("loadError").textContent="Failed to load repair data: "+(e.message||e);$("loadError").style.display="block"}
+}
+$("repairSelect").onchange=()=>{selectedRepairId=$("repairSelect").value;page=1;renderAll()};
+$("searchBox").oninput=()=>{search=$("searchBox").value;page=1;renderAll()};
+$("prevPage").onclick=()=>{if(page>1){page--;renderAll()}};
+$("nextPage").onclick=()=>{const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));if(page<pages){page++;renderAll()}};
+window.addEventListener("resize",()=>{drawRange();drawTrend()});
+load();
+</script>
+</body>
+</html>
+
+
+
+
+

@@ -1,41 +1,1457 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>After-Sales Team Dashboard</title>
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#0f172a;--muted:#607089;--line:#dbe3ee;--nav:#0b1222;--blue:#3b82f6;--orange:#fb6b1d;--green:#16a34a;--shadow:0 10px 28px rgba(15,23,42,.06)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;font-size:14px;font-weight:400}.app{min-height:100vh;display:grid;grid-template-columns:288px 1fr}.sidebar{background:#0b1222;color:#e5e7eb;min-height:100vh;padding:22px 16px;position:sticky;top:0}.brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 28px}.brandMark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#2563eb);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(37,99,235,.25)}.brandMark svg{width:20px;height:20px;stroke-width:1.8}.brandText span{display:block;font-size:18px;font-weight:600}.brandText small{display:block;color:#9aa8bc;font-size:12px;margin-top:2px}.navSection{font-size:12px;letter-spacing:4px;color:#8ea0b8;text-transform:uppercase;margin:25px 8px 10px}.navBtn,.navLink{width:100%;display:flex;align-items:center;gap:13px;border:0;background:transparent;color:#d9e1ec;padding:13px 14px;border-radius:12px;font-weight:600;text-decoration:none;cursor:pointer;text-align:left}.navBtn.active,.navLink.active{background:rgba(255,255,255,.10);color:#fff}.navBtn:hover,.navLink:hover{background:rgba(255,255,255,.07)}.navBtn svg,.navLink svg{width:18px;height:18px;stroke-width:1.8;color:#aebcd1}.navDivider{height:1px;background:rgba(255,255,255,.10);margin:22px 8px}.main{min-width:0;padding:30px 40px 46px}.pageTop{display:flex;justify-content:space-between;gap:22px;align-items:flex-start;margin-bottom:18px}.pageTitle{font-size:28px;line-height:1.15;font-weight:600;margin:0 0 8px;letter-spacing:-.02em}.subTitle{color:#52627a;font-size:14px;margin:0}.topActions{display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;min-width:520px}.claimSwitch{display:inline-flex;padding:4px;border:1px solid #dbe7f5;background:#fff;border-radius:18px;box-shadow:0 8px 22px rgba(15,23,42,.04)}.claimBtn{height:38px;border:0;background:transparent;border-radius:14px;padding:0 17px;color:#334155;font-weight:500;cursor:pointer;white-space:nowrap}.claimBtn:hover{background:#f8fbff}.claimBtn.active{background:#eaf4ff;color:#1d4ed8;box-shadow:inset 0 0 0 1px #bfdbfe}.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px 28px;margin-bottom:24px;overflow:hidden}.panelHead{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:16px}.panelTitle{font-size:22px;font-weight:500;margin:0 0 8px;letter-spacing:-.015em}.panelDesc{color:#5f6f86;margin:0;font-size:13px;line-height:1.45}.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.input{height:42px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 13px;color:#0f172a}.chartWrap{height:390px;position:relative}canvas{width:100%;height:100%;display:block}.legend{display:flex;gap:18px;justify-content:center;align-items:center;margin-top:10px;color:#52627a;flex-wrap:wrap}.legend span{display:flex;gap:7px;align-items:center}.dot{width:9px;height:9px;border-radius:999px;display:inline-block}.blue{background:var(--blue)}.orange{background:var(--orange)}.green{background:var(--green)}.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin-bottom:16px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:0 0 24px}.speedKpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 18px}.speedKpis .kpi{min-height:82px;padding:13px 15px;border-radius:14px;box-shadow:0 8px 20px rgba(15,23,42,.045)}.speedKpis .kpiLabel{font-size:10px;letter-spacing:3px;margin-bottom:8px}.speedKpis .kpiValue{font-size:23px}.speedKpis .kpiHint{display:none}.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:21px 22px;box-shadow:var(--shadow);min-height:120px}.kpiLabel{font-weight:600;margin:0 0 14px;color:#52627a;font-size:12px;letter-spacing:4px;text-transform:uppercase}.kpiValue{font-size:30px;font-weight:500;letter-spacing:-.025em}.kpiHint{color:#64748b;font-size:12px;margin-top:9px}.infoGrid{display:grid;grid-template-columns:1.05fr .95fr;gap:22px}.barList{display:grid;gap:12px;margin-top:18px}.barRow{display:grid;grid-template-columns:210px 1fr 76px;gap:14px;align-items:center}.barLabel{color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.barTrack{height:16px;border-radius:999px;background:#eef3f8;border:1px solid #e2e8f0;overflow:hidden}.barFill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7dd3fc,#3b82f6)}.barValue{text-align:right;color:#334155;font-weight:500}.mixRows{display:grid;gap:10px;margin-top:18px}.mixRow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:11px 13px;border:1px solid #e5edf6;border-radius:12px;background:#f9fbfe;color:#334155}.mixRow b{font-weight:500;color:#0f172a}.tooltip{position:fixed;display:none;pointer-events:none;z-index:50;background:white;border:1px solid #e2e8f0;box-shadow:0 18px 44px rgba(15,23,42,.18);border-radius:14px;padding:12px 14px;font-size:13px;min-width:250px;line-height:1.45}.tooltip b{display:block;margin-bottom:8px}.tipRow{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:7px}.tipLeft{font-weight:500}.tipRight{display:flex;align-items:center;gap:10px;justify-content:flex-end;white-space:nowrap}.tipValue{font-weight:700;color:#0f172a}.tipDelta{font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;line-height:1.4}.tipDelta.up{color:#166534;background:#dcfce7}.tipDelta.down{color:#b91c1c;background:#fee2e2}.tipDelta.flat{color:#475569;background:#e2e8f0}@media(max-width:1120px){.app{grid-template-columns:250px 1fr}.kpis{grid-template-columns:repeat(2,1fr)}.infoGrid{grid-template-columns:1fr}.pageTop{display:block}.topActions{justify-content:flex-start;min-width:0;margin-top:14px}}@media(max-width:760px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}.kpis{grid-template-columns:1fr}.barRow{grid-template-columns:120px 1fr 58px}.claimSwitch{display:grid;grid-template-columns:1fr;width:100%}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;font-size:14px;font-weight:400}.app{min-height:100vh;display:grid;grid-template-columns:288px 1fr}.sidebar{background:#0b1222;color:#e5e7eb;min-height:100vh;padding:22px 16px;position:sticky;top:0}.brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 28px}.brandMark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#2563eb);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(37,99,235,.25)}.brandMark svg{width:20px;height:20px;stroke-width:1.8}.brandText span{display:block;font-size:18px;font-weight:600}.brandText small{display:block;color:#9aa8bc;font-size:12px;margin-top:2px}.navSection{font-size:12px;letter-spacing:4px;color:#8ea0b8;text-transform:uppercase;margin:25px 8px 10px}.navBtn,.navLink{width:100%;display:flex;align-items:center;gap:13px;border:0;background:transparent;color:#d9e1ec;padding:13px 14px;border-radius:12px;font-weight:600;text-decoration:none;cursor:pointer;text-align:left}.navBtn.active,.navLink.active{background:rgba(255,255,255,.10);color:#fff}.navBtn:hover,.navLink:hover{background:rgba(255,255,255,.07)}.navBtn svg,.navLink svg{width:18px;height:18px;stroke-width:1.8;color:#aebcd1}.navDivider{height:1px;background:rgba(255,255,255,.10);margin:22px 8px}.main{min-width:0;padding:30px 40px 46px}.pageTop{display:flex;justify-content:space-between;gap:22px;align-items:flex-start;margin-bottom:18px}.pageTitle{font-size:28px;line-height:1.15;font-weight:600;margin:0 0 8px;letter-spacing:-.02em}.subTitle{color:#52627a;font-size:14px;margin:0}.topActions{display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;min-width:520px}.claimSwitch{display:inline-flex;padding:4px;border:1px solid #dbe7f5;background:#fff;border-radius:18px;box-shadow:0 8px 22px rgba(15,23,42,.04)}.claimBtn{height:38px;border:0;background:transparent;border-radius:14px;padding:0 17px;color:#334155;font-weight:500;cursor:pointer;white-space:nowrap}.claimBtn:hover{background:#f8fbff}.claimBtn.active{background:#eaf4ff;color:#1d4ed8;box-shadow:inset 0 0 0 1px #bfdbfe}.changeSwitch{display:inline-flex;padding:3px;border:1px solid #dbe7f5;background:#fff;border-radius:14px;box-shadow:0 8px 22px rgba(15,23,42,.04)}.changeBtn{height:32px;border:0;background:transparent;border-radius:11px;padding:0 12px;color:#334155;font-weight:500;cursor:pointer;white-space:nowrap}.changeBtn.active{background:#eef7ff;color:#155e9f;box-shadow:inset 0 0 0 1px #bfdbfe}.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px 28px;margin-bottom:24px;overflow:hidden}.panelHead{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:16px}.panelTitle{font-size:22px;font-weight:500;margin:0 0 8px;letter-spacing:-.015em}.panelDesc{color:#5f6f86;margin:0;font-size:13px;line-height:1.45}.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.input{height:42px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 13px;color:#0f172a}.chartWrap{height:390px;position:relative}canvas{width:100%;height:100%;display:block}.legend{display:flex;gap:18px;justify-content:center;align-items:center;margin-top:10px;color:#52627a;flex-wrap:wrap}.legend span{display:flex;gap:7px;align-items:center}.dot{width:9px;height:9px;border-radius:999px;display:inline-block}.blue{background:var(--blue)}.orange{background:var(--orange)}.green{background:var(--green)}.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin-bottom:16px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:0 0 24px}.speedKpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 18px}.speedKpis .kpi{min-height:82px;padding:13px 15px;border-radius:14px;box-shadow:0 8px 20px rgba(15,23,42,.045)}.speedKpis .kpiLabel{font-size:10px;letter-spacing:3px;margin-bottom:8px}.speedKpis .kpiValue{font-size:23px}.speedKpis .kpiHint{display:none}.speedKpis #kpiApprovedAmount,.speedKpis #kpiUnapprovedAmount{display:block}.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:21px 22px;box-shadow:var(--shadow);min-height:120px}.kpiLabel{font-weight:600;margin:0 0 14px;color:#52627a;font-size:12px;letter-spacing:4px;text-transform:uppercase}.kpiValue{font-size:30px;font-weight:500;letter-spacing:-.025em}.kpiHint{color:#64748b;font-size:12px;margin-top:9px}.infoGrid{display:grid;grid-template-columns:1.05fr .95fr;gap:22px}.barList{display:grid;gap:12px;margin-top:18px}.barRow{display:grid;grid-template-columns:210px 1fr 76px;gap:14px;align-items:center}.barLabel{color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.barTrack{height:16px;border-radius:999px;background:#eef3f8;border:1px solid #e2e8f0;overflow:hidden}.barFill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7dd3fc,#3b82f6)}.barValue{text-align:right;color:#334155;font-weight:500}.mixRows{display:grid;gap:10px;margin-top:18px}.mixRow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:11px 13px;border:1px solid #e5edf6;border-radius:12px;background:#f9fbfe;color:#334155}.mixRow b{font-weight:500;color:#0f172a}.tooltip{position:fixed;display:none;pointer-events:none;z-index:50;background:white;border:1px solid #e2e8f0;box-shadow:0 18px 44px rgba(15,23,42,.18);border-radius:14px;padding:12px 14px;font-size:13px;min-width:250px;line-height:1.45}.tooltip b{display:block;margin-bottom:8px}.tipRow{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:7px}.tipLeft{font-weight:500}.tipRight{display:flex;align-items:center;gap:10px;justify-content:flex-end;white-space:nowrap}.tipValue{font-weight:700;color:#0f172a}.tipDelta{font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;line-height:1.4}.tipDelta.up{color:#166534;background:#dcfce7}.tipDelta.down{color:#b91c1c;background:#fee2e2}.tipDelta.flat{color:#475569;background:#e2e8f0}@media(max-width:1120px){.app{grid-template-columns:250px 1fr}.kpis{grid-template-columns:repeat(2,1fr)}.infoGrid{grid-template-columns:1fr}.pageTop{display:block}.topActions{justify-content:flex-start;min-width:0;margin-top:14px}}@media(max-width:760px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}.kpis{grid-template-columns:1fr}.barRow{grid-template-columns:120px 1fr 58px}.claimSwitch{display:grid;grid-template-columns:1fr;width:100%}}
 
 .heroGrid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(440px,.92fr);gap:24px;margin-bottom:24px}.heroGrid .panel{margin-bottom:0}.speedPanel{display:flex;flex-direction:column}.speedHeadLine{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:2px 0 18px;padding-top:2px;border-top:1px solid #eef3f8}.speedMetric{display:flex;flex-direction:column;align-items:flex-start}.speedMetric b{font-size:31px;font-weight:500;letter-spacing:-.03em;color:#0f172a}.speedMetric span{font-size:12px;color:#64748b;margin-top:4px}.speedRows{display:grid;gap:12px;margin-top:4px}.speedRow{display:grid;grid-template-columns:116px 1fr 44px;gap:12px;align-items:center}.speedLabel{color:#52627a;font-size:13px;text-align:right}.speedTrack{height:18px;border-radius:999px;background:#eef4fa;border:1px solid #e1e9f2;overflow:hidden}.speedFill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7dd3fc,#22aeea)}.speedValue{font-weight:500;color:#334155}@media(max-width:1180px){.heroGrid{grid-template-columns:1fr}.speedRow{grid-template-columns:118px 1fr 52px}}
+
+.teamKpiGrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;margin:0 0 24px}.teamKpiGrid .kpi{grid-column:span 3;min-height:122px;padding:18px 20px;border-radius:16px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;background:linear-gradient(180deg,#fff,#fbfdff)}.teamKpiGrid .kpi:nth-child(n+5){grid-column:span 4}.kpiTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.kpiIcon{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#eff6ff;color:#2563eb;font-size:20px;font-weight:700;flex:0 0 auto}.kpiIcon.green{background:#ecfdf5;color:#10b981}.kpiIcon.orange{background:#fff7ed;color:#f97316}.kpiIcon.red{background:#fff1f2;color:#e11d48}.kpiIcon.purple{background:#f5f3ff;color:#7c3aed}.kpiIcon.sky{background:#f0f9ff;color:#0284c7}.kpiMain{min-width:0}.teamKpiGrid .kpiLabel{letter-spacing:0;text-transform:none;font-size:13px;margin:0 0 8px;color:#344054;font-weight:500}.teamKpiGrid .kpiValue{font-size:28px;line-height:1;font-weight:600;letter-spacing:-.025em}.kpiHint{display:block}.kpiTrend{display:flex;align-items:center;gap:7px;color:#64748b;font-size:12px;line-height:1.3;min-height:20px}.kpiTrend svg{width:17px;height:17px;flex:0 0 auto}.kpiTrend.good{color:#059669}.kpiTrend.bad{color:#e11d48}.kpiTrend.flat{color:#64748b}.kpiTrend span{white-space:nowrap}.ratioBase{font-size:12px;color:#2563eb;font-weight:600;margin-top:8px}.speedPanel .panelHead{margin-bottom:14px}.speedPanel .speedHeadLine{border-top:0;padding-top:0}@media(max-width:1280px){.teamKpiGrid .kpi,.teamKpiGrid .kpi:nth-child(n+5){grid-column:span 6}}@media(max-width:760px){.teamKpiGrid{grid-template-columns:1fr}.teamKpiGrid .kpi,.teamKpiGrid .kpi:nth-child(n+5){grid-column:1}}
+.speedDonutLayout{display:grid;grid-template-columns:178px minmax(0,1fr);gap:22px;align-items:center;margin-top:4px}.speedDonut{width:170px;height:170px;border-radius:999px;position:relative;box-shadow:inset 0 0 0 1px #e5edf6,0 16px 32px rgba(37,99,235,.10)}.speedDonut:after{content:"";position:absolute;inset:42px;border-radius:999px;background:linear-gradient(180deg,#fff,#f8fbff);box-shadow:inset 0 0 0 1px #e5edf6}.speedDonutCenter{position:absolute;inset:0;z-index:1;display:grid;place-items:center;text-align:center;pointer-events:none}.speedDonutCenter b{display:block;font-size:27px;font-weight:600;letter-spacing:-.03em;color:#0f172a}.speedDonutCenter span{display:block;margin-top:4px;font-size:12px;color:#64748b}.speedLegendRows{display:grid;gap:9px;min-width:0}.speedLegendRow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 11px;border:1px solid #e8eef6;border-radius:13px;background:#fbfdff}.speedSwatch{width:10px;height:10px;border-radius:999px;box-shadow:0 0 0 3px rgba(148,163,184,.10)}.speedLegendLabel{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#334155}.speedLegendRow b{font-weight:600;color:#0f172a;white-space:nowrap}.speedLegendRow small{font-size:11px;color:#64748b;font-weight:500;margin-left:5px}.speedEmpty{grid-column:1/-1;padding:34px 16px;border:1px dashed #cbd5e1;border-radius:16px;background:#f8fafc;color:#64748b;text-align:center}@media(max-width:760px){.speedDonutLayout{grid-template-columns:1fr}.speedDonut{margin:0 auto}.speedLegendRow{grid-template-columns:auto minmax(0,1fr) auto}}
+.dashboardTop{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;margin:0 0 18px;align-items:stretch}.dashboardMain{min-width:0}.dashboardTop .teamKpiGrid{margin:0}.criticalSummaryPanel{background:#fff;border:1px solid #dde6f2;border-radius:18px;box-shadow:0 14px 36px rgba(15,23,42,.06);padding:20px 20px 16px;min-height:100%;display:flex;flex-direction:column}.criticalSummaryPanel .panelTitle{font-size:17px;margin:0 0 14px}.criticalSideList{display:grid;gap:10px;min-height:0}.criticalSideRow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;color:#475569;font-size:13px}.criticalSideDot{width:8px;height:8px;border-radius:999px;box-shadow:0 0 0 3px rgba(59,130,246,.10)}.criticalSideLabel{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.criticalSideValue{min-width:34px;text-align:center;border-radius:999px;background:#eef6ff;color:#1d4ed8;font-weight:600;padding:4px 9px}.criticalSideLink{margin-top:auto;height:38px;border:0;border-radius:12px;background:#f1f6fd;color:#1d4ed8;font-weight:600;display:grid;place-items:center;text-decoration:none}.dashboardAnalysisGrid{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:18px;margin:0 0 18px}.dashboardAnalysisGrid .panel{margin-bottom:0;min-height:240px}.dashboardTrendGrid{grid-template-columns:1fr;margin-bottom:18px}.dashboardTrendGrid .panel{margin-bottom:0}.dashboardTrendGrid .speedPanel{display:none}.dashboardTop .kpi{border-radius:14px;box-shadow:0 12px 28px rgba(15,23,42,.045);border-color:#dfe8f3}.panel{border-radius:16px;box-shadow:0 14px 34px rgba(15,23,42,.055)}.panelTitle{font-size:16px;font-weight:600;margin-bottom:5px}.panelDesc{font-size:12px}.chartWrap{height:330px}.dashboardAnalysisGrid .barList{margin-top:10px}.dashboardAnalysisGrid .barRow{grid-template-columns:145px 1fr 42px;gap:10px}.dashboardAnalysisGrid .barTrack{height:12px}.dashboardAnalysisGrid .speedDonutLayout{grid-template-columns:150px minmax(0,1fr);gap:16px}.dashboardAnalysisGrid .speedDonut{width:148px;height:148px}.dashboardAnalysisGrid .speedDonut:after{inset:37px}.dashboardAnalysisGrid .speedDonutCenter b{font-size:23px}.dashboardAnalysisGrid .speedLegendRow{padding:7px 9px;border-radius:11px}@media(max-width:1320px){.dashboardTop{grid-template-columns:1fr}.criticalSummaryPanel{min-height:auto}.dashboardAnalysisGrid{grid-template-columns:1fr 1fr}.dashboardAnalysisGrid .dealerRankPanel{grid-column:1/-1}}@media(max-width:900px){.dashboardAnalysisGrid{grid-template-columns:1fr}.dashboardAnalysisGrid .dealerRankPanel{grid-column:auto}.dashboardTop{display:block}.criticalSummaryPanel{margin-top:16px}}
+
+/* Center calculation overlay */
+.calcFloat{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);color:#155e9f;letter-spacing:0}.calcFloat.active{display:flex}.calcFloat:before{content:"";position:absolute;inset:0;background:rgba(248,251,255,.42);pointer-events:none}.calcFloat>*{position:relative}.calcSpinner{width:64px;height:64px;border-radius:999px;border:6px solid #dbeafe;border-top-color:#2563eb;border-right-color:#60a5fa;animation:calcSpin .78s linear infinite;flex:0 0 auto;box-shadow:0 10px 28px rgba(37,99,235,.16)}.calcFloatText{margin-top:18px;display:block;white-space:nowrap;font-size:16px;font-weight:650;color:#155e9f}.calcFloat{flex-direction:column}.calcFloat.active~.app,.calcFloat.active~main{filter:blur(1px);opacity:.68;pointer-events:none;user-select:none}@keyframes calcSpin{to{transform:rotate(360deg)}}@media(max-width:760px){.calcSpinner{width:54px;height:54px;border-width:5px}.calcFloatText{font-size:14px;margin-top:14px}}
+.calcFloat.active{display:flex}.calcSpinner{width:22px;height:22px;border-radius:999px;border:3px solid #dbeafe;border-top-color:#2563eb;animation:calcSpin .78s linear infinite;flex:0 0 auto}.calcFloatText{white-space:nowrap}@keyframes calcSpin{to{transform:rotate(360deg)}}@media(max-width:760px){.calcFloat{right:16px;bottom:16px;min-width:0;padding:10px 13px}.calcFloatText{font-size:12px}}
+
+
+/* Segmented button refinement */
+.changeSwitch,.claimSwitch{display:inline-flex!important;align-items:center!important;gap:0!important;height:46px!important;padding:5px!important;border:1px solid #dbe4ef!important;background:#fff!important;border-radius:15px!important;box-shadow:0 10px 24px rgba(15,23,42,.045)!important;overflow:hidden!important}.changeBtn,.claimBtn{height:36px!important;min-width:86px!important;border:0!important;border-radius:10px!important;background:transparent!important;color:#25364f!important;font-size:13px!important;font-weight:600!important;padding:0 16px!important;box-shadow:none!important;white-space:nowrap!important}.changeBtn:hover,.claimBtn:hover{background:#f3f7fc!important}.changeBtn.active,.claimBtn.active{background:#1677f2!important;color:#fff!important;box-shadow:0 8px 18px rgba(22,119,242,.26)!important}.btn,.tab,.chip{border-radius:12px!important;font-weight:600!important}.btn.active,.tab.active,.chip.active,.btn.dark{background:#1677f2!important;border-color:#1677f2!important;color:#fff!important;box-shadow:0 8px 18px rgba(22,119,242,.22)!important}
+/* Team dashboard section order */.dashboardTop{display:grid!important;grid-template-columns:minmax(0,1fr) 340px!important;gap:18px!important;margin:0 0 18px!important;align-items:stretch!important}.dashboardTop .dashboardMain{min-width:0!important;display:flex!important;flex-direction:column!important;gap:18px!important}.dashboardTop .teamKpiGrid{margin:0!important}.dashboardTop .trendPanel{margin:0!important;min-height:0!important}.dashboardTop .trendPanel .chartWrap{height:300px!important}.featureSideStack{align-self:stretch!important;height:100%!important;display:grid!important;grid-template-rows:auto minmax(0,1fr)!important;gap:18px!important;min-width:0!important}.featureSideStack .criticalSummaryPanel,.featureSideStack .dealerRankPanel{margin:0!important;min-height:0!important}.featureSideStack .criticalSummaryPanel{order:0!important}.featureSideStack .dealerRankPanel{order:1!important;display:flex!important;flex-direction:column!important}.featureSideStack .dealerRankPanel .barList{display:grid!important;grid-template-columns:1fr!important;gap:7px!important;margin-top:12px!important;flex:1!important;align-content:space-between!important}.featureSideStack .dealerRankPanel .barRow{grid-template-columns:120px minmax(90px,1fr) 40px!important;gap:8px!important;min-height:20px!important}.featureSideStack .dealerRankPanel .barTrack{height:10px!important}.dashboardMain .dashboardAnalysisGrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important;margin:0!important;align-items:stretch!important}.dashboardMain .dashboardAnalysisGrid .speedPanel,.dashboardMain .dashboardAnalysisGrid .statusMixPanel{min-height:320px!important;display:flex!important;flex-direction:column!important}.dashboardMain .dashboardAnalysisGrid .speedRows,.dashboardMain .dashboardAnalysisGrid #statusMix{flex:1!important}.dashboardMain .dashboardAnalysisGrid .speedDonutLayout{min-height:170px!important;align-items:center!important}.dashboardMain .dashboardAnalysisGrid .speedDonut{width:154px!important;height:154px!important}.dashboardMain .dashboardAnalysisGrid .speedDonut:after{inset:39px!important}.dashboardMain .dashboardAnalysisGrid .statusMixPanel .speedDonutLayout{margin-top:46px!important}@media(max-width:1050px){.dashboardTop,.dashboardMain .dashboardAnalysisGrid{grid-template-columns:1fr!important}.dashboardTop .trendPanel .chartWrap{height:280px!important}.dashboardMain .dashboardAnalysisGrid .statusMixPanel .speedDonutLayout{margin-top:0!important}}
+/* Ratio KPI card only: blue border + leading larger icon */
+.teamKpiGrid .ratioKpiCard{
+  border-color:#3b82f6!important;
+  box-shadow:0 0 0 1px rgba(59,130,246,.30),0 12px 28px rgba(37,99,235,.12)!important;
+}
+.teamKpiGrid .ratioKpiCard .kpiTop{
+  justify-content:flex-start!important;
+  align-items:flex-start!important;
+  gap:16px!important;
+}
+.teamKpiGrid .ratioKpiCard .kpiIcon{
+  order:-1!important;
+  width:44px!important;
+  height:44px!important;
+  border-radius:15px!important;
+  font-size:22px!important;
+  flex:0 0 44px!important;
+  background:#eff6ff!important;
+  color:#2563eb!important;
+}
+.teamKpiGrid .ratioKpiCard .kpiMain{
+  min-width:0!important;
+  padding-left:2px!important;
+}
+.teamKpiGrid .ratioKpiCard .kpiTrend{
+  margin-left:13px!important;
+}
+.teamKpiGrid .ratioKpiCard .kpiTrend svg{
+  width:18px!important;
+  height:18px!important;
+}
+/* Other KPI cards only: use the same leading-icon layout as ratio card, keep original colours */
+.teamKpiGrid .kpi:not(.ratioKpiCard) .kpiTop{
+  justify-content:flex-start!important;
+  align-items:flex-start!important;
+  gap:16px!important;
+}
+.teamKpiGrid .kpi:not(.ratioKpiCard) .kpiIcon{
+  order:-1!important;
+  width:44px!important;
+  height:44px!important;
+  border-radius:15px!important;
+  font-size:22px!important;
+  flex:0 0 44px!important;
+}
+.teamKpiGrid .kpi:not(.ratioKpiCard) .kpiMain{
+  min-width:0!important;
+  padding-left:2px!important;
+}
+.teamKpiGrid .kpi:not(.ratioKpiCard) .kpiTrend{
+  margin-left:13px!important;
+}
+.teamKpiGrid .kpi:not(.ratioKpiCard) .kpiTrend svg{
+  width:18px!important;
+  height:18px!important;
+}
+.teamKpiGrid .kpi .kpiIcon{
+  margin-top:8px!important;
+}
+.teamKpiGrid .kpi .kpiIcon svg{
+  width:24px!important;
+  height:24px!important;
+  display:block!important;
+}
+.teamKpiGrid .customPurple{
+  background:#f3edff!important;
+  color:#6d4aff!important;
+}
+.teamKpiGrid .customGreen{
+  background:#eafaf1!important;
+  color:#22c55e!important;
+}
+.teamKpiGrid .customOrange{
+  background:#fff5e8!important;
+  color:#f59e0b!important;
+}
+.teamKpiGrid .customAmber{
+  background:#fff6ea!important;
+  color:#f59e0b!important;
+}
+
+/* Requested: remove subtitles in the two lower analysis cards and lift their content slightly */
+.dashboardMain .dashboardAnalysisGrid .speedPanel .panelHead{
+  margin-bottom:6px!important;
+}
+.dashboardMain .dashboardAnalysisGrid .statusMixPanel #statusMix{
+  margin-top:8px!important;
+}
+.dashboardMain .dashboardAnalysisGrid .statusMixPanel .speedDonutLayout{
+  margin-top:8px!important;
+}
+
+/* Requested: Ticket Aging bars only, replacing Critical Handling Speed chart */
+.dashboardMain .dashboardAnalysisGrid .speedPanel .panelHead{
+  margin-bottom:14px!important;
+}
+.dashboardMain .dashboardAnalysisGrid .speedPanel .agingRows{
+  display:grid!important;
+  gap:14px!important;
+  margin-top:8px!important;
+  flex:0 0 auto!important;
+}
+.dashboardMain .dashboardAnalysisGrid .speedPanel .agingRow{
+  display:grid!important;
+  grid-template-columns:96px minmax(0,1fr) 92px!important;
+  gap:12px!important;
+  align-items:center!important;
+}
+.dashboardMain .dashboardAnalysisGrid .speedPanel .agingLabel{
+  color:#475569!important;
+  font-size:12px!important;
+  text-align:left!important;
+  white-space:nowrap!important;
+}
+.dashboardMain .dashboardAnalysisGrid .speedPanel .agingTrack{
+  height:10px!important;
+  border-radius:999px!important;
+  background:#eef2ff!important;
+  overflow:hidden!important;
+}
+.dashboardMain .dashboardAnalysisGrid .speedPanel .agingFill{
+  height:100%!important;
+  border-radius:999px!important;
+}
+.dashboardMain .dashboardAnalysisGrid .speedPanel .agingValue{
+  color:#475569!important;
+  font-size:12px!important;
+  font-weight:600!important;
+  text-align:right!important;
+  white-space:nowrap!important;
+}
+.dashboardMain .dashboardAnalysisGrid .speedPanel .agingValue small{
+  color:#94a3b8!important;
+  font-size:11px!important;
+  font-weight:600!important;
+  margin-left:5px!important;
+}
+
+
+/* Requested: dealer critical tickets list styled like Critical Tickets card, with collapsible display */
+.featureSideStack .dealerRankPanel .panelTitle{
+  font-size:17px!important;
+  margin:0 0 14px!important;
+}
+.featureSideStack .dealerRankPanel .panelDesc{
+  display:none!important;
+}
+.featureSideStack .dealerCriticalList{
+  display:grid!important;
+  gap:10px!important;
+  min-height:0!important;
+  flex:0 0 auto!important;
+  margin-top:0!important;
+}
+.featureSideStack .dealerCriticalRow{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:10px!important;
+  color:#475569!important;
+  font-size:13px!important;
+  min-height:25px!important;
+  cursor:pointer!important;
+  border-radius:8px!important;
+}
+.featureSideStack .dealerCriticalRow:hover{
+  background:#f6f9fe!important;
+}
+.featureSideStack .dealerCriticalRow:hover .dealerCriticalLabel{
+  color:#1d4ed8!important;
+  text-decoration:underline!important;
+}
+.featureSideStack .dealerCriticalDot{
+  width:8px!important;
+  height:8px!important;
+  border-radius:999px!important;
+  box-shadow:0 0 0 3px rgba(59,130,246,.10)!important;
+}
+.featureSideStack .dealerCriticalLabel{
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.featureSideStack .dealerCriticalValue{
+  min-width:34px!important;
+  text-align:center!important;
+  border-radius:999px!important;
+  background:#eef6ff!important;
+  color:#1d4ed8!important;
+  font-weight:600!important;
+  padding:4px 9px!important;
+}
+.featureSideStack .dealerCriticalToggle{
+  margin-top:auto!important;
+  width:100%!important;
+  height:38px!important;
+  border:0!important;
+  border-radius:12px!important;
+  background:#f1f6fd!important;
+  color:#4f00ff!important;
+  font-weight:700!important;
+  display:grid!important;
+  place-items:center!important;
+  cursor:pointer!important;
+}
+
+/* Requested: remove the upper Critical Tickets card, move dealer list up, and stop it stretching tall */
+.featureSideStack{
+  align-self:start!important;
+  height:auto!important;
+  grid-template-rows:auto!important;
+}
+.featureSideStack .dealerRankPanel{
+  order:0!important;
+  flex:0 0 auto!important;
+  align-self:start!important;
+}
+.featureSideStack .dealerCriticalToggle{
+  margin-top:10px!important;
+}
+
+/* Requested: Critical Status Mix pie chart only */
+.dashboardMain .dashboardAnalysisGrid .statusMixPanel .statusPieLayout{
+  display:grid!important;
+  grid-template-columns:170px minmax(0,1fr)!important;
+  gap:18px!important;
+  align-items:center!important;
+  margin-top:10px!important;
+  flex:1!important;
+}
+.dashboardMain .dashboardAnalysisGrid .statusMixPanel .statusPieWrap{
+  width:170px!important;
+  height:170px!important;
+  position:relative!important;
+}
+.dashboardMain .dashboardAnalysisGrid .statusMixPanel .statusPieSvg{
+  width:170px!important;
+  height:170px!important;
+  display:block!important;
+}
+.dashboardMain .dashboardAnalysisGrid .statusMixPanel .statusPieSlice{
+  cursor:pointer!important;
+  transition:opacity .15s ease, transform .15s ease!important;
+  transform-origin:85px 85px!important;
+}
+.dashboardMain .dashboardAnalysisGrid .statusMixPanel .statusPieSlice:hover{
+  opacity:.86!important;
+  transform:scale(1.015)!important;
+}
+.dashboardMain .dashboardAnalysisGrid .statusMixPanel .statusPiePct{
+  fill:#fff!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  pointer-events:none!important;
+}
+.dashboardMain .dashboardAnalysisGrid .statusMixPanel .statusPieLegend{
+  display:grid!important;
+  gap:9px!important;
+  min-width:0!important;
+}
+.dashboardMain .dashboardAnalysisGrid .statusMixPanel .statusPieLegendRow{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  gap:9px!important;
+  align-items:center!important;
+  color:#334155!important;
+  font-size:12px!important;
+  cursor:pointer!important;
+}
+.dashboardMain .dashboardAnalysisGrid .statusMixPanel .statusPieLegendDot{
+  width:8px!important;
+  height:8px!important;
+  border-radius:999px!important;
+  box-shadow:0 0 0 3px rgba(148,163,184,.10)!important;
+}
+.dashboardMain .dashboardAnalysisGrid .statusMixPanel .statusPieLegendLabel{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.statusMixHoverTip{
+  position:fixed!important;
+  display:none;
+  z-index:80!important;
+  max-width:310px!important;
+  background:#fff!important;
+  border:1px solid #e2e8f0!important;
+  box-shadow:0 18px 44px rgba(15,23,42,.18)!important;
+  border-radius:14px!important;
+  padding:10px 12px!important;
+  color:#334155!important;
+  font-size:12px!important;
+  line-height:1.45!important;
+  pointer-events:none!important;
+}
+.statusMixHoverTip b{
+  display:block!important;
+  color:#0f172a!important;
+  margin-bottom:4px!important;
+}
+@media(max-width:760px){
+  .dashboardMain .dashboardAnalysisGrid .statusMixPanel .statusPieLayout{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardMain .dashboardAnalysisGrid .statusMixPanel .statusPieWrap{
+    margin:0 auto!important;
+  }
+}
+
+/* Requested: Trend + Critical Status Change Log split row */
+.trendLogGrid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:18px!important;
+  align-items:stretch!important;
+}
+.dashboardTop .trendPanel{
+  width:auto!important;
+  max-width:none!important;
+  align-self:stretch!important;
+}
+.criticalLogPanel{
+  margin:0!important;
+  min-height:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+.criticalLogPanel .panelTitle{
+  margin-bottom:4px!important;
+}
+.criticalLogList{
+  display:grid!important;
+  gap:0!important;
+  margin-top:10px!important;
+  border-top:1px solid #eef3f8!important;
+}
+.criticalLogRow{
+  display:grid!important;
+  grid-template-columns:92px minmax(0,1fr) 68px 56px!important;
+  gap:10px!important;
+  align-items:center!important;
+  min-height:34px!important;
+  padding:7px 0!important;
+  border-bottom:1px solid #eef3f8!important;
+  font-size:12px!important;
+  color:#42526b!important;
+}
+.criticalLogTime{
+  color:#52627a!important;
+  white-space:nowrap!important;
+}
+.criticalLogStatus{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  max-width:100%!important;
+}
+.criticalLogDot{
+  width:7px!important;
+  height:7px!important;
+  border-radius:999px!important;
+  flex:0 0 auto!important;
+}
+.criticalLogTicket{
+  color:#334155!important;
+  font-weight:600!important;
+  white-space:nowrap!important;
+}
+.criticalLogAmount{
+  text-align:right!important;
+  color:#0f172a!important;
+  white-space:nowrap!important;
+}
+.criticalLogLink{
+  margin-top:auto!important;
+  height:34px!important;
+  border-radius:10px!important;
+  background:#f1f6fd!important;
+  color:#1d4ed8!important;
+  display:grid!important;
+  place-items:center!important;
+  text-decoration:none!important;
+  font-weight:600!important;
+  font-size:12px!important;
+}
+@media(max-width:1050px){
+  .trendLogGrid{
+    grid-template-columns:1fr!important;
+  }
+  .dashboardTop .trendPanel{
+    width:100%!important;
+  }
+}
+
+/* Requested: widen right dealer rail and align analysis cards below it */
+.dashboardTop{
+  grid-template-columns:minmax(0,1fr) 416px!important;
+}
+.featureSideStack{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:18px!important;
+  align-items:stretch!important;
+  width:100%!important;
+}
+.featureSideStack .dashboardAnalysisGrid{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:18px!important;
+  margin:0!important;
+  align-items:stretch!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel,
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel{
+  min-height:auto!important;
+  margin:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+.featureSideStack .dealerRankPanel{
+  width:100%!important;
+  align-self:stretch!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel{
+  min-height:218px!important;
+  padding:20px 22px!important;
+  justify-content:flex-start!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel{
+  min-height:218px!important;
+  padding:20px 22px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel{
+  order:0!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel{
+  order:1!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRows{
+  display:grid!important;
+  gap:13px!important;
+  margin-top:16px!important;
+  flex:1!important;
+  align-content:center!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRow{
+  display:grid!important;
+  grid-template-columns:88px minmax(0,1fr) 68px!important;
+  gap:11px!important;
+  align-items:center!important;
+  min-height:26px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingLabel{
+  color:#475569!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingTrack{
+  position:relative!important;
+  height:13px!important;
+  border-radius:999px!important;
+  background:#edf3fb!important;
+  border:1px solid #e1e9f3!important;
+  overflow:hidden!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingFill{
+  display:block!important;
+  height:100%!important;
+  min-width:4px!important;
+  border-radius:999px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingValue{
+  grid-column:auto!important;
+  grid-row:auto!important;
+  justify-self:end!important;
+  align-self:center!important;
+  padding-right:0!important;
+  color:#0f172a!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  text-align:right!important;
+  white-space:nowrap!important;
+  text-shadow:none!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingValue small{
+  color:#64748b!important;
+  font-size:10px!important;
+  font-weight:700!important;
+  margin-left:4px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLayout{
+  display:grid!important;
+  grid-template-columns:136px minmax(0,1fr)!important;
+  gap:16px!important;
+  align-items:center!important;
+  margin-top:14px!important;
+  flex:1!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieWrap,
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieSvg{
+  width:136px!important;
+  height:136px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieSvg{
+  display:block!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieSlice{
+  cursor:pointer!important;
+  transform-origin:85px 85px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPiePct{
+  fill:#fff!important;
+  font-size:10px!important;
+  font-weight:700!important;
+  pointer-events:none!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLegend{
+  display:grid!important;
+  gap:7px!important;
+  min-width:0!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLegendRow{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr)!important;
+  gap:8px!important;
+  align-items:center!important;
+  color:#334155!important;
+  font-size:12px!important;
+  cursor:pointer!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLegendDot{
+  width:8px!important;
+  height:8px!important;
+  border-radius:999px!important;
+  box-shadow:0 0 0 3px rgba(148,163,184,.10)!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLegendLabel{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+@media(max-width:1050px){
+  .dashboardTop{
+    grid-template-columns:1fr!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLayout{
+    grid-template-columns:1fr!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieWrap{
+    margin:0 auto!important;
+  }
+}
+
+/* Requested: team C4C Assign To workload card under trend/log row */
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel{
+  min-height:256px!important;
+  padding:22px 24px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLayout{
+  grid-template-columns:180px minmax(0,1fr)!important;
+  gap:18px!important;
+  margin-top:18px!important;
+  align-items:center!important;
+  min-height:182px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieWrap,
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieSvg{
+  width:180px!important;
+  height:180px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLegend{
+  gap:10px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLegendRow{
+  font-size:12px!important;
+  min-height:18px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLegendDot{
+  width:9px!important;
+  height:9px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPiePct{
+  font-size:11px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel{
+  min-height:246px!important;
+  padding:22px 24px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRows{
+  gap:16px!important;
+  margin-top:20px!important;
+  align-content:stretch!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRow{
+  min-height:30px!important;
+  grid-template-columns:90px minmax(0,1fr) 70px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingTrack{
+  height:14px!important;
+}
+@media(max-width:1200px){
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLayout{
+    grid-template-columns:160px minmax(0,1fr)!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieWrap,
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieSvg{
+    width:160px!important;
+    height:160px!important;
+  }
+}
+
+/* Give the right-side dealer/status/aging stack more horizontal room */
+.dashboardTop{
+  grid-template-columns:minmax(0,1fr) 530px!important;
+}
+.featureSideStack{
+  width:530px!important;
+  max-width:530px!important;
+}
+.featureSideStack .dealerRankPanel,
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel,
+.featureSideStack .dashboardAnalysisGrid .speedPanel{
+  width:100%!important;
+}
+.featureSideStack .dealerCriticalRow{
+  grid-template-columns:auto minmax(0,1fr) 46px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLayout{
+  grid-template-columns:190px minmax(0,1fr)!important;
+  gap:24px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieWrap,
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieSvg{
+  width:190px!important;
+  height:190px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRow{
+  grid-template-columns:96px minmax(0,1fr) 76px!important;
+}
+.dashboardMain .teamKpiGrid{
+  gap:12px!important;
+}
+.dashboardMain .teamKpiGrid .kpi{
+  min-height:108px!important;
+  padding:17px 18px!important;
+}
+.dashboardMain .teamKpiGrid .kpiTop{
+  gap:12px!important;
+}
+.dashboardMain .teamKpiGrid .kpiIcon{
+  width:38px!important;
+  height:38px!important;
+  flex-basis:38px!important;
+}
+.dashboardMain .teamKpiGrid .kpiValue{
+  font-size:26px!important;
+}
+.criticalLogPanel{
+  padding:18px 18px 16px!important;
+}
+.criticalLogRow{
+  grid-template-columns:118px minmax(190px,1fr) 76px 78px!important;
+  gap:12px!important;
+  font-size:12px!important;
+}
+.teamAssignPanel{
+  padding:16px 16px 14px!important;
+}
+.teamAssignRow{
+  grid-template-columns:112px minmax(0,1fr) 64px!important;
+  gap:9px!important;
+}
+@media(max-width:1280px){
+  .dashboardTop{
+    grid-template-columns:1fr!important;
+  }
+  .featureSideStack{
+    width:100%!important;
+    max-width:none!important;
+  }
+}
+
+.teamAssignPanel{
+  margin:0!important;
+  padding:18px 20px 16px!important;
+  cursor:pointer!important;
+}
+.teamAssignPanel .panelHead{
+  margin-bottom:12px!important;
+  align-items:flex-start!important;
+}
+.teamAssignActions{
+  display:flex!important;
+  gap:8px!important;
+  flex-wrap:wrap!important;
+  justify-content:flex-end!important;
+}
+.teamAssignBtn{
+  height:31px!important;
+  border:1px solid #dbe4ef!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:#25364f!important;
+  padding:0 12px!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  cursor:pointer!important;
+}
+.teamAssignBtn.active{
+  background:#eef7ff!important;
+  border-color:#93c5fd!important;
+  color:#1d4ed8!important;
+  box-shadow:inset 0 0 0 1px rgba(59,130,246,.18)!important;
+}
+.teamAssignGrid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-flow:column!important;
+  gap:12px 34px!important;
+  padding:2px 6px 10px!important;
+}
+.teamAssignRow{
+  display:grid!important;
+  grid-template-columns:126px minmax(0,1fr) 70px!important;
+  gap:12px!important;
+  align-items:center!important;
+  min-height:28px!important;
+}
+.dashboardMain .teamAssignPanel{
+  padding:16px 16px 14px!important;
+}
+.dashboardMain .teamAssignRow{
+  grid-template-columns:112px minmax(0,1fr) 64px!important;
+  gap:9px!important;
+}
+.teamAssignName{
+  color:#334155!important;
+  font-size:12px!important;
+  text-align:right!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.teamAssignTrack{
+  position:relative!important;
+  height:18px!important;
+  border-radius:999px!important;
+  background:#edf2f7!important;
+  overflow:visible!important;
+}
+.teamAssignBlue,
+.teamAssignRed{
+  position:absolute!important;
+  left:0!important;
+  border-radius:999px!important;
+}
+.teamAssignBlue{
+  top:0!important;
+  bottom:0!important;
+  background:linear-gradient(90deg,#93c5fd,#4f46e5)!important;
+  min-width:3px!important;
+}
+.teamAssignRed{
+  top:3px!important;
+  height:12px!important;
+  background:linear-gradient(90deg,#fb7185,#e11d48)!important;
+  min-width:0!important;
+}
+    .teamAssignInline{
+      position:absolute!important;
+      top:50%!important;
+      transform:translate(-100%,-50%)!important;
+      margin-left:-6px!important;
+      z-index:3!important;
+      color:#fff!important;
+      background:rgba(15,23,42,.28)!important;
+      border:0!important;
+      border-radius:999px!important;
+      padding:1px 5px!important;
+      font-family:"Segoe UI",Arial,sans-serif!important;
+      font-size:10px!important;
+      font-weight:900!important;
+      line-height:1.15!important;
+      font-variant-numeric:tabular-nums!important;
+      -webkit-font-smoothing:antialiased!important;
+      white-space:nowrap!important;
+      pointer-events:none!important;
+      text-shadow:none!important;
+      box-shadow:none!important;
+    }
+.teamAssignValue{
+  font-size:12px!important;
+  font-weight:700!important;
+  white-space:nowrap!important;
+}
+.teamAssignValue .redValue{color:#e11d48!important}
+.teamAssignValue .blueValue{color:#4f46e5!important}
+.teamAssignLegend{
+  display:flex!important;
+  justify-content:center!important;
+  gap:30px!important;
+  color:#66758f!important;
+  font-size:12px!important;
+  padding-top:4px!important;
+}
+.teamAssignLegend span{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+.teamAssignLegend i{
+  width:12px!important;
+  height:8px!important;
+  border-radius:3px!important;
+}
+.teamAssignEmpty{
+  grid-column:1/-1!important;
+  padding:28px 16px!important;
+  text-align:center!important;
+  color:#64748b!important;
+  border:1px dashed #cbd5e1!important;
+  border-radius:14px!important;
+  background:#f8fafc!important;
+}
+@media(max-width:1150px){
+  .teamAssignGrid{grid-template-columns:1fr!important}
+}
+@media(max-width:760px){
+  .teamAssignRow{grid-template-columns:1fr!important}
+  .teamAssignName{text-align:left!important}
+  .teamAssignValue{text-align:right!important}
+  .teamAssignActions{justify-content:flex-start!important}
+}
+
+/* Compact claim filter control */
+.claimSwitch.filterTools{
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  height:auto!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+.filterIconBtn,
+.filterButton{
+  height:44px!important;
+  border:1px solid #dbe4ef!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#25364f!important;
+  box-shadow:0 8px 22px rgba(15,23,42,.045)!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  cursor:pointer!important;
+}
+.filterIconBtn{
+  width:48px!important;
+  padding:0!important;
+}
+.filterButton{
+  gap:10px!important;
+  padding:0 18px!important;
+  font-size:13px!important;
+  font-weight:700!important;
+}
+.filterIconBtn svg,
+.filterButton svg{
+  width:18px!important;
+  height:18px!important;
+  stroke-width:2!important;
+}
+.filterDropdown{
+  position:relative!important;
+}
+.filterMenu{
+  position:absolute!important;
+  right:0!important;
+  top:calc(100% + 8px)!important;
+  z-index:80!important;
+  min-width:230px!important;
+  padding:8px!important;
+  border:1px solid #dbe4ef!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:0 18px 44px rgba(15,23,42,.16)!important;
+  display:none!important;
+}
+.filterDropdown.open .filterMenu{
+  display:grid!important;
+  gap:6px!important;
+}
+.filterOption{
+  width:100%!important;
+  min-height:36px!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  color:#25364f!important;
+  text-align:left!important;
+  padding:0 11px!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  cursor:pointer!important;
+}
+.filterOption:hover{
+  background:#f3f7fc!important;
+}
+.filterOption.active{
+  background:#eef7ff!important;
+  color:#1d4ed8!important;
+}
+@media(max-width:760px){
+  .claimSwitch.filterTools{width:auto!important;display:flex!important}
+}
+
 </style>
 </head>
-<body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></button><a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><a class="navLink" href="employee-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Internal Employees</span></a><div class="navDivider"></div><div class="navSection">Reports</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Tickets</span></a><a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a></aside><main class="main"><div class="pageTop"><div><h1 class="pageTitle">Team Dashboard</h1><p class="subTitle">Track all-dealer critical ticket stock and critical exit speed. Data is pre-calculated by Python.</p></div><div class="topActions"><div id="claimSwitch" class="claimSwitch"></div></div></div><div id="loadError" class="error"></div><section class="heroGrid"><div class="panel"><div class="panelHead"><div><h2 class="panelTitle">Critical Status Trends by Date</h2><p class="panelDesc">Orange is reconstructed current critical stock, not cumulative created tickets.</p></div><div class="controls"><label>From <input id="dateFrom" class="input" type="date"></label><label>To <input id="dateTo" class="input" type="date"></label></div></div><div class="chartWrap"><canvas id="trendChart"></canvas></div><div class="legend"><span><i class="dot blue"></i>Entered Critical cumulative</span><span><i class="dot orange"></i>Critical total · right axis</span><span><i class="dot green"></i>Exited Critical cumulative</span></div></div><div class="panel speedPanel"><div class="panelHead"><div><h2 class="panelTitle">Critical Handling Speed</h2><p class="panelDesc">2-week benchmark uses true entered-critical date, with ticket CreatedOn fallback when old enter logs are missing.</p></div></div><div class="speedKpis"><div class="kpi"><div class="kpiLabel">Total Critical</div><div class="kpiValue" id="kpiCritical">0</div><div class="kpiHint">Current critical tickets</div></div><div class="kpi"><div class="kpiLabel">Entered Critical</div><div class="kpiValue" id="kpiEntered">0</div><div class="kpiHint">Full observed history</div></div><div class="kpi"><div class="kpiLabel">Exited Critical</div><div class="kpiValue" id="kpiExited">0</div><div class="kpiHint">Full observed history</div></div><div class="kpi"><div class="kpiLabel">Exit-to-Entry Rate</div><div class="kpiValue" id="kpiRate">0%</div><div class="kpiHint">Exited Critical ÷ Entered Critical</div></div></div><div class="speedHeadLine"><div class="speedMetric"><b id="speedRate">0%</b><span>2-week benchmark</span></div><div class="speedMetric"><b id="speedAvg">—</b><span>Estimated clear time</span></div></div><div id="speedRows" class="speedRows"></div></div></section><section class="infoGrid"><div class="panel"><h2 class="panelTitle">Top Critical Tickets by Dealer</h2><p class="panelDesc">Current critical ticket count by dealer.</p><div id="dealerBars" class="barList"></div></div><div class="panel"><h2 class="panelTitle">Current Critical Status Mix</h2><p class="panelDesc">Status distribution across current critical tickets.</p><div id="statusMix" class="mixRows"></div></div></section></main></div><div id="tooltip" class="tooltip"></div>
+<body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></button><a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><a class="navLink" href="employee-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Internal Employees</span></a><a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a><div class="navDivider"></div><div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a></aside><main class="main"><div class="pageTop"><div><h1 class="pageTitle">After-Sales Team Dashboard</h1></div><div class="topActions"><div id="periodSwitch" class="changeSwitch"></div><div id="claimSwitch" class="claimSwitch"></div></div></div><div id="loadError" class="error"></div><section class="dashboardTop"><div class="dashboardMain"><section class="teamKpiGrid"><div class="kpi totalCriticalCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Total Tickets</div><div class="kpiValue" id="kpiCritical">0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8.2 4.5H5.8A1.8 1.8 0 0 0 4 6.3v2.4c0 .58.28 1.13.74 1.46L7.5 12l-2.76 1.84A1.8 1.8 0 0 0 4 15.3v2.4c0 1 .8 1.8 1.8 1.8h2.4c.58 0 1.13-.28 1.46-.74L12 16.5l1.84 2.26c.33.46.88.74 1.46.74h2.4c1 0 1.8-.8 1.8-1.8v-2.4c0-.58-.28-1.13-.74-1.46L16.5 12l2.26-1.84c.46-.33.74-.88.74-1.46V6.3A1.8 1.8 0 0 0 17.7 4.5h-2.4c-.58 0-1.13.28-1.46.74L12 7.5 10.16 5.24A1.8 1.8 0 0 0 8.7 4.5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiCriticalTrend"></div></div><div class="kpi approvedTicketsCountCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Tickets</div><div class="kpiValue" id="kpiApprovedTickets">0</div></div><div class="kpiIcon customGreen" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.2" stroke="currentColor" stroke-width="1.9"/><path d="M8.6 12.3l2.2 2.2 4.8-5.2" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTicketsTrend"></div></div><div class="kpi unapprovedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved Tickets</div><div class="kpiValue" id="kpiUnapproved">0</div></div><div class="kpiIcon customAmber" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.9"/><path d="M12 8.1v4.1l2.9 1.9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiUnapprovedTrend"></div></div><div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">2-week benchmark</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div><div class="kpi approvedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Amount</div><div class="kpiValue" id="kpiApproved">$0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6.4" rx="5.2" ry="2.3" stroke="currentColor" stroke-width="1.8"/><path d="M6.8 6.4v4.2c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3V6.4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 10.6v4.1c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-4.1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 14.7v2.9c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-2.9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTrend"></div></div><div class="kpi exitedValueCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Estimated clear time</div><div class="kpiValue" id="kpiRate">-</div></div><div class="kpiIcon customOrange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4.5" y="6.5" width="15" height="11" rx="2.4" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 10h8.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7.5 13.4h4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16.8" cy="13.8" r="1.8" stroke="currentColor" stroke-width="1.6"/></svg></div></div><div class="kpiTrend" id="kpiRateTrend"></div></div><div class="kpi ratioKpiCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved / Approved</div><div class="kpiValue" id="kpiUnapprovedRatio">0.00%</div><div class="ratioBase" id="kpiRatioBase">0 / 0</div></div><div class="kpiIcon">%</div></div><div class="kpiTrend" id="kpiRatioTrend"></div></div></section><section class="trendLogGrid"><section class="panel trendPanel"><div class="panelHead"><div><h2 class="panelTitle">Critical Status Trends by Date</h2></div><div class="controls"><label>From <input id="dateFrom" class="input" type="date"></label><label>To <input id="dateTo" class="input" type="date"></label></div></div><div class="chartWrap"><canvas id="trendChart"></canvas></div><div class="legend"><span><i class="dot blue"></i>Entered Critical cumulative</span><span><i class="dot orange"></i>Critical total - right axis</span><span><i class="dot green"></i>Exited Critical cumulative</span></div></section><section class="panel criticalLogPanel"><h2 class="panelTitle">Critical Status Change Log</h2><div id="criticalLogRows" class="criticalLogList"></div><a class="criticalLogLink" href="dealer-workbench.html#tickets">View full log -&gt;</a></section></section><section class="panel teamAssignPanel"><div class="panelHead"><div><h2 class="panelTitle">Critical Tickets by C4C Assign To</h2></div><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed</span><span><i style="background:#4f46e5"></i>Current critical tickets</span></div></section></div><aside class="featureSideStack"><div class="panel dealerRankPanel"><h2 class="panelTitle">Critical Tickets by Dealer</h2><div id="dealerBars" class="dealerCriticalList"></div></div><section class="dashboardAnalysisGrid"><div class="panel speedPanel"><div class="panelHead"><div><h2 class="panelTitle">Ticket Aging (Created On)</h2></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel statusMixPanel"><h2 class="panelTitle">Critical Status Mix</h2><div id="statusMix" class="mixRows"></div></div></section></aside></section></main></div><div id="tooltip" class="tooltip"></div>
+<div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
 <script>
+
+function showCalcFloat(active,text){
+  const el=document.getElementById('calcFloat');
+  if(!el)return;
+  const label=el.querySelector('.calcFloatText');
+  if(label&&text)label.textContent=text;
+  el.classList.toggle('active',!!active);
+}
+function hideCalcFloat(delay=250){setTimeout(()=>showCalcFloat(false),delay)}
+
+
 const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
 const MONITOR_ROOT="ctmTicketStatusMonitorV44";
 let team={views:{},defaultView:"all",claimOptions:[{key:"all",label:"All Claims"}]};
-let activeClaim="all", activeView=null, trendPoints=[];
+let activeClaim="all", activeView=null, activePeriod="all", trendPoints=[], rawCritical={loaded:false,views:{}}, rawTicketEntries=[], statusMapping={}, dealerKeyLookup={exact:{},loose:{}}, employeeAnalytics=null, teamAssignMetric="totalRemoved";
+const DEFAULT_RANGE_START="2026-05-25";
+let dealerListExpanded=false;
 const $=id=>document.getElementById(id); const clean=v=>v==null?"":String(v).trim(); const num=v=>Number(v||0).toLocaleString();
 const esc=v=>clean(v).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
+const money=v=>Number(v||0).toLocaleString(undefined,{style:"currency",currency:"AUD",maximumFractionDigits:0});
 function fbUrl(path){return DEFAULT_FIREBASE.replace(/\/+$/,'')+"/"+path.replace(/^\/+/,'')+".json"}
 async function readJson(path){const r=await fetch(fbUrl(path),{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
+function arrayFromMaybe(v){if(Array.isArray(v))return v;if(v&&typeof v==="object")return Object.values(v);return []}
+function fieldNormKey(v){return clean(v).toLowerCase().replace(/[ _\-/()]/g,'')}
+function getField(obj,cands){if(!obj||typeof obj!=="object")return "";const idx={};Object.keys(obj).forEach(k=>idx[fieldNormKey(k)]=k);for(const c of cands){if(clean(obj[c]))return clean(obj[c]);const k=idx[fieldNormKey(c)];if(k&&clean(obj[k]))return clean(obj[k]);}return ""}
+function findRoleName(node,roleId){if(!node||typeof node!=="object")return "";if(Array.isArray(node)){for(const x of node){const n=findRoleName(x,roleId);if(n)return n;}return ""}if(clean(node.InvolvedPartyRoleID)===roleId&&clean(node.InvolvedPartyName))return clean(node.InvolvedPartyName);const direct=node[roleId];if(direct&&typeof direct==="object"){const n=clean(direct.InvolvedPartyName)||findRoleName(direct,roleId);if(n)return n;}for(const v of Object.values(node)){const n=findRoleName(v,roleId);if(n)return n;}return ""}
+function normalizeTicketEntry(row,key){const raw=(row&&typeof row==="object")?row:{};const ticket=(raw.ticket&&typeof raw.ticket==="object")?raw.ticket:raw;const roles=(raw.roles&&typeof raw.roles==="object")?raw.roles:{};const id=clean(ticket.TicketID||ticket.ticketID||ticket.id||key);return {ticket,roles,id}}
+function mappedStatus(ticket,mapping){const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status);const text=clean(ticket.TicketStatusText||ticket.statusText);return clean((code&&mapping?.[code]?.firstLevelStatus)||(text&&mapping?.[text]?.firstLevelStatus)||(text&&mapping?.[text]?.ticketStatusText)||text||"Unmapped")}
+function isMappedCritical(ticket,mapping){return mappedStatus(ticket,mapping).toLowerCase()==="critical"}
+function parseAmountIncludingTax(v){const n=Number(clean(v).replace(/,/g,''));return Number.isFinite(n)?n:0}
+function parseDate(v){if(!v)return null;if(typeof v==="number")return new Date(v);const s=clean(v);let m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m){const d=new Date(+m[3],+m[2]-1,+m[1]);return isNaN(d)?null:d}if(/^\d{8}$/.test(s)){const d=new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8));return isNaN(d)?null:d}const d=new Date(s);return isNaN(d)?null:d}
+function dateKey(v){const d=parseDate(v);return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`:""}
+function ticketOutcomeText(ticket,mapping){const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status);const text=clean(ticket.TicketStatusText||ticket.statusText);return clean((code&&mapping?.[code]?.ticketStatusText)||(text&&mapping?.[text]?.ticketStatusText)||text||code)}
+function isExitedTicket(ticket,mapping){const text=ticketOutcomeText(ticket,mapping).toLowerCase();return text.includes("repairer invoiced processed")||text.includes("calins closed")}
+function rawExitedTicketsTotalValue(start,end){if(!rawTicketEntries.length)return null;return rawTicketEntries.reduce((total,{ticket})=>{const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);if(!created||created<start||created>end)return total;if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return total;return isExitedTicket(ticket,statusMapping)?total+parseAmountIncludingTax(ticket.AmountIncludingTax):total},0)}
+function approvalBucket(ticket){const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status).toUpperCase();const text=clean(ticket.TicketStatusText||ticket.statusText).toLowerCase();if(code==="Z9"&&text==="sales order approved")return "approved";if(code==="Y8"&&text==="unapproved claims closed (closed)")return "unapproved";return "other"}
+function rawApprovalSummary(start,end){const summary={approved:0,unapproved:0,approvedAmount:0,unapprovedAmount:0};rawTicketEntries.forEach(({ticket})=>{const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);if(!created||created<start||created>end)return;if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;const bucket=approvalBucket(ticket);const amount=parseAmountIncludingTax(ticket.AmountIncludingTax);if(bucket==="approved"){summary.approved++;summary.approvedAmount+=amount}if(bucket==="unapproved"){summary.unapproved++;summary.unapprovedAmount+=amount}});return summary}
+function rawTotalTickets(start,end){if(!rawTicketEntries.length)return null;let total=0;rawTicketEntries.forEach(({ticket})=>{const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);if(!created||created<start||created>end)return;if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;total++;});return total}
+function rawCurrentTotalTickets(){if(!rawTicketEntries.length)return null;let total=0;rawTicketEntries.forEach(({ticket})=>{if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;total++;});return total}
+function claimKeyForTicket(ticket){const raw=clean(getField(ticket,["TicketTypeText","Ticket Type Text","TicketType","Ticket Type","ClaimType","Claim Type"])).toLowerCase();return raw.includes("pre delivery")?"preDelivery":"inField"}
+function rawDealerName(ticket,roles){return clean(getField(ticket,["DealerName","Dealer Name","WarrantyHandlingDealerName","Warranty Handling Dealer Name","Warranty Handling Dealer","RepairerBusinessNameID","Repairer Business Name","Repairer"])||findRoleName(roles,"1001")||ticket.DealerID||ticket.WarrantyHandlingDealerID||"Unknown Dealership")}
+function rawAssignToName(ticket,roles){return clean(getField(ticket,["C4CAssignTo","C4C Assign To","AssignTo","Assign To","Employee","EmployeeName","OwnerName"])||findRoleName(roles,"40")||"Queue Warranty")}
+function isExcludedAssignName(name){const s=clean(name).toLowerCase().replace(/\s+/g,' ').trim();if(!s)return false;if(['admin','admin a b.a.','admin a b.a'].includes(s))return true;if(/^admin\b/.test(s))return true;return s.includes('test')||s.includes('demo')||s.includes('dummy')||s.includes('sample')}
+function validAssignName(name){const s=clean(name).toLowerCase().replace(/\s+/g,' ').trim();if(!s)return false;if(['unknown','undefined','null','n/a','na','none','unassigned','not assigned'].includes(s))return false;if(s.includes('unknown'))return false;return !isExcludedAssignName(name)}
+function looseDealerLookupName(v){return clean(v).toLowerCase().replace(/[^a-z0-9]+/g,'')}
+function setDealerKeyLookup(stats){dealerKeyLookup={exact:{},loose:{}};arrayFromMaybe(stats).forEach(x=>{const dealer=clean(x.dealer),key=clean(x.key);if(!dealer||!key)return;[dealer,standardDealerName(dealer)].forEach(name=>{if(!name)return;dealerKeyLookup.exact[name]=key;dealerKeyLookup.loose[looseDealerLookupName(name)]=key;});});}
+function dealerKeyForName(name){const standard=standardDealerName(name);return dealerKeyLookup.exact[name]||dealerKeyLookup.exact[standard]||dealerKeyLookup.loose[looseDealerLookupName(name)]||dealerKeyLookup.loose[looseDealerLookupName(standard)]||""}
+function dealerButtonName(raw,dealerOptions){const mapped=standardDealerName(raw);const loose=s=>clean(s).toLowerCase().replace(/[^a-z0-9]+/g,'');return dealerOptions.find(d=>d===mapped)||dealerOptions.find(d=>loose(d)===loose(mapped))||dealerOptions.find(d=>loose(d)===loose(raw))||""}
+function buildRawCriticalView(rows,dealerOptions,claimKey){const grouped={};let total=0,unmapped=0;rows.forEach(r=>{if(claimKey!=="all"&&r.claimKey!==claimKey)return;total++;const dealer=dealerButtonName(r.dealer,dealerOptions);if(!dealer){unmapped++;return;}grouped[dealer]=(grouped[dealer]||0)+1;});const dealers=Object.entries(grouped).map(([dealer,criticalTickets])=>({dealer,criticalTickets})).sort((a,b)=>b.criticalTickets-a.criticalTickets||a.dealer.localeCompare(b.dealer));return {total,dealers,unmapped}}
+async function loadRawCritical(){
+  const [ticketsNode,mapping,dealerIndex]=await Promise.all([
+    readJson("c4cTickets_test/tickets"),
+    readJson("ticketStatusMapping"),
+    readJson(MONITOR_ROOT+"/analytics/dealer/index").catch(()=>null)
+  ]);
+  const dealerStats=arrayFromMaybe(dealerIndex&&dealerIndex.stats);
+  setDealerKeyLookup(dealerStats);
+  const dealerOptions=dealerStats.map(x=>clean(x.dealer)).filter(Boolean);
+  const rows=[];
+  statusMapping=mapping||{};
+  rawTicketEntries=Object.entries(ticketsNode||{}).map(([key,row])=>normalizeTicketEntry(row,key)).filter(x=>x.id&&x.ticket&&typeof x.ticket==="object");
+  Object.entries(ticketsNode||{}).forEach(([key,row])=>{
+    const {ticket,roles,id}=normalizeTicketEntry(row,key);
+    if(!id||!isMappedCritical(ticket,mapping||{}))return;
+    rows.push({id,dealer:rawDealerName(ticket,roles),claimKey:claimKeyForTicket(ticket),status:mappedStatus(ticket,mapping||{})});
+  });
+  rawCritical={loaded:true,views:{all:buildRawCriticalView(rows,dealerOptions,"all"),inField:buildRawCriticalView(rows,dealerOptions,"inField"),preDelivery:buildRawCriticalView(rows,dealerOptions,"preDelivery")}};
+}
+async function loadEmployeeAnalytics(){
+  const a1=await readJson(MONITOR_ROOT+"/analytics/employee").catch(()=>null);
+  if(a1&&typeof a1==="object")return a1;
+  const a2=await readJson(MONITOR_ROOT+"/employeeAnalytics").catch(()=>null);
+  if(a2&&typeof a2==="object")return a2;
+  const a3=await readJson(MONITOR_ROOT+"/dashboardAnalytics").catch(()=>null);
+  if(a3&&typeof a3==="object"&&a3.employee&&typeof a3.employee==="object")return a3.employee;
+  return null;
+}
+function currentRawCriticalView(){return rawCritical.loaded?(rawCritical.views[activeClaim]||rawCritical.views.all):null}
+function currentTotalCritical(fallback){const v=currentRawCriticalView();return v?Number(v.total||0):fallback}
 function prepareCanvas(c){const rect=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;c.width=Math.max(1,Math.floor(rect.width*dpr));c.height=Math.max(1,Math.floor(rect.height*dpr));const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);return{ctx,w:rect.width,h:rect.height}}
 function niceMax(v){v=Math.max(1,Number(v||0));if(v<=5)return 5;if(v<=25)return Math.ceil(v/5)*5;if(v<=120)return Math.ceil(v/20)*20;if(v<=500)return Math.ceil(v/50)*50;return Math.ceil(v/100)*100}
 function smoothPath(ctx,pts){if(!pts.length)return;ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++){const p0=pts[i-1],p1=pts[i];const mx=(p0.x+p1.x)/2;ctx.quadraticCurveTo(p0.x,p0.y,mx,(p0.y+p1.y)/2);ctx.quadraticCurveTo(p1.x,p1.y,p1.x,p1.y)}}function drawLine(ctx,pts,color,dashed=false,alpha=1){if(!pts.length)return;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=dashed?1.7:2.4;ctx.lineCap="round";ctx.lineJoin="round";if(dashed)ctx.setLineDash([7,6]);smoothPath(ctx,pts);ctx.stroke();ctx.setLineDash([]);pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,dashed?2.6:3.3,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();ctx.lineWidth=dashed?1.7:2.2;ctx.strokeStyle=color;ctx.stroke();});ctx.restore()}
-function renderClaimButtons(){const opts=team.claimOptions||[{key:"all",label:"All Claims"}];$("claimSwitch").innerHTML=opts.map(o=>`<button class="claimBtn ${o.key===activeClaim?'active':''}" data-key="${esc(o.key)}" type="button">${esc(o.label)}</button>`).join("");document.querySelectorAll(".claimBtn").forEach(b=>b.addEventListener("click",()=>{activeClaim=b.dataset.key;renderAll()}));}
+function renderPeriodButtons(){if(!$('periodSwitch'))return;const opts=[{key:"day",label:"Today"},{key:"week",label:"This Week"},{key:"month",label:"MTD"}];$("periodSwitch").innerHTML=opts.map(o=>`<button class="changeBtn ${o.key===activePeriod?'active':''}" data-key="${o.key}" type="button">${o.label}</button>`).join("");document.querySelectorAll(".changeBtn").forEach(b=>{let t=null;b.addEventListener("click",ev=>{if(ev.detail>=2){if(t)clearTimeout(t);activePeriod="all";setFullRange();renderAll();return;}if(t)clearTimeout(t);t=setTimeout(()=>{const key=b.dataset.key;if(activePeriod===key){activePeriod="all";setFullRange();}else{activePeriod=key;const end=latestDateForView();const start=periodStartDate(end);if($("dateFrom"))$("dateFrom").value=start;if($("dateTo"))$("dateTo").value=end;}renderAll();},180);});b.addEventListener("dblclick",ev=>{ev.preventDefault();if(t)clearTimeout(t);activePeriod="all";setFullRange();renderAll();});});}
+function latestDateForView(){const view=currentView();const pts=view.trend||[];return (pts.length?pts[pts.length-1].date:clean(view.generatedAt).slice(0,10)||clean(team.generatedAt).slice(0,10)||new Date().toISOString().slice(0,10));}
+function earliestDateForView(){const view=currentView();const pts=view.trend||[];const first=(pts.length?pts[0].date:(view.minDate||team.minDate||latestDateForView()));return first&&first>DEFAULT_RANGE_START?first:DEFAULT_RANGE_START;}
+function setFullRange(){const view=currentView();const pts=view.trend||[];if(!pts.length)return;if($("dateFrom"))$("dateFrom").value=earliestDateForView();if($("dateTo"))$("dateTo").value=pts[pts.length-1].date;}
+function periodEndDate(){return ($("dateTo")&&$("dateTo").value)||latestDateForView();}
+function periodStartDate(end){if(activePeriod==="all")return ($("dateFrom")&&$("dateFrom").value)||earliestDateForView();if(activePeriod==="day")return end;const d=new Date(end+"T00:00:00Z");d.setUTCDate(d.getUTCDate()-(activePeriod==="month"?29:6));const out=d.toISOString().slice(0,10);return out<earliestDateForView()?earliestDateForView():out;}
+function sumDaily(map,start,end){let total=0;Object.entries(map||{}).forEach(([k,v])=>{if(k>=start&&k<=end)total+=Number(v||0)});return total;}
+function criticalAtDate(view,end){
+  const pts=(view&&view.trend)||[];
+  if(!pts.length) return Number((view&&view.summary&&view.summary.criticalNow)||0);
+  let best=null;
+  pts.forEach(p=>{if(clean(p.date)&&p.date<=end) best=p;});
+  if(!best) best=pts[0];
+  return Number(best.critical||best.criticalNow||0);
+}
+function isFullRangeSelected(){
+  return activePeriod==="all" && periodStartDate(periodEndDate())===earliestDateForView() && periodEndDate()===latestDateForView();
+}
+function hasTicketFilter(){
+  return activeClaim!=="all" || activePeriod!=="all" || !isFullRangeSelected();
+}
+function teamRowsInSelectedRange(){
+  const {start,end}=periodBounds();
+  const view=currentView();
+  const dates=(view.trend||[]).map(p=>p.date).filter(d=>d&&d>=start&&d<=end);
+  const map=new Map();
+  (dates.length?dates:[end]).forEach(d=>{
+    teamRowsAtDate(d).forEach(r=>{
+      if(!isValidDealerForTeamTotal(r.dealer))return;
+      const id=clean(r.id)||(`${d}-${standardDealerName(r.dealer)}-${clean(r.status)}`);
+      if(!map.has(id))map.set(id,r);
+    });
+  });
+  return Array.from(map.values());
+}
+function teamRowsForSelectedPeriod(){
+  return teamRowsInSelectedRange();
+}
+function selectedPeriodCriticalRows(){
+  return teamRowsForSelectedPeriod().filter(x=>isValidDealerForTeamTotal(x.dealer));
+}
+function selectedPeriodCriticalTotal(){
+  return selectedPeriodCriticalRows().length;
+}
+function currentPeriodSummary(){
+  const view=currentView();
+  const end=periodEndDate();
+  const start=periodStartDate(end);
+  const daily=view.daily||{};
+  const pts=(view.trend||[]).filter(p=>(!start||p.date>=start)&&(!end||p.date<=end));
+  const first=pts[0]||null,last=pts[pts.length-1]||null;
+  let entered=sumDaily(daily.entered,start,end), exited=sumDaily(daily.exited,start,end);
+  if(!entered && first && last) entered=Math.max(0,Number(last.entered||0)-Number(first.entered||0));
+  if(!exited && first && last) exited=Math.max(0,Number(last.exited||0)-Number(first.exited||0));
+  const criticalNow=currentTotalCritical(selectedPeriodCriticalTotal());
+  const totalTickets=rawTotalTickets(start,end);
+  const rawExitedValue=rawExitedTicketsTotalValue(start,end);
+  const approvals=rawApprovalSummary(start,end);
+  return {totalTickets:totalTickets==null?entered:totalTickets,criticalNow,enteredCritical:entered,exitedCritical:exited,exitedTicketsTotalValue:rawExitedValue==null?sumDaily(daily.exitedValue,start,end):rawExitedValue,approvedTickets:approvals.approved,unapprovedTickets:approvals.unapproved,approvedAmount:approvals.approvedAmount,unapprovedAmount:approvals.unapprovedAmount};
+}
+function numFixed(v,d=1){return Number(v||0).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d})}
+function pctValue(part,total){return Number(total||0)?Number(part||0)/Number(total||0)*100:0}
+function pctText(v,d=2){return numFixed(v,d)+"%"}
+function addDaysISO(iso,days){const d=new Date(iso+"T00:00:00Z");if(isNaN(d))return iso;d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10)}
+function daysInBounds(start,end){const a=new Date(start+"T00:00:00Z"),b=new Date(end+"T00:00:00Z");if(isNaN(a)||isNaN(b))return 1;return Math.max(1,Math.round((b-a)/86400000)+1)}
+function previousPeriodBounds(start,end){const days=daysInBounds(start,end);const prevEnd=addDaysISO(start,-1);return {start:addDaysISO(prevEnd,-days+1),end:prevEnd}}
+function summaryForBounds(start,end){
+  const view=currentView(),daily=view.daily||{};
+  if(!start||!end||end<earliestDateForView())return {totalTickets:0,criticalNow:0,enteredCritical:0,exitedCritical:0,exitedTicketsTotalValue:0,approvedTickets:0,unapprovedTickets:0,approvedAmount:0,unapprovedAmount:0};
+  const entered=sumDaily(daily.entered,start,end),exited=sumDaily(daily.exited,start,end);
+  const totalTickets=rawTotalTickets(start,end);
+  const rawExitedValue=rawExitedTicketsTotalValue(start,end);
+  const approvals=rawApprovalSummary(start,end);
+  return {totalTickets:totalTickets==null?entered:totalTickets,criticalNow:Number(criticalAtDate(view,end)||0),enteredCritical:entered,exitedCritical:exited,exitedTicketsTotalValue:rawExitedValue==null?sumDaily(daily.exitedValue,start,end):rawExitedValue,approvedTickets:approvals.approved,unapprovedTickets:approvals.unapproved,approvedAmount:approvals.approvedAmount,unapprovedAmount:approvals.unapprovedAmount};
+}
+function compareLabel(){if(activePeriod==="day")return "vs yesterday";if(activePeriod==="week")return "vs last week";if(activePeriod==="month")return "vs previous 30d";return "vs previous period"}
+function sparkSvg(dir){
+  if(dir==="down")return `<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 5.5L8 10.5L11 8L17 14.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 14.5H17V10" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  if(dir==="flat")return `<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 10H17" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/><path d="M13 6L17 10L13 14" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  return `<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 14.5L8 9.5L11 12L17 5.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 5.5H17V10" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+function trendMarkup(key,current,previous,fmt="number"){
+  const diff=Number(current||0)-Number(previous||0);
+  const dir=diff>0?"up":diff<0?"down":"flat";
+  const higherGood={totalTickets:true,criticalNow:false,enteredCritical:false,exitedCritical:true,exitedTicketsTotalValue:true,estimatedClearDays:false,benchmarkRate:true,approvedTickets:true,approvedAmount:true,unapprovedTickets:true,unapprovedRatio:true};
+  const cls=diff===0?"flat":((diff>0)===higherGood[key]?"good":"bad");
+  const value=fmt==="percentPoint"?`${diff>0?"+":""}${numFixed(diff,1)}pt`:previous?`${diff>0?"+":""}${numFixed(diff/Math.abs(previous)*100,1)}%`:(diff===0?"0":(fmt==="money"?money(diff):fmt==="days"?`${diff>0?"+":""}${num(diff)}d`:fmt==="percent"?`${diff>0?"+":""}${numFixed(diff,1)}pt`:`${diff>0?"+":""}${num(diff)}`));
+  return `${sparkSvg(dir)}<span>${value} ${compareLabel()}</span>`;
+}
+function claimFilterIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>`}
+function refreshIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>`}
+function clearDashboardFilters(){activeClaim="all";activePeriod="all";setFullRange();renderAll();}
+function renderClaimButtons(){const opts=team.claimOptions||[{key:"all",label:"All Claims"},{key:"inField",label:"In Field Warranty Claims"},{key:"preDelivery",label:"Pre Delivery Warranty Claims"}];const box=$("claimSwitch");if(!box)return;box.className="claimSwitch filterTools";box.innerHTML=`<button class="filterIconBtn" id="clearClaimFilters" title="Clear filters" type="button">${refreshIcon()}</button><div class="filterDropdown"><button class="filterButton" type="button">${claimFilterIcon()}<span>Filters</span></button><div class="filterMenu">${opts.map(o=>`<button class="filterOption ${o.key===activeClaim?'active':''}" data-key="${esc(o.key)}" type="button">${esc(o.label)}</button>`).join("")}</div></div>`;box.querySelector("#clearClaimFilters").onclick=clearDashboardFilters;const dd=box.querySelector(".filterDropdown");box.querySelector(".filterButton").onclick=e=>{e.stopPropagation();dd.classList.toggle("open")};box.querySelectorAll(".filterOption").forEach(b=>b.onclick=()=>{activeClaim=b.dataset.key||"all";dd.classList.remove("open");renderAll()});}
 function currentView(){return (team.views&&team.views[activeClaim]) || team.views?.all || team;}
-function selectedTrend(){const view=currentView();const all=view.trend||[];const from=$("dateFrom").value,to=$("dateTo").value;return all.filter(p=>(!from||p.date>=from)&&(!to||p.date<=to));}
-function drawTrend(){const c=$("trendChart");if(!c)return;const {ctx,w,h}=prepareCanvas(c);ctx.clearRect(0,0,w,h);const pts=trendPoints;const left=58,right=62,top=24,bottom=56,plotW=w-left-right,plotH=h-top-bottom;const flowMax=niceMax(Math.max(1,...pts.flatMap(p=>[p.entered,p.exited])));const criticalMax=niceMax(Math.max(1,...pts.map(p=>p.critical)));ctx.save();ctx.font="12px Inter, Segoe UI, Arial";ctx.strokeStyle="#d8e2ee";ctx.setLineDash([2,4]);for(let i=0;i<=5;i++){const val=Math.round(flowMax*i/5),y=top+plotH-(plotH*i/5);ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillStyle="#64748b";ctx.textAlign="right";ctx.fillText(String(val),left-10,y+4);const rv=Math.round(criticalMax*i/5);ctx.fillStyle="#fb6b1d";ctx.textAlign="left";ctx.fillText(String(rv),w-right+10,y+4)}ctx.setLineDash([]);ctx.fillStyle="#64748b";ctx.textAlign="left";pts.forEach((p,i)=>{const x=left+(pts.length<=1?0:plotW*i/(pts.length-1));if(i===0||i===pts.length-1||pts.length<=7)ctx.fillText(p.date.slice(5),x-14,h-22)});ctx.restore();const xFor=i=>left+(pts.length<=1?0:plotW*i/(pts.length-1));const yFlow=v=>top+plotH-(plotH*(v/flowMax));const yCritical=v=>top+plotH-(plotH*(v/criticalMax));drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.entered)})),"#3b82f6");drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yCritical(p.critical)})),"#fb6b1d",true,.55);drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.exited)})),"#16a34a");c._points=pts.map((p,i)=>({x:xFor(i),p,idx:i}))}
-function renderKpis(){const s=currentView().summary||{};$("kpiCritical").textContent=num(s.criticalNow);$("kpiEntered").textContent=num(s.enteredCritical ?? s.enteredCriticalStored);$("kpiExited").textContent=num(s.exitedCritical ?? s.exitedCriticalStored);$("kpiRate").textContent=num(s.exitToEntryRate)+"%";}
+function dailyCriticalTotalForTrend(p){const view=currentView();const rows=teamRowsAtDate(p.date).filter(r=>isValidDealerForTeamTotal(r.dealer));const canRebuild=Array.isArray(view.currentCriticalRows)||Array.isArray(view.logs);return canRebuild?rows.length:Number(p.critical||p.criticalNow||0)}
+function selectedTrend(){const view=currentView();const all=view.trend||[];const from=$("dateFrom").value,to=$("dateTo").value;return all.filter(p=>(!from||p.date>=from)&&(!to||p.date<=to)).map(p=>({...p,critical:dailyCriticalTotalForTrend(p)}));}
+function drawTodayBarsTeam(ctx,w,h){
+  const s=currentPeriodSummary();
+  const data=[['Entered',s.enteredCritical,'#3b82f6'],['Exited',s.exitedCritical,'#16a34a'],['Total Critical',s.criticalNow,'#fb6b1d']];
+  const left=70,right=30,top=36,bottom=48,plotW=w-left-right,plotH=h-top-bottom,max=Math.max(1,...data.map(x=>x[1]));
+  ctx.font='500 13px Inter, Segoe UI, Arial';ctx.textAlign='center';ctx.textBaseline='middle';
+  data.forEach((d,i)=>{const bw=Math.min(100,plotW/(data.length*2));const gap=plotW/data.length;const x=left+gap*i+gap/2-bw/2;const bh=plotH*(d[1]/max);const y=top+plotH-bh;const g=ctx.createLinearGradient(0,y,0,y+bh);g.addColorStop(0,d[2]);g.addColorStop(1,'#7dd3fc');ctx.fillStyle=g;ctx.beginPath();ctx.roundRect?ctx.roundRect(x,y,bw,bh,8):(ctx.rect(x,y,bw,bh));ctx.fill();ctx.fillStyle='#0f172a';ctx.font='600 16px Inter, Segoe UI, Arial';ctx.fillText(num(d[1]),x+bw/2,y-12);ctx.fillStyle='#52627a';ctx.font='500 12px Inter, Segoe UI, Arial';ctx.fillText(d[0],x+bw/2,h-22);});
+}
+function drawTrend(){const c=$("trendChart");if(!c)return;const {ctx,w,h}=prepareCanvas(c);ctx.clearRect(0,0,w,h);if(activePeriod==="day"){drawTodayBarsTeam(ctx,w,h);return;}const pts=trendPoints;const left=58,right=62,top=24,bottom=56,plotW=w-left-right,plotH=h-top-bottom;const flowMax=niceMax(Math.max(1,...pts.flatMap(p=>[p.entered,p.exited])));const criticalMax=niceMax(Math.max(1,...pts.map(p=>p.critical)));ctx.save();ctx.font="12px Inter, Segoe UI, Arial";ctx.strokeStyle="#d8e2ee";ctx.setLineDash([2,4]);for(let i=0;i<=5;i++){const val=Math.round(flowMax*i/5),y=top+plotH-(plotH*i/5);ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillStyle="#64748b";ctx.textAlign="right";ctx.fillText(String(val),left-10,y+4);const rv=Math.round(criticalMax*i/5);ctx.fillStyle="#fb6b1d";ctx.textAlign="left";ctx.fillText(String(rv),w-right+10,y+4)}ctx.setLineDash([]);ctx.fillStyle="#64748b";ctx.textAlign="left";pts.forEach((p,i)=>{const x=left+(pts.length<=1?0:plotW*i/(pts.length-1));if(i===0||i===pts.length-1||pts.length<=7)ctx.fillText(p.date.slice(5),x-14,h-22)});ctx.restore();const xFor=i=>left+(pts.length<=1?0:plotW*i/(pts.length-1));const yFlow=v=>top+plotH-(plotH*(v/flowMax));const yCritical=v=>top+plotH-(plotH*(v/criticalMax));drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.entered)})),"#3b82f6");drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yCritical(p.critical)})),"#fb6b1d",true,.55);drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.exited)})),"#16a34a");c._points=pts.map((p,i)=>({x:xFor(i),p,idx:i}))}
+function renderKpis(){const s=currentPeriodSummary();const b=periodBounds(),pb=previousPeriodBounds(b.start,b.end),prev=summaryForBounds(pb.start,pb.end);const ratio=pctValue(s.unapprovedTickets,s.approvedTickets),prevRatio=pctValue(prev.unapprovedTickets,prev.approvedTickets);const h=periodHandlingSummary();const prevH=periodHandlingSummaryForBounds(pb.start,pb.end,prev.criticalNow);const ticketFiltered=hasTicketFilter();const totalTicketValue=ticketFiltered?s.totalTickets:s.criticalNow;const totalTicketLabel=document.querySelector(".totalCriticalCard .kpiLabel");if(totalTicketLabel)totalTicketLabel.textContent=ticketFiltered?"Total Tickets Change":"Total Tickets";$("kpiCritical").textContent=num(totalTicketValue);if($("kpiApprovedTickets"))$("kpiApprovedTickets").textContent=num(s.approvedTickets);if($("kpiBenchmark"))$("kpiBenchmark").textContent=`${numFixed(h.rate||0,1)}%`;$("kpiRate").textContent=h.current<=0?"Clean":(h.clearDays==null?"-":formatClearTime(h.clearDays));if($("kpiApproved"))$("kpiApproved").textContent=money(s.approvedAmount);if($("kpiUnapproved"))$("kpiUnapproved").textContent=num(s.unapprovedTickets);if($("kpiUnapprovedAmount"))$("kpiUnapprovedAmount").textContent=money(s.unapprovedAmount);if($("kpiUnapprovedRatio"))$("kpiUnapprovedRatio").textContent=pctText(ratio,2);if($("kpiRatioBase"))$("kpiRatioBase").textContent=`${num(s.unapprovedTickets)} / ${num(s.approvedTickets)}`;const trends=[["kpiCriticalTrend","totalTickets",s.totalTickets,prev.totalTickets],["kpiApprovedTicketsTrend","approvedTickets",s.approvedTickets,prev.approvedTickets],["kpiUnapprovedTrend","unapprovedTickets",s.unapprovedTickets,prev.unapprovedTickets],["kpiBenchmarkTrend","benchmarkRate",h.rate||0,prevH.rate||0,"percentPoint"],["kpiApprovedTrend","approvedAmount",s.approvedAmount,prev.approvedAmount,"money"],["kpiRateTrend","estimatedClearDays",h.clearDays||0,prevH.clearDays||0,"days"],["kpiRatioTrend","unapprovedRatio",ratio,prevRatio,"percent"]];trends.forEach(([id,key,c,p,fmt])=>{const el=$(id);if(!el)return;if(id==="kpiCriticalTrend"&&!ticketFiltered){el.innerHTML="";el.className="kpiTrend flat";return;}const html=trendMarkup(key,c,p,fmt);el.innerHTML=html;el.className=`kpiTrend ${html.includes('vs')?'' : ''}`;const diff=Number(c||0)-Number(p||0);const higherGood={totalTickets:true,criticalNow:false,enteredCritical:false,exitedCritical:true,exitedTicketsTotalValue:true,estimatedClearDays:false,benchmarkRate:true,approvedTickets:true,approvedAmount:true,unapprovedTickets:true,unapprovedRatio:true};el.classList.add(diff===0?"flat":((diff>0)===higherGood[key]?"good":"bad"));});}
 function formatClearTime(days){days=Number(days||0);if(!days)return "0d";return Math.ceil(days)+"d"}
-function renderHandlingSpeed(){const h=currentView().handlingSpeed||{};const rows=(h.buckets||[]).filter(x=>x.key!=="stillCritical");const max=Math.max(1,...rows.map(x=>Number(x.count||0)));const current=Number(h.currentCritical ?? currentView()?.summary?.criticalNow ?? 0);const forecastBacklog=Number(h.forecastBacklog ?? current);const nearlyClean=(current>0&&current<=5)||(forecastBacklog>0&&forecastBacklog<=5);if($("speedRate"))$("speedRate").textContent=((h.twoWeekBenchmarkRate??h.resolvedWithinTwoWeeksRate??h.resolvedWithinThreeDaysRate)??0)+"%";if($("speedAvg"))$("speedAvg").textContent=current<=0||forecastBacklog<=0?"Clean":(nearlyClean?"Nearly clean":(h.estimatedClearDays==null?"—":formatClearTime(h.estimatedClearDays)));if($("speedRows"))$("speedRows").innerHTML=rows.length?rows.map(x=>`<div class="speedRow"><div class="speedLabel">${esc(x.label)}</div><div class="speedTrack"><div class="speedFill" style="width:${Math.max(3,Number(x.count||0)/max*100)}%"></div></div><div class="speedValue">${num(x.count)}</div></div>`).join(""):`<div class="panelDesc">No handling-speed analytics found.</div>`;}
-function renderLists(){const view=currentView();const dealers=(view.topDealers||[]).slice(0,12);const max=Math.max(1,...dealers.map(x=>Number(x.criticalTickets||0)));$("dealerBars").innerHTML=dealers.length?dealers.map(x=>`<div class="barRow"><div class="barLabel" title="${esc(x.dealer)}">${esc(x.dealer)}</div><div class="barTrack"><div class="barFill" style="width:${Math.max(2,Number(x.criticalTickets||0)/max*100)}%"></div></div><div class="barValue">${num(x.criticalTickets)}</div></div>`).join(""):`<div class="panelDesc">No dealer analytics found for this claim type.</div>`;$("statusMix").innerHTML=(view.statusMix||[]).slice(0,10).map(x=>`<div class="mixRow"><span>${esc(x.status)}</span><b>${num(x.count)}</b></div>`).join("")||`<div class="panelDesc">No status mix found for this claim type.</div>`;}
-function setDateDefaults(){const view=currentView();const pts=view.trend||[];if(!pts.length)return;$("dateFrom").min=pts[0].date;$("dateTo").min=pts[0].date;if(!$("dateFrom").value||$("dateFrom").value<pts[0].date)$("dateFrom").value=pts[0].date;if(!$("dateTo").value||$("dateTo").value>pts[pts.length-1].date)$("dateTo").value=pts[pts.length-1].date;}
-function renderAll(){renderClaimButtons();setDateDefaults();trendPoints=selectedTrend();renderKpis();renderHandlingSpeed();renderLists();drawTrend();}
-function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(prev||0);if(delta===0)return{cls:"flat",arrow:"•",text:"0"};const isGood=(metric==="exited")?delta>0:delta<0;return{cls:isGood?"up":"down",arrow:delta>0?"▲":"▼",text:num(Math.abs(delta))};}
+function speedDonutMarkup(rows,rate){
+  const colors=["#2f6df6","#22c55e","#f59e0b","#fb7185","#94a3b8"];
+  const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
+  if(!total)return `<div class="speedEmpty">No handling-speed analytics found for this period.</div>`;
+  let cursor=0;
+  const stops=rows.map((row,i)=>{
+    const next=cursor+(Number(row.count||0)/total*100);
+    const stop=`${colors[i%colors.length]} ${cursor}% ${next}%`;
+    cursor=next;
+    return stop;
+  }).join(",");
+  const legend=rows.map((row,i)=>{
+    const count=Number(row.count||0);
+    const pct=total?Math.round(count/total*100):0;
+    return `<div class="speedLegendRow"><span class="speedSwatch" style="background:${colors[i%colors.length]}"></span><span class="speedLegendLabel">${esc(row.label)}</span><b>${num(count)}<small>${pct}%</small></b></div>`;
+  }).join("");
+  return `<div class="speedDonut" style="background:conic-gradient(${stops})"><div class="speedDonutCenter"><div><b>${esc(String(rate||0))}%</b><span>within 14d</span></div></div></div><div class="speedLegendRows">${legend}</div>`;
+}
+function statusPiePath(cx,cy,r,startAngle,endAngle){
+  const rad=a=>(a-90)*Math.PI/180;
+  const x1=cx+r*Math.cos(rad(startAngle)), y1=cy+r*Math.sin(rad(startAngle));
+  const x2=cx+r*Math.cos(rad(endAngle)), y2=cy+r*Math.sin(rad(endAngle));
+  const large=endAngle-startAngle>180?1:0;
+  return `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`;
+}
+function statusPiePoint(cx,cy,r,angle){
+  const rad=(angle-90)*Math.PI/180;
+  return {x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};
+}
+function distributionDonutMarkup(rows,centerLabel){
+  const colors=["#5b5cf6","#22c55e","#f59e0b","#fb7185","#8b5cf6","#94a3b8"];
+  const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
+  if(!total)return `<div class="speedEmpty">No status mix found for this claim type and selected period.</div>`;
+  let cursor=0;
+  const slices=rows.map((row,i)=>{
+    const count=Number(row.count||0);
+    const pct=total?count/total*100:0;
+    const start=cursor;
+    const end=cursor+pct*3.6;
+    cursor=end;
+    const mid=(start+end)/2;
+    const p=statusPiePoint(85,85,48,mid);
+    const tip=(row.details&&row.details.length)
+      ? `<b>${esc(row.label)}: ${num(count)} (${Math.round(pct)}%)</b>${row.details.map(x=>`${esc(x.label)}: ${num(x.count)}`).join('<br>')}`
+      : `<b>${esc(row.label)}</b>${num(count)} tickets - ${Math.round(pct)}%`;
+    return `<path class="statusPieSlice" d="${statusPiePath(85,85,72,start,end)}" fill="${colors[i%colors.length]}" data-status-tip="${esc(tip)}"></path>${pct>=7?`<text class="statusPiePct" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${Math.round(pct)}%</text>`:''}`;
+  }).join("");
+  const legend=rows.map((row,i)=>{
+    const count=Number(row.count||0);
+    const pct=total?Math.round(count/total*100):0;
+    const tip=(row.details&&row.details.length)
+      ? `<b>${esc(row.label)}: ${num(count)} (${pct}%)</b>${row.details.map(x=>`${esc(x.label)}: ${num(x.count)}`).join('<br>')}`
+      : `<b>${esc(row.label)}</b>${num(count)} tickets - ${pct}%`;
+    return `<div class="statusPieLegendRow" data-status-tip="${esc(tip)}"><span class="statusPieLegendDot" style="background:${colors[i%colors.length]}"></span><span class="statusPieLegendLabel">${esc(row.label)} (${num(count)})</span></div>`;
+  }).join("");
+  return `<div class="statusPieWrap"><svg class="statusPieSvg" viewBox="0 0 170 170" aria-label="${esc(centerLabel)} status distribution">${slices}</svg></div><div class="statusPieLegend">${legend}</div><div id="statusMixHoverTip" class="statusMixHoverTip"></div>`;
+}
+function bindStatusMixTips(){
+  const tip=$("statusMixHoverTip");
+  const box=$("statusMix");
+  if(!tip||!box)return;
+  box.querySelectorAll("[data-status-tip]").forEach(el=>{
+    el.onmousemove=e=>{
+      tip.innerHTML=el.getAttribute("data-status-tip")||"";
+      tip.style.display="block";
+      tip.style.left=(e.clientX+14)+"px";
+      tip.style.top=(e.clientY+14)+"px";
+    };
+    el.onmouseleave=()=>{tip.style.display="none";};
+  });
+}
+function renderHandlingSpeed(){
+  const rowsEl=$('speedRows');
+  const h=periodHandlingSummary();
+  const rows=h.buckets||[];
+  if($("speedRate"))$("speedRate").textContent=(h.rate||0)+"%";
+  if($("speedAvg"))$("speedAvg").textContent=h.current<=0?"Clean":(h.clearDays==null?"-":formatClearTime(h.clearDays));
+  if(rowsEl){
+    const colors=["#6366f1","#3b82f6","#8b5cf6","#22c55e","#f59e0b","#fb7185"];
+    const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
+    const max=Math.max(1,...rows.map(row=>Number(row.count||0)));
+    rowsEl.className="speedRows agingRows";
+    rowsEl.innerHTML=total?rows.map((row,i)=>{
+      const count=Number(row.count||0);
+      const pct=total?Math.round(count/total*100):0;
+      const width=Math.max(4,Math.round(count/max*100));
+      const color=colors[i%colors.length];
+      return `<div class="agingRow"><div class="agingLabel">${esc(row.label)}</div><div class="agingTrack"><div class="agingFill" style="width:${width}%;background:linear-gradient(90deg,${color},${color}cc)"></div></div><div class="agingValue">${num(count)}<small>${pct}%</small></div></div>`;
+    }).join(""):`<div class="speedEmpty">No ticket-aging analytics found for this period.</div>`;
+  }
+}
+
+
+function standardDealerName(raw){
+  const s=clean(raw); if(!s)return 'Unknown';
+  const n=s.toLowerCase().replace(/\s+/g,' ').trim();
+  const loose=n.replace(/[^a-z0-9]+/g,'');
+  const exact={
+    'abco caravans - boambee valley':'ABCO','auswide caravans - south nowra':'Auswide','bendigo caravan group - bendigo':'Bendigo','leisure lion - bundaberg':'Bundaberg','cmg campers - christchurch':'CMG Campers','caravans wa':'Caravans WA','vanari caravans - christchurch':'Christchurch','destiny rv - south australia':'Destiny RV','green rv - forest glen':'Forest Glen','regent rv - frankston':'Frankston','snowy river geelong':'Geelong','qccc - gympie':'Gympie','the caravan hub - townsville':'Heatherbrae','newcastle rv super centre - beresfield':'Heatherbrae','leisure lion-new castle':'Heatherbrae','leisure lion - new castle':'Heatherbrae','leisure lion - newcastle':'Heatherbrae','launceston':'Launceston','vanari caravans - marden point':'Marsden Point','vanari caravans - marsden point':'Marsden Point','motorhub ltd':'MotorHub','newcastle caravans & rv':'Newcastle Caravans & RV','regent rv - perth':'ST James','green rv - slacks creek':'Slacks Creek','regent rv - toowoomba':'Toowoomba','regent rv - townsville':'Townsville','regent rv - traralgon':'Traralgon','snowy river wangaratta':'Wangaratta','great ocean road rv & caravans - warrnambool':'Warrnambool'
+  };
+  if(exact[n])return exact[n];
+  if(loose.includes('forestglen'))return 'Forest Glen';
+  if(loose.includes('perth')||loose==='stjames')return 'ST James';
+  if(loose.includes('caravanhub')||loose.includes('newcastlervsuper')||loose.includes('morisset')||loose.includes('newcastle'))return 'Heatherbrae';
+  if(loose.includes('mardenpoint')||loose.includes('marsdenpoint'))return 'Marsden Point';
+  if(loose.includes('bundaberg'))return 'Bundaberg';
+  if(loose.includes('southnowra')||loose.includes('auswide'))return 'Auswide';
+  if(loose.includes('boambee')||loose.includes('abco'))return 'ABCO';
+  if(loose.includes('destiny'))return 'Destiny RV';
+  if(loose.includes('slackscreek'))return 'Slacks Creek';
+  if(loose.includes('frankston'))return 'Frankston';
+  if(loose.includes('geelong'))return 'Geelong';
+  if(loose.includes('gympie'))return 'Gympie';
+  if(loose.includes('townsville'))return 'Townsville';
+  if(loose.includes('toowoomba'))return 'Toowoomba';
+  if(loose.includes('traralgon'))return 'Traralgon';
+  if(loose.includes('warrnambool'))return 'Warrnambool';
+  if(loose.includes('bendigo'))return 'Bendigo';
+  if(loose.includes('christchurch'))return 'Christchurch';
+  if(loose.includes('cmg'))return 'CMG Campers';
+  if(loose.includes('motorhub'))return 'MotorHub';
+  if(loose.includes('launceston'))return 'Launceston';
+  if(loose.includes('wangaratta'))return 'Wangaratta';
+  if(loose.includes('caravanswa'))return 'Caravans WA';
+  return s;
+}
+function isValidDealerForTeamTotal(name){
+  const s=clean(name).toLowerCase().replace(/\s+/g,' ').trim();
+  if(!s) return false;
+  if(['unknown','not assigned','unassigned','n/a','na','none','null','undefined'].includes(s)) return false;
+  if(s.includes('unknown') || s.includes('not assigned')) return false;
+  return true;
+}
+function durationDaysForTeamLog(e){
+  const direct=Number(e.durationDays ?? e.duration ?? e.daysToExit ?? e.ageDays);
+  if(Number.isFinite(direct)&&direct>=0)return direct;
+  const end=new Date(e.detectedAt||e.dataSyncAt||e.date||'');
+  let start=new Date(e.enteredAt||e.enteredCriticalAt||e.firstEnteredAt||e.created||e.CreatedOn||e.createdOn||e.createdAt||e.ticketCreatedOn||e.TicketCreatedOn||'');
+  if(isNaN(start)) start=end;
+  if(isNaN(end)||isNaN(start)) return 999;
+  return Math.max(0,(end-start)/86400000);
+}
+function periodHandlingSummaryForBounds(start,end,currentOverride){
+  const view=currentView();
+  const hs=view.handlingSpeed||{};
+  const resolvedRows=Array.isArray(hs.resolvedRows)?hs.resolvedRows:[];
+  const periodResolved=resolvedRows.filter(r=>{const d=clean(r.exitDate)||eventDateKey(r.exitAt);return d&&d>=start&&d<=end;});
+  const logs=(view.logs||[]).filter(e=>{const d=eventDateKey(e.detectedAt||e.date);return d&&d>=start&&d<=end;});
+  const sourceExits=periodResolved.length?periodResolved:logs.filter(e=>clean(e.cls)==='exit');
+  const buckets=[
+    {key:'leOneDay',label:'<= 1 day',count:0},
+    {key:'oneToThreeDays',label:'1-3 days',count:0},
+    {key:'threeToSevenDays',label:'3-7 days',count:0},
+    {key:'eightToFourteenDays',label:'8-14 days',count:0},
+    {key:'overFourteenDays',label:'> 14 days',count:0},
+  ];
+  sourceExits.forEach(e=>{
+    const key=clean(e.bucket);
+    if(key){const b=buckets.find(x=>x.key===key); if(b){b.count++; return;}}
+    const d=Number.isFinite(Number(e.durationDays))?Number(e.durationDays):durationDaysForTeamLog(e);
+    if(d<=1)buckets[0].count++; else if(d<=3)buckets[1].count++; else if(d<=7)buckets[2].count++; else if(d<=14)buckets[3].count++; else buckets[4].count++;
+  });
+  const resolved=sourceExits.length;
+  const within=buckets.slice(0,4).reduce((a,b)=>a+b.count,0);
+  const rate=resolved?Math.round((within/resolved)*1000)/10:0;
+  const days=Math.max(1,Math.round((new Date(end+'T00:00:00Z')-new Date(start+'T00:00:00Z'))/86400000)+1);
+  const current=currentOverride==null?currentTotalCritical(selectedPeriodCriticalTotal()):Number(currentOverride||0);
+  const grossExitPerDay=resolved/days;
+  const clearDays=current>0&&grossExitPerDay>0?Math.ceil(current/grossExitPerDay*1.4):null;
+  return {buckets,rate,current,clearDays};
+}
+function periodHandlingSummary(){
+  const {start,end}=periodBounds();
+  return periodHandlingSummaryForBounds(start,end,currentTotalCritical(selectedPeriodCriticalTotal()));
+}
+
+function eventDateKey(v){const d=new Date(v||'');return isNaN(d)?clean(v).slice(0,10):d.toISOString().slice(0,10)}
+function teamRowsAtDate(date){
+  const view=currentView();
+  const pts=view.trend||[];
+  const end=date||(($('dateTo')&&$('dateTo').value)||(pts.length?pts[pts.length-1].date:new Date().toISOString().slice(0,10)));
+  const map=new Map();
+  (view.currentCriticalRows||[]).forEach(r=>{const id=clean(r.id)||('current-'+map.size);map.set(id,{id, dealer:standardDealerName(r.dealer||'Unknown'), status:clean(r.status||r.statusText||'Unknown')||'Unknown'});});
+  // Work backwards from the latest snapshot to the selected To date.
+  (view.logs||[]).slice().sort((a,b)=>clean(b.detectedAt||b.date).localeCompare(clean(a.detectedAt||a.date))).forEach(e=>{
+    const d=eventDateKey(e.detectedAt||e.date);
+    if(!d||d<=end)return;
+    const id=clean(e.id)||('log-'+d+'-'+map.size);
+    const cls=clean(e.cls);
+    if(cls==='enter'){
+      // It entered critical after the selected To date, so it was not critical yet.
+      map.delete(id);
+    }else if(cls==='exit'){
+      // It exited after the selected To date, so it was still critical then.
+      if(!map.has(id)) map.set(id,{id, dealer:standardDealerName(e.dealer||'Unknown'), status:clean(e.fromStatus||e.status||'Unknown')||'Unknown'});
+    }else{
+      // Critical-to-critical move after selected date: use the previous status at selected date.
+      if(map.has(id) && clean(e.fromStatus)) map.get(id).status=clean(e.fromStatus);
+    }
+  });
+  return Array.from(map.values());
+}
+function periodBounds(){const end=periodEndDate();const start=periodStartDate(end);return {start,end};}
+function periodTeamLogs(){const view=currentView();const {start,end}=periodBounds();return (view.logs||[]).filter(e=>{const d=eventDateKey(e.detectedAt||e.date);return d&&d>=start&&d<=end;});}
+function shortDateTime(v){const d=new Date(v||"");return isNaN(d)?clean(v).slice(5,16):d.toLocaleString("en-AU",{day:"2-digit",month:"short",hour:"numeric",minute:"2-digit"});}
+function logStatusLabel(e){const to=[e.toCode,e.toStatus].map(clean).filter(Boolean).join(" ");const from=[e.fromCode,e.fromStatus].map(clean).filter(Boolean).join(" ");return to||from||clean(e.status)||clean(e.type)||"Status changed";}
+function logColor(e){const cls=clean(e.cls).toLowerCase();if(cls==="exit")return "#16a34a";if(cls==="enter")return "#2f6df6";return "#fb6b1d";}
+function renderCriticalLog(){
+  const box=$("criticalLogRows");
+  if(!box)return;
+  const logs=periodTeamLogs().slice().sort((a,b)=>clean(b.detectedAt||b.date).localeCompare(clean(a.detectedAt||a.date))).slice(0,8);
+  box.innerHTML=logs.length?logs.map(e=>`<div class="criticalLogRow"><span class="criticalLogTime">${esc(shortDateTime(e.detectedAt||e.date))}</span><span class="criticalLogStatus"><i class="criticalLogDot" style="background:${logColor(e)}"></i>${esc(logStatusLabel(e))}</span><span class="criticalLogTicket">#${esc(e.id||e.ticketId||"-")}</span><span class="criticalLogAmount">${money(e.amount||e.value||0)}</span></div>`).join(""):`<div class="panelDesc" style="padding:12px 0">No critical status changes in this period.</div>`;
+}
+function currentEmployeeAnalyticsView(){return (employeeAnalytics&&employeeAnalytics.views&&employeeAnalytics.views[activeClaim])?employeeAnalytics.views[activeClaim]:employeeAnalytics}
+function teamAssignRowsFromAnalytics(){
+  const view=currentEmployeeAnalyticsView();
+  if(!view||typeof view!=="object")return [];
+  const {start,end}=periodBounds();
+  const days=daysInBounds(start,end);
+  return arrayFromMaybe(view.stats).filter(s=>validAssignName(s.name)).map(s=>{
+    const removed=sumDaily(s.removedDaily,start,end);
+    const total=Number(s.criticalTickets??s.totalTickets??s.total??0);
+    return {name:clean(s.name),total,removed,avgDaily:removed/days,avgWeekly:removed/days*7};
+  }).filter(r=>r.total>0||r.removed>0);
+}
+function teamAssignRowsFromRaw(){
+  if(!rawTicketEntries.length)return [];
+  const grouped=new Map();
+  rawTicketEntries.forEach(({ticket,roles})=>{
+    if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
+    if(!isMappedCritical(ticket,statusMapping))return;
+    const name=rawAssignToName(ticket,roles);
+    if(!validAssignName(name))return;
+    const row=grouped.get(name)||{name,total:0,removed:0,avgDaily:0,avgWeekly:0};
+    row.total++;
+    grouped.set(name,row);
+  });
+  return Array.from(grouped.values());
+}
+function teamAssignMetricValue(row){if(teamAssignMetric==="avgDaily")return row.avgDaily;if(teamAssignMetric==="avgWeekly")return row.avgWeekly;if(teamAssignMetric==="compare")return row.removed;return row.removed}
+function teamAssignMetricLabel(v){return teamAssignMetric==="totalRemoved"||teamAssignMetric==="compare"?num(v):numFixed(v,1)}
+function renderTeamAssignActions(){
+  const box=$("teamAssignActions");
+  if(!box)return;
+  const opts=[["totalRemoved","Total removed"],["avgDaily","Avg daily"],["avgWeekly","Avg weekly"],["compare","Compare all"]];
+  box.innerHTML=opts.map(([key,label])=>`<button class="teamAssignBtn ${teamAssignMetric===key?'active':''}" data-assign-metric="${key}" type="button">${label}</button>`).join("");
+  box.querySelectorAll("[data-assign-metric]").forEach(btn=>btn.onclick=()=>{teamAssignMetric=btn.dataset.assignMetric||"totalRemoved";renderTeamAssignChart();});
+}
+function renderTeamAssignChart(){
+  renderTeamAssignActions();
+  const box=$("teamAssignGrid");
+  if(!box)return;
+  const rows=(teamAssignRowsFromAnalytics().length?teamAssignRowsFromAnalytics():teamAssignRowsFromRaw())
+    .sort((a,b)=>Math.max(b.total,teamAssignMetricValue(b))-Math.max(a.total,teamAssignMetricValue(a))||a.name.localeCompare(b.name))
+    .slice(0,12);
+  if(!rows.length){box.innerHTML=`<div class="teamAssignEmpty">No C4C Assign To workload found for this period.</div>`;return;}
+  box.style.gridTemplateRows=`repeat(${Math.ceil(rows.length/2)}, minmax(28px, auto))`;
+  const max=Math.max(1,...rows.map(r=>Math.max(Number(r.total||0),Number(teamAssignMetricValue(r)||0))));
+  box.innerHTML=rows.map(row=>{
+    const redValue=teamAssignMetricValue(row);
+    const blueValue=Number(row.total||0);
+    const redPct=Math.max(redValue?2:0,Math.min(100,redValue/max*100));
+    const bluePct=Math.max(blueValue?2:0,Math.min(100,blueValue/max*100));
+    const redIsBase=redPct>=bluePct;
+    const redLabel=teamAssignMetricLabel(redValue);
+    const blueLabel=num(blueValue);
+    const labelsOverlap=redValue>0&&blueValue>0&&Math.abs(redPct-bluePct)<8;
+    const redInline=redValue&&!labelsOverlap?`<span class="teamAssignInline" style="left:${Math.max(redPct,8)}%">${redLabel}</span>`:"";
+    const blueInline=blueValue&&!labelsOverlap?`<span class="teamAssignInline" style="left:${Math.max(bluePct,8)}%">${blueLabel}</span>`:"";
+    return `<div class="teamAssignRow"><div class="teamAssignName" title="${esc(row.name)}">${esc(row.name)}</div><div class="teamAssignTrack"><div class="${redIsBase?'teamAssignRed':'teamAssignBlue'}" style="width:${redIsBase?redPct:bluePct}%"></div><div class="${redIsBase?'teamAssignBlue':'teamAssignRed'}" style="width:${redIsBase?bluePct:redPct}%"></div>${redInline}${blueInline}</div><div class="teamAssignValue"><span class="redValue">${redLabel}</span> / <span class="blueValue">${blueLabel}</span></div></div>`;
+  }).join("");
+}
+function bindTeamAssignPanelLink(){
+  const panel=document.querySelector(".teamAssignPanel");
+  if(!panel||panel.dataset.linkBound)return;
+  panel.dataset.linkBound="1";
+  panel.addEventListener("click",ev=>{
+    if(ev.target.closest("button"))return;
+    window.location.href="employee-workbench.html";
+  });
+}
+function teamRowsForCards(){
+  return teamRowsForSelectedPeriod();
+}
+function renderLists(){const rawView=currentRawCriticalView();const rows=selectedPeriodCriticalRows();
+  const grouped={};
+  rows.forEach(x=>{const dealer=standardDealerName(x.dealer||'Unknown'); if(isValidDealerForTeamTotal(dealer)) grouped[dealer]=(grouped[dealer]||0)+1;});
+  const dealers=rawView?rawView.dealers:Object.entries(grouped).map(([dealer,criticalTickets])=>({dealer,criticalTickets})).sort((a,b)=>b.criticalTickets-a.criticalTickets||a.dealer.localeCompare(b.dealer));
+  const max=Math.max(1,...dealers.map(x=>Number(x.criticalTickets||0)));
+  const dealerColors=["#4f46e5","#60a5fa","#7c3aed","#f59e0b","#ec4899","#8b5cf6","#22c55e","#94a3b8"];
+  const shownDealers=dealerListExpanded?dealers:dealers.slice(0,7);
+  if($("dealerBars")){$("dealerBars").className="dealerCriticalList";$("dealerBars").innerHTML=dealers.length?shownDealers.map((x,i)=>`<div class="dealerCriticalRow" role="button" tabindex="0" data-dealer="${esc(x.dealer)}" title="Open ${esc(x.dealer)} in Dealer Workbench"><span class="dealerCriticalDot" style="background:${dealerColors[i%dealerColors.length]}"></span><span class="dealerCriticalLabel" title="${esc(x.dealer)}">${esc(x.dealer)}</span><span class="dealerCriticalValue">${num(x.criticalTickets)}</span></div>`).join("")+(dealers.length>7?`<button class="dealerCriticalToggle" type="button" onclick="toggleDealerList()">${dealerListExpanded?'Collapse dealers':'View all dealers ->'}</button>`:""):`<div class="panelDesc">No dealer analytics found for this claim type and selected period.</div>`;$("dealerBars").querySelectorAll(".dealerCriticalRow").forEach(row=>{row.onclick=()=>openDealerWorkbench(row.dataset.dealer);row.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDealerWorkbench(row.dataset.dealer);}}});}
+  const statusMap={};
+  rows.forEach(r=>{const st=clean(r.status)||'Unknown'; statusMap[st]=(statusMap[st]||0)+1;});
+  const statuses=Object.entries(statusMap).map(([status,count])=>({label:status,count})).sort((a,b)=>b.count-a.count||a.label.localeCompare(b.label));
+  const statusDonutRows=statuses.length>6?statuses.slice(0,5).concat({label:"Others",count:statuses.slice(5).reduce((sum,x)=>sum+Number(x.count||0),0),details:statuses.slice(5)}):statuses;
+  if($("statusMix")){$("statusMix").className="statusPieLayout";$("statusMix").innerHTML=distributionDonutMarkup(statusDonutRows,"tickets");bindStatusMixTips();}
+  if($("criticalSideList")){
+    const colors=["#2f6df6","#60a5fa","#2563eb","#f59e0b","#fb7185","#8b5cf6","#22c55e","#94a3b8"];
+    $("criticalSideList").innerHTML=statuses.slice(0,8).map((x,i)=>`<div class="criticalSideRow"><span class="criticalSideDot" style="background:${colors[i%colors.length]}"></span><span class="criticalSideLabel" title="${esc(x.label)}">${esc(x.label)}</span><span class="criticalSideValue">${num(x.count)}</span></div>`).join("")||`<div class="panelDesc">No critical tickets found.</div>`;
+  }
+}
+function openDealerWorkbench(dealer){const key=dealerKeyForName(dealer);if(key)localStorage.setItem("dealerWorkspaceSelectedKey",key);localStorage.setItem("dealerWorkspaceSelectedName",dealer||"");window.location.href="dealer-workbench.html";}
+function toggleDealerList(){dealerListExpanded=!dealerListExpanded;renderLists();}
+
+function setDateDefaults(){const view=currentView();const pts=view.trend||[];if(!pts.length)return;$("dateFrom").min=pts[0].date;$("dateTo").min=pts[0].date;if(activePeriod==="all"&&(!$('dateFrom').value||!$('dateTo').value)){setFullRange();return;}if(!$("dateFrom").value||$("dateFrom").value<pts[0].date)$("dateFrom").value=pts[0].date;if(!$("dateTo").value||$("dateTo").value>pts[pts.length-1].date)$("dateTo").value=pts[pts.length-1].date;}
+function renderAll(){showCalcFloat(true,"Calculating...");renderPeriodButtons();renderClaimButtons();setDateDefaults();trendPoints=selectedTrend();renderKpis();renderHandlingSpeed();renderLists();renderCriticalLog();renderTeamAssignChart();bindTeamAssignPanelLink();drawTrend();hideCalcFloat();}
+function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(prev||0);if(delta===0)return{cls:"flat",arrow:"-",text:"0"};const isGood=(metric==="exited")?delta>0:delta<0;return{cls:isGood?"up":"down",arrow:delta>0?"^":"v",text:num(Math.abs(delta))};}
 function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}
 function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const enteredDelta=deltaInfoMetric("entered",hit.p.entered,prev?prev.entered:hit.p.entered);const criticalDelta=deltaInfoMetric("critical",hit.p.critical,prev?prev.critical:hit.p.critical);const exitedDelta=deltaInfoMetric("exited",hit.p.exited,prev?prev.exited:hit.p.exited);tip.innerHTML=`<b>Date: ${esc(hit.p.date)}</b>${tipRow("Entered cumulative","#3b82f6",hit.p.entered,enteredDelta)}${tipRow("Critical total","#fb6b1d",hit.p.critical,criticalDelta)}${tipRow("Exited cumulative","#16a34a",hit.p.exited,exitedDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
-async function load(){try{$("loadError").style.display="none";const data=await readJson(MONITOR_ROOT+"/analytics/team");if(!data||typeof data!=="object")throw new Error("analytics/team is empty");team=data;activeClaim=team.defaultView||"all";renderAll()}catch(err){$("loadError").innerHTML="Cannot load pre-calculated Team analytics. Run <b>rebuild_analytics_only_mandt800_rejection_filter.bat</b> once, then refresh. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll()}}
-$("dateFrom").addEventListener("change",()=>{trendPoints=selectedTrend();drawTrend()});$("dateTo").addEventListener("change",()=>{trendPoints=selectedTrend();drawTrend()});window.addEventListener("resize",drawTrend);bindTooltip();load();
+async function load(){try{showCalcFloat(true,"Calculating...");$("loadError").style.display="none";const data=await readJson(MONITOR_ROOT+"/analytics/team");if(!data||typeof data!=="object")throw new Error("analytics/team is empty");team=data;activeClaim=team.defaultView||"all";await Promise.all([loadRawCritical().catch(()=>{rawCritical={loaded:false,views:{}}}),loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{employeeAnalytics=null})]);renderAll();hideCalcFloat()}catch(err){hideCalcFloat();$("loadError").innerHTML="Cannot load team analytics from Firebase. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll()}}
+$("dateFrom").addEventListener("change",()=>{renderAll()});$("dateTo").addEventListener("change",()=>{renderAll()});window.addEventListener("resize",drawTrend);bindTooltip();load();
 </script></body></html>

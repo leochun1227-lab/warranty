@@ -1,0 +1,178 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Repair Insights</title>
+<style>
+:root{--bg:#f3f6fb;--card:#fff;--ink:#0f172a;--muted:#607089;--line:#dbe3ee;--blue:#3b82f6;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--shadow:0 10px 28px rgba(15,23,42,.06)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;font-size:14px}.main{padding:28px;max-width:1480px;margin:0 auto}.header,.panel,.kpi{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}.header{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;padding:20px 24px;margin-bottom:20px}.title{font-size:25px;font-weight:650;margin:0 0 6px}.sub{color:#607089;margin:0}.btn{height:40px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 14px;font-weight:700;cursor:pointer;color:#0f172a}.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}.kpi{padding:20px}.kpiLabel{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#64748b;font-weight:700;margin-bottom:12px}.kpiValue{font-size:28px;font-weight:600}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.panel{padding:22px 24px}.panelTitle{font-size:18px;font-weight:620;margin:0 0 12px}.chart{height:310px}canvas{width:100%;height:100%;display:block}.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin-bottom:16px}@media(max-width:900px){.kpis,.grid{grid-template-columns:1fr}.main{padding:18px}}
+
+/* Center calculation overlay */
+.calcFloat{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);color:#155e9f;letter-spacing:0}.calcFloat.active{display:flex}.calcFloat:before{content:"";position:absolute;inset:0;background:rgba(248,251,255,.42);pointer-events:none}.calcFloat>*{position:relative}.calcSpinner{width:64px;height:64px;border-radius:999px;border:6px solid #dbeafe;border-top-color:#2563eb;border-right-color:#60a5fa;animation:calcSpin .78s linear infinite;flex:0 0 auto;box-shadow:0 10px 28px rgba(37,99,235,.16)}.calcFloatText{margin-top:18px;display:block;white-space:nowrap;font-size:16px;font-weight:650;color:#155e9f}.calcFloat{flex-direction:column}.calcFloat.active~.app,.calcFloat.active~main{filter:blur(1px);opacity:.68;pointer-events:none;user-select:none}@keyframes calcSpin{to{transform:rotate(360deg)}}@media(max-width:760px){.calcSpinner{width:54px;height:54px;border-width:5px}.calcFloatText{font-size:14px;margin-top:14px}}
+.calcFloat.active{display:flex}.calcSpinner{width:22px;height:22px;border-radius:999px;border:3px solid #dbeafe;border-top-color:#2563eb;animation:calcSpin .78s linear infinite;flex:0 0 auto}.calcFloatText{white-space:nowrap}@keyframes calcSpin{to{transform:rotate(360deg)}}@media(max-width:760px){.calcFloat{right:16px;bottom:16px;min-width:0;padding:10px 13px}.calcFloatText{font-size:12px}}
+
+
+/* Reference dashboard visual polish - layout only */
+.main,.wrap{background:#f6f8fc}.panel,.card,.kpi{border-color:#dde6f2!important;border-radius:16px!important;box-shadow:0 14px 34px rgba(15,23,42,.055)!important;background:#fff!important}.panelTitle,.cardTitle{font-size:16px!important;font-weight:600!important;letter-spacing:-.01em!important}.panelDesc,.desc,.cardDesc{font-size:12px!important;color:#66758f!important}.kpiLabel{letter-spacing:.08em!important;color:#66758f!important}.kpiValue{font-weight:600!important;letter-spacing:-.025em!important}.chartGrid,.kpis,.kpiGrid{gap:18px!important}.tableWrap{border-color:#dde6f2!important;border-radius:14px!important}.btn,.input,.search,.select,.dealerSelect{border-radius:12px!important}.claimSwitch,.changeSwitch{border-radius:14px!important;box-shadow:0 8px 22px rgba(15,23,42,.04)!important}.navBtn.active,.navLink.active{background:#1667d9!important;color:#fff!important;box-shadow:0 10px 24px rgba(37,99,235,.22)!important}
+/* Segmented button refinement */
+.changeSwitch,.claimSwitch{display:inline-flex!important;align-items:center!important;gap:0!important;height:46px!important;padding:5px!important;border:1px solid #dbe4ef!important;background:#fff!important;border-radius:15px!important;box-shadow:0 10px 24px rgba(15,23,42,.045)!important;overflow:hidden!important}.changeBtn,.claimBtn{height:36px!important;min-width:86px!important;border:0!important;border-radius:10px!important;background:transparent!important;color:#25364f!important;font-size:13px!important;font-weight:600!important;padding:0 16px!important;box-shadow:none!important;white-space:nowrap!important}.changeBtn:hover,.claimBtn:hover{background:#f3f7fc!important}.changeBtn.active,.claimBtn.active{background:#1677f2!important;color:#fff!important;box-shadow:0 8px 18px rgba(22,119,242,.26)!important}.btn,.tab,.chip{border-radius:12px!important;font-weight:600!important}.btn.active,.tab.active,.chip.active,.btn.dark{background:#1677f2!important;border-color:#1677f2!important;color:#fff!important;box-shadow:0 8px 18px rgba(22,119,242,.22)!important}</style>
+<style>
+/* KPI cards aligned with Team Dashboard visual language */
+.kpis .kpi,
+.partsGrid .kpi,
+.dealerHandlingKpis .kpi{
+  position:relative!important;
+  min-height:118px!important;
+  padding:20px 22px!important;
+  border:1px solid #dfe7f1!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,#fff 0%,#fbfdff 100%)!important;
+  box-shadow:0 14px 34px rgba(15,23,42,.055)!important;
+  overflow:hidden!important;
+}
+.kpis .kpi:before,
+.partsGrid .kpi:before,
+.dealerHandlingKpis .kpi:before{
+  content:"";
+  position:absolute;
+  right:18px;
+  top:18px;
+  width:42px;
+  height:42px;
+  border-radius:999px;
+  background:#eaf4ff;
+  box-shadow:inset 0 0 0 1px rgba(59,130,246,.12);
+}
+.kpis .kpi:after,
+.partsGrid .kpi:after,
+.dealerHandlingKpis .kpi:after{
+  content:"#";
+  position:absolute;
+  right:18px;
+  top:18px;
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  color:#1677f2;
+  font-size:20px;
+  font-weight:850;
+  line-height:1;
+}
+.kpis .kpi:nth-child(1):after{content:"#";}
+.kpis .kpi:nth-child(2):after{content:"✓";color:#10b981;}
+.kpis .kpi:nth-child(2):before{background:#dcfce7;}
+.kpis .kpi:nth-child(3):after{content:"!";color:#f59e0b;}
+.kpis .kpi:nth-child(3):before{background:#fff7ed;}
+.kpis .kpi:nth-child(4):after{content:"%";color:#6366f1;}
+.kpis .kpi:nth-child(4):before{background:#eef2ff;}
+.partsGrid .kpi:nth-child(1):after{content:"$";color:#7c3aed;}
+.partsGrid .kpi:nth-child(1):before{background:#f3e8ff;}
+.partsGrid .kpi:nth-child(2):after{content:"%";color:#1677f2;}
+.partsGrid .kpi:nth-child(3):after{content:"14";color:#10b981;font-size:16px;}
+.partsGrid .kpi:nth-child(3):before{background:#dcfce7;}
+.partsGrid .kpi:nth-child(4):after{content:"d";color:#f59e0b;}
+.partsGrid .kpi:nth-child(4):before{background:#fff7ed;}
+.dealerHandlingKpis .kpi:nth-child(1):after{content:"%";color:#10b981;}
+.dealerHandlingKpis .kpi:nth-child(1):before{background:#dcfce7;}
+.dealerHandlingKpis .kpi:nth-child(2):after{content:"d";color:#f59e0b;}
+.dealerHandlingKpis .kpi:nth-child(2):before{background:#fff7ed;}
+.kpiLabel{
+  margin:0 54px 10px 0!important;
+  color:#334155!important;
+  font-size:12px!important;
+  line-height:1.3!important;
+  font-weight:650!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+}
+.kpiValue{
+  color:#0b1220!important;
+  font-size:30px!important;
+  line-height:1.05!important;
+  font-weight:680!important;
+  letter-spacing:-.03em!important;
+}
+.metricTrend,
+.ratioBase{
+  margin-top:12px!important;
+  font-size:12px!important;
+  font-weight:650!important;
+}
+</style></head>
+<body><main class="main">
+<div class="header"><div><h1 id="title" class="title">Repair Insights</h1></div><div><button class="btn" onclick="location.href='repairs.html'">Back to Repairs</button></div></div>
+<div id="loadError" class="error"></div>
+<section class="kpis"><div class="kpi"><div class="kpiLabel">Tickets</div><div id="kpiTickets" class="kpiValue">0</div></div><div class="kpi"><div class="kpiLabel">Total Cost</div><div id="kpiCost" class="kpiValue">$0</div></div><div class="kpi"><div class="kpiLabel">Avg Cost</div><div id="kpiAvg" class="kpiValue">$0</div></div></section>
+<section class="grid">
+<div class="panel"><h2 class="panelTitle">Amount Including Tax Distribution</h2><div class="chart"><canvas id="amountChart"></canvas></div></div>
+<div class="panel"><h2 class="panelTitle">Chassis Number Repeat Range</h2><div class="chart"><canvas id="chassisChart"></canvas></div></div>
+<div class="panel"><h2 class="panelTitle">Status Volume</h2><div class="chart"><canvas id="statusChart"></canvas></div></div>
+<div class="panel"><h2 class="panelTitle">Ticket CreatedOn Trend</h2><div class="chart"><canvas id="createdChart"></canvas></div></div>
+<div class="panel"><h2 class="panelTitle">Cost by Ticket Type</h2><div class="chart"><canvas id="typeChart"></canvas></div></div>
+</section>
+</main>
+<div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
+<script>
+
+function showCalcFloat(active,text){
+  const el=document.getElementById('calcFloat');
+  if(!el)return;
+  const label=el.querySelector('.calcFloatText');
+  if(label&&text)label.textContent=text;
+  el.classList.toggle('active',!!active);
+}
+function hideCalcFloat(delay=250){setTimeout(()=>showCalcFloat(false),delay)}
+
+
+const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
+const repairId=new URLSearchParams(location.search).get("repairId")||"no-repair";
+const $=id=>document.getElementById(id), clean=v=>v==null?"":String(v).trim();
+const esc=v=>clean(v).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
+const num=(v,d=0)=>Number(v||0).toLocaleString(undefined,{maximumFractionDigits:d,minimumFractionDigits:d});
+const money=v=>Number(v||0).toLocaleString(undefined,{style:"currency",currency:"AUD",maximumFractionDigits:0});
+function fbUrl(path){return DEFAULT_FIREBASE.replace(/\/+$/,'')+"/"+path.replace(/^\/+/,'')+".json"}
+async function readJson(path){const r=await fetch(fbUrl(path),{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
+function parseAmount(v){const n=Number(clean(v).replace(/,/g,''));return Number.isFinite(n)?n:0}
+function parseDate(v){if(!v)return null;const s=clean(v);let m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m){const d=new Date(+m[3],+m[2]-1,+m[1]);return isNaN(d)?null:d}const d=new Date(s);return isNaN(d)?null:d}
+function dateKey(v){const d=parseDate(v);return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`:""}
+function normalize(row,key){const raw=(row&&typeof row==="object")?row:{};const ticket=(raw.ticket&&typeof raw.ticket==="object")?raw.ticket:raw;const roles=(raw.roles&&typeof raw.roles==="object")?raw.roles:{};return {id:clean(ticket.TicketID||key),ticket,roles}}
+function repairInfo(entry){const r=entry.roles&&entry.roles["43"]&&typeof entry.roles["43"]==="object"?entry.roles["43"]:null;return {id:clean(r&&r.InvolvedPartyBusinessPartnerID)||"no-repair",name:clean(r&&r.InvolvedPartyName)||"No Repair Shop Assigned"}}
+function chassis(entry){const t=entry.ticket;let v=clean(t.SerialID)||clean(t.ChassisNumber);if(!v){const parts=clean(t.TicketName).split(/\s+/);v=parts[parts.length-1]||""}return v.replace(/-/g,"")}
+function prep(c){const dpr=devicePixelRatio||1,w=c.clientWidth||600,h=c.clientHeight||300;c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);return {ctx,w,h}}
+function barChart(id,data,color="#3b82f6"){
+  const c=$(id),{ctx,w,h}=prep(c),left=150,right=42,top=24,rowH=Math.min(42,(h-50)/Math.max(1,data.length)),max=Math.max(1,...data.map(x=>x.value));
+  ctx.font="13px Segoe UI,Arial";data.forEach((d,i)=>{const y=top+i*rowH+rowH/2,bw=(w-left-right)*d.value/max;ctx.fillStyle="#334155";ctx.textAlign="right";ctx.textBaseline="middle";ctx.fillText(d.label.length>22?d.label.slice(0,21)+"...":d.label,left-12,y);ctx.fillStyle="#eef2f7";ctx.fillRect(left,y-10,w-left-right,20);ctx.fillStyle=d.color||color;ctx.fillRect(left,y-10,bw,20);ctx.fillStyle="#0f172a";ctx.textAlign="left";ctx.fillText(num(d.value),left+bw+8,y)});
+}
+function lineChart(id,data){
+  const c=$(id),{ctx,w,h}=prep(c),left=52,right=24,top=24,bottom=48,plotW=w-left-right,plotH=h-top-bottom,max=Math.max(1,...data.map(x=>x.value));
+  ctx.strokeStyle="#d8e2ee";ctx.setLineDash([2,4]);for(let i=0;i<=4;i++){const y=top+plotH*i/4;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke()}ctx.setLineDash([]);
+  const x=i=>left+(data.length<=1?0:plotW*i/(data.length-1)), y=v=>top+plotH-plotH*v/max;ctx.strokeStyle="#10b981";ctx.lineWidth=2.4;ctx.beginPath();data.forEach((p,i)=>i?ctx.lineTo(x(i),y(p.value)):ctx.moveTo(x(i),y(p.value)));ctx.stroke();ctx.fillStyle="#52627a";ctx.textAlign="center";ctx.font="12px Segoe UI,Arial";data.forEach((p,i)=>{if(i%Math.ceil(data.length/8)===0||i===data.length-1)ctx.fillText(p.label,x(i),h-22)});
+}
+async function load(){
+  try{showCalcFloat(true,"Calculating...");
+    const node=await readJson("c4cTickets_test/tickets"), all=Object.entries(node||{}).map(([k,r])=>normalize(r,k)).filter(x=>x.id);
+    const rows=all.filter(x=>repairInfo(x).id===repairId), first=rows[0], name=first?repairInfo(first).name:"Repair shop";
+    $("title").textContent=name;const subtitle=$("subtitle");if(subtitle)subtitle.textContent=`Repair ID ${repairId} - shareable URL`;
+    const total=rows.reduce((s,x)=>s+parseAmount(x.ticket.AmountIncludingTax),0), avg=rows.length?total/rows.length:0;
+    $("kpiTickets").textContent=num(rows.length);$("kpiCost").textContent=money(total);$("kpiAvg").textContent=money(avg);
+    const amountBins={"0 - 500":0,"500 - 2k":0,"2k - 5k":0,"5k+":0}, status={}, month={}, type={}, chassisCount={};
+    rows.forEach(x=>{const a=parseAmount(x.ticket.AmountIncludingTax), ch=chassis(x), d=dateKey(x.ticket.CreatedOn), st=clean(x.ticket.TicketStatusText)||clean(x.ticket.TicketStatus)||"Unknown", ty=clean(x.ticket.TicketTypeText)||"Unknown";if(a<500)amountBins["0 - 500"]++;else if(a<2000)amountBins["500 - 2k"]++;else if(a<5000)amountBins["2k - 5k"]++;else amountBins["5k+"]++;status[st]=(status[st]||0)+1;type[ty]=(type[ty]||0)+a;if(d){const m=d.slice(0,7);month[m]=(month[m]||0)+1}if(ch)chassisCount[ch]=(chassisCount[ch]||0)+1});
+    const repeats={Unique:0,"2 - 3 repeats":0,"4+ repeats":0};Object.values(chassisCount).forEach(c=>{if(c<=1)repeats.Unique++;else if(c<=3)repeats["2 - 3 repeats"]++;else repeats["4+ repeats"]++});
+    barChart("amountChart",Object.entries(amountBins).map(([label,value])=>({label,value,color:"#3b82f6"})));
+    barChart("chassisChart",Object.entries(repeats).map(([label,value])=>({label,value,color:"#f59e0b"})));
+    barChart("statusChart",Object.entries(status).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([label,value])=>({label,value,color:"#10b981"})));
+    lineChart("createdChart",Object.entries(month).sort().map(([label,value])=>({label,value})));
+    barChart("typeChart",Object.entries(type).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([label,value])=>({label,value,color:"#ef4444"})));
+    hideCalcFloat();
+  }catch(e){hideCalcFloat();$("loadError").textContent="Failed to load repair insight data: "+(e.message||e);$("loadError").style.display="block"}
+}
+window.addEventListener("resize",load);
+load();
+</script>
+</body>
+</html>
+
+
+
