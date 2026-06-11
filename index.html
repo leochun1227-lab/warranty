@@ -1949,9 +1949,27 @@ function criticalDurationDaysForRow(row,endDate){
   const direct=Number(row.durationDays??row.duration??row.daysInCritical??row.ageDays);
   return Number.isFinite(direct)&&direct>=0?direct:null;
 }
+function criticalLogSortTime(e){
+  const raw=e&&clean(e.detectedAt||e.dataSyncAt||e.date||e.createdAt);
+  const d=new Date(raw||"");
+  return isNaN(d)?raw:d.toISOString();
+}
+function criticalLogSortRank(e){
+  const cls=clean(e&&e.cls).toLowerCase();
+  // If C4C writes multiple critical changes with the same timestamp, process
+  // exits before enters so a same-time re-entered ticket stays in Critical.
+  if(cls==="exit")return 0;
+  if(cls==="move")return 1;
+  if(cls==="enter")return 2;
+  return 3;
+}
 function criticalEnterDateByTicketId(end){
   const view=currentView(), map=new Map();
-  arrayFromMaybe(view.logs).slice().sort((a,b)=>eventDateKey(a.detectedAt||a.date).localeCompare(eventDateKey(b.detectedAt||b.date))).forEach(e=>{
+  arrayFromMaybe(view.logs).slice().sort((a,b)=>{
+    const at=criticalLogSortTime(a), bt=criticalLogSortTime(b);
+    const byTime=at.localeCompare(bt);
+    return byTime || (criticalLogSortRank(a)-criticalLogSortRank(b));
+  }).forEach(e=>{
     const d=eventDateKey(e.detectedAt||e.date);
     if(!d||d>end||!logMatchesClaim(e))return;
     const id=clean(e.id||e.ticketId||e.TicketID);
