@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -116,9 +116,7 @@
 <div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div>
 <div class="navSection">Workspace</div>
 <a class="navLink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></a>
-<a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a>
-<a class="navLink" href="employee-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Internal Employees</span></a>
-<a class="navLink active" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a>
+<a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><a class="navLink active" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a>
 <div class="navDivider"></div><div class="navSection">Tickets</div>
 <a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a>
 <a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a>
@@ -244,6 +242,7 @@ $("prevPage").onclick=()=>{if(page>1){page--;renderAll()}};
 $("nextPage").onclick=()=>{const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));if(page<pages){page++;renderAll()}};
 window.addEventListener("resize",()=>{drawRange();drawTrend()});
 load();
+const REPAIRS_AUTO_REFRESH_MS=5*60*1000;setInterval(()=>load(),REPAIRS_AUTO_REFRESH_MS);
 </script>
 </body>
 </html>

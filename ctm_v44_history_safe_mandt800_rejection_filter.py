@@ -1998,7 +1998,7 @@ def compare_and_write(source_root: str, monitor_root: str) -> None:
     )
 
 
-def run_company_fetch(company_file: str, db_url: str, sa_path: str) -> None:
+def run_company_fetch(company_file: str, db_url: str, sa_path: str, source_root: str, monitor_root: str) -> None:
     p = Path(company_file)
     if not p.exists():
         raise SystemExit(f"Cannot find company fetch file:\n{p}")
@@ -2006,6 +2006,10 @@ def run_company_fetch(company_file: str, db_url: str, sa_path: str) -> None:
     env = os.environ.copy()
     env["FIREBASE_DB_URL"] = db_url
     env["FIREBASE_SA_PATH"] = sa_path
+    env["FIREBASE_ROOT"] = source_root
+    env["SOURCE_ROOT"] = source_root
+    env["MONITOR_ROOT"] = monitor_root
+    env["PYTHONUNBUFFERED"] = "1"
 
     print(f"[FETCH] Running company file:\n{p}")
     result = subprocess.run([sys.executable, str(p)], env=env)
@@ -2047,7 +2051,7 @@ def parse_args() -> argparse.Namespace:
 
 def run_once(args: argparse.Namespace) -> None:
     if not args.skip_fetch:
-        run_company_fetch(args.company_file, args.firebase_db_url, args.firebase_sa_path)
+        run_company_fetch(args.company_file, args.firebase_db_url, args.firebase_sa_path, args.source_root, args.monitor_root)
     else:
         print("[FETCH] Skipped company fetch. Comparing existing Firebase only.")
 
@@ -2055,9 +2059,16 @@ def run_once(args: argparse.Namespace) -> None:
     compare_and_write(args.source_root, args.monitor_root)
 
     # Then rebuild all ready-to-display dashboard analytics.
-    # This keeps Team / Dealer / Employee pages fresh after every normal PowerShell run,
+    # This keeps Team / Dealer pages fresh after every scheduled run,
     # so you do not need to run rebuild_analytics_only separately after fetch.
     write_analytics(args.source_root, args.monitor_root)
+    db.reference(args.monitor_root).child("automation").update({
+        "lastRunFinishedAt": now_iso(),
+        "lastRunMode": "once",
+        "sourceRoot": args.source_root,
+        "monitorRoot": args.monitor_root,
+        "status": "success",
+    })
 
 
 def main() -> None:
