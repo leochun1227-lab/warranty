@@ -2943,8 +2943,9 @@ function drawEmployeeChart(){
     const blueLabel=num(s.total,0);
     const redIsBase=redPct>=totalPct;
     const labelPositions=employeeBarLabelPositions(redPct,totalPct,redValue,s.total);
-    const redSpan=redValue>0?`<span class="employeeInlineValue employeeEndValue redValue ${labelPositions.close?'closeValue '+labelPositions.redSide:''}" style="left:${labelPositions.red}%;top:50%">${redLabel}</span>`:'';
-    const blueSpan=s.total>0?`<span class="employeeInlineValue employeeEndValue blueValue ${labelPositions.close?'closeValue '+labelPositions.blueSide:''}" style="left:${labelPositions.blue}%;top:50%">${blueLabel}</span>`:'';
+    const minInlineLabelValue=15;
+    const redSpan=redValue>=minInlineLabelValue?`<span class="employeeInlineValue employeeEndValue redValue ${labelPositions.close?'closeValue '+labelPositions.redSide:''}" style="left:${labelPositions.red}%;top:50%">${redLabel}</span>`:'';
+    const blueSpan=s.total>=minInlineLabelValue?`<span class="employeeInlineValue employeeEndValue blueValue ${labelPositions.close?'closeValue '+labelPositions.blueSide:''}" style="left:${labelPositions.blue}%;top:50%">${blueLabel}</span>`:'';
     return `<div class="employeeBarRow ${active?'active':''}" data-employee="${esc(s.name)}" title="Click to filter ${esc(s.name)}"><div class="employeeBarName">${employeeNameHtml(s.name)}</div><div class="employeeBarTrack"><div class="${redIsBase?'employeeBarRemoved employeeBarFillBase':'employeeBarTotal employeeBarFillBase'}" style="width:${redIsBase?redPct:totalPct}%"></div><div class="${redIsBase?'employeeBarTotal employeeBarFillOverlay':'employeeBarRemoved employeeBarFillOverlay'}" style="width:${redIsBase?totalPct:redPct}%"></div>${redSpan}${blueSpan}</div><div class="employeeBarValue"><span style="color:#be123c">${redLabel}</span> / <span style="color:#1d4ed8">${blueLabel}</span></div></div>`;
   }).join('');
   if(axis){axis.innerHTML=`<div></div><div class="axisLine"><span>0</span><span>${num(max/4,0)}</span><span>${num(max/2,0)}</span><span>${num(max*3/4,0)}</span><span>${num(max,0)}</span></div><div></div>`;}

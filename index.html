@@ -2875,7 +2875,7 @@ function renderTeamAssignChart(){
     const redIsBase=redPct>=bluePct;
     const redLabel=teamAssignMetricLabel(redValue);
     const blueLabel=num(blueValue);
-    const minInlineLabelValue=5;
+    const minInlineLabelValue=15;
     const showRedInline=redValue>=minInlineLabelValue;
     const showBlueInline=blueValue>=minInlineLabelValue;
     const labelsOverlap=showRedInline&&showBlueInline&&Math.abs(redPct-bluePct)<8;
