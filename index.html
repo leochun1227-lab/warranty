@@ -1793,7 +1793,7 @@ function hideCalcFloat(delay=250){setTimeout(()=>showCalcFloat(false),delay)}
 const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
 const MONITOR_ROOT="ctmTicketStatusMonitorV44";
 let team={views:{},defaultView:"all",claimOptions:[{key:"all",label:"All Claims"}]};
-let activeClaim="all", activeView=null, activePeriod="all", trendPoints=[], rawCritical={loaded:false,views:{}}, rawTicketEntries=[], statusMapping={}, dealerKeyLookup={exact:{},loose:{}}, employeeAnalytics=null, teamAssignMetric="totalRemoved", selectedEmployeeName="", employeeModalPeriod="all", employeeStatusMapping={}, employeeStatusEdit=false;
+let activeClaim="all", activeView=null, activePeriod="all", trendPoints=[], rawCritical={loaded:false,views:{}}, rawTicketEntries=[], statusMapping={}, dealerKeyLookup={exact:{},loose:{}}, employeeAnalytics=null, teamAssignMetric="totalRemoved", selectedEmployeeName="", employeeModalPeriod="all", employeeStatusMapping={}, employeeStatusEdit=false, lastKnownLatestDate="", dateRangeManuallyChanged=false;
 const DEFAULT_RANGE_START="2026-05-25";
 let dealerListExpanded=false;
 const $=id=>document.getElementById(id); const clean=v=>v==null?"":String(v).trim(); const num=v=>Number(v||0).toLocaleString();
@@ -1931,27 +1931,32 @@ function currentTotalCritical(fallback){const v=currentRawCriticalView();return 
 function prepareCanvas(c){const rect=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;c.width=Math.max(1,Math.floor(rect.width*dpr));c.height=Math.max(1,Math.floor(rect.height*dpr));const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);return{ctx,w:rect.width,h:rect.height}}
 function niceMax(v){v=Math.max(1,Number(v||0));if(v<=5)return 5;if(v<=25)return Math.ceil(v/5)*5;if(v<=120)return Math.ceil(v/20)*20;if(v<=500)return Math.ceil(v/50)*50;return Math.ceil(v/100)*100}
 function smoothPath(ctx,pts){if(!pts.length)return;ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++){const p0=pts[i-1],p1=pts[i];const mx=(p0.x+p1.x)/2;ctx.quadraticCurveTo(p0.x,p0.y,mx,(p0.y+p1.y)/2);ctx.quadraticCurveTo(p1.x,p1.y,p1.x,p1.y)}}function drawLine(ctx,pts,color,dashed=false,alpha=1){if(!pts.length)return;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=dashed?1.7:2.4;ctx.lineCap="round";ctx.lineJoin="round";if(dashed)ctx.setLineDash([7,6]);smoothPath(ctx,pts);ctx.stroke();ctx.setLineDash([]);pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,dashed?2.6:3.3,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();ctx.lineWidth=dashed?1.7:2.2;ctx.strokeStyle=color;ctx.stroke();});ctx.restore()}
-function renderPeriodButtons(){if(!$('periodSwitch'))return;const opts=[{key:"day",label:"Today"},{key:"week",label:"This Week"},{key:"month",label:"MTD"}];$("periodSwitch").innerHTML=opts.map(o=>`<button class="changeBtn ${o.key===activePeriod?'active':''}" data-key="${o.key}" type="button">${o.label}</button>`).join("");document.querySelectorAll(".changeBtn").forEach(b=>{let t=null;b.addEventListener("click",ev=>{if(ev.detail>=2){if(t)clearTimeout(t);activePeriod="all";setFullRange();renderAll();return;}if(t)clearTimeout(t);t=setTimeout(()=>{const key=b.dataset.key;if(activePeriod===key){activePeriod="all";setFullRange();}else{activePeriod=key;const end=latestDateForView();const start=periodStartDate(end);if($("dateFrom"))$("dateFrom").value=start;if($("dateTo"))$("dateTo").value=end;}renderAll();},180);});b.addEventListener("dblclick",ev=>{ev.preventDefault();if(t)clearTimeout(t);activePeriod="all";setFullRange();renderAll();});});}
+function renderPeriodButtons(){if(!$('periodSwitch'))return;const opts=[{key:"day",label:"Today"},{key:"week",label:"This Week"},{key:"month",label:"MTD"}];$("periodSwitch").innerHTML=opts.map(o=>`<button class="changeBtn ${o.key===activePeriod?'active':''}" data-key="${o.key}" type="button">${o.label}</button>`).join("");document.querySelectorAll(".changeBtn").forEach(b=>{let t=null;b.addEventListener("click",ev=>{if(ev.detail>=2){if(t)clearTimeout(t);activePeriod="all";dateRangeManuallyChanged=false;setFullRange();renderAll();return;}if(t)clearTimeout(t);t=setTimeout(()=>{const key=b.dataset.key;if(activePeriod===key){activePeriod="all";dateRangeManuallyChanged=false;setFullRange();}else{activePeriod=key;dateRangeManuallyChanged=false;const end=latestDateForView();const start=periodStartDate(end);if($("dateFrom"))$("dateFrom").value=start;if($("dateTo"))$("dateTo").value=end;}renderAll();},180);});b.addEventListener("dblclick",ev=>{ev.preventDefault();if(t)clearTimeout(t);activePeriod="all";dateRangeManuallyChanged=false;setFullRange();renderAll();});});}
 function todayISO(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function nextDateKey(date){const d=new Date(date+"T00:00:00Z");if(isNaN(d))return "";d.setUTCDate(d.getUTCDate()+1);return d.toISOString().slice(0,10)}
 function trendThroughToday(view=currentView()){
   const pts=arrayFromMaybe(view.trend).map(p=>({...p})).filter(p=>clean(p.date)).sort((a,b)=>clean(a.date).localeCompare(clean(b.date)));
   const today=todayISO();
-  const last=pts[pts.length-1]||null;
-  if(last&&last.date>=today)return pts;
   const daily=view.daily||{};
-  const enteredToday=Number((daily.entered||{})[today]||0);
-  const exitedToday=Number((daily.exited||{})[today]||0);
-  pts.push({
-    date:today,
-    entered:Number(last?.entered||0)+enteredToday,
-    exited:Number(last?.exited||0)+exitedToday,
-    critical:currentTotalCritical(Number(last?.critical||last?.criticalNow||0))
-  });
+  let last=pts[pts.length-1]||null;
+  if(!last){
+    pts.push({date:today,entered:Number((daily.entered||{})[today]||0),exited:Number((daily.exited||{})[today]||0),critical:currentTotalCritical(0)});
+    return pts;
+  }
+  while(last.date<today){
+    const d=nextDateKey(last.date);
+    if(!d)break;
+    const entered=Number(last.entered||0)+Number((daily.entered||{})[d]||0);
+    const exited=Number(last.exited||0)+Number((daily.exited||{})[d]||0);
+    const stock=d===today?currentTotalCritical(Number(last.critical||last.criticalNow||0)):Math.max(0,Number(last.critical||last.criticalNow||0)+Number((daily.entered||{})[d]||0)-Number((daily.exited||{})[d]||0));
+    last={date:d,entered,exited,critical:stock};
+    pts.push(last);
+  }
   return pts;
 }
 function latestDateForView(){const view=currentView();const pts=trendThroughToday(view);return (pts.length?pts[pts.length-1].date:clean(view.generatedAt).slice(0,10)||clean(team.generatedAt).slice(0,10)||todayISO());}
 function earliestDateForView(){const view=currentView();const pts=view.trend||[];const first=(pts.length?pts[0].date:(view.minDate||team.minDate||latestDateForView()));return first&&first>DEFAULT_RANGE_START?first:DEFAULT_RANGE_START;}
-function setFullRange(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;if($("dateFrom"))$("dateFrom").value=earliestDateForView();if($("dateTo"))$("dateTo").value=latestDateForView();}
+function setFullRange(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;if($("dateFrom"))$("dateFrom").value=earliestDateForView();if($("dateTo"))$("dateTo").value=latestDateForView();lastKnownLatestDate=latestDateForView();}
 function periodEndDate(){return ($("dateTo")&&$("dateTo").value)||latestDateForView();}
 function periodStartDate(end){if(activePeriod==="all")return ($("dateFrom")&&$("dateFrom").value)||earliestDateForView();if(activePeriod==="day")return end;const d=new Date(end+"T00:00:00Z");d.setUTCDate(d.getUTCDate()-(activePeriod==="month"?29:6));const out=d.toISOString().slice(0,10);return out<earliestDateForView()?earliestDateForView():out;}
 function sumDaily(map,start,end){let total=0;Object.entries(map||{}).forEach(([k,v])=>{if(k>=start&&k<=end)total+=Number(v||0)});return total;}
@@ -2050,7 +2055,7 @@ function trendMarkup(key,current,previous,fmt="number"){
 }
 function claimFilterIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>`}
 function refreshIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>`}
-function clearDashboardFilters(){activeClaim="all";activePeriod="all";setFullRange();renderAll();}
+function clearDashboardFilters(){activeClaim="all";activePeriod="all";dateRangeManuallyChanged=false;setFullRange();renderAll();}
 function renderClaimButtons(){const opts=team.claimOptions||[{key:"all",label:"All Claims"},{key:"inField",label:"In Field Warranty Claims"},{key:"preDelivery",label:"Pre Delivery Warranty Claims"}];const box=$("claimSwitch");if(!box)return;box.className="claimSwitch filterTools";box.innerHTML=`<button class="filterIconBtn" id="clearClaimFilters" title="Clear filters" type="button">${refreshIcon()}</button><div class="filterDropdown"><button class="filterButton" type="button">${claimFilterIcon()}<span>Filters</span></button><div class="filterMenu">${opts.map(o=>`<button class="filterOption ${o.key===activeClaim?'active':''}" data-key="${esc(o.key)}" type="button">${esc(o.label)}</button>`).join("")}</div></div>`;box.querySelector("#clearClaimFilters").onclick=clearDashboardFilters;const dd=box.querySelector(".filterDropdown");box.querySelector(".filterButton").onclick=e=>{e.stopPropagation();dd.classList.toggle("open")};box.querySelectorAll(".filterOption").forEach(b=>b.onclick=()=>{activeClaim=b.dataset.key||"all";dd.classList.remove("open");renderAll()});}
 function currentView(){return (team.views&&team.views[activeClaim]) || team.views?.all || team;}
 function dailyCriticalTotalForTrend(p){const raw=Number(p.critical||p.criticalNow||0);return p.date===latestDateForView()?currentTotalCritical(raw):raw}
@@ -3085,7 +3090,21 @@ function renderLists(){const rawView=currentRawCriticalView();const rows=selecte
 function openDealerWorkbench(dealer){const key=dealerKeyForName(dealer);if(key)localStorage.setItem("dealerWorkspaceSelectedKey",key);localStorage.setItem("dealerWorkspaceSelectedName",dealer||"");window.location.href="dealer-workbench.html";}
 function toggleDealerList(){dealerListExpanded=!dealerListExpanded;renderLists();}
 
-function setDateDefaults(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;$("dateFrom").min=pts[0].date;$("dateTo").min=pts[0].date;if(activePeriod==="all"&&(!$('dateFrom').value||!$('dateTo').value)){setFullRange();return;}if(!$("dateFrom").value||$("dateFrom").value<pts[0].date)$("dateFrom").value=pts[0].date;if(!$("dateTo").value||$("dateTo").value>latestDateForView())$("dateTo").value=latestDateForView();}
+function setDateDefaults(){
+  const view=currentView(),pts=trendThroughToday(view);if(!pts.length)return;
+  const first=pts[0].date,latest=latestDateForView(),fromEl=$("dateFrom"),toEl=$("dateTo"),prevLatest=lastKnownLatestDate;
+  fromEl.min=first;toEl.min=first;toEl.max=latest;
+  const followsLiveEnd=!dateRangeManuallyChanged&&(!toEl.value||(prevLatest&&toEl.value===prevLatest)||toEl.value>=latest);
+  if(activePeriod==="all"){
+    if(followsLiveEnd||!fromEl.value||!toEl.value){setFullRange();return;}
+  }else if(followsLiveEnd){
+    toEl.value=latest;
+    fromEl.value=periodStartDate(latest);
+  }
+  if(!fromEl.value||fromEl.value<first)fromEl.value=first;
+  if(!toEl.value||toEl.value>latest)toEl.value=latest;
+  lastKnownLatestDate=latest;
+}
 
 function updateDateNotes(){const date=periodEndDate();const label=formatSnapshotDateLabel(date);document.querySelectorAll("[data-date-note]").forEach(el=>{el.textContent=label;el.title=`Snapshot date: ${date}`;});}
 function renderAll(){showCalcFloat(true,"Calculating...");renderPeriodButtons();renderClaimButtons();setDateDefaults();trendPoints=selectedTrend();updateDateNotes();renderKpis();renderHandlingSpeed();renderLists();renderRepairCostDistribution();renderApprovedMix();renderTeamAssignChart();bindTeamAssignPanelLink();drawTrend();hideCalcFloat();}
@@ -3093,6 +3112,6 @@ function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(pr
 function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}
 function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const enteredDelta=deltaInfoMetric("entered",hit.p.entered,prev?prev.entered:hit.p.entered);const criticalDelta=deltaInfoMetric("critical",hit.p.critical,prev?prev.critical:hit.p.critical);const exitedDelta=deltaInfoMetric("exited",hit.p.exited,prev?prev.exited:hit.p.exited);tip.innerHTML=`<b>Date: ${esc(hit.p.date)}</b>${tipRow("Entered cumulative","#3b82f6",hit.p.entered,enteredDelta)}${tipRow("Critical total","#fb6b1d",hit.p.critical,criticalDelta)}${tipRow("Exited cumulative","#16a34a",hit.p.exited,exitedDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
 async function load(){try{showCalcFloat(true,"Calculating...");$("loadError").style.display="none";const data=await readJson(MONITOR_ROOT+"/analytics/team");if(!data||typeof data!=="object")throw new Error("analytics/team is empty");team=data;activeClaim=team.defaultView||"all";await Promise.all([loadRawCritical().catch(()=>{rawCritical={loaded:false,views:{}}}),loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{employeeAnalytics=null})]);renderAll();hideCalcFloat()}catch(err){hideCalcFloat();$("loadError").innerHTML="Cannot load team analytics from Firebase. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll()}}
-$("dateFrom").addEventListener("change",()=>{renderAll()});$("dateTo").addEventListener("change",()=>{renderAll()});if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",drawTrend);bindTooltip();loadEmployeeStatusMapping();load();
+$("dateFrom").addEventListener("change",()=>{dateRangeManuallyChanged=true;renderAll()});$("dateTo").addEventListener("change",()=>{dateRangeManuallyChanged=true;renderAll()});if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",drawTrend);bindTooltip();loadEmployeeStatusMapping();load();
 const TEAM_DASHBOARD_AUTO_REFRESH_MS=5*60*1000;setInterval(()=>load(),TEAM_DASHBOARD_AUTO_REFRESH_MS);
 </script></body></html>
