@@ -722,7 +722,14 @@ def event_dealer_display(e: Dict[str, Any]) -> str:
 def group_dealer_materials(rows: list[Dict[str, Any]], delivered: bool = False) -> list[Dict[str, Any]]:
     groups: Dict[str, Dict[str, Any]] = {}
     for t in rows:
-        if is_closed_ticket_row(t) or is_partially_rejected_row(t):
+        # Undelivered backlog should exclude tickets that are closed or whose whole
+        # order is partially rejected. Delivered material, however, is historical
+        # evidence coming from fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER
+        # /Sales Order Details/Delivery Count, so it can legitimately live on a
+        # ticket that has since been closed or partially rejected. Do not filter
+        # those rows out before checking deliveryCount, otherwise the Delivered
+        # Material List becomes empty as soon as delivered tickets leave open work.
+        if not delivered and (is_closed_ticket_row(t) or is_partially_rejected_row(t)):
             continue
         for item in t.get("details") or []:
             try:
