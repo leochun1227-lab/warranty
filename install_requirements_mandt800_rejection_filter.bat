@@ -1,5 +1,5 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-python -m pip install --user requests pandas pyodbc firebase-admin
+python -m pip install --user requests pandas pyodbc firebase-admin openpyxl
 pause

@@ -31,8 +31,13 @@ if not exist "%~dp0firebase-service-account.json" (
 )
 
 set "FIREBASE_SA_PATH=%~dp0firebase-service-account.json"
+set "FIREBASE_DB_URL=https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app"
+set "SOURCE_ROOT=c4cTickets_test"
+set "FIREBASE_ROOT=c4cTickets_test"
+set "MONITOR_ROOT=ctmTicketStatusMonitorV44"
+set "PYTHONUNBUFFERED=1"
 
-python "%~dp0ctm_v44_history_safe_mandt800_rejection_filter.py" --once --company-file "%~dp0fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py"
+python -u "%~dp0ctm_v44_history_safe_mandt800_rejection_filter.py" --once --company-file "%~dp0fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py"
 
 echo.
 echo One-time test finished.
