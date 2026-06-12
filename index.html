@@ -151,7 +151,8 @@
 .dashboardMain .dashboardAnalysisGrid .speedPanel .agingRow.clickableRow:hover .agingTrack{
   box-shadow:0 0 0 3px rgba(59,130,246,.12)!important;
 }
-.dashboardMain .dashboardAnalysisGrid .speedPanel .durationValueGuide{
+.dashboardMain .dashboardAnalysisGrid .speedPanel .durationValueGuide,
+.featureSideStack .dashboardAnalysisGrid .speedPanel .durationValueGuide{
   display:inline-flex!important;
   align-items:center!important;
   gap:4px!important;
@@ -1498,6 +1499,17 @@
   border-color:#bfdbfe!important;
   box-shadow:0 12px 26px rgba(37,99,235,.13)!important;
 }
+
+.repairCostPie .statusPieSlice,
+.repairCostPie .statusPieLegendRow,
+.approvedBarChart .approvedBarItem{
+  cursor:pointer!important;
+}
+.repairCostPie .statusPieSlice:hover,
+.repairCostPie .statusPieLegendRow:hover,
+.approvedBarChart .approvedBarItem:hover{
+  filter:drop-shadow(0 4px 10px rgba(37,99,235,.16))!important;
+}
 .repairCostPanel>.panelTitle,
 .featureSideStack .dashboardAnalysisGrid .speedPanel .panelTitle,
 .featureSideStack .dashboardAnalysisGrid .statusMixPanel .panelTitle{
@@ -2436,16 +2448,45 @@ function repairCostBucketDefs(){
 function repairCostBucketFor(amount,buckets){
   return buckets.find(b=>amount>=b.min&&amount<b.max)||buckets[buckets.length-1];
 }
+function repairAnalyticsEntryMatchesPeriod(ticket){
+  if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return false;
+  if(hasTicketFilter()){
+    const {start,end}=periodBounds();
+    const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
+    return !!created&&created>=start&&created<=end;
+  }
+  return isMappedCritical(ticket,statusMapping);
+}
+function repairAnalyticsDashboardRow(entry){
+  const {ticket,roles,id}=entry;
+  const end=periodEndDate();
+  const days=criticalDurationDaysForRow(ticket,end);
+  return {
+    id:id||clean(ticket.TicketID||ticket.ticketID),
+    status:clean(ticket.TicketStatusText||ticket.statusText||mappedStatus(ticket,statusMapping))||"Critical",
+    customer:getField(ticket,["CustomerName","Customer Name","AccountName","Account Name","BuyerName","Buyer Name"])||"-",
+    claim:clean(getField(ticket,["TicketTypeText","Ticket Type Text","TicketType","Ticket Type","ClaimType","Claim Type"]))||claimKeyForTicket(ticket),
+    repair:getField(ticket,["RepairDescription","Repair Description","Subject","Description","TicketDescription","Ticket Description"])||"-",
+    dealer:standardDealerName(rawDealerName(ticket,roles)),
+    owner:rawAssignToName(ticket,roles),
+    employee:rawAssignToName(ticket,roles),
+    days:days==null?0:days,
+    agingDays:days==null?0:days
+  };
+}
+function repairAnalyticsEntries(){
+  return rawTicketEntries.filter(({ticket})=>repairAnalyticsEntryMatchesPeriod(ticket));
+}
+function repairCostBucketKey(bucket){
+  return `${bucket.min}-${bucket.max}`;
+}
+function repairCostBucketByKey(key){
+  return repairCostBucketDefs().find(b=>repairCostBucketKey(b)===key)||null;
+}
 function repairCostDistributionRows(){
   const buckets=repairCostBucketDefs();
   const filtered=hasTicketFilter();
-  const {start,end}=periodBounds();
-  rawTicketEntries.forEach(({ticket})=>{
-    if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
-    if(filtered){
-      const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
-      if(!created||created<start||created>end)return;
-    }else if(!isMappedCritical(ticket,statusMapping))return;
+  repairAnalyticsEntries().forEach(({ticket})=>{
     const amount=parseAmountIncludingTax(ticket.AmountIncludingTax);
     const bucket=repairCostBucketFor(amount,buckets);
     bucket.count++;
@@ -2456,7 +2497,7 @@ function repairCostDistributionRows(){
     const expected=currentTotalCritical(counted);
     if(expected>counted)buckets[0].count+=expected-counted;
   }
-  return buckets.filter(b=>b.count>0).map(b=>({label:b.label,count:b.count,details:[{label:"Tickets",count:b.count},{label:"Total cost",count:money(b.total)}]}));
+  return buckets.filter(b=>b.count>0).map(b=>({key:repairCostBucketKey(b),label:b.label,count:b.count,details:[{label:"Tickets",count:b.count},{label:"Total cost",count:money(b.total)}]}));
 }
 function repairCostDonutMarkup(rows){
   const colors=["#5b5cf6","#22c55e","#f59e0b","#fb7185","#8b5cf6","#94a3b8"];
@@ -2469,13 +2510,13 @@ function repairCostDonutMarkup(rows){
     const mid=(start+end)/2,p=statusPiePoint(85,85,48,mid);
     const totalCost=(row.details||[]).find(x=>x.label==="Total cost")?.count||"$0";
     const tip=`<b>${esc(row.label)}: ${num(count)} (${Math.round(pct)}%)</b>Total cost: ${esc(totalCost)}`;
-    return `<path class="statusPieSlice" d="${statusPiePath(85,85,72,start,end)}" fill="${colors[i%colors.length]}" data-status-tip="${esc(tip)}"></path>${pct>=7?`<text class="statusPiePct" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${Math.round(pct)}%</text>`:''}`;
+    return `<path class="statusPieSlice" role="button" tabindex="0" d="${statusPiePath(85,85,72,start,end)}" fill="${colors[i%colors.length]}" data-repair-cost-key="${esc(row.key)}" data-repair-cost-label="${esc(row.label)}" data-status-tip="${esc(tip)}"></path>${pct>=7?`<text class="statusPiePct" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${Math.round(pct)}%</text>`:''}`;
   }).join("");
   const legend=rows.map((row,i)=>{
     const count=Number(row.count||0),pct=Math.round(count/total*100);
     const totalCost=(row.details||[]).find(x=>x.label==="Total cost")?.count||"$0";
     const tip=`<b>${esc(row.label)}: ${num(count)} (${pct}%)</b>Total cost: ${esc(totalCost)}`;
-    return `<div class="statusPieLegendRow" data-status-tip="${esc(tip)}"><span class="statusPieLegendDot" style="background:${colors[i%colors.length]}"></span><span class="statusPieLegendLabel">${esc(row.label)} (${num(count)})</span></div>`;
+    return `<div class="statusPieLegendRow" role="button" tabindex="0" data-repair-cost-key="${esc(row.key)}" data-repair-cost-label="${esc(row.label)}" data-status-tip="${esc(tip)}"><span class="statusPieLegendDot" style="background:${colors[i%colors.length]}"></span><span class="statusPieLegendLabel">${esc(row.label)} (${num(count)})</span></div>`;
   }).join("");
   return `<div class="statusPieWrap"><svg class="statusPieSvg" viewBox="0 0 170 170" aria-label="Repair cost distribution">${slices}</svg></div><div class="statusPieLegend">${legend}</div><div id="repairCostHoverTip" class="statusMixHoverTip"></div>`;
 }
@@ -2663,19 +2704,35 @@ function openEmployeeModal(name){
   renderEmployeeModalWithLoading();
 }
 function closeEmployeeModal(){const modal=$("employeeModalBackdrop");if(modal)modal.classList.remove("active");selectedEmployeeName="";}
+function openRepairCostBucketTickets(key,label){
+  const bucket=repairCostBucketByKey(key);
+  if(!bucket)return;
+  const rows=repairAnalyticsEntries().filter(({ticket})=>{
+    const amount=parseAmountIncludingTax(ticket.AmountIncludingTax);
+    return amount>=bucket.min&&amount<bucket.max;
+  }).map(repairAnalyticsDashboardRow);
+  openDashboardTickets(rows,`Repair Analytics - ${label}`);
+}
+function bindRepairCostTicketLinks(box){
+  box.querySelectorAll("[data-repair-cost-key]").forEach(el=>{
+    el.onclick=e=>{e.preventDefault();e.stopPropagation();openRepairCostBucketTickets(el.dataset.repairCostKey,el.dataset.repairCostLabel);};
+    el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openRepairCostBucketTickets(el.dataset.repairCostKey,el.dataset.repairCostLabel);}};
+  });
+}
 function renderRepairCostDistribution(){
   const box=$("criticalLogRows");
   if(!box)return;
   box.className="statusPieLayout repairCostPie";
   box.innerHTML=repairCostDonutMarkup(repairCostDistributionRows());
   bindStatusMixTipsFor(box,$("repairCostHoverTip"));
+  bindRepairCostTicketLinks(box);
 }
 function approvedMixRows(){
   const {start,end}=periodBounds();
   const s=changeApprovalSummary(start,end);
   return [
-    {label:"Approved Tickets",count:Number(s.approved||0),details:[{label:"Approved Cost",count:money(s.approvedAmount)}]},
-    {label:"Unapproved Tickets",count:Number(s.unapproved||0),details:[{label:"Unapproved Cost",count:money(s.unapprovedAmount)}]}
+    {key:"approved",label:"Approved Tickets",count:Number(s.approved||0),details:[{label:"Approved Cost",count:money(s.approvedAmount)}]},
+    {key:"unapproved",label:"Unapproved Tickets",count:Number(s.unapproved||0),details:[{label:"Unapproved Cost",count:money(s.unapprovedAmount)}]}
   ].filter(x=>x.count>0);
 }
 function approvedBarChartMarkup(rows){
@@ -2689,8 +2746,49 @@ function approvedBarChartMarkup(rows){
     const height=Math.max(4,count/max*100);
     const detail=(row.details||[]).map(x=>`${esc(x.label)}: ${esc(x.count)}`).join("<br>");
     const tip=`<b>${esc(row.label)}: ${num(count)} (${pct}%)</b>${detail}`;
-    return `<div class="approvedBarItem" data-status-tip="${esc(tip)}"><div class="approvedBarTop"><span class="approvedBarCount">${num(count)}</span><span class="approvedBarPct">${pct}% of total</span></div><div class="approvedBarTrack"><span class="approvedBarFill" style="height:${height}%;background:linear-gradient(180deg,${colors[i%colors.length]},${i%2?"#e11d48":"#16a34a"})"></span></div><div class="approvedBarLabel"><span class="approvedBarDot" style="background:${colors[i%colors.length]}"></span><span>${esc(row.label)}</span></div></div>`;
+    return `<div class="approvedBarItem" role="button" tabindex="0" data-approval-key="${esc(row.key)}" data-approval-label="${esc(row.label)}" data-status-tip="${esc(tip)}"><div class="approvedBarTop"><span class="approvedBarCount">${num(count)}</span><span class="approvedBarPct">${pct}% of total</span></div><div class="approvedBarTrack"><span class="approvedBarFill" style="height:${height}%;background:linear-gradient(180deg,${colors[i%colors.length]},${i%2?"#e11d48":"#16a34a"})"></span></div><div class="approvedBarLabel"><span class="approvedBarDot" style="background:${colors[i%colors.length]}"></span><span>${esc(row.label)}</span></div></div>`;
   }).join("");
+}
+function repairAnalyticsDashboardRowFromLog(e){
+  const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);
+  if(entry)return repairAnalyticsDashboardRow(entry);
+  return {
+    id:clean(e.id||e.ticketId||e.TicketID),
+    status:[e.toCode,e.toStatus].map(clean).filter(Boolean).join(" ")||clean(e.status)||"Critical",
+    customer:clean(e.customer||e.name)||"-",
+    claim:clean(e.claim||e.claimType)||"-",
+    repair:clean(e.repair)||"-",
+    dealer:standardDealerName(e.dealer||""),
+    owner:clean(e.employee||e.owner)||"-",
+    employee:clean(e.employee||e.owner)||"-",
+    days:Number(e.durationDays??e.agingDays??e.ageDays??0)||0,
+    agingDays:Number(e.durationDays??e.agingDays??e.ageDays??0)||0
+  };
+}
+function approvalBucketTicketRows(key){
+  const {start,end}=periodBounds();
+  const logs=arrayFromMaybe(currentView().logs).filter(e=>{
+    const d=eventDateKey(e.detectedAt||e.date);
+    if(!d||d<start||d>end||clean(e.cls).toLowerCase()!=="exit"||!logMatchesClaim(e))return false;
+    const logKey=logIsUnapprovedExit(e)?"unapproved":"approved";
+    return logKey===key;
+  });
+  if(logs.length)return logs.map(repairAnalyticsDashboardRowFromLog);
+  return rawTicketEntries.filter(({ticket})=>{
+    const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
+    if(!created||created<start||created>end)return false;
+    if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return false;
+    return approvalBucket(ticket)===key;
+  }).map(repairAnalyticsDashboardRow);
+}
+function openApprovalBucketTickets(key,label){
+  openDashboardTickets(approvalBucketTicketRows(key),`Repair Analytics - ${label}`);
+}
+function bindApprovalTicketLinks(box){
+  box.querySelectorAll("[data-approval-key]").forEach(el=>{
+    el.onclick=e=>{e.preventDefault();e.stopPropagation();openApprovalBucketTickets(el.dataset.approvalKey,el.dataset.approvalLabel);};
+    el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openApprovalBucketTickets(el.dataset.approvalKey,el.dataset.approvalLabel);}};
+  });
 }
 function renderApprovedMix(){
   const box=$("approvedMixRows");
@@ -2698,6 +2796,7 @@ function renderApprovedMix(){
   box.className="approvedBarChart";
   box.innerHTML=approvedBarChartMarkup(approvedMixRows());
   bindStatusMixTipsFor(box,$("tooltip"));
+  bindApprovalTicketLinks(box);
 }
 function currentEmployeeAnalyticsView(){return (employeeAnalytics&&employeeAnalytics.views&&employeeAnalytics.views[activeClaim])?employeeAnalytics.views[activeClaim]:employeeAnalytics}
 function teamAssignRowsFromAnalytics(){
