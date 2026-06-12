@@ -1619,9 +1619,145 @@
 }
 .dateNote{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;border:1px solid #dbe4ef;border-radius:999px;background:#f8fbff;color:#64748b;padding:3px 8px;font-size:11px;line-height:1.2;font-weight:700;letter-spacing:.01em;box-shadow:inset 0 1px 0 rgba(255,255,255,.65)}.panelTitleRow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.panelTitleRow .panelTitle{margin:0}
 html{zoom:.8!important;}
+
+/* Four-card right rail: dealer, repair cost, status mix, and duration share one aligned column */
+.featureSideStack{
+  width:530px!important;
+  max-width:530px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:14px!important;
+  align-items:stretch!important;
+}
+.featureSideStack>.panel,
+.featureSideStack>.dashboardAnalysisGrid,
+.featureSideStack .dashboardAnalysisGrid>.panel{
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+  min-width:0!important;
+}
+.featureSideStack .dealerRankPanel{
+  padding:17px 20px 16px!important;
+  min-height:178px!important;
+}
+.featureSideStack .dealerRankPanel .panelTitleRow,
+.featureSideStack .sideRepairCostPanel .panelTitleRow,
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .panelTitleRow{
+  margin-bottom:12px!important;
+}
+.featureSideStack .dealerCriticalList{
+  gap:7px!important;
+}
+.featureSideStack .dealerCriticalRow{
+  min-height:22px!important;
+}
+.featureSideStack .dealerCriticalToggle{
+  height:32px!important;
+  margin-top:8px!important;
+}
+.featureSideStack .sideRepairCostPanel{
+  padding:18px 20px 16px!important;
+  min-height:228px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+}
+.featureSideStack .sideRepairCostPanel .panelTitle{
+  text-align:left!important;
+  width:auto!important;
+  margin:0!important;
+}
+.featureSideStack .sideRepairCostPanel .repairCostPie{
+  display:grid!important;
+  grid-template-columns:156px minmax(0,1fr)!important;
+  gap:18px!important;
+  align-items:center!important;
+  flex:1 1 auto!important;
+  min-height:156px!important;
+  margin-top:4px!important;
+}
+.featureSideStack .sideRepairCostPanel .statusPieWrap,
+.featureSideStack .sideRepairCostPanel .statusPieSvg{
+  width:156px!important;
+  height:156px!important;
+}
+.featureSideStack .sideRepairCostPanel .statusPieLegend{
+  gap:8px!important;
+}
+.featureSideStack .sideRepairCostPanel .statusPieLegendRow{
+  font-size:12px!important;
+  min-height:17px!important;
+}
+.featureSideStack .dashboardAnalysisGrid{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:14px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel{
+  min-height:228px!important;
+  padding:18px 20px 16px!important;
+  order:0!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLayout{
+  grid-template-columns:156px minmax(0,1fr)!important;
+  gap:18px!important;
+  min-height:156px!important;
+  margin-top:4px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieWrap,
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieSvg{
+  width:156px!important;
+  height:156px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLegend{
+  gap:8px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel{
+  min-height:214px!important;
+  padding:17px 20px 16px!important;
+  order:1!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .panelHead{
+  margin:0 0 6px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRows{
+  gap:10px!important;
+  margin-top:10px!important;
+  align-content:start!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRow{
+  min-height:24px!important;
+  grid-template-columns:90px minmax(0,1fr) 70px!important;
+}
+.featureSideStack .dashboardAnalysisGrid .speedPanel .agingTrack{
+  height:12px!important;
+}
+.approvalAnalyticsPanel .repairComboGrid{
+  grid-template-columns:1fr!important;
+}
+.approvalAnalyticsPanel .approvedBarChart{
+  min-height:220px!important;
+}
+@media(max-width:1280px){
+  .featureSideStack{
+    width:100%!important;
+    max-width:none!important;
+  }
+}
+@media(max-width:760px){
+  .featureSideStack .sideRepairCostPanel .repairCostPie,
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLayout{
+    grid-template-columns:1fr!important;
+  }
+  .featureSideStack .sideRepairCostPanel .statusPieWrap,
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieWrap{
+    margin:0 auto!important;
+  }
+}
 </style>
 </head>
-<body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></button><a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a><div class="navDivider"></div><div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a></aside><main class="main"><div class="pageTop"><div><h1 class="pageTitle">After-Sales Team Dashboard</h1></div><div class="topActions"><div id="periodSwitch" class="changeSwitch"></div><div id="claimSwitch" class="claimSwitch"></div></div></div><div id="loadError" class="error"></div><section class="dashboardTop"><div class="dashboardMain"><section class="teamKpiGrid"><div class="kpi totalCriticalCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Total Tickets</div><div class="kpiValue" id="kpiCritical">0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8.2 4.5H5.8A1.8 1.8 0 0 0 4 6.3v2.4c0 .58.28 1.13.74 1.46L7.5 12l-2.76 1.84A1.8 1.8 0 0 0 4 15.3v2.4c0 1 .8 1.8 1.8 1.8h2.4c.58 0 1.13-.28 1.46-.74L12 16.5l1.84 2.26c.33.46.88.74 1.46.74h2.4c1 0 1.8-.8 1.8-1.8v-2.4c0-.58-.28-1.13-.74-1.46L16.5 12l2.26-1.84c.46-.33.74-.88.74-1.46V6.3A1.8 1.8 0 0 0 17.7 4.5h-2.4c-.58 0-1.13.28-1.46.74L12 7.5 10.16 5.24A1.8 1.8 0 0 0 8.7 4.5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiCriticalTrend"></div></div><div class="kpi approvedTicketsCountCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Tickets</div><div class="kpiValue" id="kpiApprovedTickets">0</div></div><div class="kpiIcon customGreen" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.2" stroke="currentColor" stroke-width="1.9"/><path d="M8.6 12.3l2.2 2.2 4.8-5.2" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTicketsTrend"></div></div><div class="kpi unapprovedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved Tickets</div><div class="kpiValue" id="kpiUnapproved">0</div></div><div class="kpiIcon customAmber" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.9"/><path d="M12 8.1v4.1l2.9 1.9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiUnapprovedTrend"></div></div><div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">2-week benchmark</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div><div class="kpi approvedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Cost</div><div class="kpiValue" id="kpiApproved">$0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6.4" rx="5.2" ry="2.3" stroke="currentColor" stroke-width="1.8"/><path d="M6.8 6.4v4.2c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3V6.4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 10.6v4.1c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-4.1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 14.7v2.9c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-2.9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTrend"></div></div><div class="kpi avgCostCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Avg Cost/Ticket</div><div class="kpiValue" id="kpiAvgCost">$0</div></div><div class="kpiIcon customGreen" aria-hidden="true">$</div></div><div class="kpiTrend" id="kpiAvgCostTrend"></div></div><div class="kpi exitedValueCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Estimated clear time</div><div class="kpiValue" id="kpiRate">-</div></div><div class="kpiIcon customOrange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4.5" y="6.5" width="15" height="11" rx="2.4" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 10h8.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7.5 13.4h4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16.8" cy="13.8" r="1.8" stroke="currentColor" stroke-width="1.6"/></svg></div></div><div class="kpiTrend" id="kpiRateTrend"></div></div><div class="kpi ratioKpiCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved / Approved</div><div class="kpiValue" id="kpiUnapprovedRatio">0.00%</div><div class="ratioBase" id="kpiRatioBase">0 / 0</div></div><div class="kpiIcon">%</div></div><div class="kpiTrend" id="kpiRatioTrend"></div></div></section><section class="trendLogGrid"><section class="panel trendPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Status Trends by Date</h2></div></div><div class="controls"><label>From <input id="dateFrom" class="input" type="date"></label><label>To <input id="dateTo" class="input" type="date"></label></div></div><div class="chartWrap"><canvas id="trendChart"></canvas></div><div class="legend"><span><i class="dot blue"></i>Entered Critical cumulative</span><span><i class="dot orange"></i>Critical total - right axis</span><span><i class="dot green"></i>Exited Critical cumulative</span></div></section><section class="panel criticalLogPanel repairCostPanel"><div class="panelTitleRow"><h2 class="panelTitle">Repair Analytics</h2><span class="dateNote" data-date-note>through --</span></div><div class="repairComboGrid"><div class="repairComboItem"><h3 class="repairComboTitle">Tickets Repair Cost Distribution</h3><div id="criticalLogRows" class="statusPieLayout repairCostPie"></div></div><div class="repairComboItem"><h3 class="repairComboTitle">Approved vs Unapproved Tickets</h3><div id="approvedMixRows" class="statusPieLayout approvedMixPie"></div></div></div></section></section><section class="panel teamAssignPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Owner Workload</h2><span class="dateNote" data-date-note>through --</span></div></div><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed</span><span><i style="background:#4f46e5"></i>Current critical tickets</span></div><div id="employeeStatusMapping" class="employeeStatusMapping"></div></section></div><aside class="featureSideStack"><div class="panel dealerRankPanel"><div class="panelTitleRow"><h2 class="panelTitle">Top Critical Tickets by Dealer</h2><span class="dateNote" data-date-note>through --</span></div><div id="dealerBars" class="dealerCriticalList"></div></div><section class="dashboardAnalysisGrid"><div class="panel speedPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Duration Distribution</h2></div></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel statusMixPanel"><div class="panelTitleRow"><h2 class="panelTitle">Critical Tickets Status Mix</h2></div><div id="statusMix" class="mixRows"></div></div></section></aside></section></main></div><div id="tooltip" class="tooltip"></div><div id="employeeModalBackdrop" class="employeeModalBackdrop">
+<body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></button><a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a><div class="navDivider"></div><div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a></aside><main class="main"><div class="pageTop"><div><h1 class="pageTitle">After-Sales Team Dashboard</h1></div><div class="topActions"><div id="periodSwitch" class="changeSwitch"></div><div id="claimSwitch" class="claimSwitch"></div></div></div><div id="loadError" class="error"></div><section class="dashboardTop"><div class="dashboardMain"><section class="teamKpiGrid"><div class="kpi totalCriticalCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Total Tickets</div><div class="kpiValue" id="kpiCritical">0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8.2 4.5H5.8A1.8 1.8 0 0 0 4 6.3v2.4c0 .58.28 1.13.74 1.46L7.5 12l-2.76 1.84A1.8 1.8 0 0 0 4 15.3v2.4c0 1 .8 1.8 1.8 1.8h2.4c.58 0 1.13-.28 1.46-.74L12 16.5l1.84 2.26c.33.46.88.74 1.46.74h2.4c1 0 1.8-.8 1.8-1.8v-2.4c0-.58-.28-1.13-.74-1.46L16.5 12l2.26-1.84c.46-.33.74-.88.74-1.46V6.3A1.8 1.8 0 0 0 17.7 4.5h-2.4c-.58 0-1.13.28-1.46.74L12 7.5 10.16 5.24A1.8 1.8 0 0 0 8.7 4.5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiCriticalTrend"></div></div><div class="kpi approvedTicketsCountCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Tickets</div><div class="kpiValue" id="kpiApprovedTickets">0</div></div><div class="kpiIcon customGreen" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.2" stroke="currentColor" stroke-width="1.9"/><path d="M8.6 12.3l2.2 2.2 4.8-5.2" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTicketsTrend"></div></div><div class="kpi unapprovedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved Tickets</div><div class="kpiValue" id="kpiUnapproved">0</div></div><div class="kpiIcon customAmber" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.9"/><path d="M12 8.1v4.1l2.9 1.9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiUnapprovedTrend"></div></div><div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">2-week benchmark</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div><div class="kpi approvedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Cost</div><div class="kpiValue" id="kpiApproved">$0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6.4" rx="5.2" ry="2.3" stroke="currentColor" stroke-width="1.8"/><path d="M6.8 6.4v4.2c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3V6.4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 10.6v4.1c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-4.1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 14.7v2.9c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-2.9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTrend"></div></div><div class="kpi avgCostCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Avg Cost/Ticket</div><div class="kpiValue" id="kpiAvgCost">$0</div></div><div class="kpiIcon customGreen" aria-hidden="true">$</div></div><div class="kpiTrend" id="kpiAvgCostTrend"></div></div><div class="kpi exitedValueCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Estimated clear time</div><div class="kpiValue" id="kpiRate">-</div></div><div class="kpiIcon customOrange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4.5" y="6.5" width="15" height="11" rx="2.4" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 10h8.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7.5 13.4h4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16.8" cy="13.8" r="1.8" stroke="currentColor" stroke-width="1.6"/></svg></div></div><div class="kpiTrend" id="kpiRateTrend"></div></div><div class="kpi ratioKpiCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved / Approved</div><div class="kpiValue" id="kpiUnapprovedRatio">0.00%</div><div class="ratioBase" id="kpiRatioBase">0 / 0</div></div><div class="kpiIcon">%</div></div><div class="kpiTrend" id="kpiRatioTrend"></div></div></section><section class="trendLogGrid"><section class="panel trendPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Status Trends by Date</h2></div></div><div class="controls"><label>From <input id="dateFrom" class="input" type="date"></label><label>To <input id="dateTo" class="input" type="date"></label></div></div><div class="chartWrap"><canvas id="trendChart"></canvas></div><div class="legend"><span><i class="dot blue"></i>Entered Critical cumulative</span><span><i class="dot orange"></i>Critical total - right axis</span><span><i class="dot green"></i>Exited Critical cumulative</span></div></section><section class="panel criticalLogPanel repairCostPanel approvalAnalyticsPanel"><div class="panelTitleRow"><h2 class="panelTitle">Repair Analytics</h2><span class="dateNote" data-date-note>through --</span></div><div class="repairComboGrid"><div class="repairComboItem"><h3 class="repairComboTitle">Approved vs Unapproved Tickets</h3><div id="approvedMixRows" class="statusPieLayout approvedMixPie"></div></div></div></section></section><section class="panel teamAssignPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Owner Workload</h2><span class="dateNote" data-date-note>through --</span></div></div><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed</span><span><i style="background:#4f46e5"></i>Current critical tickets</span></div><div id="employeeStatusMapping" class="employeeStatusMapping"></div></section></div><aside class="featureSideStack"><div class="panel dealerRankPanel"><div class="panelTitleRow"><h2 class="panelTitle">Top Critical Tickets by Dealer</h2><span class="dateNote" data-date-note>through --</span></div><div id="dealerBars" class="dealerCriticalList"></div></div><section class="panel repairCostPanel sideRepairCostPanel"><div class="panelTitleRow"><h2 class="panelTitle">Tickets Repair Cost Distribution</h2><span class="dateNote" data-date-note>through --</span></div><div id="criticalLogRows" class="statusPieLayout repairCostPie"></div></section><section class="dashboardAnalysisGrid"><div class="panel speedPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Duration Distribution</h2></div></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel statusMixPanel"><div class="panelTitleRow"><h2 class="panelTitle">Critical Tickets Status Mix</h2></div><div id="statusMix" class="mixRows"></div></div></section></aside></section></main></div><div id="tooltip" class="tooltip"></div><div id="employeeModalBackdrop" class="employeeModalBackdrop">
   <section class="employeeModal" role="dialog" aria-modal="true" aria-label="Employee workload details">
     <div class="employeeModalHead">
       <div class="employeePickerWrap"><label class="employeePickerLabel" for="employeePicker">Employee</label><select id="employeePicker" class="employeePicker"></select></div>
