@@ -767,7 +767,7 @@
 .teamAssignPanel{
   margin:0!important;
   padding:18px 20px 16px!important;
-  cursor:pointer!important;
+  cursor:default!important;
 }
 .teamAssignPanel .panelHead{
   margin-bottom:12px!important;
@@ -922,9 +922,22 @@
 }
 .teamAssignRow{
   min-height:36px!important;
+  position:relative!important;
+  border-radius:12px!important;
+  transition:background .16s ease, box-shadow .16s ease!important;
+}
+.teamAssignRow:hover,
+.teamAssignRow:focus-within{
+  background:#f8fbff!important;
+  box-shadow:0 0 0 2px #60a5fa, 0 8px 22px rgba(37,99,235,.14)!important;
 }
 .teamAssignTrack{
   height:20px!important;
+  cursor:pointer!important;
+  outline:none!important;
+}
+.teamAssignTrack:focus-visible{
+  box-shadow:0 0 0 3px rgba(96,165,250,.45)!important;
 }
 .teamAssignRed{
   top:4px!important;
@@ -2637,12 +2650,12 @@ function renderTeamAssignChart(){
     const blueInline=blueValue&&!labelsOverlap?`<span class="teamAssignInline" style="left:${Math.max(bluePct,8)}%">${blueLabel}</span>`:"";
     const exited=isEmployeeExited(row.name);
     const nameLabel=`${esc(row.name)}${exited?`<span class="teamAssignExitedBadge">Exited</span>`:""}`;
-    return `<div class="teamAssignRow" role="button" tabindex="0" data-employee="${esc(row.name)}"><div class="teamAssignName" title="${esc(row.name)}${exited?' - Exited':''}">${nameLabel}</div><div class="teamAssignTrack"><div class="${redIsBase?'teamAssignRed':'teamAssignBlue'}" style="width:${redIsBase?redPct:bluePct}%"></div><div class="${redIsBase?'teamAssignBlue':'teamAssignRed'}" style="width:${redIsBase?bluePct:redPct}%"></div>${redInline}${blueInline}</div><div class="teamAssignValue"><span class="redValue">${redLabel}</span> / <span class="blueValue">${blueLabel}</span></div></div>`;
+    return `<div class="teamAssignRow"><div class="teamAssignName" title="${esc(row.name)}${exited?' - Exited':''}">${nameLabel}</div><div class="teamAssignTrack" role="button" tabindex="0" data-employee="${esc(row.name)}" aria-label="Open ${esc(row.name)} workload details" title="Open ${esc(row.name)} workload details"><div class="${redIsBase?'teamAssignRed':'teamAssignBlue'}" style="width:${redIsBase?redPct:bluePct}%"></div><div class="${redIsBase?'teamAssignBlue':'teamAssignRed'}" style="width:${redIsBase?bluePct:redPct}%"></div>${redInline}${blueInline}</div><div class="teamAssignValue"><span class="redValue">${redLabel}</span> / <span class="blueValue">${blueLabel}</span></div></div>`;
   }).join("");
   renderEmployeeStatusMapping();
-  box.querySelectorAll(".teamAssignRow[data-employee]").forEach(row=>{
-    row.onclick=()=>openEmployeeModal(row.dataset.employee);
-    row.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openEmployeeModal(row.dataset.employee);}};
+  box.querySelectorAll(".teamAssignTrack[data-employee]").forEach(track=>{
+    track.onclick=e=>{e.stopPropagation();openEmployeeModal(track.dataset.employee);};
+    track.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openEmployeeModal(track.dataset.employee);}};
   });
 }
 function bindTeamAssignPanelLink(){
