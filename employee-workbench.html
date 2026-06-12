@@ -2431,7 +2431,51 @@ body .app main.main > .employeeHero .filterMenu{
   font-size:11px!important;
 }
 html{zoom:.8!important;}
-</style></head>
+</style><style>
+/* Final owner workload number spacing: keep red/blue labels close, readable, and never overlapping. */
+.employeePanel .employeeBarTrack .employeeEndValue,
+.employeePanel .employeeBarTrack .employeeEndValue.redValue,
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  transform:translate(-50%,-50%)!important;
+  margin-left:0!important;
+  top:50%!important;
+  height:16px!important;
+  min-width:22px!important;
+  padding:0 6px!important;
+  border-radius:999px!important;
+  font-family:"Arial","Segoe UI",sans-serif!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  line-height:16px!important;
+  letter-spacing:-.01em!important;
+  font-variant-numeric:tabular-nums!important;
+  text-align:center!important;
+  text-shadow:none!important;
+  box-shadow:0 1px 2px rgba(15,23,42,.08)!important;
+  z-index:6!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue.redValue{
+  color:#be123c!important;
+  background:#fff1f5!important;
+  border:1px solid rgba(244,63,94,.28)!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  color:#1d4ed8!important;
+  background:#eff6ff!important;
+  border:1px solid rgba(59,130,246,.24)!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue.closeValue{
+  min-width:21px!important;
+  padding:0 5px!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue.closeValue.before{
+  transform:translate(calc(-100% - 2px),-50%)!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue.closeValue.after{
+  transform:translate(2px,-50%)!important;
+}
+</style>
+</head>
 <body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><a class="navLink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></a><a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Internal Employees</span></button><a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a><div class="navDivider"></div><div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a></aside><main class="main"><section class="employeeHero"><div class="employeeHeroTop"><div><div class="employeeEyebrow">Employee analytics</div><h1 class="pageTitle">Internal Employees</h1></div><div class="employeeHeroActions"><div id="periodSwitch" class="claimSwitch"></div><div id="claimSwitch" class="claimSwitch"></div><label class="dateGroup">From <input id="dateFrom" class="input" type="date" min="2026-05-25"></label><label class="dateGroup">To <input id="dateTo" class="input" type="date" min="2026-05-25"></label></div></div></section><div id="loadError" class="error"></div>
 <section id="calcStatus" class="calcStatus" aria-hidden="true"><div id="calcStep1"></div><div id="calcStep2"></div><div id="calcStep3"></div></section>
 <section class="kpis"><div class="kpi"><div class="kpiLabel">Critical Tickets</div><div class="kpiValue" id="kpiTickets">0</div><div class="metricTrend" id="kpiTicketsTrend"></div></div><div class="kpi"><div class="kpiLabel">Approved Tickets</div><div class="kpiValue" id="partsApprovedCount">0</div><div class="metricTrend" id="partsApprovedTrend"></div></div><div class="kpi"><div class="kpiLabel">Unapproved Tickets</div><div class="kpiValue" id="partsUnapprovedCount">0</div><div class="metricTrend" id="partsUnapprovedTrend"></div></div><div class="kpi"><div class="kpiLabel">Weekly Rate</div><div class="kpiValue" id="kpiWeeklyRate">0%</div><div class="metricTrend" id="kpiWeeklyRateTrend"></div></div></section>
@@ -2862,6 +2906,24 @@ function recalc(){
 function prepareCanvas(c){const dpr=window.devicePixelRatio||1,w=c.clientWidth||900,h=c.clientHeight||520;c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);return{ctx,w,h}}
 function roundRect(ctx,x,y,w,h,r){const rr=Math.min(r,Math.abs(w)/2,Math.abs(h)/2);ctx.beginPath();ctx.moveTo(x+rr,y);ctx.arcTo(x+w,y,x+w,y+h,rr);ctx.arcTo(x+w,y+h,x,y+h,rr);ctx.arcTo(x,y+h,x,y,rr);ctx.arcTo(x,y,x+w,y,rr);ctx.closePath()}
 function shorten(s,max=27){s=clean(s);return s.length>max?s.slice(0,max-1)+'...':s}
+function employeeBarLabelPositions(redPct,totalPct,redValue,totalValue){
+  const clamp=(value,min=7,max=95)=>Math.max(min,Math.min(max,value));
+  let red=clamp(Number(redPct||0));
+  let blue=clamp(Number(totalPct||0));
+  if(!(redValue>0)||!(totalValue>0)) return {red,blue,close:false,redSide:'',blueSide:''};
+  const closeThreshold=12;
+  const diff=Math.abs(red-blue);
+  if(diff>closeThreshold) return {red,blue,close:false,redSide:'',blueSide:''};
+  const center=clamp((red+blue)/2,11,91);
+  const redIsLeft=red<=blue;
+  return {
+    red:center,
+    blue:center,
+    close:true,
+    redSide:redIsLeft?'before':'after',
+    blueSide:redIsLeft?'after':'before'
+  };
+}
 function drawEmployeeChart(){
   const wrap=$('employeeBarList'); const axis=$('employeeChartAxis'); if(!wrap)return; chartAreas=[];
   const data=employeeStats.slice(0,12);
@@ -2880,13 +2942,9 @@ function drawEmployeeChart(){
     const redLabel=selectedMetric==='totalRemoved'?num(redValue,0):num(redValue,1);
     const blueLabel=num(s.total,0);
     const redIsBase=redPct>=totalPct;
-    const redLeft=Math.min(98,Math.max(redPct,12));
-    const blueLeft=Math.min(98,Math.max(totalPct,12));
-    const labelsOverlap=redValue>0&&s.total>0&&Math.abs(redPct-totalPct)<8;
-    const redTop='50%';
-    const blueTop='50%';
-    const redSpan=redValue>0&&!labelsOverlap?`<span class="employeeInlineValue employeeEndValue redValue" style="left:${redLeft}%;top:${redTop}">${redLabel}</span>`:'';
-    const blueSpan=s.total>0&&!labelsOverlap?`<span class="employeeInlineValue employeeEndValue blueValue" style="left:${blueLeft}%;top:${blueTop}">${blueLabel}</span>`:'';
+    const labelPositions=employeeBarLabelPositions(redPct,totalPct,redValue,s.total);
+    const redSpan=redValue>0?`<span class="employeeInlineValue employeeEndValue redValue ${labelPositions.close?'closeValue '+labelPositions.redSide:''}" style="left:${labelPositions.red}%;top:50%">${redLabel}</span>`:'';
+    const blueSpan=s.total>0?`<span class="employeeInlineValue employeeEndValue blueValue ${labelPositions.close?'closeValue '+labelPositions.blueSide:''}" style="left:${labelPositions.blue}%;top:50%">${blueLabel}</span>`:'';
     return `<div class="employeeBarRow ${active?'active':''}" data-employee="${esc(s.name)}" title="Click to filter ${esc(s.name)}"><div class="employeeBarName">${employeeNameHtml(s.name)}</div><div class="employeeBarTrack"><div class="${redIsBase?'employeeBarRemoved employeeBarFillBase':'employeeBarTotal employeeBarFillBase'}" style="width:${redIsBase?redPct:totalPct}%"></div><div class="${redIsBase?'employeeBarTotal employeeBarFillOverlay':'employeeBarRemoved employeeBarFillOverlay'}" style="width:${redIsBase?totalPct:redPct}%"></div>${redSpan}${blueSpan}</div><div class="employeeBarValue"><span style="color:#be123c">${redLabel}</span> / <span style="color:#1d4ed8">${blueLabel}</span></div></div>`;
   }).join('');
   if(axis){axis.innerHTML=`<div></div><div class="axisLine"><span>0</span><span>${num(max/4,0)}</span><span>${num(max/2,0)}</span><span>${num(max*3/4,0)}</span><span>${num(max,0)}</span></div><div></div>`;}
