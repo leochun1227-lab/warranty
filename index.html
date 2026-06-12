@@ -145,6 +145,26 @@
   height:100%!important;
   border-radius:999px!important;
 }
+.dashboardMain .dashboardAnalysisGrid .speedPanel .agingRow.clickableRow{
+  cursor:pointer!important;
+}
+.dashboardMain .dashboardAnalysisGrid .speedPanel .agingRow.clickableRow:hover .agingTrack{
+  box-shadow:0 0 0 3px rgba(59,130,246,.12)!important;
+}
+.dashboardMain .dashboardAnalysisGrid .speedPanel .durationValueGuide{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  color:#1e3a8a!important;
+  background:rgba(255,255,255,.92)!important;
+  border:1px solid rgba(147,197,253,.52)!important;
+  border-radius:999px!important;
+  padding:2px 6px!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  line-height:1!important;
+  box-shadow:0 1px 3px rgba(15,23,42,.10)!important;
+}
 .dashboardMain .dashboardAnalysisGrid .speedPanel .agingValue{
   color:#475569!important;
   font-size:12px!important;
@@ -885,13 +905,8 @@
     }
     .teamAssignCallout::before,
     .teamAssignCallout::after{
-      content:""!important;
-      position:absolute!important;
-      top:50%!important;
-      width:10px!important;
-      height:1px!important;
-      background:currentColor!important;
-      opacity:.82!important;
+      content:none!important;
+      display:none!important;
     }
     .teamAssignCallout.left::after{
       left:100%!important;
@@ -1971,7 +1986,7 @@ function statusPiePoint(cx,cy,r,angle){
   const rad=(angle-90)*Math.PI/180;
   return {x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};
 }
-function distributionDonutMarkup(rows,centerLabel){
+function distributionDonutMarkup(rows,centerLabel,clickableStatus=false){
   const colors=["#5b5cf6","#22c55e","#f59e0b","#fb7185","#8b5cf6","#94a3b8"];
   const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
   if(!total)return `<div class="speedEmpty">No status mix found for this claim type and selected period.</div>`;
@@ -1988,7 +2003,8 @@ function distributionDonutMarkup(rows,centerLabel){
     const tip=(row.details&&row.details.length)
       ? `<b>${esc(row.label)}: ${num(count)} (${Math.round(pct)}%)</b>${row.details.map(x=>`${esc(x.label)}: ${detailValue(x.count)}`).join('<br>')}`
       : `<b>${esc(row.label)}</b>${num(count)} tickets - ${Math.round(pct)}%`;
-    return `<path class="statusPieSlice" d="${statusPiePath(85,85,72,start,end)}" fill="${colors[i%colors.length]}" data-status-tip="${esc(tip)}"></path>${pct>=7?`<text class="statusPiePct" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${Math.round(pct)}%</text>`:''}`;
+    const groupAttr=clickableStatus?` data-status-group="${i}"`:"";
+    return `<path class="statusPieSlice" d="${statusPiePath(85,85,72,start,end)}" fill="${colors[i%colors.length]}" data-status-tip="${esc(tip)}"${groupAttr}></path>${pct>=7?`<text class="statusPiePct" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${Math.round(pct)}%</text>`:''}`;
   }).join("");
   const legend=rows.map((row,i)=>{
     const count=Number(row.count||0);
@@ -1996,7 +2012,8 @@ function distributionDonutMarkup(rows,centerLabel){
     const tip=(row.details&&row.details.length)
       ? `<b>${esc(row.label)}: ${num(count)} (${pct}%)</b>${row.details.map(x=>`${esc(x.label)}: ${detailValue(x.count)}`).join('<br>')}`
       : `<b>${esc(row.label)}</b>${num(count)} tickets - ${pct}%`;
-    return `<div class="statusPieLegendRow" data-status-tip="${esc(tip)}"><span class="statusPieLegendDot" style="background:${colors[i%colors.length]}"></span><span class="statusPieLegendLabel">${esc(row.label)} (${num(count)})</span></div>`;
+    const groupAttrs=clickableStatus?` data-status-group="${i}" role="button" tabindex="0" title="Open ${esc(row.label)} tickets"`:"";
+    return `<div class="statusPieLegendRow" data-status-tip="${esc(tip)}"${groupAttrs}><span class="statusPieLegendDot" style="background:${colors[i%colors.length]}"></span><span class="statusPieLegendLabel">${esc(row.label)} (${num(count)})</span></div>`;
   }).join("");
   return `<div class="statusPieWrap"><svg class="statusPieSvg" viewBox="0 0 170 170" aria-label="${esc(centerLabel)} status distribution">${slices}</svg></div><div class="statusPieLegend">${legend}</div><div id="statusMixHoverTip" class="statusMixHoverTip"></div>`;
 }
@@ -2014,6 +2031,22 @@ function bindStatusMixTipsFor(box,tip){
       tip.style.top=(e.clientY+14)+"px";
     };
     el.onmouseleave=()=>{tip.style.display="none";};
+    if(el.dataset.statusGroup!=null){
+      el.onclick=e=>{
+        e.stopPropagation();
+        const rows=window.__dashboardStatusDonutRows||[];
+        const row=rows[Number(el.dataset.statusGroup)];
+        if(row)openStatusBucketTickets(row.label,row.details);
+      };
+      el.onkeydown=e=>{
+        if(e.key==="Enter"||e.key===" "){
+          e.preventDefault();
+          const rows=window.__dashboardStatusDonutRows||[];
+          const row=rows[Number(el.dataset.statusGroup)];
+          if(row)openStatusBucketTickets(row.label,row.details);
+        }
+      };
+    }
   });
 }
 function criticalDurationDaysForRow(row,endDate){
@@ -2166,6 +2199,51 @@ function renderAnalysisDateNotes(){
   setAnalysisDateNote(".featureSideStack .dashboardAnalysisGrid .speedPanel",end);
   setAnalysisDateNote(".featureSideStack .dashboardAnalysisGrid .statusMixPanel",end);
 }
+function durationBucketMatch(row,key){
+  const d=Number(row&&row.days);
+  if(!Number.isFinite(d))return key==="overFourteenDays";
+  if(key==="leOneDay")return d<=1;
+  if(key==="oneToThreeDays")return d>1&&d<=3;
+  if(key==="threeToSevenDays")return d>3&&d<=7;
+  if(key==="eightToFourteenDays")return d>7&&d<=14;
+  if(key==="overFourteenDays")return d>14;
+  return false;
+}
+function dashboardTicketPayload(row){
+  return {
+    id:clean(row.id||row.ticketId||row.TicketID),
+    status:clean(row.status)||"Critical",
+    customer:clean(row.customer)||"-",
+    claim:clean(row.claim)||"-",
+    repair:clean(row.repair)||"-",
+    employee:clean(row.owner||row.employee)||"-",
+    owner:clean(row.owner||row.employee)||"-",
+    agingDays:Number(row.days??row.agingDays??0)||0,
+    days:Number(row.days??row.agingDays??0)||0,
+    dealer:clean(row.dealer)||"",
+    isCritical:true,
+    dashboardFilter:true
+  };
+}
+function openDashboardTickets(rows,label){
+  const payload=(rows||[]).map(dashboardTicketPayload).filter(t=>t.id||t.customer||t.dealer);
+  try{
+    localStorage.setItem("dealerWorkbenchDashboardTickets",JSON.stringify(payload));
+    localStorage.setItem("dealerWorkbenchDashboardTicketsLabel",label||"Dashboard tickets");
+  }catch(e){}
+  window.location.href="dealer-workbench.html?dashboardTickets=1#tickets";
+}
+function openDurationBucketTickets(key,label){
+  const rows=criticalDurationRows().filter(row=>durationBucketMatch(row,key));
+  openDashboardTickets(rows,`Critical Duration Distribution - ${label}`);
+}
+function openStatusBucketTickets(label,details){
+  const labels=(details&&details.length?details.map(x=>clean(x.label)): [clean(label)]).filter(Boolean);
+  const set=new Set(labels);
+  const rows=criticalSnapshotRowsAt(periodEndDate()).filter(row=>set.has(clean(row.status)||"Unknown"));
+  openDashboardTickets(rows,`Critical Tickets Status Mix - ${label}`);
+}
+
 function bindDurationDatePicker(){
   const input=$("durationSnapshotDate");
   if(!input)return;
@@ -2198,10 +2276,14 @@ function renderHandlingSpeed(){
       const pct=total?Math.round(count/total*100):0;
       const width=Math.max(4,Math.round(count/max*100));
       const color=colors[i%colors.length];
-      return `<div class="agingRow"><div class="agingLabel">${esc(row.label)}</div><div class="agingTrack"><div class="agingFill" style="width:${width}%;background:linear-gradient(90deg,${color},${color}cc)"></div></div><div class="agingValue">${num(count)}<small>${pct}%</small></div></div>`;
+      return `<div class="agingRow clickableRow" role="button" tabindex="0" data-duration-key="${esc(row.key)}" data-duration-label="${esc(row.label)}" title="Open tickets in ${esc(row.label)}"><div class="agingLabel">${esc(row.label)}</div><div class="agingTrack"><div class="agingFill" style="width:${width}%;background:linear-gradient(90deg,${color},${color}cc)"></div></div><div class="agingValue"><span class="durationValueGuide">${num(count)}<small>${pct}%</small></span></div></div>`;
     }).join(""):`<div class="speedEmpty">No critical duration data found for this period.</div>`;
     rowsEl.innerHTML=`<div class="durationDatePicker"><label>Snapshot To <input id="durationSnapshotDate" type="date" value="${esc(periodEndDate())}"></label></div>`+chartMarkup;
     bindDurationDatePicker();
+    rowsEl.querySelectorAll(".agingRow[data-duration-key]").forEach(row=>{
+      row.onclick=()=>openDurationBucketTickets(row.dataset.durationKey,row.dataset.durationLabel);
+      row.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDurationBucketTickets(row.dataset.durationKey,row.dataset.durationLabel);}};
+    });
   }
 }
 
@@ -2740,7 +2822,7 @@ function renderLists(){const rawView=currentRawCriticalView();const rows=selecte
   if($("dealerBars")){$("dealerBars").className="dealerCriticalList";$("dealerBars").innerHTML=dealers.length?shownDealers.map((x,i)=>`<div class="dealerCriticalRow" role="button" tabindex="0" data-dealer="${esc(x.dealer)}" title="Open ${esc(x.dealer)} in Dealer Workbench"><span class="dealerCriticalDot" style="background:${dealerColors[i%dealerColors.length]}"></span><span class="dealerCriticalLabel" title="${esc(x.dealer)}">${esc(x.dealer)}</span><span class="dealerCriticalValue">${num(x.criticalTickets)}</span></div>`).join("")+(dealers.length>7?`<button class="dealerCriticalToggle" type="button" onclick="toggleDealerList()">${dealerListExpanded?'Collapse dealers':'View all dealers ->'}</button>`:""):`<div class="panelDesc">No dealer analytics found for this claim type and selected period.</div>`;$("dealerBars").querySelectorAll(".dealerCriticalRow").forEach(row=>{row.onclick=()=>openDealerWorkbench(row.dataset.dealer);row.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDealerWorkbench(row.dataset.dealer);}}});}
   const statuses=currentCriticalStatusRows();
   const statusDonutRows=statuses.length>6?statuses.slice(0,5).concat({label:"Others",count:statuses.slice(5).reduce((sum,x)=>sum+Number(x.count||0),0),details:statuses.slice(5)}):statuses;
-  if($("statusMix")){$("statusMix").className="statusPieLayout";$("statusMix").innerHTML=distributionDonutMarkup(statusDonutRows,"tickets");bindStatusMixTips();}
+  if($("statusMix")){window.__dashboardStatusDonutRows=statusDonutRows;$("statusMix").className="statusPieLayout";$("statusMix").innerHTML=distributionDonutMarkup(statusDonutRows,"tickets",true);bindStatusMixTips();}
   if($("criticalSideList")){
     const colors=["#2f6df6","#60a5fa","#2563eb","#f59e0b","#fb7185","#8b5cf6","#22c55e","#94a3b8"];
     $("criticalSideList").innerHTML=statuses.slice(0,8).map((x,i)=>`<div class="criticalSideRow"><span class="criticalSideDot" style="background:${colors[i%colors.length]}"></span><span class="criticalSideLabel" title="${esc(x.label)}">${esc(x.label)}</span><span class="criticalSideValue">${num(x.count)}</span></div>`).join("")||`<div class="panelDesc">No critical tickets found.</div>`;
