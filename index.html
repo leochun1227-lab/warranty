@@ -2875,11 +2875,14 @@ function renderTeamAssignChart(){
     const redIsBase=redPct>=bluePct;
     const redLabel=teamAssignMetricLabel(redValue);
     const blueLabel=num(blueValue);
-    const labelsOverlap=redValue>0&&blueValue>0&&Math.abs(redPct-bluePct)<8;
+    const minInlineLabelValue=5;
+    const showRedInline=redValue>=minInlineLabelValue;
+    const showBlueInline=blueValue>=minInlineLabelValue;
+    const labelsOverlap=showRedInline&&showBlueInline&&Math.abs(redPct-bluePct)<8;
     const redLabelPct=Math.min(96,Math.max(labelsOverlap?14:8,redPct));
     const blueLabelPct=Math.min(96,Math.max(labelsOverlap?14:8,bluePct));
-    const redInline=redValue?`<span class="${labelsOverlap?'teamAssignCallout left':'teamAssignInline'} redLabel" style="left:${redLabelPct}%">${redLabel}</span>`:"";
-    const blueInline=blueValue?`<span class="${labelsOverlap?'teamAssignCallout right':'teamAssignInline'} blueLabel" style="left:${blueLabelPct}%">${blueLabel}</span>`:"";
+    const redInline=showRedInline?`<span class="${labelsOverlap?'teamAssignCallout left':'teamAssignInline'} redLabel" style="left:${redLabelPct}%">${redLabel}</span>`:"";
+    const blueInline=showBlueInline?`<span class="${labelsOverlap?'teamAssignCallout right':'teamAssignInline'} blueLabel" style="left:${blueLabelPct}%">${blueLabel}</span>`:"";
     const exited=isEmployeeExited(row.name);
     const nameLabel=`${esc(row.name)}${exited?`<span class="teamAssignExitedBadge">Exited</span>`:""}`;
     return `<div class="teamAssignRow"><div class="teamAssignName" title="${esc(row.name)}${exited?' - Exited':''}">${nameLabel}</div><div class="teamAssignTrack" role="button" tabindex="0" data-employee="${esc(row.name)}" aria-label="Open ${esc(row.name)} workload details" title="Open ${esc(row.name)} workload details"><div class="${redIsBase?'teamAssignRed':'teamAssignBlue'}" style="width:${redIsBase?redPct:bluePct}%"></div><div class="${redIsBase?'teamAssignBlue':'teamAssignRed'}" style="width:${redIsBase?bluePct:redPct}%"></div>${redInline}${blueInline}</div><div class="teamAssignValue"><span class="redValue">${redLabel}</span> / <span class="blueValue">${blueLabel}</span></div></div>`;
