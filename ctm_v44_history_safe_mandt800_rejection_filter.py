@@ -644,7 +644,14 @@ def parse_sales_order_details(value: Any) -> list[Dict[str, Any]]:
             order_qty = float(str(value.get("Order Qty", "0")).replace(",", "") or 0)
         except Exception:
             order_qty = 0.0
-        return [{"description": clean(value.get("Description") or "-"), "material": clean(value.get("Material") or "-"), "deliveryCount": delivery_count, "orderQty": order_qty}]
+        return [{
+            "description": clean(value.get("Description") or "-"),
+            "material": clean(value.get("Material") or "-"),
+            "deliveryCount": delivery_count,
+            "orderQty": order_qty,
+            "salesUnit": clean(value.get("Sales Unit") or ""),
+            "salesOrderItem": clean(value.get("Sales Order Item") or ""),
+        }]
     out: list[Dict[str, Any]] = []
     for nested in value.values():
         out.extend(parse_sales_order_details(nested))
@@ -712,26 +719,52 @@ def event_dealer_display(e: Dict[str, Any]) -> str:
     return final_configured_dealer_display("", raw, "", raw) or config_display_from(raw)
 
 
-def group_dealer_materials(rows: list[Dict[str, Any]]) -> list[Dict[str, Any]]:
+def group_dealer_materials(rows: list[Dict[str, Any]], delivered: bool = False) -> list[Dict[str, Any]]:
     groups: Dict[str, Dict[str, Any]] = {}
     for t in rows:
         if is_closed_ticket_row(t) or is_partially_rejected_row(t):
             continue
         for item in t.get("details") or []:
-            if item.get("deliveryCount") != 0:
+            try:
+                delivery_count = int(item.get("deliveryCount"))
+            except Exception:
+                continue
+            is_delivered = delivery_count > 0
+            if delivered != is_delivered:
                 continue
             code = clean(item.get("material")); desc = clean(item.get("description"))
             if not code or not desc:
                 continue
             key = safe_key(code + "|" + desc)
-            g = groups.setdefault(key, {"code": code, "desc": desc, "totalQty": 0, "ticketIds": set(), "items": []})
+            g = groups.setdefault(key, {"code": code, "desc": desc, "totalQty": 0, "deliveryCount": 0, "ticketIds": set(), "amountByTicket": {}, "items": []})
             qty = float(item.get("orderQty") or 1)
-            g["totalQty"] += qty; g["ticketIds"].add(t.get("id"))
-            g["items"].append({"ticketId": t.get("id"), "status": t.get("status"), "qty": qty, "agingDays": t.get("agingDays"), "customer": t.get("customer"), "claim": t.get("claim"), "repair": t.get("repair"), "employee": t.get("employee"), "soCreatedDate": t.get("soCreatedDate"), "oldestApprovedAge": aging_days(t.get("soCreatedDate"))})
+            amount = parse_amount(t.get("amount"))
+            ticket_id = clean(t.get("id"))
+            g["totalQty"] += qty
+            g["deliveryCount"] += delivery_count
+            g["ticketIds"].add(ticket_id)
+            if ticket_id and ticket_id not in g["amountByTicket"]:
+                g["amountByTicket"][ticket_id] = amount
+            g["items"].append({
+                "ticketId": t.get("id"), "status": t.get("status"), "qty": qty,
+                "deliveryCount": delivery_count, "amount": amount,
+                "created": t.get("created"), "agingDays": t.get("agingDays"),
+                "customer": t.get("customer"), "claim": t.get("claim"), "repair": t.get("repair"),
+                "employee": t.get("employee"), "soCreatedDate": t.get("soCreatedDate"),
+                "oldestApprovedAge": aging_days(t.get("soCreatedDate")),
+                "salesUnit": item.get("salesUnit"), "salesOrderItem": item.get("salesOrderItem"),
+            })
     out=[]
     for g in groups.values():
         items = g["items"]
-        out.append({"code": g["code"], "desc": g["desc"], "totalQty": g["totalQty"], "ticketCount": len(g["ticketIds"]), "oldestAge": max([int(x.get("agingDays") or 0) for x in items] or [0]), "oldestApprovedAge": max([int(x.get("oldestApprovedAge") or 0) for x in items] or [0]), "items": items})
+        out.append({
+            "code": g["code"], "desc": g["desc"], "totalQty": g["totalQty"],
+            "deliveryCount": g["deliveryCount"], "ticketCount": len(g["ticketIds"]),
+            "amount": round(sum(g["amountByTicket"].values()), 2),
+            "oldestAge": max([int(x.get("agingDays") or 0) for x in items] or [0]),
+            "oldestApprovedAge": max([int(x.get("oldestApprovedAge") or 0) for x in items] or [0]),
+            "items": items,
+        })
     out.sort(key=lambda x: (-float(x.get("totalQty") or 0), clean(x.get("code"))))
     return out
 
@@ -1152,6 +1185,7 @@ def build_dealer_analytics(source_root: str, monitor_root: str, history_events: 
             })
         logs.sort(key=lambda e: clean(e.get("detectedAt")), reverse=True)
         material_groups = group_dealer_materials(all_rows)
+        delivered_material_groups = group_dealer_materials(all_rows, delivered=True)
         status_counts: Dict[str, int] = {}
         for t in critical_rows:
             k = clean(t.get("status")) or "Unknown"
@@ -1171,6 +1205,8 @@ def build_dealer_analytics(source_root: str, monitor_root: str, history_events: 
                 "approvalRule": "Approved = Z1Z8TimeConsumed totalMinutes > 0; Unapproved = empty or <= 0.",
                 "criticalTickets": len(critical_rows),
                 "openMaterialTypes": len(material_groups),
+                "deliveredMaterialTypes": len(delivered_material_groups),
+                "deliveredMaterialAmount": round(sum(parse_amount(g.get("amount")) for g in delivered_material_groups), 2),
                 "logTotal": len(logs),
                 "entered": sum(1 for e in logs if clean(e.get("cls")) == "enter"),
                 "moved": sum(1 for e in logs if clean(e.get("cls")) == "move"),
@@ -1185,6 +1221,7 @@ def build_dealer_analytics(source_root: str, monitor_root: str, history_events: 
             "tickets": critical_rows,
             "logs": logs,
             "materials": material_groups,
+            "deliveredMaterials": delivered_material_groups,
         }
 
     by_dealer: Dict[str, Any] = {}
@@ -1208,6 +1245,7 @@ def build_dealer_analytics(source_root: str, monitor_root: str, history_events: 
             "tickets": all_view["tickets"],
             "logs": all_view["logs"],
             "materials": all_view["materials"],
+            "deliveredMaterials": all_view.get("deliveredMaterials", []),
         }
         by_dealer[dealer_key] = payload
         index_stats.append({"dealer": dealer, "key": dealer_key, "isGroup": is_group_dealer(dealer), "groupMembers": sorted(dealer_group_members(dealer)), **all_view["summary"]})
