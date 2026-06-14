@@ -385,6 +385,41 @@ def event_type(e: Dict[str, Any]) -> str:
     return ""
 
 
+def event_is_unapproved_exit(e: Dict[str, Any]) -> bool:
+    code = clean(e.get("toCode") or e.get("newCode") or e.get("statusCode") or e.get("TicketStatus")).upper()
+    text = clean(
+        e.get("toStatus")
+        or e.get("newStatus")
+        or e.get("toStatusText")
+        or e.get("newStatusText")
+        or e.get("status")
+        or e.get("statusText")
+        or e.get("TicketStatusText")
+        or e.get("type")
+    ).lower()
+    return code == "Y8" or "unapproved claims closed" in text or "unapproved" in text
+
+
+def add_daily_approval(
+    approval_by_employee: Dict[str, Dict[str, Any]],
+    employee: str,
+    dkey: str,
+    bucket: str,
+    amount: float,
+) -> None:
+    if not employee or not dkey or bucket not in {"approved", "unapproved"}:
+        return
+    row = approval_by_employee.setdefault(employee, {
+        "approvedDaily": {},
+        "unapprovedDaily": {},
+        "approvedAmountDaily": {},
+        "unapprovedAmountDaily": {},
+    })
+    count_key = f"{bucket}Daily"
+    amount_key = f"{bucket}AmountDaily"
+    row[count_key][dkey] = row[count_key].get(dkey, 0) + 1
+    row[amount_key][dkey] = round(row[amount_key].get(dkey, 0.0) + amount, 2)
+
 def event_ticket_id(e: Dict[str, Any]) -> str:
     return clean(e.get("id") or e.get("ticketId") or e.get("ticketID") or e.get("TicketID") or e.get("localTicketId"))
 
@@ -1348,6 +1383,7 @@ def build_employee_analytics(snap: Dict[str, Dict[str, Any]], history_events: li
 
         removed_by_employee: Dict[str, int] = {}
         removed_daily_by_employee: Dict[str, Dict[str, int]] = {}
+        approval_by_employee: Dict[str, Dict[str, Any]] = {}
         removed_by_ticket: Dict[str, int] = {}
         last_removed_by_ticket: Dict[str, str] = {}
         unmapped_removed_events: list[Dict[str, Any]] = []
@@ -1388,6 +1424,11 @@ def build_employee_analytics(snap: Dict[str, Dict[str, Any]], history_events: li
             if dkey:
                 by_day = removed_daily_by_employee.setdefault(bucket, {})
                 by_day[dkey] = by_day.get(dkey, 0) + 1
+            if bucket != unmapped_label and dkey:
+                amount = parse_amount((ticket or {}).get("amount") or e.get("amount") or e.get("value") or e.get("AmountIncludingTax"))
+                approval_bucket = "unapproved" if event_is_unapproved_exit(e) else "approved"
+                add_daily_approval(approval_by_employee, bucket, dkey, approval_bucket, amount)
+
             if tid and bucket != unmapped_label:
                 removed_by_ticket[tid] = removed_by_ticket.get(tid, 0) + 1
                 et = event_time(e)
@@ -1413,6 +1454,30 @@ def build_employee_analytics(snap: Dict[str, Dict[str, Any]], history_events: li
             })
         stats.sort(key=lambda x: (-int(x.get("totalTickets") or 0), -int(x.get("removedTotal") or 0), clean(x.get("name")).lower()))
         for i, row in enumerate(stats, 1):
+            row["rank"] = i
+
+        approval_rows = []
+        for name, row in approval_by_employee.items():
+            approved = sum(int(v or 0) for v in row.get("approvedDaily", {}).values())
+            unapproved = sum(int(v or 0) for v in row.get("unapprovedDaily", {}).values())
+            total = approved + unapproved
+            if total <= 0:
+                continue
+            approval_rows.append({
+                "name": name,
+                "key": safe_key(name),
+                "approved": approved,
+                "unapproved": unapproved,
+                "total": total,
+                "approvedAmount": round(sum(float(v or 0) for v in row.get("approvedAmountDaily", {}).values()), 2),
+                "unapprovedAmount": round(sum(float(v or 0) for v in row.get("unapprovedAmountDaily", {}).values()), 2),
+                "approvedDaily": row.get("approvedDaily", {}),
+                "unapprovedDaily": row.get("unapprovedDaily", {}),
+                "approvedAmountDaily": row.get("approvedAmountDaily", {}),
+                "unapprovedAmountDaily": row.get("unapprovedAmountDaily", {}),
+            })
+        approval_rows.sort(key=lambda x: (-int(x.get("total") or 0), -int(x.get("unapproved") or 0), clean(x.get("name")).lower()))
+        for i, row in enumerate(approval_rows, 1):
             row["rank"] = i
 
         detail_rows = list(ticket_detail.values())
@@ -1455,6 +1520,7 @@ def build_employee_analytics(snap: Dict[str, Dict[str, Any]], history_events: li
                 "removedDaily": total_removed_daily,
             },
             "stats": stats,
+            "approvalRows": approval_rows,
             "detailRows": detail_rows,
             "notAssignedRows": not_assigned_rows[:300],
             "unmappedRemovedEvents": unmapped_removed_events[:2000],
@@ -1471,6 +1537,7 @@ def build_employee_analytics(snap: Dict[str, Dict[str, Any]], history_events: li
         # Backward-compatible fields for older employee-workbench.html.
         "summary": all_view["summary"],
         "stats": all_view["stats"],
+        "approvalRows": all_view["approvalRows"],
         "detailRows": all_view["detailRows"],
         "storageNote": "Pre-calculated by Python. Claim buttons switch pre-built employee views; browser only renders and filters by date.",
     }

@@ -2953,14 +2953,16 @@ function renderRepairCostDistribution(){
   bindRepairCostTicketLinks(box);
 }
 function approvedMixRows(){
+  const view=currentEmployeeAnalyticsView();
   const {start,end}=periodBounds();
-  const bounds={start,end};
-  const names=[...new Set(rawTicketEntries.map(employeeTicketEmployee).map(clean).filter(Boolean))];
-  return names.map(name=>{
-    const s=employeeApprovalSummary(name,bounds);
-    const approved=Number(s.approved||0),unapproved=Number(s.unapproved||0),total=approved+unapproved;
-    return {name,approved,unapproved,total,approvedPct:total?approved/total*100:0,unapprovedPct:total?unapproved/total*100:0};
-  }).filter(row=>row.total>0).sort((a,b)=>b.total-a.total||b.unapproved-a.unapproved||a.name.localeCompare(b.name));
+  return arrayFromMaybe(view&&view.approvalRows).map(row=>{
+    const approved=sumDaily(row.approvedDaily,start,end);
+    const unapproved=sumDaily(row.unapprovedDaily,start,end);
+    const approvedAmount=sumDaily(row.approvedAmountDaily,start,end);
+    const unapprovedAmount=sumDaily(row.unapprovedAmountDaily,start,end);
+    const total=approved+unapproved;
+    return {name:clean(row.name),approved,unapproved,total,approvedAmount,unapprovedAmount,approvedPct:total?approved/total*100:0,unapprovedPct:total?unapproved/total*100:0};
+  }).filter(row=>row.name&&row.total>0).sort((a,b)=>b.total-a.total||b.unapproved-a.unapproved||a.name.localeCompare(b.name));
 }
 function approvedEmployeeTableMarkup(rows){
   if(!rows.length)return `<div class="speedEmpty">No approved or unapproved ticket changes found by employee.</div>`;
