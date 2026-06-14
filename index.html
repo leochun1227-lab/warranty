@@ -2040,6 +2040,10 @@ function kpiDateMetaMarkup(mode="range"){
   const label=selectedRangeDateLabel(mode);
   return label?`<span class="kpiTrendMeta">${esc(label)}</span>`:"";
 }
+function latestSnapshotMetaMarkup(){
+  const label=`As of ${formatSnapshotDateLabel(latestDateForView())}`;
+  return label?`<span class="kpiTrendMeta">${esc(label)}</span>`:"";
+}
 function sparkSvg(dir){
   if(dir==="down")return `<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 5.5L8 10.5L11 8L17 14.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 14.5H17V10" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   if(dir==="flat")return `<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 10H17" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/><path d="M13 6L17 10L13 14" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -2116,7 +2120,7 @@ function renderKpis(){
   if($("kpiUnapprovedRatio"))$("kpiUnapprovedRatio").textContent=todayMode?"-":pctText(ratio,2);
   if($("kpiRatioBase"))$("kpiRatioBase").textContent=todayMode?"":`${num(s.unapprovedTickets)} / ${num(s.approvedTickets)}`;
   setTrend("kpiCriticalTrend","totalTickets",s.totalTickets,prev.totalTickets,undefined,filtered);
-  if($("kpiApprovedTicketsTrend")){ $("kpiApprovedTicketsTrend").innerHTML=kpiDateMetaMarkup("end"); $("kpiApprovedTicketsTrend").className="kpiTrend flat kpiTrendDateOnly"; }
+  if($("kpiApprovedTicketsTrend")){ $("kpiApprovedTicketsTrend").innerHTML=latestSnapshotMetaMarkup(); $("kpiApprovedTicketsTrend").className="kpiTrend flat kpiTrendDateOnly"; }
   setTrend("kpiApprovalTicketsSplitTrend","approvedTickets",s.approvedTickets,prev.approvedTickets,undefined,filtered);
   if($("kpiUnapprovedTrend")){ $("kpiUnapprovedTrend").innerHTML=kpiDateMetaMarkup("end"); $("kpiUnapprovedTrend").className="kpiTrend flat kpiTrendDateOnly"; }
   setTrend("kpiBenchmarkTrend","benchmarkRate",h.rate||0,prevH.rate||0,"percentPoint",filtered&&!todayMode);
