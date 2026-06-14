@@ -701,7 +701,34 @@ function drawTodayChangeBars(ctx,w,h){
   ctx.font='500 13px Segoe UI,Arial';ctx.textAlign='center';ctx.textBaseline='middle';
   data.forEach((d,i)=>{const bw=Math.min(90,plotW/(data.length*2));const gap=plotW/data.length;const x=left+gap*i+gap/2-bw/2;const bh=plotH*(d[1]/max);const y=top+plotH-bh;const g=ctx.createLinearGradient(0,y,0,y+bh);g.addColorStop(0,d[2]);g.addColorStop(1,'#7dd3fc');ctx.fillStyle=g;roundRect(ctx,x,y,bw,bh,8);ctx.fill();ctx.fillStyle='#0f172a';ctx.font='600 16px Segoe UI,Arial';ctx.fillText(num(d[1]),x+bw/2,y-12);ctx.fillStyle='#52627a';ctx.font='500 12px Segoe UI,Arial';ctx.fillText(d[0],x+bw/2,h-22);});
 }
-function drawTrend(){const c=$("trendChart"),{ctx,w,h}=prepare(c);if(activePeriod==='day'){drawTodayChangeBars(ctx,w,h);return;}let view=currentDealerView();let viewTrend=(view&&view.dashboard&&view.dashboard.trend)||[];let bounds=rangeBounds();let pts=viewTrend.filter(p=>(!bounds.start||p.date>=bounds.start)&&(!bounds.end||p.date<=bounds.end));if(!pts.length)pts=viewTrend;const left=58,right=62,top=24,bottom=54,plotW=w-left-right,plotH=h-top-bottom;const flowRaw=Math.max(5,...pts.flatMap(p=>[Number(p.newClaim||0),Number(p.exited||0)]));const critRaw=Math.max(5,...pts.map(p=>Number(p.critical||0)));const flowMax=flowRaw<=25?Math.ceil(flowRaw/5)*5:flowRaw<=120?Math.ceil(flowRaw/20)*20:Math.ceil(flowRaw/50)*50;const critMax=critRaw<=25?Math.ceil(critRaw/5)*5:critRaw<=120?Math.ceil(critRaw/20)*20:Math.ceil(critRaw/50)*50;ctx.font='400 12px Segoe UI,Arial';ctx.strokeStyle='#d8e0ea';ctx.setLineDash([2,4]);ctx.textBaseline='middle';for(let i=0;i<=5;i++){const yy=top+plotH*i/5;ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(w-right,yy);ctx.stroke();ctx.fillStyle='#64748b';ctx.textAlign='right';ctx.fillText(String(Math.round(flowMax*(1-i/5))),left-8,yy);ctx.fillStyle='#fb6b1d';ctx.textAlign='left';ctx.fillText(String(Math.round(critMax*(1-i/5))),w-right+10,yy)}ctx.setLineDash([]);const x=i=>left+(pts.length<=1?0:plotW*i/(pts.length-1)),yFlow=v=>top+plotH-plotH*(Number(v||0)/flowMax),yCrit=v=>top+plotH-plotH*(Number(v||0)/critMax);function smooth(ctx,arr){if(!arr.length)return;ctx.beginPath();ctx.moveTo(arr[0].x,arr[0].y);for(let i=1;i<arr.length;i++){const p0=arr[i-1],p1=arr[i],mx=(p0.x+p1.x)/2;ctx.quadraticCurveTo(p0.x,p0.y,mx,(p0.y+p1.y)/2);ctx.quadraticCurveTo(p1.x,p1.y,p1.x,p1.y)}}function line(key,color,yfn,dashed=false,alpha=1){const arr=pts.map((p,i)=>({x:x(i),y:yfn(p[key])}));ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=dashed?1.7:2.4;ctx.lineCap='round';ctx.lineJoin='round';if(dashed)ctx.setLineDash([7,6]);smooth(ctx,arr);ctx.stroke();ctx.setLineDash([]);arr.forEach((pt,i)=>{ctx.beginPath();ctx.arc(pt.x,pt.y,i===arr.length-1?3.4:2.8,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=dashed?1.7:2.2;ctx.strokeStyle=color;ctx.stroke()});ctx.restore()}line('newClaim','#2f6df6',yFlow);line('critical','#fb6b1d',yCrit,true,.55);line('exited','#16a34a',yFlow);c._trendPoints=pts.map((p,i)=>({x:x(i),p,idx:i}));bindTrendTooltip()}function deltaInfoMetric(metric,curr,prev){const d=Number(curr||0)-Number(prev||0);if(d===0)return{cls:"flat",arrow:"-",text:"0"};const good=(metric==="exited")?d>0:d<0;return{cls:good?"up":"down",arrow:d>0?"^":"v",text:num(Math.abs(d))}}function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}function bindTrendTooltip(){const c=$("trendChart");if(!c||c.dataset.trendTooltipBound)return;c.dataset.trendTooltipBound="1";c.addEventListener('mousemove',ev=>{const pts=c._trendPoints||[];if(!pts.length)return;const rect=c.getBoundingClientRect(),mx=ev.clientX-rect.left;const hit=pts.reduce((best,p)=>Math.abs(p.x-mx)<Math.abs(best.x-mx)?p:best,pts[0]);const prev=hit.idx>0?pts[hit.idx-1].p:null;setTooltip(ev,`<b>Date: ${esc(hit.p.date)}</b>${tipRow("Entered Critical cumulative","#2f6df6",hit.p.newClaim,deltaInfoMetric("entered",hit.p.newClaim,prev?prev.newClaim:hit.p.newClaim))}${tipRow("Critical total","#fb6b1d",hit.p.critical,deltaInfoMetric("critical",hit.p.critical,prev?prev.critical:hit.p.critical))}${tipRow("Exited Critical cumulative","#16a34a",hit.p.exited,deltaInfoMetric("exited",hit.p.exited,prev?prev.exited:hit.p.exited))}`)});c.addEventListener('mouseleave',hideTooltip)}function renderPeriodButtons(){
+function drawTrend(){
+  const c=$("trendChart"),{ctx,w,h}=prepare(c);
+  if(activePeriod==='day'){drawTodayChangeBars(ctx,w,h);return;}
+  let view=currentDealerView();
+  let viewTrend=(view&&view.dashboard&&view.dashboard.trend)||[];
+  let bounds=rangeBounds();
+  let rawPts=viewTrend.filter(p=>(!bounds.start||p.date>=bounds.start)&&(!bounds.end||p.date<=bounds.end));
+  if(!rawPts.length)rawPts=viewTrend;
+  const base=rawPts[0]||{};
+  const pts=rawPts.map(p=>({...p,newClaim:Math.max(0,Number(p.newClaim||0)-Number(base.newClaim||0)),entered:Math.max(0,Number((p.entered??p.newClaim)||0)-Number((base.entered??base.newClaim)||0)),exited:Math.max(0,Number(p.exited||0)-Number(base.exited||0)),rawEntered:Number((p.entered??p.newClaim)||0),rawExited:Number(p.exited||0)}));
+  const left=58,right=70,top=24,bottom=54,plotW=w-left-right,plotH=h-top-bottom;
+  const flowRaw=Math.max(5,...pts.flatMap(p=>[Number(p.newClaim||0),Number(p.exited||0)]));
+  const critVals=pts.map(p=>Number(p.critical||0));
+  const critMinRaw=Math.min(...critVals),critMaxRaw=Math.max(...critVals);
+  const flowMax=flowRaw<=25?Math.ceil(flowRaw/5)*5:flowRaw<=120?Math.ceil(flowRaw/20)*20:Math.ceil(flowRaw/50)*50;
+  const critSpan=Math.max(5,critMaxRaw-critMinRaw);
+  let critMin=Math.max(0,Math.floor((critMinRaw-critSpan*.15)/5)*5);
+  let critMax=Math.ceil((critMaxRaw+critSpan*.15)/5)*5;
+  if(critMax<=critMin)critMax=critMin+5;
+  ctx.font='400 12px Segoe UI,Arial';ctx.strokeStyle='#d8e0ea';ctx.setLineDash([2,4]);ctx.textBaseline='middle';
+  for(let i=0;i<=5;i++){const yy=top+plotH*i/5;ctx.beginPath();ctx.moveTo(left,yy);ctx.lineTo(w-right,yy);ctx.stroke();ctx.fillStyle='#64748b';ctx.textAlign='right';ctx.fillText(String(Math.round(flowMax*(1-i/5))),left-8,yy);ctx.fillStyle='#fb6b1d';ctx.textAlign='left';ctx.fillText(String(Math.round(critMin+(critMax-critMin)*(1-i/5))),w-right+10,yy)}
+  ctx.setLineDash([]);
+  const x=i=>left+(pts.length<=1?plotW/2:plotW*i/(pts.length-1)),yFlow=v=>top+plotH-plotH*(Number(v||0)/flowMax),yCrit=v=>top+plotH-plotH*((Number(v||0)-critMin)/(critMax-critMin));
+  function smooth(ctx,arr){if(!arr.length)return;ctx.beginPath();ctx.moveTo(arr[0].x,arr[0].y);for(let i=1;i<arr.length;i++){const p0=arr[i-1],p1=arr[i],mx=(p0.x+p1.x)/2;ctx.quadraticCurveTo(p0.x,p0.y,mx,(p0.y+p1.y)/2);ctx.quadraticCurveTo(p1.x,p1.y,p1.x,p1.y)}}
+  function line(key,color,yfn,dashed=false,alpha=1){const arr=pts.map((p,i)=>({x:x(i),y:yfn(p[key])}));ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=dashed?1.9:2.6;ctx.lineCap='round';ctx.lineJoin='round';if(dashed)ctx.setLineDash([7,6]);smooth(ctx,arr);ctx.stroke();ctx.setLineDash([]);arr.forEach((pt,i)=>{ctx.beginPath();ctx.arc(pt.x,pt.y,i===arr.length-1?3.6:2.8,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=dashed?1.8:2.2;ctx.strokeStyle=color;ctx.stroke()});ctx.restore()}
+  line('newClaim','#2f6df6',yFlow);line('critical','#fb6b1d',yCrit,true,.75);line('exited','#16a34a',yFlow);
+  c._trendPoints=pts.map((p,i)=>({x:x(i),p,idx:i}));bindTrendTooltip()
+}function deltaInfoMetric(metric,curr,prev){const d=Number(curr||0)-Number(prev||0);if(d===0)return{cls:"flat",arrow:"-",text:"0"};const good=(metric==="exited")?d>0:d<0;return{cls:good?"up":"down",arrow:d>0?"^":"v",text:num(Math.abs(d))}}function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}function bindTrendTooltip(){const c=$("trendChart");if(!c||c.dataset.trendTooltipBound)return;c.dataset.trendTooltipBound="1";c.addEventListener('mousemove',ev=>{const pts=c._trendPoints||[];if(!pts.length)return;const rect=c.getBoundingClientRect(),mx=ev.clientX-rect.left;const hit=pts.reduce((best,p)=>Math.abs(p.x-mx)<Math.abs(best.x-mx)?p:best,pts[0]);const prev=hit.idx>0?pts[hit.idx-1].p:null;setTooltip(ev,`<b>Date: ${esc(hit.p.date)}</b>${tipRow("Entered Critical cumulative","#2f6df6",hit.p.newClaim,deltaInfoMetric("entered",hit.p.newClaim,prev?prev.newClaim:hit.p.newClaim))}${tipRow("Critical total","#fb6b1d",hit.p.critical,deltaInfoMetric("critical",hit.p.critical,prev?prev.critical:hit.p.critical))}${tipRow("Exited Critical cumulative","#16a34a",hit.p.exited,deltaInfoMetric("exited",hit.p.exited,prev?prev.exited:hit.p.exited))}`)});c.addEventListener('mouseleave',hideTooltip)}function renderPeriodButtons(){
   const box=$('periodSwitch');if(!box)return;
   if(currentPage==="tickets"){box.innerHTML="";box.className="periodSwitchHidden";return;}
   const opts=[{key:"day",label:"Today"},{key:"week",label:"This Week"},{key:"month",label:"MTD"}];
@@ -843,20 +870,20 @@ function dealerHandlingSummary(){
   const logs=(view.logs||[]).filter(e=>{const d=eventDateKey(e.detectedAt||e.date);return d&&d>=start&&d<=end;});
   const sourceExits=periodResolved.length?periodResolved:logs.filter(e=>logClass(e)==='exit');
   const buckets=[
-    {key:'leOneDay',label:'<= 1 day',count:0},
-    {key:'oneToThreeDays',label:'1-3 days',count:0},
-    {key:'threeToSevenDays',label:'3-7 days',count:0},
-    {key:'eightToFourteenDays',label:'8-14 days',count:0},
-    {key:'overFourteenDays',label:'> 14 days',count:0},
+    {key:'zeroToFourteenDays',label:'0-14 days',count:0},
+    {key:'fourteenToThirtyDays',label:'14-30 days',count:0},
+    {key:'thirtyToSixtyDays',label:'30-60 days',count:0},
+    {key:'overSixtyDays',label:'60+ days',count:0},
   ];
+  const legacyBucketIndex={leOneDay:0,oneToThreeDays:0,threeToSevenDays:0,eightToFourteenDays:0,overFourteenDays:1};
   sourceExits.forEach(e=>{
     const key=clean(e.bucket);
-    if(key){const b=buckets.find(x=>x.key===key); if(b){b.count++; return;}}
+    if(key){const b=buckets.find(x=>x.key===key); if(b){b.count++; return;} if(Object.prototype.hasOwnProperty.call(legacyBucketIndex,key)){buckets[legacyBucketIndex[key]].count++;return;}}
     const d=Number.isFinite(Number(e.durationDays))?Number(e.durationDays):dealerDurationDaysForLog(e);
-    if(d<=1)buckets[0].count++; else if(d<=3)buckets[1].count++; else if(d<=7)buckets[2].count++; else if(d<=14)buckets[3].count++; else buckets[4].count++;
+    if(d<=14)buckets[0].count++; else if(d<=30)buckets[1].count++; else if(d<=60)buckets[2].count++; else buckets[3].count++;
   });
   const resolved=sourceExits.length;
-  const within=buckets.slice(0,4).reduce((a,b)=>a+b.count,0);
+  const within=buckets[0].count;
   const rate=resolved?Math.round((within/resolved)*1000)/10:0;
   const days=Math.max(1,Math.round((new Date(end+'T00:00:00Z')-new Date(start+'T00:00:00Z'))/86400000)+1);
   const current=dealerRowsAtEnd().length||periodCurrentCritical();
@@ -906,21 +933,20 @@ function dealerCriticalDurationRows(){
 }
 function dealerCriticalDurationBuckets(){
   const buckets=[
-    {key:'leOneDay',label:'<= 1 day',count:0},
-    {key:'oneToThreeDays',label:'1-3 days',count:0},
-    {key:'threeToSevenDays',label:'3-7 days',count:0},
-    {key:'eightToFourteenDays',label:'8-14 days',count:0},
-    {key:'overFourteenDays',label:'> 14 days',count:0},
+    {key:'zeroToFourteenDays',label:'0-14 days',count:0},
+    {key:'fourteenToThirtyDays',label:'14-30 days',count:0},
+    {key:'thirtyToSixtyDays',label:'30-60 days',count:0},
+    {key:'overSixtyDays',label:'60+ days',count:0},
   ];
   const rows=dealerCriticalDurationRows();
   rows.forEach(row=>{
-    if(row.days==null||!Number.isFinite(Number(row.days))){buckets[4].count++;return;}
+    if(row.days==null||!Number.isFinite(Number(row.days))){buckets[3].count++;return;}
     const d=Number(row.days);
-    if(d<=1)buckets[0].count++; else if(d<=3)buckets[1].count++; else if(d<=7)buckets[2].count++; else if(d<=14)buckets[3].count++; else buckets[4].count++;
+    if(d<=14)buckets[0].count++; else if(d<=30)buckets[1].count++; else if(d<=60)buckets[2].count++; else buckets[3].count++;
   });
   const expected=rows.length;
   const counted=buckets.reduce((sum,row)=>sum+Number(row.count||0),0);
-  if(expected>counted)buckets[4].count+=expected-counted;
+  if(expected>counted)buckets[3].count+=expected-counted;
   return buckets;
 }
 function bindDealerDurationDatePicker(){
@@ -946,7 +972,7 @@ function renderHandlingSpeed(){
   if($('dealerSpeedAvg'))$('dealerSpeedAvg').textContent=h.current<=0?'Clean':(h.clearDays==null?'-':formatClearTime(h.clearDays));
   if(!rowsEl)return;
   const rows=dealerCriticalDurationBuckets();
-  const colors=['#6366f1','#3b82f6','#8b5cf6','#22c55e','#f59e0b'];
+  const colors=['#22c55e','#3b82f6','#f59e0b','#ef4444'];
   const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
   const max=Math.max(1,...rows.map(row=>Number(row.count||0)));
   rowsEl.className='speedRows agingRows';
