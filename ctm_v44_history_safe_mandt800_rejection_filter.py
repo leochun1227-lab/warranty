@@ -855,15 +855,13 @@ def build_dealer_trend(critical_rows: list[Dict[str, Any]], logs: list[Dict[str,
 
 
 def _duration_bucket(days: float) -> str:
-    if days <= 1:
-        return "leOneDay"
-    if days <= 3:
-        return "oneToThreeDays"
-    if days <= 7:
-        return "threeToSevenDays"
     if days <= 14:
-        return "eightToFourteenDays"
-    return "overFourteenDays"
+        return "zeroToFourteenDays"
+    if days <= 30:
+        return "fourteenToThirtyDays"
+    if days <= 60:
+        return "thirtyToSixtyDays"
+    return "overSixtyDays"
 
 
 def calculate_handling_speed(logs: list[Dict[str, Any]], current_critical_rows: list[Dict[str, Any]], ticket_by_id: Optional[Dict[str, Dict[str, Any]]] = None) -> Dict[str, Any]:
@@ -883,18 +881,16 @@ def calculate_handling_speed(logs: list[Dict[str, Any]], current_critical_rows: 
       speed across the full observed period, not from 2026-05-25.
     """
     buckets = {
-        "leOneDay": 0,
-        "oneToThreeDays": 0,
-        "threeToSevenDays": 0,
-        "eightToFourteenDays": 0,
-        "overFourteenDays": 0,
+        "zeroToFourteenDays": 0,
+        "fourteenToThirtyDays": 0,
+        "thirtyToSixtyDays": 0,
+        "overSixtyDays": 0,
     }
     labels = {
-        "leOneDay": "≤ 1 day",
-        "oneToThreeDays": "1–3 days",
-        "threeToSevenDays": "3–7 days",
-        "eightToFourteenDays": "8–14 days",
-        "overFourteenDays": "> 14 days",
+        "zeroToFourteenDays": "0-14 days",
+        "fourteenToThirtyDays": "14-30 days",
+        "thirtyToSixtyDays": "30-60 days",
+        "overSixtyDays": "60+ days",
     }
 
     now_dt = datetime.now(timezone.utc)
@@ -1000,12 +996,7 @@ def calculate_handling_speed(logs: list[Dict[str, Any]], current_critical_rows: 
         })
 
     resolved_total = len(resolved_durations)
-    within_two_weeks = (
-        buckets["leOneDay"]
-        + buckets["oneToThreeDays"]
-        + buckets["threeToSevenDays"]
-        + buckets["eightToFourteenDays"]
-    )
+    within_two_weeks = buckets["zeroToFourteenDays"]
     two_week_rate = round((within_two_weeks / resolved_total) * 100, 1) if resolved_total else 0
     avg_days = round(sum(resolved_durations) / resolved_total, 1) if resolved_total else 0
 
@@ -1056,7 +1047,7 @@ def calculate_handling_speed(logs: list[Dict[str, Any]], current_critical_rows: 
     current_new_claim_stock = sum(1 for t in (current_critical_rows or []) if clean(t.get("code")) == "Z1" or "new claim" in clean(t.get("status")).lower())
     forecast_backlog = current_stock
 
-    order = ["leOneDay", "oneToThreeDays", "threeToSevenDays", "eightToFourteenDays", "overFourteenDays"]
+    order = ["zeroToFourteenDays", "fourteenToThirtyDays", "thirtyToSixtyDays", "overSixtyDays"]
     rows = [{"key": k, "label": labels[k], "count": int(buckets[k])} for k in order]
     return {
         "buckets": rows,
