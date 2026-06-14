@@ -770,11 +770,7 @@
   font-size:26px!important;
 }
 .dashboardMain .teamKpiGrid .unapprovedTicketsCard{
-  cursor:pointer!important;
-}
-.dashboardMain .teamKpiGrid .unapprovedTicketsCard:hover{
-  border-color:#93c5fd!important;
-  box-shadow:0 14px 34px rgba(37,99,235,.13)!important;
+  display:none!important;
 }
 .criticalLogPanel{
   padding:18px 18px 16px!important;
@@ -2159,7 +2155,6 @@ function renderKpis(){
   const prevH=periodHandlingSummaryForBounds(pb.start,pb.end,prev.criticalNow);
   const filtered=hasTicketFilter();
   const claimCounts=claimTypeCounts();
-  const noUpdate=noUpdateAgingSummary();
   const approvedAvg=s.approvedTickets?s.approvedAmount/s.approvedTickets:0;
   const prevApprovedAvg=prev.approvedTickets?prev.approvedAmount/prev.approvedTickets:0;
   const ratio=pctValue(s.unapprovedTickets,s.approvedTickets),prevRatio=pctValue(prev.unapprovedTickets,prev.approvedTickets);
@@ -2167,13 +2162,12 @@ function renderKpis(){
   const todayMode=activePeriod==="day";
   setCardLabel(".totalCriticalCard",filtered?"Total Tickets Change":"Total Tickets");
   setCardLabel(".approvedTicketsCountCard",filtered?"Approved / Unapproved Tickets changes":"In Field Warranty Claims / Pre Delivery Warranty Claims");
-  setCardLabel(".unapprovedTicketsCard","No Update Aging");
+  document.querySelector(".unapprovedTicketsCard")?.remove();
   setCardLabel(".benchmarkRateCard","2-week benchmark");
   setCardLabel(".approvedTicketsCard","Approved Cost");
   setCardLabel(".exitedValueCard","Estimated clear time");
   $("kpiCritical").textContent=num(totalTicketValue);
   if($("kpiApprovedTickets"))$("kpiApprovedTickets").textContent=filtered?`${num(s.approvedTickets)} / ${num(s.unapprovedTickets)}`:`${num(claimCounts.inField)} / ${num(claimCounts.preDelivery)}`;
-  if($("kpiUnapproved"))$("kpiUnapproved").textContent=num(noUpdate.count);
   if($("kpiBenchmark"))$("kpiBenchmark").textContent=todayMode?"-":`${numFixed(h.rate||0,1)}%`;
   $("kpiRate").textContent=h.current<=0?"Clean":(h.clearDays==null?"-":formatClearTime(h.clearDays));
   if($("kpiApproved"))$("kpiApproved").textContent=money(s.approvedAmount);
@@ -2183,12 +2177,9 @@ function renderKpis(){
   if($("kpiRatioBase"))$("kpiRatioBase").textContent=todayMode?"":`${num(s.unapprovedTickets)} / ${num(s.approvedTickets)}`;
   setTrend("kpiCriticalTrend","totalTickets",s.totalTickets,prev.totalTickets,undefined,filtered);
   setTrend("kpiApprovedTicketsTrend","approvedTickets",s.approvedTickets,prev.approvedTickets,undefined,filtered);
-  if($("kpiUnapprovedTrend")){ $("kpiUnapprovedTrend").innerHTML=kpiDateMetaMarkup("end"); $("kpiUnapprovedTrend").className="kpiTrend flat kpiTrendDateOnly"; }
   setTrend("kpiBenchmarkTrend","benchmarkRate",h.rate||0,prevH.rate||0,"percentPoint",filtered&&!todayMode);
   clearKpiPreview(document.querySelector(".benchmarkRateCard"));
-  const noUpdateCard=document.querySelector(".unapprovedTicketsCard");
   clearKpiPreview(document.querySelector(".exitedValueCard"));
-  if(noUpdateCard)noUpdateCard.onclick=()=>{try{localStorage.setItem("dealerWorkbenchNoUpdateTickets",JSON.stringify(noUpdate.rows||[]));}catch(e){}window.location.href="dealer-workbench.html?noUpdate=1#tickets";};
   setTrend("kpiApprovedTrend","approvedAmount",s.approvedAmount,prev.approvedAmount,"money",filtered);
   setTrend("kpiAvgCostTrend","avgCost",approvedAvg,prevApprovedAvg,"money",filtered);
   setTrend("kpiRateTrend","estimatedClearDays",h.clearDays||0,prevH.clearDays||0,"days",filtered);
