@@ -2285,10 +2285,14 @@ function bindStatusMixTipsFor(box,tip){
 }
 function criticalDurationDaysForRow(row,endDate){
   const end=new Date((endDate||periodEndDate())+"T00:00:00Z");
-  const start=new Date(row.enteredAt||row.enteredCriticalAt||row.firstEnteredAt||row.criticalSince||row.detectedAt||row.date||"");
-  if(!isNaN(start)&&!isNaN(end))return Math.max(0,(end-start)/86400000);
-  const direct=Number(row.durationDays??row.duration??row.daysInCritical??row.ageDays);
-  return Number.isFinite(direct)&&direct>=0?direct:null;
+  const enteredStart=new Date(row.enteredAt||row.enteredCriticalAt||row.firstEnteredAt||row.criticalSince||row.detectedAt||row.date||"");
+  if(!isNaN(enteredStart)&&!isNaN(end))return Math.max(0,(end-enteredStart)/86400000);
+  const direct=Number(row.durationDays??row.criticalDurationDays??row.daysInCritical);
+  if(Number.isFinite(direct)&&direct>=0)return direct;
+  const createdStart=new Date(row.created||row.CreatedOn||row.createdOn||row.CreatedAt||row.createdAt||row.ticketCreatedOn||row.TicketCreatedOn||"");
+  if(!isNaN(createdStart)&&!isNaN(end))return Math.max(0,(end-createdStart)/86400000);
+  const legacyAging=Number(row.ageDays??row.agingDays);
+  return Number.isFinite(legacyAging)&&legacyAging>=0?legacyAging:null;
 }
 function criticalLogSortTime(e){
   const raw=e&&clean(e.detectedAt||e.dataSyncAt||e.date||e.createdAt);

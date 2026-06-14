@@ -907,10 +907,14 @@ function dealerCriticalEnterDateByTicketId(end){
   return map;
 }
 function dealerCriticalDurationDaysForTicket(t,end){
-  const dateFields=[t.enteredAt,t.enteredCriticalAt,t.firstEnteredAt,t.criticalSince,t.detectedAt,t.date];
-  for(const field of dateFields){const d=eventDateKey(field);const days=d?dealerDaysBetweenISO(d,end):null;if(days!=null)return days;}
-  const direct=Number(t.durationDays??t.criticalDurationDays??t.daysInCritical??t.ageDays??t.agingDays);
-  return Number.isFinite(direct)&&direct>=0?direct:null;
+  const criticalDateFields=[t.enteredAt,t.enteredCriticalAt,t.firstEnteredAt,t.criticalSince,t.detectedAt,t.date];
+  for(const field of criticalDateFields){const d=eventDateKey(field);const days=d?dealerDaysBetweenISO(d,end):null;if(days!=null)return days;}
+  const direct=Number(t.durationDays??t.criticalDurationDays??t.daysInCritical);
+  if(Number.isFinite(direct)&&direct>=0)return direct;
+  const createdDateFields=[t.created,t.CreatedOn,t.createdOn,t.CreatedAt,t.createdAt,t.ticketCreatedOn,t.TicketCreatedOn];
+  for(const field of createdDateFields){const d=eventDateKey(field);const days=d?dealerDaysBetweenISO(d,end):null;if(days!=null)return days;}
+  const legacyAging=Number(t.ageDays??t.agingDays);
+  return Number.isFinite(legacyAging)&&legacyAging>=0?legacyAging:null;
 }
 function dealerCriticalDurationRows(){
   const {end,last}=rangeBounds();
@@ -990,7 +994,7 @@ function dealerRowsAtEnd(){
   const view=currentDealerView();
   const {end}=rangeBounds();
   const map=new Map();
-  (view?.tickets||[]).forEach(t=>{const id=clean(t.id)||('current-'+map.size);map.set(id,{id,status:clean(t.status||t.statusText||'Unknown')||'Unknown'});});
+  (view?.tickets||[]).forEach(t=>{const id=clean(t.id)||('current-'+map.size);map.set(id,{id,status:clean(t.status||t.statusText||'Unknown')||'Unknown',created:t.created||t.CreatedOn||t.createdOn||t.CreatedAt||t.createdAt||t.ticketCreatedOn||t.TicketCreatedOn||''});});
   (view?.logs||[]).slice().sort((a,b)=>clean(b.detectedAt||b.date).localeCompare(clean(a.detectedAt||a.date))).forEach(e=>{
     const d=eventDateKey(e.detectedAt||e.date);
     if(!d||d<=end)return;
@@ -999,7 +1003,7 @@ function dealerRowsAtEnd(){
     if(cls==='enter'){
       map.delete(id);
     }else if(cls==='exit'){
-      if(!map.has(id)) map.set(id,{id,status:clean(e.fromStatus||e.status||'Unknown')||'Unknown'});
+      if(!map.has(id)) map.set(id,{id,status:clean(e.fromStatus||e.status||'Unknown')||'Unknown',created:e.created||e.CreatedOn||e.createdOn||e.CreatedAt||e.createdAt||e.ticketCreatedOn||e.TicketCreatedOn||''});
     }else if(map.has(id)&&clean(e.fromStatus)){
       map.get(id).status=clean(e.fromStatus);
     }
