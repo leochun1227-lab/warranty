@@ -566,22 +566,6 @@
   min-width:4px!important;
   border-radius:999px!important;
 }
-.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRow.clickableRow{
-  cursor:pointer!important;
-  border-radius:12px!important;
-  outline:none!important;
-  transition:background .16s ease, box-shadow .16s ease!important;
-}
-.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRow.clickableRow:hover,
-.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRow.clickableRow:focus-visible{
-  background:#f8fbff!important;
-  box-shadow:0 0 0 2px #60a5fa, 0 8px 22px rgba(37,99,235,.14)!important;
-}
-.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRow.clickableRow:hover .agingTrack,
-.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRow.clickableRow:focus-visible .agingTrack{
-  border-color:#60a5fa!important;
-  box-shadow:0 0 0 3px rgba(96,165,250,.24)!important;
-}
 .featureSideStack .dashboardAnalysisGrid .speedPanel .agingValue{
   grid-column:auto!important;
   grid-row:auto!important;
@@ -770,7 +754,11 @@
   font-size:26px!important;
 }
 .dashboardMain .teamKpiGrid .unapprovedTicketsCard{
-  display:none!important;
+  cursor:pointer!important;
+}
+.dashboardMain .teamKpiGrid .unapprovedTicketsCard:hover{
+  border-color:#93c5fd!important;
+  box-shadow:0 14px 34px rgba(37,99,235,.13)!important;
 }
 .criticalLogPanel{
   padding:18px 18px 16px!important;
@@ -1615,213 +1603,9 @@
 }
 .dateNote{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;border:1px solid #dbe4ef;border-radius:999px;background:#f8fbff;color:#64748b;padding:3px 8px;font-size:11px;line-height:1.2;font-weight:700;letter-spacing:.01em;box-shadow:inset 0 1px 0 rgba(255,255,255,.65)}.panelTitleRow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.panelTitleRow .panelTitle{margin:0}
 html{zoom:.8!important;}
-
-/* Four-card right rail: dealer, repair cost, status mix, and duration share one aligned column */
-.featureSideStack{
-  width:530px!important;
-  max-width:530px!important;
-  display:flex!important;
-  flex-direction:column!important;
-  gap:14px!important;
-  align-items:stretch!important;
-}
-.featureSideStack>.panel,
-.featureSideStack>.dashboardAnalysisGrid,
-.featureSideStack .dashboardAnalysisGrid>.panel{
-  width:100%!important;
-  max-width:100%!important;
-  margin:0!important;
-  min-width:0!important;
-}
-.featureSideStack .dealerRankPanel{
-  padding:17px 20px 16px!important;
-  min-height:178px!important;
-}
-.featureSideStack .dealerRankPanel .panelTitleRow,
-.featureSideStack .sideRepairCostPanel .panelTitleRow,
-.featureSideStack .dashboardAnalysisGrid .statusMixPanel .panelTitleRow{
-  margin-bottom:12px!important;
-}
-.featureSideStack .dealerCriticalList{
-  gap:7px!important;
-}
-.featureSideStack .dealerCriticalRow{
-  min-height:22px!important;
-}
-.featureSideStack .dealerCriticalToggle{
-  height:32px!important;
-  margin-top:8px!important;
-}
-.featureSideStack .sideRepairCostPanel{
-  padding:18px 20px 16px!important;
-  min-height:228px!important;
-  display:flex!important;
-  flex-direction:column!important;
-  justify-content:flex-start!important;
-}
-.featureSideStack .sideRepairCostPanel .panelTitle{
-  text-align:left!important;
-  width:auto!important;
-  margin:0!important;
-}
-.featureSideStack .sideRepairCostPanel .repairCostPie{
-  display:grid!important;
-  grid-template-columns:156px minmax(0,1fr)!important;
-  gap:18px!important;
-  align-items:center!important;
-  flex:1 1 auto!important;
-  min-height:156px!important;
-  margin-top:4px!important;
-}
-.featureSideStack .sideRepairCostPanel .statusPieWrap,
-.featureSideStack .sideRepairCostPanel .statusPieSvg{
-  width:156px!important;
-  height:156px!important;
-}
-.featureSideStack .sideRepairCostPanel .statusPieLegend{
-  gap:8px!important;
-}
-.featureSideStack .sideRepairCostPanel .statusPieLegendRow{
-  font-size:12px!important;
-  min-height:17px!important;
-}
-.featureSideStack .dashboardAnalysisGrid{
-  display:flex!important;
-  flex-direction:column!important;
-  gap:14px!important;
-}
-.featureSideStack .dashboardAnalysisGrid .statusMixPanel{
-  min-height:228px!important;
-  padding:18px 20px 16px!important;
-  order:0!important;
-}
-.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLayout{
-  grid-template-columns:156px minmax(0,1fr)!important;
-  gap:18px!important;
-  min-height:156px!important;
-  margin-top:4px!important;
-}
-.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieWrap,
-.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieSvg{
-  width:156px!important;
-  height:156px!important;
-}
-.featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLegend{
-  gap:8px!important;
-}
-.featureSideStack .dashboardAnalysisGrid .speedPanel{
-  min-height:214px!important;
-  padding:17px 20px 16px!important;
-  order:1!important;
-}
-.featureSideStack .dashboardAnalysisGrid .speedPanel .panelHead{
-  margin:0 0 6px!important;
-}
-.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRows{
-  gap:10px!important;
-  margin-top:10px!important;
-  align-content:start!important;
-}
-.featureSideStack .dashboardAnalysisGrid .speedPanel .agingRow{
-  min-height:24px!important;
-  grid-template-columns:90px minmax(0,1fr) 70px!important;
-}
-.featureSideStack .dashboardAnalysisGrid .speedPanel .agingTrack{
-  height:12px!important;
-}
-.approvalAnalyticsPanel .repairComboGrid{
-  grid-template-columns:1fr!important;
-}
-.approvalAnalyticsPanel .approvedBarChart{
-  min-height:220px!important;
-}
-
-.employeeApprovalTable{
-  display:grid!important;
-  gap:8px!important;
-  margin-top:10px!important;
-  max-height:260px!important;
-  overflow:auto!important;
-  padding-right:4px!important;
-}
-.employeeApprovalHeader,
-.employeeApprovalRow{
-  display:grid!important;
-  grid-template-columns:minmax(150px,1.4fr) repeat(4,minmax(70px,.7fr))!important;
-  gap:10px!important;
-  align-items:center!important;
-}
-.employeeApprovalHeader{
-  position:sticky!important;
-  top:0!important;
-  z-index:1!important;
-  padding:8px 10px!important;
-  border:1px solid #e2e8f0!important;
-  border-radius:12px!important;
-  background:#f8fbff!important;
-  color:#64748b!important;
-  font-size:11px!important;
-  font-weight:800!important;
-  text-transform:uppercase!important;
-  letter-spacing:.05em!important;
-}
-.employeeApprovalRow{
-  min-height:42px!important;
-  padding:9px 10px!important;
-  border:1px solid #edf2f7!important;
-  border-radius:12px!important;
-  background:#fff!important;
-  color:#334155!important;
-  font-size:12px!important;
-  font-weight:700!important;
-  cursor:pointer!important;
-  transition:border-color .15s ease,box-shadow .15s ease,transform .15s ease!important;
-}
-.employeeApprovalRow:hover{
-  border-color:#bfdbfe!important;
-  box-shadow:0 10px 22px rgba(37,99,235,.10)!important;
-  transform:translateY(-1px)!important;
-}
-.employeeApprovalName{
-  min-width:0!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-  white-space:nowrap!important;
-  color:#0f172a!important;
-}
-.employeeApprovalCount{
-  text-align:right!important;
-  font-variant-numeric:tabular-nums!important;
-}
-.employeeApprovalPct{
-  text-align:right!important;
-  font-variant-numeric:tabular-nums!important;
-}
-.employeeApprovalApproved{color:#16a34a!important;}
-.employeeApprovalUnapproved{color:#e11d48!important;}
-@media(max-width:760px){
-  .employeeApprovalHeader,
-  .employeeApprovalRow{grid-template-columns:minmax(120px,1.2fr) repeat(4,minmax(58px,.7fr))!important;font-size:11px!important;gap:6px!important;}
-}
-@media(max-width:1280px){
-  .featureSideStack{
-    width:100%!important;
-    max-width:none!important;
-  }
-}
-@media(max-width:760px){
-  .featureSideStack .sideRepairCostPanel .repairCostPie,
-  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLayout{
-    grid-template-columns:1fr!important;
-  }
-  .featureSideStack .sideRepairCostPanel .statusPieWrap,
-  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieWrap{
-    margin:0 auto!important;
-  }
-}
 </style>
 </head>
-<body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></button><a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a><div class="navDivider"></div><div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a></aside><main class="main"><div class="pageTop"><div><h1 class="pageTitle">After-Sales Team Dashboard</h1></div><div class="topActions"><div id="periodSwitch" class="changeSwitch"></div><div id="claimSwitch" class="claimSwitch"></div></div></div><div id="loadError" class="error"></div><section class="dashboardTop"><div class="dashboardMain"><section class="teamKpiGrid"><div class="kpi totalCriticalCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Total Tickets</div><div class="kpiValue" id="kpiCritical">0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8.2 4.5H5.8A1.8 1.8 0 0 0 4 6.3v2.4c0 .58.28 1.13.74 1.46L7.5 12l-2.76 1.84A1.8 1.8 0 0 0 4 15.3v2.4c0 1 .8 1.8 1.8 1.8h2.4c.58 0 1.13-.28 1.46-.74L12 16.5l1.84 2.26c.33.46.88.74 1.46.74h2.4c1 0 1.8-.8 1.8-1.8v-2.4c0-.58-.28-1.13-.74-1.46L16.5 12l2.26-1.84c.46-.33.74-.88.74-1.46V6.3A1.8 1.8 0 0 0 17.7 4.5h-2.4c-.58 0-1.13.28-1.46.74L12 7.5 10.16 5.24A1.8 1.8 0 0 0 8.7 4.5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiCriticalTrend"></div></div><div class="kpi approvedTicketsCountCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Tickets</div><div class="kpiValue" id="kpiApprovedTickets">0</div></div><div class="kpiIcon customGreen" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.2" stroke="currentColor" stroke-width="1.9"/><path d="M8.6 12.3l2.2 2.2 4.8-5.2" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTicketsTrend"></div></div><div class="kpi unapprovedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved Tickets</div><div class="kpiValue" id="kpiUnapproved">0</div></div><div class="kpiIcon customAmber" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.9"/><path d="M12 8.1v4.1l2.9 1.9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiUnapprovedTrend"></div></div><div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">2-week benchmark</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div><div class="kpi approvedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Cost</div><div class="kpiValue" id="kpiApproved">$0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6.4" rx="5.2" ry="2.3" stroke="currentColor" stroke-width="1.8"/><path d="M6.8 6.4v4.2c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3V6.4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 10.6v4.1c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-4.1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 14.7v2.9c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-2.9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTrend"></div></div><div class="kpi avgCostCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Avg Cost/Ticket</div><div class="kpiValue" id="kpiAvgCost">$0</div></div><div class="kpiIcon customGreen" aria-hidden="true">$</div></div><div class="kpiTrend" id="kpiAvgCostTrend"></div></div><div class="kpi exitedValueCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Estimated clear time</div><div class="kpiValue" id="kpiRate">-</div></div><div class="kpiIcon customOrange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4.5" y="6.5" width="15" height="11" rx="2.4" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 10h8.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7.5 13.4h4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16.8" cy="13.8" r="1.8" stroke="currentColor" stroke-width="1.6"/></svg></div></div><div class="kpiTrend" id="kpiRateTrend"></div></div><div class="kpi ratioKpiCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved / Approved</div><div class="kpiValue" id="kpiUnapprovedRatio">0.00%</div><div class="ratioBase" id="kpiRatioBase">0 / 0</div></div><div class="kpiIcon">%</div></div><div class="kpiTrend" id="kpiRatioTrend"></div></div></section><section class="trendLogGrid"><section class="panel trendPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Status Trends by Date</h2></div></div><div class="controls"><label>From <input id="dateFrom" class="input" type="date"></label><label>To <input id="dateTo" class="input" type="date"></label></div></div><div class="chartWrap"><canvas id="trendChart"></canvas></div><div class="legend"><span><i class="dot blue"></i>Entered Critical daily</span><span><i class="dot orange"></i>Critical daily change - right axis</span><span><i class="dot green"></i>Exited Critical daily</span></div></section><section class="panel criticalLogPanel repairCostPanel approvalAnalyticsPanel"><div class="panelTitleRow"><h2 class="panelTitle">Internal Employee Approval Analytics</h2><span class="dateNote" data-date-note>through --</span></div><div class="repairComboGrid"><div class="repairComboItem"><h3 class="repairComboTitle">Approved vs Unapproved by Employee</h3><div id="approvedMixRows" class="employeeApprovalTable"></div></div></div></section></section><section class="panel teamAssignPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Owner Workload</h2><span class="dateNote" data-date-note>through --</span></div></div><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed</span><span><i style="background:#4f46e5"></i>Current critical tickets</span></div><div id="employeeStatusMapping" class="employeeStatusMapping"></div></section></div><aside class="featureSideStack"><div class="panel dealerRankPanel"><div class="panelTitleRow"><h2 class="panelTitle">Top Critical Tickets by Dealer</h2><span class="dateNote" data-date-note>through --</span></div><div id="dealerBars" class="dealerCriticalList"></div></div><section class="panel repairCostPanel sideRepairCostPanel"><div class="panelTitleRow"><h2 class="panelTitle">Tickets Repair Cost Distribution</h2><span class="dateNote" data-date-note>through --</span></div><div id="criticalLogRows" class="statusPieLayout repairCostPie"></div></section><section class="dashboardAnalysisGrid"><div class="panel speedPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Duration Distribution</h2></div></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel statusMixPanel"><div class="panelTitleRow"><h2 class="panelTitle">Critical Tickets Status Mix</h2></div><div id="statusMix" class="mixRows"></div></div></section></aside></section></main></div><div id="tooltip" class="tooltip"></div><div id="employeeModalBackdrop" class="employeeModalBackdrop">
+<body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></button><a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a><div class="navDivider"></div><div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a></aside><main class="main"><div class="pageTop"><div><h1 class="pageTitle">After-Sales Team Dashboard</h1></div><div class="topActions"><div id="periodSwitch" class="changeSwitch"></div><div id="claimSwitch" class="claimSwitch"></div></div></div><div id="loadError" class="error"></div><section class="dashboardTop"><div class="dashboardMain"><section class="teamKpiGrid"><div class="kpi totalCriticalCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Total Tickets</div><div class="kpiValue" id="kpiCritical">0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8.2 4.5H5.8A1.8 1.8 0 0 0 4 6.3v2.4c0 .58.28 1.13.74 1.46L7.5 12l-2.76 1.84A1.8 1.8 0 0 0 4 15.3v2.4c0 1 .8 1.8 1.8 1.8h2.4c.58 0 1.13-.28 1.46-.74L12 16.5l1.84 2.26c.33.46.88.74 1.46.74h2.4c1 0 1.8-.8 1.8-1.8v-2.4c0-.58-.28-1.13-.74-1.46L16.5 12l2.26-1.84c.46-.33.74-.88.74-1.46V6.3A1.8 1.8 0 0 0 17.7 4.5h-2.4c-.58 0-1.13.28-1.46.74L12 7.5 10.16 5.24A1.8 1.8 0 0 0 8.7 4.5Z" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiCriticalTrend"></div></div><div class="kpi approvedTicketsCountCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Tickets</div><div class="kpiValue" id="kpiApprovedTickets">0</div></div><div class="kpiIcon customGreen" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7.2" stroke="currentColor" stroke-width="1.9"/><path d="M8.6 12.3l2.2 2.2 4.8-5.2" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTicketsTrend"></div></div><div class="kpi unapprovedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved Tickets</div><div class="kpiValue" id="kpiUnapproved">0</div></div><div class="kpiIcon customAmber" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.9"/><path d="M12 8.1v4.1l2.9 1.9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiUnapprovedTrend"></div></div><div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">2-week benchmark</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div><div class="kpi approvedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Cost</div><div class="kpiValue" id="kpiApproved">$0</div></div><div class="kpiIcon customPurple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="6.4" rx="5.2" ry="2.3" stroke="currentColor" stroke-width="1.8"/><path d="M6.8 6.4v4.2c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3V6.4" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 10.6v4.1c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-4.1" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6.8 14.7v2.9c0 1.27 2.33 2.3 5.2 2.3s5.2-1.03 5.2-2.3v-2.9" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></div></div><div class="kpiTrend" id="kpiApprovedTrend"></div></div><div class="kpi avgCostCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Avg Cost/Ticket</div><div class="kpiValue" id="kpiAvgCost">$0</div></div><div class="kpiIcon customGreen" aria-hidden="true">$</div></div><div class="kpiTrend" id="kpiAvgCostTrend"></div></div><div class="kpi exitedValueCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Estimated clear time</div><div class="kpiValue" id="kpiRate">-</div></div><div class="kpiIcon customOrange" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="4.5" y="6.5" width="15" height="11" rx="2.4" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 10h8.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7.5 13.4h4.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16.8" cy="13.8" r="1.8" stroke="currentColor" stroke-width="1.6"/></svg></div></div><div class="kpiTrend" id="kpiRateTrend"></div></div><div class="kpi ratioKpiCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved / Approved</div><div class="kpiValue" id="kpiUnapprovedRatio">0.00%</div><div class="ratioBase" id="kpiRatioBase">0 / 0</div></div><div class="kpiIcon">%</div></div><div class="kpiTrend" id="kpiRatioTrend"></div></div></section><section class="trendLogGrid"><section class="panel trendPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Status Trends by Date</h2></div></div><div class="controls"><label>From <input id="dateFrom" class="input" type="date"></label><label>To <input id="dateTo" class="input" type="date"></label></div></div><div class="chartWrap"><canvas id="trendChart"></canvas></div><div class="legend"><span><i class="dot blue"></i>Entered Critical cumulative</span><span><i class="dot orange"></i>Critical total - right axis</span><span><i class="dot green"></i>Exited Critical cumulative</span></div></section><section class="panel criticalLogPanel repairCostPanel"><div class="panelTitleRow"><h2 class="panelTitle">Repair Analytics</h2><span class="dateNote" data-date-note>through --</span></div><div class="repairComboGrid"><div class="repairComboItem"><h3 class="repairComboTitle">Tickets Repair Cost Distribution</h3><div id="criticalLogRows" class="statusPieLayout repairCostPie"></div></div><div class="repairComboItem"><h3 class="repairComboTitle">Approved vs Unapproved Tickets</h3><div id="approvedMixRows" class="statusPieLayout approvedMixPie"></div></div></div></section></section><section class="panel teamAssignPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Owner Workload</h2><span class="dateNote" data-date-note>through --</span></div></div><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed</span><span><i style="background:#4f46e5"></i>Current critical tickets</span></div><div id="employeeStatusMapping" class="employeeStatusMapping"></div></section></div><aside class="featureSideStack"><div class="panel dealerRankPanel"><div class="panelTitleRow"><h2 class="panelTitle">Top Critical Tickets by Dealer</h2><span class="dateNote" data-date-note>through --</span></div><div id="dealerBars" class="dealerCriticalList"></div></div><section class="dashboardAnalysisGrid"><div class="panel speedPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Duration Distribution</h2></div></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel statusMixPanel"><div class="panelTitleRow"><h2 class="panelTitle">Critical Tickets Status Mix</h2></div><div id="statusMix" class="mixRows"></div></div></section></aside></section></main></div><div id="tooltip" class="tooltip"></div><div id="employeeModalBackdrop" class="employeeModalBackdrop">
   <section class="employeeModal" role="dialog" aria-modal="true" aria-label="Employee workload details">
     <div class="employeeModalHead">
       <div class="employeePickerWrap"><label class="employeePickerLabel" for="employeePicker">Employee</label><select id="employeePicker" class="employeePicker"></select></div>
@@ -1857,7 +1641,7 @@ function hideCalcFloat(delay=250){setTimeout(()=>showCalcFloat(false),delay)}
 const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
 const MONITOR_ROOT="ctmTicketStatusMonitorV44";
 let team={views:{},defaultView:"all",claimOptions:[{key:"all",label:"All Claims"}]};
-let activeClaim="all", activeView=null, activePeriod="all", trendPoints=[], rawCritical={loaded:false,views:{}}, rawTicketEntries=[], statusMapping={}, dealerKeyLookup={exact:{},loose:{}}, employeeAnalytics=null, teamAssignMetric="totalRemoved", selectedEmployeeName="", employeeModalPeriod="all", employeeStatusMapping={}, employeeStatusEdit=false, lastKnownLatestDate="", dateRangeManuallyChanged=false;
+let activeClaim="all", activeView=null, activePeriod="all", trendPoints=[], rawCritical={loaded:false,views:{}}, rawTicketEntries=[], statusMapping={}, dealerKeyLookup={exact:{},loose:{}}, employeeAnalytics=null, teamAssignMetric="totalRemoved", selectedEmployeeName="", employeeModalPeriod="all", employeeStatusMapping={}, employeeStatusEdit=false;
 const DEFAULT_RANGE_START="2026-05-25";
 let dealerListExpanded=false;
 const $=id=>document.getElementById(id); const clean=v=>v==null?"":String(v).trim(); const num=v=>Number(v||0).toLocaleString();
@@ -1995,32 +1779,27 @@ function currentTotalCritical(fallback){const v=currentRawCriticalView();return 
 function prepareCanvas(c){const rect=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;c.width=Math.max(1,Math.floor(rect.width*dpr));c.height=Math.max(1,Math.floor(rect.height*dpr));const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);return{ctx,w:rect.width,h:rect.height}}
 function niceMax(v){v=Math.max(1,Number(v||0));if(v<=5)return 5;if(v<=25)return Math.ceil(v/5)*5;if(v<=120)return Math.ceil(v/20)*20;if(v<=500)return Math.ceil(v/50)*50;return Math.ceil(v/100)*100}
 function smoothPath(ctx,pts){if(!pts.length)return;ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++){const p0=pts[i-1],p1=pts[i];const mx=(p0.x+p1.x)/2;ctx.quadraticCurveTo(p0.x,p0.y,mx,(p0.y+p1.y)/2);ctx.quadraticCurveTo(p1.x,p1.y,p1.x,p1.y)}}function drawLine(ctx,pts,color,dashed=false,alpha=1){if(!pts.length)return;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=dashed?1.7:2.4;ctx.lineCap="round";ctx.lineJoin="round";if(dashed)ctx.setLineDash([7,6]);smoothPath(ctx,pts);ctx.stroke();ctx.setLineDash([]);pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,dashed?2.6:3.3,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();ctx.lineWidth=dashed?1.7:2.2;ctx.strokeStyle=color;ctx.stroke();});ctx.restore()}
-function renderPeriodButtons(){if(!$('periodSwitch'))return;const opts=[{key:"day",label:"Today"},{key:"week",label:"This Week"},{key:"month",label:"MTD"}];$("periodSwitch").innerHTML=opts.map(o=>`<button class="changeBtn ${o.key===activePeriod?'active':''}" data-key="${o.key}" type="button">${o.label}</button>`).join("");document.querySelectorAll(".changeBtn").forEach(b=>{let t=null;b.addEventListener("click",ev=>{if(ev.detail>=2){if(t)clearTimeout(t);activePeriod="all";dateRangeManuallyChanged=false;setFullRange();renderAll();return;}if(t)clearTimeout(t);t=setTimeout(()=>{const key=b.dataset.key;if(activePeriod===key){activePeriod="all";dateRangeManuallyChanged=false;setFullRange();}else{activePeriod=key;dateRangeManuallyChanged=false;const end=latestDateForView();const start=periodStartDate(end);if($("dateFrom"))$("dateFrom").value=start;if($("dateTo"))$("dateTo").value=end;}renderAll();},180);});b.addEventListener("dblclick",ev=>{ev.preventDefault();if(t)clearTimeout(t);activePeriod="all";dateRangeManuallyChanged=false;setFullRange();renderAll();});});}
+function renderPeriodButtons(){if(!$('periodSwitch'))return;const opts=[{key:"day",label:"Today"},{key:"week",label:"This Week"},{key:"month",label:"MTD"}];$("periodSwitch").innerHTML=opts.map(o=>`<button class="changeBtn ${o.key===activePeriod?'active':''}" data-key="${o.key}" type="button">${o.label}</button>`).join("");document.querySelectorAll(".changeBtn").forEach(b=>{let t=null;b.addEventListener("click",ev=>{if(ev.detail>=2){if(t)clearTimeout(t);activePeriod="all";setFullRange();renderAll();return;}if(t)clearTimeout(t);t=setTimeout(()=>{const key=b.dataset.key;if(activePeriod===key){activePeriod="all";setFullRange();}else{activePeriod=key;const end=latestDateForView();const start=periodStartDate(end);if($("dateFrom"))$("dateFrom").value=start;if($("dateTo"))$("dateTo").value=end;}renderAll();},180);});b.addEventListener("dblclick",ev=>{ev.preventDefault();if(t)clearTimeout(t);activePeriod="all";setFullRange();renderAll();});});}
 function todayISO(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
-function nextDateKey(date){const d=new Date(date+"T00:00:00Z");if(isNaN(d))return "";d.setUTCDate(d.getUTCDate()+1);return d.toISOString().slice(0,10)}
 function trendThroughToday(view=currentView()){
   const pts=arrayFromMaybe(view.trend).map(p=>({...p})).filter(p=>clean(p.date)).sort((a,b)=>clean(a.date).localeCompare(clean(b.date)));
   const today=todayISO();
+  const last=pts[pts.length-1]||null;
+  if(last&&last.date>=today)return pts;
   const daily=view.daily||{};
-  let last=pts[pts.length-1]||null;
-  if(!last){
-    pts.push({date:today,entered:Number((daily.entered||{})[today]||0),exited:Number((daily.exited||{})[today]||0),critical:currentTotalCritical(0)});
-    return pts;
-  }
-  while(last.date<today){
-    const d=nextDateKey(last.date);
-    if(!d)break;
-    const entered=Number(last.entered||0)+Number((daily.entered||{})[d]||0);
-    const exited=Number(last.exited||0)+Number((daily.exited||{})[d]||0);
-    const stock=d===today?currentTotalCritical(Number(last.critical||last.criticalNow||0)):Math.max(0,Number(last.critical||last.criticalNow||0)+Number((daily.entered||{})[d]||0)-Number((daily.exited||{})[d]||0));
-    last={date:d,entered,exited,critical:stock};
-    pts.push(last);
-  }
+  const enteredToday=Number((daily.entered||{})[today]||0);
+  const exitedToday=Number((daily.exited||{})[today]||0);
+  pts.push({
+    date:today,
+    entered:Number(last?.entered||0)+enteredToday,
+    exited:Number(last?.exited||0)+exitedToday,
+    critical:currentTotalCritical(Number(last?.critical||last?.criticalNow||0))
+  });
   return pts;
 }
 function latestDateForView(){const view=currentView();const pts=trendThroughToday(view);return (pts.length?pts[pts.length-1].date:clean(view.generatedAt).slice(0,10)||clean(team.generatedAt).slice(0,10)||todayISO());}
 function earliestDateForView(){const view=currentView();const pts=view.trend||[];const first=(pts.length?pts[0].date:(view.minDate||team.minDate||latestDateForView()));return first&&first>DEFAULT_RANGE_START?first:DEFAULT_RANGE_START;}
-function setFullRange(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;if($("dateFrom"))$("dateFrom").value=earliestDateForView();if($("dateTo"))$("dateTo").value=latestDateForView();lastKnownLatestDate=latestDateForView();}
+function setFullRange(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;if($("dateFrom"))$("dateFrom").value=earliestDateForView();if($("dateTo"))$("dateTo").value=latestDateForView();}
 function periodEndDate(){return ($("dateTo")&&$("dateTo").value)||latestDateForView();}
 function periodStartDate(end){if(activePeriod==="all")return ($("dateFrom")&&$("dateFrom").value)||earliestDateForView();if(activePeriod==="day")return end;const d=new Date(end+"T00:00:00Z");d.setUTCDate(d.getUTCDate()-(activePeriod==="month"?29:6));const out=d.toISOString().slice(0,10);return out<earliestDateForView()?earliestDateForView():out;}
 function sumDaily(map,start,end){let total=0;Object.entries(map||{}).forEach(([k,v])=>{if(k>=start&&k<=end)total+=Number(v||0)});return total;}
@@ -2119,29 +1898,23 @@ function trendMarkup(key,current,previous,fmt="number"){
 }
 function claimFilterIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>`}
 function refreshIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>`}
-function clearDashboardFilters(){activeClaim="all";activePeriod="all";dateRangeManuallyChanged=false;setFullRange();renderAll();}
+function clearDashboardFilters(){activeClaim="all";activePeriod="all";setFullRange();renderAll();}
 function renderClaimButtons(){const opts=team.claimOptions||[{key:"all",label:"All Claims"},{key:"inField",label:"In Field Warranty Claims"},{key:"preDelivery",label:"Pre Delivery Warranty Claims"}];const box=$("claimSwitch");if(!box)return;box.className="claimSwitch filterTools";box.innerHTML=`<button class="filterIconBtn" id="clearClaimFilters" title="Clear filters" type="button">${refreshIcon()}</button><div class="filterDropdown"><button class="filterButton" type="button">${claimFilterIcon()}<span>Filters</span></button><div class="filterMenu">${opts.map(o=>`<button class="filterOption ${o.key===activeClaim?'active':''}" data-key="${esc(o.key)}" type="button">${esc(o.label)}</button>`).join("")}</div></div>`;box.querySelector("#clearClaimFilters").onclick=clearDashboardFilters;const dd=box.querySelector(".filterDropdown");box.querySelector(".filterButton").onclick=e=>{e.stopPropagation();dd.classList.toggle("open")};box.querySelectorAll(".filterOption").forEach(b=>b.onclick=()=>{activeClaim=b.dataset.key||"all";dd.classList.remove("open");renderAll()});}
 function currentView(){return (team.views&&team.views[activeClaim]) || team.views?.all || team;}
 function dailyCriticalTotalForTrend(p){const raw=Number(p.critical||p.criticalNow||0);return p.date===latestDateForView()?currentTotalCritical(raw):raw}
 function selectedTrend(){
   const view=currentView();
   const all=trendThroughToday(view).map(p=>({...p,critical:dailyCriticalTotalForTrend(p)}));
-  const daily=(view&&view.daily)||{};
-  const points=all.map((p,i)=>{
-    const prev=i>0?all[i-1]:null;
-    const enteredDaily=daily.entered&&Object.prototype.hasOwnProperty.call(daily.entered,p.date)
-      ? Number(daily.entered[p.date]||0)
-      : Math.max(0,Number(p.entered||p.newClaim||0)-Number(prev?(prev.entered||prev.newClaim||0):0));
-    const exitedDaily=daily.exited&&Object.prototype.hasOwnProperty.call(daily.exited,p.date)
-      ? Number(daily.exited[p.date]||0)
-      : Math.max(0,Number(p.exited||0)-Number(prev?prev.exited||0:0));
-    const criticalChange=prev
-      ? Number(p.critical||p.criticalNow||0)-Number(prev.critical||prev.criticalNow||0)
-      : Number(p.criticalChange||p.netChange||0);
-    return {...p,entered:enteredDaily,newClaim:enteredDaily,exited:exitedDaily,critical:criticalChange,criticalStock:Number(p.critical||p.criticalNow||0)};
-  });
+  for(let i=1;i<all.length;i++){
+    const prev=all[i-1],cur=all[i];
+    const delta=Number(cur.critical||0)-Number(prev.critical||0);
+    const enteredBase=Math.max(Number(cur.entered||0),Number(prev.entered||0));
+    const exitedBase=Math.max(Number(cur.exited||0),Number(prev.exited||0));
+    cur.entered=delta>0?Math.max(enteredBase,Number(prev.entered||0)+delta):enteredBase;
+    cur.exited=delta<0?Math.max(exitedBase,Number(prev.exited||0)+Math.abs(delta)):exitedBase;
+  }
   const from=$("dateFrom").value,to=$("dateTo").value;
-  return points.filter(p=>(!from||p.date>=from)&&(!to||p.date<=to));
+  return all.filter(p=>(!from||p.date>=from)&&(!to||p.date<=to));
 }
 function drawTodayBarsTeam(ctx,w,h){
   const s=currentPeriodSummary();
@@ -2150,7 +1923,7 @@ function drawTodayBarsTeam(ctx,w,h){
   ctx.font='500 13px Inter, Segoe UI, Arial';ctx.textAlign='center';ctx.textBaseline='middle';
   data.forEach((d,i)=>{const bw=Math.min(100,plotW/(data.length*2));const gap=plotW/data.length;const x=left+gap*i+gap/2-bw/2;const bh=plotH*(d[1]/max);const y=top+plotH-bh;const g=ctx.createLinearGradient(0,y,0,y+bh);g.addColorStop(0,d[2]);g.addColorStop(1,'#7dd3fc');ctx.fillStyle=g;ctx.beginPath();ctx.roundRect?ctx.roundRect(x,y,bw,bh,8):(ctx.rect(x,y,bw,bh));ctx.fill();ctx.fillStyle='#0f172a';ctx.font='600 16px Inter, Segoe UI, Arial';ctx.fillText(num(d[1]),x+bw/2,y-12);ctx.fillStyle='#52627a';ctx.font='500 12px Inter, Segoe UI, Arial';ctx.fillText(d[0],x+bw/2,h-22);});
 }
-function drawTrend(){const c=$("trendChart");if(!c)return;const {ctx,w,h}=prepareCanvas(c);ctx.clearRect(0,0,w,h);if(activePeriod==="day"){drawTodayBarsTeam(ctx,w,h);return;}const pts=trendPoints;const left=58,right=70,top=24,bottom=56,plotW=w-left-right,plotH=h-top-bottom;const flowMax=niceMax(Math.max(1,...pts.flatMap(p=>[p.entered,p.exited])));const critVals=pts.map(p=>Number(p.critical||0));const critAbs=niceMax(Math.max(1,...critVals.map(v=>Math.abs(v))));const critMin=-critAbs,critMax=critAbs;ctx.save();ctx.font="12px Inter, Segoe UI, Arial";ctx.strokeStyle="#d8e2ee";ctx.setLineDash([2,4]);for(let i=0;i<=5;i++){const val=Math.round(flowMax*i/5),y=top+plotH-(plotH*i/5);ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillStyle="#64748b";ctx.textAlign="right";ctx.fillText(String(val),left-10,y+4);const rv=Math.round(critMin+(critMax-critMin)*i/5);ctx.fillStyle="#fb6b1d";ctx.textAlign="left";ctx.fillText(String(rv),w-right+10,y+4)}ctx.setLineDash([]);ctx.fillStyle="#64748b";ctx.textAlign="left";pts.forEach((p,i)=>{const x=left+(pts.length<=1?0:plotW*i/(pts.length-1));if(i===0||i===pts.length-1||pts.length<=7)ctx.fillText(p.date.slice(5),x-14,h-22)});ctx.restore();const xFor=i=>left+(pts.length<=1?0:plotW*i/(pts.length-1));const yFlow=v=>top+plotH-(plotH*(Number(v||0)/flowMax));const yCritical=v=>top+plotH-plotH*((Number(v||0)-critMin)/(critMax-critMin));drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.entered)})),"#3b82f6");drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yCritical(p.critical)})),"#fb6b1d",true,.75);drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.exited)})),"#16a34a");c._points=pts.map((p,i)=>({x:xFor(i),p,idx:i}))}
+function drawTrend(){const c=$("trendChart");if(!c)return;const {ctx,w,h}=prepareCanvas(c);ctx.clearRect(0,0,w,h);if(activePeriod==="day"){drawTodayBarsTeam(ctx,w,h);return;}const pts=trendPoints;const left=58,right=62,top=24,bottom=56,plotW=w-left-right,plotH=h-top-bottom;const flowMax=niceMax(Math.max(1,...pts.flatMap(p=>[p.entered,p.exited])));const criticalMax=niceMax(Math.max(1,...pts.map(p=>p.critical)));ctx.save();ctx.font="12px Inter, Segoe UI, Arial";ctx.strokeStyle="#d8e2ee";ctx.setLineDash([2,4]);for(let i=0;i<=5;i++){const val=Math.round(flowMax*i/5),y=top+plotH-(plotH*i/5);ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillStyle="#64748b";ctx.textAlign="right";ctx.fillText(String(val),left-10,y+4);const rv=Math.round(criticalMax*i/5);ctx.fillStyle="#fb6b1d";ctx.textAlign="left";ctx.fillText(String(rv),w-right+10,y+4)}ctx.setLineDash([]);ctx.fillStyle="#64748b";ctx.textAlign="left";pts.forEach((p,i)=>{const x=left+(pts.length<=1?0:plotW*i/(pts.length-1));if(i===0||i===pts.length-1||pts.length<=7)ctx.fillText(p.date.slice(5),x-14,h-22)});ctx.restore();const xFor=i=>left+(pts.length<=1?0:plotW*i/(pts.length-1));const yFlow=v=>top+plotH-(plotH*(v/flowMax));const yCritical=v=>top+plotH-(plotH*(v/criticalMax));drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.entered)})),"#3b82f6");drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yCritical(p.critical)})),"#fb6b1d",true,.55);drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.exited)})),"#16a34a");c._points=pts.map((p,i)=>({x:xFor(i),p,idx:i}))}
 function setKpiTrendHidden(id,hidden,mode="range"){const el=$(id);if(!el)return;el.innerHTML=kpiDateMetaMarkup(mode);el.className="kpiTrend flat kpiTrendDateOnly";}
 function setCardLabel(selector,label){const el=document.querySelector(selector+" .kpiLabel");if(el)el.textContent=label;}
 function setTrend(id,key,current,previous,fmt,show,mode="range"){const el=$(id);if(!el)return;if(!show){setKpiTrendHidden(id,true,mode);return;}const html=trendMarkup(key,current,previous,fmt)+kpiDateMetaMarkup(mode);el.innerHTML=html;el.className="kpiTrend";const diff=Number(current||0)-Number(previous||0);const higherGood={totalTickets:true,criticalNow:false,enteredCritical:false,exitedCritical:true,exitedTicketsTotalValue:true,estimatedClearDays:false,benchmarkRate:true,approvedTickets:true,approvedAmount:true,avgCost:true,unapprovedTickets:true,unapprovedRatio:true};el.classList.add(diff===0?"flat":((diff>0)===higherGood[key]?"good":"bad"));}
@@ -2161,6 +1934,7 @@ function renderKpis(){
   const prevH=periodHandlingSummaryForBounds(pb.start,pb.end,prev.criticalNow);
   const filtered=hasTicketFilter();
   const claimCounts=claimTypeCounts();
+  const noUpdate=noUpdateAgingSummary();
   const approvedAvg=s.approvedTickets?s.approvedAmount/s.approvedTickets:0;
   const prevApprovedAvg=prev.approvedTickets?prev.approvedAmount/prev.approvedTickets:0;
   const ratio=pctValue(s.unapprovedTickets,s.approvedTickets),prevRatio=pctValue(prev.unapprovedTickets,prev.approvedTickets);
@@ -2168,12 +1942,13 @@ function renderKpis(){
   const todayMode=activePeriod==="day";
   setCardLabel(".totalCriticalCard",filtered?"Total Tickets Change":"Total Tickets");
   setCardLabel(".approvedTicketsCountCard",filtered?"Approved / Unapproved Tickets changes":"In Field Warranty Claims / Pre Delivery Warranty Claims");
-  document.querySelector(".unapprovedTicketsCard")?.remove();
+  setCardLabel(".unapprovedTicketsCard","No Update Aging");
   setCardLabel(".benchmarkRateCard","2-week benchmark");
   setCardLabel(".approvedTicketsCard","Approved Cost");
   setCardLabel(".exitedValueCard","Estimated clear time");
   $("kpiCritical").textContent=num(totalTicketValue);
   if($("kpiApprovedTickets"))$("kpiApprovedTickets").textContent=filtered?`${num(s.approvedTickets)} / ${num(s.unapprovedTickets)}`:`${num(claimCounts.inField)} / ${num(claimCounts.preDelivery)}`;
+  if($("kpiUnapproved"))$("kpiUnapproved").textContent=num(noUpdate.count);
   if($("kpiBenchmark"))$("kpiBenchmark").textContent=todayMode?"-":`${numFixed(h.rate||0,1)}%`;
   $("kpiRate").textContent=h.current<=0?"Clean":(h.clearDays==null?"-":formatClearTime(h.clearDays));
   if($("kpiApproved"))$("kpiApproved").textContent=money(s.approvedAmount);
@@ -2183,9 +1958,12 @@ function renderKpis(){
   if($("kpiRatioBase"))$("kpiRatioBase").textContent=todayMode?"":`${num(s.unapprovedTickets)} / ${num(s.approvedTickets)}`;
   setTrend("kpiCriticalTrend","totalTickets",s.totalTickets,prev.totalTickets,undefined,filtered);
   setTrend("kpiApprovedTicketsTrend","approvedTickets",s.approvedTickets,prev.approvedTickets,undefined,filtered);
+  if($("kpiUnapprovedTrend")){ $("kpiUnapprovedTrend").innerHTML=kpiDateMetaMarkup("end"); $("kpiUnapprovedTrend").className="kpiTrend flat kpiTrendDateOnly"; }
   setTrend("kpiBenchmarkTrend","benchmarkRate",h.rate||0,prevH.rate||0,"percentPoint",filtered&&!todayMode);
   clearKpiPreview(document.querySelector(".benchmarkRateCard"));
+  const noUpdateCard=document.querySelector(".unapprovedTicketsCard");
   clearKpiPreview(document.querySelector(".exitedValueCard"));
+  if(noUpdateCard)noUpdateCard.onclick=()=>{try{localStorage.setItem("dealerWorkbenchNoUpdateTickets",JSON.stringify(noUpdate.rows||[]));}catch(e){}window.location.href="dealer-workbench.html?noUpdate=1#tickets";};
   setTrend("kpiApprovedTrend","approvedAmount",s.approvedAmount,prev.approvedAmount,"money",filtered);
   setTrend("kpiAvgCostTrend","avgCost",approvedAvg,prevApprovedAvg,"money",filtered);
   setTrend("kpiRateTrend","estimatedClearDays",h.clearDays||0,prevH.clearDays||0,"days",filtered);
@@ -2285,14 +2063,10 @@ function bindStatusMixTipsFor(box,tip){
 }
 function criticalDurationDaysForRow(row,endDate){
   const end=new Date((endDate||periodEndDate())+"T00:00:00Z");
-  const enteredStart=new Date(row.enteredAt||row.enteredCriticalAt||row.firstEnteredAt||row.criticalSince||row.detectedAt||row.date||"");
-  if(!isNaN(enteredStart)&&!isNaN(end))return Math.max(0,(end-enteredStart)/86400000);
-  const direct=Number(row.durationDays??row.criticalDurationDays??row.daysInCritical);
-  if(Number.isFinite(direct)&&direct>=0)return direct;
-  const createdStart=new Date(row.created||row.CreatedOn||row.createdOn||row.CreatedAt||row.createdAt||row.ticketCreatedOn||row.TicketCreatedOn||"");
-  if(!isNaN(createdStart)&&!isNaN(end))return Math.max(0,(end-createdStart)/86400000);
-  const legacyAging=Number(row.ageDays??row.agingDays);
-  return Number.isFinite(legacyAging)&&legacyAging>=0?legacyAging:null;
+  const start=new Date(row.enteredAt||row.enteredCriticalAt||row.firstEnteredAt||row.criticalSince||row.detectedAt||row.date||"");
+  if(!isNaN(start)&&!isNaN(end))return Math.max(0,(end-start)/86400000);
+  const direct=Number(row.durationDays??row.duration??row.daysInCritical??row.ageDays);
+  return Number.isFinite(direct)&&direct>=0?direct:null;
 }
 function criticalLogSortTime(e){
   const raw=e&&clean(e.detectedAt||e.dataSyncAt||e.date||e.createdAt);
@@ -2391,31 +2165,27 @@ function criticalSnapshotRowsAt(end){
   });
   return rows;
 }
-function criticalDurationBucketDefs(){
-  return [
-    {key:"zeroToFourteenDays",label:"0-14 days",count:0},
-    {key:"fourteenToThirtyDays",label:"14-30 days",count:0},
-    {key:"thirtyToSixtyDays",label:"30-60 days",count:0},
-    {key:"overSixtyDays",label:"60+ days",count:0}
-  ];
-}
-function criticalDurationBucketIndex(days){
-  const d=Number(days);
-  if(!Number.isFinite(d))return 3;
-  if(d<=14)return 0;
-  if(d<=30)return 1;
-  if(d<=60)return 2;
-  return 3;
-}
 function criticalDurationBuckets(){
-  const buckets=criticalDurationBucketDefs();
+  const buckets=[
+    {key:"leOneDay",label:"<= 1 day",count:0},
+    {key:"oneToThreeDays",label:"1-3 days",count:0},
+    {key:"threeToSevenDays",label:"3-7 days",count:0},
+    {key:"eightToFourteenDays",label:"8-14 days",count:0},
+    {key:"overFourteenDays",label:"> 14 days",count:0}
+  ];
   const durationRows=criticalDurationRows();
   durationRows.forEach(row=>{
-    buckets[criticalDurationBucketIndex(row.days)].count++;
+    if(row.days==null||!Number.isFinite(Number(row.days))){buckets[4].count++;return;}
+    const d=Number(row.days);
+    if(d<=1)buckets[0].count++;
+    else if(d<=3)buckets[1].count++;
+    else if(d<=7)buckets[2].count++;
+    else if(d<=14)buckets[3].count++;
+    else buckets[4].count++;
   });
   const expected=durationRows.length;
   const counted=buckets.reduce((sum,row)=>sum+Number(row.count||0),0);
-  if(expected>counted)buckets[3].count+=expected-counted;
+  if(expected>counted)buckets[4].count+=expected-counted;
   return buckets;
 }
 function formatSnapshotDateLabel(dateStr){
@@ -2442,8 +2212,14 @@ function renderAnalysisDateNotes(){
   setAnalysisDateNote(".featureSideStack .dashboardAnalysisGrid .statusMixPanel",end);
 }
 function durationBucketMatch(row,key){
-  const bucket=criticalDurationBucketDefs()[criticalDurationBucketIndex(row&&row.days)];
-  return Boolean(bucket&&bucket.key===key);
+  const d=Number(row&&row.days);
+  if(!Number.isFinite(d))return key==="overFourteenDays";
+  if(key==="leOneDay")return d<=1;
+  if(key==="oneToThreeDays")return d>1&&d<=3;
+  if(key==="threeToSevenDays")return d>3&&d<=7;
+  if(key==="eightToFourteenDays")return d>7&&d<=14;
+  if(key==="overFourteenDays")return d>14;
+  return false;
 }
 function dashboardTicketPayload(row){
   return {
@@ -2580,16 +2356,21 @@ function periodHandlingSummaryForBounds(start,end,currentOverride){
   const periodResolved=resolvedRows.filter(r=>{const d=clean(r.exitDate)||eventDateKey(r.exitAt);return d&&d>=start&&d<=end;});
   const logs=(view.logs||[]).filter(e=>{const d=eventDateKey(e.detectedAt||e.date);return d&&d>=start&&d<=end;});
   const sourceExits=periodResolved.length?periodResolved:logs.filter(e=>clean(e.cls)==='exit');
-  const buckets=criticalDurationBucketDefs();
-  const legacyBucketIndex={leOneDay:0,oneToThreeDays:0,threeToSevenDays:0,eightToFourteenDays:0,overFourteenDays:1};
+  const buckets=[
+    {key:'leOneDay',label:'<= 1 day',count:0},
+    {key:'oneToThreeDays',label:'1-3 days',count:0},
+    {key:'threeToSevenDays',label:'3-7 days',count:0},
+    {key:'eightToFourteenDays',label:'8-14 days',count:0},
+    {key:'overFourteenDays',label:'> 14 days',count:0},
+  ];
   sourceExits.forEach(e=>{
     const key=clean(e.bucket);
-    if(key){const b=buckets.find(x=>x.key===key); if(b){b.count++; return;} if(Object.prototype.hasOwnProperty.call(legacyBucketIndex,key)){buckets[legacyBucketIndex[key]].count++;return;}}
+    if(key){const b=buckets.find(x=>x.key===key); if(b){b.count++; return;}}
     const d=Number.isFinite(Number(e.durationDays))?Number(e.durationDays):durationDaysForTeamLog(e);
-    buckets[criticalDurationBucketIndex(d)].count++;
+    if(d<=1)buckets[0].count++; else if(d<=3)buckets[1].count++; else if(d<=7)buckets[2].count++; else if(d<=14)buckets[3].count++; else buckets[4].count++;
   });
   const resolved=sourceExits.length;
-  const within=buckets[0].count;
+  const within=buckets.slice(0,4).reduce((a,b)=>a+b.count,0);
   const rate=resolved?Math.round((within/resolved)*1000)/10:0;
   const days=Math.max(1,Math.round((new Date(end+'T00:00:00Z')-new Date(start+'T00:00:00Z'))/86400000)+1);
   const current=currentOverride==null?currentTotalCritical(selectedPeriodCriticalTotal()):Number(currentOverride||0);
@@ -2947,22 +2728,26 @@ function renderRepairCostDistribution(){
   bindRepairCostTicketLinks(box);
 }
 function approvedMixRows(){
-  const view=currentEmployeeAnalyticsView();
   const {start,end}=periodBounds();
-  return arrayFromMaybe(view&&view.approvalRows).map(row=>{
-    const approved=sumDaily(row.approvedDaily,start,end);
-    const unapproved=sumDaily(row.unapprovedDaily,start,end);
-    const approvedAmount=sumDaily(row.approvedAmountDaily,start,end);
-    const unapprovedAmount=sumDaily(row.unapprovedAmountDaily,start,end);
-    const total=approved+unapproved;
-    return {name:clean(row.name),approved,unapproved,total,approvedAmount,unapprovedAmount,approvedPct:total?approved/total*100:0,unapprovedPct:total?unapproved/total*100:0};
-  }).filter(row=>row.name&&row.total>0).sort((a,b)=>b.total-a.total||b.unapproved-a.unapproved||a.name.localeCompare(b.name));
+  const s=changeApprovalSummary(start,end);
+  return [
+    {key:"approved",label:"Approved Tickets",count:Number(s.approved||0),details:[{label:"Approved Cost",count:money(s.approvedAmount)}]},
+    {key:"unapproved",label:"Unapproved Tickets",count:Number(s.unapproved||0),details:[{label:"Unapproved Cost",count:money(s.unapprovedAmount)}]}
+  ].filter(x=>x.count>0);
 }
-function approvedEmployeeTableMarkup(rows){
-  if(!rows.length)return `<div class="speedEmpty">No approved or unapproved ticket changes found by employee.</div>`;
-  const header=`<div class="employeeApprovalHeader"><span>Employee</span><span class="employeeApprovalCount">Approved</span><span class="employeeApprovalPct">Approved %</span><span class="employeeApprovalCount">Unapproved</span><span class="employeeApprovalPct">Unapproved %</span></div>`;
-  const body=rows.map(row=>`<div class="employeeApprovalRow" role="button" tabindex="0" data-employee-name="${esc(row.name)}" data-status-tip="${esc(`<b>${esc(row.name)}</b>Approved: ${num(row.approved)} (${pctText(row.approvedPct,0)})<br>Unapproved: ${num(row.unapproved)} (${pctText(row.unapprovedPct,0)})<br>Total: ${num(row.total)}`)}"><span class="employeeApprovalName">${esc(row.name)}</span><span class="employeeApprovalCount employeeApprovalApproved">${num(row.approved)}</span><span class="employeeApprovalPct employeeApprovalApproved">${pctText(row.approvedPct,0)}</span><span class="employeeApprovalCount employeeApprovalUnapproved">${num(row.unapproved)}</span><span class="employeeApprovalPct employeeApprovalUnapproved">${pctText(row.unapprovedPct,0)}</span></div>`).join("");
-  return header+body;
+function approvedBarChartMarkup(rows){
+  const colors=["#22c55e","#fb7185"];
+  const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
+  if(!total)return `<div class="speedEmpty">No approved or unapproved ticket changes found.</div>`;
+  const max=Math.max(1,...rows.map(row=>Number(row.count||0)));
+  return rows.map((row,i)=>{
+    const count=Number(row.count||0);
+    const pct=total?Math.round(count/total*100):0;
+    const height=Math.max(4,count/max*100);
+    const detail=(row.details||[]).map(x=>`${esc(x.label)}: ${esc(x.count)}`).join("<br>");
+    const tip=`<b>${esc(row.label)}: ${num(count)} (${pct}%)</b>${detail}`;
+    return `<div class="approvedBarItem" role="button" tabindex="0" data-approval-key="${esc(row.key)}" data-approval-label="${esc(row.label)}" data-status-tip="${esc(tip)}"><div class="approvedBarTop"><span class="approvedBarCount">${num(count)}</span><span class="approvedBarPct">${pct}% of total</span></div><div class="approvedBarTrack"><span class="approvedBarFill" style="height:${height}%;background:linear-gradient(180deg,${colors[i%colors.length]},${i%2?"#e11d48":"#16a34a"})"></span></div><div class="approvedBarLabel"><span class="approvedBarDot" style="background:${colors[i%colors.length]}"></span><span>${esc(row.label)}</span></div></div>`;
+  }).join("");
 }
 function repairAnalyticsDashboardRowFromLog(e){
   const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);
@@ -3005,19 +2790,13 @@ function bindApprovalTicketLinks(box){
     el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openApprovalBucketTickets(el.dataset.approvalKey,el.dataset.approvalLabel);}};
   });
 }
-function bindEmployeeApprovalRows(box){
-  box.querySelectorAll("[data-employee-name]").forEach(el=>{
-    el.onclick=e=>{e.preventDefault();e.stopPropagation();openEmployeeModal(el.dataset.employeeName);};
-    el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openEmployeeModal(el.dataset.employeeName);}};
-  });
-}
 function renderApprovedMix(){
   const box=$("approvedMixRows");
   if(!box)return;
-  box.className="employeeApprovalTable";
-  box.innerHTML=approvedEmployeeTableMarkup(approvedMixRows());
+  box.className="approvedBarChart";
+  box.innerHTML=approvedBarChartMarkup(approvedMixRows());
   bindStatusMixTipsFor(box,$("tooltip"));
-  bindEmployeeApprovalRows(box);
+  bindApprovalTicketLinks(box);
 }
 function currentEmployeeAnalyticsView(){return (employeeAnalytics&&employeeAnalytics.views&&employeeAnalytics.views[activeClaim])?employeeAnalytics.views[activeClaim]:employeeAnalytics}
 function teamAssignRowsFromAnalytics(){
@@ -3096,14 +2875,11 @@ function renderTeamAssignChart(){
     const redIsBase=redPct>=bluePct;
     const redLabel=teamAssignMetricLabel(redValue);
     const blueLabel=num(blueValue);
-    const minInlineLabelValue=15;
-    const showRedInline=redValue>=minInlineLabelValue;
-    const showBlueInline=blueValue>=minInlineLabelValue;
-    const labelsOverlap=showRedInline&&showBlueInline&&Math.abs(redPct-bluePct)<8;
+    const labelsOverlap=redValue>0&&blueValue>0&&Math.abs(redPct-bluePct)<8;
     const redLabelPct=Math.min(96,Math.max(labelsOverlap?14:8,redPct));
     const blueLabelPct=Math.min(96,Math.max(labelsOverlap?14:8,bluePct));
-    const redInline=showRedInline?`<span class="${labelsOverlap?'teamAssignCallout left':'teamAssignInline'} redLabel" style="left:${redLabelPct}%">${redLabel}</span>`:"";
-    const blueInline=showBlueInline?`<span class="${labelsOverlap?'teamAssignCallout right':'teamAssignInline'} blueLabel" style="left:${blueLabelPct}%">${blueLabel}</span>`:"";
+    const redInline=redValue?`<span class="${labelsOverlap?'teamAssignCallout left':'teamAssignInline'} redLabel" style="left:${redLabelPct}%">${redLabel}</span>`:"";
+    const blueInline=blueValue?`<span class="${labelsOverlap?'teamAssignCallout right':'teamAssignInline'} blueLabel" style="left:${blueLabelPct}%">${blueLabel}</span>`:"";
     const exited=isEmployeeExited(row.name);
     const nameLabel=`${esc(row.name)}${exited?`<span class="teamAssignExitedBadge">Exited</span>`:""}`;
     return `<div class="teamAssignRow"><div class="teamAssignName" title="${esc(row.name)}${exited?' - Exited':''}">${nameLabel}</div><div class="teamAssignTrack" role="button" tabindex="0" data-employee="${esc(row.name)}" aria-label="Open ${esc(row.name)} workload details" title="Open ${esc(row.name)} workload details"><div class="${redIsBase?'teamAssignRed':'teamAssignBlue'}" style="width:${redIsBase?redPct:bluePct}%"></div><div class="${redIsBase?'teamAssignBlue':'teamAssignRed'}" style="width:${redIsBase?bluePct:redPct}%"></div>${redInline}${blueInline}</div><div class="teamAssignValue"><span class="redValue">${redLabel}</span> / <span class="blueValue">${blueLabel}</span></div></div>`;
@@ -3154,28 +2930,14 @@ function renderLists(){const rawView=currentRawCriticalView();const rows=selecte
 function openDealerWorkbench(dealer){const key=dealerKeyForName(dealer);if(key)localStorage.setItem("dealerWorkspaceSelectedKey",key);localStorage.setItem("dealerWorkspaceSelectedName",dealer||"");window.location.href="dealer-workbench.html";}
 function toggleDealerList(){dealerListExpanded=!dealerListExpanded;renderLists();}
 
-function setDateDefaults(){
-  const view=currentView(),pts=trendThroughToday(view);if(!pts.length)return;
-  const first=pts[0].date,latest=latestDateForView(),fromEl=$("dateFrom"),toEl=$("dateTo"),prevLatest=lastKnownLatestDate;
-  fromEl.min=first;toEl.min=first;toEl.max=latest;
-  const followsLiveEnd=!dateRangeManuallyChanged&&(!toEl.value||(prevLatest&&toEl.value===prevLatest)||toEl.value>=latest);
-  if(activePeriod==="all"){
-    if(followsLiveEnd||!fromEl.value||!toEl.value){setFullRange();return;}
-  }else if(followsLiveEnd){
-    toEl.value=latest;
-    fromEl.value=periodStartDate(latest);
-  }
-  if(!fromEl.value||fromEl.value<first)fromEl.value=first;
-  if(!toEl.value||toEl.value>latest)toEl.value=latest;
-  lastKnownLatestDate=latest;
-}
+function setDateDefaults(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;$("dateFrom").min=pts[0].date;$("dateTo").min=pts[0].date;if(activePeriod==="all"&&(!$('dateFrom').value||!$('dateTo').value)){setFullRange();return;}if(!$("dateFrom").value||$("dateFrom").value<pts[0].date)$("dateFrom").value=pts[0].date;if(!$("dateTo").value||$("dateTo").value>latestDateForView())$("dateTo").value=latestDateForView();}
 
 function updateDateNotes(){const date=periodEndDate();const label=formatSnapshotDateLabel(date);document.querySelectorAll("[data-date-note]").forEach(el=>{el.textContent=label;el.title=`Snapshot date: ${date}`;});}
 function renderAll(){showCalcFloat(true,"Calculating...");renderPeriodButtons();renderClaimButtons();setDateDefaults();trendPoints=selectedTrend();updateDateNotes();renderKpis();renderHandlingSpeed();renderLists();renderRepairCostDistribution();renderApprovedMix();renderTeamAssignChart();bindTeamAssignPanelLink();drawTrend();hideCalcFloat();}
 function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(prev||0);if(delta===0)return{cls:"flat",arrow:"-",text:"0"};const isGood=(metric==="exited")?delta>0:delta<0;return{cls:isGood?"up":"down",arrow:delta>0?"^":"v",text:num(Math.abs(delta))};}
 function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}
-function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const enteredDelta=deltaInfoMetric("entered",hit.p.entered,prev?prev.entered:hit.p.entered);const criticalDelta=deltaInfoMetric("critical",hit.p.critical,prev?prev.critical:hit.p.critical);const exitedDelta=deltaInfoMetric("exited",hit.p.exited,prev?prev.exited:hit.p.exited);tip.innerHTML=`<b>Date: ${esc(hit.p.date)}</b>${tipRow("Entered daily","#3b82f6",hit.p.entered,enteredDelta)}${tipRow("Critical daily change","#fb6b1d",hit.p.critical,criticalDelta)}${tipRow("Exited daily","#16a34a",hit.p.exited,exitedDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
+function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const enteredDelta=deltaInfoMetric("entered",hit.p.entered,prev?prev.entered:hit.p.entered);const criticalDelta=deltaInfoMetric("critical",hit.p.critical,prev?prev.critical:hit.p.critical);const exitedDelta=deltaInfoMetric("exited",hit.p.exited,prev?prev.exited:hit.p.exited);tip.innerHTML=`<b>Date: ${esc(hit.p.date)}</b>${tipRow("Entered cumulative","#3b82f6",hit.p.entered,enteredDelta)}${tipRow("Critical total","#fb6b1d",hit.p.critical,criticalDelta)}${tipRow("Exited cumulative","#16a34a",hit.p.exited,exitedDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
 async function load(){try{showCalcFloat(true,"Calculating...");$("loadError").style.display="none";const data=await readJson(MONITOR_ROOT+"/analytics/team");if(!data||typeof data!=="object")throw new Error("analytics/team is empty");team=data;activeClaim=team.defaultView||"all";await Promise.all([loadRawCritical().catch(()=>{rawCritical={loaded:false,views:{}}}),loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{employeeAnalytics=null})]);renderAll();hideCalcFloat()}catch(err){hideCalcFloat();$("loadError").innerHTML="Cannot load team analytics from Firebase. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll()}}
-$("dateFrom").addEventListener("change",()=>{dateRangeManuallyChanged=true;renderAll()});$("dateTo").addEventListener("change",()=>{dateRangeManuallyChanged=true;renderAll()});if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",drawTrend);bindTooltip();loadEmployeeStatusMapping();load();
+$("dateFrom").addEventListener("change",()=>{renderAll()});$("dateTo").addEventListener("change",()=>{renderAll()});if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",drawTrend);bindTooltip();loadEmployeeStatusMapping();load();
 const TEAM_DASHBOARD_AUTO_REFRESH_MS=5*60*1000;setInterval(()=>load(),TEAM_DASHBOARD_AUTO_REFRESH_MS);
 </script></body></html>

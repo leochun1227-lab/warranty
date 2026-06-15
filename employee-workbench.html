@@ -2474,16 +2474,6 @@ html{zoom:.8!important;}
 .employeePanel .employeeBarTrack .employeeEndValue.closeValue.after{
   transform:translate(2px,-50%)!important;
 }
-
-.employeeTrendCharts{display:grid;gap:18px}
-.employeeTrendCard{border:1px solid #e2e8f0;border-radius:16px;background:#fbfdff;padding:16px 18px 18px;min-height:260px}
-.employeeTrendTitle{margin:0 0 4px;color:#132035;font-size:15px;font-weight:650;letter-spacing:-.01em}
-.employeeTrendDesc{margin:0 0 12px;color:#667085;font-size:12px;font-weight:400;line-height:1.4}
-.employeeTrendCanvasWrap{height:220px;position:relative}
-.employeeTrendCanvasWrap canvas{width:100%;height:100%;display:block}
-.modal.employeeTrendModal{width:min(1120px,94vw);max-height:90vh}
-.modal.employeeTrendModal #ticketModalBody{overflow:auto;padding-right:4px}
-@media(max-width:760px){.modal.employeeTrendModal{width:94vw}.employeeTrendCanvasWrap{height:190px}}
 </style>
 </head>
 <body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><a class="navLink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></a><a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Internal Employees</span></button><a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a><div class="navDivider"></div><div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a></aside><main class="main"><section class="employeeHero"><div class="employeeHeroTop"><div><div class="employeeEyebrow">Employee analytics</div><h1 class="pageTitle">Internal Employees</h1></div><div class="employeeHeroActions"><div id="periodSwitch" class="claimSwitch"></div><div id="claimSwitch" class="claimSwitch"></div><label class="dateGroup">From <input id="dateFrom" class="input" type="date" min="2026-05-25"></label><label class="dateGroup">To <input id="dateTo" class="input" type="date" min="2026-05-25"></label></div></div></section><div id="loadError" class="error"></div>
@@ -2757,7 +2747,6 @@ function openTicketModalFromRow(row){
   ].filter(x=>clean(x[1]));
   $('ticketModalTitle').textContent=clean(row.id)?'Ticket #'+clean(row.id):'Ticket details';
   $('ticketModalBody').innerHTML=fields.length?`<div class="detailList">${fields.map(([k,v])=>`<div class="detailKey">${esc(k)}</div><div class="detailVal">${esc(v)}</div>`).join('')}</div>`:'<div class="empty">No ticket details available.</div>';
-  $('ticketModal')?.querySelector('.modal')?.classList.remove('employeeTrendModal');
   $('ticketModal').style.display='flex';
 }
 function openOldestNotAssignedTicket(){
@@ -2954,9 +2943,8 @@ function drawEmployeeChart(){
     const blueLabel=num(s.total,0);
     const redIsBase=redPct>=totalPct;
     const labelPositions=employeeBarLabelPositions(redPct,totalPct,redValue,s.total);
-    const minInlineLabelValue=15;
-    const redSpan=redValue>=minInlineLabelValue?`<span class="employeeInlineValue employeeEndValue redValue ${labelPositions.close?'closeValue '+labelPositions.redSide:''}" style="left:${labelPositions.red}%;top:50%">${redLabel}</span>`:'';
-    const blueSpan=s.total>=minInlineLabelValue?`<span class="employeeInlineValue employeeEndValue blueValue ${labelPositions.close?'closeValue '+labelPositions.blueSide:''}" style="left:${labelPositions.blue}%;top:50%">${blueLabel}</span>`:'';
+    const redSpan=redValue>0?`<span class="employeeInlineValue employeeEndValue redValue ${labelPositions.close?'closeValue '+labelPositions.redSide:''}" style="left:${labelPositions.red}%;top:50%">${redLabel}</span>`:'';
+    const blueSpan=s.total>0?`<span class="employeeInlineValue employeeEndValue blueValue ${labelPositions.close?'closeValue '+labelPositions.blueSide:''}" style="left:${labelPositions.blue}%;top:50%">${blueLabel}</span>`:'';
     return `<div class="employeeBarRow ${active?'active':''}" data-employee="${esc(s.name)}" title="Click to filter ${esc(s.name)}"><div class="employeeBarName">${employeeNameHtml(s.name)}</div><div class="employeeBarTrack"><div class="${redIsBase?'employeeBarRemoved employeeBarFillBase':'employeeBarTotal employeeBarFillBase'}" style="width:${redIsBase?redPct:totalPct}%"></div><div class="${redIsBase?'employeeBarTotal employeeBarFillOverlay':'employeeBarRemoved employeeBarFillOverlay'}" style="width:${redIsBase?totalPct:redPct}%"></div>${redSpan}${blueSpan}</div><div class="employeeBarValue"><span style="color:#be123c">${redLabel}</span> / <span style="color:#1d4ed8">${blueLabel}</span></div></div>`;
   }).join('');
   if(axis){axis.innerHTML=`<div></div><div class="axisLine"><span>0</span><span>${num(max/4,0)}</span><span>${num(max/2,0)}</span><span>${num(max*3/4,0)}</span><span>${num(max,0)}</span></div><div></div>`;}
@@ -3084,126 +3072,7 @@ function renderPartsApproval(from,to){
   renderPartsAmountPie(summary.byEmployee,summary.approvedAmount);
   renderPartsBars('partsUnapprovedBars',summary.byEmployee,['unapprovedCount'],['amber'],v=>num(v));
 }
-function employeeTrendBounds(){
-  const view=currentEmployeeView();
-  const min=view.minDate||analytics?.minDate||DASHBOARD_MIN_DATE;
-  const from=($('dateFrom')&&$('dateFrom').value)||min;
-  const to=($('dateTo')&&$('dateTo').value)||toISODate(new Date());
-  return {from:from<min?min:from,to};
-}
-function dateSeries(from,to){
-  const out=[];
-  let d=parseDate(from), end=parseDate(to);
-  if(!d||!end)return out;
-  d=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));
-  end=new Date(Date.UTC(end.getFullYear(),end.getMonth(),end.getDate()));
-  while(d<=end){out.push(d.toISOString().slice(0,10));d.setUTCDate(d.getUTCDate()+1)}
-  return out;
-}
-function employeeStatForName(name){
-  const key=normEmp(name);
-  return arrayFromMaybe(currentEmployeeView().stats).find(s=>normEmp(s&&s.name)===key)||employeeStats.find(s=>normEmp(s&&s.name)===key)||{};
-}
-function buildEmployeeCriticalTrend(name,dates){
-  const key=normEmp(name);
-  const counts=Object.fromEntries(dates.map(d=>[d,0]));
-  arrayFromMaybe(currentEmployeeView().detailRows).forEach(t=>{
-    if(normEmp(t&&t.employee)!==key || t.isCritical===false)return;
-    const d=dateKey(t.created||t.createdOn||t.CreatedOn||t.detectedAt||t.date);
-    if(d&&counts[d]!=null)counts[d]+=1;
-  });
-  return dates.map(d=>counts[d]||0);
-}
-function buildEmployeeProcessingTrend(name,dates,criticalValues){
-  const stat=employeeStatForName(name);
-  const removedDaily=stat.removedDaily||{};
-  return dates.map((d,i)=>{
-    const count=Number(removedDaily[d]||0);
-    const base=Number(criticalValues[i]||0);
-    return {count,rate:base?count/base*100:0};
-  });
-}
-function buildEmployeeApprovalTrend(name,dates){
-  const key=normEmp(name);
-  const rows=Object.fromEntries(dates.map(d=>[d,{approved:0,unapproved:0}]));
-  rawPartsTickets.forEach(({ticket,roles})=>{
-    if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
-    const emp=employeeDetailsFromRoles(roles);
-    if(normEmp(emp.employeeName)!==key)return;
-    const d=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
-    if(!d||!rows[d])return;
-    const bucket=approvalBucket(ticket);
-    if(bucket==="approved")rows[d].approved+=1;
-    if(bucket==="unapproved")rows[d].unapproved+=1;
-  });
-  return dates.map(d=>rows[d]||{approved:0,unapproved:0});
-}
-function chartNiceMax(max){
-  max=Number(max||0);
-  if(max<=0)return 1;
-  const pow=Math.pow(10,Math.floor(Math.log10(max)));
-  const n=Math.ceil(max/pow);
-  return (n<=2?2:n<=5?5:10)*pow;
-}
-function drawEmployeeLineChart(canvas,dates,series,{percent=false}={}){
-  if(!canvas)return;
-  const {ctx,w,h}=prepareCanvas(canvas);
-  const pad={l:48,r:22,t:24,b:42};
-  const innerW=Math.max(10,w-pad.l-pad.r), innerH=Math.max(10,h-pad.t-pad.b);
-  const max=chartNiceMax(Math.max(...series.flatMap(s=>s.values),0));
-  ctx.font='12px Inter, Segoe UI, Arial, sans-serif';
-  ctx.lineWidth=1;
-  ctx.strokeStyle='#e2e8f0';
-  ctx.fillStyle='#64748b';
-  ctx.textAlign='right';
-  ctx.textBaseline='middle';
-  for(let i=0;i<=4;i++){
-    const y=pad.t+innerH*i/4;
-    const val=max*(1-i/4);
-    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(w-pad.r,y);ctx.stroke();
-    ctx.fillText(percent?num(val,0)+'%':num(val,0),pad.l-10,y);
-  }
-  const xFor=i=>pad.l+(dates.length<=1?innerW/2:i*innerW/(dates.length-1));
-  const yFor=v=>pad.t+innerH-(Number(v||0)/max)*innerH;
-  ctx.textAlign='center';ctx.textBaseline='top';ctx.fillStyle='#64748b';
-  const labelIdx=[0,Math.floor((dates.length-1)/2),dates.length-1].filter((v,i,a)=>v>=0&&a.indexOf(v)===i);
-  labelIdx.forEach(i=>ctx.fillText((dates[i]||'').slice(5),xFor(i),h-pad.b+14));
-  series.forEach(s=>{
-    ctx.strokeStyle=s.color;ctx.lineWidth=2.5;ctx.beginPath();
-    s.values.forEach((v,i)=>{const x=xFor(i),y=yFor(v);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});
-    ctx.stroke();
-    ctx.fillStyle=s.color;
-    s.values.forEach((v,i)=>{const x=xFor(i),y=yFor(v);ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);ctx.fill()});
-  });
-  let lx=pad.l, ly=8;
-  ctx.textAlign='left';ctx.textBaseline='middle';ctx.font='12px Inter, Segoe UI, Arial, sans-serif';
-  series.forEach(s=>{ctx.fillStyle=s.color;ctx.fillRect(lx,ly,10,10);ctx.fillStyle='#475569';ctx.fillText(s.name,lx+16,ly+5);lx+=ctx.measureText(s.name).width+48;});
-}
-function openEmployeeTrendModal(name){
-  const employee=clean(name);
-  if(!employee)return;
-  const modal=$('ticketModal'), body=$('ticketModalBody'), title=$('ticketModalTitle');
-  if(!modal||!body||!title)return;
-  const {from,to}=employeeTrendBounds();
-  const dates=dateSeries(from,to);
-  const critical=buildEmployeeCriticalTrend(employee,dates);
-  const processing=buildEmployeeProcessingTrend(employee,dates,critical);
-  const approvals=buildEmployeeApprovalTrend(employee,dates);
-  title.innerHTML=`${employeeNameHtml(employee)} trends`;
-  body.innerHTML=`<div class="employeeTrendCharts">
-    <section class="employeeTrendCard"><h3 class="employeeTrendTitle">Critical tickets over time</h3><p class="employeeTrendDesc">Daily critical ticket count for the selected employee.</p><div class="employeeTrendCanvasWrap"><canvas id="employeeCriticalTrendCanvas"></canvas></div></section>
-    <section class="employeeTrendCard"><h3 class="employeeTrendTitle">Processing speed over time</h3><p class="employeeTrendDesc">Removed critical ticket count and removal rate by day.</p><div class="employeeTrendCanvasWrap"><canvas id="employeeProcessingTrendCanvas"></canvas></div></section>
-    <section class="employeeTrendCard"><h3 class="employeeTrendTitle">Approved vs unapproved over time</h3><p class="employeeTrendDesc">Daily approved and unapproved closed ticket counts.</p><div class="employeeTrendCanvasWrap"><canvas id="employeeApprovalTrendCanvas"></canvas></div></section>
-  </div>`;
-  modal.querySelector('.modal')?.classList.add('employeeTrendModal');
-  modal.style.display='flex';
-  requestAnimationFrame(()=>{
-    drawEmployeeLineChart($('employeeCriticalTrendCanvas'),dates,[{name:'Critical tickets',color:'#ef4444',values:critical}]);
-    drawEmployeeLineChart($('employeeProcessingTrendCanvas'),dates,[{name:'Processed count',color:'#2563eb',values:processing.map(x=>x.count)},{name:'Rate %',color:'#16a34a',values:processing.map(x=>x.rate)}],{percent:false});
-    drawEmployeeLineChart($('employeeApprovalTrendCanvas'),dates,[{name:'Approved',color:'#16a34a',values:approvals.map(x=>x.approved)},{name:'Unapproved',color:'#f59e0b',values:approvals.map(x=>x.unapproved)}]);
-  });
-}
-function selectEmployee(name){selectedEmployee=selectedEmployee===name?'':name;drawEmployeeChart();renderDetails();openEmployeeTrendModal(name)}
+function selectEmployee(name){selectedEmployee=selectedEmployee===name?'':name;drawEmployeeChart();renderDetails()}
 function setTooltip(ev,html){const tip=$('tooltip');tip.innerHTML=html;tip.style.display='block';tip.style.left=(ev.clientX+14)+'px';tip.style.top=(ev.clientY+14)+'px'}
 function hideTooltip(){const tip=$('tooltip');if(tip)tip.style.display='none'}
 function bindChart(){

@@ -385,41 +385,6 @@ def event_type(e: Dict[str, Any]) -> str:
     return ""
 
 
-def event_is_unapproved_exit(e: Dict[str, Any]) -> bool:
-    code = clean(e.get("toCode") or e.get("newCode") or e.get("statusCode") or e.get("TicketStatus")).upper()
-    text = clean(
-        e.get("toStatus")
-        or e.get("newStatus")
-        or e.get("toStatusText")
-        or e.get("newStatusText")
-        or e.get("status")
-        or e.get("statusText")
-        or e.get("TicketStatusText")
-        or e.get("type")
-    ).lower()
-    return code == "Y8" or "unapproved claims closed" in text or "unapproved" in text
-
-
-def add_daily_approval(
-    approval_by_employee: Dict[str, Dict[str, Any]],
-    employee: str,
-    dkey: str,
-    bucket: str,
-    amount: float,
-) -> None:
-    if not employee or not dkey or bucket not in {"approved", "unapproved"}:
-        return
-    row = approval_by_employee.setdefault(employee, {
-        "approvedDaily": {},
-        "unapprovedDaily": {},
-        "approvedAmountDaily": {},
-        "unapprovedAmountDaily": {},
-    })
-    count_key = f"{bucket}Daily"
-    amount_key = f"{bucket}AmountDaily"
-    row[count_key][dkey] = row[count_key].get(dkey, 0) + 1
-    row[amount_key][dkey] = round(row[amount_key].get(dkey, 0.0) + amount, 2)
-
 def event_ticket_id(e: Dict[str, Any]) -> str:
     return clean(e.get("id") or e.get("ticketId") or e.get("ticketID") or e.get("TicketID") or e.get("localTicketId"))
 
@@ -679,14 +644,7 @@ def parse_sales_order_details(value: Any) -> list[Dict[str, Any]]:
             order_qty = float(str(value.get("Order Qty", "0")).replace(",", "") or 0)
         except Exception:
             order_qty = 0.0
-        return [{
-            "description": clean(value.get("Description") or "-"),
-            "material": clean(value.get("Material") or "-"),
-            "deliveryCount": delivery_count,
-            "orderQty": order_qty,
-            "salesUnit": clean(value.get("Sales Unit") or ""),
-            "salesOrderItem": clean(value.get("Sales Order Item") or ""),
-        }]
+        return [{"description": clean(value.get("Description") or "-"), "material": clean(value.get("Material") or "-"), "deliveryCount": delivery_count, "orderQty": order_qty}]
     out: list[Dict[str, Any]] = []
     for nested in value.values():
         out.extend(parse_sales_order_details(nested))
@@ -754,59 +712,26 @@ def event_dealer_display(e: Dict[str, Any]) -> str:
     return final_configured_dealer_display("", raw, "", raw) or config_display_from(raw)
 
 
-def group_dealer_materials(rows: list[Dict[str, Any]], delivered: bool = False) -> list[Dict[str, Any]]:
+def group_dealer_materials(rows: list[Dict[str, Any]]) -> list[Dict[str, Any]]:
     groups: Dict[str, Dict[str, Any]] = {}
     for t in rows:
-        # Undelivered backlog should exclude tickets that are closed or whose whole
-        # order is partially rejected. Delivered material, however, is historical
-        # evidence coming from fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER
-        # /Sales Order Details/Delivery Count, so it can legitimately live on a
-        # ticket that has since been closed or partially rejected. Do not filter
-        # those rows out before checking deliveryCount, otherwise the Delivered
-        # Material List becomes empty as soon as delivered tickets leave open work.
-        if not delivered and (is_closed_ticket_row(t) or is_partially_rejected_row(t)):
+        if is_closed_ticket_row(t) or is_partially_rejected_row(t):
             continue
         for item in t.get("details") or []:
-            try:
-                delivery_count = int(item.get("deliveryCount"))
-            except Exception:
-                continue
-            is_delivered = delivery_count > 0
-            if delivered != is_delivered:
+            if item.get("deliveryCount") != 0:
                 continue
             code = clean(item.get("material")); desc = clean(item.get("description"))
             if not code or not desc:
                 continue
             key = safe_key(code + "|" + desc)
-            g = groups.setdefault(key, {"code": code, "desc": desc, "totalQty": 0, "deliveryCount": 0, "ticketIds": set(), "amountByTicket": {}, "items": []})
+            g = groups.setdefault(key, {"code": code, "desc": desc, "totalQty": 0, "ticketIds": set(), "items": []})
             qty = float(item.get("orderQty") or 1)
-            amount = parse_amount(t.get("amount"))
-            ticket_id = clean(t.get("id"))
-            g["totalQty"] += qty
-            g["deliveryCount"] += delivery_count
-            g["ticketIds"].add(ticket_id)
-            if ticket_id and ticket_id not in g["amountByTicket"]:
-                g["amountByTicket"][ticket_id] = amount
-            g["items"].append({
-                "ticketId": t.get("id"), "status": t.get("status"), "qty": qty,
-                "deliveryCount": delivery_count, "amount": amount,
-                "created": t.get("created"), "agingDays": t.get("agingDays"),
-                "customer": t.get("customer"), "claim": t.get("claim"), "repair": t.get("repair"),
-                "employee": t.get("employee"), "soCreatedDate": t.get("soCreatedDate"),
-                "oldestApprovedAge": aging_days(t.get("soCreatedDate")),
-                "salesUnit": item.get("salesUnit"), "salesOrderItem": item.get("salesOrderItem"),
-            })
+            g["totalQty"] += qty; g["ticketIds"].add(t.get("id"))
+            g["items"].append({"ticketId": t.get("id"), "status": t.get("status"), "qty": qty, "agingDays": t.get("agingDays"), "customer": t.get("customer"), "claim": t.get("claim"), "repair": t.get("repair"), "employee": t.get("employee"), "soCreatedDate": t.get("soCreatedDate"), "oldestApprovedAge": aging_days(t.get("soCreatedDate"))})
     out=[]
     for g in groups.values():
         items = g["items"]
-        out.append({
-            "code": g["code"], "desc": g["desc"], "totalQty": g["totalQty"],
-            "deliveryCount": g["deliveryCount"], "ticketCount": len(g["ticketIds"]),
-            "amount": round(sum(g["amountByTicket"].values()), 2),
-            "oldestAge": max([int(x.get("agingDays") or 0) for x in items] or [0]),
-            "oldestApprovedAge": max([int(x.get("oldestApprovedAge") or 0) for x in items] or [0]),
-            "items": items,
-        })
+        out.append({"code": g["code"], "desc": g["desc"], "totalQty": g["totalQty"], "ticketCount": len(g["ticketIds"]), "oldestAge": max([int(x.get("agingDays") or 0) for x in items] or [0]), "oldestApprovedAge": max([int(x.get("oldestApprovedAge") or 0) for x in items] or [0]), "items": items})
     out.sort(key=lambda x: (-float(x.get("totalQty") or 0), clean(x.get("code"))))
     return out
 
@@ -890,13 +815,15 @@ def build_dealer_trend(critical_rows: list[Dict[str, Any]], logs: list[Dict[str,
 
 
 def _duration_bucket(days: float) -> str:
+    if days <= 1:
+        return "leOneDay"
+    if days <= 3:
+        return "oneToThreeDays"
+    if days <= 7:
+        return "threeToSevenDays"
     if days <= 14:
-        return "zeroToFourteenDays"
-    if days <= 30:
-        return "fourteenToThirtyDays"
-    if days <= 60:
-        return "thirtyToSixtyDays"
-    return "overSixtyDays"
+        return "eightToFourteenDays"
+    return "overFourteenDays"
 
 
 def calculate_handling_speed(logs: list[Dict[str, Any]], current_critical_rows: list[Dict[str, Any]], ticket_by_id: Optional[Dict[str, Dict[str, Any]]] = None) -> Dict[str, Any]:
@@ -916,16 +843,18 @@ def calculate_handling_speed(logs: list[Dict[str, Any]], current_critical_rows: 
       speed across the full observed period, not from 2026-05-25.
     """
     buckets = {
-        "zeroToFourteenDays": 0,
-        "fourteenToThirtyDays": 0,
-        "thirtyToSixtyDays": 0,
-        "overSixtyDays": 0,
+        "leOneDay": 0,
+        "oneToThreeDays": 0,
+        "threeToSevenDays": 0,
+        "eightToFourteenDays": 0,
+        "overFourteenDays": 0,
     }
     labels = {
-        "zeroToFourteenDays": "0-14 days",
-        "fourteenToThirtyDays": "14-30 days",
-        "thirtyToSixtyDays": "30-60 days",
-        "overSixtyDays": "60+ days",
+        "leOneDay": "≤ 1 day",
+        "oneToThreeDays": "1–3 days",
+        "threeToSevenDays": "3–7 days",
+        "eightToFourteenDays": "8–14 days",
+        "overFourteenDays": "> 14 days",
     }
 
     now_dt = datetime.now(timezone.utc)
@@ -1031,7 +960,12 @@ def calculate_handling_speed(logs: list[Dict[str, Any]], current_critical_rows: 
         })
 
     resolved_total = len(resolved_durations)
-    within_two_weeks = buckets["zeroToFourteenDays"]
+    within_two_weeks = (
+        buckets["leOneDay"]
+        + buckets["oneToThreeDays"]
+        + buckets["threeToSevenDays"]
+        + buckets["eightToFourteenDays"]
+    )
     two_week_rate = round((within_two_weeks / resolved_total) * 100, 1) if resolved_total else 0
     avg_days = round(sum(resolved_durations) / resolved_total, 1) if resolved_total else 0
 
@@ -1082,7 +1016,7 @@ def calculate_handling_speed(logs: list[Dict[str, Any]], current_critical_rows: 
     current_new_claim_stock = sum(1 for t in (current_critical_rows or []) if clean(t.get("code")) == "Z1" or "new claim" in clean(t.get("status")).lower())
     forecast_backlog = current_stock
 
-    order = ["zeroToFourteenDays", "fourteenToThirtyDays", "thirtyToSixtyDays", "overSixtyDays"]
+    order = ["leOneDay", "oneToThreeDays", "threeToSevenDays", "eightToFourteenDays", "overFourteenDays"]
     rows = [{"key": k, "label": labels[k], "count": int(buckets[k])} for k in order]
     return {
         "buckets": rows,
@@ -1218,7 +1152,6 @@ def build_dealer_analytics(source_root: str, monitor_root: str, history_events: 
             })
         logs.sort(key=lambda e: clean(e.get("detectedAt")), reverse=True)
         material_groups = group_dealer_materials(all_rows)
-        delivered_material_groups = group_dealer_materials(all_rows, delivered=True)
         status_counts: Dict[str, int] = {}
         for t in critical_rows:
             k = clean(t.get("status")) or "Unknown"
@@ -1238,8 +1171,6 @@ def build_dealer_analytics(source_root: str, monitor_root: str, history_events: 
                 "approvalRule": "Approved = Z1Z8TimeConsumed totalMinutes > 0; Unapproved = empty or <= 0.",
                 "criticalTickets": len(critical_rows),
                 "openMaterialTypes": len(material_groups),
-                "deliveredMaterialTypes": len(delivered_material_groups),
-                "deliveredMaterialAmount": round(sum(parse_amount(g.get("amount")) for g in delivered_material_groups), 2),
                 "logTotal": len(logs),
                 "entered": sum(1 for e in logs if clean(e.get("cls")) == "enter"),
                 "moved": sum(1 for e in logs if clean(e.get("cls")) == "move"),
@@ -1254,7 +1185,6 @@ def build_dealer_analytics(source_root: str, monitor_root: str, history_events: 
             "tickets": critical_rows,
             "logs": logs,
             "materials": material_groups,
-            "deliveredMaterials": delivered_material_groups,
         }
 
     by_dealer: Dict[str, Any] = {}
@@ -1278,7 +1208,6 @@ def build_dealer_analytics(source_root: str, monitor_root: str, history_events: 
             "tickets": all_view["tickets"],
             "logs": all_view["logs"],
             "materials": all_view["materials"],
-            "deliveredMaterials": all_view.get("deliveredMaterials", []),
         }
         by_dealer[dealer_key] = payload
         index_stats.append({"dealer": dealer, "key": dealer_key, "isGroup": is_group_dealer(dealer), "groupMembers": sorted(dealer_group_members(dealer)), **all_view["summary"]})
@@ -1383,7 +1312,6 @@ def build_employee_analytics(snap: Dict[str, Dict[str, Any]], history_events: li
 
         removed_by_employee: Dict[str, int] = {}
         removed_daily_by_employee: Dict[str, Dict[str, int]] = {}
-        approval_by_employee: Dict[str, Dict[str, Any]] = {}
         removed_by_ticket: Dict[str, int] = {}
         last_removed_by_ticket: Dict[str, str] = {}
         unmapped_removed_events: list[Dict[str, Any]] = []
@@ -1424,11 +1352,6 @@ def build_employee_analytics(snap: Dict[str, Dict[str, Any]], history_events: li
             if dkey:
                 by_day = removed_daily_by_employee.setdefault(bucket, {})
                 by_day[dkey] = by_day.get(dkey, 0) + 1
-            if bucket != unmapped_label and dkey:
-                amount = parse_amount((ticket or {}).get("amount") or e.get("amount") or e.get("value") or e.get("AmountIncludingTax"))
-                approval_bucket = "unapproved" if event_is_unapproved_exit(e) else "approved"
-                add_daily_approval(approval_by_employee, bucket, dkey, approval_bucket, amount)
-
             if tid and bucket != unmapped_label:
                 removed_by_ticket[tid] = removed_by_ticket.get(tid, 0) + 1
                 et = event_time(e)
@@ -1454,30 +1377,6 @@ def build_employee_analytics(snap: Dict[str, Dict[str, Any]], history_events: li
             })
         stats.sort(key=lambda x: (-int(x.get("totalTickets") or 0), -int(x.get("removedTotal") or 0), clean(x.get("name")).lower()))
         for i, row in enumerate(stats, 1):
-            row["rank"] = i
-
-        approval_rows = []
-        for name, row in approval_by_employee.items():
-            approved = sum(int(v or 0) for v in row.get("approvedDaily", {}).values())
-            unapproved = sum(int(v or 0) for v in row.get("unapprovedDaily", {}).values())
-            total = approved + unapproved
-            if total <= 0:
-                continue
-            approval_rows.append({
-                "name": name,
-                "key": safe_key(name),
-                "approved": approved,
-                "unapproved": unapproved,
-                "total": total,
-                "approvedAmount": round(sum(float(v or 0) for v in row.get("approvedAmountDaily", {}).values()), 2),
-                "unapprovedAmount": round(sum(float(v or 0) for v in row.get("unapprovedAmountDaily", {}).values()), 2),
-                "approvedDaily": row.get("approvedDaily", {}),
-                "unapprovedDaily": row.get("unapprovedDaily", {}),
-                "approvedAmountDaily": row.get("approvedAmountDaily", {}),
-                "unapprovedAmountDaily": row.get("unapprovedAmountDaily", {}),
-            })
-        approval_rows.sort(key=lambda x: (-int(x.get("total") or 0), -int(x.get("unapproved") or 0), clean(x.get("name")).lower()))
-        for i, row in enumerate(approval_rows, 1):
             row["rank"] = i
 
         detail_rows = list(ticket_detail.values())
@@ -1520,7 +1419,6 @@ def build_employee_analytics(snap: Dict[str, Dict[str, Any]], history_events: li
                 "removedDaily": total_removed_daily,
             },
             "stats": stats,
-            "approvalRows": approval_rows,
             "detailRows": detail_rows,
             "notAssignedRows": not_assigned_rows[:300],
             "unmappedRemovedEvents": unmapped_removed_events[:2000],
@@ -1537,7 +1435,6 @@ def build_employee_analytics(snap: Dict[str, Dict[str, Any]], history_events: li
         # Backward-compatible fields for older employee-workbench.html.
         "summary": all_view["summary"],
         "stats": all_view["stats"],
-        "approvalRows": all_view["approvalRows"],
         "detailRows": all_view["detailRows"],
         "storageNote": "Pre-calculated by Python. Claim buttons switch pre-built employee views; browser only renders and filters by date.",
     }
