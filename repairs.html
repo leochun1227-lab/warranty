@@ -242,7 +242,7 @@ $("prevPage").onclick=()=>{if(page>1){page--;renderAll()}};
 $("nextPage").onclick=()=>{const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));if(page<pages){page++;renderAll()}};
 window.addEventListener("resize",()=>{drawRange();drawTrend()});
 load();
-const REPAIRS_AUTO_REFRESH_MS=5*60*1000;setInterval(()=>load(),REPAIRS_AUTO_REFRESH_MS);
+
 </script>
 </body>
 </html>
