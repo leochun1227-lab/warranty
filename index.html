@@ -164,6 +164,55 @@
   height:12px!important;
   stroke-width:2.2!important;
 }
+.kpiExportBtn{
+  width:30px!important;
+  height:30px!important;
+  border:1px solid #cfe0f5!important;
+  border-radius:10px!important;
+  background:#f8fbff!important;
+  color:#1d4ed8!important;
+  display:grid!important;
+  place-items:center!important;
+  cursor:pointer!important;
+  flex:0 0 auto!important;
+  box-shadow:0 6px 14px rgba(37,99,235,.08)!important;
+}
+.kpiExportBtn:hover,
+.kpiExportBtn:focus-visible{
+  background:#eff6ff!important;
+  border-color:#93c5fd!important;
+  outline:none!important;
+}
+.kpiExportBtn svg{
+  width:15px!important;
+  height:15px!important;
+  stroke-width:2.2!important;
+}
+.summaryExportBtn{
+  height:42px!important;
+  border:1px solid #cfe0f5!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  color:#1d4ed8!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  padding:0 14px!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+  box-shadow:0 8px 22px rgba(15,23,42,.04)!important;
+}
+.summaryExportBtn:hover,
+.summaryExportBtn:focus-visible{
+  background:#eff6ff!important;
+  border-color:#93c5fd!important;
+  outline:none!important;
+}
+.summaryExportBtn svg{
+  width:15px!important;
+  height:15px!important;
+}
 
 /* Requested: Ticket Aging bars only, replacing Critical Handling Speed chart */
 .dashboardMain .dashboardAnalysisGrid .speedPanel .panelHead{
@@ -2315,15 +2364,15 @@ html{zoom:.8!important;}
   <main class="main">
     <div class="pageTop">
       <div><h1 class="pageTitle">After-Sales Team Dashboard</h1></div>
-      <div class="topActions"><div class="globalDateRange"><label>From <input id="dateFrom" class="input" type="date"></label><label>To <input id="dateTo" class="input" type="date"></label></div><div id="claimSwitch" class="claimSwitch"></div></div>
+      <div class="topActions"><div class="globalDateRange"><label>From <input id="dateFrom" class="input" type="date"></label><label>To <input id="dateTo" class="input" type="date"></label></div><div id="claimSwitch" class="claimSwitch"></div><button id="dashboardSummaryExportBtn" class="summaryExportBtn" type="button" title="Export dashboard summary to Excel"></button></div>
     </div>
     <div id="loadError" class="error"></div>
     <section class="dashboardTop">
       <div class="dashboardMain">
         <section class="teamKpiGrid">
-          <div class="kpi totalCriticalCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Total Critical Tickets</div><div class="kpiValue" id="kpiCritical">0</div></div><div class="kpiIcon customPurple" aria-hidden="true">!</div></div><div class="kpiTrend" id="kpiCriticalTrend"></div></div>
+          <div class="kpi totalCriticalCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Total Critical Tickets</div><div class="kpiValue" id="kpiCritical">0</div></div><button class="kpiExportBtn" id="totalCriticalExportBtn" type="button" title="Export Total Critical Tickets to Excel" aria-label="Export Total Critical Tickets to Excel"></button><div class="kpiIcon customPurple" aria-hidden="true">!</div></div><div class="kpiTrend" id="kpiCriticalTrend"></div></div>
           <div class="kpi approvedTicketsCountCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Tickets</div><div class="kpiValue" id="kpiApprovedTickets">0</div></div><div class="kpiIcon customGreen" aria-hidden="true">OK</div></div><div class="kpiTrend" id="kpiApprovedTicketsTrend"></div></div>
-          <div class="kpi unapprovedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Long Duration Tickets<span class="kpiSubLabel">(Over 60days)</span></div><div class="kpiValue" id="kpiUnapproved">0</div></div><div class="kpiIcon customAmber" aria-hidden="true">!</div></div><div class="kpiTrend" id="kpiUnapprovedTrend"></div></div>
+          <div class="kpi unapprovedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Long Duration Tickets<span class="kpiSubLabel">(Over 60days)</span></div><div class="kpiValue" id="kpiUnapproved">0</div></div><button class="kpiExportBtn" id="longDurationExportBtn" type="button" title="Export Long Duration Tickets to Excel" aria-label="Export Long Duration Tickets to Excel"></button><div class="kpiIcon customAmber" aria-hidden="true">!</div></div><div class="kpiTrend" id="kpiUnapprovedTrend"></div></div>
           <div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">2-week benchmark</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div>
           <div class="kpi approvedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Cost</div><div class="kpiValue" id="kpiApproved">$0</div></div><div class="kpiIcon customPurple" aria-hidden="true">$</div></div><div class="kpiTrend" id="kpiApprovedTrend"></div></div>
           <div class="kpi avgCostCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Current Avg Cost/Ticket</div><div class="kpiValue" id="kpiAvgCost">$0</div></div><div class="kpiIcon customGreen" aria-hidden="true">$</div></div><div class="kpiTrend" id="kpiAvgCostTrend"></div></div>
@@ -3902,6 +3951,136 @@ function exportCellValue(v){
 function excelEscape(v){
   return esc(exportCellValue(v)).replace(/\r?\n/g," ");
 }
+function xmlEscape(v){
+  return exportCellValue(v).replace(/[<>&'"]/g,s=>({"<":"&lt;",">":"&gt;","&":"&amp;","'":"&apos;","\"":"&quot;"}[s]));
+}
+function excelSheetName(name){
+  return clean(name).replace(/[:\\/?*\[\]]/g," ").slice(0,31)||"Sheet";
+}
+function exportWorkbook(sheets,filename){
+  const valid=(sheets||[]).filter(sheet=>sheet&&sheet.rows&&sheet.rows.length);
+  if(!valid.length){alert("No export data found for the selected filters.");return;}
+  const workbook=`<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<Styles><Style ss:ID="Header"><Font ss:Bold="1"/><Interior ss:Color="#EEF6FF" ss:Pattern="Solid"/></Style></Styles>
+${valid.map(sheet=>`<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name))}"><Table>${sheet.rows.map((row,i)=>`<Row>${row.map(cell=>`<Cell${i===0?' ss:StyleID="Header"':''}><Data ss:Type="${typeof cell==="number"&&Number.isFinite(cell)?"Number":"String"}">${xmlEscape(cell)}</Data></Cell>`).join("")}</Row>`).join("")}</Table></Worksheet>`).join("")}
+</Workbook>`;
+  const blob=new Blob([workbook],{type:"application/vnd.ms-excel;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=filename.endsWith(".xls")?filename:`${filename}.xls`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function exportDateSuffix(){
+  const {start,end}=periodBounds();
+  return start&&end&&start!==end?`${start}_to_${end}`:(end||new Date().toISOString().slice(0,10));
+}
+function ticketExportRow(row){
+  const payload=dashboardTicketPayload(row||{});
+  const entry=ticketEntryById(payload.id);
+  const raw=(entry&&entry.ticket)||{};
+  return [
+    payload.id,
+    payload.status,
+    payload.customer,
+    payload.claim,
+    payload.repair,
+    payload.dealer,
+    payload.employee||payload.owner,
+    payload.agingDays,
+    raw.AmountIncludingTax||raw.amount||row.amount||"",
+    raw.CreatedOn||raw.createdOn||raw.CreatedAt||"",
+    ticketLastUpdateDate(raw)||"",
+    raw.TicketStatus||raw.statusCode||"",
+    raw.TicketStatusText||raw.statusText||""
+  ];
+}
+function ticketExportSheet(name,rows){
+  return {
+    name,
+    rows:[["Ticket ID","Status","Customer","Claim Type","Repair","Dealer","Employee","Aging Days","Amount Including Tax","Created On","Last Update","Status Code","Status Text"]].concat((rows||[]).map(ticketExportRow))
+  };
+}
+function exportTotalCriticalTickets(e){
+  if(e){e.preventDefault();e.stopPropagation();}
+  const rows=selectedPeriodCriticalRows();
+  if(!rows.length){alert("No Total Critical Tickets data found for the selected filters.");return;}
+  exportWorkbook([ticketExportSheet("Total Critical Tickets",rows)],`total-critical-tickets-${exportDateSuffix()}.xls`);
+}
+function longDurationTicketRows(){
+  return criticalDurationRows().filter(row=>durationBucketMatch(row,"overSixtyDays"));
+}
+function exportLongDurationTickets(e){
+  if(e){e.preventDefault();e.stopPropagation();}
+  const rows=longDurationTicketRows();
+  if(!rows.length){alert("No Long Duration Tickets over 60 days found for the selected filters.");return;}
+  exportWorkbook([ticketExportSheet("Long Duration Tickets",rows)],`long-duration-tickets-over-60-days-${exportDateSuffix()}.xls`);
+}
+function dealerSummaryRows(){
+  const rawView=currentRawCriticalView();
+  const rows=selectedPeriodCriticalRows();
+  const grouped={};
+  rows.forEach(row=>{const dealer=standardDealerName(row.dealer||"Unknown");if(isValidDealerForTeamTotal(dealer))grouped[dealer]=(grouped[dealer]||0)+1;});
+  const dealers=(!hasTicketFilter()&&rawView)?arrayFromMaybe(rawView.dealers):Object.entries(grouped).map(([dealer,criticalTickets])=>({dealer,criticalTickets}));
+  return [["Dealer","Critical Tickets"]].concat(dealers.sort((a,b)=>Number(b.criticalTickets||0)-Number(a.criticalTickets||0)||clean(a.dealer).localeCompare(clean(b.dealer))).map(row=>[row.dealer,Number(row.criticalTickets||0)]));
+}
+function statusSummaryRows(){
+  return [["Status","Critical Tickets"]].concat(currentCriticalStatusRows().map(row=>[row.label,Number(row.count||0)]));
+}
+function durationSummaryRows(){
+  const total=criticalDurationBuckets().reduce((sum,row)=>sum+Number(row.count||0),0);
+  return [["Duration Bucket","Critical Tickets","Percent"]].concat(criticalDurationBuckets().map(row=>[row.label,Number(row.count||0),total?`${Math.round(Number(row.count||0)/total*100)}%`:"0%"]));
+}
+function kpiSummaryRows(){
+  const s=currentPeriodSummary(),h=periodHandlingSummary(),noUpdate=noUpdateAgingSummary(),claimCounts=claimTypeCounts();
+  const ratio=pctValue(s.unapprovedTickets,s.approvedTickets);
+  return [["Metric","Value","Context"],["Total Critical Tickets",clean($("kpiCritical")?.textContent),selectedRangeDateLabel("end")],["Long Duration Tickets over 60 days",noUpdate.count,selectedRangeDateLabel("end")],["In Field Warranty Claims",claimCounts.inField,selectedRangeDateLabel("end")],["Pre Delivery Warranty Claims",claimCounts.preDelivery,selectedRangeDateLabel("end")],["Approved Tickets",s.approvedTickets,selectedRangeDateLabel()],["Unapproved Tickets",s.unapprovedTickets,selectedRangeDateLabel()],["Approved Cost",s.approvedAmount,selectedRangeDateLabel()],["Current Avg Cost/Ticket",s.avgCostPerTicket,selectedRangeDateLabel()],["2-week benchmark",`${numFixed(h.rate||0,1)}%`,selectedRangeDateLabel()],["Unapproved / Approved",`${numFixed(ratio,2)}%`,`${s.unapprovedTickets} / ${s.approvedTickets}`]];
+}
+function trendSummaryRows(){
+  return [["Date","Entered Critical","Critical Total","Exited Critical"]].concat(selectedTrend().map(row=>[row.date,Number(row.entered||0),Number(row.critical||0),Number(row.exited||0)]));
+}
+function repairApprovalSummaryRows(){
+  return [["Group","Decision","Decision Date","Ticket ID","Status","Customer","Claim Type","Repair","Dealer","Employee","Aging Days","Amount"]].concat(repairAnalyticsExportRows().map(item=>{
+    const row=item.row||{};
+    return [item.group,item.key==="unapproved"?"Unapproved":"Approved",row.decisionDate||"",row.id,row.status,row.customer,row.claim,row.repair,row.dealer,row.employee||row.owner,row.agingDays??row.days,row.amount??""];
+  }));
+}
+function employeeWorkloadSummaryRows(){
+  return [["Employee","Current Critical Tickets","Removed","Avg Daily","Avg Weekly","Employee Status"]].concat(teamAssignRowsWithDirectory().map(row=>[row.name,Number(row.total||0),Number(row.removed||0),Number(row.avgDaily||0),Number(row.avgWeekly||0),isEmployeeExited(row.name)?"Exited":"Active"]));
+}
+function exportDashboardSummary(){
+  exportWorkbook([
+    {name:"KPI Summary",rows:kpiSummaryRows()},
+    {name:"Trend",rows:trendSummaryRows()},
+    {name:"Dealer Summary",rows:dealerSummaryRows()},
+    {name:"Duration Summary",rows:durationSummaryRows()},
+    {name:"Status Mix",rows:statusSummaryRows()},
+    {name:"Repair Approval",rows:repairApprovalSummaryRows()},
+    {name:"Employee Workload",rows:employeeWorkloadSummaryRows()},
+    ticketExportSheet("Total Critical Tickets",selectedPeriodCriticalRows()),
+    ticketExportSheet("Long Duration Tickets",longDurationTicketRows())
+  ],`dashboard-summary-${exportDateSuffix()}.xls`);
+}
+function bindDashboardExportButtons(){
+  const summary=$("dashboardSummaryExportBtn");
+  if(summary&&!summary.dataset.bound){
+    summary.innerHTML=`${exportIcon()}<span>Export</span>`;
+    summary.onclick=exportDashboardSummary;
+    summary.dataset.bound="1";
+  }
+  const total=$("totalCriticalExportBtn");
+  if(total&&!total.dataset.bound){total.innerHTML=exportIcon();total.onclick=exportTotalCriticalTickets;total.dataset.bound="1";}
+  const longBtn=$("longDurationExportBtn");
+  if(longBtn&&!longBtn.dataset.bound){longBtn.innerHTML=exportIcon();longBtn.onclick=exportLongDurationTickets;longBtn.dataset.bound="1";}
+}
 function repairAnalyticsExportRows(){
   const groups=[
     {key:"approved",label:"Approved Tickets"},
@@ -4229,10 +4408,10 @@ function renderAllWithLoading(text="Calculating..."){
   if(renderAllTimer)clearTimeout(renderAllTimer);
   renderAllTimer=setTimeout(()=>{renderAllTimer=null;renderAll();},0);
 }
-function renderAll(){renderPeriodButtons();renderClaimButtons();setDateDefaults();trendPoints=selectedTrend();updateDateNotes();renderKpis();renderHandlingSpeed();renderWeeklyAvgCostTrend();renderLists();renderRepairCostDistribution();renderApprovedMix();renderTeamAssignChart();bindTeamAssignPanelLink();drawTrend();scheduleStatusMixBottomAlignment();}
+function renderAll(){renderPeriodButtons();renderClaimButtons();bindDashboardExportButtons();setDateDefaults();trendPoints=selectedTrend();updateDateNotes();renderKpis();renderHandlingSpeed();renderWeeklyAvgCostTrend();renderLists();renderRepairCostDistribution();renderApprovedMix();renderTeamAssignChart();bindTeamAssignPanelLink();drawTrend();scheduleStatusMixBottomAlignment();}
 function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(prev||0);if(delta===0)return{cls:"flat",arrow:"-",text:"0"};const isGood=(metric==="exited")?delta>0:delta<0;return{cls:isGood?"up":"down",arrow:delta>0?"^":"v",text:num(Math.abs(delta))};}
 function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}
 function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const enteredDelta=deltaInfoMetric("entered",hit.p.entered,prev?prev.entered:hit.p.entered);const criticalDelta=deltaInfoMetric("critical",hit.p.critical,prev?prev.critical:hit.p.critical);const exitedDelta=deltaInfoMetric("exited",hit.p.exited,prev?prev.exited:hit.p.exited);tip.innerHTML=`<b>Date: ${esc(hit.p.date)}</b>${tipRow("Entered on date","#3b82f6",hit.p.entered,enteredDelta)}${tipRow("Critical total","#fb6b1d",hit.p.critical,criticalDelta)}${tipRow("Exited on date","#16a34a",hit.p.exited,exitedDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
 async function load(){try{showCalcFloat(true,"Loading dashboard...");$("loadError").style.display="none";const data=await readJson(MONITOR_ROOT+"/analytics/team");if(!data||typeof data!=="object")throw new Error("analytics/team is empty");team=data;activeClaim=team.defaultView||"all";await Promise.all([loadRawCritical().catch(()=>{rawCritical={loaded:false,views:{}}}),loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{employeeAnalytics=null}),loadEmployeeStatusMappingRemote()]);hideCalcFloat(60);renderAll()}catch(err){hideCalcFloat();$("loadError").innerHTML="Cannot load team analytics from Firebase. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll()}}
-$("dateFrom").addEventListener("change",()=>{renderAll()});$("dateTo").addEventListener("change",()=>{renderAll()});if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",()=>{drawTrend();scheduleStatusMixBottomAlignment();});bindTooltip();loadEmployeeStatusMapping();load();
+$("dateFrom").addEventListener("change",()=>{renderAll()});$("dateTo").addEventListener("change",()=>{renderAll()});if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",()=>{drawTrend();scheduleStatusMixBottomAlignment();});bindTooltip();bindDashboardExportButtons();loadEmployeeStatusMapping();load();
 </script></body></html>
