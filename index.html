@@ -2387,7 +2387,7 @@ html{zoom:.8!important;}
       </div>
       <aside class="featureSideStack">
         <div class="panel dealerRankPanel"><div class="panelTitleRow"><h2 class="panelTitle">Top Critical Tickets by Dealer</h2><span class="dateNote" data-date-note>through --</span></div><div id="dealerBars" class="dealerCriticalList"></div></div>
-        <section class="dashboardAnalysisGrid"><div class="panel speedPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Duration Distribution</h2></div></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel avgCostTrendPanel"><div class="panelTitleRow"><h2 class="panelTitle">Avg Cost/Ticket by Week</h2></div><div id="weeklyAvgCostTrend" class="weeklyAvgCostTrend"></div></div><div class="panel statusMixPanel"><div class="panelTitleRow"><h2 class="panelTitle">Critical Tickets Status Mix</h2></div><div id="statusMix" class="mixRows"></div></div></section>
+        <section class="dashboardAnalysisGrid"><div class="panel speedPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Duration Distribution</h2></div></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel avgCostTrendPanel"><div class="panelTitleRow"><h2 class="panelTitle">Current Avg Cost/Ticket Trend</h2></div><div id="weeklyAvgCostTrend" class="weeklyAvgCostTrend"></div></div><div class="panel statusMixPanel"><div class="panelTitleRow"><h2 class="panelTitle">Critical Tickets Status Mix</h2></div><div id="statusMix" class="mixRows"></div></div></section>
       </aside>
     </section>
   </main>
@@ -2507,14 +2507,20 @@ function dateKey(v){const d=parseDate(v);return d?`${d.getFullYear()}-${String(d
 function ticketOutcomeText(ticket,mapping){const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status);const text=clean(ticket.TicketStatusText||ticket.statusText);return clean((code&&mapping?.[code]?.ticketStatusText)||(text&&mapping?.[text]?.ticketStatusText)||text||code)}
 function isExitedTicket(ticket,mapping){const text=ticketOutcomeText(ticket,mapping).toLowerCase();return text.includes("repairer invoiced processed")||text.includes("calins closed")}
 function rawExitedTicketsTotalValue(start,end){if(!rawTicketEntries.length)return null;return rawTicketEntries.reduce((total,{ticket})=>{const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);if(!created||created<start||created>end)return total;if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return total;return isExitedTicket(ticket,statusMapping)?total+parseAmountIncludingTax(ticket.AmountIncludingTax):total},0)}
-function approvalBucket(ticket){const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status).toUpperCase();const text=clean(ticket.TicketStatusText||ticket.statusText).toLowerCase();if(code==="Z9"&&text==="sales order approved")return "approved";if(code==="Y8"&&text==="unapproved claims closed (closed)")return "unapproved";return "other"}
-function rawApprovalSummary(start,end){const summary={approved:0,unapproved:0,approvedAmount:0,unapprovedAmount:0};rawTicketEntries.forEach(({ticket})=>{const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);if(!created||created<start||created>end)return;if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;const bucket=approvalBucket(ticket);const amount=parseAmountIncludingTax(ticket.AmountIncludingTax);if(bucket==="approved"){summary.approved++;summary.approvedAmount+=amount}if(bucket==="unapproved"){summary.unapproved++;summary.unapprovedAmount+=amount}});return summary}
+function normalizePoNumber(v){let s=clean(v);if(!s)return "";if(/^\d+(?:\.0+)?$/.test(s))s=s.split(".")[0];return s}
+function ticketPoNumber(ticket){return normalizePoNumber(getField(ticket,["ERPPurchaseOrder","ERP Purchase Order","Purchasing Document","PurchasingDocument"]))}
+function ticketPoDocumentDate(ticket){return dateKey(getField(ticket,["PO Document Date","PODocumentDate","Document Date","DocumentDate"]))}
+function isUnapprovedTicket(ticket){const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status).toUpperCase();const text=clean(ticket.TicketStatusText||ticket.statusText).toLowerCase();return code==="Y8"||text.includes("unapproved claims closed")||text.includes("unapproved")}
+const APPROVED_C4C_STATUS_CODES=new Set(["Z9","Y0","Y1","Y2","Y4","YB"]);
+function isValidApprovedPo(ticket){const po=ticketPoNumber(ticket);const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status).toUpperCase();const orderRejection=clean(getField(ticket,["Order Rejection Status","OrderRejectionStatus"])).toLowerCase();return /^7\d{9}$/.test(po)&&APPROVED_C4C_STATUS_CODES.has(code)&&!["rejected","partially rejected"].includes(orderRejection)}
+function approvalBucket(ticket){if(isUnapprovedTicket(ticket))return "unapproved";if(isValidApprovedPo(ticket))return "approved";return "other"}
+function approvalDecisionDate(ticket){const bucket=approvalBucket(ticket);if(bucket==="approved")return ticketPoDocumentDate(ticket)||dateKey(getField(ticket,["ERP PO First Seen Date","ERPPurchaseOrderFirstSeenDate","erpPoFirstSeenDate","Approval Decision Date","approvalDecisionDate"]));if(bucket==="unapproved")return dateKey(getField(ticket,["Unapproved Date","UnapprovedDate","LastUpdateDateTime","Last Update Date Time","UpdatedOn","updatedAt","CreatedOn","Created On"]));return ""}
+function unapprovedLogRows(start,end){return arrayFromMaybe(currentView().logs).filter(e=>{const d=eventDateKey(e.detectedAt||e.date);return d&&d>=start&&d<=end&&logMatchesClaim(e)&&logIsUnapprovedExit(e)})}
 function ticketEntryById(id){id=clean(id);return rawTicketEntries.find(x=>clean(x.id)===id)||null}
 function logClaimKey(e){const direct=clean(e.claimKey||e.claim||e.claimTypeKey);if(direct)return direct;const text=clean(e.claimType||e.ticketType||e.TicketTypeText).toLowerCase();if(text.includes("pre delivery"))return "preDelivery";if(text.includes("in field"))return "inField";const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);return entry?claimKeyForTicket(entry.ticket):"all"}
 function logMatchesClaim(e){return activeClaim==="all"||logClaimKey(e)===activeClaim}
 function logAmount(e){const direct=Number(e.amount??e.value??e.AmountIncludingTax??e.approvedAmount??0);if(Number.isFinite(direct)&&direct>0)return direct;const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);return entry?parseAmountIncludingTax(entry.ticket.AmountIncludingTax):0}
 function logIsUnapprovedExit(e){const code=clean(e.toCode||e.statusCode||e.TicketStatus).toUpperCase();const text=clean(e.toStatus||e.status||e.statusText||e.TicketStatusText||e.type).toLowerCase();return code==="Y8"||text.includes("unapproved claims closed")||text.includes("unapproved")}
-function changeApprovalSummary(start,end){const view=currentView();const logs=arrayFromMaybe(view.logs).filter(e=>{const d=eventDateKey(e.detectedAt||e.date);return d&&d>=start&&d<=end&&clean(e.cls).toLowerCase()==="exit"&&logMatchesClaim(e)});if(!logs.length)return rawApprovalSummary(start,end);let exited=0,exitedAmount=0,unapproved=0,unapprovedAmount=0;logs.forEach(e=>{const amount=logAmount(e);exited++;exitedAmount+=amount;if(logIsUnapprovedExit(e)){unapproved++;unapprovedAmount+=amount}});return {approved:Math.max(0,exited-unapproved),unapproved,approvedAmount:Math.max(0,exitedAmount-unapprovedAmount),unapprovedAmount}}
 function claimTypeCounts(){
   const pySplit=pythonDashboardKpis().criticalClaimSplit||currentView().summary?.criticalClaimSplit;
   if(pySplit&&typeof pySplit==="object"){
@@ -2618,7 +2624,7 @@ function trendThroughToday(view=currentView()){
 function latestDateForView(){const view=currentView();const pts=trendThroughToday(view);return (pts.length?pts[pts.length-1].date:clean(view.generatedAt).slice(0,10)||clean(team.generatedAt).slice(0,10)||todayISO());}
 function earliestDateForView(){const view=currentView();const pts=view.trend||[];const first=(pts.length?pts[0].date:(view.minDate||team.minDate||latestDateForView()));return first&&first>DEFAULT_RANGE_START?first:DEFAULT_RANGE_START;}
 function setFullRange(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;if($("dateFrom"))$("dateFrom").value=earliestDateForView();if($("dateTo"))$("dateTo").value=latestDateForView();}
-function periodEndDate(){return ($("dateTo")&&$("dateTo").value)||latestDateForView();}
+function periodEndDate(){const latest=latestDateForView();const value=($("dateTo")&&$("dateTo").value)||latest;return value&&value<latest?value:latest;}
 function isLatestPeriodEnd(end=periodEndDate()){return clean(end)>=latestDateForView();}
 function periodStartDate(end){if(activePeriod==="all")return ($("dateFrom")&&$("dateFrom").value)||earliestDateForView();if(activePeriod==="day")return end;const d=new Date(end+"T00:00:00Z");d.setUTCDate(d.getUTCDate()-(activePeriod==="month"?29:6));const out=d.toISOString().slice(0,10);return out<earliestDateForView()?earliestDateForView():out;}
 function sumDaily(map,start,end){let total=0;Object.entries(map||{}).forEach(([k,v])=>{if(k>=start&&k<=end)total+=Number(v||0)});return total;}
@@ -2744,9 +2750,14 @@ function currentView(){return (team.views&&team.views[activeClaim]) || team.view
 function pythonDashboardKpis(){const view=currentView()||{};return view.dashboardKpis||(view.summary&&view.summary.dashboardKpis)||{}}
 function selectedTrend(){
   const view=currentView();
-  const all=trendThroughToday(view);
   const from=$("dateFrom").value,to=$("dateTo").value;
-  return all.filter(p=>(!from||p.date>=from)&&(!to||p.date<=to)).map(p=>({...p,critical:Number(p.critical||0)}));
+  const granularity=avgCostGranularity(from||earliestDateForView(),to||latestDateForView());
+  const source=granularity==="monthly"?view.trendMonthly:(granularity==="weekly"?view.trendWeekly:(view.trendDaily||view.trend));
+  return arrayFromMaybe(source).filter(p=>{
+    const start=clean(p.periodStart||p.date);
+    const end=clean(p.periodEnd||p.date||start);
+    return start&&end&&(!from||end>=from)&&(!to||start<=to);
+  }).map(p=>({...p,date:clean(p.date||p.periodEnd||p.periodStart),periodStart:clean(p.periodStart||p.date),periodEnd:clean(p.periodEnd||p.date),critical:Number(p.critical||0),entered:Number(p.entered||p.newClaim||0),exited:Number(p.exited||0),granularity}));
 }
 function drawTodayBarsTeam(ctx,w,h){
   const s=currentPeriodSummary();
@@ -2755,25 +2766,48 @@ function drawTodayBarsTeam(ctx,w,h){
   ctx.font='500 13px Inter, Segoe UI, Arial';ctx.textAlign='center';ctx.textBaseline='middle';
   data.forEach((d,i)=>{const bw=Math.min(100,plotW/(data.length*2));const gap=plotW/data.length;const x=left+gap*i+gap/2-bw/2;const bh=plotH*(d[1]/max);const y=top+plotH-bh;const g=ctx.createLinearGradient(0,y,0,y+bh);g.addColorStop(0,d[2]);g.addColorStop(1,'#7dd3fc');ctx.fillStyle=g;ctx.beginPath();ctx.roundRect?ctx.roundRect(x,y,bw,bh,8):(ctx.rect(x,y,bw,bh));ctx.fill();ctx.fillStyle='#0f172a';ctx.font='600 16px Inter, Segoe UI, Arial';ctx.fillText(num(d[1]),x+bw/2,y-12);ctx.fillStyle='#52627a';ctx.font='500 12px Inter, Segoe UI, Arial';ctx.fillText(d[0],x+bw/2,h-22);});
 }
-function drawTrend(){const c=$("trendChart");if(!c)return;const {ctx,w,h}=prepareCanvas(c);ctx.clearRect(0,0,w,h);if(activePeriod==="day"){drawTodayBarsTeam(ctx,w,h);return;}const pts=trendPoints;if(!pts.length){c._points=[];ctx.fillStyle="#64748b";ctx.font="500 13px Inter, Segoe UI, Arial";ctx.textAlign="center";ctx.fillText("No trend data found for this date range.",w/2,h/2);return;}const left=58,right=62,top=24,bottom=56,plotW=w-left-right,plotH=h-top-bottom;const flowMax=niceMax(Math.max(1,...pts.flatMap(p=>[p.entered,p.exited])));const criticalMax=niceMax(Math.max(1,...pts.map(p=>p.critical)));ctx.save();ctx.font="12px Inter, Segoe UI, Arial";ctx.strokeStyle="#d8e2ee";ctx.setLineDash([2,4]);for(let i=0;i<=5;i++){const val=Math.round(flowMax*i/5),y=top+plotH-(plotH*i/5);ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillStyle="#64748b";ctx.textAlign="right";ctx.fillText(String(val),left-10,y+4);const rv=Math.round(criticalMax*i/5);ctx.fillStyle="#fb6b1d";ctx.textAlign="left";ctx.fillText(String(rv),w-right+10,y+4)}ctx.setLineDash([]);ctx.fillStyle="#64748b";ctx.textAlign="left";pts.forEach((p,i)=>{const x=left+(pts.length<=1?0:plotW*i/(pts.length-1));if(i===0||i===pts.length-1||pts.length<=7)ctx.fillText(p.date.slice(5),x-14,h-22)});ctx.restore();const xFor=i=>left+(pts.length<=1?0:plotW*i/(pts.length-1));const yFlow=v=>top+plotH-(plotH*(v/flowMax));const yCritical=v=>top+plotH-(plotH*(v/criticalMax));drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.entered)})),"#3b82f6");drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yCritical(p.critical)})),"#fb6b1d",true,.55);drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.exited)})),"#16a34a");c._points=pts.map((p,i)=>({x:xFor(i),p,idx:i}))}
+function trendPointLabel(p){const start=clean(p.periodStart||p.date),end=clean(p.periodEnd||p.date||start);return start&&end&&start!==end?`${formatSnapshotDateLabel(start)} - ${formatSnapshotDateLabel(end)}`:formatSnapshotDateLabel(end||start)}
+function drawTrend(){const c=$("trendChart");if(!c)return;const {ctx,w,h}=prepareCanvas(c);ctx.clearRect(0,0,w,h);if(activePeriod==="day"){drawTodayBarsTeam(ctx,w,h);return;}const pts=trendPoints;if(!pts.length){c._points=[];ctx.fillStyle="#64748b";ctx.font="500 13px Inter, Segoe UI, Arial";ctx.textAlign="center";ctx.fillText("No trend data found for this date range.",w/2,h/2);return;}const left=58,right=62,top=24,bottom=56,plotW=w-left-right,plotH=h-top-bottom;const flowMax=niceMax(Math.max(1,...pts.flatMap(p=>[p.entered,p.exited])));const criticalMax=niceMax(Math.max(1,...pts.map(p=>p.critical)));ctx.save();ctx.font="12px Inter, Segoe UI, Arial";ctx.strokeStyle="#d8e2ee";ctx.setLineDash([2,4]);for(let i=0;i<=5;i++){const val=Math.round(flowMax*i/5),y=top+plotH-(plotH*i/5);ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillStyle="#64748b";ctx.textAlign="right";ctx.fillText(String(val),left-10,y+4);const rv=Math.round(criticalMax*i/5);ctx.fillStyle="#fb6b1d";ctx.textAlign="left";ctx.fillText(String(rv),w-right+10,y+4)}ctx.setLineDash([]);ctx.fillStyle="#64748b";ctx.textAlign="left";pts.forEach((p,i)=>{const x=left+(pts.length<=1?0:plotW*i/(pts.length-1));if(i===0||i===pts.length-1||pts.length<=7)ctx.fillText(clean(p.date).slice(5),x-14,h-22)});ctx.restore();const xFor=i=>left+(pts.length<=1?0:plotW*i/(pts.length-1));const yFlow=v=>top+plotH-(plotH*(v/flowMax));const yCritical=v=>top+plotH-(plotH*(v/criticalMax));drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.entered)})),"#3b82f6");drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yCritical(p.critical)})),"#fb6b1d",true,.55);drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.exited)})),"#16a34a");c._points=pts.map((p,i)=>({x:xFor(i),p,idx:i}))}
 function setKpiTrendHidden(id,hidden,mode="range"){const el=$(id);if(!el)return;el.innerHTML=kpiDateMetaMarkup(mode);el.className="kpiTrend flat kpiTrendDateOnly";}
 function setCardLabel(selector,label){const el=document.querySelector(selector+" .kpiLabel");if(el)el.textContent=label;}
 function setTrend(id,key,current,previous,fmt,show,mode="range"){const el=$(id);if(!el)return;setKpiTrendHidden(id,true,mode);}
 function weekStartISO(dateStr){const d=new Date(dateStr+"T00:00:00Z");if(isNaN(d))return "";const day=(d.getUTCDay()+6)%7;d.setUTCDate(d.getUTCDate()-day);return d.toISOString().slice(0,10)}
 function weekEndISO(weekStart){const d=new Date(weekStart+"T00:00:00Z");if(isNaN(d))return weekStart;d.setUTCDate(d.getUTCDate()+6);return d.toISOString().slice(0,10)}
-function weeklyAvgCostRows(){
-  const bounds=periodBounds(),view=currentView();
-  const dailyRows=arrayFromMaybe(view.dailyAvgCostTrend).filter(row=>{
-    const date=clean(row.date);
-    return date&&(!bounds.start||date>=bounds.start)&&(!bounds.end||date<=bounds.end);
-  });
-  if(dailyRows.length)return dailyRows.map(row=>({date:clean(row.date),approvedTickets:Number(row.approvedTickets||0),approvedAmount:Number(row.approvedAmount||0),avgCostPerTicket:Number(row.avgCostPerTicket||0)}));
-  return [];
+function avgCostGranularity(start,end){
+  const days=daysInBounds(start,end);
+  if(days<=45)return "daily";
+  if(days<=180)return "weekly";
+  return "monthly";
+}
+function avgCostTrendRows(){
+  const {start,end}=periodBounds();
+  const granularity=avgCostGranularity(start,end);
+  const source=granularity==="monthly"?currentView().trendMonthly:(granularity==="weekly"?currentView().trendWeekly:(currentView().trendDaily||currentView().trend));
+  return arrayFromMaybe(source).filter(row=>{
+    const rowStart=clean(row.monthStart||row.weekStart||row.date);
+    const rowEnd=clean(row.monthEnd||row.weekEnd||row.date||rowStart);
+    return rowStart&&rowEnd&&(!start||rowEnd>=start)&&(!end||rowStart<=end);
+  }).map(row=>{
+    const pointEnd=[clean(row.monthEnd),clean(row.weekEnd),clean(row.periodEnd),clean(row.date),clean(row.monthStart),clean(row.weekStart)].find(Boolean)||end;
+    const cappedEnd=pointEnd>end?end:pointEnd;
+    const snap=periodSnapshotForBounds(start,cappedEnd);
+    const summary=snap&&snap.summary?snap.summary:null;
+    if(!summary)return null;
+    return {
+      date:cappedEnd,
+      periodStart:start,
+      periodEnd:cappedEnd,
+      granularity,
+      approvedTickets:Number(summary.approvedTickets||0),
+      approvedAmount:Number(summary.approvedAmount||0),
+      avgCostPerTicket:Number(summary.avgCostPerTicket||0)
+    };
+  }).filter(Boolean);
 }
 function renderWeeklyAvgCostTrend(){
   const box=$("weeklyAvgCostTrend");if(!box)return;
-  const rows=weeklyAvgCostRows();
-  if(!rows.length){box.innerHTML=`<div class="speedEmpty">No weekly Avg Cost/Ticket data found.</div>`;return;}
+  const rows=avgCostTrendRows();
+  if(!rows.length){box.innerHTML=`<div class="speedEmpty">No Avg Cost/Ticket data found.</div>`;return;}
   const w=360,h=220,left=44,right=14,top=22,bottom=42,plotW=w-left-right,plotH=h-top-bottom;
   const values=rows.map(row=>Number(row.avgCostPerTicket||0));
   const max=niceMax(Math.max(1,...values));
@@ -2783,14 +2817,14 @@ function renderWeeklyAvgCostTrend(){
   const area=`${left},${top+plotH} ${points} ${left+plotW},${top+plotH}`;
   const grid=[0,.5,1].map(v=>`<line class="weeklyAvgCostGridLine" x1="${left}" x2="${left+plotW}" y1="${top+plotH-(v*plotH)}" y2="${top+plotH-(v*plotH)}"></line>`).join("");
   const circles=rows.map((row,i)=>{
-    const date=clean(row.date||row.weekEnd||row.weekStart);
-    const label=formatSnapshotDateLabel(date);
+    const date=clean(row.date||row.periodEnd||row.periodStart);
+    const label=row.periodStart&&row.periodEnd&&row.periodStart!==row.periodEnd?`${formatSnapshotDateLabel(row.periodStart)} - ${formatSnapshotDateLabel(row.periodEnd)}`:formatSnapshotDateLabel(date);
     const tip=`<b>${esc(label)}</b><div class="tipRow"><span>Avg Cost/Ticket</span><span>${money(row.avgCostPerTicket)}</span></div><div class="tipRow"><span>Approved tickets</span><span>${num(row.approvedTickets)}</span></div><div class="tipRow"><span>Approved cost</span><span>${money(row.approvedAmount)}</span></div>`;
     const cx=xFor(i).toFixed(1),cy=yFor(row.avgCostPerTicket).toFixed(1);
     return `<circle class="weeklyAvgCostHit" cx="${cx}" cy="${cy}" r="11" data-weekly-tip="${esc(tip)}"></circle><circle class="weeklyAvgCostPoint" cx="${cx}" cy="${cy}" r="3.2"></circle>`;
   }).join("");
   const first=rows[0],last=rows[rows.length-1];
-  const firstDate=clean(first.date||first.weekStart),lastDate=clean(last.date||last.weekEnd||last.weekStart);
+  const firstDate=clean(first.date||first.periodStart),lastDate=clean(last.date||last.periodEnd||last.periodStart);
   box.innerHTML=`<div class="weeklyAvgCostChart"><svg class="weeklyAvgCostSvg" viewBox="0 0 ${w} ${h}" role="img" aria-label="Avg Cost per Ticket by selected date">${grid}<line class="weeklyAvgCostAxis" x1="${left}" x2="${left+plotW}" y1="${top+plotH}" y2="${top+plotH}"></line><line class="weeklyAvgCostAxis" x1="${left}" x2="${left}" y1="${top}" y2="${top+plotH}"></line><polygon class="weeklyAvgCostArea" points="${area}"></polygon><polyline class="weeklyAvgCostLine" points="${points}"></polyline>${circles}<text x="${left-8}" y="${top+4}" fill="#64748b" font-size="11" font-weight="700" text-anchor="end">${money(max).replace('.00','')}</text><text x="${left-8}" y="${top+plotH}" fill="#64748b" font-size="11" font-weight="700" text-anchor="end">$0</text></svg><div class="weeklyAvgCostLabels"><span>${esc(formatSnapshotDateLabel(firstDate).replace(/ 202\d$/,""))}</span><span>${money(last.avgCostPerTicket)} latest</span><span>${esc(formatSnapshotDateLabel(lastDate).replace(/ 202\d$/,""))}</span></div></div>`;
   bindWeeklyAvgCostTooltip();
 }
@@ -3473,60 +3507,40 @@ function repairCostBucketKey(bucket){
 function repairCostBucketByKey(key){
   return repairCostBucketDefs().find(b=>repairCostBucketKey(b)===key)||null;
 }
-function approvedRepairCostEntries(){
-  const {start,end}=periodBounds();
-  const logs=arrayFromMaybe(currentView().logs).filter(e=>{
-    const d=eventDateKey(e.detectedAt||e.date);
-    return d&&d>=start&&d<=end&&clean(e.cls).toLowerCase()==="exit"&&logMatchesClaim(e)&&!logIsUnapprovedExit(e);
-  });
-  if(logs.length){
-    return logs.map(e=>{
-      const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);
-      const row=entry?repairAnalyticsDashboardRow(entry):repairAnalyticsDashboardRowFromLog(e);
-      row.amount=logAmount(e);
-      row.approvedTicket=true;
-      return row;
-    });
-  }
-  return rawTicketEntries.filter(({ticket})=>{
-    if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return false;
-    const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
-    if(created&&(created<start||created>end))return false;
-    return approvalBucket(ticket)==="approved";
-  }).map(repairAnalyticsDashboardRow);
-}
 function repairCostDistributionRows(){
   const {start,end}=periodBounds();
   const py=periodSnapshotForBounds(start,end);
-  const rows=arrayFromMaybe(py&&py.repairCostDistribution?py.repairCostDistribution:(currentView()||{}).repairCostDistribution);
-  return rows.map(row=>{
+  const rows=arrayFromMaybe(py&&py.repairCostDistribution);
+  const source=rows.length?rows:arrayFromMaybe(currentView().repairCostDistribution);
+  return source.map(row=>{
     const total=Number(row.total||0);
     return {
       key:clean(row.key),
       label:clean(row.label),
       count:Number(row.count||0),
+      total,
       details:[{label:"Approved tickets",count:Number(row.count||0)},{label:"Total approved cost",count:money(total)}]
     };
-  }).filter(row=>row.count>0);
+  }).filter(row=>row.count>0||row.total>0);
 }
 function repairCostDonutMarkup(rows){
   const colors=["#5b5cf6","#22c55e","#f59e0b","#fb7185","#8b5cf6","#94a3b8"];
-  const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
+  const total=rows.reduce((sum,row)=>sum+Number(row.total||0),0);
   if(!total)return `<div class="speedEmpty">No repair cost data found for this claim type and selected period.</div>`;
   let cursor=0;
   const slices=rows.map((row,i)=>{
-    const count=Number(row.count||0),pct=count/total*100,start=cursor,end=cursor+pct*3.6;
+    const count=Number(row.count||0),cost=Number(row.total||0),pct=cost/total*100,start=cursor,end=cursor+pct*3.6;
     cursor=end;
     const mid=(start+end)/2,p=statusPiePoint(85,85,48,mid);
     const totalCost=(row.details||[]).find(x=>x.label==="Total approved cost")?.count||"$0";
-    const tip=`<b>${esc(row.label)}: ${num(count)} approved (${Math.round(pct)}%)</b>Total approved cost: ${esc(totalCost)}`;
+    const tip=`<b>${esc(row.label)}: ${pctText(pct,2)} of approved cost</b>Approved tickets: ${num(count)}<br>Total approved cost: ${esc(totalCost)}`;
     return `<path class="statusPieSlice" role="button" tabindex="0" d="${statusPiePath(85,85,72,start,end)}" fill="${colors[i%colors.length]}" data-repair-cost-key="${esc(row.key)}" data-repair-cost-label="${esc(row.label)}" data-status-tip="${esc(tip)}"></path>${pct>=7?`<text class="statusPiePct" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${Math.round(pct)}%</text>`:''}`;
   }).join("");
   const legend=rows.map((row,i)=>{
-    const count=Number(row.count||0),pct=Math.round(count/total*100);
+    const count=Number(row.count||0),cost=Number(row.total||0),pct=Math.round(cost/total*100);
     const totalCost=(row.details||[]).find(x=>x.label==="Total approved cost")?.count||"$0";
-    const tip=`<b>${esc(row.label)}: ${num(count)} approved (${pct}%)</b>Total approved cost: ${esc(totalCost)}`;
-    return `<div class="statusPieLegendRow" role="button" tabindex="0" data-repair-cost-key="${esc(row.key)}" data-repair-cost-label="${esc(row.label)}" data-status-tip="${esc(tip)}"><span class="statusPieLegendDot" style="background:${colors[i%colors.length]}"></span><span class="statusPieLegendLabel">${esc(row.label)} (${num(count)})</span></div>`;
+    const tip=`<b>${esc(row.label)}: ${pct}% of approved cost</b>Approved tickets: ${num(count)}<br>Total approved cost: ${esc(totalCost)}`;
+    return `<div class="statusPieLegendRow" role="button" tabindex="0" data-repair-cost-key="${esc(row.key)}" data-repair-cost-label="${esc(row.label)}" data-status-tip="${esc(tip)}"><span class="statusPieLegendDot" style="background:${colors[i%colors.length]}"></span><span class="statusPieLegendLabel">${esc(row.label)} (${esc(totalCost)})</span></div>`;
   }).join("");
   return `<div class="statusPieWrap"><svg class="statusPieSvg" viewBox="0 0 170 170" aria-label="Repair cost distribution">${slices}</svg></div><div class="statusPieLegend">${legend}</div><div id="repairCostHoverTip" class="statusMixHoverTip"></div>`;
 }
@@ -3662,24 +3676,23 @@ function employeeCriticalCountAtDate(name,date){
 }
 function employeeCriticalTrendRows(name,bounds){
   const stat=employeeAnalyticsStat(name);
-  if(stat&&stat.dailySnapshots){
-    const daily=stat.dailySnapshots||{};
-    const dates=Object.keys(daily).filter(d=>d&&d>=bounds.start&&d<=bounds.end).sort();
-    const full=dates.length?dates:[bounds.end];
-    const step=7;
-    const sampled=full.filter((_,i)=>i%step===0||i===full.length-1);
-    return sampled.map(date=>{
-      const snap=daily[date]||{};
-      return {
-        date,
-        count:Number(snap.critical||0),
-        handled:Number(snap.handled||0),
-        approvedAmount:Number(snap.approvedAmount||0),
-        avgCost:Number(snap.avgCost||0)
-      };
-    });
-  }
-  return [];
+  if(!stat)return [];
+  const granularity=avgCostGranularity(bounds.start,bounds.end);
+  const source=granularity==="monthly"?stat.criticalTrendMonthly:(granularity==="weekly"?stat.criticalTrendWeekly:stat.criticalTrendDailyRows);
+  return arrayFromMaybe(source).filter(row=>{
+    const start=clean(row.periodStart||row.date);
+    const end=clean(row.periodEnd||row.date||start);
+    return start&&end&&end>=bounds.start&&start<=bounds.end;
+  }).map(row=>({
+    date:clean(row.date||row.periodEnd||row.periodStart),
+    periodStart:clean(row.periodStart||row.date),
+    periodEnd:clean(row.periodEnd||row.date),
+    count:Number(row.count||0),
+    handled:Number(row.handled||0),
+    approvedAmount:Number(row.approvedAmount||0),
+    avgCost:Number(row.avgCost||0),
+    granularity
+  }));
 }
 function employeeCriticalTrendMarkup(rows){
   if(!rows.length)return '<div class="employeeTrendEmpty">No critical ticket history found.</div>';
@@ -3691,7 +3704,7 @@ function employeeCriticalTrendMarkup(rows){
   const points=rows.map((r,i)=>`${xFor(i).toFixed(1)},${yFor(r.count).toFixed(1)}`).join(" ");
   const area=`${left},${top+plotH} ${points} ${left+plotW},${top+plotH}`;
   const circles=rows.map((r,i)=>{
-    const label=formatSnapshotDateLabel(r.date);
+    const label=r.periodStart&&r.periodEnd&&r.periodStart!==r.periodEnd?`${formatSnapshotDateLabel(r.periodStart)} - ${formatSnapshotDateLabel(r.periodEnd)}`:formatSnapshotDateLabel(r.date);
     const tip=`<b>${esc(label)}</b><div class="tipRow"><span>Critical tickets</span><span>${num(r.count)}</span></div><div class="tipRow"><span>Handled tickets</span><span>${num(r.handled||0)}</span></div><div class="tipRow"><span>Approved cost</span><span>${money(r.approvedAmount||0)}</span></div><div class="tipRow"><span>Avg cost/ticket</span><span>${money(r.avgCost||0)}</span></div>`;
     const cx=xFor(i).toFixed(1),cy=yFor(r.count).toFixed(1);
     return `<circle class="employeeTrendHit" cx="${cx}" cy="${cy}" r="11" data-trend-tip="${esc(tip)}"></circle><circle class="employeeTrendPoint" cx="${cx}" cy="${cy}" r="3.4"></circle>`;
@@ -3701,7 +3714,7 @@ function employeeCriticalTrendMarkup(rows){
   return `<div class="employeeTrendInner"><svg class="employeeTrendSvg" viewBox="0 0 ${w} ${h}" role="img" aria-label="Critical tickets trend">${grid}<line class="employeeTrendAxis" x1="${left}" x2="${left+plotW}" y1="${top+plotH}" y2="${top+plotH}"></line><line class="employeeTrendAxis" x1="${left}" x2="${left}" y1="${top}" y2="${top+plotH}"></line><polygon class="employeeTrendArea" points="${area}"></polygon><polyline class="employeeTrendLine" points="${points}"></polyline>${circles}<text x="${left}" y="${top+10}" fill="#64748b" font-size="11" font-weight="650">${num(max)}</text><text x="${left}" y="${top+plotH-4}" fill="#64748b" font-size="11" font-weight="650">0</text></svg><div class="employeeTrendMeta"><span>${esc(formatSnapshotDateLabel(first.date))}</span><span>${num(last.count)} current</span><span>${esc(formatSnapshotDateLabel(last.date))}</span></div></div>`;
 }
 function employeeCriticalTrendTip(row){
-  const label=formatSnapshotDateLabel(row.date);
+  const label=row.periodStart&&row.periodEnd&&row.periodStart!==row.periodEnd?`${formatSnapshotDateLabel(row.periodStart)} - ${formatSnapshotDateLabel(row.periodEnd)}`:formatSnapshotDateLabel(row.date);
   return `<b>${esc(label)}</b><div class="tipRow"><span>Critical tickets</span><span>${num(row.count)}</span></div><div class="tipRow"><span>Handled tickets</span><span>${num(row.handled||0)}</span></div><div class="tipRow"><span>Approved cost</span><span>${money(row.approvedAmount||0)}</span></div><div class="tipRow"><span>Avg cost/ticket</span><span>${money(row.avgCost||0)}</span></div>`;
 }
 function employeeCriticalTrendHitFromMouse(el,ev){
@@ -3899,19 +3912,13 @@ function repairAnalyticsDashboardRowFromLog(e){
 }
 function approvalBucketTicketRows(key){
   const {start,end}=periodBounds();
-  const logs=arrayFromMaybe(currentView().logs).filter(e=>{
-    const d=eventDateKey(e.detectedAt||e.date);
-    if(!d||d<start||d>end||clean(e.cls).toLowerCase()!=="exit"||!logMatchesClaim(e))return false;
-    const logKey=logIsUnapprovedExit(e)?"unapproved":"approved";
-    return logKey===key;
-  });
-  if(logs.length)return logs.map(repairAnalyticsDashboardRowFromLog);
+  if(key==="unapproved")return unapprovedLogRows(start,end).map(repairAnalyticsDashboardRowFromLog);
   return rawTicketEntries.filter(({ticket})=>{
-    const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
-    if(!created||created<start||created>end)return false;
     if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return false;
+    const decisionDate=approvalDecisionDate(ticket);
+    if(!decisionDate||decisionDate<start||decisionDate>end)return false;
     return approvalBucket(ticket)===key;
-  }).map(repairAnalyticsDashboardRow);
+  }).map(entry=>{const row=repairAnalyticsDashboardRow(entry);row.decisionDate=approvalDecisionDate(entry.ticket);row.approvalDecision=key==="unapproved"?"Unapproved":"Approved";return row;});
 }
 function openApprovalBucketTickets(key,label){
   openDashboardTickets(approvalBucketTicketRows(key),`Repair Analytics - ${label}`);
@@ -4411,7 +4418,7 @@ function renderAllWithLoading(text="Calculating..."){
 function renderAll(){renderPeriodButtons();renderClaimButtons();bindDashboardExportButtons();setDateDefaults();trendPoints=selectedTrend();updateDateNotes();renderKpis();renderHandlingSpeed();renderWeeklyAvgCostTrend();renderLists();renderRepairCostDistribution();renderApprovedMix();renderTeamAssignChart();bindTeamAssignPanelLink();drawTrend();scheduleStatusMixBottomAlignment();}
 function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(prev||0);if(delta===0)return{cls:"flat",arrow:"-",text:"0"};const isGood=(metric==="exited")?delta>0:delta<0;return{cls:isGood?"up":"down",arrow:delta>0?"^":"v",text:num(Math.abs(delta))};}
 function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}
-function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const enteredDelta=deltaInfoMetric("entered",hit.p.entered,prev?prev.entered:hit.p.entered);const criticalDelta=deltaInfoMetric("critical",hit.p.critical,prev?prev.critical:hit.p.critical);const exitedDelta=deltaInfoMetric("exited",hit.p.exited,prev?prev.exited:hit.p.exited);tip.innerHTML=`<b>Date: ${esc(hit.p.date)}</b>${tipRow("Entered on date","#3b82f6",hit.p.entered,enteredDelta)}${tipRow("Critical total","#fb6b1d",hit.p.critical,criticalDelta)}${tipRow("Exited on date","#16a34a",hit.p.exited,exitedDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
+function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const enteredDelta=deltaInfoMetric("entered",hit.p.entered,prev?prev.entered:hit.p.entered);const criticalDelta=deltaInfoMetric("critical",hit.p.critical,prev?prev.critical:hit.p.critical);const exitedDelta=deltaInfoMetric("exited",hit.p.exited,prev?prev.exited:hit.p.exited);tip.innerHTML=`<b>${esc(trendPointLabel(hit.p))}</b>${tipRow("Entered Critical","#3b82f6",hit.p.entered,enteredDelta)}${tipRow("Critical total","#fb6b1d",hit.p.critical,criticalDelta)}${tipRow("Exited Critical","#16a34a",hit.p.exited,exitedDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
 async function load(){try{showCalcFloat(true,"Loading dashboard...");$("loadError").style.display="none";const data=await readJson(MONITOR_ROOT+"/analytics/team");if(!data||typeof data!=="object")throw new Error("analytics/team is empty");team=data;activeClaim=team.defaultView||"all";await Promise.all([loadRawCritical().catch(()=>{rawCritical={loaded:false,views:{}}}),loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{employeeAnalytics=null}),loadEmployeeStatusMappingRemote()]);hideCalcFloat(60);renderAll()}catch(err){hideCalcFloat();$("loadError").innerHTML="Cannot load team analytics from Firebase. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll()}}
 $("dateFrom").addEventListener("change",()=>{renderAll()});$("dateTo").addEventListener("change",()=>{renderAll()});if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",()=>{drawTrend();scheduleStatusMixBottomAlignment();});bindTooltip();bindDashboardExportButtons();loadEmployeeStatusMapping();load();
 </script></body></html>
