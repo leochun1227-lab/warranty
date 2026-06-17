@@ -2380,14 +2380,14 @@ html{zoom:.8!important;}
           <div class="kpi ratioKpiCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved / Approved</div><div class="kpiValue" id="kpiUnapprovedRatio">0.00%</div><div class="ratioBase" id="kpiRatioBase">0 / 0</div></div><div class="kpiIcon">%</div></div><div class="kpiTrend" id="kpiRatioTrend"></div></div>
         </section>
         <section class="trendLogGrid">
-          <section class="panel trendPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Status Trends by Date</h2></div></div></div><div class="chartWrap"><canvas id="trendChart"></canvas></div><div class="legend"><span><i class="dot blue"></i>Entered Critical on date</span><span><i class="dot orange"></i>Critical total - right axis</span><span><i class="dot green"></i>Exited Critical on date</span></div></section>
+          <section class="panel trendPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Status Trends by Date</h2></div></div></div><div class="chartWrap"><canvas id="trendChart"></canvas></div><div class="legend"><span><i class="dot blue"></i>Cumulative New Tickets</span><span><i class="dot green"></i>Cumulative Approved + Unapproved</span><span><i class="dot orange"></i>Critical total - right axis</span></div></section>
           <section class="panel criticalLogPanel repairCostPanel"><div class="panelTitleRow"><h2 class="panelTitle">Repair Analytics</h2><span class="dateNote" data-date-note>through --</span></div><div class="repairComboGrid"><div class="repairComboItem"><h3 class="repairComboTitle">Tickets Repair Cost Distribution</h3><div id="criticalLogRows" class="statusPieLayout repairCostPie"></div></div><div class="repairComboItem"><h3 class="repairComboTitle">Approved vs Unapproved Tickets</h3><div id="approvedMixRows" class="statusPieLayout approvedMixPie"></div></div></div></section>
         </section>
         <section class="panel teamAssignPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Employee Workload</h2><span class="dateNote" data-date-note>through --</span></div></div><div id="teamAssignActions" class="teamAssignActions"></div></div><div class="teamAssignSplit"><div class="teamAssignCol teamWorkloadCol"><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Total removed as of date</span><span><i style="background:#4f46e5"></i>Current critical tickets</span></div></div><div class="teamAssignCol employeeApprovalCol"><div class="employeeApprovalTitle">Approved vs Unapproved by Employee</div><div id="employeeApprovalBars" class="employeeApprovalBars"></div></div></div><div id="employeeStatusMapping" class="employeeStatusMapping"></div></section>
       </div>
       <aside class="featureSideStack">
         <div class="panel dealerRankPanel"><div class="panelTitleRow"><h2 class="panelTitle">Top Critical Tickets by Dealer</h2><span class="dateNote" data-date-note>through --</span></div><div id="dealerBars" class="dealerCriticalList"></div></div>
-        <section class="dashboardAnalysisGrid"><div class="panel speedPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Duration Distribution</h2></div></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel avgCostTrendPanel"><div class="panelTitleRow"><h2 class="panelTitle">Current Avg Cost/Ticket Trend</h2></div><div id="weeklyAvgCostTrend" class="weeklyAvgCostTrend"></div></div><div class="panel statusMixPanel"><div class="panelTitleRow"><h2 class="panelTitle">Critical Tickets Status Mix</h2></div><div id="statusMix" class="mixRows"></div></div></section>
+        <section class="dashboardAnalysisGrid"><div class="panel speedPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Duration Distribution</h2></div></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel avgCostTrendPanel"><div class="panelTitleRow"><h2 class="panelTitle">Current Avg Cost/Ticket</h2></div><div id="weeklyAvgCostTrend" class="weeklyAvgCostTrend"></div></div><div class="panel statusMixPanel"><div class="panelTitleRow"><h2 class="panelTitle">Critical Tickets Status Mix</h2></div><div id="statusMix" class="mixRows"></div></div></section>
       </aside>
     </section>
   </main>
@@ -2752,22 +2752,32 @@ function selectedTrend(){
   const view=currentView();
   const from=$("dateFrom").value,to=$("dateTo").value;
   const granularity=avgCostGranularity(from||earliestDateForView(),to||latestDateForView());
-  const source=granularity==="monthly"?view.trendMonthly:(granularity==="weekly"?view.trendWeekly:(view.trendDaily||view.trend));
+  const source=granularity==="monthly"?view.ticketVolumeTrendMonthly:(granularity==="weekly"?view.ticketVolumeTrendWeekly:view.ticketVolumeTrendDaily);
   return arrayFromMaybe(source).filter(p=>{
     const start=clean(p.periodStart||p.date);
     const end=clean(p.periodEnd||p.date||start);
     return start&&end&&(!from||end>=from)&&(!to||start<=to);
-  }).map(p=>({...p,date:clean(p.date||p.periodEnd||p.periodStart),periodStart:clean(p.periodStart||p.date),periodEnd:clean(p.periodEnd||p.date),critical:Number(p.critical||0),entered:Number(p.entered||p.newClaim||0),exited:Number(p.exited||0),granularity}));
+  }).map(p=>({...p,date:clean(p.date||p.periodEnd||p.periodStart),periodStart:clean(p.periodStart||p.date),periodEnd:clean(p.periodEnd||p.date),criticalTotal:Number(p.criticalTotal||0),newTickets:Number(p.newTickets||0),approvedUnapprovedTickets:Number(p.approvedUnapprovedTickets||0),granularity}));
 }
 function drawTodayBarsTeam(ctx,w,h){
-  const s=currentPeriodSummary();
-  const data=[['Entered',s.enteredCritical,'#3b82f6'],['Exited',s.exitedCritical,'#16a34a'],['Total Critical',s.criticalNow,'#fb6b1d']];
+  const rows=selectedTrend();
+  const totals=rows.reduce((acc,row)=>{acc.newTickets+=Number(row.newTickets||0);acc.approvedUnapprovedTickets+=Number(row.approvedUnapprovedTickets||0);return acc;},{newTickets:0,approvedUnapprovedTickets:0});
+  const last=rows.slice(-1)[0]||{};
+  const data=[['Cumulative New Tickets',totals.newTickets,'#3b82f6'],['Cumulative Approved + Unapproved',totals.approvedUnapprovedTickets,'#16a34a'],['Critical total',Number(last.criticalTotal||0),'#fb6b1d']];
   const left=70,right=30,top=36,bottom=48,plotW=w-left-right,plotH=h-top-bottom,max=Math.max(1,...data.map(x=>x[1]));
   ctx.font='500 13px Inter, Segoe UI, Arial';ctx.textAlign='center';ctx.textBaseline='middle';
   data.forEach((d,i)=>{const bw=Math.min(100,plotW/(data.length*2));const gap=plotW/data.length;const x=left+gap*i+gap/2-bw/2;const bh=plotH*(d[1]/max);const y=top+plotH-bh;const g=ctx.createLinearGradient(0,y,0,y+bh);g.addColorStop(0,d[2]);g.addColorStop(1,'#7dd3fc');ctx.fillStyle=g;ctx.beginPath();ctx.roundRect?ctx.roundRect(x,y,bw,bh,8):(ctx.rect(x,y,bw,bh));ctx.fill();ctx.fillStyle='#0f172a';ctx.font='600 16px Inter, Segoe UI, Arial';ctx.fillText(num(d[1]),x+bw/2,y-12);ctx.fillStyle='#52627a';ctx.font='500 12px Inter, Segoe UI, Arial';ctx.fillText(d[0],x+bw/2,h-22);});
 }
 function trendPointLabel(p){const start=clean(p.periodStart||p.date),end=clean(p.periodEnd||p.date||start);return start&&end&&start!==end?`${formatSnapshotDateLabel(start)} - ${formatSnapshotDateLabel(end)}`:formatSnapshotDateLabel(end||start)}
-function drawTrend(){const c=$("trendChart");if(!c)return;const {ctx,w,h}=prepareCanvas(c);ctx.clearRect(0,0,w,h);if(activePeriod==="day"){drawTodayBarsTeam(ctx,w,h);return;}const pts=trendPoints;if(!pts.length){c._points=[];ctx.fillStyle="#64748b";ctx.font="500 13px Inter, Segoe UI, Arial";ctx.textAlign="center";ctx.fillText("No trend data found for this date range.",w/2,h/2);return;}const left=58,right=62,top=24,bottom=56,plotW=w-left-right,plotH=h-top-bottom;const flowMax=niceMax(Math.max(1,...pts.flatMap(p=>[p.entered,p.exited])));const criticalMax=niceMax(Math.max(1,...pts.map(p=>p.critical)));ctx.save();ctx.font="12px Inter, Segoe UI, Arial";ctx.strokeStyle="#d8e2ee";ctx.setLineDash([2,4]);for(let i=0;i<=5;i++){const val=Math.round(flowMax*i/5),y=top+plotH-(plotH*i/5);ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillStyle="#64748b";ctx.textAlign="right";ctx.fillText(String(val),left-10,y+4);const rv=Math.round(criticalMax*i/5);ctx.fillStyle="#fb6b1d";ctx.textAlign="left";ctx.fillText(String(rv),w-right+10,y+4)}ctx.setLineDash([]);ctx.fillStyle="#64748b";ctx.textAlign="left";pts.forEach((p,i)=>{const x=left+(pts.length<=1?0:plotW*i/(pts.length-1));if(i===0||i===pts.length-1||pts.length<=7)ctx.fillText(clean(p.date).slice(5),x-14,h-22)});ctx.restore();const xFor=i=>left+(pts.length<=1?0:plotW*i/(pts.length-1));const yFlow=v=>top+plotH-(plotH*(v/flowMax));const yCritical=v=>top+plotH-(plotH*(v/criticalMax));drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.entered)})),"#3b82f6");drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yCritical(p.critical)})),"#fb6b1d",true,.55);drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yFlow(p.exited)})),"#16a34a");c._points=pts.map((p,i)=>({x:xFor(i),p,idx:i}))}
+function cumulativeTrendPoints(rows){
+  let cumulativeNewTickets=0,cumulativeApprovedUnapprovedTickets=0;
+  return rows.map(row=>{
+    cumulativeNewTickets+=Number(row.newTickets||0);
+    cumulativeApprovedUnapprovedTickets+=Number(row.approvedUnapprovedTickets||0);
+    return {...row,cumulativeNewTickets,cumulativeApprovedUnapprovedTickets};
+  });
+}
+function drawTrend(){const c=$("trendChart");if(!c)return;const {ctx,w,h}=prepareCanvas(c);ctx.clearRect(0,0,w,h);if(activePeriod==="day"){drawTodayBarsTeam(ctx,w,h);return;}const pts=cumulativeTrendPoints(trendPoints);if(!pts.length){c._points=[];ctx.fillStyle="#64748b";ctx.font="500 13px Inter, Segoe UI, Arial";ctx.textAlign="center";ctx.fillText("No trend data found for this date range.",w/2,h/2);return;}const left=58,right=62,top=24,bottom=56,plotW=w-left-right,plotH=h-top-bottom;const cumulativeMax=niceMax(Math.max(1,...pts.flatMap(p=>[p.cumulativeNewTickets,p.cumulativeApprovedUnapprovedTickets])));const criticalMax=niceMax(Math.max(1,...pts.map(p=>p.criticalTotal)));ctx.save();ctx.font="12px Inter, Segoe UI, Arial";ctx.strokeStyle="#d8e2ee";ctx.setLineDash([2,4]);for(let i=0;i<=5;i++){const y=top+plotH-(plotH*i/5),leftVal=Math.round(cumulativeMax*i/5),rightVal=Math.round(criticalMax*i/5);ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillStyle="#64748b";ctx.textAlign="right";ctx.fillText(String(leftVal),left-10,y+4);ctx.fillStyle="#fb6b1d";ctx.textAlign="left";ctx.fillText(String(rightVal),w-right+10,y+4)}ctx.setLineDash([]);ctx.fillStyle="#64748b";ctx.textAlign="left";pts.forEach((p,i)=>{const x=left+(pts.length<=1?0:plotW*i/(pts.length-1));if(i===0||i===pts.length-1||pts.length<=7)ctx.fillText(clean(p.date).slice(5),x-14,h-22)});ctx.restore();const xFor=i=>left+(pts.length<=1?0:plotW*i/(pts.length-1));const yCumulative=v=>top+plotH-(plotH*(Number(v||0)/cumulativeMax));const yCritical=v=>top+plotH-(plotH*(Number(v||0)/criticalMax));drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yCumulative(p.cumulativeNewTickets)})),"#3b82f6");drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yCumulative(p.cumulativeApprovedUnapprovedTickets)})),"#16a34a");drawLine(ctx,pts.map((p,i)=>({x:xFor(i),y:yCritical(p.criticalTotal)})),"#fb6b1d",true,.65);c._points=pts.map((p,i)=>({x:xFor(i),p,idx:i}))}
 function setKpiTrendHidden(id,hidden,mode="range"){const el=$(id);if(!el)return;el.innerHTML=kpiDateMetaMarkup(mode);el.className="kpiTrend flat kpiTrendDateOnly";}
 function setCardLabel(selector,label){const el=document.querySelector(selector+" .kpiLabel");if(el)el.textContent=label;}
 function setTrend(id,key,current,previous,fmt,show,mode="range"){const el=$(id);if(!el)return;setKpiTrendHidden(id,true,mode);}
@@ -2782,50 +2792,43 @@ function avgCostGranularity(start,end){
 function avgCostTrendRows(){
   const {start,end}=periodBounds();
   const granularity=avgCostGranularity(start,end);
-  const source=granularity==="monthly"?currentView().trendMonthly:(granularity==="weekly"?currentView().trendWeekly:(currentView().trendDaily||currentView().trend));
+  const source=granularity==="monthly"?currentView().monthlyAvgCostTrend:(granularity==="weekly"?currentView().weeklyAvgCostTrend:currentView().dailyAvgCostTrend);
   return arrayFromMaybe(source).filter(row=>{
-    const rowStart=clean(row.monthStart||row.weekStart||row.date);
-    const rowEnd=clean(row.monthEnd||row.weekEnd||row.date||rowStart);
+    const rowStart=clean(row.periodStart||row.weekStart||row.monthStart||row.date);
+    const rowEnd=clean(row.periodEnd||row.weekEnd||row.monthEnd||row.date||rowStart);
     return rowStart&&rowEnd&&(!start||rowEnd>=start)&&(!end||rowStart<=end);
-  }).map(row=>{
-    const pointEnd=[clean(row.monthEnd),clean(row.weekEnd),clean(row.periodEnd),clean(row.date),clean(row.monthStart),clean(row.weekStart)].find(Boolean)||end;
-    const cappedEnd=pointEnd>end?end:pointEnd;
-    const snap=periodSnapshotForBounds(start,cappedEnd);
-    const summary=snap&&snap.summary?snap.summary:null;
-    if(!summary)return null;
-    return {
-      date:cappedEnd,
-      periodStart:start,
-      periodEnd:cappedEnd,
-      granularity,
-      approvedTickets:Number(summary.approvedTickets||0),
-      approvedAmount:Number(summary.approvedAmount||0),
-      avgCostPerTicket:Number(summary.avgCostPerTicket||0)
-    };
-  }).filter(Boolean);
+  }).map(row=>({
+    date:clean(row.date||row.periodEnd||row.weekEnd||row.monthEnd||row.periodStart||row.weekStart||row.monthStart),
+    periodStart:clean(row.periodStart||row.weekStart||row.monthStart||row.date),
+    periodEnd:clean(row.periodEnd||row.weekEnd||row.monthEnd||row.date),
+    granularity,
+    approvedTickets:Number(row.approvedTickets||0),
+    approvedAmount:Number(row.approvedAmount||0),
+    avgCostPerTicket:Number(row.avgCostPerTicket||0)
+  }));
 }
 function renderWeeklyAvgCostTrend(){
   const box=$("weeklyAvgCostTrend");if(!box)return;
   const rows=avgCostTrendRows();
-  if(!rows.length){box.innerHTML=`<div class="speedEmpty">No Avg Cost/Ticket data found.</div>`;return;}
+  if(!rows.length){box.innerHTML=`<div class="speedEmpty">No avg cost trend data found.</div>`;return;}
   const w=360,h=220,left=44,right=14,top=22,bottom=42,plotW=w-left-right,plotH=h-top-bottom;
   const values=rows.map(row=>Number(row.avgCostPerTicket||0));
   const max=niceMax(Math.max(1,...values));
   const xFor=i=>left+(rows.length===1?plotW/2:(i/(rows.length-1))*plotW);
   const yFor=v=>top+plotH-(Number(v||0)/max)*plotH;
   const points=rows.map((row,i)=>`${xFor(i).toFixed(1)},${yFor(row.avgCostPerTicket).toFixed(1)}`).join(" ");
-  const area=`${left},${top+plotH} ${points} ${left+plotW},${top+plotH}`;
+  const areaPoints=`${left},${top+plotH} ${points} ${left+plotW},${top+plotH}`;
   const grid=[0,.5,1].map(v=>`<line class="weeklyAvgCostGridLine" x1="${left}" x2="${left+plotW}" y1="${top+plotH-(v*plotH)}" y2="${top+plotH-(v*plotH)}"></line>`).join("");
   const circles=rows.map((row,i)=>{
     const date=clean(row.date||row.periodEnd||row.periodStart);
     const label=row.periodStart&&row.periodEnd&&row.periodStart!==row.periodEnd?`${formatSnapshotDateLabel(row.periodStart)} - ${formatSnapshotDateLabel(row.periodEnd)}`:formatSnapshotDateLabel(date);
-    const tip=`<b>${esc(label)}</b><div class="tipRow"><span>Avg Cost/Ticket</span><span>${money(row.avgCostPerTicket)}</span></div><div class="tipRow"><span>Approved tickets</span><span>${num(row.approvedTickets)}</span></div><div class="tipRow"><span>Approved cost</span><span>${money(row.approvedAmount)}</span></div>`;
+    const tip=`<b>${esc(label)}</b><div class="tipRow"><span>Avg cost/ticket</span><span>${money(row.avgCostPerTicket)}</span></div><div class="tipRow"><span>Approved tickets</span><span>${num(row.approvedTickets)}</span></div><div class="tipRow"><span>Approved cost</span><span>${money(row.approvedAmount)}</span></div>`;
     const cx=xFor(i).toFixed(1),cy=yFor(row.avgCostPerTicket).toFixed(1);
-    return `<circle class="weeklyAvgCostHit" cx="${cx}" cy="${cy}" r="11" data-weekly-tip="${esc(tip)}"></circle><circle class="weeklyAvgCostPoint" cx="${cx}" cy="${cy}" r="3.2"></circle>`;
+    return `<circle class="weeklyAvgCostPoint" cx="${cx}" cy="${cy}" r="3.5"></circle><circle class="weeklyAvgCostHit" cx="${cx}" cy="${cy}" r="11" data-weekly-tip="${esc(tip)}"></circle>`;
   }).join("");
   const first=rows[0],last=rows[rows.length-1];
   const firstDate=clean(first.date||first.periodStart),lastDate=clean(last.date||last.periodEnd||last.periodStart);
-  box.innerHTML=`<div class="weeklyAvgCostChart"><svg class="weeklyAvgCostSvg" viewBox="0 0 ${w} ${h}" role="img" aria-label="Avg Cost per Ticket by selected date">${grid}<line class="weeklyAvgCostAxis" x1="${left}" x2="${left+plotW}" y1="${top+plotH}" y2="${top+plotH}"></line><line class="weeklyAvgCostAxis" x1="${left}" x2="${left}" y1="${top}" y2="${top+plotH}"></line><polygon class="weeklyAvgCostArea" points="${area}"></polygon><polyline class="weeklyAvgCostLine" points="${points}"></polyline>${circles}<text x="${left-8}" y="${top+4}" fill="#64748b" font-size="11" font-weight="700" text-anchor="end">${money(max).replace('.00','')}</text><text x="${left-8}" y="${top+plotH}" fill="#64748b" font-size="11" font-weight="700" text-anchor="end">$0</text></svg><div class="weeklyAvgCostLabels"><span>${esc(formatSnapshotDateLabel(firstDate).replace(/ 202\d$/,""))}</span><span>${money(last.avgCostPerTicket)} latest</span><span>${esc(formatSnapshotDateLabel(lastDate).replace(/ 202\d$/,""))}</span></div></div>`;
+  box.innerHTML=`<div class="weeklyAvgCostChart"><svg class="weeklyAvgCostSvg" viewBox="0 0 ${w} ${h}" role="img" aria-label="Current average cost per ticket trend">${grid}<line class="weeklyAvgCostAxis" x1="${left}" x2="${left+plotW}" y1="${top+plotH}" y2="${top+plotH}"></line><line class="weeklyAvgCostAxis" x1="${left}" x2="${left}" y1="${top}" y2="${top+plotH}"></line><polygon class="weeklyAvgCostArea" points="${areaPoints}"></polygon><polyline class="weeklyAvgCostLine" points="${points}"></polyline>${circles}<text x="${left-8}" y="${top+4}" fill="#64748b" font-size="11" font-weight="700" text-anchor="end">${money(max)}</text><text x="${left-8}" y="${top+plotH}" fill="#64748b" font-size="11" font-weight="700" text-anchor="end">$0</text></svg><div class="weeklyAvgCostLabels"><span>${esc(formatSnapshotDateLabel(firstDate).replace(/ 202\d$/,""))}</span><span>${money(last.avgCostPerTicket)} latest</span><span>${esc(formatSnapshotDateLabel(lastDate).replace(/ 202\d$/,""))}</span></div></div>`;
   bindWeeklyAvgCostTooltip();
 }
 function bindWeeklyAvgCostTooltip(){
@@ -3540,7 +3543,7 @@ function repairCostDonutMarkup(rows){
     const count=Number(row.count||0),cost=Number(row.total||0),pct=Math.round(cost/total*100);
     const totalCost=(row.details||[]).find(x=>x.label==="Total approved cost")?.count||"$0";
     const tip=`<b>${esc(row.label)}: ${pct}% of approved cost</b>Approved tickets: ${num(count)}<br>Total approved cost: ${esc(totalCost)}`;
-    return `<div class="statusPieLegendRow" role="button" tabindex="0" data-repair-cost-key="${esc(row.key)}" data-repair-cost-label="${esc(row.label)}" data-status-tip="${esc(tip)}"><span class="statusPieLegendDot" style="background:${colors[i%colors.length]}"></span><span class="statusPieLegendLabel">${esc(row.label)} (${esc(totalCost)})</span></div>`;
+    return `<div class="statusPieLegendRow" role="button" tabindex="0" data-repair-cost-key="${esc(row.key)}" data-repair-cost-label="${esc(row.label)}" data-status-tip="${esc(tip)}"><span class="statusPieLegendDot" style="background:${colors[i%colors.length]}"></span><span class="statusPieLegendLabel">${esc(row.label)} (${num(count)})</span></div>`;
   }).join("");
   return `<div class="statusPieWrap"><svg class="statusPieSvg" viewBox="0 0 170 170" aria-label="Repair cost distribution">${slices}</svg></div><div class="statusPieLegend">${legend}</div><div id="repairCostHoverTip" class="statusMixHoverTip"></div>`;
 }
@@ -3857,10 +3860,26 @@ function renderRepairCostDistribution(){
   bindRepairCostTicketLinks(box);
 }
 function approvedMixRows(){
-  const s=currentPeriodSummary();
+  const grouped={
+    approved:{key:"approved",label:"Approved Tickets",count:0,total:0},
+    unapproved:{key:"unapproved",label:"Unapproved Tickets",count:0,total:0}
+  };
+  repairAnalyticsExportRows().forEach(item=>{
+    const key=item.key==="unapproved"?"unapproved":"approved";
+    const raw=item.raw||rawTicketForExport(item.row)||{};
+    grouped[key].count++;
+    grouped[key].total+=Number(item.row&&item.row.amount)||parseAmountIncludingTax(raw.AmountIncludingTax);
+  });
+  if(!grouped.approved.count&&!grouped.unapproved.count&&!rawTicketEntries.length){
+    const s=currentPeriodSummary();
+    grouped.approved.count=Number(s.approvedTickets||0);
+    grouped.approved.total=Number(s.approvedAmount||0);
+    grouped.unapproved.count=Number(s.unapprovedTickets||0);
+    grouped.unapproved.total=Number(s.unapprovedAmount||0);
+  }
   return [
-    {key:"approved",label:"Approved Tickets",count:Number(s.approvedTickets||0),details:[{label:"Approved Cost",count:money(s.approvedAmount)}]},
-    {key:"unapproved",label:"Unapproved Tickets",count:Number(s.unapprovedTickets||0),details:[{label:"Unapproved Cost",count:money(s.unapprovedAmount)}]}
+    {...grouped.approved,details:[{label:"Approved Cost",count:money(grouped.approved.total)}]},
+    {...grouped.unapproved,details:[{label:"Unapproved Cost",count:money(grouped.unapproved.total)}]}
   ].filter(x=>x.count>0);
 }
 function approvedBarChartMarkup(rows){
@@ -4052,7 +4071,7 @@ function kpiSummaryRows(){
   return [["Metric","Value","Context"],["Total Critical Tickets",clean($("kpiCritical")?.textContent),selectedRangeDateLabel("end")],["Long Duration Tickets over 60 days",noUpdate.count,selectedRangeDateLabel("end")],["In Field Warranty Claims",claimCounts.inField,selectedRangeDateLabel("end")],["Pre Delivery Warranty Claims",claimCounts.preDelivery,selectedRangeDateLabel("end")],["Approved Tickets",s.approvedTickets,selectedRangeDateLabel()],["Unapproved Tickets",s.unapprovedTickets,selectedRangeDateLabel()],["Approved Cost",s.approvedAmount,selectedRangeDateLabel()],["Current Avg Cost/Ticket",s.avgCostPerTicket,selectedRangeDateLabel()],["2-week benchmark",`${numFixed(h.rate||0,1)}%`,selectedRangeDateLabel()],["Unapproved / Approved",`${numFixed(ratio,2)}%`,`${s.unapprovedTickets} / ${s.approvedTickets}`]];
 }
 function trendSummaryRows(){
-  return [["Date","Entered Critical","Critical Total","Exited Critical"]].concat(selectedTrend().map(row=>[row.date,Number(row.entered||0),Number(row.critical||0),Number(row.exited||0)]));
+  return [["Date","Cumulative New Tickets","Cumulative Approved + Unapproved","Critical Total (right axis)","New Tickets","Approved + Unapproved"]].concat(cumulativeTrendPoints(selectedTrend()).map(row=>[row.date,Number(row.cumulativeNewTickets||0),Number(row.cumulativeApprovedUnapprovedTickets||0),Number(row.criticalTotal||0),Number(row.newTickets||0),Number(row.approvedUnapprovedTickets||0)]));
 }
 function repairApprovalSummaryRows(){
   return [["Group","Decision","Decision Date","Ticket ID","Status","Customer","Claim Type","Repair","Dealer","Employee","Aging Days","Amount"]].concat(repairAnalyticsExportRows().map(item=>{
@@ -4253,25 +4272,30 @@ function renderEmployeeStatusMapping(){
   });
 }
 function employeeApprovalRows(){
-  const view=currentEmployeeAnalyticsView();
-  if(view&&Array.isArray(view.approvalRows)&&view.approvalRows.length){
-    return view.approvalRows.map(row=>{
-      const approved=Number(row.approved||0),unapproved=Number(row.unapproved||0);
-      const total=Number(row.total||approved+unapproved);
-      return {
-        name:clean(row.name),
-        approved,
-        unapproved,
-        total,
-        approvedPct:Number(row.approvedPct??(total?approved/total*100:0)),
-        unapprovedPct:Number(row.unapprovedPct??(total?unapproved/total*100:0)),
-        ratio:pctValue(unapproved,approved),
-        employeeStatus:clean(row.employeeStatus)||"active",
-        isExited:!!row.isExited
-      };
-    }).filter(row=>validAssignName(row.name)&&row.total>0);
-  }
-  return [];
+  const grouped=new Map();
+  repairAnalyticsExportRows().forEach(item=>{
+    const row=item.row||{};
+    const key=item.key==="unapproved"?"unapproved":"approved";
+    const name=clean(row.employee||row.owner);
+    if(!validAssignName(name))return;
+    const current=grouped.get(name)||{name,approved:0,unapproved:0};
+    current[key]++;
+    grouped.set(name,current);
+  });
+  return Array.from(grouped.values()).map(row=>{
+    const approved=Number(row.approved||0),unapproved=Number(row.unapproved||0),total=approved+unapproved;
+    return {
+      name:row.name,
+      approved,
+      unapproved,
+      total,
+      approvedPct:total?approved/total*100:0,
+      unapprovedPct:total?unapproved/total*100:0,
+      ratio:pctValue(unapproved,approved),
+      employeeStatus:isEmployeeExited(row.name)?"exited":"active",
+      isExited:isEmployeeExited(row.name)
+    };
+  }).filter(row=>row.total>0).sort((a,b)=>b.total-a.total||b.unapproved-a.unapproved||a.name.localeCompare(b.name));
 }
 function renderEmployeeApprovalBars(){
   const box=$("employeeApprovalBars");if(!box)return;
@@ -4418,7 +4442,7 @@ function renderAllWithLoading(text="Calculating..."){
 function renderAll(){renderPeriodButtons();renderClaimButtons();bindDashboardExportButtons();setDateDefaults();trendPoints=selectedTrend();updateDateNotes();renderKpis();renderHandlingSpeed();renderWeeklyAvgCostTrend();renderLists();renderRepairCostDistribution();renderApprovedMix();renderTeamAssignChart();bindTeamAssignPanelLink();drawTrend();scheduleStatusMixBottomAlignment();}
 function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(prev||0);if(delta===0)return{cls:"flat",arrow:"-",text:"0"};const isGood=(metric==="exited")?delta>0:delta<0;return{cls:isGood?"up":"down",arrow:delta>0?"^":"v",text:num(Math.abs(delta))};}
 function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}
-function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const enteredDelta=deltaInfoMetric("entered",hit.p.entered,prev?prev.entered:hit.p.entered);const criticalDelta=deltaInfoMetric("critical",hit.p.critical,prev?prev.critical:hit.p.critical);const exitedDelta=deltaInfoMetric("exited",hit.p.exited,prev?prev.exited:hit.p.exited);tip.innerHTML=`<b>${esc(trendPointLabel(hit.p))}</b>${tipRow("Entered Critical","#3b82f6",hit.p.entered,enteredDelta)}${tipRow("Critical total","#fb6b1d",hit.p.critical,criticalDelta)}${tipRow("Exited Critical","#16a34a",hit.p.exited,exitedDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
+function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const newDelta=deltaInfoMetric("entered",hit.p.cumulativeNewTickets,prev?prev.cumulativeNewTickets:hit.p.cumulativeNewTickets);const approvalDelta=deltaInfoMetric("entered",hit.p.cumulativeApprovedUnapprovedTickets,prev?prev.cumulativeApprovedUnapprovedTickets:hit.p.cumulativeApprovedUnapprovedTickets);const criticalDelta=deltaInfoMetric("critical",hit.p.criticalTotal,prev?prev.criticalTotal:hit.p.criticalTotal);tip.innerHTML=`<b>${esc(trendPointLabel(hit.p))}</b>${tipRow("Cumulative New Tickets","#3b82f6",hit.p.cumulativeNewTickets,newDelta)}${tipRow("Cumulative Approved + Unapproved","#16a34a",hit.p.cumulativeApprovedUnapprovedTickets,approvalDelta)}${tipRow("Critical total (right axis)","#fb6b1d",hit.p.criticalTotal,criticalDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
 async function load(){try{showCalcFloat(true,"Loading dashboard...");$("loadError").style.display="none";const data=await readJson(MONITOR_ROOT+"/analytics/team");if(!data||typeof data!=="object")throw new Error("analytics/team is empty");team=data;activeClaim=team.defaultView||"all";await Promise.all([loadRawCritical().catch(()=>{rawCritical={loaded:false,views:{}}}),loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{employeeAnalytics=null}),loadEmployeeStatusMappingRemote()]);hideCalcFloat(60);renderAll()}catch(err){hideCalcFloat();$("loadError").innerHTML="Cannot load team analytics from Firebase. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll()}}
 $("dateFrom").addEventListener("change",()=>{renderAll()});$("dateTo").addEventListener("change",()=>{renderAll()});if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",()=>{drawTrend();scheduleStatusMixBottomAlignment();});bindTooltip();bindDashboardExportButtons();loadEmployeeStatusMapping();load();
 </script></body></html>
