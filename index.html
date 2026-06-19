@@ -14,7 +14,7 @@
 .dashboardTop{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;margin:0 0 18px;align-items:stretch}.dashboardMain{min-width:0}.dashboardTop .teamKpiGrid{margin:0}.criticalSummaryPanel{background:#fff;border:1px solid #dde6f2;border-radius:18px;box-shadow:0 14px 36px rgba(15,23,42,.06);padding:20px 20px 16px;min-height:100%;display:flex;flex-direction:column}.criticalSummaryPanel .panelTitle{font-size:17px;margin:0 0 14px}.criticalSideList{display:grid;gap:10px;min-height:0}.criticalSideRow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;color:#475569;font-size:13px}.criticalSideDot{width:8px;height:8px;border-radius:999px;box-shadow:0 0 0 3px rgba(59,130,246,.10)}.criticalSideLabel{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.criticalSideValue{min-width:34px;text-align:center;border-radius:999px;background:#eef6ff;color:#1d4ed8;font-weight:600;padding:4px 9px}.criticalSideLink{margin-top:auto;height:38px;border:0;border-radius:12px;background:#f1f6fd;color:#1d4ed8;font-weight:600;display:grid;place-items:center;text-decoration:none}.dashboardAnalysisGrid{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:18px;margin:0 0 18px}.dashboardAnalysisGrid .panel{margin-bottom:0;min-height:240px}.dashboardTrendGrid{grid-template-columns:1fr;margin-bottom:18px}.dashboardTrendGrid .panel{margin-bottom:0}.dashboardTrendGrid .speedPanel{display:none}.dashboardTop .kpi{border-radius:14px;box-shadow:0 12px 28px rgba(15,23,42,.045);border-color:#dfe8f3}.panel{border-radius:16px;box-shadow:0 14px 34px rgba(15,23,42,.055)}.panelTitle{font-size:16px;font-weight:600;margin-bottom:5px}.panelDesc{font-size:12px}.chartWrap{height:330px}.dashboardAnalysisGrid .barList{margin-top:10px}.dashboardAnalysisGrid .barRow{grid-template-columns:145px 1fr 42px;gap:10px}.dashboardAnalysisGrid .barTrack{height:12px}.dashboardAnalysisGrid .speedDonutLayout{grid-template-columns:150px minmax(0,1fr);gap:16px}.dashboardAnalysisGrid .speedDonut{width:148px;height:148px}.dashboardAnalysisGrid .speedDonut:after{inset:37px}.dashboardAnalysisGrid .speedDonutCenter b{font-size:23px}.dashboardAnalysisGrid .speedLegendRow{padding:7px 9px;border-radius:11px}@media(max-width:1320px){.dashboardTop{grid-template-columns:1fr}.criticalSummaryPanel{min-height:auto}.dashboardAnalysisGrid{grid-template-columns:1fr 1fr}.dashboardAnalysisGrid .dealerRankPanel{grid-column:1/-1}}@media(max-width:900px){.dashboardAnalysisGrid{grid-template-columns:1fr}.dashboardAnalysisGrid .dealerRankPanel{grid-column:auto}.dashboardTop{display:block}.criticalSummaryPanel{margin-top:16px}}
 
 /* Center calculation overlay */
-.calcFloat{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);color:#155e9f;letter-spacing:0}.calcFloat.active{display:flex}.calcFloat:before{content:"";position:absolute;inset:0;background:rgba(248,251,255,.42);pointer-events:none}.calcFloat>*{position:relative}.calcSpinner{width:64px;height:64px;border-radius:999px;border:6px solid #dbeafe;border-top-color:#2563eb;border-right-color:#60a5fa;animation:calcSpin .78s linear infinite;flex:0 0 auto;box-shadow:0 10px 28px rgba(37,99,235,.16)}.calcFloatText{margin-top:18px;display:block;white-space:nowrap;font-size:16px;font-weight:650;color:#155e9f}.calcFloat{flex-direction:column}.calcFloat.active~.app,.calcFloat.active~main{filter:blur(1px);opacity:.68;pointer-events:none;user-select:none}@keyframes calcSpin{to{transform:rotate(360deg)}}@media(max-width:760px){.calcSpinner{width:54px;height:54px;border-width:5px}.calcFloatText{font-size:14px;margin-top:14px}}
+.calcFloat{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);color:#155e9f;letter-spacing:0}.calcFloat.active{display:flex}.calcFloat:before{content:"";position:absolute;inset:0;background:rgba(248,251,255,.42);pointer-events:none}.calcFloat>*{position:relative}.calcSpinner{width:64px;height:64px;border-radius:999px;border:6px solid #dbeafe;border-top-color:#2563eb;border-right-color:#60a5fa;animation:calcSpin .78s linear infinite;flex:0 0 auto;box-shadow:0 10px 28px rgba(37,99,235,.16)}.calcFloatText{margin-top:18px;display:block;white-space:nowrap;font-size:16px;font-weight:650;color:#155e9f}.calcFloat{flex-direction:column}body.calculating .app{filter:blur(1px);opacity:.68;pointer-events:none;user-select:none}@keyframes calcSpin{to{transform:rotate(360deg)}}@media(max-width:760px){.calcSpinner{width:54px;height:54px;border-width:5px}.calcFloatText{font-size:14px;margin-top:14px}}
 .calcFloat.active{display:flex}.calcSpinner{width:22px;height:22px;border-radius:999px;border:3px solid #dbeafe;border-top-color:#2563eb;animation:calcSpin .78s linear infinite;flex:0 0 auto}.calcFloatText{white-space:nowrap}@keyframes calcSpin{to{transform:rotate(360deg)}}@media(max-width:760px){.calcFloat{right:16px;bottom:16px;min-width:0;padding:10px 13px}.calcFloatText{font-size:12px}}
 
 
@@ -898,6 +898,19 @@
   margin-bottom:12px!important;
   align-items:flex-start!important;
 }
+.teamAssignHeadTools{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  flex-wrap:wrap!important;
+}
+.teamAssignHeadTools .summaryExportBtn{
+  width:34px!important;
+  min-width:34px!important;
+  height:31px!important;
+  padding:0!important;
+}
 .teamAssignActions{
   display:flex!important;
   gap:8px!important;
@@ -1672,6 +1685,19 @@
   display:grid!important;
   gap:6px!important;
 }
+.filterSectionTitle{
+  padding:6px 11px 2px!important;
+  color:#7a8aa1!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  letter-spacing:.12em!important;
+  text-transform:uppercase!important;
+}
+.filterDivider{
+  height:1px!important;
+  background:#e8eef6!important;
+  margin:4px 2px!important;
+}
 .filterOption{
   width:100%!important;
   min-height:36px!important;
@@ -1830,10 +1856,20 @@
 }
 .repairCostPanel .statusPieLayout{
   display:grid!important;
-  grid-template-columns:170px minmax(0,1fr)!important;
-  gap:18px!important;
+  grid-template-columns:210px minmax(0,1fr)!important;
+  gap:14px!important;
   align-items:center!important;
-  margin-top:10px!important;
+  margin-top:4px!important;
+}
+.repairCostPanel .repairCostPie .statusPieWrap{
+  width:210px!important;
+  height:210px!important;
+  transform:translate(18px,-8px)!important;
+}
+.repairCostPanel .repairCostPie .statusPieSvg{
+  width:210px!important;
+  height:210px!important;
+  display:block!important;
 }
 .repairCostPanel .statusPieLegend{
   display:grid!important;
@@ -2113,8 +2149,13 @@ html{zoom:.8!important;}
 .globalDateRange{display:inline-flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid #dbe7f5;background:linear-gradient(180deg,#fff,#f8fbff);border-radius:16px;box-shadow:0 10px 24px rgba(15,23,42,.045)}
 .globalDateRange label{display:inline-flex;align-items:center;gap:7px;color:#52627a;font-size:12px;font-weight:700}
 .globalDateRange .input{height:36px;border-radius:11px;background:#fff;font-weight:600}
+.rangeBtn{height:34px;border:0;background:transparent;border-radius:11px;padding:0 12px;color:#334155;font-weight:700;cursor:pointer;white-space:nowrap}
+.rangeBtn:hover{background:#f1f7ff}
+.rangeBtn.active{background:#1667d9;color:#fff;box-shadow:0 8px 18px rgba(37,99,235,.18)}
 .kpiSubLabel{display:block;margin-top:3px;color:#94a3b8;font-size:11px;font-weight:500;line-height:1.25}
 .trendPanel .panelHead{align-items:center!important}
+.dashboardTop .trendPanel .panelHead{justify-content:center!important;text-align:center!important}
+.dashboardTop .trendPanel .panelTitleRow{justify-content:center!important}
 @media(max-width:1120px){.globalDateRange{margin-top:14px;flex-wrap:wrap}.topActions{justify-content:flex-start}}
 @media(max-width:760px){.globalDateRange{width:100%;display:grid;grid-template-columns:1fr}.globalDateRange label{justify-content:space-between}.globalDateRange .input{min-width:0;width:100%}}
 
@@ -2292,8 +2333,8 @@ html{zoom:.8!important;}
     flex:1 1 auto!important;
     min-height:0!important;
     display:grid!important;
-    grid-template-columns:156px minmax(0,1fr)!important;
-    gap:18px!important;
+    grid-template-columns:200px minmax(0,1fr)!important;
+    gap:14px!important;
     align-items:center!important;
     justify-content:center!important;
     align-content:center!important;
@@ -2301,8 +2342,11 @@ html{zoom:.8!important;}
   }
   .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieWrap,
   .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieSvg{
-    width:156px!important;
-    height:156px!important;
+    width:200px!important;
+    height:200px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieWrap{
+    transform:translate(16px,-4px)!important;
   }
   .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLegend{
     gap:8px!important;
@@ -2359,19 +2403,21 @@ html{zoom:.8!important;}
     <div class="navDivider"></div>
     <div class="navSection">Tickets</div>
     <a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a>
+    <a class="navLink" href="in-field-pre-delivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M16 17l2-2 2 2"/></svg><span>In Field / Pre Delivery</span></a>
+    <a class="navLink" href="approved-unapproved.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l2 2 4-5"/><path d="M21 12a9 9 0 1 1-9-9"/><path d="M17 3h4v4"/></svg><span>Approved vs Unapproved</span></a>
     <a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a>
   </aside>
   <main class="main">
     <div class="pageTop">
       <div><h1 class="pageTitle">After-Sales Team Dashboard</h1></div>
-      <div class="topActions"><div class="globalDateRange"><label>From <input id="dateFrom" class="input" type="date"></label><label>To <input id="dateTo" class="input" type="date"></label></div><div id="claimSwitch" class="claimSwitch"></div><button id="dashboardSummaryExportBtn" class="summaryExportBtn" type="button" title="Export dashboard summary to Excel"></button></div>
+      <div class="topActions"><input id="dateFrom" type="hidden"><input id="dateTo" type="hidden"><div id="claimSwitch" class="claimSwitch"></div><button id="dashboardSummaryExportBtn" class="summaryExportBtn" type="button" title="Export dashboard summary to Excel"></button></div>
     </div>
     <div id="loadError" class="error"></div>
     <section class="dashboardTop">
       <div class="dashboardMain">
         <section class="teamKpiGrid">
           <div class="kpi totalCriticalCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Total Critical Tickets</div><div class="kpiValue" id="kpiCritical">0</div></div><button class="kpiExportBtn" id="totalCriticalExportBtn" type="button" title="Export Total Critical Tickets to Excel" aria-label="Export Total Critical Tickets to Excel"></button><div class="kpiIcon customPurple" aria-hidden="true">!</div></div><div class="kpiTrend" id="kpiCriticalTrend"></div></div>
-          <div class="kpi approvedTicketsCountCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Tickets</div><div class="kpiValue" id="kpiApprovedTickets">0</div></div><div class="kpiIcon customGreen" aria-hidden="true">OK</div></div><div class="kpiTrend" id="kpiApprovedTicketsTrend"></div></div>
+          <div class="kpi approvedTicketsCountCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">In Field / Pre Delivery<span class="kpiSubLabel">Current total tickets distribution</span></div><div class="kpiValue" id="kpiApprovedTickets">0</div></div><div class="kpiIcon customGreen" aria-hidden="true">OK</div></div><div class="kpiTrend" id="kpiApprovedTicketsTrend"></div></div>
           <div class="kpi unapprovedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Long Duration Tickets<span class="kpiSubLabel">(Over 60days)</span></div><div class="kpiValue" id="kpiUnapproved">0</div></div><button class="kpiExportBtn" id="longDurationExportBtn" type="button" title="Export Long Duration Tickets to Excel" aria-label="Export Long Duration Tickets to Excel"></button><div class="kpiIcon customAmber" aria-hidden="true">!</div></div><div class="kpiTrend" id="kpiUnapprovedTrend"></div></div>
           <div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">2-week benchmark</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div>
           <div class="kpi approvedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Cost</div><div class="kpiValue" id="kpiApproved">$0</div></div><div class="kpiIcon customPurple" aria-hidden="true">$</div></div><div class="kpiTrend" id="kpiApprovedTrend"></div></div>
@@ -2381,9 +2427,9 @@ html{zoom:.8!important;}
         </section>
         <section class="trendLogGrid">
           <section class="panel trendPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Critical Status Trends by Date</h2></div></div></div><div class="chartWrap"><canvas id="trendChart"></canvas></div><div class="legend"><span><i class="dot blue"></i>Cumulative New Tickets</span><span><i class="dot green"></i>Cumulative Approved + Unapproved</span><span><i class="dot orange"></i>Critical total - right axis</span></div></section>
-          <section class="panel criticalLogPanel repairCostPanel"><div class="panelTitleRow"><h2 class="panelTitle">Repair Analytics</h2><span class="dateNote" data-date-note>through --</span></div><div class="repairComboGrid"><div class="repairComboItem"><h3 class="repairComboTitle">Tickets Repair Cost Distribution</h3><div id="criticalLogRows" class="statusPieLayout repairCostPie"></div></div><div class="repairComboItem"><h3 class="repairComboTitle">Approved vs Unapproved Tickets</h3><div id="approvedMixRows" class="statusPieLayout approvedMixPie"></div></div></div></section>
+          <section id="repair-analytics" class="panel criticalLogPanel repairCostPanel"><div class="panelTitleRow"><h2 class="panelTitle">Repair Analytics</h2><span class="dateNote" data-date-note>through --</span></div><div class="repairComboGrid"><div class="repairComboItem"><h3 class="repairComboTitle">Tickets Repair Cost Distribution</h3><div id="criticalLogRows" class="statusPieLayout repairCostPie"></div></div><div class="repairComboItem"><h3 class="repairComboTitle">Approved vs Unapproved Tickets</h3><div id="approvedMixRows" class="statusPieLayout approvedMixPie"></div></div></div></section>
         </section>
-        <section class="panel teamAssignPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Employee Workload</h2><span class="dateNote" data-date-note>through --</span></div></div><div id="teamAssignActions" class="teamAssignActions"></div></div><div class="teamAssignSplit"><div class="teamAssignCol teamWorkloadCol"><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Total removed as of date</span><span><i style="background:#4f46e5"></i>Current critical tickets</span></div></div><div class="teamAssignCol employeeApprovalCol"><div class="employeeApprovalTitle">Approved vs Unapproved by Employee</div><div id="employeeApprovalBars" class="employeeApprovalBars"></div></div></div><div id="employeeStatusMapping" class="employeeStatusMapping"></div></section>
+        <section class="panel teamAssignPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Employee Workload</h2><span class="dateNote" data-date-note>through --</span></div></div><div class="teamAssignHeadTools"><button id="employeeWorkloadExportBtn" class="summaryExportBtn" type="button" title="Export Employee Workload to Excel"></button><button id="employeeApprovalExportBtn" class="summaryExportBtn" type="button" title="Export Employee Approved vs Unapproved to Excel"></button><div id="teamAssignActions" class="teamAssignActions"></div></div></div><div class="teamAssignSplit"><div class="teamAssignCol teamWorkloadCol"><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Total removed as of date</span><span><i style="background:#4f46e5"></i>Current critical tickets</span></div></div><div class="teamAssignCol employeeApprovalCol"><div class="employeeApprovalTitle">Approved vs Unapproved by Employee</div><div id="employeeApprovalBars" class="employeeApprovalBars"></div></div></div><div id="employeeStatusMapping" class="employeeStatusMapping"></div></section>
       </div>
       <aside class="featureSideStack">
         <div class="panel dealerRankPanel"><div class="panelTitleRow"><h2 class="panelTitle">Top Critical Tickets by Dealer</h2><span class="dateNote" data-date-note>through --</span></div><div id="dealerBars" class="dealerCriticalList"></div></div>
@@ -2415,14 +2461,17 @@ html{zoom:.8!important;}
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
 <script>
 
+let calcFloatHideTimer=null;
 function showCalcFloat(active,text){
   const el=document.getElementById('calcFloat');
   if(!el)return;
+  if(active&&calcFloatHideTimer){clearTimeout(calcFloatHideTimer);calcFloatHideTimer=null;}
   const label=el.querySelector('.calcFloatText');
   if(label&&text)label.textContent=text;
   el.classList.toggle('active',!!active);
+  document.body.classList.toggle('calculating',!!active);
 }
-function hideCalcFloat(delay=250){setTimeout(()=>showCalcFloat(false),delay)}
+function hideCalcFloat(delay=250){if(calcFloatHideTimer)clearTimeout(calcFloatHideTimer);calcFloatHideTimer=setTimeout(()=>{calcFloatHideTimer=null;showCalcFloat(false)},delay)}
 
 
 const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
@@ -2510,21 +2559,38 @@ function rawExitedTicketsTotalValue(start,end){if(!rawTicketEntries.length)retur
 function normalizePoNumber(v){let s=clean(v);if(!s)return "";if(/^\d+(?:\.0+)?$/.test(s))s=s.split(".")[0];return s}
 function ticketPoNumber(ticket){return normalizePoNumber(getField(ticket,["ERPPurchaseOrder","ERP Purchase Order","Purchasing Document","PurchasingDocument"]))}
 function ticketPoDocumentDate(ticket){return dateKey(getField(ticket,["PO Document Date","PODocumentDate","Document Date","DocumentDate"]))}
+function ticketC4CApprovedDate(ticket){return dateKey(getField(ticket,["ApprovalDate","Approval Date","Claim Approved On","ClaimApprovedOn","C4C SAPAnalyst Approved Date","approvedAt","LastUpdateDateTime","Last Updated Date Time","LastUpdatedDateTime","LastUpdateOn","LastChangedOn","LastChangeDateTime","ChangedOn","Changed On","UpdatedOn","Updated On","updatedAt","lastUpdateDate"]))}
 function isUnapprovedTicket(ticket){const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status).toUpperCase();const text=clean(ticket.TicketStatusText||ticket.statusText).toLowerCase();return code==="Y8"||text.includes("unapproved claims closed")||text.includes("unapproved")}
 const APPROVED_C4C_STATUS_CODES=new Set(["Z9","Y0","Y1","Y2","Y4","YB"]);
 function isValidApprovedPo(ticket){const po=ticketPoNumber(ticket);const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status).toUpperCase();const orderRejection=clean(getField(ticket,["Order Rejection Status","OrderRejectionStatus"])).toLowerCase();return /^7\d{9}$/.test(po)&&APPROVED_C4C_STATUS_CODES.has(code)&&!["rejected","partially rejected"].includes(orderRejection)}
 function approvalBucket(ticket){if(isUnapprovedTicket(ticket))return "unapproved";if(isValidApprovedPo(ticket))return "approved";return "other"}
-function approvalDecisionDate(ticket){const bucket=approvalBucket(ticket);if(bucket==="approved")return ticketPoDocumentDate(ticket)||dateKey(getField(ticket,["ERP PO First Seen Date","ERPPurchaseOrderFirstSeenDate","erpPoFirstSeenDate","Approval Decision Date","approvalDecisionDate"]));if(bucket==="unapproved")return dateKey(getField(ticket,["Unapproved Date","UnapprovedDate","LastUpdateDateTime","Last Update Date Time","UpdatedOn","updatedAt","CreatedOn","Created On"]));return ""}
-function unapprovedLogRows(start,end){return arrayFromMaybe(currentView().logs).filter(e=>{const d=eventDateKey(e.detectedAt||e.date);return d&&d>=start&&d<=end&&logMatchesClaim(e)&&logIsUnapprovedExit(e)})}
+function approvalDecisionDate(ticket){const bucket=approvalBucket(ticket);if(bucket==="approved")return ticketC4CApprovedDate(ticket)||ticketPoDocumentDate(ticket)||dateKey(getField(ticket,["ERP PO First Seen Date","ERPPurchaseOrderFirstSeenDate","erpPoFirstSeenDate","Approval Decision Date","approvalDecisionDate"]));if(bucket==="unapproved")return dateKey(getField(ticket,["Unapproved Date","UnapprovedDate","LastUpdateDateTime","Last Update Date Time","UpdatedOn","updatedAt","CreatedOn","Created On"]));return ""}
+function latestByTicket(rows,idFn,timeFn){
+  const map=new Map();
+  (rows||[]).forEach(row=>{
+    const id=clean(idFn(row));
+    if(!id)return;
+    const time=clean(timeFn(row));
+    const prev=map.get(id);
+    if(!prev||time>=prev.time)map.set(id,{row,time});
+  });
+  return Array.from(map.values()).map(x=>x.row);
+}
+function unapprovedLogRows(start,end){return latestByTicket(arrayFromMaybe(currentView().logs).filter(e=>{const d=eventDateKey(e.detectedAt||e.date);return d&&d>=start&&d<=end&&logMatchesClaim(e)&&logIsUnapprovedExit(e)}),e=>e.id||e.ticketId||e.TicketID,e=>e.detectedAt||e.date||e.dataSyncAt||"")}
 function ticketEntryById(id){id=clean(id);return rawTicketEntries.find(x=>clean(x.id)===id)||null}
 function logClaimKey(e){const direct=clean(e.claimKey||e.claim||e.claimTypeKey);if(direct)return direct;const text=clean(e.claimType||e.ticketType||e.TicketTypeText).toLowerCase();if(text.includes("pre delivery"))return "preDelivery";if(text.includes("in field"))return "inField";const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);return entry?claimKeyForTicket(entry.ticket):"all"}
 function logMatchesClaim(e){return activeClaim==="all"||logClaimKey(e)===activeClaim}
 function logAmount(e){const direct=Number(e.amount??e.value??e.AmountIncludingTax??e.approvedAmount??0);if(Number.isFinite(direct)&&direct>0)return direct;const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);return entry?parseAmountIncludingTax(entry.ticket.AmountIncludingTax):0}
 function logIsUnapprovedExit(e){const code=clean(e.toCode||e.statusCode||e.TicketStatus).toUpperCase();const text=clean(e.toStatus||e.status||e.statusText||e.TicketStatusText||e.type).toLowerCase();return code==="Y8"||text.includes("unapproved claims closed")||text.includes("unapproved")}
 function claimTypeCounts(){
-  const pySplit=pythonDashboardKpis().criticalClaimSplit||currentView().summary?.criticalClaimSplit;
+  const pyKpis=pythonDashboardKpis();
+  const pySplit=pyKpis&&pyKpis.criticalClaimSplit;
   if(pySplit&&typeof pySplit==="object"){
     return {inField:Number(pySplit.inField||0),preDelivery:Number(pySplit.preDelivery||0)};
+  }
+  const viewSplit=currentView().summary&&currentView().summary.criticalClaimSplit;
+  if(viewSplit&&typeof viewSplit==="object"){
+    return {inField:Number(viewSplit.inField||0),preDelivery:Number(viewSplit.preDelivery||0)};
   }
   return {inField:0,preDelivery:0};
 }
@@ -2616,7 +2682,7 @@ function currentTotalCritical(fallback){const v=currentRawCriticalView();return 
 function prepareCanvas(c){const rect=c.getBoundingClientRect(),dpr=window.devicePixelRatio||1;c.width=Math.max(1,Math.floor(rect.width*dpr));c.height=Math.max(1,Math.floor(rect.height*dpr));const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);return{ctx,w:rect.width,h:rect.height}}
 function niceMax(v){v=Math.max(1,Number(v||0));if(v<=5)return 5;if(v<=25)return Math.ceil(v/5)*5;if(v<=120)return Math.ceil(v/20)*20;if(v<=500)return Math.ceil(v/50)*50;return Math.ceil(v/100)*100}
 function smoothPath(ctx,pts){if(!pts.length)return;ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);for(let i=1;i<pts.length;i++){const p0=pts[i-1],p1=pts[i];const mx=(p0.x+p1.x)/2;ctx.quadraticCurveTo(p0.x,p0.y,mx,(p0.y+p1.y)/2);ctx.quadraticCurveTo(p1.x,p1.y,p1.x,p1.y)}}function drawLine(ctx,pts,color,dashed=false,alpha=1){if(!pts.length)return;ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=dashed?1.7:2.4;ctx.lineCap="round";ctx.lineJoin="round";if(dashed)ctx.setLineDash([7,6]);smoothPath(ctx,pts);ctx.stroke();ctx.setLineDash([]);pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,dashed?2.6:3.3,0,Math.PI*2);ctx.fillStyle="#fff";ctx.fill();ctx.lineWidth=dashed?1.7:2.2;ctx.strokeStyle=color;ctx.stroke();});ctx.restore()}
-function renderPeriodButtons(){activePeriod="all";}
+function renderPeriodButtons(){document.querySelectorAll("[data-period]").forEach(btn=>btn.classList.toggle("active",(btn.dataset.period||"all")===activePeriod));}
 function todayISO(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function trendThroughToday(view=currentView()){
   return arrayFromMaybe(view.trend).map(p=>({...p})).filter(p=>clean(p.date)).sort((a,b)=>clean(a.date).localeCompare(clean(b.date)));
@@ -2626,7 +2692,9 @@ function earliestDateForView(){const view=currentView();const pts=view.trend||[]
 function setFullRange(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;if($("dateFrom"))$("dateFrom").value=earliestDateForView();if($("dateTo"))$("dateTo").value=latestDateForView();}
 function periodEndDate(){const latest=latestDateForView();const value=($("dateTo")&&$("dateTo").value)||latest;return value&&value<latest?value:latest;}
 function isLatestPeriodEnd(end=periodEndDate()){return clean(end)>=latestDateForView();}
-function periodStartDate(end){if(activePeriod==="all")return ($("dateFrom")&&$("dateFrom").value)||earliestDateForView();if(activePeriod==="day")return end;const d=new Date(end+"T00:00:00Z");d.setUTCDate(d.getUTCDate()-(activePeriod==="month"?29:6));const out=d.toISOString().slice(0,10);return out<earliestDateForView()?earliestDateForView():out;}
+function periodDaysForActive(){if(activePeriod==="week")return 7;if(activePeriod==="last14")return 14;if(activePeriod==="month")return 30;if(activePeriod==="quarter")return 90;return null}
+function periodStartDate(end){const days=periodDaysForActive();if(activePeriod==="all"||!days)return earliestDateForView();const d=new Date(end+"T00:00:00Z");d.setUTCDate(d.getUTCDate()-(days-1));const out=d.toISOString().slice(0,10);return out<earliestDateForView()?earliestDateForView():out;}
+function syncRangeInputsToActivePeriod(){const end=latestDateForView(),start=periodStartDate(end);if($("dateFrom"))$("dateFrom").value=start;if($("dateTo"))$("dateTo").value=end;}
 function sumDaily(map,start,end){let total=0;Object.entries(map||{}).forEach(([k,v])=>{if(k>=start&&k<=end)total+=Number(v||0)});return total;}
 function criticalAtDate(view,end){
   const pts=(view&&view.trend)||[];
@@ -2717,7 +2785,7 @@ function summaryForBounds(start,end){
   }
   return {totalTickets:0,criticalNow:0,enteredCritical:0,exitedCritical:0,exitedTicketsTotalValue:0,approvedTickets:0,unapprovedTickets:0,approvedAmount:0,unapprovedAmount:0,avgCostPerTicket:0};
 }
-function compareLabel(){if(activePeriod==="day")return "vs yesterday";if(activePeriod==="week")return "vs last week";if(activePeriod==="month")return "vs previous 30d";return "vs previous period"}
+function compareLabel(){if(activePeriod==="week")return "vs previous 7d";if(activePeriod==="last14")return "vs previous 14d";if(activePeriod==="month")return "vs previous 30d";if(activePeriod==="quarter")return "vs previous 90d";return "vs previous period"}
 function selectedRangeDateLabel(mode="range"){
   const end=periodEndDate();
   const start=periodStartDate(end);
@@ -2739,13 +2807,13 @@ function trendMarkup(key,current,previous,fmt="number"){
   const dir=diff>0?"up":diff<0?"down":"flat";
   const higherGood={totalTickets:true,criticalNow:false,enteredCritical:false,exitedCritical:true,exitedTicketsTotalValue:true,estimatedClearDays:false,benchmarkRate:true,approvedTickets:true,approvedAmount:true,unapprovedTickets:true,unapprovedRatio:true};
   const cls=diff===0?"flat":((diff>0)===higherGood[key]?"good":"bad");
-  const value=fmt==="percentPoint"?`${diff>0?"+":""}${numFixed(diff,1)}pt`:previous?`${diff>0?"+":""}${numFixed(diff/Math.abs(previous)*100,1)}%`:(diff===0?"0":(fmt==="money"?money(diff):fmt==="days"?`${diff>0?"+":""}${num(diff)}d`:fmt==="percent"?`${diff>0?"+":""}${numFixed(diff,1)}pt`:`${diff>0?"+":""}${num(diff)}`));
+  const value=fmt==="percentPoint"?`${diff>0?"+":""}${numFixed(diff,1)}pt`:previous?`${diff>0?"+":""}${numFixed(diff/Math.abs(previous)*100,1)}%`:(diff===0?"0":(fmt==="money"?money(diff):fmt==="days"?`${diff>0?"+":""}${formatClearTime(Math.abs(diff))}`:fmt==="percent"?`${diff>0?"+":""}${numFixed(diff,1)}pt`:`${diff>0?"+":""}${num(diff)}`));
   return `${sparkSvg(dir)}<span>${value} ${compareLabel()}</span>`;
 }
 function claimFilterIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>`}
 function refreshIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>`}
-function clearDashboardFilters(){activeClaim="all";activePeriod="all";setFullRange();renderAll();}
-function renderClaimButtons(){const opts=team.claimOptions||[{key:"all",label:"All Claims"},{key:"inField",label:"In Field Warranty Claims"},{key:"preDelivery",label:"Pre Delivery Warranty Claims"}];const box=$("claimSwitch");if(!box)return;box.className="claimSwitch filterTools";box.innerHTML=`<button class="filterIconBtn" id="clearClaimFilters" title="Clear filters" type="button">${refreshIcon()}</button><div class="filterDropdown"><button class="filterButton" type="button">${claimFilterIcon()}<span>Filters</span></button><div class="filterMenu">${opts.map(o=>`<button class="filterOption ${o.key===activeClaim?'active':''}" data-key="${esc(o.key)}" type="button">${esc(o.label)}</button>`).join("")}</div></div>`;box.querySelector("#clearClaimFilters").onclick=clearDashboardFilters;const dd=box.querySelector(".filterDropdown");box.querySelector(".filterButton").onclick=e=>{e.stopPropagation();dd.classList.toggle("open")};box.querySelectorAll(".filterOption").forEach(b=>b.onclick=()=>{activeClaim=b.dataset.key||"all";dd.classList.remove("open");renderAll()});}
+function clearDashboardFilters(){activeClaim="all";activePeriod="all";syncRangeInputsToActivePeriod();renderAllWithLoading();}
+function renderClaimButtons(){const opts=team.claimOptions||[{key:"all",label:"All Claims"},{key:"inField",label:"In Field Warranty Claims"},{key:"preDelivery",label:"Pre Delivery Warranty Claims"}];const ranges=[["all","Total"],["week","Last 7 Days"],["last14","Last 14 Days"],["month","Last 1 Month"],["quarter","Last 3 Months"]];const box=$("claimSwitch");if(!box)return;box.className="claimSwitch filterTools";box.innerHTML=`<button class="filterIconBtn" id="clearClaimFilters" title="Clear filters" type="button">${refreshIcon()}</button><div class="filterDropdown"><button class="filterButton" type="button">${claimFilterIcon()}<span>Filters</span></button><div class="filterMenu"><div class="filterSectionTitle">Range</div>${ranges.map(([key,label])=>`<button class="filterOption ${key===activePeriod?'active':''}" data-period="${esc(key)}" type="button">${esc(label)}</button>`).join("")}<div class="filterDivider"></div><div class="filterSectionTitle">Claim Type</div>${opts.map(o=>`<button class="filterOption ${o.key===activeClaim?'active':''}" data-key="${esc(o.key)}" type="button">${esc(o.label)}</button>`).join("")}</div></div>`;box.querySelector("#clearClaimFilters").onclick=clearDashboardFilters;const dd=box.querySelector(".filterDropdown");box.querySelector(".filterButton").onclick=e=>{e.stopPropagation();dd.classList.toggle("open")};box.querySelectorAll(".filterOption[data-period]").forEach(b=>b.onclick=()=>{activePeriod=b.dataset.period||"all";syncRangeInputsToActivePeriod();dd.classList.remove("open");renderAllWithLoading()});box.querySelectorAll(".filterOption[data-key]").forEach(b=>b.onclick=()=>{activeClaim=b.dataset.key||"all";dd.classList.remove("open");renderAllWithLoading()});}
 function currentView(){return (team.views&&team.views[activeClaim]) || team.views?.all || team;}
 function pythonDashboardKpis(){const view=currentView()||{};return view.dashboardKpis||(view.summary&&view.summary.dashboardKpis)||{}}
 function selectedTrend(){
@@ -2757,7 +2825,11 @@ function selectedTrend(){
     const start=clean(p.periodStart||p.date);
     const end=clean(p.periodEnd||p.date||start);
     return start&&end&&(!from||end>=from)&&(!to||start<=to);
-  }).map(p=>({...p,date:clean(p.date||p.periodEnd||p.periodStart),periodStart:clean(p.periodStart||p.date),periodEnd:clean(p.periodEnd||p.date),criticalTotal:Number(p.criticalTotal||0),newTickets:Number(p.newTickets||0),approvedUnapprovedTickets:Number(p.approvedUnapprovedTickets||0),granularity}));
+  }).map(p=>{
+    const periodStart=clean(p.periodStart||p.date);
+    const periodEnd=clean(p.periodEnd||p.date||periodStart);
+    return {...p,date:clean(p.date||periodEnd||periodStart),periodStart,periodEnd,criticalTotal:Number(p.criticalTotal||0),newTickets:Number(p.newTickets||0),approvedUnapprovedTickets:Number(p.approvedUnapprovedTickets||0),approvedUnapprovedCumulative:Number(p.approvedUnapprovedCumulative||0),granularity};
+  });
 }
 function drawTodayBarsTeam(ctx,w,h){
   const rows=selectedTrend();
@@ -2773,7 +2845,7 @@ function cumulativeTrendPoints(rows){
   let cumulativeNewTickets=0,cumulativeApprovedUnapprovedTickets=0;
   return rows.map(row=>{
     cumulativeNewTickets+=Number(row.newTickets||0);
-    cumulativeApprovedUnapprovedTickets+=Number(row.approvedUnapprovedTickets||0);
+    cumulativeApprovedUnapprovedTickets=Number(row.approvedUnapprovedCumulative||0);
     return {...row,cumulativeNewTickets,cumulativeApprovedUnapprovedTickets};
   });
 }
@@ -2864,7 +2936,8 @@ function renderKpis(){
   const clearToTargetText=pyClearStatus==="done"?"Done":(pyClearDays==null||pyClearDays===""?"-":formatClearTime(pyClearDays));
   const todayMode=activePeriod==="day";
   setCardLabel(".totalCriticalCard","Total Critical Tickets");
-  setCardLabel(".approvedTicketsCountCard",filtered?"Approved / Unapproved Tickets changes":"In Field Warranty Claims / Pre Delivery Warranty Claims");
+  const claimSplitLabel=document.querySelector(".approvedTicketsCountCard .kpiLabel");
+  if(claimSplitLabel)claimSplitLabel.innerHTML='In Field / Pre Delivery<span class="kpiSubLabel">Current total tickets distribution</span>';
   const noUpdateLabel=document.querySelector(".unapprovedTicketsCard .kpiLabel");
   if(noUpdateLabel)noUpdateLabel.innerHTML='Long Duration Tickets<span class="kpiSubLabel">(Over 60days)</span>';
   setCardLabel(".benchmarkRateCard","2-week benchmark");
@@ -2872,7 +2945,7 @@ function renderKpis(){
   setCardLabel(".avgCostCard","Current Avg Cost/Ticket");
   setCardLabel(".exitedValueCard","Estimated clear up to 300");
   $("kpiCritical").textContent=num(totalTicketValue);
-  if($("kpiApprovedTickets"))$("kpiApprovedTickets").textContent=filtered?`${num(s.approvedTickets)} / ${num(s.unapprovedTickets)}`:`${num(claimCounts.inField)} / ${num(claimCounts.preDelivery)}`;
+  if($("kpiApprovedTickets"))$("kpiApprovedTickets").textContent=`${num(claimCounts.inField)} / ${num(claimCounts.preDelivery)}`;
   if($("kpiUnapproved"))$("kpiUnapproved").textContent=num(noUpdate.count);
   if($("kpiBenchmark"))$("kpiBenchmark").textContent=todayMode?"-":`${numFixed(h.rate||0,1)}%`;
   $("kpiRate").textContent=clearToTargetText;
@@ -2882,7 +2955,7 @@ function renderKpis(){
   if($("kpiUnapprovedRatio"))$("kpiUnapprovedRatio").textContent=todayMode?"-":pctText(ratio,2);
   if($("kpiRatioBase"))$("kpiRatioBase").textContent=todayMode?"":`${num(s.unapprovedTickets)} / ${num(s.approvedTickets)}`;
   setTrend("kpiCriticalTrend","criticalNow",s.criticalNow,prev.criticalNow,undefined,true);
-  setTrend("kpiApprovedTicketsTrend","approvedTickets",s.approvedTickets,prev.approvedTickets,undefined,filtered);
+  if($("kpiApprovedTicketsTrend")){ $("kpiApprovedTicketsTrend").innerHTML=kpiDateMetaMarkup("end"); $("kpiApprovedTicketsTrend").className="kpiTrend flat kpiTrendDateOnly"; }
   if($("kpiUnapprovedTrend")){ $("kpiUnapprovedTrend").innerHTML=kpiDateMetaMarkup("end"); $("kpiUnapprovedTrend").className="kpiTrend flat kpiTrendDateOnly"; }
   setTrend("kpiBenchmarkTrend","benchmarkRate",h.rate||0,prevH.rate||0,"percentPoint",filtered&&!todayMode);
   clearKpiPreview(document.querySelector(".benchmarkRateCard"));
@@ -2893,7 +2966,13 @@ function renderKpis(){
   setTrend("kpiAvgCostTrend","avgCost",approvedAvg,prevApprovedAvg,"money",filtered);
   setTrend("kpiRateTrend","estimatedClearDays",h.clearDays||0,prevH.clearDays||0,"days",filtered);
   setTrend("kpiRatioTrend","unapprovedRatio",ratio,prevRatio,"percent",filtered&&!todayMode);
-}function formatClearTime(days){days=Number(days||0);if(!days)return "0d";return Math.ceil(days)+"d"}
+}function formatClearTime(days){
+  days=Number(days||0);
+  if(!Number.isFinite(days)||days<=0)return "0 weeks";
+  const weeks=days/7;
+  if(weeks<1)return "<1 week";
+  return `${Math.ceil(weeks)} weeks`;
+}
 function speedDonutMarkup(rows,rate){
   const colors=["#2f6df6","#22c55e","#f59e0b","#fb7185","#94a3b8"];
   const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
@@ -3301,7 +3380,7 @@ function bindDurationDatePicker(){
     const value=clean(input.value);
     if(!value)return;
     if($("dateTo"))$("dateTo").value=value;
-    renderAll();
+    renderAllWithLoading();
   });
 }
 function renderHandlingSpeed(){
@@ -3764,7 +3843,7 @@ function employeeCompareLabel(){
 function modalTrendMarkup(key,current,previous,fmt="number"){
   const diff=Number(current||0)-Number(previous||0);
   const dir=diff>0?"up":diff<0?"down":"flat";
-  const value=fmt==="percentPoint"?`${diff>0?"+":""}${numFixed(diff,1)}pt`:previous?`${diff>0?"+":""}${numFixed(diff/Math.abs(previous)*100,1)}%`:(diff===0?"0":(fmt==="money"?money(diff):fmt==="days"?`${diff>0?"+":""}${num(diff)}d`:fmt==="percent"?`${diff>0?"+":""}${numFixed(diff,1)}pt`:`${diff>0?"+":""}${num(diff)}`));
+  const value=fmt==="percentPoint"?`${diff>0?"+":""}${numFixed(diff,1)}pt`:previous?`${diff>0?"+":""}${numFixed(diff/Math.abs(previous)*100,1)}%`:(diff===0?"0":(fmt==="money"?money(diff):fmt==="days"?`${diff>0?"+":""}${formatClearTime(Math.abs(diff))}`:fmt==="percent"?`${diff>0?"+":""}${numFixed(diff,1)}pt`:`${diff>0?"+":""}${num(diff)}`));
   return `${sparkSvg(dir)}<span>${value} ${employeeCompareLabel()}</span>`;
 }
 function setModalTrend(id,key,current,previous,fmt,show){
@@ -3931,6 +4010,32 @@ function repairAnalyticsDashboardRowFromLog(e){
 }
 function approvalBucketTicketRows(key){
   const {start,end}=periodBounds();
+  return approvalBucketTicketRowsForRange(key,start,end);
+}
+function approvalBucketTicketRowsForRange(key,start,end){
+  const py=periodSnapshotForBounds(start,end);
+  const pyRows=arrayFromMaybe(py&&py.approvalTicketRows).filter(row=>{
+    const rowKey=clean(row.decisionKey).toLowerCase()||(clean(row.decision).toLowerCase()==="unapproved"?"unapproved":"approved");
+    return rowKey===key;
+  });
+  if(pyRows.length)return pyRows.map(row=>({
+    id:clean(row.id),
+    status:clean(row.status),
+    customer:clean(row.customer)||"-",
+    claim:clean(row.claim)||"-",
+    repair:clean(row.repair)||"-",
+    dealer:standardDealerName(row.dealer||""),
+    owner:clean(row.owner||row.employee)||"-",
+    employee:clean(row.employee||row.owner)||"-",
+    days:Number(row.days??row.agingDays??0)||0,
+    agingDays:Number(row.agingDays??row.days??0)||0,
+    amount:Number(row.amount||0),
+    decisionDate:clean(row.decisionDate),
+    decisionAt:clean(row.decisionAt||row.decisionDate),
+    approvalDecision:key==="unapproved"?"Unapproved":"Approved",
+    created:clean(row.created),
+    sourceGroup:clean(row.sourceGroup)
+  }));
   if(key==="unapproved")return unapprovedLogRows(start,end).map(repairAnalyticsDashboardRowFromLog);
   return rawTicketEntries.filter(({ticket})=>{
     if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return false;
@@ -4082,6 +4187,93 @@ function repairApprovalSummaryRows(){
 function employeeWorkloadSummaryRows(){
   return [["Employee","Current Critical Tickets","Removed","Avg Daily","Avg Weekly","Employee Status"]].concat(teamAssignRowsWithDirectory().map(row=>[row.name,Number(row.total||0),Number(row.removed||0),Number(row.avgDaily||0),Number(row.avgWeekly||0),isEmployeeExited(row.name)?"Exited":"Active"]));
 }
+function removedTicketEventsForRange(){
+  const {start,end}=periodBounds();
+  const rows=arrayFromMaybe(currentView().logs).filter(e=>{
+    const d=eventDateKey(e.detectedAt||e.date||e.dataSyncAt||e.createdAt);
+    if(!d||d<start||d>end)return false;
+    if(criticalLogClass(e)!=="exit")return false;
+    return logMatchesClaim(e);
+  });
+  return latestByTicket(rows,e=>criticalEventId(e),e=>e.detectedAt||e.date||e.dataSyncAt||e.createdAt||"").sort((a,b)=>{
+    const da=eventDateKey(a.detectedAt||a.date||a.dataSyncAt||a.createdAt);
+    const db=eventDateKey(b.detectedAt||b.date||b.dataSyncAt||b.createdAt);
+    return da.localeCompare(db)||clean(a.employee||a.owner).localeCompare(clean(b.employee||b.owner))||criticalEventId(a).localeCompare(criticalEventId(b));
+  });
+}
+function removedTicketDetailExportRows(){
+  const rows=removedTicketEventsForRange().map(e=>{
+    const id=criticalEventId(e);
+    const entry=ticketEntryById(id);
+    const raw=(entry&&entry.ticket)||{};
+    const dashboardRow=entry?repairAnalyticsDashboardRow(entry):repairAnalyticsDashboardRowFromLog(e);
+    const removedDate=eventDateKey(e.detectedAt||e.date||e.dataSyncAt||e.createdAt);
+    const removedAt=clean(e.detectedAt||e.date||e.dataSyncAt||e.createdAt);
+    const employee=clean(e.employee||e.owner||dashboardRow.employee||dashboardRow.owner);
+    return [
+      employee,
+      removedDate,
+      removedAt,
+      id,
+      clean(e.fromStatus||e.oldStatus||""),
+      clean(e.toStatus||e.newStatus||dashboardRow.status||""),
+      dashboardRow.customer||clean(e.name)||"-",
+      dashboardRow.claim||clean(e.claim||e.claimType)||"-",
+      dashboardRow.repair||clean(e.repair)||"-",
+      dashboardRow.dealer||standardDealerName(e.dealer||""),
+      dashboardRow.agingDays??dashboardRow.days??"",
+      logAmount(e)||dashboardRow.amount||raw.AmountIncludingTax||"",
+      raw.CreatedOn||raw.createdOn||raw.CreatedAt||clean(e.created)||"",
+      ticketLastUpdateDate(raw)||clean(e.changedAt||e.dataSyncAt)||"",
+      clean(e.source||"")
+    ];
+  }).filter(row=>validAssignName(row[0]));
+  return [["Employee","Removed Date","Removed At","Ticket ID","From Status","To Status","Customer","Claim Type","Repair","Dealer","Aging Days","Amount","Created On","Last Update","Source"]].concat(rows);
+}
+function employeeApprovalSummaryExportRows(){
+  return [["Employee","Approved","Unapproved","Total","Approved %","Unapproved %","Unapproved / Approved","Employee Status"]].concat(employeeApprovalRows().map(row=>[
+    row.name,
+    Number(row.approved||0),
+    Number(row.unapproved||0),
+    Number(row.total||0),
+    `${numFixed(row.approvedPct||0,2)}%`,
+    `${numFixed(row.unapprovedPct||0,2)}%`,
+    pctText(row.ratio,2),
+    isEmployeeExited(row.name)?"Exited":"Active"
+  ]));
+}
+function employeeApprovalDetailExportRows(){
+  return [["Employee","Decision","Decision Date","Ticket ID","Status","Customer","Claim Type","Repair","Dealer","Aging Days","Amount","Created On","Source Group"]].concat(repairAnalyticsExportRows().map(item=>{
+    const row=item.row||{},raw=item.raw||{};
+    return [
+      clean(row.employee||row.owner),
+      item.key==="unapproved"?"Unapproved":"Approved",
+      row.decisionDate||"",
+      row.id||"",
+      row.status||"",
+      row.customer||"",
+      row.claim||"",
+      row.repair||"",
+      row.dealer||"",
+      row.agingDays??row.days??"",
+      row.amount??raw.AmountIncludingTax??"",
+      raw.CreatedOn||raw.createdOn||raw.CreatedAt||row.created||"",
+      row.sourceGroup||item.group||""
+    ];
+  }).filter(row=>validAssignName(row[0])));
+}
+function exportEmployeeWorkload(){
+  exportWorkbook([
+    {name:"By Employee",rows:employeeWorkloadSummaryRows()},
+    {name:"Removed Ticket Detail",rows:removedTicketDetailExportRows()}
+  ],`employee-workload-${exportDateSuffix()}.xls`);
+}
+function exportEmployeeApproval(){
+  exportWorkbook([
+    {name:"By Employee",rows:employeeApprovalSummaryExportRows()},
+    {name:"Ticket Detail",rows:employeeApprovalDetailExportRows()}
+  ],`employee-approved-unapproved-${exportDateSuffix()}.xls`);
+}
 function exportDashboardSummary(){
   exportWorkbook([
     {name:"KPI Summary",rows:kpiSummaryRows()},
@@ -4106,6 +4298,10 @@ function bindDashboardExportButtons(){
   if(total&&!total.dataset.bound){total.innerHTML=exportIcon();total.onclick=exportTotalCriticalTickets;total.dataset.bound="1";}
   const longBtn=$("longDurationExportBtn");
   if(longBtn&&!longBtn.dataset.bound){longBtn.innerHTML=exportIcon();longBtn.onclick=exportLongDurationTickets;longBtn.dataset.bound="1";}
+  const empWorkload=$("employeeWorkloadExportBtn");
+  if(empWorkload&&!empWorkload.dataset.bound){empWorkload.innerHTML=exportIcon();empWorkload.onclick=exportEmployeeWorkload;empWorkload.dataset.bound="1";}
+  const empApproval=$("employeeApprovalExportBtn");
+  if(empApproval&&!empApproval.dataset.bound){empApproval.innerHTML=exportIcon();empApproval.onclick=exportEmployeeApproval;empApproval.dataset.bound="1";}
 }
 function repairAnalyticsExportRows(){
   const groups=[
@@ -4119,7 +4315,7 @@ function repairAnalyticsExportRows(){
       rows.push({group:group.label,key:group.key,row,raw});
     });
   });
-  return rows;
+  return latestByTicket(rows,item=>`${item.key}:${item.row?.id||""}`,item=>item.row?.decisionAt||item.row?.decisionDate||"");
 }
 function exportRepairAnalyticsTickets(){
   const rows=repairAnalyticsExportRows();
@@ -4220,14 +4416,13 @@ function teamAssignRowsWithDirectory(){
     const key=employeeStatusKey(name);
     if(key&&!byKey.has(key))byKey.set(key,{name,total:0,removed:0,avgDaily:0,avgWeekly:0});
   });
-  return Array.from(byKey.values());
+  return Array.from(byKey.values()).filter(row=>!isEmployeeExited(row.name));
 }
 function renderTeamAssignActions(){
   const box=$("teamAssignActions");
   if(!box)return;
-  const opts=[["totalRemoved","Total removed as of date"],["avgDaily","Avg daily"],["avgWeekly","Avg weekly"],["compare","Compare all"]];
-  box.innerHTML=opts.map(([key,label])=>`<button class="teamAssignBtn ${teamAssignMetric===key?'active':''}" data-assign-metric="${key}" type="button">${label}</button>`).join("");
-  box.querySelectorAll("[data-assign-metric]").forEach(btn=>btn.onclick=()=>{teamAssignMetric=btn.dataset.assignMetric||"totalRemoved";renderTeamAssignChart();});
+  teamAssignMetric="totalRemoved";
+  box.innerHTML="";
 }
 function renderEmployeeStatusMapping(){
   const box=$("employeeStatusMapping");if(!box)return;
@@ -4272,6 +4467,25 @@ function renderEmployeeStatusMapping(){
   });
 }
 function employeeApprovalRows(){
+  const {start,end}=periodBounds();
+  const py=periodSnapshotForBounds(start,end)||currentView();
+  const pyRows=arrayFromMaybe(py&&py.employeeApprovalRows);
+  if(pyRows.length){
+    return pyRows.map(row=>{
+      const approved=Number(row.approved||0),unapproved=Number(row.unapproved||0),total=Number(row.total||approved+unapproved);
+      return {
+        name:clean(row.name),
+        approved,
+        unapproved,
+        total,
+        approvedPct:total?Number(row.approvedPct||approved/total*100):0,
+        unapprovedPct:total?Number(row.unapprovedPct||unapproved/total*100):0,
+        ratio:pctValue(unapproved,approved),
+        employeeStatus:isEmployeeExited(row.name)?"exited":"active",
+        isExited:isEmployeeExited(row.name)
+      };
+    }).filter(row=>row.total>0&&!isEmployeeExited(row.name)&&validAssignName(row.name)).sort((a,b)=>b.total-a.total||b.unapproved-a.unapproved||a.name.localeCompare(b.name));
+  }
   const grouped=new Map();
   repairAnalyticsExportRows().forEach(item=>{
     const row=item.row||{};
@@ -4295,7 +4509,7 @@ function employeeApprovalRows(){
       employeeStatus:isEmployeeExited(row.name)?"exited":"active",
       isExited:isEmployeeExited(row.name)
     };
-  }).filter(row=>row.total>0).sort((a,b)=>b.total-a.total||b.unapproved-a.unapproved||a.name.localeCompare(b.name));
+  }).filter(row=>row.total>0&&!isEmployeeExited(row.name)).sort((a,b)=>b.total-a.total||b.unapproved-a.unapproved||a.name.localeCompare(b.name));
 }
 function renderEmployeeApprovalBars(){
   const box=$("employeeApprovalBars");if(!box)return;
@@ -4339,9 +4553,8 @@ function renderTeamAssignChart(){
     const blueLabelPct=Math.min(96,Math.max(labelsOverlap?14:8,bluePct));
     const redInline=redValue?`<span class="${labelsOverlap?'teamAssignCallout left':'teamAssignInline'} redLabel" style="left:${redLabelPct}%">${redLabel}</span>`:"";
     const blueInline=blueValue?`<span class="${labelsOverlap?'teamAssignCallout right':'teamAssignInline'} blueLabel" style="left:${blueLabelPct}%">${blueLabel}</span>`:"";
-    const exited=isEmployeeExited(row.name);
-    const nameLabel=`${exited?`<span class="teamAssignExitedBadge">EXIT</span>`:""}${esc(row.name)}`;
-    return `<div class="teamAssignRow"><div class="teamAssignName" title="${esc(row.name)}${exited?' - EXIT':''}">${nameLabel}</div><div class="teamAssignTrack" role="button" tabindex="0" data-employee="${esc(row.name)}" aria-label="Open ${esc(row.name)} workload details" title="Open ${esc(row.name)} workload details"><div class="${redIsBase?'teamAssignRed':'teamAssignBlue'}" style="width:${redIsBase?redPct:bluePct}%"></div><div class="${redIsBase?'teamAssignBlue':'teamAssignRed'}" style="width:${redIsBase?bluePct:redPct}%"></div>${redInline}${blueInline}</div><div class="teamAssignValue"><span class="redValue">${redLabel}</span> / <span class="blueValue">${blueLabel}</span></div></div>`;
+    const nameLabel=esc(row.name);
+    return `<div class="teamAssignRow"><div class="teamAssignName" title="${esc(row.name)}">${nameLabel}</div><div class="teamAssignTrack" role="button" tabindex="0" data-employee="${esc(row.name)}" aria-label="Open ${esc(row.name)} workload details" title="Open ${esc(row.name)} workload details"><div class="${redIsBase?'teamAssignRed':'teamAssignBlue'}" style="width:${redIsBase?redPct:bluePct}%"></div><div class="${redIsBase?'teamAssignBlue':'teamAssignRed'}" style="width:${redIsBase?bluePct:redPct}%"></div>${redInline}${blueInline}</div><div class="teamAssignValue"><span class="redValue">${redLabel}</span> / <span class="blueValue">${blueLabel}</span></div></div>`;
   }).join("");
   renderEmployeeStatusMapping();
   box.querySelectorAll(".teamAssignTrack[data-employee]").forEach(track=>{
@@ -4365,7 +4578,11 @@ function currentCriticalStatusRows(){
     counts[st]=(counts[st]||0)+1;
   });
   const counted=Object.values(counts).reduce((sum,v)=>sum+Number(v||0),0);
-  const expected=end>=latestDateForView()?currentTotalCritical(counted):counted;
+  if(!counted){
+    const rows=arrayFromMaybe(currentView().statusMix);
+    if(rows.length)return rows.map(row=>({label:clean(row.label||row.status)||"Unknown",count:Number(row.count||row.value||0)})).filter(row=>row.count>0).sort((a,b)=>b.count-a.count||a.label.localeCompare(b.label));
+  }
+  const expected=end>=latestDateForView()?currentTotalCritical(Number(currentView().summary&&currentView().summary.criticalNow||counted)):counted;
   if(expected>counted)counts.Unknown=(counts.Unknown||0)+(expected-counted);
   return Object.entries(counts).map(([status,count])=>({label:status,count})).sort((a,b)=>b.count-a.count||a.label.localeCompare(b.label));
 }
@@ -4373,7 +4590,8 @@ function renderLists(){const rawView=currentRawCriticalView();const rows=selecte
   const dealerTitle=document.querySelector(".dealerRankPanel .panelTitle");if(dealerTitle)dealerTitle.textContent=hasTicketFilter()?"Top Critical Tickets Change by Dealer":"Top Critical Tickets by Dealer";
   const grouped={};
   rows.forEach(x=>{const dealer=standardDealerName(x.dealer||'Unknown'); if(isValidDealerForTeamTotal(dealer)) grouped[dealer]=(grouped[dealer]||0)+1;});
-  const dealers=(!hasTicketFilter()&&rawView)?rawView.dealers:Object.entries(grouped).map(([dealer,criticalTickets])=>({dealer,criticalTickets})).sort((a,b)=>b.criticalTickets-a.criticalTickets||a.dealer.localeCompare(b.dealer));
+  const fallbackDealers=arrayFromMaybe(currentView().topDealers).map(x=>({dealer:clean(x.dealer),criticalTickets:Number(x.criticalTickets||x.count||0)})).filter(x=>x.dealer);
+  const dealers=(!hasTicketFilter()&&rawView)?rawView.dealers:(Object.keys(grouped).length?Object.entries(grouped).map(([dealer,criticalTickets])=>({dealer,criticalTickets})).sort((a,b)=>b.criticalTickets-a.criticalTickets||a.dealer.localeCompare(b.dealer)):fallbackDealers);
   const max=Math.max(1,...dealers.map(x=>Number(x.criticalTickets||0)));
   const dealerColors=["#4f46e5","#60a5fa","#7c3aed","#f59e0b","#ec4899","#8b5cf6","#22c55e","#94a3b8"];
   const shownDealers=dealerListExpanded?dealers:dealers.slice(0,7);
@@ -4389,7 +4607,7 @@ function renderLists(){const rawView=currentRawCriticalView();const rows=selecte
 function openDealerWorkbench(dealer){const key=dealerKeyForName(dealer);if(key)localStorage.setItem("dealerWorkspaceSelectedKey",key);localStorage.setItem("dealerWorkspaceSelectedName",dealer||"");window.location.href="dealer-workbench.html";}
 function toggleDealerList(){dealerListExpanded=!dealerListExpanded;renderLists();}
 
-function setDateDefaults(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;$("dateFrom").min=pts[0].date;$("dateTo").min=pts[0].date;if(activePeriod==="all"&&(!$('dateFrom').value||!$('dateTo').value)){setFullRange();return;}if(!$("dateFrom").value||$("dateFrom").value<pts[0].date)$("dateFrom").value=pts[0].date;if(!$("dateTo").value||$("dateTo").value>latestDateForView())$("dateTo").value=latestDateForView();}
+function setDateDefaults(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;syncRangeInputsToActivePeriod();}
 
 function updateDateNotes(){const date=periodEndDate();const label=formatSnapshotDateLabel(date);document.querySelectorAll("[data-date-note]").forEach(el=>{el.textContent=label;el.title=`Snapshot date: ${date}`;});}
 
@@ -4409,7 +4627,9 @@ function alignEmployeeWorkloadBottomToDuration(){
   durationPanel.style.removeProperty("height");
   const employeeRect=employeePanel.getBoundingClientRect();
   const durationRect=durationPanel.getBoundingClientRect();
-  const diff=durationRect.bottom-employeeRect.bottom;
+  const employeeBottom=employeeRect.bottom+window.scrollY;
+  const durationBottom=durationRect.bottom+window.scrollY;
+  const diff=durationBottom-employeeBottom;
   if(Math.abs(diff)<=1)return;
   const setPanelMinHeight=(panel,height)=>{
     const px=Math.ceil(height)+"px";
@@ -4421,8 +4641,25 @@ function alignEmployeeWorkloadBottomToDuration(){
     setPanelMinHeight(durationPanel,durationRect.height-diff);
   }
 }
+let employeeDurationResizeObserver=null;
+let employeeDurationAlignmentScheduled=false;
+function bindEmployeeDurationAlignmentObserver(){
+  const employeePanel=document.querySelector(".teamAssignPanel");
+  const durationPanel=document.querySelector(".featureSideStack .dashboardAnalysisGrid .speedPanel");
+  if(!employeePanel||!durationPanel||employeePanel.dataset.alignObserverBound)return;
+  employeePanel.dataset.alignObserverBound="1";
+  if("ResizeObserver" in window){
+    employeeDurationResizeObserver=new ResizeObserver(()=>scheduleStatusMixBottomAlignment());
+    employeeDurationResizeObserver.observe(employeePanel);
+    employeeDurationResizeObserver.observe(durationPanel);
+  }
+}
 function scheduleStatusMixBottomAlignment(){
+  if(employeeDurationAlignmentScheduled)return;
+  employeeDurationAlignmentScheduled=true;
   requestAnimationFrame(()=>{
+    employeeDurationAlignmentScheduled=false;
+    bindEmployeeDurationAlignmentObserver();
     alignStatusMixBottomToRepairAnalytics();
     alignEmployeeWorkloadBottomToDuration();
     setTimeout(alignStatusMixBottomToRepairAnalytics,80);
@@ -4436,13 +4673,14 @@ function scheduleStatusMixBottomAlignment(){
 
 let renderAllTimer=null;
 function renderAllWithLoading(text="Calculating..."){
+  showCalcFloat(true,text);
   if(renderAllTimer)clearTimeout(renderAllTimer);
-  renderAllTimer=setTimeout(()=>{renderAllTimer=null;renderAll();},0);
+  renderAllTimer=setTimeout(()=>{renderAllTimer=null;renderAll();hideCalcFloat(120);},35);
 }
 function renderAll(){renderPeriodButtons();renderClaimButtons();bindDashboardExportButtons();setDateDefaults();trendPoints=selectedTrend();updateDateNotes();renderKpis();renderHandlingSpeed();renderWeeklyAvgCostTrend();renderLists();renderRepairCostDistribution();renderApprovedMix();renderTeamAssignChart();bindTeamAssignPanelLink();drawTrend();scheduleStatusMixBottomAlignment();}
 function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(prev||0);if(delta===0)return{cls:"flat",arrow:"-",text:"0"};const isGood=(metric==="exited")?delta>0:delta<0;return{cls:isGood?"up":"down",arrow:delta>0?"^":"v",text:num(Math.abs(delta))};}
 function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}
 function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const newDelta=deltaInfoMetric("entered",hit.p.cumulativeNewTickets,prev?prev.cumulativeNewTickets:hit.p.cumulativeNewTickets);const approvalDelta=deltaInfoMetric("entered",hit.p.cumulativeApprovedUnapprovedTickets,prev?prev.cumulativeApprovedUnapprovedTickets:hit.p.cumulativeApprovedUnapprovedTickets);const criticalDelta=deltaInfoMetric("critical",hit.p.criticalTotal,prev?prev.criticalTotal:hit.p.criticalTotal);tip.innerHTML=`<b>${esc(trendPointLabel(hit.p))}</b>${tipRow("Cumulative New Tickets","#3b82f6",hit.p.cumulativeNewTickets,newDelta)}${tipRow("Cumulative Approved + Unapproved","#16a34a",hit.p.cumulativeApprovedUnapprovedTickets,approvalDelta)}${tipRow("Critical total (right axis)","#fb6b1d",hit.p.criticalTotal,criticalDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
-async function load(){try{showCalcFloat(true,"Loading dashboard...");$("loadError").style.display="none";const data=await readJson(MONITOR_ROOT+"/analytics/team");if(!data||typeof data!=="object")throw new Error("analytics/team is empty");team=data;activeClaim=team.defaultView||"all";await Promise.all([loadRawCritical().catch(()=>{rawCritical={loaded:false,views:{}}}),loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{employeeAnalytics=null}),loadEmployeeStatusMappingRemote()]);hideCalcFloat(60);renderAll()}catch(err){hideCalcFloat();$("loadError").innerHTML="Cannot load team analytics from Firebase. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll()}}
-$("dateFrom").addEventListener("change",()=>{renderAll()});$("dateTo").addEventListener("change",()=>{renderAll()});if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",()=>{drawTrend();scheduleStatusMixBottomAlignment();});bindTooltip();bindDashboardExportButtons();loadEmployeeStatusMapping();load();
+async function load(){try{const started=performance.now();showCalcFloat(true,"Loading dashboard...");$("loadError").style.display="none";let data=await readJson(MONITOR_ROOT+"/analytics/teamDashboard").catch(()=>null);if(!data||typeof data!=="object")throw new Error("analytics/teamDashboard is empty. Please rebuild analytics.");team=data;activeClaim=team.defaultView||"all";hideCalcFloat(Math.max(60,Math.min(350,400-performance.now()+started)));renderAll();Promise.all([loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{employeeAnalytics=null}),loadEmployeeStatusMappingRemote()]).then(()=>renderAll()).catch(()=>{});}catch(err){hideCalcFloat();$("loadError").innerHTML="Cannot load team analytics from Firebase. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll()}}
+document.querySelectorAll("[data-period]").forEach(btn=>btn.addEventListener("click",()=>{activePeriod=btn.dataset.period||"all";syncRangeInputsToActivePeriod();renderAllWithLoading();}));if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",()=>{drawTrend();scheduleStatusMixBottomAlignment();});bindTooltip();bindDashboardExportButtons();loadEmployeeStatusMapping();load();
 </script></body></html>
