@@ -94,6 +94,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI"
     <div class="pageTop">
       <div>
         <h1 class="pageTitle">In Field / Pre Delivery &amp; Approved vs Unapproved</h1>
+        <p class="subTitle">Monthly In Field and Pre Delivery warranty claim volumes. History up to May 2026 is taken from the SAP reports; June 2026 onward updates live from this dashboard. Approved totals include both In Field and Pre Delivery claims.</p>
       </div>
       <div id="asOf" class="datePill">As of --</div>
     </div>
@@ -127,6 +128,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI"
     <section class="panel" id="created">
       <div class="panelHead">
         <h2 class="panelTitle"><span class="titleIcon ic-blue"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14h6"/></svg></span>In Field &amp; Pre Delivery Warranty Tickets Created by Month</h2>
+        <p class="panelDesc">Tickets grouped by the month they were created (CreatedOn). History through May 2026 matches the SAP "tickets created by month" report; June 2026 onward is calculated live from this dashboard.</p>
       </div>
       <div class="grid">
         <div class="pivotWrap"><table class="pivot"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims</th><th>Sum of Pre Delivery Warranty Claims</th></tr></thead><tbody id="createdPivot"></tbody></table></div>
@@ -140,6 +142,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI"
     <section class="panel" id="approved">
       <div class="panelHead">
         <h2 class="panelTitle"><span class="titleIcon ic-green"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.3 12.3l2.5 2.5 4.9-5.6"/></svg></span>Approved Tickets</h2>
+        <p class="panelDesc">Monthly approved counts split by In Field and Pre Delivery warranty claims. Date basis: Claim Approved Date. Approved tickets are filtered by approval date rather than current status, so every ticket approved in the period is included regardless of its present workflow stage.</p>
       </div>
       <div class="grid">
         <div class="pivotWrap"><table class="pivot"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims</th><th>Sum of Pre Delivery Warranty Claims</th></tr></thead><tbody id="approvedPivot"></tbody></table></div>

@@ -1,0 +1,3196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Employee Workbench</title>
+<style>
+
+:root{
+  --bg:#f4f7fb;--card:#ffffff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;
+  --nav:#0b1220;--nav2:#162033;--nav3:#1f2a3d;--blue:#3b82f6;--sky:#22aeea;
+  --orange:#f97316;--green:#16a34a;--red:#f87171;--shadow:0 18px 45px rgba(15,23,42,.07);
+}
+*{box-sizing:border-box}html{font-size:15px}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;font-size:14px;font-weight:500;letter-spacing:-.01em}button,input,select{font:inherit}.app{min-height:100vh;display:grid;grid-template-columns:286px minmax(0,1fr)}
+.sidebar{background:linear-gradient(180deg,#0b1220 0%,#0a1020 100%);color:#e5e7eb;min-height:100vh;position:sticky;top:0;padding:20px 14px;border-right:1px solid rgba(255,255,255,.06)}
+.brand,.brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 28px;padding:0 8px;font-size:18px;font-weight:800;letter-spacing:-.02em;color:#f8fafc}.brandMark{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#2f6df6,#22aeea);box-shadow:0 12px 26px rgba(34,174,234,.23)}.brandText span{display:block}.brandText small{display:block;margin-top:2px;color:#93a4bd;font-size:12px;font-weight:600;letter-spacing:.02em}.navSection{font-size:11px;letter-spacing:.18em;color:#8493aa;text-transform:uppercase;margin:22px 10px 9px;font-weight:700}.navBtn,.navLink{width:100%;min-height:45px;display:flex;align-items:center;gap:13px;border:0;background:transparent;color:#d6deeb;padding:12px 14px;border-radius:12px;font-weight:760;text-decoration:none;cursor:pointer;text-align:left;transition:.16s ease}.navBtn:hover,.navLink:hover{background:#172238;color:#fff;transform:translateX(1px)}.navBtn.active,.navLink.active{background:#1d293d;color:#fff;box-shadow:inset 3px 0 0 #60a5fa}.navBtn svg,.navLink svg{width:18px;height:18px;stroke-width:1.85;opacity:.95;flex:0 0 auto}.navBtn.active svg,.navLink.active svg{color:#bfdbfe}.navDivider{height:1px;background:rgba(255,255,255,.08);margin:16px 8px}.sideTiny{color:#93a4bd;font-size:12px;line-height:1.4;padding:8px 10px}.main{min-width:0;padding:34px 38px 54px}.topbar{background:transparent;border:0;padding:0;margin:0 0 26px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap}.workspace{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#475569;padding:6px 12px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:800;box-shadow:0 5px 16px rgba(15,23,42,.035)}.workspace svg{width:14px;height:14px;stroke-width:2}.h1,.pageTitle{font-size:30px;line-height:1.1;font-weight:820;letter-spacing:-.035em;margin:12px 0 6px;color:#0b1220}.subTitle,.panelDesc,.desc{color:#64748b;font-size:14px;margin:0;line-height:1.5;font-weight:500}.content{padding:0}.page{display:none}.page.active{display:block}.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:14px;padding:13px 15px;margin-bottom:18px;font-weight:650}
+.card,.panel{background:rgba(255,255,255,.96);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:25px 27px;margin-bottom:24px;overflow:hidden}.panelHead{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:18px}.panelTitle{font-size:21px;line-height:1.2;font-weight:820;margin:0 0 7px;letter-spacing:-.025em;color:#0b1220}.cardTitle{font-size:20px;line-height:1.2;font-weight:820;margin:0 0 8px;letter-spacing:-.025em}.cardDesc{color:#64748b;font-size:14px;margin:0 0 18px;line-height:1.5}.kpis,.kpiGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:0 0 24px}.kpi{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 22px;box-shadow:0 12px 30px rgba(15,23,42,.055);min-height:118px}.kpiInner{border:0!important;padding:0!important;min-height:auto!important;background:transparent!important;display:block!important}.kpiLabel{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#64748b;font-weight:820;line-height:1.35}.kpiValue{font-size:31px;font-weight:840;letter-spacing:-.035em;margin-top:12px;color:#0f172a}.kpiHint{display:none;color:#64748b;font-size:12px;margin-top:7px}.chartGrid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.chartWrap,.miniChartWrap{height:370px;position:relative;overflow:hidden}.trendWrap,.chartWrap.chartTall{height:375px;position:relative;overflow:hidden}.canvas,canvas{width:100%;height:100%;display:block}.legend{display:flex;gap:18px;justify-content:center;align-items:center;margin-top:12px;color:#52627a;flex-wrap:wrap;font-size:13px}.legend span{display:flex;gap:8px;align-items:center}.dot{width:10px;height:10px;border-radius:999px;display:inline-block}.blue{background:var(--blue)}.orange{background:var(--orange)}.green{background:var(--green)}.red{background:var(--red)}.grey{background:#cbd5e1}.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.input,.btn,.search,.select,.dealerSelect{height:40px;border:1px solid var(--line);border-radius:11px;background:#fff;padding:0 13px;color:#0f172a;outline:none;font-weight:650}.input:focus,.search:focus,.dealerSelect:focus{border-color:#93c5fd;box-shadow:0 0 0 4px rgba(59,130,246,.12)}.btn{font-weight:780;cursor:pointer;transition:.15s ease}.btn:hover{box-shadow:0 8px 18px rgba(15,23,42,.08);transform:translateY(-1px)}.btn.active,.btn.dark{background:#0f172a;color:#fff;border-color:#0f172a}.tabs,.chips{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.tab,.chip{height:38px;border:1px solid var(--line);border-radius:999px;background:#fff;padding:0 15px;font-weight:760;cursor:pointer;color:#334155}.tab.active,.chip.active{background:#0f172a;color:#fff;border-color:#0f172a}.chip{height:auto;padding:8px 13px}.search{min-width:280px}.tableWrap{border:1px solid var(--line);border-radius:16px;background:#fff;overflow:auto;max-height:440px}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}th{background:#f8fafc;color:#475569;font-weight:820;position:sticky;top:0;z-index:1}td{font-weight:520}tr:hover td{background:#f8fafc}.badge,.pill{display:inline-flex;border:1px solid currentColor;border-radius:999px;padding:5px 10px;font-weight:780;font-size:12px;white-space:nowrap}.b-critical{color:#be123c;background:#fff1f2}.b-normal{color:#334155;background:#f8fafc}.b-enter{color:#166534;background:#dcfce7}.b-move{color:#075985;background:#e0f2fe}.b-exit{color:#9f1239;background:#ffe4e6}.changeType{display:inline-flex;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:820}.enter{background:#dcfce7;color:#166534}.exit{background:#ffe4e6;color:#9f1239}.move{background:#e0f2fe;color:#075985}.tooltip{position:fixed;display:none;pointer-events:auto;background:#fff;border:1px solid #e2e8f0;border-radius:14px;box-shadow:0 20px 48px rgba(15,23,42,.18);padding:11px 13px;z-index:60;line-height:1.45;max-width:440px}.tooltip b{display:block;margin-bottom:5px}.tooltip span{display:block;margin-top:6px}.modalBackdrop{position:fixed;inset:0;background:rgba(15,23,42,.64);display:none;align-items:center;justify-content:center;z-index:80;padding:24px}.modal{width:min(920px,96vw);max-height:84vh;overflow:auto;background:#fff;border-radius:20px;border:1px solid var(--line);box-shadow:0 30px 100px rgba(0,0,0,.34);padding:24px}.modalHead{display:flex;justify-content:space-between;gap:18px;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:14px}.modalTitle{font-size:20px;font-weight:820}.modalClose{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer}.empty{padding:28px;color:#64748b;text-align:center}.nameFilter{display:none;margin:0 0 14px;padding:10px 12px;border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:12px;font-weight:780}.nameFilter button{margin-left:10px;border:0;background:transparent;color:#1d4ed8;font-weight:850;cursor:pointer}.claimToggle{display:inline-flex;align-items:center;gap:0;height:42px;border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}.claimToggleBtn{height:42px;border:0;border-right:1px solid var(--line);background:transparent;color:#52627a;padding:0 16px;font-weight:780;cursor:pointer;white-space:nowrap}.claimToggleBtn:last-child{border-right:0}.claimToggleBtn.active{background:#eff6ff;color:#0f172a;box-shadow:inset 0 -2px 0 #22aeea}.pieLegend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px;margin-top:4px;color:#475569;font-size:13px}.pieLegendRow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 8px;border-radius:10px;background:#f8fafc}.pieLegendLeft{display:flex;align-items:center;gap:8px;min-width:0}.pieSwatch{width:10px;height:10px;border-radius:999px;flex:0 0 auto}.pieLabel{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pieValue{font-weight:820;color:#0f172a;white-space:nowrap}.dealerSwitcher{min-width:310px;background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 26px rgba(15,23,42,.055);padding:14px 16px}.dealerSwitcherLabel{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#64748b;font-weight:820;margin-bottom:8px}.dealerSwitcher .dealerSelect{width:100%;height:42px}.dealerName,.sideHiddenDealer{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+@media(max-width:1150px){.app{grid-template-columns:250px minmax(0,1fr)}.main{padding:28px 26px}.kpis,.kpiGrid,.chartGrid{grid-template-columns:1fr 1fr}.infoGrid{grid-template-columns:1fr!important}.chartWrap,.miniChartWrap{height:360px}}
+@media(max-width:760px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}.kpis,.kpiGrid,.chartGrid{grid-template-columns:1fr}.search{min-width:100%;width:100%}.dealerSwitcher{width:100%;min-width:0}.chartWrap,.miniChartWrap{height:390px}.claimToggle{width:100%;height:auto;display:grid;grid-template-columns:1fr}.claimToggleBtn{border-right:0;border-bottom:1px solid var(--line)}}
+
+
+
+/* V4 employee workbench visual overhaul */
+.main{padding:32px 36px 56px;background:linear-gradient(180deg,#f7faff 0%,#f2f6fb 100%)}
+.pageTitle{font-size:28px;margin:0 0 6px;letter-spacing:-.03em}.subTitle{font-size:13.5px;color:#64748b;max-width:820px}
+.employeeHero{background:#fff;border:1px solid #e2e8f0;border-radius:24px;box-shadow:0 16px 44px rgba(15,23,42,.06);padding:26px 28px;margin-bottom:22px}
+.employeeHeroTop{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap}.employeeEyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.17em;text-transform:uppercase;color:#64748b;font-weight:850;margin-bottom:10px}.employeeEyebrow:before{content:"";width:8px;height:8px;border-radius:999px;background:#3b82f6;box-shadow:0 0 0 4px rgba(59,130,246,.12)}
+.employeeHero .pageTitle{font-size:31px}.employeeHeroActions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}.dateGroup{display:flex;align-items:center;gap:8px;color:#475569;font-weight:760;font-size:12px}.dateGroup .input{height:38px;border-radius:12px;background:#f8fafc}.kpis{margin:0 0 22px!important;grid-template-columns:repeat(4,minmax(0,1fr))}.kpi{border-radius:20px;min-height:112px;background:linear-gradient(180deg,#fff,#fbfdff)}
+.employeePanel{padding:0;overflow:hidden}.employeePanel .panelHead{padding:24px 26px 14px;margin:0}.metricTabs{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.metricTabs .btn{height:36px;border-radius:999px;background:#f8fafc;border-color:#dbe3ee;font-size:13px}.metricTabs .btn.active{background:#0f172a;color:#fff;border-color:#0f172a}.metricTabs #clearFilter{background:#fff}.employeeChartShell{padding:4px 26px 22px}.employeeBarList{display:grid;gap:12px;max-width:980px;margin:0 auto}.employeeBarRow{display:grid;grid-template-columns:190px minmax(240px,1fr) 86px;gap:16px;align-items:center;padding:9px 10px;border-radius:14px;cursor:pointer;transition:.14s ease}.employeeBarRow:hover{background:#f8fafc}.employeeBarRow.active{background:#eef6ff;box-shadow:inset 3px 0 0 #3b82f6}.employeeBarName{font-size:14px;color:#334155;font-weight:720;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.employeeBarTrack{height:26px;border-radius:999px;background:#edf2f7;position:relative;overflow:visible;border:1px solid #e2e8f0}.employeeBarTotal{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#93c5fd,#3b82f6);min-width:3px}.employeeBarRemoved{position:absolute;left:0;top:7px;height:12px;border-radius:999px;background:linear-gradient(90deg,#fecaca,#fb7185);min-width:0}.employeeBarValue{font-size:13px;font-weight:800;color:#0f172a;text-align:left}.employeeChartAxis{display:grid;grid-template-columns:190px 1fr 86px;gap:16px;align-items:center;max-width:980px;margin:14px auto 0;padding:0 10px;color:#94a3b8;font-size:11px;font-weight:760}.axisLine{display:flex;justify-content:space-between;border-top:1px dashed #cbd5e1;padding-top:7px}.legend{margin:0;padding:0 0 22px}.legend .dot{border-radius:3px;width:13px;height:8px}.tableWrap{max-height:480px}.panelDesc b{font-weight:850;color:#334155}.emptyChart{padding:46px 20px;text-align:center;color:#64748b;border:1px dashed #cbd5e1;border-radius:18px;background:#f8fafc}.emptyChart b{display:block;color:#0f172a;margin-bottom:6px;font-size:15px}
+@media(max-width:900px){.employeeBarRow,.employeeChartAxis{grid-template-columns:1fr}.employeeBarName{text-align:left}.employeeBarValue{text-align:right}.employeeHeroActions{justify-content:flex-start}.kpis{grid-template-columns:1fr 1fr!important}}
+@media(max-width:620px){.kpis{grid-template-columns:1fr!important}.main{padding:22px}.employeeHero{padding:22px}.employeePanel .panelHead{padding:22px}.employeeChartShell{padding:2px 18px 20px}}
+
+
+
+/* V5 typography refinement: softer dashboard font weight and cleaner cards */
+:root{
+  --ink:#111827;
+  --muted:#667085;
+  --line:#e3e8f0;
+  --shadow:0 10px 26px rgba(15,23,42,.045);
+}
+html{font-size:15px!important;}
+body{
+  font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif!important;
+  font-weight:400!important;
+  letter-spacing:0!important;
+  color:#111827!important;
+  background:#f4f7fb!important;
+}
+.brand,.brandWrap{font-weight:600!important;letter-spacing:-.01em!important;}
+.brandText small{font-weight:400!important;}
+.navSection{font-weight:500!important;letter-spacing:.16em!important;color:#8b98aa!important;}
+.navBtn,.navLink{font-weight:600!important;font-size:14px!important;letter-spacing:0!important;}
+.navBtn svg,.navLink svg{stroke-width:1.65!important;opacity:.9!important;}
+.h1,.pageTitle{
+  font-size:28px!important;
+  font-weight:600!important;
+  letter-spacing:-.02em!important;
+  line-height:1.18!important;
+}
+.subTitle,.panelDesc,.desc,.cardDesc{
+  font-weight:400!important;
+  color:#667085!important;
+  letter-spacing:0!important;
+}
+.card,.panel{
+  border-radius:18px!important;
+  box-shadow:0 8px 22px rgba(15,23,42,.045)!important;
+  border-color:#e3e8f0!important;
+}
+.panelTitle,.cardTitle{
+  font-size:22px!important;
+  font-weight:500!important;
+  letter-spacing:-.01em!important;
+  color:#111827!important;
+}
+.kpis,.kpiGrid{gap:14px!important;}
+.kpi{
+  min-height:106px!important;
+  padding:18px 20px!important;
+  border-radius:15px!important;
+  box-shadow:0 6px 18px rgba(15,23,42,.04)!important;
+}
+.kpiLabel{
+  font-size:11px!important;
+  font-weight:600!important;
+  letter-spacing:.12em!important;
+  color:#667085!important;
+}
+.kpiValue{
+  font-size:28px!important;
+  font-weight:600!important;
+  letter-spacing:-.02em!important;
+  margin-top:10px!important;
+  color:#111827!important;
+}
+.kpiHint{font-weight:400!important;color:#667085!important;}
+.btn,.input,.search,.select,.dealerSelect{
+  font-weight:500!important;
+  border-color:#d8e0ec!important;
+}
+.btn.active,.btn.dark{font-weight:600!important;background:#111827!important;border-color:#111827!important;}
+.metricTabs .btn{font-weight:500!important;}
+.metricTabs .btn.active{font-weight:600!important;}
+th{font-weight:600!important;color:#667085!important;letter-spacing:0!important;}
+td{font-weight:400!important;color:#283548!important;}
+td b{font-weight:500!important;}
+.badge,.pill,.changeType{font-weight:500!important;}
+.employeeEyebrow,.dealerSwitcherLabel,.workspace{font-weight:500!important;}
+.employeeHero{box-shadow:0 8px 22px rgba(15,23,42,.045)!important;border-color:#e3e8f0!important;}
+.employeeBarName{font-weight:400!important;color:#344054!important;font-size:14px!important;}
+.employeeBarValue{font-weight:500!important;color:#344054!important;}
+.employeeBarRow{padding:10px 12px!important;}
+.employeeBarTrack{height:24px!important;background:#eef2f7!important;overflow:visible!important;position:relative!important;}
+.employeeBarTotal{background:linear-gradient(90deg,#8ab4f8,#4d82e9)!important;}
+.employeeBarRemoved{background:linear-gradient(90deg,#fda4af,#fb7185)!important;}
+.employeeChartAxis{font-weight:400!important;color:#98a2b3!important;}
+.emptyChart b{font-weight:500!important;}
+.logStat h3{font-weight:600!important;font-size:28px!important;}
+.logStat p{font-weight:500!important;letter-spacing:.06em!important;}
+.sideTiny{font-weight:400!important;}
+
+
+
+/* V7 soft typography + lighter active controls */
+:root{
+  --ink:#152238;
+  --ink-soft:#25364f;
+  --active-soft:#eef7ff;
+  --active-soft-border:#b8ddff;
+  --active-soft-text:#155e9f;
+}
+body{font-weight:400;color:var(--ink);}
+.brand,.brandWrap{font-weight:600!important;}
+.brandText small,.navSection{font-weight:500!important;}
+.navBtn,.navLink{font-weight:500!important;color:#d8e2f0!important;}
+.navBtn.active,.navLink.active{
+  background:rgba(255,255,255,.105)!important;
+  color:#fff!important;
+  box-shadow:inset 3px 0 0 #93c5fd!important;
+}
+.h1,.pageTitle{font-weight:500!important;letter-spacing:-.025em!important;color:#132035!important;}
+.panelTitle,.cardTitle{font-weight:500!important;letter-spacing:-.018em!important;color:#132035!important;}
+.subTitle,.panelDesc,.desc,.cardDesc{font-weight:400!important;color:#627089!important;}
+.kpiLabel,.dealerSwitcherLabel{font-weight:500!important;letter-spacing:.18em!important;color:#66758f!important;}
+.kpiValue{font-weight:500!important;font-size:29px!important;letter-spacing:-.025em!important;color:#142033!important;}
+.kpiHint{font-weight:400!important;color:#64748b!important;}
+.input,.search,.select,.dealerSelect{font-weight:400!important;}
+.btn{font-weight:500!important;color:#24344d!important;}
+.btn.active,.btn.dark{
+  background:var(--active-soft)!important;
+  color:var(--active-soft-text)!important;
+  border-color:var(--active-soft-border)!important;
+  box-shadow:inset 0 -2px 0 #7dd3fc!important;
+}
+.btn:hover{transform:none!important;box-shadow:0 6px 16px rgba(15,23,42,.06)!important;}
+.tab,.chip{
+  font-weight:500!important;
+  color:#2f4059!important;
+  background:#fff!important;
+  border-color:#dbe3ee!important;
+}
+.tab.active,.chip.active{
+  background:linear-gradient(180deg,#f2f9ff,#eaf5ff)!important;
+  color:#155e9f!important;
+  border-color:#b8ddff!important;
+  box-shadow:inset 0 -2px 0 #7dd3fc!important;
+}
+th{font-weight:500!important;color:#53627a!important;}
+td{font-weight:400!important;color:#25364f!important;}
+td b{font-weight:500!important;}
+.badge,.pill,.changeType{font-weight:500!important;}
+.tooltip b{font-weight:500!important;}
+.pieLegendRow{
+  background:#fbfdff!important;
+  border:1px solid #edf2f7!important;
+  border-radius:12px!important;
+  padding:8px 10px!important;
+}
+.pieLabel{font-weight:400!important;color:#31445e!important;}
+.pieValue{font-weight:500!important;color:#263852!important;}
+.legend{font-weight:400!important;color:#60708a!important;}
+.nameFilter,.nameFilter button{font-weight:500!important;}
+.claimToggle{background:#fff!important;border-radius:999px!important;padding:3px!important;height:auto!important;}
+.claimToggleBtn{
+  height:38px!important;
+  border-right:0!important;
+  border-radius:999px!important;
+  font-weight:500!important;
+  color:#53627a!important;
+  padding:0 16px!important;
+}
+.claimToggleBtn.active{
+  background:linear-gradient(180deg,#f2f9ff,#eaf5ff)!important;
+  color:#155e9f!important;
+  box-shadow:none!important;
+}
+/* Critical ticket filter buttons: softer than black */
+#page-tickets .tabs{gap:10px!important;margin:18px 0 16px!important;}
+#page-tickets .tab{height:42px!important;padding:0 20px!important;border-radius:999px!important;}
+#page-tickets .chips{gap:10px!important;margin:16px 0 22px!important;}
+#page-tickets .chip{padding:9px 16px!important;border-radius:999px!important;}
+
+
+.claimSwitch{display:inline-flex;padding:4px;border:1px solid #dbe7f5;background:#fff;border-radius:18px;box-shadow:0 8px 22px rgba(15,23,42,.04)}
+.claimBtn{height:38px;border:0;background:transparent;border-radius:14px;padding:0 17px;color:#334155;font-weight:500;cursor:pointer;white-space:nowrap}
+.claimBtn:hover{background:#f8fbff}.claimBtn.active{background:#eaf4ff;color:#1d4ed8;box-shadow:inset 0 0 0 1px #bfdbfe}
+@media(max-width:920px){.employeeHeroActions{justify-content:flex-start}.claimSwitch{width:100%;display:grid;grid-template-columns:1fr}.claimBtn{width:100%}}
+
+.notAssignedKpi{position:relative}
+.infoDot{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;font-size:12px;font-weight:600;margin-left:6px;vertical-align:middle;cursor:help}
+.assignmentValue{font-variant-numeric:tabular-nums}
+.kpiSoftHint{display:block;margin-top:4px;color:#8a98ad;font-size:11px}
+.tooltipAction{margin-top:10px;border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;border-radius:999px;height:30px;padding:0 11px;font-weight:500;cursor:pointer}
+.tooltipAction:hover{background:#dbeafe}
+.detailList{display:grid;grid-template-columns:170px minmax(0,1fr);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.detailKey,.detailVal{padding:12px 14px;border-bottom:1px solid var(--line);font-size:13px}.detailKey{background:#f8fafc;color:#64748b;font-weight:500}.detailVal{color:#1f2f46;font-weight:400}.detailKey:nth-last-child(2),.detailVal:last-child{border-bottom:0}
+
+
+.employeeBarTrack{overflow:visible!important;position:relative!important}
+.employeeInlineValue{position:absolute;top:50%;transform:translate(8px,-50%);font-size:12px;font-weight:650;letter-spacing:-.01em;white-space:nowrap;color:#142033;background:rgba(255,255,255,.88);border:1px solid #e3e8f0;border-radius:999px;padding:1px 6px;box-shadow:0 4px 10px rgba(15,23,42,.06);z-index:4}
+.employeeInlineValue.redValue{color:#be123c}
+.employeeInlineValue.blueValue{color:#1d4ed8}
+.employeeInlineValue.inside{transform:translate(-100%,-50%);margin-left:-6px;background:rgba(255,255,255,.92)}
+.employeeBarValue{min-width:92px!important;font-variant-numeric:tabular-nums!important;color:#52627a!important}
+.partsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 22px}.partsPanel{padding:0;overflow:hidden}.partsPanel .panelHead{padding:24px 26px 14px;margin:0}.partsCharts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;padding:4px 26px 24px}.partsChart{min-width:0}.partsChartTitle{font-size:14px;font-weight:600;color:#25364f;margin:0 0 12px}.partsBarList{display:grid;gap:10px}.partsBarRow{display:grid;grid-template-columns:minmax(150px,190px) minmax(140px,1fr) minmax(82px,112px);gap:10px;align-items:center}.partsBarName{font-size:clamp(10px,1vw,12px);color:#344054;text-align:right;white-space:normal;overflow:hidden;line-height:1.25;overflow-wrap:anywhere}.partsBarName .exitedTag,.employeeBarName .exitedTag,.detailEmployee .exitedTag,.nameFilter .exitedTag,.employeeDirectoryTable .exitedTag{display:inline-flex;margin-left:6px;border:1px solid #fecaca;background:#fff1f2;color:#be123c;border-radius:999px;padding:1px 6px;font-size:10px;font-weight:600;vertical-align:middle}.partsBarTrack{height:20px;border-radius:999px;background:#eef2f7;border:1px solid #e2e8f0;overflow:hidden}.partsBarFill{height:100%;border-radius:999px;background:linear-gradient(90deg,#60a5fa,#2563eb);min-width:0}.partsBarFill.green{background:linear-gradient(90deg,#86efac,#22c55e)}.partsBarFill.amber{background:linear-gradient(90deg,#fcd34d,#f59e0b)}.partsBarFill.red{background:linear-gradient(90deg,#fca5a5,#ef4444)}.partsBarValue{font-size:clamp(10px,1vw,12px);color:#344054;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}.partsEmpty{padding:24px;text-align:center;color:#64748b;border:1px dashed #cbd5e1;border-radius:14px;background:#f8fafc}.employeeDirectoryTable .input{height:34px}.employeeDirectoryActions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.employeeDirectoryActions .input{min-width:220px}.statusSelect{height:34px;border:1px solid #d8e0ec;border-radius:10px;background:#fff;padding:0 10px;color:#25364f}.saveState{font-size:12px;color:#64748b}.metricTrend{display:flex;align-items:center;gap:7px;margin-top:10px;min-height:18px;font-size:12px;color:#64748b;line-height:1.3}.metricTrend svg{width:17px;height:17px;flex:0 0 auto}.metricTrend.good{color:#059669}.metricTrend.bad{color:#e11d48}.metricTrend.flat{color:#64748b}.metricTrend span{white-space:nowrap}.mappingPanel.collapsed .mappingEditor{display:none}.mappingPanel.collapsed{padding-bottom:18px}.mappingPanel .panelHead{margin-bottom:14px}.detailEmployee{font-weight:500;color:#25364f}.partsGrid .kpi{display:flex;flex-direction:column;justify-content:space-between}@media(max-width:1150px){.partsGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.partsCharts{grid-template-columns:1fr}}@media(max-width:620px){.partsGrid{grid-template-columns:1fr}.partsBarRow{grid-template-columns:1fr}.partsBarName{text-align:left}}
+.partsBarTrack.multi{height:auto;display:grid;gap:3px;padding:3px}.partsBarTrack.multi .partsBarFill{height:8px}.ratioBase{display:block;margin-top:8px;font-size:12px;color:#2563eb;font-weight:600}
+.partsGrid{grid-template-columns:repeat(4,minmax(0,1fr))}.calcStatus{display:none;border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:16px;margin:0 0 18px;overflow:hidden;box-shadow:0 8px 22px rgba(15,23,42,.04)}.calcStatus.active{display:block}.calcTicker{height:38px;display:flex;align-items:center;white-space:nowrap;overflow:hidden}.calcTicker span{display:inline-block;padding-left:100%;animation:calcScroll 14s linear infinite;font-size:13px;font-weight:600}.calcLog{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid #bfdbfe}.calcLog div{padding:10px 14px;border-right:1px solid #bfdbfe;font-size:12px;color:#334155}.calcLog div:last-child{border-right:0}@keyframes calcScroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}@media(max-width:760px){.calcLog{grid-template-columns:1fr}.calcLog div{border-right:0;border-bottom:1px solid #bfdbfe}.calcLog div:last-child{border-bottom:0}}
+
+/* Center calculation overlay */
+.calcFloat{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);color:#155e9f;letter-spacing:0}.calcFloat.active{display:flex}.calcFloat:before{content:"";position:absolute;inset:0;background:rgba(248,251,255,.42);pointer-events:none}.calcFloat>*{position:relative}.calcSpinner{width:64px;height:64px;border-radius:999px;border:6px solid #dbeafe;border-top-color:#2563eb;border-right-color:#60a5fa;animation:calcSpin .78s linear infinite;flex:0 0 auto;box-shadow:0 10px 28px rgba(37,99,235,.16)}.calcFloatText{margin-top:18px;display:block;white-space:nowrap;font-size:16px;font-weight:650;color:#155e9f}.calcFloat{flex-direction:column}.calcFloat.active~.app,.calcFloat.active~main{filter:blur(1px);opacity:.68;pointer-events:none;user-select:none}@keyframes calcSpin{to{transform:rotate(360deg)}}@media(max-width:760px){.calcSpinner{width:54px;height:54px;border-width:5px}.calcFloatText{font-size:14px;margin-top:14px}}
+.calcFloat.active{display:flex}.calcSpinner{width:22px;height:22px;border-radius:999px;border:3px solid #dbeafe;border-top-color:#2563eb;animation:calcSpin .78s linear infinite;flex:0 0 auto}.calcFloatText{white-space:nowrap}@keyframes calcSpin{to{transform:rotate(360deg)}}@media(max-width:760px){.calcFloat{right:16px;bottom:16px;min-width:0;padding:10px 13px}.calcFloatText{font-size:12px}}
+
+
+/* Reference dashboard visual polish - layout only */
+.main,.wrap{background:#f6f8fc}.panel,.card,.kpi{border-color:#dde6f2!important;border-radius:16px!important;box-shadow:0 14px 34px rgba(15,23,42,.055)!important;background:#fff!important}.panelTitle,.cardTitle{font-size:16px!important;font-weight:600!important;letter-spacing:-.01em!important}.panelDesc,.desc,.cardDesc{font-size:12px!important;color:#66758f!important}.kpiLabel{letter-spacing:.08em!important;color:#66758f!important}.kpiValue{font-weight:600!important;letter-spacing:-.025em!important}.chartGrid,.kpis,.kpiGrid{gap:18px!important}.tableWrap{border-color:#dde6f2!important;border-radius:14px!important}.btn,.input,.search,.select,.dealerSelect{border-radius:12px!important}.claimSwitch,.changeSwitch{border-radius:14px!important;box-shadow:0 8px 22px rgba(15,23,42,.04)!important}.navBtn.active,.navLink.active{background:#1667d9!important;color:#fff!important;box-shadow:0 10px 24px rgba(37,99,235,.22)!important}
+/* Segmented button refinement */
+.changeSwitch,.claimSwitch{display:inline-flex!important;align-items:center!important;gap:0!important;height:46px!important;padding:5px!important;border:1px solid #dbe4ef!important;background:#fff!important;border-radius:15px!important;box-shadow:0 10px 24px rgba(15,23,42,.045)!important;overflow:hidden!important}.changeBtn,.claimBtn{height:36px!important;min-width:86px!important;border:0!important;border-radius:10px!important;background:transparent!important;color:#25364f!important;font-size:13px!important;font-weight:600!important;padding:0 16px!important;box-shadow:none!important;white-space:nowrap!important}.changeBtn:hover,.claimBtn:hover{background:#f3f7fc!important}.changeBtn.active,.claimBtn.active{background:#1677f2!important;color:#fff!important;box-shadow:0 8px 18px rgba(22,119,242,.26)!important}.btn,.tab,.chip{border-radius:12px!important;font-weight:600!important}.btn.active,.tab.active,.chip.active,.btn.dark{background:#1677f2!important;border-color:#1677f2!important;color:#fff!important;box-shadow:0 8px 18px rgba(22,119,242,.22)!important}
+/* Requested: Critical Tickets by C4C Assign To single overlaid bar style only */
+.employeePanel .employeePanelTitleLine{
+  display:flex!important;
+  align-items:center!important;
+  gap:76px!important;
+  flex-wrap:wrap!important;
+}
+.employeePanel .employeeHeaderLegend{
+  display:flex!important;
+  align-items:center!important;
+  gap:22px!important;
+  color:#52627a!important;
+  font-size:12px!important;
+  font-weight:400!important;
+}
+.employeePanel .employeeHeaderLegend span{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+.employeePanel .employeeHeaderLegend .dot{
+  width:12px!important;
+  height:8px!important;
+  border-radius:3px!important;
+}
+.employeePanel > .legend{
+  display:none!important;
+}
+.employeePanel .employeeBarTrack{
+  height:24px!important;
+  border-radius:999px!important;
+  background:#eef2f7!important;
+  border:1px solid #e2e8f0!important;
+  overflow:visible!important;
+  position:relative!important;
+}
+.employeePanel .employeeBarTotal,
+.employeePanel .employeeBarRemoved{
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  bottom:0!important;
+  height:100%!important;
+  border-radius:999px!important;
+  min-width:0!important;
+}
+.employeePanel .employeeBarTotal{
+  background:linear-gradient(90deg,#8b5cf6,#6d28d9)!important;
+}
+.employeePanel .employeeBarRemoved{
+  background:linear-gradient(90deg,#ff0f72,#f00066)!important;
+}
+.employeePanel .employeeBarFillBase{
+  z-index:1!important;
+}
+.employeePanel .employeeBarFillOverlay{
+  z-index:2!important;
+  box-shadow:inset -2px 0 0 rgba(255,255,255,.82),0 0 0 1px rgba(255,255,255,.34)!important;
+}
+.employeePanel .employeeInlineValue{
+  z-index:5!important;
+  top:50%!important;
+  height:18px!important;
+  min-width:24px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0 7px!important;
+  border-radius:999px!important;
+  border:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  color:#fff!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  line-height:18px!important;
+  pointer-events:none!important;
+}
+.employeePanel .employeeInlineValue.inside{
+  transform:translate(-50%,-50%)!important;
+  margin-left:0!important;
+}
+.employeePanel .employeeInlineValue.outside{
+  transform:translate(8px,-50%)!important;
+  background:#fff!important;
+  border:1px solid #e3e8f0!important;
+  box-shadow:0 4px 10px rgba(15,23,42,.06)!important;
+}
+.employeePanel .employeeInlineValue.outside.redValue{
+  color:#be123c!important;
+}
+.employeePanel .employeeInlineValue.outside.blueValue{
+  color:#1d4ed8!important;
+}
+.employeePanel .employeeInlineValue{
+  text-shadow:0 1px 2px rgba(15,23,42,.35)!important;
+}
+.employeePanel .employeeInlineValue.outside{
+  text-shadow:none!important;
+  height:17px!important;
+  line-height:17px!important;
+  min-width:24px!important;
+  padding:0 7px!important;
+}
+.employeePanel .employeeInlineValue.outside.redValue{
+  top:18%!important;
+}
+.employeePanel .employeeInlineValue.outside.blueValue{
+  top:82%!important;
+}
+
+
+/* Requested fix: keep C4C Assign To bar numbers stable, no floating labels */
+.employeePanel .employeeBarTrack .employeeInlineValue.inside{
+  transform:translate(-50%,-50%)!important;
+  margin-left:0!important;
+  background:transparent!important;
+  color:#fff!important;
+  text-shadow:0 1px 2px rgba(15,23,42,.45)!important;
+}
+
+
+
+/* Requested fix: C4C Assign To values sit just left of each bar endpoint without overlap */
+.employeePanel .employeeBarTrack .employeeEndValue{
+  transform:translate(-100%,-50%)!important;
+  margin-left:-6px!important;
+  height:18px!important;
+  min-width:22px!important;
+  padding:0 5px!important;
+  border:0!important;
+  background:transparent!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  text-shadow:0 1px 2px rgba(15,23,42,.55)!important;
+  font-size:11px!important;
+  font-weight:750!important;
+  line-height:18px!important;
+  pointer-events:none!important;
+  white-space:nowrap!important;
+}
+
+/* Keep C4C Assign To endpoint numbers readable without changing the bar format */
+.employeePanel .employeeBarRow{
+  grid-template-columns:190px minmax(260px,1fr) 104px!important;
+}
+.employeePanel .employeeBarList{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-flow:column!important;
+  gap:12px 34px!important;
+  max-width:none!important;
+}
+.employeePanel .employeeBarTrack{
+  height:30px!important;
+}
+    .employeePanel .employeeBarTrack .employeeEndValue{
+      height:14px!important;
+      min-width:18px!important;
+      max-width:48px!important;
+      padding:0 4px!important;
+      color:#fff!important;
+      background:transparent!important;
+      border:0!important;
+      border-radius:999px!important;
+      box-shadow:none!important;
+      text-shadow:0 1px 2px rgba(15,23,42,.4)!important;
+      overflow:hidden!important;
+      text-overflow:ellipsis!important;
+      font-size:10px!important;
+      line-height:14px!important;
+      margin-left:-4px!important;
+    }
+    .employeePanel .employeeBarTrack .employeeEndValue.redValue,
+    .employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+      color:#fff!important;
+    }
+.employeePanel .employeeBarTrack .employeeEndValue.redValue{
+  top:31%!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  top:70%!important;
+}
+.employeePanel .employeeBarValue{
+  min-width:104px!important;
+  font-size:12px!important;
+}
+@media(max-width:900px){
+  .employeePanel .employeeBarRow{
+    grid-template-columns:1fr!important;
+  }
+  .employeePanel .employeeBarList{
+    grid-template-columns:1fr!important;
+    grid-auto-flow:row!important;
+  }
+}
+
+/* Compact claim filter control */
+.claimSwitch.filterTools{
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  height:auto!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  width:auto!important;
+}
+.filterIconBtn,
+.filterButton{
+  height:44px!important;
+  border:1px solid #dbe4ef!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#25364f!important;
+  box-shadow:0 8px 22px rgba(15,23,42,.045)!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  cursor:pointer!important;
+}
+.filterIconBtn{
+  width:48px!important;
+  padding:0!important;
+}
+.filterButton{
+  gap:10px!important;
+  padding:0 18px!important;
+  font-size:13px!important;
+  font-weight:700!important;
+}
+.filterIconBtn svg,
+.filterButton svg{
+  width:18px!important;
+  height:18px!important;
+  stroke-width:2!important;
+}
+.filterDropdown{
+  position:relative!important;
+}
+.filterMenu{
+  position:absolute!important;
+  right:0!important;
+  top:calc(100% + 8px)!important;
+  z-index:80!important;
+  min-width:230px!important;
+  padding:8px!important;
+  border:1px solid #dbe4ef!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:0 18px 44px rgba(15,23,42,.16)!important;
+  display:none!important;
+}
+.filterDropdown.open .filterMenu{
+  display:grid!important;
+  gap:6px!important;
+}
+.filterOption{
+  width:100%!important;
+  min-height:36px!important;
+  border:0!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  color:#25364f!important;
+  text-align:left!important;
+  padding:0 11px!important;
+  font-size:13px!important;
+  font-weight:600!important;
+  cursor:pointer!important;
+}
+.filterOption:hover{background:#f3f7fc!important}
+.filterOption.active{background:#eef7ff!important;color:#1d4ed8!important}
+
+/* Keep C4C Assign To inline values aligned and readable */
+.employeePanel .employeeBarTrack .employeeEndValue,
+.employeePanel .employeeBarTrack .employeeEndValue.redValue,
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  top:50%!important;
+  transform:translate(-100%,-50%)!important;
+  color:#1e3a8a!important;
+  text-shadow:none!important;
+}
+
+/* Internal Employees two-column workbench layout */
+main.main{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(330px,390px)!important;
+  gap:18px!important;
+  align-items:start!important;
+}
+.employeeHero,
+#loadError,
+#calcStatus,
+main.main > .panel:not(.partsPanel):not(.employeePanel),
+.mappingPanel{
+  grid-column:1 / -1!important;
+}
+main.main > .kpis,
+main.main > .partsGrid,
+main.main > .employeePanel{
+  grid-column:1!important;
+}
+main.main > .kpis{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:12px!important;
+  margin:0!important;
+}
+main.main > .partsGrid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:12px!important;
+  margin:0!important;
+}
+main.main > .kpis .kpi,
+main.main > .partsGrid .kpi{
+  min-height:98px!important;
+  padding:16px 17px!important;
+}
+main.main > .kpis .kpiValue,
+main.main > .partsGrid .kpiValue{
+  font-size:25px!important;
+}
+main.main > .employeePanel{
+  margin:0!important;
+}
+main.main > .partsPanel{
+  grid-column:2!important;
+  grid-row:4 / span 3!important;
+  align-self:stretch!important;
+  margin:0!important;
+  min-width:0!important;
+}
+.partsPanel .panelHead{
+  padding:20px 22px 10px!important;
+}
+.partsPanel .panelDesc{
+  display:none!important;
+}
+.partsPanel .partsCharts{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:12px!important;
+  padding:0 18px 18px!important;
+}
+.partsPanel .partsChart{
+  min-width:0!important;
+  padding:14px!important;
+}
+.partsPanel .partsChartTitle{
+  font-size:13px!important;
+  margin-bottom:12px!important;
+}
+.partsPanel .partsBarList{
+  gap:9px!important;
+}
+.partsPanel .partsBarRow{
+  grid-template-columns:118px minmax(0,1fr) 104px!important;
+  gap:9px!important;
+}
+.partsPanel .partsBarName{
+  font-size:11px!important;
+}
+.partsPanel .partsBarValue{
+  font-size:11px!important;
+  white-space:nowrap!important;
+}
+.partsAmountPie{
+  display:grid!important;
+  grid-template-columns:180px minmax(0,1fr)!important;
+  gap:18px!important;
+  align-items:center!important;
+  flex:1!important;
+  min-height:240px!important;
+}
+.partsPieDonut{
+  width:180px!important;
+  height:180px!important;
+  border-radius:999px!important;
+  position:relative!important;
+  box-shadow:inset 0 0 0 1px #e5edf6,0 16px 32px rgba(37,99,235,.10)!important;
+}
+.partsPieDonut:after{
+  content:"";
+  position:absolute;
+  inset:46px;
+  border-radius:999px;
+  background:#fff;
+  box-shadow:inset 0 0 0 1px #e5edf6;
+}
+.partsPieDonut span{
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  z-index:1;
+  color:#0f172a;
+  font-size:18px;
+  font-weight:750;
+  text-align:center;
+}
+.partsPieLegend{
+  display:grid!important;
+  gap:10px!important;
+  min-width:0!important;
+}
+.partsPieRow{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  gap:8px!important;
+  align-items:center!important;
+  font-size:12px!important;
+  color:#334155!important;
+}
+.partsPieDot{
+  width:9px!important;
+  height:9px!important;
+  border-radius:999px!important;
+}
+.partsPieName{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+.partsPieRow b{
+  color:#0f172a!important;
+}
+@media(max-width:1280px){
+  main.main{
+    grid-template-columns:1fr!important;
+  }
+  main.main > .partsPanel,
+  main.main > .kpis,
+  main.main > .partsGrid,
+  main.main > .employeePanel{
+    grid-column:1!important;
+    grid-row:auto!important;
+  }
+  .partsPanel .partsCharts{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  .partsAmountPie{
+    grid-template-columns:1fr!important;
+  }
+  .partsPieDonut{
+    margin:0 auto!important;
+  }
+}
+@media(max-width:900px){
+  main.main > .kpis,
+  main.main > .partsGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  .partsPanel .partsCharts{
+    grid-template-columns:1fr!important;
+  }
+}
+@media(max-width:620px){
+  main.main > .kpis,
+  main.main > .partsGrid{
+    grid-template-columns:1fr!important;
+  }
+}
+
+/* Requested: wider right approval rail aligned with C4C/detail stack */
+main.main{
+  grid-template-columns:minmax(0,calc(100% - 560px - 18px)) minmax(500px,560px)!important;
+}
+main.main > .kpis{
+  grid-column:1!important;
+  grid-row:4!important;
+}
+main.main > .partsGrid{
+  grid-column:1!important;
+  grid-row:5!important;
+}
+main.main > .employeePanel{
+  grid-column:1!important;
+  grid-row:6!important;
+}
+main.main > .employeeDetailPanel{
+  grid-column:1!important;
+  grid-row:7!important;
+  margin:0!important;
+}
+main.main > .partsPanel{
+  grid-column:2!important;
+  grid-row:4 / 8!important;
+  align-self:stretch!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+.partsPanel .partsCharts{
+  flex:1!important;
+  grid-template-columns:1fr!important;
+  grid-template-rows:minmax(0,1fr) minmax(280px,.9fr)!important;
+  align-content:stretch!important;
+}
+.partsPanel .partsChart{
+  display:flex!important;
+  flex-direction:column!important;
+  min-height:0!important;
+}
+.partsPanel .partsChart:nth-child(3){
+  display:none!important;
+}
+.partsPanel .partsBarList{
+  flex:1!important;
+  min-height:0!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue,
+.employeePanel .employeeBarTrack .employeeEndValue.redValue,
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  color:#0f766e!important;
+}
+@media(max-width:1400px){
+  main.main{
+    grid-template-columns:minmax(0,1fr) minmax(440px,500px)!important;
+  }
+}
+@media(max-width:1280px){
+  main.main{
+    grid-template-columns:1fr!important;
+  }
+  main.main > .partsPanel,
+  main.main > .employeeDetailPanel,
+  main.main > .employeePanel,
+  main.main > .kpis,
+  main.main > .partsGrid{
+    grid-column:1!important;
+    grid-row:auto!important;
+  }
+  .partsPanel .partsCharts{
+    grid-template-rows:auto!important;
+  }
+}
+
+</style>
+<style>
+/* KPI cards aligned with Team Dashboard visual language */
+.kpis .kpi,
+.partsGrid .kpi,
+.dealerHandlingKpis .kpi{
+  position:relative!important;
+  min-height:118px!important;
+  padding:20px 22px!important;
+  border:1px solid #dfe7f1!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,#fff 0%,#fbfdff 100%)!important;
+  box-shadow:0 14px 34px rgba(15,23,42,.055)!important;
+  overflow:hidden!important;
+}
+.kpis .kpi:before,
+.partsGrid .kpi:before,
+.dealerHandlingKpis .kpi:before{
+  content:"";
+  position:absolute;
+  right:18px;
+  top:18px;
+  width:42px;
+  height:42px;
+  border-radius:999px;
+  background:#eaf4ff;
+  box-shadow:inset 0 0 0 1px rgba(59,130,246,.12);
+}
+.kpis .kpi:after,
+.partsGrid .kpi:after,
+.dealerHandlingKpis .kpi:after{
+  content:"#";
+  position:absolute;
+  right:18px;
+  top:18px;
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  color:#1677f2;
+  font-size:20px;
+  font-weight:850;
+  line-height:1;
+}
+.kpis .kpi:nth-child(1):after{content:"#";}
+.kpis .kpi:nth-child(2):after{content:"✓";color:#10b981;}
+.kpis .kpi:nth-child(2):before{background:#dcfce7;}
+.kpis .kpi:nth-child(3):after{content:"!";color:#f59e0b;}
+.kpis .kpi:nth-child(3):before{background:#fff7ed;}
+.kpis .kpi:nth-child(4):after{content:"%";color:#6366f1;}
+.kpis .kpi:nth-child(4):before{background:#eef2ff;}
+.partsGrid .kpi:nth-child(1):after{content:"$";color:#7c3aed;}
+.partsGrid .kpi:nth-child(1):before{background:#f3e8ff;}
+.partsGrid .kpi:nth-child(2):after{content:"%";color:#1677f2;}
+.partsGrid .kpi:nth-child(3):after{content:"14";color:#10b981;font-size:16px;}
+.partsGrid .kpi:nth-child(3):before{background:#dcfce7;}
+.partsGrid .kpi:nth-child(4):after{content:"d";color:#f59e0b;}
+.partsGrid .kpi:nth-child(4):before{background:#fff7ed;}
+.dealerHandlingKpis .kpi:nth-child(1):after{content:"%";color:#10b981;}
+.dealerHandlingKpis .kpi:nth-child(1):before{background:#dcfce7;}
+.dealerHandlingKpis .kpi:nth-child(2):after{content:"d";color:#f59e0b;}
+.dealerHandlingKpis .kpi:nth-child(2):before{background:#fff7ed;}
+.kpiLabel{
+  margin:0 54px 10px 0!important;
+  color:#334155!important;
+  font-size:12px!important;
+  line-height:1.3!important;
+  font-weight:650!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+}
+.kpiValue{
+  color:#0b1220!important;
+  font-size:30px!important;
+  line-height:1.05!important;
+  font-weight:680!important;
+  letter-spacing:-.03em!important;
+}
+.metricTrend,
+.ratioBase{
+  margin-top:12px!important;
+  font-size:12px!important;
+  font-weight:650!important;
+}
+</style><style>
+/* Final Internal Employees layout/readability corrections */
+main.main{
+  grid-template-columns:minmax(0,calc(100% - 560px - 22px)) minmax(520px,560px)!important;
+  gap:22px!important;
+}
+main.main > .kpis{grid-row:4!important;}
+main.main > .partsGrid{grid-row:5!important;}
+main.main > .employeePanel{grid-row:6!important;}
+main.main > .employeeDetailPanel{
+  grid-column:1!important;
+  grid-row:7!important;
+  margin-top:18px!important;
+  position:relative!important;
+  z-index:1!important;
+}
+main.main > .partsPanel{
+  grid-column:2!important;
+  grid-row:4 / 8!important;
+  align-self:stretch!important;
+  position:relative!important;
+  z-index:2!important;
+  overflow:hidden!important;
+}
+main.main > .mappingPanel{
+  grid-column:1 / -1!important;
+  grid-row:99!important;
+}
+main.main > .kpis .kpiLabel,
+main.main > .partsGrid .kpiLabel{
+  font-size:14px!important;
+  font-weight:720!important;
+  line-height:1.25!important;
+  color:#1f2a44!important;
+}
+.partsPanel .partsCharts{
+  grid-template-rows:minmax(230px,.9fr) minmax(310px,1.1fr)!important;
+  overflow:hidden!important;
+}
+.partsPanel .partsChart{overflow:hidden!important;}
+.partsAmountPie{
+  min-height:300px!important;
+  align-self:stretch!important;
+}
+.partsPieDonut{
+  z-index:1!important;
+  cursor:pointer!important;
+}
+.partsPieRow{cursor:pointer!important;}
+.employeePanel .employeeBarTrack .employeeEndValue,
+.employeePanel .employeeBarTrack .employeeEndValue.redValue,
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  color:#b45309!important;
+}
+@media(max-width:1280px){
+  main.main{grid-template-columns:1fr!important;}
+  main.main > .partsPanel,
+  main.main > .employeeDetailPanel,
+  main.main > .employeePanel,
+  main.main > .kpis,
+  main.main > .partsGrid,
+  main.main > .mappingPanel{
+    grid-column:1!important;
+    grid-row:auto!important;
+  }
+}
+</style><style>
+/* Final three-panel employee workbench: C4C | amount pie | approval */
+main.main{
+  grid-template-columns:minmax(0,1fr) minmax(300px,340px) minmax(360px,430px)!important;
+  gap:18px!important;
+}
+main.main > .kpis,
+main.main > .partsGrid{
+  grid-column:1 / -1!important;
+}
+main.main > .employeePanel{
+  grid-column:1!important;
+  grid-row:6!important;
+  min-width:0!important;
+}
+main.main > .partsAmountPanel{
+  grid-column:2!important;
+  grid-row:6!important;
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+main.main > .partsPanel{
+  grid-column:3!important;
+  grid-row:6!important;
+  min-width:0!important;
+  align-self:stretch!important;
+}
+main.main > .employeeDetailPanel{
+  grid-column:1 / -1!important;
+  grid-row:7!important;
+  margin-top:18px!important;
+}
+main.main > .mappingPanel{
+  grid-column:1 / -1!important;
+  grid-row:99!important;
+}
+.employeePanel .panelHead{
+  padding:18px 18px 10px!important;
+}
+.employeePanel .metricTabs{
+  gap:6px!important;
+}
+.employeePanel .metricTabs .btn{
+  height:31px!important;
+  padding:0 10px!important;
+  font-size:11px!important;
+}
+.employeePanel .employeeChartShell{
+  padding:2px 16px 16px!important;
+}
+.employeePanel .employeeBarList{
+  grid-template-columns:1fr!important;
+  grid-auto-flow:row!important;
+  gap:9px!important;
+}
+.employeePanel .employeeBarRow{
+  grid-template-columns:118px minmax(0,1fr) 62px!important;
+  gap:9px!important;
+  min-height:26px!important;
+  padding:7px 6px!important;
+}
+.employeePanel .employeeBarName{
+  font-size:11px!important;
+}
+.employeePanel .employeeBarTrack{
+  height:22px!important;
+}
+.employeePanel .employeeBarValue{
+  min-width:62px!important;
+  font-size:10px!important;
+}
+.partsPanel .partsCharts{
+  grid-template-columns:1fr!important;
+  grid-template-rows:1fr!important;
+  padding:0 18px 18px!important;
+}
+.partsPanel .partsChart:nth-child(2),
+.partsPanel .partsChart:nth-child(3){
+  display:none!important;
+}
+.partsAmountPanel .panelHead{
+  padding:18px 18px 6px!important;
+}
+.partsAmountPanel .partsAmountPie{
+  grid-template-columns:1fr!important;
+  gap:12px!important;
+  min-height:0!important;
+  padding:0 18px 18px!important;
+  flex:1!important;
+  align-content:center!important;
+}
+.partsAmountPanel .partsPieDonut{
+  width:190px!important;
+  height:190px!important;
+  margin:0 auto!important;
+}
+.partsAmountPanel .partsPieLegend{
+  gap:8px!important;
+}
+.partsAmountPanel .partsPieRow{
+  font-size:11px!important;
+}
+@media(max-width:1360px){
+  main.main{
+    grid-template-columns:1fr!important;
+  }
+  main.main > .employeePanel,
+  main.main > .partsAmountPanel,
+  main.main > .partsPanel,
+  main.main > .employeeDetailPanel,
+  main.main > .mappingPanel,
+  main.main > .kpis,
+  main.main > .partsGrid{
+    grid-column:1!important;
+    grid-row:auto!important;
+  }
+}
+</style><style>
+/* Final requested Internal Employees composition */
+main.main{
+  display:grid!important;
+  grid-template-columns:repeat(10,minmax(0,1fr))!important;
+  gap:18px!important;
+  align-items:stretch!important;
+}
+.employeeHero,#loadError,#calcStatus{
+  grid-column:1 / -1!important;
+}
+main.main > .kpis,
+main.main > .partsGrid{
+  grid-column:1 / 8!important;
+}
+main.main > .kpis{grid-row:4!important;}
+main.main > .partsGrid{grid-row:5!important;}
+main.main > .employeePanel{
+  grid-column:1 / 6!important;
+  grid-row:6!important;
+  min-width:0!important;
+  align-self:stretch!important;
+}
+main.main > .partsAmountPanel{
+  grid-column:6 / 8!important;
+  grid-row:6!important;
+  min-width:0!important;
+  align-self:stretch!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+main.main > .partsPanel{
+  grid-column:8 / 11!important;
+  grid-row:4 / 7!important;
+  min-width:0!important;
+  align-self:stretch!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+main.main > .employeeDetailPanel{
+  grid-column:1 / -1!important;
+  grid-row:7!important;
+  margin-top:12px!important;
+  position:relative!important;
+  z-index:1!important;
+}
+main.main > .mappingPanel{
+  grid-column:1 / -1!important;
+  grid-row:99!important;
+}
+main.main > .kpis .kpiLabel,
+main.main > .partsGrid .kpiLabel{
+  font-size:14px!important;
+  font-weight:740!important;
+  color:#1f2a44!important;
+}
+.employeePanel .panelHead{
+  padding:16px 16px 8px!important;
+}
+.employeePanel .employeePanelTitleLine{
+  gap:10px!important;
+  flex-wrap:wrap!important;
+}
+.employeePanel .metricTabs .btn{
+  height:30px!important;
+  padding:0 9px!important;
+  font-size:10.5px!important;
+}
+.employeePanel .employeeChartShell{
+  padding:2px 14px 14px!important;
+}
+.employeePanel .employeeBarList{
+  grid-template-columns:1fr!important;
+  grid-auto-flow:row!important;
+  gap:8px!important;
+}
+.employeePanel .employeeBarRow{
+  grid-template-columns:110px minmax(0,1fr) 58px!important;
+  gap:8px!important;
+  min-height:25px!important;
+  padding:6px 5px!important;
+}
+.employeePanel .employeeBarName{
+  font-size:10.5px!important;
+}
+.employeePanel .employeeBarTrack{
+  height:21px!important;
+}
+.employeePanel .employeeBarValue{
+  min-width:58px!important;
+  font-size:10px!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue,
+.employeePanel .employeeBarTrack .employeeEndValue.redValue,
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  color:#fff!important;
+  font-weight:900!important;
+}
+.partsAmountPanel .panelHead{
+  padding:16px 16px 6px!important;
+}
+.partsAmountPanel .partsAmountPie{
+  grid-template-columns:1fr!important;
+  gap:10px!important;
+  padding:0 14px 14px!important;
+  min-height:0!important;
+  flex:1!important;
+  align-content:center!important;
+}
+.partsAmountPanel .partsPieDonut{
+  width:178px!important;
+  height:178px!important;
+  margin:0 auto!important;
+}
+.partsAmountPanel .partsPieDonut span{
+  font-size:16px!important;
+}
+.partsAmountPanel .partsPieLegend{
+  gap:7px!important;
+}
+.partsAmountPanel .partsPieRow{
+  font-size:10.5px!important;
+}
+.partsPanel .partsCharts{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  grid-template-rows:1fr!important;
+  padding:0 18px 18px!important;
+  flex:1!important;
+}
+.partsPanel .partsChart:nth-child(2),
+.partsPanel .partsChart:nth-child(3){display:none!important;}
+.partsPanel .partsChart{
+  display:flex!important;
+  flex-direction:column!important;
+  min-height:0!important;
+}
+.partsPanel .partsBarList{
+  flex:1!important;
+  min-height:0!important;
+}
+@media(max-width:1360px){
+  main.main{grid-template-columns:1fr!important;}
+  main.main > .kpis,
+  main.main > .partsGrid,
+  main.main > .employeePanel,
+  main.main > .partsAmountPanel,
+  main.main > .partsPanel,
+  main.main > .employeeDetailPanel,
+  main.main > .mappingPanel{
+    grid-column:1!important;
+    grid-row:auto!important;
+  }
+}
+</style><style>
+/* Final separation: C4C | Approved amount total | Approval tickets */
+main.main{
+  grid-template-columns:repeat(10,minmax(0,1fr))!important;
+  gap:20px!important;
+}
+main.main > .employeePanel{
+  grid-column:1 / 6!important;
+  grid-row:6!important;
+  margin:0!important;
+  overflow:hidden!important;
+}
+main.main > .partsAmountPanel{
+  grid-column:6 / 8!important;
+  grid-row:6!important;
+  margin:0!important;
+  min-width:0!important;
+  align-self:stretch!important;
+  display:flex!important;
+  flex-direction:column!important;
+  border:1px solid #dfe7f1!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-shadow:0 14px 34px rgba(15,23,42,.055)!important;
+  overflow:hidden!important;
+}
+main.main > .partsPanel{
+  grid-column:8 / 11!important;
+  grid-row:6!important;
+  margin:0!important;
+  min-width:0!important;
+  align-self:stretch!important;
+  overflow:hidden!important;
+}
+main.main > .employeeDetailPanel{
+  grid-column:1 / -1!important;
+  grid-row:7!important;
+  margin-top:16px!important;
+}
+.partsAmountPanel .panelHead{
+  padding:18px 18px 8px!important;
+  border-bottom:0!important;
+}
+.partsAmountPanel .panelTitle{
+  font-size:16px!important;
+  font-weight:720!important;
+  color:#0f172a!important;
+}
+.partsAmountPanel .partsAmountPie{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:12px!important;
+  padding:4px 18px 18px!important;
+  flex:1!important;
+  min-height:0!important;
+  align-content:center!important;
+  justify-items:stretch!important;
+}
+.partsAmountPanel .partsPieDonut{
+  width:180px!important;
+  height:180px!important;
+  margin:0 auto!important;
+  position:relative!important;
+  z-index:1!important;
+}
+.partsAmountPanel .partsPieLegend{
+  width:100%!important;
+  gap:8px!important;
+}
+.partsAmountPanel .partsPieRow{
+  font-size:11px!important;
+  min-height:22px!important;
+}
+.partsPanel .panelHead{
+  padding:18px 20px 8px!important;
+}
+.partsPanel .panelTitle{
+  font-size:17px!important;
+  font-weight:730!important;
+}
+.partsPanel .partsCharts{
+  padding:0 20px 20px!important;
+}
+.partsPanel .partsChartTitle{
+  display:none!important;
+}
+.partsPanel .partsBarList{
+  gap:12px!important;
+}
+.partsPanel .partsBarRow{
+  grid-template-columns:145px minmax(0,1fr) 118px!important;
+  gap:12px!important;
+  min-height:34px!important;
+}
+.partsPanel .partsBarName{
+  font-size:12.5px!important;
+  font-weight:650!important;
+}
+.partsPanel .partsBarTrack.multi{
+  gap:5px!important;
+  padding:4px!important;
+}
+.partsPanel .partsBarTrack.multi .partsBarFill{
+  height:9px!important;
+  border-radius:999px!important;
+}
+.partsPanel .partsBarValue{
+  font-size:12px!important;
+  font-weight:750!important;
+}
+@media(max-width:1360px){
+  main.main{grid-template-columns:1fr!important;}
+  main.main > .employeePanel,
+  main.main > .partsAmountPanel,
+  main.main > .partsPanel,
+  main.main > .employeeDetailPanel{
+    grid-column:1!important;
+    grid-row:auto!important;
+  }
+}
+</style><style>
+/* Absolute final polish for separated employee approval layout */
+main.main > .partsAmountPanel{
+  box-sizing:border-box!important;
+  isolation:isolate!important;
+  background:#fff!important;
+  border:1px solid #dfe7f1!important;
+  border-radius:16px!important;
+  box-shadow:0 14px 34px rgba(15,23,42,.055)!important;
+}
+main.main > .employeePanel,
+main.main > .partsPanel,
+main.main > .partsAmountPanel{
+  position:relative!important;
+  z-index:1!important;
+}
+.partsAmountPanel .partsPieDonut,
+.partsAmountPanel .partsPieLegend{
+  position:relative!important;
+  z-index:2!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue,
+.employeePanel .employeeBarTrack .employeeEndValue.redValue,
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  color:#fff!important;
+  text-shadow:0 1px 2px rgba(15,23,42,.42)!important;
+}
+.partsPanel .panelDesc{display:none!important;}
+.partsPanel .partsBarRow{
+  grid-template-columns:155px minmax(0,1fr) 126px!important;
+  min-height:38px!important;
+}
+.partsPanel .partsBarName{font-size:13px!important;}
+.partsPanel .partsBarTrack.multi .partsBarFill{height:10px!important;}
+.partsPanel .partsBarValue{font-size:12.5px!important;}
+</style><style>
+/* Crisp C4C inline numbers */
+.employeePanel .employeeBarTrack .employeeEndValue,
+.employeePanel .employeeBarTrack .employeeEndValue.redValue,
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  color:#fff!important;
+  background:rgba(15,23,42,.28)!important;
+  border:0!important;
+  border-radius:999px!important;
+  padding:1px 5px!important;
+  font-family:"Segoe UI",Arial,sans-serif!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  line-height:1.15!important;
+  font-variant-numeric:tabular-nums!important;
+  -webkit-font-smoothing:antialiased!important;
+  text-shadow:none!important;
+  box-shadow:none!important;
+}
+</style><style>
+/* Authoritative employee layout: no overlap */
+main.main{
+  display:grid!important;
+  grid-template-columns:repeat(20,minmax(0,1fr))!important;
+  grid-auto-rows:auto!important;
+  grid-template-areas:
+    "hero hero hero hero hero hero hero hero hero hero hero hero hero hero hero hero hero hero hero hero"
+    "error error error error error error error error error error error error error error error error error error error error"
+    "calc calc calc calc calc calc calc calc calc calc calc calc calc calc calc calc calc calc calc calc"
+    "kpi kpi kpi kpi kpi kpi kpi kpi kpi kpi kpi kpi kpi kpi approve approve approve approve approve approve"
+    "kpi2 kpi2 kpi2 kpi2 kpi2 kpi2 kpi2 kpi2 kpi2 kpi2 kpi2 kpi2 kpi2 kpi2 approve approve approve approve approve approve"
+    "c4c c4c c4c c4c c4c c4c c4c c4c c4c pie pie pie pie pie approve approve approve approve approve approve"
+    "detail detail detail detail detail detail detail detail detail detail detail detail detail detail detail detail detail detail detail detail"
+    "mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping"!important;
+  gap:20px!important;
+  align-items:stretch!important;
+}
+.employeeHero{grid-area:hero!important;}
+#loadError{grid-area:error!important;}
+#calcStatus{grid-area:calc!important;}
+main.main > .kpis{grid-area:kpi!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .partsGrid{grid-area:kpi2!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .employeePanel{grid-area:c4c!important;grid-column:auto!important;grid-row:auto!important;min-width:0!important;margin:0!important;overflow:hidden!important;z-index:1!important;}
+main.main > .partsAmountPanel{grid-area:pie!important;grid-column:auto!important;grid-row:auto!important;min-width:0!important;margin:0!important;overflow:hidden!important;z-index:1!important;background:#fff!important;border:1px solid #dfe7f1!important;border-radius:16px!important;box-shadow:0 14px 34px rgba(15,23,42,.055)!important;display:flex!important;flex-direction:column!important;}
+main.main > .partsPanel{grid-area:approve!important;grid-column:auto!important;grid-row:auto!important;min-width:0!important;margin:0!important;overflow:hidden!important;z-index:1!important;display:flex!important;flex-direction:column!important;}
+main.main > .employeeDetailPanel{grid-area:detail!important;grid-column:auto!important;grid-row:auto!important;margin:0!important;}
+main.main > .mappingPanel{grid-area:mapping!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .mappingPanel{
+  align-self:start!important;
+  margin-top:0!important;
+  min-height:0!important;
+  height:auto!important;
+}
+.mappingPanel.collapsed{
+  padding-bottom:18px!important;
+}
+.partsAmountPanel .panelHead{padding:18px 18px 8px!important;}
+.partsAmountPanel .panelTitle{font-size:16px!important;font-weight:730!important;color:#0f172a!important;}
+.partsAmountPanel .partsAmountPie{display:grid!important;grid-template-columns:1fr!important;gap:12px!important;padding:4px 18px 18px!important;flex:1!important;align-content:center!important;justify-items:center!important;min-height:0!important;}
+.partsAmountPanel .partsPieDonut{width:188px!important;height:188px!important;margin:0 auto!important;position:relative!important;z-index:1!important;}
+.partsAmountPanel .partsPieLegend{width:100%!important;gap:8px!important;}
+.partsPanel .panelHead{padding:20px 22px 10px!important;}
+.partsPanel .panelTitle{font-size:18px!important;font-weight:760!important;color:#0f172a!important;}
+.partsPanel .panelDesc,.partsPanel .partsChartTitle{display:none!important;}
+.partsPanel .partsCharts{display:grid!important;grid-template-columns:1fr!important;grid-template-rows:1fr!important;padding:0 22px 22px!important;flex:1!important;min-height:0!important;}
+.partsPanel .partsChart{display:flex!important;flex-direction:column!important;min-height:0!important;padding:16px!important;}
+.partsPanel .partsChart:nth-child(2),.partsPanel .partsChart:nth-child(3){display:none!important;}
+.partsPanel .partsBarList{gap:14px!important;flex:1!important;}
+.partsPanel .partsBarRow{grid-template-columns:160px minmax(0,1fr) 132px!important;gap:14px!important;min-height:40px!important;}
+.partsPanel .partsBarName{font-size:13px!important;font-weight:700!important;}
+.partsPanel .partsBarTrack.multi{gap:5px!important;padding:4px!important;}
+.partsPanel .partsBarTrack.multi .partsBarFill{height:11px!important;border-radius:999px!important;}
+.partsPanel .partsBarValue{font-size:13px!important;font-weight:800!important;}
+@media(max-width:1360px){
+  main.main{grid-template-columns:1fr!important;grid-template-areas:"hero" "error" "calc" "kpi" "kpi2" "c4c" "pie" "approve" "detail" "mapping"!important;}
+}
+</style><style>
+/* Hand-drawn target layout: final authority */
+main.main{
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  grid-template-areas:
+    "hero hero hero hero hero hero hero hero hero hero hero hero"
+    "error error error error error error error error error error error error"
+    "calc calc calc calc calc calc calc calc calc calc calc calc"
+    "kpis kpis kpis kpis kpis kpis kpis kpis kpis kpis kpis kpis"
+    "kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2"
+    "c4c c4c c4c c4c amount amount amount approval approval approval approval approval"
+    "detail detail detail detail detail detail detail detail detail detail detail detail"
+    "mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping"!important;
+  gap:20px!important;
+  align-items:start!important;
+}
+.employeeHero{grid-area:hero!important;}
+#loadError{grid-area:error!important;}
+#calcStatus{grid-area:calc!important;}
+main.main > .kpis{grid-area:kpis!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .partsGrid{grid-area:kpis2!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .employeePanel{grid-area:c4c!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .partsAmountPanel{grid-area:amount!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .partsPanel{grid-area:approval!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .employeeDetailPanel{grid-area:detail!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .mappingPanel{grid-area:mapping!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .kpis,
+main.main > .partsGrid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px!important;
+  margin:0!important;
+}
+main.main > .kpis .kpi,
+main.main > .partsGrid .kpi{
+  min-height:112px!important;
+  padding:19px 21px!important;
+}
+main.main > .kpis .kpiLabel,
+main.main > .partsGrid .kpiLabel{
+  font-size:14px!important;
+  font-weight:750!important;
+  color:#1f2a44!important;
+  line-height:1.25!important;
+}
+main.main > .employeePanel,
+main.main > .partsAmountPanel,
+main.main > .partsPanel,
+main.main > .employeeDetailPanel,
+main.main > .mappingPanel{
+  position:relative!important;
+  z-index:1!important;
+  margin:0!important;
+  min-width:0!important;
+  background:#fff!important;
+  border:1px solid #dfe7f1!important;
+  border-radius:16px!important;
+  box-shadow:0 14px 34px rgba(15,23,42,.055)!important;
+  overflow:hidden!important;
+}
+main.main > .employeePanel,
+main.main > .partsAmountPanel,
+main.main > .partsPanel{
+  align-self:stretch!important;
+  min-height:440px!important;
+}
+.employeePanel .panelHead,
+.partsAmountPanel .panelHead,
+.partsPanel .panelHead{
+  padding:18px 18px 10px!important;
+}
+.employeePanel .panelTitle,
+.partsAmountPanel .panelTitle,
+.partsPanel .panelTitle{
+  font-size:16px!important;
+  font-weight:760!important;
+  color:#0f172a!important;
+}
+.employeePanel .employeeHeaderLegend{
+  font-size:11px!important;
+}
+.employeePanel .metricTabs{
+  gap:6px!important;
+}
+.employeePanel .metricTabs .btn{
+  height:30px!important;
+  padding:0 9px!important;
+  font-size:10.5px!important;
+}
+.employeePanel .employeeChartShell{
+  padding:2px 14px 14px!important;
+}
+.employeePanel .employeeBarList{
+  grid-template-columns:1fr!important;
+  grid-auto-flow:row!important;
+  gap:8px!important;
+}
+.employeePanel .employeeBarRow{
+  grid-template-columns:112px minmax(0,1fr) 60px!important;
+  gap:8px!important;
+  min-height:25px!important;
+  padding:6px 5px!important;
+}
+.employeePanel .employeeBarName{
+  font-size:10.5px!important;
+}
+.employeePanel .employeeBarTrack{
+  height:21px!important;
+}
+.employeePanel .employeeBarValue{
+  min-width:60px!important;
+  font-size:10px!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue,
+.employeePanel .employeeBarTrack .employeeEndValue.redValue,
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  color:#fff!important;
+  background:rgba(15,23,42,.28)!important;
+  text-shadow:none!important;
+}
+.partsAmountPanel{
+  display:flex!important;
+  flex-direction:column!important;
+}
+.partsAmountPanel .partsAmountPie{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:12px!important;
+  padding:4px 18px 18px!important;
+  flex:1!important;
+  min-height:0!important;
+  align-content:center!important;
+  justify-items:center!important;
+}
+.partsAmountPanel .partsPieDonut{
+  width:190px!important;
+  height:190px!important;
+  margin:0 auto!important;
+}
+.partsAmountPanel .partsPieLegend{
+  width:100%!important;
+  gap:8px!important;
+}
+.partsAmountPanel .partsPieRow{
+  font-size:11px!important;
+  min-height:22px!important;
+}
+.partsPanel{
+  display:flex!important;
+  flex-direction:column!important;
+}
+.partsPanel .panelDesc,
+.partsPanel .partsChartTitle{
+  display:none!important;
+}
+.partsPanel .partsCharts{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  grid-template-rows:1fr!important;
+  padding:0 22px 22px!important;
+  flex:1!important;
+  min-height:0!important;
+}
+.partsPanel .partsChart{
+  display:flex!important;
+  flex-direction:column!important;
+  min-height:0!important;
+  padding:16px!important;
+}
+.partsPanel .partsChart:nth-child(2),
+.partsPanel .partsChart:nth-child(3){
+  display:none!important;
+}
+.partsPanel .partsBarList{
+  gap:14px!important;
+  flex:1!important;
+}
+.partsPanel .partsBarRow{
+  grid-template-columns:160px minmax(0,1fr) 132px!important;
+  gap:14px!important;
+  min-height:40px!important;
+}
+.partsPanel .partsBarName{
+  font-size:13px!important;
+  font-weight:700!important;
+}
+.partsPanel .partsBarTrack.multi{
+  gap:5px!important;
+  padding:4px!important;
+}
+.partsPanel .partsBarTrack.multi .partsBarFill{
+  height:11px!important;
+  border-radius:999px!important;
+}
+.partsPanel .partsBarValue{
+  font-size:13px!important;
+  font-weight:800!important;
+}
+.employeeDetailPanel{
+  margin-top:0!important;
+}
+.mappingPanel{
+  align-self:start!important;
+  height:auto!important;
+  min-height:0!important;
+  margin-top:0!important;
+}
+@media(max-width:1360px){
+  main.main{
+    grid-template-columns:1fr!important;
+    grid-template-areas:"hero" "error" "calc" "kpis" "kpis2" "c4c" "amount" "approval" "detail" "mapping"!important;
+  }
+  main.main > .kpis,
+  main.main > .partsGrid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:720px){
+  main.main > .kpis,
+  main.main > .partsGrid{
+    grid-template-columns:1fr!important;
+  }
+}
+</style><style>
+/* Hand sketch authority layout: KPI/cards left, approval panel right */
+main.main{
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  grid-template-areas:
+    "hero hero hero hero hero hero hero hero hero hero hero hero"
+    "error error error error error error error error error error error error"
+    "calc calc calc calc calc calc calc calc calc calc calc calc"
+    "kpis kpis kpis kpis kpis kpis kpis approval approval approval approval approval"
+    "kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 approval approval approval approval approval"
+    "c4c c4c c4c c4c amount amount amount approval approval approval approval approval"
+    "detail detail detail detail detail detail detail detail detail detail detail detail"
+    "mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping"!important;
+  gap:20px!important;
+  align-items:start!important;
+}
+.employeeHero{grid-area:hero!important;}
+#loadError{grid-area:error!important;}
+#calcStatus{grid-area:calc!important;}
+main.main > .kpis{grid-area:kpis!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .partsGrid{grid-area:kpis2!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .employeePanel{grid-area:c4c!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .partsAmountPanel{grid-area:amount!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .partsPanel{grid-area:approval!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .employeeDetailPanel{grid-area:detail!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .mappingPanel{grid-area:mapping!important;grid-column:auto!important;grid-row:auto!important;}
+main.main > .kpis,
+main.main > .partsGrid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px!important;
+  margin:0!important;
+  min-width:0!important;
+}
+main.main > .kpis .kpi,
+main.main > .partsGrid .kpi{
+  min-height:116px!important;
+  padding:20px 22px!important;
+  border-radius:16px!important;
+}
+main.main > .kpis .kpiLabel,
+main.main > .partsGrid .kpiLabel{
+  font-size:14px!important;
+  font-weight:800!important;
+  line-height:1.25!important;
+  color:#1e293b!important;
+}
+main.main > .employeePanel,
+main.main > .partsAmountPanel,
+main.main > .partsPanel,
+main.main > .employeeDetailPanel,
+main.main > .mappingPanel{
+  position:relative!important;
+  z-index:1!important;
+  margin:0!important;
+  min-width:0!important;
+  background:#fff!important;
+  border:1px solid #dfe7f1!important;
+  border-radius:16px!important;
+  box-shadow:0 14px 34px rgba(15,23,42,.055)!important;
+  overflow:hidden!important;
+}
+main.main > .employeePanel,
+main.main > .partsAmountPanel,
+main.main > .partsPanel{
+  align-self:stretch!important;
+  min-height:460px!important;
+}
+main.main > .partsPanel{
+  min-height:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+.partsPanel .panelHead{padding:20px 22px 8px!important;}
+.partsPanel .panelTitle{font-size:18px!important;font-weight:850!important;color:#0f172a!important;}
+.partsPanel .panelDesc,
+.partsPanel .partsChartTitle{display:none!important;}
+.partsPanel .partsCharts{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  padding:8px 22px 24px!important;
+  flex:1!important;
+  min-height:0!important;
+}
+.partsPanel .partsChart{display:flex!important;flex-direction:column!important;min-height:0!important;}
+.partsPanel .partsChart:nth-child(2),
+.partsPanel .partsChart:nth-child(3){display:none!important;}
+.partsPanel .partsBarList{gap:16px!important;flex:1!important;}
+.partsPanel .partsBarRow{
+  grid-template-columns:170px minmax(0,1fr) 138px!important;
+  gap:14px!important;
+  min-height:42px!important;
+}
+.partsPanel .partsBarName{font-size:13.5px!important;font-weight:750!important;color:#1e293b!important;}
+.partsPanel .partsBarTrack.multi{gap:5px!important;padding:4px!important;}
+.partsPanel .partsBarTrack.multi .partsBarFill{height:12px!important;border-radius:999px!important;}
+.partsPanel .partsBarValue{font-size:13px!important;font-weight:850!important;color:#0f172a!important;}
+.employeePanel .panelHead,
+.partsAmountPanel .panelHead{padding:18px 18px 10px!important;}
+.employeePanel .panelTitle,
+.partsAmountPanel .panelTitle{font-size:16px!important;font-weight:800!important;color:#0f172a!important;}
+.employeePanel .metricTabs{gap:6px!important;}
+.employeePanel .metricTabs .btn{height:30px!important;padding:0 9px!important;font-size:10.5px!important;}
+.employeePanel .employeeChartShell{padding:2px 14px 14px!important;}
+.employeePanel .employeeBarList{grid-template-columns:1fr!important;grid-auto-flow:row!important;gap:8px!important;}
+.employeePanel .employeeBarRow{grid-template-columns:112px minmax(0,1fr) 60px!important;gap:8px!important;min-height:25px!important;padding:6px 5px!important;}
+.employeePanel .employeeBarName{font-size:10.5px!important;}
+.employeePanel .employeeBarTrack{height:21px!important;}
+.employeePanel .employeeBarValue{min-width:60px!important;font-size:10px!important;}
+.employeePanel .employeeBarTrack .employeeEndValue,
+.employeePanel .employeeBarTrack .employeeEndValue.redValue,
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  color:#fff!important;
+  font-family:"Arial","Segoe UI",sans-serif!important;
+  font-weight:900!important;
+  -webkit-font-smoothing:antialiased!important;
+  text-rendering:geometricPrecision!important;
+  background:rgba(15,23,42,.26)!important;
+  text-shadow:none!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue.redValue{
+  transform:translate(4px,-50%)!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  transform:translate(-14px,-50%)!important;
+}
+.partsAmountPanel{display:flex!important;flex-direction:column!important;}
+.partsAmountPanel .partsAmountPie{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:12px!important;
+  padding:4px 18px 18px!important;
+  flex:1!important;
+  min-height:0!important;
+  align-content:center!important;
+  justify-items:center!important;
+}
+.partsAmountPanel .partsPieDonut{width:190px!important;height:190px!important;margin:0 auto!important;}
+.partsAmountPanel .partsPieLegend{width:100%!important;gap:8px!important;}
+.partsAmountPanel .partsPieRow{font-size:11px!important;min-height:22px!important;}
+.employeeDetailPanel{margin-top:0!important;}
+.mappingPanel{
+  align-self:start!important;
+  height:auto!important;
+  min-height:0!important;
+  margin-top:0!important;
+  padding-bottom:18px!important;
+}
+.mappingPanel .panelHead{margin-bottom:0!important;}
+.mappingPanel.collapsed .mappingEditor{display:none!important;}
+@media(max-width:1050px){
+  main.main{
+    grid-template-columns:repeat(12,minmax(0,1fr))!important;
+    grid-template-areas:
+      "hero hero hero hero hero hero hero hero hero hero hero hero"
+      "error error error error error error error error error error error error"
+      "calc calc calc calc calc calc calc calc calc calc calc calc"
+      "kpis kpis kpis kpis kpis kpis kpis kpis kpis kpis kpis kpis"
+      "kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2"
+      "c4c c4c c4c c4c c4c c4c amount amount amount amount amount amount"
+      "approval approval approval approval approval approval approval approval approval approval approval approval"
+      "detail detail detail detail detail detail detail detail detail detail detail detail"
+      "mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping"!important;
+  }
+  main.main > .partsPanel{min-height:520px!important;}
+}
+@media(max-width:760px){
+  main.main{grid-template-columns:1fr!important;grid-template-areas:"hero" "error" "calc" "kpis" "kpis2" "c4c" "amount" "approval" "detail" "mapping"!important;}
+  main.main > .kpis,
+  main.main > .partsGrid{grid-template-columns:1fr!important;}
+  .partsPanel .partsBarRow{grid-template-columns:1fr!important;gap:8px!important;}
+  .partsPanel .partsBarName{text-align:left!important;}
+}
+</style><style>
+/* Width reset for hand sketch layout */
+main.main > .kpis,
+main.main > .partsGrid,
+main.main > .employeePanel,
+main.main > .partsAmountPanel,
+main.main > .partsPanel,
+main.main > .employeeDetailPanel,
+main.main > .mappingPanel{
+  width:auto!important;
+  max-width:none!important;
+  min-width:0!important;
+}
+main.main > .kpis,
+main.main > .partsGrid{
+  grid-auto-flow:row!important;
+}
+@media(min-width:1051px){
+  main.main > .partsPanel{height:100%!important;}
+  main.main > .employeePanel,
+  main.main > .partsAmountPanel{height:460px!important;}
+}
+</style><style>
+/* Final grid-area restore: keep named areas after older auto longhands */
+main.main > .kpis{grid-area:kpis!important;}
+main.main > .partsGrid{grid-area:kpis2!important;}
+main.main > .employeePanel{grid-area:c4c!important;}
+main.main > .partsAmountPanel{grid-area:amount!important;}
+main.main > .partsPanel{grid-area:approval!important;}
+main.main > .employeeDetailPanel{grid-area:detail!important;}
+main.main > .mappingPanel{grid-area:mapping!important;}
+</style><style>
+/* Final named-line placement: prevent old grid-column rules from stretching panels */
+main.main > .kpis{grid-row:kpis-start / kpis-end!important;grid-column:kpis-start / kpis-end!important;}
+main.main > .partsGrid{grid-row:kpis2-start / kpis2-end!important;grid-column:kpis2-start / kpis2-end!important;}
+main.main > .employeePanel{grid-row:c4c-start / c4c-end!important;grid-column:c4c-start / c4c-end!important;}
+main.main > .partsAmountPanel{grid-row:amount-start / amount-end!important;grid-column:amount-start / amount-end!important;}
+main.main > .partsPanel{grid-row:approval-start / approval-end!important;grid-column:approval-start / approval-end!important;}
+main.main > .employeeDetailPanel{grid-row:detail-start / detail-end!important;grid-column:detail-start / detail-end!important;}
+main.main > .mappingPanel{grid-row:mapping-start / mapping-end!important;grid-column:mapping-start / mapping-end!important;}
+</style><style>
+/* Strong placement for Approved amount total card */
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel{
+  grid-row:amount-start / amount-end!important;
+  grid-column:amount-start / amount-end!important;
+  grid-area:amount-start / amount-start / amount-end / amount-end!important;
+  width:auto!important;
+  max-width:none!important;
+}
+</style><style>
+/* Final swap: Approved vs Unapproved left, C4C right */
+main.main{
+  grid-template-areas:
+    "hero hero hero hero hero hero hero hero hero hero hero hero"
+    "error error error error error error error error error error error error"
+    "calc calc calc calc calc calc calc calc calc calc calc calc"
+    "kpis kpis kpis kpis kpis kpis kpis c4c c4c c4c c4c c4c"
+    "kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 c4c c4c c4c c4c c4c"
+    "approval approval approval approval amount amount amount c4c c4c c4c c4c c4c"
+    "detail detail detail detail detail detail detail detail detail detail detail detail"
+    "mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping"!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel{
+  grid-row:approval-start / approval-end!important;
+  grid-column:approval-start / approval-end!important;
+  grid-area:approval-start / approval-start / approval-end / approval-end!important;
+  height:460px!important;
+  min-height:460px!important;
+}
+body .app main.main > section.panel.employeePanel.employeePanel{
+  grid-row:c4c-start / c4c-end!important;
+  grid-column:c4c-start / c4c-end!important;
+  grid-area:c4c-start / c4c-start / c4c-end / c4c-end!important;
+  height:100%!important;
+  min-height:100%!important;
+}
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel{
+  grid-row:amount-start / amount-end!important;
+  grid-column:amount-start / amount-end!important;
+  grid-area:amount-start / amount-start / amount-end / amount-end!important;
+}
+@media(max-width:1050px){
+  main.main{
+    grid-template-areas:
+      "hero hero hero hero hero hero hero hero hero hero hero hero"
+      "error error error error error error error error error error error error"
+      "calc calc calc calc calc calc calc calc calc calc calc calc"
+      "kpis kpis kpis kpis kpis kpis kpis kpis kpis kpis kpis kpis"
+      "kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2"
+      "approval approval approval approval approval approval amount amount amount amount amount amount"
+      "c4c c4c c4c c4c c4c c4c c4c c4c c4c c4c c4c c4c"
+      "detail detail detail detail detail detail detail detail detail detail detail detail"
+      "mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping"!important;
+  }
+  body .app main.main > section.panel.employeePanel.employeePanel{height:auto!important;min-height:520px!important;}
+}
+@media(max-width:760px){
+  main.main{grid-template-areas:"hero" "error" "calc" "kpis" "kpis2" "approval" "amount" "c4c" "detail" "mapping"!important;}
+  body .app main.main > section.panel.partsPanel.partsPanel,
+  body .app main.main > section.panel.employeePanel.employeePanel{height:auto!important;min-height:0!important;}
+}
+</style><style>
+/* Approved amount title spacing fix */
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  position:relative!important;
+  z-index:2!important;
+  padding:16px 18px 4px!important;
+  margin:0!important;
+  min-height:42px!important;
+}
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  margin:0!important;
+  font-size:15px!important;
+  line-height:1.2!important;
+  max-width:100%!important;
+}
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .partsAmountPie{
+  padding:8px 16px 16px!important;
+  align-content:start!important;
+  gap:8px!important;
+}
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .partsPieDonut{
+  width:168px!important;
+  height:168px!important;
+  margin:2px auto 0!important;
+}
+</style><style>
+/* Tighten Internal Employees hero spacing */
+.employeeHero{
+  margin-bottom:0!important;
+  padding-bottom:18px!important;
+}
+main.main{
+  row-gap:6px!important;
+}
+main.main > .kpis,
+main.main > .partsPanel{
+  margin-top:0!important;
+}
+</style><style>
+/* Slightly soften Internal Employees KPI titles */
+main.main > .kpis .kpiLabel,
+main.main > .partsGrid .kpiLabel{
+  color:#465873!important;
+}
+</style><style>
+/* Balance approval/amount panels and make compact content scrollable */
+@media(min-width:1051px){
+  main.main{
+    grid-template-areas:
+      "hero hero hero hero hero hero hero hero hero hero hero hero"
+      "error error error error error error error error error error error error"
+      "calc calc calc calc calc calc calc calc calc calc calc calc"
+      "kpis kpis kpis kpis kpis kpis kpis c4c c4c c4c c4c c4c"
+      "kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 kpis2 c4c c4c c4c c4c c4c"
+      "approval approval approval approval amount amount amount c4c c4c c4c c4c c4c"
+      "detail detail detail detail detail detail detail detail detail detail detail detail"
+      "mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping mapping"!important;
+  }
+  body .app main.main > section.panel.partsPanel.partsPanel{
+    grid-row:approval-start / approval-end!important;
+    grid-column:approval-start / approval-end!important;
+    grid-area:approval-start / approval-start / approval-end / approval-end!important;
+  }
+  body .app main.main > section.panel.partsAmountPanel.partsAmountPanel{
+    grid-row:amount-start / amount-end!important;
+    grid-column:amount-start / amount-end!important;
+    grid-area:amount-start / amount-start / amount-end / amount-end!important;
+  }
+}
+body .app main.main > section.panel.partsPanel.partsPanel{
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .partsCharts{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  max-height:100%!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  scrollbar-width:thin;
+  scrollbar-color:#cbd5e1 transparent;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .partsCharts::-webkit-scrollbar{width:8px;}
+body .app main.main > section.panel.partsPanel.partsPanel .partsCharts::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px;}
+body .app main.main > section.panel.partsPanel.partsPanel .partsCharts::-webkit-scrollbar-track{background:transparent;}
+body .app main.main > section.panel.partsPanel.partsPanel .partsChart{
+  min-height:0!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .partsBarList{
+  min-height:0!important;
+  max-height:315px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding-right:6px!important;
+  scrollbar-width:thin;
+  scrollbar-color:#cbd5e1 transparent;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .partsBarList::-webkit-scrollbar{width:8px;}
+body .app main.main > section.panel.partsPanel.partsPanel .partsBarList::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px;}
+body .app main.main > section.panel.partsPanel.partsPanel .partsBarList::-webkit-scrollbar-track{background:transparent;}
+body .app main.main > section.panel.partsPanel.partsPanel .partsBarRow{
+  grid-template-columns:145px minmax(130px,1fr) 112px!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .partsBarTrack{
+  min-width:130px!important;
+}
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel{
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+}
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .partsAmountPie{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  scrollbar-width:thin;
+  scrollbar-color:#cbd5e1 transparent;
+}
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .partsAmountPie::-webkit-scrollbar{width:8px;}
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .partsAmountPie::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:999px;}
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .partsAmountPie::-webkit-scrollbar-track{background:transparent;}
+body .app main.main > section.panel.partsPanel.partsPanel .panelTitle,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  color:#25364f!important;
+  font-weight:650!important;
+}
+/* Final polish: align Internal Employees KPI cards and panel headings with Team Dashboard */
+body .app main.main > .kpis .kpi,
+body .app main.main > .partsGrid .kpi{
+  position:relative!important;
+  min-height:112px!important;
+  padding:18px 20px!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#fbfdff 100%)!important;
+  border-color:#dfe8f3!important;
+  box-shadow:0 12px 28px rgba(15,23,42,.045)!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+}
+body .app main.main > .kpis .kpi:before,
+body .app main.main > .partsGrid .kpi:before{
+  right:18px!important;
+  top:18px!important;
+  width:38px!important;
+  height:38px!important;
+  border-radius:13px!important;
+  box-shadow:none!important;
+}
+body .app main.main > .kpis .kpi:after,
+body .app main.main > .partsGrid .kpi:after{
+  right:18px!important;
+  top:18px!important;
+  width:38px!important;
+  height:38px!important;
+  font-size:18px!important;
+  font-weight:700!important;
+  line-height:1!important;
+}
+body .app main.main > .kpis .kpi:nth-child(3):after{
+  content:"!"!important;
+  color:#f59e0b!important;
+}
+body .app main.main > .partsGrid .kpi:nth-child(3):after{
+  content:"%"!important;
+  color:#10b981!important;
+  font-size:18px!important;
+}
+body .app main.main > .kpis .kpiLabel,
+body .app main.main > .partsGrid .kpiLabel{
+  margin:0 52px 8px 0!important;
+  color:#344054!important;
+  font-size:13px!important;
+  line-height:1.25!important;
+  font-weight:500!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+}
+body .app main.main > .kpis .kpiValue,
+body .app main.main > .partsGrid .kpiValue{
+  color:#0f172a!important;
+  font-size:28px!important;
+  line-height:1!important;
+  font-weight:600!important;
+  letter-spacing:-.025em!important;
+  margin-top:0!important;
+}
+body .app main.main > .kpis .metricTrend,
+body .app main.main > .partsGrid .metricTrend,
+body .app main.main > .partsGrid .ratioBase{
+  margin-top:0!important;
+  min-height:20px!important;
+  color:#64748b!important;
+  font-size:12px!important;
+  font-weight:500!important;
+}
+body .app main.main > section.panel.employeePanel.employeePanel .panelHead,
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  padding:18px 20px 12px!important;
+  margin:0!important;
+  align-items:flex-start!important;
+}
+body .app main.main > section.panel.employeePanel.employeePanel .panelTitle,
+body .app main.main > section.panel.partsPanel.partsPanel .panelTitle,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  margin:0!important;
+  color:#132035!important;
+  font-size:16px!important;
+  line-height:1.2!important;
+  font-weight:600!important;
+  letter-spacing:-.01em!important;
+}
+body .app main.main > section.panel.employeePanel.employeePanel .employeeHeaderLegend{
+  color:#66758f!important;
+  font-size:12px!important;
+  font-weight:400!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelDesc{
+  margin-top:4px!important;
+  color:#667085!important;
+  font-size:12px!important;
+  font-weight:400!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  height:54px!important;
+  min-height:54px!important;
+  padding:18px 20px 10px!important;
+  display:flex!important;
+  align-items:flex-start!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead > div,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead > div{
+  display:block!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelTitle,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  height:20px!important;
+  line-height:20px!important;
+  display:block!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel{
+  align-self:start!important;
+  margin-top:0!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  box-sizing:border-box!important;
+  padding-top:18px!important;
+  padding-right:20px!important;
+  padding-bottom:10px!important;
+  padding-left:20px!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelTitle,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  padding:0!important;
+  transform:none!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  position:relative!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelTitle,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  position:static!important;
+  top:auto!important;
+  left:auto!important;
+  margin:0!important;
+}
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  padding:18px 20px 10px!important;
+}
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  display:block!important;
+  width:100%!important;
+  text-align:left!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  height:58px!important;
+  min-height:58px!important;
+  padding:0 20px!important;
+  margin:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead > div,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead > div{
+  width:100%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelTitle,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  position:static!important;
+  width:100%!important;
+  height:auto!important;
+  line-height:1.2!important;
+  margin:0!important;
+  padding:0!important;
+  display:block!important;
+  text-align:center!important;
+  transform:none!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelDesc{
+  display:none!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel{
+  position:relative!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead{
+  height:64px!important;
+  min-height:64px!important;
+  padding:0!important;
+  margin:0!important;
+  display:block!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelHead > div,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelHead > div{
+  display:block!important;
+  width:100%!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel .panelTitle,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel .panelTitle{
+  position:absolute!important;
+  top:24px!important;
+  left:0!important;
+  right:0!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0 20px!important;
+  line-height:20px!important;
+  text-align:center!important;
+  transform:none!important;
+  box-sizing:border-box!important;
+}
+body .app main.main > section.panel.partsPanel.partsPanel,
+body .app main.main > section.panel.partsAmountPanel.partsAmountPanel{
+  padding:0!important;
+}
+body .app main.main > .employeeHero{
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  padding:4px 0 12px!important;
+  margin:0!important;
+}
+body .app main.main > .employeeHero .pageTitle{
+  font-size:28px!important;
+  line-height:1.15!important;
+  font-weight:600!important;
+  letter-spacing:-.02em!important;
+  margin:0!important;
+}
+body .app main.main > .employeeHero .employeeEyebrow{
+  margin-bottom:8px!important;
+  color:#66758f!important;
+  font-weight:500!important;
+}
+body .app main.main > .employeeHero .employeeHeroTop{
+  align-items:flex-start!important;
+}
+body .app main.main > .employeeHero .employeeHeroActions{
+  align-items:center!important;
+  gap:10px!important;
+}
+body .app main.main > .employeeHero .dateGroup{
+  display:none!important;
+}
+body .app main.main > .employeeHero .claimSwitch.filterTools{
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  width:auto!important;
+}
+.filterMenuSection{
+  display:grid!important;
+  gap:6px!important;
+  padding-bottom:8px!important;
+  border-bottom:1px solid #eef2f7!important;
+}
+.filterDateGrid{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+  padding-top:10px!important;
+}
+.filterDateGrid label{
+  display:grid!important;
+  gap:5px!important;
+  color:#66758f!important;
+  font-size:11px!important;
+  font-weight:600!important;
+}
+.filterDateGrid .input{
+  width:100%!important;
+  min-width:0!important;
+  height:36px!important;
+  border-radius:10px!important;
+  font-size:12px!important;
+  padding:0 9px!important;
+}
+body .app main.main > .employeeHero .filterMenu{
+  min-width:310px!important;
+}
+.employeePanel > #mappingPanel.mappingPanel{
+  grid-area:auto!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+  width:auto!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:10px 14px 14px!important;
+  padding:10px 12px!important;
+  align-self:auto!important;
+  overflow:hidden!important;
+  border:1px solid #e6edf5!important;
+  border-radius:12px!important;
+  background:#f8fbff!important;
+  box-shadow:none!important;
+}
+.employeePanel > #mappingPanel.mappingPanel.collapsed{
+  padding-bottom:10px!important;
+}
+.employeePanel > #mappingPanel .panelHead{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+.employeePanel > #mappingPanel .panelTitle{
+  position:static!important;
+  width:auto!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:left!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+  font-weight:600!important;
+  letter-spacing:0!important;
+}
+.employeePanel > #mappingPanel .panelDesc{
+  display:none!important;
+}
+.employeePanel > #mappingPanel #mappingEditBtn{
+  height:28px!important;
+  padding:0 9px!important;
+  border-radius:9px!important;
+  font-size:11px!important;
+  flex:0 0 auto!important;
+}
+.employeePanel > #mappingPanel .mappingEditor{
+  margin-top:10px!important;
+}
+.employeePanel > #mappingPanel .employeeDirectoryActions{
+  gap:6px!important;
+}
+.employeePanel > #mappingPanel .employeeDirectoryActions .input{
+  min-width:150px!important;
+  height:30px!important;
+  border-radius:8px!important;
+  font-size:11px!important;
+  padding:0 9px!important;
+}
+.employeePanel > #mappingPanel .employeeDirectoryActions .btn{
+  height:30px!important;
+  padding:0 9px!important;
+  border-radius:8px!important;
+  font-size:11px!important;
+}
+.employeePanel > #mappingPanel .saveState{
+  font-size:11px!important;
+}
+.employeePanel > #mappingPanel .employeeDirectoryTable{
+  max-height:150px!important;
+  margin-top:8px!important;
+  border-radius:10px!important;
+}
+.employeePanel > #mappingPanel .employeeDirectoryTable th,
+.employeePanel > #mappingPanel .employeeDirectoryTable td{
+  padding:7px 9px!important;
+  font-size:11px!important;
+}
+.employeePanel > #mappingPanel .statusSelect{
+  height:28px!important;
+  border-radius:8px!important;
+  font-size:11px!important;
+}
+html{zoom:.8!important;}
+</style><style>
+/* Final owner workload number spacing: keep red/blue labels close, readable, and never overlapping. */
+.employeePanel .employeeBarTrack .employeeEndValue,
+.employeePanel .employeeBarTrack .employeeEndValue.redValue,
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  transform:translate(-50%,-50%)!important;
+  margin-left:0!important;
+  top:50%!important;
+  height:16px!important;
+  min-width:22px!important;
+  padding:0 6px!important;
+  border-radius:999px!important;
+  font-family:"Arial","Segoe UI",sans-serif!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  line-height:16px!important;
+  letter-spacing:-.01em!important;
+  font-variant-numeric:tabular-nums!important;
+  text-align:center!important;
+  text-shadow:none!important;
+  box-shadow:0 1px 2px rgba(15,23,42,.08)!important;
+  z-index:6!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue.redValue{
+  color:#be123c!important;
+  background:#fff1f5!important;
+  border:1px solid rgba(244,63,94,.28)!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue.blueValue{
+  color:#1d4ed8!important;
+  background:#eff6ff!important;
+  border:1px solid rgba(59,130,246,.24)!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue.closeValue{
+  min-width:21px!important;
+  padding:0 5px!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue.closeValue.before{
+  transform:translate(calc(-100% - 2px),-50%)!important;
+}
+.employeePanel .employeeBarTrack .employeeEndValue.closeValue.after{
+  transform:translate(2px,-50%)!important;
+}
+.partsBarName .exitedTag,
+.employeeBarName .exitedTag,
+.detailEmployee .exitedTag,
+.nameFilter .exitedTag,
+.employeeDirectoryTable .exitedTag{
+  margin-left:0!important;
+  margin-right:6px!important;
+}
+</style>
+</head>
+<body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><a class="navLink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></a><a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>Internal Employees</span></button><a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a><div class="navDivider"></div><div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="infieldpredelivery.html#created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M16 17l2-2 2 2"/></svg><span>In Field / Pre Delivery</span></a><a class="navLink" href="infieldpredelivery.html#approved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l2 2 4-5"/><path d="M21 12a9 9 0 1 1-9-9"/><path d="M17 3h4v4"/></svg><span>Approved vs Unapproved</span></a><a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a></aside><main class="main"><section class="employeeHero"><div class="employeeHeroTop"><div><div class="employeeEyebrow">Employee analytics</div><h1 class="pageTitle">Internal Employees</h1></div><div class="employeeHeroActions"><div id="claimSwitch" class="claimSwitch"></div><label class="dateGroup">From <input id="dateFrom" class="input" type="date" min="2026-05-25"></label><label class="dateGroup">To <input id="dateTo" class="input" type="date" min="2026-05-25"></label></div></div></section><div id="loadError" class="error"></div>
+<section id="calcStatus" class="calcStatus" aria-hidden="true"><div id="calcStep1"></div><div id="calcStep2"></div><div id="calcStep3"></div></section>
+<section class="kpis"><div class="kpi"><div class="kpiLabel">Critical Tickets</div><div class="kpiValue" id="kpiTickets">0</div><div class="metricTrend" id="kpiTicketsTrend"></div></div><div class="kpi"><div class="kpiLabel">Approved Tickets</div><div class="kpiValue" id="partsApprovedCount">0</div><div class="metricTrend" id="partsApprovedTrend"></div></div><div class="kpi"><div class="kpiLabel">Unapproved Tickets</div><div class="kpiValue" id="partsUnapprovedCount">0</div><div class="metricTrend" id="partsUnapprovedTrend"></div></div><div class="kpi"><div class="kpiLabel">Weekly Rate</div><div class="kpiValue" id="kpiWeeklyRate">0%</div><div class="metricTrend" id="kpiWeeklyRateTrend"></div></div></section>
+<section class="partsGrid"><div class="kpi"><div class="kpiLabel">Approved Amount</div><div class="kpiValue" id="partsApprovedAmount">$0</div><div class="metricTrend" id="partsAmountTrend"></div></div><div class="kpi"><div class="kpiLabel">Unapproved / Approved</div><div class="kpiValue" id="partsUnapprovedRatio">0.00%</div><div class="ratioBase" id="partsRatioBase">0 / 0</div><div class="metricTrend" id="partsRatioTrend"></div></div><div class="kpi"><div class="kpiLabel">2-week benchmark</div><div class="kpiValue" id="kpiBenchmark">0%</div><div class="metricTrend" id="kpiBenchmarkTrend"></div></div><div class="kpi"><div class="kpiLabel">Estimated clear time</div><div class="kpiValue" id="kpiClearTime">-</div><div class="metricTrend" id="kpiClearTimeTrend"></div></div></section>
+<section class="panel partsPanel"><div class="panelHead"><div><h2 class="panelTitle">Approved vs Unapproved Tickets</h2><p class="panelDesc">Approved is Z9 Sales Order Approved. Unapproved is Y8 Unapproved Claims Closed and represents company saving.</p></div></div><div class="partsCharts"><div class="partsChart"><h3 class="partsChartTitle">Approved vs Unapproved Tickets</h3><div id="partsCountBars" class="partsBarList"></div></div><div class="partsChart"><h3 class="partsChartTitle">Approved Amount by Employee</h3><div id="partsAmountBars" class="partsBarList"></div></div><div class="partsChart"><h3 class="partsChartTitle">Unapproved Tickets by Employee</h3><div id="partsUnapprovedBars" class="partsBarList"></div></div></div></section>
+<section class="panel partsAmountPanel"><div class="panelHead"><div><h2 class="panelTitle">Approved amount total</h2></div></div><div id="partsAmountPieStandalone" class="partsAmountPie"></div></section>
+<section class="panel employeePanel"><div class="panelHead"><div class="employeePanelTitleLine"><h2 class="panelTitle">Critical Tickets by C4C Assign To</h2><div class="employeeHeaderLegend"><span><i class="dot red"></i> Removed</span><span><i class="dot blue"></i> Current critical tickets</span></div></div><div class="metricTabs"><button class="btn active" data-metric="totalRemoved" type="button">Total removed</button><button class="btn" data-metric="avgDaily" type="button">Avg daily</button><button class="btn" data-metric="avgWeekly" type="button">Avg weekly</button><button class="btn" data-metric="compare" type="button">Compare all</button><button class="btn" id="clearFilter" type="button">Clear filter</button></div></div><div class="employeeChartShell"><div id="employeeBarList" class="employeeBarList"></div><div id="employeeChartAxis" class="employeeChartAxis"></div></div><div class="legend"><span><i class="dot red"></i> Removed</span><span><i class="dot blue"></i> Current critical tickets</span></div></section>
+<section class="panel employeeDetailPanel"><div class="panelHead"><div><h2 class="panelTitle">Employee Ticket Detail</h2><p class="panelDesc">Ticket-level view for the selected employee or all employees.</p></div><div class="controls"><input id="searchBox" class="input" style="min-width:260px" placeholder="Search employee, ticket, dealer, status"></div></div><div id="nameFilter" class="nameFilter"></div><div class="tableWrap"><table><thead><tr><th>Employee</th><th>Ticket</th><th>Status</th><th>Dealer</th><th>Created On</th><th>Critical removed</th></tr></thead><tbody id="detailRows"></tbody></table></div></section>
+<section id="mappingPanel" class="panel mappingPanel collapsed"><div class="panelHead"><div><h2 class="panelTitle">Employee Status Mapping</h2></div><button id="mappingEditBtn" class="btn" type="button">Edit mapping</button></div><div class="mappingEditor"><div class="employeeDirectoryActions"><input id="employeeAddName" class="input" placeholder="Employee name"><button id="employeeAddBtn" class="btn" type="button">Add active employee</button><span id="employeeDirectorySaveState" class="saveState"></span></div><div class="tableWrap employeeDirectoryTable" style="margin-top:14px"><table><thead><tr><th>Employee</th><th>Status</th></tr></thead><tbody id="employeeDirectoryRows"></tbody></table></div></div></section>
+</main></div><div id="tooltip" class="tooltip"></div><div id="ticketModal" class="modalBackdrop"><div class="modal"><div class="modalHead"><div><div class="modalTitle" id="ticketModalTitle">Ticket details</div></div><button class="modalClose" id="ticketModalClose" type="button">x</button></div><div id="ticketModalBody"></div></div></div>
+<div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
+<script>
+
+function showCalcFloat(active,text){
+  const el=document.getElementById('calcFloat');
+  if(!el)return;
+  const label=el.querySelector('.calcFloatText');
+  if(label&&text)label.textContent=text;
+  el.classList.toggle('active',!!active);
+}
+function hideCalcFloat(delay=250){setTimeout(()=>showCalcFloat(false),delay)}
+
+
+const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
+const MONITOR_ROOT="ctmTicketStatusMonitorV44", DASHBOARD_MIN_DATE="2026-05-25";
+let analytics=null, teamAnalytics=null, rawCritical={loaded:false,views:{}}, rawPartsTickets=[], statusMapping={}, employeeDirectory={}, baseStats=[], detailRows=[], employeeStats=[], selectedMetric="totalRemoved", selectedEmployee="", chartAreas=[], activeClaim="all";
+const DEFAULT_ACTIVE_EMPLOYEES=["Marissa Colosimo","Ford Hapuku","Mark Bertoncini","Leanne Pulford","Kylie Clayton","Rosemary Johnstone","Michael Scordia","Robert Stella","Chloe Bolger","Salvino Briganti"];
+const $=id=>document.getElementById(id);
+function setCalcStatus(active,steps=[]){
+  const box=$('calcStatus');
+  if(box)box.classList.toggle('active',false);
+  steps.forEach((text,i)=>{const el=$('calcStep'+(i+1));if(el)el.textContent=text;});
+  showCalcFloat(!!active, active ? 'Calculating...' : undefined);
+}
+function finishCalcStatus(){hideCalcFloat(350)}
+function clean(v){return v==null?"":String(v).trim()}
+function esc(v){return clean(v).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]))}
+function num(v,d=0){const n=Number(v||0);return n.toLocaleString(undefined,{maximumFractionDigits:d,minimumFractionDigits:d})}
+function money(v){return Number(v||0).toLocaleString(undefined,{style:"currency",currency:"AUD",maximumFractionDigits:0})}
+function fbUrl(path){return DEFAULT_FIREBASE.replace(/\/+$/,'')+"/"+path.replace(/^\/+/,'')+".json"}
+async function readJson(path){const r=await fetch(fbUrl(path),{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
+async function writeJson(path,value){const r=await fetch(fbUrl(path),{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(value)});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
+function fieldNormKey(v){return clean(v).toLowerCase().replace(/[ _\-/()]/g,'')}
+function getField(obj,cands){if(!obj||typeof obj!=="object")return "";const idx={};Object.keys(obj).forEach(k=>idx[fieldNormKey(k)]=k);for(const c of cands){if(clean(obj[c]))return clean(obj[c]);const k=idx[fieldNormKey(c)];if(k&&clean(obj[k]))return clean(obj[k]);}return ""}
+function findRoleName(node,roleId){if(!node||typeof node!=="object")return "";if(Array.isArray(node)){for(const x of node){const n=findRoleName(x,roleId);if(n)return n;}return ""}if(clean(node.InvolvedPartyRoleID)===roleId&&clean(node.InvolvedPartyName))return clean(node.InvolvedPartyName);const direct=node[roleId];if(direct&&typeof direct==="object"){const n=clean(direct.InvolvedPartyName)||findRoleName(direct,roleId);if(n)return n;}for(const v of Object.values(node)){const n=findRoleName(v,roleId);if(n)return n;}return ""}
+function normalizeTicketEntry(row,key){const raw=(row&&typeof row==="object")?row:{};const ticket=(raw.ticket&&typeof raw.ticket==="object")?raw.ticket:raw;const roles=(raw.roles&&typeof raw.roles==="object")?raw.roles:{};const id=clean(ticket.TicketID||ticket.ticketID||ticket.id||key);return {ticket,roles,id}}
+function mappedStatus(ticket,mapping){const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status);const text=clean(ticket.TicketStatusText||ticket.statusText);return clean((code&&mapping?.[code]?.firstLevelStatus)||(text&&mapping?.[text]?.firstLevelStatus)||(text&&mapping?.[text]?.ticketStatusText)||text||"Unmapped")}
+function isMappedCritical(ticket,mapping){return mappedStatus(ticket,mapping).toLowerCase()==="critical"}
+function claimKeyForTicket(ticket){const raw=clean(getField(ticket,["TicketTypeText","Ticket Type Text","TicketType","Ticket Type","ClaimType","Claim Type"])).toLowerCase();return raw.includes("pre delivery")?"preDelivery":"inField"}
+function rawDealerName(ticket,roles){return clean(getField(ticket,["DealerName","Dealer Name","WarrantyHandlingDealerName","Warranty Handling Dealer Name","Warranty Handling Dealer","RepairerBusinessNameID","Repairer Business Name","Repairer"])||findRoleName(roles,"1001")||ticket.DealerID||ticket.WarrantyHandlingDealerID||"Unknown Dealership")}
+function dealerButtonNameForEmployee(raw,dealerOptions){const mapped=standardDealerNameForEmployee(raw);const loose=s=>clean(s).toLowerCase().replace(/[^a-z0-9]+/g,'');const hit=dealerOptions.find(d=>d===mapped)||dealerOptions.find(d=>loose(d)===loose(mapped))||dealerOptions.find(d=>loose(d)===loose(raw));return hit||mapped||raw||"Unknown Dealership"}
+function buildRawCriticalView(rows,dealerOptions,claimKey){const grouped={};let total=0;rows.forEach(r=>{if(claimKey!=="all"&&r.claimKey!==claimKey)return;total++;const dealer=dealerButtonNameForEmployee(r.dealer,dealerOptions);grouped[dealer]=(grouped[dealer]||0)+1;});const dealers=Object.entries(grouped).map(([dealer,criticalTickets])=>({dealer,criticalTickets})).sort((a,b)=>b.criticalTickets-a.criticalTickets||a.dealer.localeCompare(b.dealer));return {total,dealers}}
+async function loadRawCritical(){
+  const [ticketsNode,mapping,dealerIndex]=await Promise.all([
+    readJson("c4cTickets_test/tickets"),
+    readJson("ticketStatusMapping"),
+    readJson(MONITOR_ROOT+"/analytics/dealer/index").catch(()=>null)
+  ]);
+  const dealerOptions=arrayFromMaybe(dealerIndex&&dealerIndex.stats).map(x=>clean(x.dealer)).filter(Boolean);
+  const rows=[];
+  Object.entries(ticketsNode||{}).forEach(([key,row])=>{
+    const {ticket,roles,id}=normalizeTicketEntry(row,key);
+    if(!id||!isMappedCritical(ticket,mapping||{}))return;
+    rows.push({id,dealer:rawDealerName(ticket,roles),claimKey:claimKeyForTicket(ticket),status:mappedStatus(ticket,mapping||{})});
+  });
+  rawCritical={loaded:true,views:{all:buildRawCriticalView(rows,dealerOptions,"all"),inField:buildRawCriticalView(rows,dealerOptions,"inField"),preDelivery:buildRawCriticalView(rows,dealerOptions,"preDelivery")}};
+}
+function currentRawCriticalView(){return rawCritical.loaded?(rawCritical.views[activeClaim]||rawCritical.views.all):null}
+function currentTotalCriticalForEmployee(fallback){const v=currentRawCriticalView();return v?Number(v.total||0):fallback}
+function parseAmountIncludingTax(v){const n=Number(clean(v).replace(/,/g,''));return Number.isFinite(n)?n:0}
+function parseSalesOrderDetails(value){
+  if(!value)return [];
+  if(typeof value==="string"){try{return parseSalesOrderDetails(JSON.parse(value))}catch{return []}}
+  if(Array.isArray(value))return value.flatMap(parseSalesOrderDetails);
+  if(typeof value!=="object")return [];
+  if(Object.keys(value).some(k=>["Delivery Count","Description","Material","Order Qty"].includes(k))){
+    return [{
+      material:clean(value.Material),
+      description:clean(value.Description),
+      deliveryCount:Number(value["Delivery Count"]||0),
+      orderQty:Number(clean(value["Order Qty"]).replace(/,/g,''))||0
+    }];
+  }
+  return Object.values(value).flatMap(parseSalesOrderDetails);
+}
+function hasUndeliveredPartsBacklog(ticket){
+  return parseSalesOrderDetails(ticket["Sales Order Details"]).some(x=>Number(x.deliveryCount||0)===0&&clean(x.material)&&clean(x.description));
+}
+function ticketOutcomeText(ticket,mapping){
+  const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status);
+  const text=clean(ticket.TicketStatusText||ticket.statusText);
+  return clean((code&&mapping?.[code]?.ticketStatusText)||(text&&mapping?.[text]?.ticketStatusText)||text||code);
+}
+function approvalBucket(ticket){
+  const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status).toUpperCase();
+  const text=clean(ticket.TicketStatusText||ticket.statusText).toLowerCase();
+  if(code==="Z9"&&text==="sales order approved")return "approved";
+  if(code==="Y8"&&text==="unapproved claims closed (closed)")return "unapproved";
+  return "other";
+}
+function isExitedTicket(ticket,mapping){
+  const text=ticketOutcomeText(ticket,mapping).toLowerCase();
+  return text.includes("repairer invoiced processed")||text.includes("calins closed");
+}
+function employeeDetailsFromRoles(roles){
+  const role=roles&&roles["40"]&&typeof roles["40"]==="object"?roles["40"]:null;
+  const name=clean(role&&role.InvolvedPartyName)||findRoleName(roles,"40")||"Unassigned";
+  const id=clean(role&&role.InvolvedPartyBusinessPartnerID)||name.toLowerCase()||"unassigned";
+  return {employeeId:id,employeeName:name};
+}
+function employeeDirectoryKey(name){return clean(name).toLowerCase().replace(/\s+/g,' ')}
+function defaultEmployeeDirectory(){
+  const out={};
+  DEFAULT_ACTIVE_EMPLOYEES.forEach(name=>{out[employeeDirectoryKey(name)]={name,status:"active"}});
+  return out;
+}
+function directoryEntryFor(name){
+  const key=employeeDirectoryKey(name);
+  return employeeDirectory[key]||{name:clean(name)||"Unassigned",status:"exited"};
+}
+function isActiveEmployeeDirectory(name){return clean(directoryEntryFor(name).status).toLowerCase()!=="exited"}
+function employeeDisplayName(name){const label=clean(name)||"Unassigned";return isActiveEmployeeDirectory(label)?label:`EXIT ${label}`}
+function employeeIsExitedName(name){const label=clean(name);return !!label&&isRealEmployeeName(label)&&!isActiveEmployeeDirectory(label)}
+function employeeNameHtml(name){const label=clean(name)||"Unassigned";return `${employeeIsExitedName(label)?'<span class="exitedTag">EXIT</span>':''}${esc(label)}`}
+function employeeBaseName(name){return clean(name).replace(/^EXIT\s+/i,'').replace(/\s+\(Exited\)$/i,'')}
+async function loadEmployeeDirectory(){
+  const remote=await readJson(MONITOR_ROOT+"/employeeDirectory").catch(()=>null);
+  const local=(()=>{try{return JSON.parse(localStorage.getItem("employeeDirectoryOverride")||"null")}catch{return null}})();
+  const hasRemote=remote&&typeof remote==="object";
+  employeeDirectory=hasRemote?remote:(local&&typeof local==="object"?local:defaultEmployeeDirectory());
+  DEFAULT_ACTIVE_EMPLOYEES.forEach(name=>{const key=employeeDirectoryKey(name);employeeDirectory[key]={name,status:"active"}});
+  if(!hasRemote)await writeJson(MONITOR_ROOT+"/employeeDirectory",employeeDirectory).catch(()=>null);
+}
+async function saveEmployeeDirectory(){
+  const state=$('employeeDirectorySaveState');
+  if(state)state.textContent='Saving...';
+  localStorage.setItem("employeeDirectoryOverride",JSON.stringify(employeeDirectory));
+  try{
+    await writeJson(MONITOR_ROOT+"/employeeDirectory",employeeDirectory);
+    if(state)state.textContent='Saved';
+  }catch(err){
+    if(state)state.textContent='Saved locally; Firebase write denied';
+  }
+  setTimeout(()=>{if(state)state.textContent=''},1600);
+}
+function renderEmployeeDirectory(){
+  const wrap=$('employeeDirectoryRows');
+  if(!wrap)return;
+  const names=new Map();
+  Object.values(employeeDirectory||{}).forEach(e=>{if(clean(e&&e.name))names.set(employeeDirectoryKey(e.name),clean(e.name))});
+  rawPartsTickets.forEach(({roles})=>{const emp=employeeDetailsFromRoles(roles);if(clean(emp.employeeName))names.set(employeeDirectoryKey(emp.employeeName),clean(emp.employeeName))});
+  baseStats.forEach(s=>{if(clean(s&&s.name))names.set(employeeDirectoryKey(s.name),clean(s.name))});
+  employeeStats.forEach(s=>{if(clean(s&&s.name))names.set(employeeDirectoryKey(s.name),clean(s.name))});
+  detailRows.forEach(t=>{if(clean(t&&t.employee))names.set(employeeDirectoryKey(t.employee),clean(t.employee))});
+  wrap.innerHTML=Array.from(names.values()).sort((a,b)=>a.localeCompare(b)).map(name=>{
+    const key=employeeDirectoryKey(name);
+    const entry=employeeDirectory[key]||{name,status:"exited"};
+    const status=clean(entry.status).toLowerCase()==="active"?"active":"exited";
+    return `<tr><td>${status==="exited"?'<span class="exitedTag">EXIT</span>':''}${esc(name)}</td><td><select class="statusSelect" data-employee-key="${esc(key)}" data-employee-name="${esc(name)}"><option value="active" ${status==="active"?'selected':''}>Active</option><option value="exited" ${status==="exited"?'selected':''}>Exited</option></select></td></tr>`;
+  }).join('');
+  wrap.querySelectorAll('.statusSelect').forEach(sel=>sel.onchange=async()=>{const key=sel.dataset.employeeKey;employeeDirectory[key]={name:sel.dataset.employeeName,status:sel.value};await saveEmployeeDirectory();renderEmployeeDirectory();renderPartsApproval($('dateFrom').value,$('dateTo').value);drawEmployeeChart();renderDetails()});
+}
+function setMappingEditor(open){
+  const panel=$('mappingPanel'),btn=$('mappingEditBtn');
+  if(!panel)return;
+  panel.classList.toggle('collapsed',!open);
+  if(btn)btn.textContent=open?'Hide mapping':'Edit mapping';
+  if(open)renderEmployeeDirectory();
+}
+function buildPartsApprovalSummary(from,to){
+  if(!rawPartsTickets.length){
+    const outcome=(currentEmployeeView()&&currentEmployeeView().approvalOutcome)||{};
+    const byEmployee=[];
+    const summary={approvedCount:0,unapprovedCount:0,approvedAmount:0,unapprovedAmount:0,byEmployee};
+    arrayFromMaybe(outcome.byEmployee).forEach(row=>{
+      const approvedCount=sumDaily(row.approvedDaily,from,to);
+      const unapprovedCount=sumDaily(row.unapprovedDaily,from,to);
+      const approvedAmount=sumDaily(row.approvedAmountDaily,from,to);
+      const unapprovedAmount=sumDaily(row.unapprovedAmountDaily,from,to);
+      if(!(approvedCount||unapprovedCount||approvedAmount||unapprovedAmount))return;
+      const employeeName=clean(row.employeeName||row.name)||'Unknown';
+      byEmployee.push({employeeId:clean(row.employeeId||row.key||employeeName),employeeName,employeeDisplayName:employeeDisplayName(employeeName),approvedCount,unapprovedCount,approvedAmount,unapprovedAmount});
+      summary.approvedCount+=approvedCount; summary.unapprovedCount+=unapprovedCount; summary.approvedAmount+=approvedAmount; summary.unapprovedAmount+=unapprovedAmount;
+    });
+    byEmployee.sort((a,b)=>(b.approvedCount+b.unapprovedCount)-(a.approvedCount+a.unapprovedCount)||clean(a.employeeName).localeCompare(clean(b.employeeName)));
+    return summary;
+  }
+  const byEmployee=new Map();
+  const summary={approvedCount:0,unapprovedCount:0,approvedAmount:0,unapprovedAmount:0,byEmployee:[]};
+  rawPartsTickets.forEach(({ticket,roles,id})=>{
+    const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
+    if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
+    if(!created||!inRange(created,from,to))return;
+    const bucket=approvalBucket(ticket);
+    if(bucket==="other")return;
+    const emp=employeeDetailsFromRoles(roles);
+    const key=emp.employeeId||emp.employeeName||"unassigned";
+    const row=byEmployee.get(key)||{employeeId:key,employeeName:emp.employeeName,employeeDisplayName:employeeDisplayName(emp.employeeName),approvedCount:0,unapprovedCount:0,approvedAmount:0,unapprovedAmount:0};
+    const amount=parseAmountIncludingTax(ticket.AmountIncludingTax);
+    if(bucket==="approved"){summary.approvedCount++;summary.approvedAmount+=amount;row.approvedCount++;row.approvedAmount+=amount;}
+    if(bucket==="unapproved"){summary.unapprovedCount++;summary.unapprovedAmount+=amount;row.unapprovedCount++;row.unapprovedAmount+=amount;}
+    row.employeeDisplayName=employeeDisplayName(emp.employeeName);
+    byEmployee.set(key,row);
+  });
+  summary.byEmployee=Array.from(byEmployee.values()).sort((a,b)=>(b.approvedCount+b.unapprovedCount)-(a.approvedCount+a.unapprovedCount)||clean(a.employeeName).localeCompare(clean(b.employeeName)));
+  return summary;
+}
+function rawExitedTicketsTotalValue(from,to){
+  return rawPartsTickets.reduce((total,{ticket})=>{
+    const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);
+    if(!created||!inRange(created,from,to))return total;
+    if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return total;
+    return isExitedTicket(ticket,statusMapping)?total+parseAmountIncludingTax(ticket.AmountIncludingTax):total;
+  },0);
+}
+async function loadPartsSource(){
+  const [ticketsNode,mapping]=await Promise.all([readJson("c4cTickets_test/tickets"),readJson("ticketStatusMapping")]);
+  statusMapping=mapping||{};
+  rawPartsTickets=Object.entries(ticketsNode||{}).map(([key,row])=>normalizeTicketEntry(row,key)).filter(x=>x.id&&x.ticket&&typeof x.ticket==="object");
+}
+function parseDate(v){if(!v)return null;if(typeof v==="number")return new Date(v);const s=clean(v);let m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m){const d=new Date(+m[3],+m[2]-1,+m[1]);return isNaN(d)?null:d}if(/^\d{8}$/.test(s)){const d=new Date(+s.slice(0,4),+s.slice(4,6)-1,+s.slice(6,8));return isNaN(d)?null:d}const d=new Date(s);return isNaN(d)?null:d}
+function toISODate(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+function dateKey(v){const d=parseDate(v);return d?toISODate(d):''}
+function daysBetween(from,to){const a=parseDate(from),b=parseDate(to);if(!a||!b)return 1;return Math.max(1,Math.round((b-a)/86400000))}
+function inRange(k,from,to){return(!from||k>=from)&&(!to||k<=to)}
+function sumDaily(map,from,to){let total=0;Object.entries(map||{}).forEach(([k,v])=>{if(inRange(k,from,to))total+=Number(v||0)});return total}
+function normEmp(name){return clean(name).toLowerCase().replace(/\s+/g,' ').trim()}
+function isExcludedEmployeeName(name){
+  const s=normEmp(name);
+  if(!s) return false;
+  if(['admin','admin a b.a.','admin a b.a'].includes(s)) return true;
+  if(/^admin\b/.test(s)) return true;
+  // Queue Warranty is a valid C4C role 40 Assign To bucket for new claims,
+  // so it must be displayed rather than excluded.
+  if(s.includes('test')||s.includes('demo')||s.includes('dummy')||s.includes('sample')) return true;
+  return false;
+}
+function isNotAssignedEmployeeName(name){
+  const s=normEmp(name);
+  if(!s) return true;
+  if(['unknown','undefined','null','n/a','na','none','unassigned','not assigned'].includes(s)) return true;
+  if(s.includes('unknown')) return true;
+  return false;
+}
+function isRealEmployeeName(name){return !isExcludedEmployeeName(name) && !isNotAssignedEmployeeName(name)}
+function notAssignedRowsFromView(view){
+  const explicit=arrayFromMaybe(view&&view.notAssignedRows)
+    .filter(r=>isNotAssignedEmployeeName(r.employeeRaw||r.employee) && !isExcludedEmployeeName(r.employeeRaw||r.employee));
+  const detail=arrayFromMaybe(view&&view.detailRows)
+    .filter(t=>isNotAssignedEmployeeName(t.employee) && !isExcludedEmployeeName(t.employee))
+    .map(t=>({id:t.id, employeeRaw:t.employee||'Unknown', status:t.status, statusCode:t.statusCode, dealer:t.dealer, created:t.created, claimType:t.claimType, customer:t.customer||t.name||''}));
+  const seen=new Set();
+  const merged=[];
+  [...explicit,...detail].forEach(r=>{
+    const k=clean(r.id)||JSON.stringify(r);
+    if(!seen.has(k)){seen.add(k); merged.push(r);}
+  });
+  merged.sort((a,b)=>((dateKey(a.created)||'9999-12-31').localeCompare(dateKey(b.created)||'9999-12-31') || clean(a.id).localeCompare(clean(b.id))));
+  return merged;
+}
+function showNotAssignedTooltip(ev, summary, view){
+  const rows=notAssignedRowsFromView(view);
+  const oldest=rows[0]||{};
+  const count=Number(summary._displayNotAssigned ?? summary.notAssignedCriticalTickets ?? rows.length ?? 0);
+  const rate=Number(summary._displayAssignmentRate ?? summary.assignmentRate ?? 0);
+  const hasOldest=clean(oldest.id||summary.oldestNotAssignedTicket);
+  const html=`<b>Not assigned critical tickets</b>
+    <span>Count: ${num(count)}</span>
+    <span>Assignment rate: ${num(rate,1)}%</span>
+    ${clean(oldest.created||summary.oldestNotAssignedDate)?`<span>Oldest date: ${esc(oldest.created||summary.oldestNotAssignedDate)}</span>`:''}
+    ${hasOldest?`<span>Oldest ticket: #${esc(oldest.id||summary.oldestNotAssignedTicket)}</span>`:''}
+    ${hasOldest?`<button class="tooltipAction" type="button" onclick="openOldestNotAssignedTicket()">View ticket</button>`:''}`;
+  setTooltip(ev, html);
+}
+let lastNotAssignedRows=[];
+function openTicketModalFromRow(row){
+  row=row||{};
+  const fields=[
+    ['Ticket ID', clean(row.id)?'#'+clean(row.id):''],
+    ['Created date', row.created],
+    ['Status', row.status],
+    ['Status code', row.statusCode],
+    ['Dealer', row.dealer],
+    ['Claim type', row.claimType],
+    ['Customer', row.customer],
+    ['Raw employee', row.employeeRaw]
+  ].filter(x=>clean(x[1]));
+  $('ticketModalTitle').textContent=clean(row.id)?'Ticket #'+clean(row.id):'Ticket details';
+  $('ticketModalBody').innerHTML=fields.length?`<div class="detailList">${fields.map(([k,v])=>`<div class="detailKey">${esc(k)}</div><div class="detailVal">${esc(v)}</div>`).join('')}</div>`:'<div class="empty">No ticket details available.</div>';
+  $('ticketModal').style.display='flex';
+}
+function openOldestNotAssignedTicket(){
+  const row=(lastNotAssignedRows&&lastNotAssignedRows[0])||{};
+  hideTooltip();
+  openTicketModalFromRow(row);
+}
+function metricValue(s){if(selectedMetric==="avgDaily")return s.avgDaily;if(selectedMetric==="avgWeekly")return s.avgWeekly;return s.removed}
+function currentEmployeeView(){return (analytics&&analytics.views&&analytics.views[activeClaim])?analytics.views[activeClaim]:analytics||emptyAnalytics()}
+function currentTeamView(){return (teamAnalytics&&teamAnalytics.views&&teamAnalytics.views[activeClaim])?teamAnalytics.views[activeClaim]:(teamAnalytics&&teamAnalytics.views&&teamAnalytics.views.all)||teamAnalytics||null}
+function standardDealerNameForEmployee(raw){
+  const s=clean(raw); if(!s)return 'Unknown';
+  const n=s.toLowerCase().replace(/\s+/g,' ').trim(); const loose=n.replace(/[^a-z0-9]+/g,'');
+  const exact={'abco caravans - boambee valley':'ABCO','auswide caravans - south nowra':'Auswide','leisure lion - bundaberg':'Bundaberg','green rv - forest glen':'Forest Glen','regent rv - perth':'ST James','vanari caravans - marden point':'Marsden Point','vanari caravans - marsden point':'Marsden Point','regent rv - toowoomba':'Toowoomba','green rv - slacks creek':'Slacks Creek','regent rv - frankston':'Frankston','destiny rv - south australia':'Destiny RV','the caravan hub - townsville':'Snowy river Townsville','the caravan hub':'Snowy river Townsville','the caravan hub repairs':'Snowy river Townsville','newcastle rv super centre - beresfield':'Newcastle RV Super Centre','newcastle rv super centre - berefield':'Newcastle RV Super Centre','leisure lion-new castle':'Heatherbrae','leisure lion - new castle':'Heatherbrae','leisure lion - newcastle':'Heatherbrae'};
+  if(exact[n])return exact[n];
+  if(loose.includes('forestglen'))return 'Forest Glen'; if(loose.includes('perth')||loose==='stjames')return 'ST James'; if(loose.includes('caravanhub'))return 'Snowy river Townsville'; if(loose.includes('newcastlervsuper'))return 'Newcastle RV Super Centre'; if(loose.includes('morisset')||loose.includes('newcastle'))return 'Heatherbrae'; if(loose.includes('mardenpoint')||loose.includes('marsdenpoint'))return 'Marsden Point'; if(loose.includes('bundaberg'))return 'Bundaberg'; if(loose.includes('southnowra')||loose.includes('auswide'))return 'Auswide'; if(loose.includes('boambee')||loose.includes('abco'))return 'ABCO'; if(loose.includes('destiny'))return 'Destiny RV'; if(loose.includes('slackscreek'))return 'Slacks Creek'; if(loose.includes('frankston'))return 'Frankston'; if(loose.includes('geelong'))return 'Geelong'; if(loose.includes('gympie'))return 'Gympie'; if(loose.includes('townsville'))return 'Townsville'; if(loose.includes('toowoomba'))return 'Toowoomba'; if(loose.includes('traralgon'))return 'Traralgon'; if(loose.includes('warrnambool'))return 'Warrnambool'; if(loose.includes('bendigo'))return 'Bendigo'; if(loose.includes('christchurch'))return 'Christchurch'; if(loose.includes('cmg'))return 'CMG Campers'; if(loose.includes('motorhub'))return 'MotorHub'; if(loose.includes('launceston'))return 'Launceston'; if(loose.includes('wangaratta'))return 'Wangaratta'; if(loose.includes('caravanswa'))return 'Caravans WA'; return s;
+}
+function isValidTeamDealerForEmployee(name){const s=clean(name).toLowerCase().replace(/\s+/g,' ').trim();return !!s && !['unknown','not assigned','unassigned','n/a','na','none','null','undefined'].includes(s) && !s.includes('unknown') && !s.includes('not assigned')}
+function employeePeriodEndDate(){return ($('dateTo')&&$('dateTo').value)||toISODate(new Date())}
+function employeePeriodStartDate(end){if(activePeriod==='all')return ($('dateFrom')&&$('dateFrom').value)||(currentEmployeeView().minDate||analytics?.minDate||DASHBOARD_MIN_DATE);if(activePeriod==='today')return end;const d=new Date(end+'T00:00:00Z');d.setUTCDate(d.getUTCDate()-(activePeriod==='month'?29:6));const out=d.toISOString().slice(0,10);const min=(currentEmployeeView().minDate||analytics?.minDate||DASHBOARD_MIN_DATE);return out<min?min:out}
+function employeeEventDateKey(v){const d=parseDate(v);return d?toISODate(d):clean(v).slice(0,10)}
+function employeePeriodTeamLogs(){const view=currentTeamView(); if(!view)return []; const end=employeePeriodEndDate(),start=employeePeriodStartDate(end); return arrayFromMaybe(view.logs).filter(e=>{const d=employeeEventDateKey(e.detectedAt||e.date);return d&&d>=start&&d<=end;});}
+function employeeTeamRowsAtDate(date){const view=currentTeamView(); if(!view)return []; const end=date||employeePeriodEndDate(); const map=new Map(); arrayFromMaybe(view.currentCriticalRows).forEach(r=>{const id=clean(r.id)||('current-'+map.size);map.set(id,{id,dealer:standardDealerNameForEmployee(r.dealer||'Unknown')});}); arrayFromMaybe(view.logs).slice().sort((a,b)=>clean(b.detectedAt||b.date).localeCompare(clean(a.detectedAt||a.date))).forEach(e=>{const d=employeeEventDateKey(e.detectedAt||e.date); if(!d||d<=end)return; const id=clean(e.id)||('log-'+d+'-'+map.size); const cls=clean(e.cls); if(cls==='enter')map.delete(id); else if(cls==='exit'&&!map.has(id))map.set(id,{id,dealer:standardDealerNameForEmployee(e.dealer||'Unknown')});}); return Array.from(map.values()).filter(x=>isValidTeamDealerForEmployee(x.dealer));}
+function employeeTeamRowsAtEnd(){return employeeTeamRowsAtDate(employeePeriodEndDate());}
+function employeeTeamRowsInSelectedRange(){const view=currentTeamView(); if(!view)return []; const end=employeePeriodEndDate(),start=employeePeriodStartDate(end); const dates=arrayFromMaybe(view.trend).map(p=>p.date).filter(d=>d&&d>=start&&d<=end); const map=new Map(); (dates.length?dates:[end]).forEach(d=>{employeeTeamRowsAtDate(d).forEach(r=>{if(!isValidTeamDealerForEmployee(r.dealer))return; const id=clean(r.id)||(`${d}-${standardDealerNameForEmployee(r.dealer)}`); if(!map.has(id))map.set(id,r);});}); return Array.from(map.values());}
+function employeeTeamRowsForSelectedPeriod(){
+  return employeeTeamRowsInSelectedRange();
+}
+function employeeTeamRowsForCards(){return employeeTeamRowsForSelectedPeriod();}
+function employeeSelectedPeriodCriticalTotal(){return employeeTeamRowsForCards().length;}
+function employeeCriticalAtDate(view,end){const pts=(view&&view.trend)||[]; if(!pts.length)return null; let best=null; pts.forEach(p=>{if(clean(p.date)&&p.date<=end)best=p;}); if(!best)best=pts[0]; return Number(best.critical||best.criticalNow||0);}
+function employeeIsFullRangeSelected(){const view=currentTeamView(); const pts=(view&&view.trend)||[]; if(!pts.length)return activePeriod==='all'; return activePeriod==='all' && employeePeriodStartDate(employeePeriodEndDate())===pts[0].date && employeePeriodEndDate()===pts[pts.length-1].date;}
+function employeeTeamCriticalCountFallback(fallback){return currentTotalCriticalForEmployee(currentTeamView()?employeeSelectedPeriodCriticalTotal():fallback);}
+function employeeTeamExitedValue(){const view=currentTeamView(); if(!view)return 0; const end=employeePeriodEndDate(), start=employeePeriodStartDate(end); let total=0; Object.entries((view.daily&&view.daily.exitedValue)||{}).forEach(([d,v])=>{if(d>=start&&d<=end)total+=Number(v||0)}); return total;}
+function employeeTeamExitedValueForBounds(from,to){const view=currentTeamView(); if(!view)return 0; let total=0; Object.entries((view.daily&&view.daily.exitedValue)||{}).forEach(([d,v])=>{if(d>=from&&d<=to)total+=Number(v||0)}); return total;}
+function employeeBenchmark14dForBounds(from,to){
+  const view=currentTeamView(); if(!view)return 0;
+  const entries=new Map(); let exits=0, within=0;
+  arrayFromMaybe(view.logs).slice().sort((a,b)=>clean(a.detectedAt||a.date).localeCompare(clean(b.detectedAt||b.date))).forEach(e=>{
+    const d=employeeEventDateKey(e.detectedAt||e.date); const id=clean(e.id||e.ticketId||e.TicketID); if(!d||!id)return;
+    const cls=clean(e.cls||e.type||e.changeType).toLowerCase();
+    if(cls==='enter')entries.set(id,d);
+    if(cls==='exit'&&d>=from&&d<=to){exits++; const enter=entries.get(id); if(enter&&daysBetween(enter,d)<=14)within++;}
+  });
+  return exits?within/exits*100:0;
+}
+function employeeEstimatedClearDaysForBounds(from,to,totalCritical){
+  const view=currentTeamView(); if(!view)return 0;
+  const end=to; const start=addDaysISO(end,-6); let entered=0, exited=0;
+  arrayFromMaybe(view.logs).forEach(e=>{const d=employeeEventDateKey(e.detectedAt||e.date); if(!d||d<start||d>end)return; const cls=clean(e.cls||e.type||e.changeType).toLowerCase(); if(cls==='enter')entered++; if(cls==='exit')exited++;});
+  const days=boundDayCount(start,end); const net=(exited-entered)/days;
+  return net>0?Number(totalCritical||0)/net:0;
+}
+function clearDaysText(v){if(!Number.isFinite(v)||v<=0)return '-'; if(v<=1)return '<= 1 day'; return `${Math.ceil(v)}d`;}
+function claimFilterIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>`}
+function refreshIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>`}
+function clearEmployeeFilters(){activeClaim='all';selectedEmployee='';activePeriod='all';manualDateMode=false;setEmployeeFullRange();recalc();}
+function renderClaimButtons(){const opts=(analytics&&analytics.claimOptions)||[{key:"all",label:"All Claims"},{key:"inField",label:"In Field Warranty Claims"},{key:"preDelivery",label:"Pre Delivery Warranty Claims"}];const box=$("claimSwitch");if(!box)return;const fromVal=$('dateFrom')?.value||'';const toVal=$('dateTo')?.value||'';box.className="claimSwitch filterTools";box.innerHTML=`<button class="filterIconBtn" id="clearClaimFilters" title="Clear filters" type="button">${refreshIcon()}</button><div class="filterDropdown"><button class="filterButton" type="button">${claimFilterIcon()}<span>Filters</span></button><div class="filterMenu"><div class="filterMenuSection">${opts.map(o=>`<button class="filterOption ${o.key===activeClaim?'active':''}" data-key="${esc(o.key)}" type="button">${esc(o.label)}</button>`).join('')}</div><div class="filterDateGrid"><label>From <input id="filterDateFrom" class="input" type="date" value="${esc(fromVal)}"></label><label>To <input id="filterDateTo" class="input" type="date" value="${esc(toVal)}"></label></div></div></div>`;box.querySelector('#clearClaimFilters').onclick=clearEmployeeFilters;const dd=box.querySelector('.filterDropdown');box.querySelector('.filterButton').onclick=e=>{e.stopPropagation();dd.classList.toggle('open')};box.querySelectorAll('.filterOption').forEach(b=>b.onclick=()=>{activeClaim=b.dataset.key||'all';selectedEmployee='';dd.classList.remove('open');recalc()});const syncDate=()=>{const f=$('filterDateFrom'),t=$('filterDateTo');if(f&&$('dateFrom'))$('dateFrom').value=f.value;if(t&&$('dateTo'))$('dateTo').value=t.value;manualEmployeeRangeChanged()};['filterDateFrom','filterDateTo'].forEach(id=>{const el=$(id);if(el)el.onchange=syncDate})}
+function sumTotalDaily(obj,from,to){
+  if(!obj||typeof obj!=='object')return 0;
+  let out=0;
+  Object.entries(obj).forEach(([d,v])=>{
+    if((!from||d>=from)&&(!to||d<=to))out+=Number(v||0);
+  });
+  return out;
+}
+function ratePct(numerator,denominator){return denominator?numerator/denominator*100:0}
+function pctValue(part,total){return Number(total||0)?Number(part||0)/Number(total||0)*100:0}
+function pctText(v,d=2){return num(v,d)+"%"}
+function boundDayCount(from,to){const a=parseDate(from),b=parseDate(to);if(!a||!b)return 1;return Math.max(1,Math.round((b-a)/86400000)+1)}
+function previousBounds(from,to){const days=boundDayCount(from,to);const prevEnd=addDaysISO(from,-1);return {from:addDaysISO(prevEnd,-days+1),to:prevEnd}}
+function compareLabel(){if(activePeriod==="today")return "vs yesterday";if(activePeriod==="week")return "vs last week";if(activePeriod==="month")return "vs previous 30d";return "vs previous period"}
+function sparkSvg(dir){
+  if(dir==="flat")return `<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+  const d=dir==="down"?"M10 4v12m0 0 5-5m-5 5-5-5":"M10 16V4m0 0 5 5m-5-5-5 5";
+  return `<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="${d}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+}
+function setMetricTrend(id,key,current,previous,fmt="number"){
+  const el=$(id);if(!el)return;
+  const diff=Number(current||0)-Number(previous||0),dir=diff>0?"up":diff<0?"down":"flat";
+  const higherGood={critical:false,removed:true,value:true,rate:true,approved:true,unapproved:true,ratio:true,benchmark:true,clear:false};
+  const cls=diff===0?"flat":((diff>0)===higherGood[key]?"good":"bad");
+  const value=previous?`${diff>0?"+":""}${num(diff/Math.abs(previous)*100,1)}%`:(diff===0?"0":(fmt==="money"?money(diff):fmt==="percent"?`${diff>0?"+":""}${num(diff,1)}pt`:fmt==="days"?`${diff>0?"+":""}${num(diff,1)}d`:`${diff>0?"+":""}${num(diff)}`));
+  el.className=`metricTrend ${cls}`;
+  el.innerHTML=`${sparkSvg(dir)}<span>${value} ${compareLabel()}</span>`;
+}
+let activePeriod="all", manualDateMode=false;
+function renderPeriodButtons(){activePeriod='all';}
+function addDaysISO(iso,days){const d=new Date(iso+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10)}
+function setEmployeeFullRange(){const min=(currentEmployeeView().minDate||analytics?.minDate||DASHBOARD_MIN_DATE);const view=currentTeamView();const pts=(view&&view.trend)||[];$('dateFrom').value=pts.length?pts[0].date:min;$('dateTo').value=pts.length?pts[pts.length-1].date:toISODate(new Date());}
+function applyPresetRange(){if(activePeriod==='all'){setEmployeeFullRange();return;}const view=currentTeamView();const pts=(view&&view.trend)||[];const to=(pts.length?pts[pts.length-1].date:($('dateTo').value||toISODate(new Date())));let from=to;if(activePeriod==='week')from=addDaysISO(to,-6);else if(activePeriod==='month')from=addDaysISO(to,-29);const min=(currentEmployeeView().minDate||analytics?.minDate||DASHBOARD_MIN_DATE);if(from<min)from=min;$('dateFrom').value=from;$('dateTo').value=to;}
+function recalc(){
+  if(!analytics)return;setCalcStatus(true,['Reading selected filters and date range','Using Python pre-calculated approved/unapproved cache','Rendering employee charts']);renderPeriodButtons();renderClaimButtons();const view=currentEmployeeView();
+  const min=view.minDate||analytics.minDate||DASHBOARD_MIN_DATE;
+  if(activePeriod==='all'&&(!$('dateFrom').value||!$('dateTo').value))setEmployeeFullRange();
+  const from=($('dateFrom').value||min)<min?min:$('dateFrom').value;
+  const to=$('dateTo').value||toISODate(new Date());
+  if($('dateFrom').value!==from)$('dateFrom').value=from;
+  const dayCount=daysBetween(from,to);
+
+  const rawDetailRows=arrayFromMaybe(view.detailRows).filter(t=>!isExcludedEmployeeName(t.employee));
+  const rawStats=arrayFromMaybe(view.stats).filter(s=>!isExcludedEmployeeName(s.name));
+  const rangeDetailRows=rawDetailRows.filter(t=>{
+    const d=dateKey(t.created||t.createdOn||t.CreatedOn||t.detectedAt||t.date);
+    return !d || inRange(d,from,to);
+  });
+  const invalidDetailRows=rangeDetailRows.filter(t=>isNotAssignedEmployeeName(t.employee));
+  const rangeCriticalByEmployee=new Map();
+  rangeDetailRows.filter(t=>isRealEmployeeName(t.employee)&&t.isCritical!==false).forEach(t=>{
+    const key=normEmp(t.employee);
+    rangeCriticalByEmployee.set(key,(rangeCriticalByEmployee.get(key)||0)+1);
+  });
+  detailRows=rangeDetailRows.filter(t=>isRealEmployeeName(t.employee));
+
+  employeeStats=rawStats.filter(s=>isRealEmployeeName(s.name)).map(s=>{
+    const removed=sumDaily(s.removedDaily,from,to);
+    const scopedTotal=rangeCriticalByEmployee.get(normEmp(s.name));
+    const total=scopedTotal==null?Number(s.criticalTickets ?? s.totalTickets ?? 0):scopedTotal;
+    return {...s, total, removed, avgDaily:removed/dayCount, avgWeekly:removed/dayCount*7};
+  }).filter(s=>s.total>0 || s.removed>0).sort((a,b)=> selectedMetric==="compare" ? (b.total-a.total || b.removed-a.removed || clean(a.name).localeCompare(clean(b.name))) : (metricValue(b)-metricValue(a) || b.total-a.total || clean(a.name).localeCompare(clean(b.name))) );
+
+  const summary=view.summary||{};
+  const totalRemoved=sumTotalDaily(summary.removedDaily,from,to) || employeeStats.reduce((a,b)=>a+b.removed,0);
+  const assigned=Number(summary.assignedCriticalTickets ?? detailRows.filter(t=>t.isCritical!==false).length);
+  const notAssigned=Number(summary.notAssignedCriticalTickets ?? invalidDetailRows.filter(t=>t.isCritical!==false).length);
+  const localCriticalTickets=Number(summary.criticalTickets ?? Math.max(assigned + notAssigned, detailRows.filter(t=>t.isCritical!==false).length + invalidDetailRows.filter(t=>t.isCritical!==false).length));
+  const criticalTickets=employeeTeamCriticalCountFallback(localCriticalTickets);
+  const avgDaily=totalRemoved/dayCount;
+  const avgWeekly=avgDaily*7;
+  // Rates are removal capacity against the current critical workload.
+  // dayCount uses calendar interval: 25/05 to 01/06 = 7 days, not 8.
+  const dailyRate=ratePct(avgDaily,criticalTickets);
+  const weeklyRate=ratePct(avgWeekly,criticalTickets);
+  const prev=previousBounds(from,to);
+  const prevDayCount=daysBetween(prev.from,prev.to);
+  const prevRemoved=sumTotalDaily(summary.removedDaily,prev.from,prev.to) || rawStats.filter(s=>isRealEmployeeName(s.name)).reduce((a,s)=>a+sumDaily(s.removedDaily,prev.from,prev.to),0);
+  const prevCritical=employeeCriticalAtDate(currentTeamView(),prev.to)||0;
+  const prevValue=rawPartsTickets.length?rawExitedTicketsTotalValue(prev.from,prev.to):employeeTeamExitedValueForBounds(prev.from,prev.to);
+  const prevWeeklyRate=ratePct((prevRemoved/prevDayCount)*7,prevCritical);
+  const exitedValue=rawPartsTickets.length?rawExitedTicketsTotalValue(from,to):employeeTeamExitedValue();
+  const benchmark14d=employeeBenchmark14dForBounds(from,to);
+  const prevBenchmark14d=employeeBenchmark14dForBounds(prev.from,prev.to);
+  const clearDays=employeeEstimatedClearDaysForBounds(from,to,criticalTickets);
+  const prevClearDays=employeeEstimatedClearDaysForBounds(prev.from,prev.to,prevCritical);
+
+  $('kpiTickets').textContent=num(criticalTickets);
+  $('kpiWeeklyRate').textContent=num(weeklyRate,1)+'%';
+  if($('kpiBenchmark'))$('kpiBenchmark').textContent=num(benchmark14d,0)+'%';
+  if($('kpiClearTime'))$('kpiClearTime').textContent=clearDaysText(clearDays);
+  setMetricTrend('kpiTicketsTrend','critical',criticalTickets,prevCritical);
+  setMetricTrend('kpiWeeklyRateTrend','rate',weeklyRate,prevWeeklyRate,'percent');
+  setMetricTrend('kpiBenchmarkTrend','benchmark',benchmark14d,prevBenchmark14d,'percent');
+  setMetricTrend('kpiClearTimeTrend','clear',clearDays,prevClearDays,'days');
+
+  renderPartsApproval(from,to);renderEmployeeDirectory(); drawEmployeeChart(); renderDetails(); finishCalcStatus();
+}
+function prepareCanvas(c){const dpr=window.devicePixelRatio||1,w=c.clientWidth||900,h=c.clientHeight||520;c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);return{ctx,w,h}}
+function roundRect(ctx,x,y,w,h,r){const rr=Math.min(r,Math.abs(w)/2,Math.abs(h)/2);ctx.beginPath();ctx.moveTo(x+rr,y);ctx.arcTo(x+w,y,x+w,y+h,rr);ctx.arcTo(x+w,y+h,x,y+h,rr);ctx.arcTo(x,y+h,x,y,rr);ctx.arcTo(x,y,x+w,y,rr);ctx.closePath()}
+function shorten(s,max=27){s=clean(s);return s.length>max?s.slice(0,max-1)+'...':s}
+function employeeBarLabelPositions(redPct,totalPct,redValue,totalValue){
+  const clamp=(value,min=7,max=95)=>Math.max(min,Math.min(max,value));
+  let red=clamp(Number(redPct||0));
+  let blue=clamp(Number(totalPct||0));
+  if(!(redValue>0)||!(totalValue>0)) return {red,blue,close:false,redSide:'',blueSide:''};
+  const closeThreshold=12;
+  const diff=Math.abs(red-blue);
+  if(diff>closeThreshold) return {red,blue,close:false,redSide:'',blueSide:''};
+  const center=clamp((red+blue)/2,11,91);
+  const redIsLeft=red<=blue;
+  return {
+    red:center,
+    blue:center,
+    close:true,
+    redSide:redIsLeft?'before':'after',
+    blueSide:redIsLeft?'after':'before'
+  };
+}
+function drawEmployeeChart(){
+  const wrap=$('employeeBarList'); const axis=$('employeeChartAxis'); if(!wrap)return; chartAreas=[];
+  const data=employeeStats.slice(0,12);
+  if(!data.length){
+    wrap.innerHTML='<div class="emptyChart"><b>No employee rows to display</b><span>No employee rows match the current filters.</span></div>';
+    if(axis)axis.innerHTML='';
+    return;
+  }
+  wrap.style.gridTemplateRows=`repeat(${Math.ceil(data.length/2)}, minmax(38px, auto))`;
+  const max=Math.max(1,...data.map(s=>Math.max(s.total, selectedMetric==='compare'?s.removed:metricValue(s))));
+  wrap.innerHTML=data.map(s=>{
+    const active=selectedEmployee&&selectedEmployee===s.name;
+    const redValue=selectedMetric==='compare'?s.removed:metricValue(s);
+    const totalPct=Math.max(s.total?1.5:0, Math.min(100, s.total/max*100));
+    const redPct=Math.max(redValue?1.5:0, Math.min(100, redValue/max*100));
+    const redLabel=selectedMetric==='totalRemoved'?num(redValue,0):num(redValue,1);
+    const blueLabel=num(s.total,0);
+    const redIsBase=redPct>=totalPct;
+    const labelPositions=employeeBarLabelPositions(redPct,totalPct,redValue,s.total);
+    const redSpan=redValue>0?`<span class="employeeInlineValue employeeEndValue redValue ${labelPositions.close?'closeValue '+labelPositions.redSide:''}" style="left:${labelPositions.red}%;top:50%">${redLabel}</span>`:'';
+    const blueSpan=s.total>0?`<span class="employeeInlineValue employeeEndValue blueValue ${labelPositions.close?'closeValue '+labelPositions.blueSide:''}" style="left:${labelPositions.blue}%;top:50%">${blueLabel}</span>`:'';
+    return `<div class="employeeBarRow ${active?'active':''}" data-employee="${esc(s.name)}" title="Click to filter ${esc(s.name)}"><div class="employeeBarName">${employeeNameHtml(s.name)}</div><div class="employeeBarTrack"><div class="${redIsBase?'employeeBarRemoved employeeBarFillBase':'employeeBarTotal employeeBarFillBase'}" style="width:${redIsBase?redPct:totalPct}%"></div><div class="${redIsBase?'employeeBarTotal employeeBarFillOverlay':'employeeBarRemoved employeeBarFillOverlay'}" style="width:${redIsBase?totalPct:redPct}%"></div>${redSpan}${blueSpan}</div><div class="employeeBarValue"><span style="color:#be123c">${redLabel}</span> / <span style="color:#1d4ed8">${blueLabel}</span></div></div>`;
+  }).join('');
+  if(axis){axis.innerHTML=`<div></div><div class="axisLine"><span>0</span><span>${num(max/4,0)}</span><span>${num(max/2,0)}</span><span>${num(max*3/4,0)}</span><span>${num(max,0)}</span></div><div></div>`;}
+}
+function renderPartsBars(id,rows,keys,colors,formatter,valueFormatter){
+  const wrap=$(id);
+  if(!wrap)return;
+  const data=rows.filter(row=>keys.reduce((sum,key)=>sum+Number(row[key]||0),0)>0).slice(0,12);
+  const max=Math.max(1,...data.flatMap(row=>keys.map(key=>Number(row[key]||0))));
+  if(!data.length){
+    wrap.innerHTML='<div class="partsEmpty">No matching tickets for this metric.</div>';
+    return;
+  }
+  wrap.innerHTML=data.map(row=>{
+    const display=clean(row.employeeDisplayName||row.employeeName);
+    const baseName=clean(row.employeeName);
+    const shown=employeeNameHtml(baseName||employeeBaseName(display));
+    const bars=keys.map((key,i)=>{
+      const value=Number(row[key]||0);
+      const pct=Math.max(value?2:0,Math.min(100,value/max*100));
+      return `<div class="partsBarFill ${colors[i]||''}" title="${esc(display)} ${formatter(value)}" style="width:${pct}%"></div>`;
+    }).join('');
+    const total=keys.reduce((sum,key)=>sum+Number(row[key]||0),0);
+    const value=valueFormatter?valueFormatter(row,total):formatter(total);
+    const tip=keys.length>1?`Approved: ${num(row.approvedCount||0)}<br>Unapproved: ${num(row.unapprovedCount||0)}<br>Total: ${num(total)}`:`${esc(display)}<br>${formatter(total)}`;
+    return `<div class="partsBarRow" data-tip="${esc(tip)}"><div class="partsBarName" title="${esc(display)}">${shown}</div><div class="partsBarTrack ${keys.length>1?'multi':''}">${bars}</div><div class="partsBarValue">${value}</div></div>`;
+  }).join('');
+  wrap.querySelectorAll('.partsBarRow[data-tip]').forEach(row=>{
+    row.onmousemove=e=>setTooltip(e,row.dataset.tip||'');
+    row.onmouseleave=hideTooltip;
+  });
+}
+function renderPartsAmountPie(rows,totalAmount){
+  const wrap=$('partsAmountPieStandalone')||$('partsAmountBars');
+  if(!wrap)return;
+  const source=rows.filter(row=>Number(row.approvedAmount||0)>0);
+  const total=Number(totalAmount||0) || source.reduce((sum,row)=>sum+Number(row.approvedAmount||0),0);
+  if(!total){wrap.innerHTML='<div class="partsEmpty">No approved amount found.</div>';return;}
+  const ranked=source.slice().sort((a,b)=>Number(b.approvedAmount||0)-Number(a.approvedAmount||0));
+  const named=ranked.filter(row=>isRealEmployeeName(row.employeeName||row.employeeDisplayName));
+  const unnamed=ranked.filter(row=>!isRealEmployeeName(row.employeeName||row.employeeDisplayName));
+  const top=named.slice(0,7);
+  const hidden=[...named.slice(7),...unnamed];
+  const shownTotal=top.reduce((sum,row)=>sum+Number(row.approvedAmount||0),0);
+  const hiddenTotal=hidden.reduce((sum,row)=>sum+Number(row.approvedAmount||0),0);
+  const remainder=Math.max(0,total-shownTotal-hiddenTotal);
+  const otherTotal=hiddenTotal+remainder;
+  const data=top.slice();
+  if(otherTotal>0.005){
+    const hiddenNames=hidden.map(row=>clean(row.employeeDisplayName||row.employeeName)).filter(Boolean);
+    const details=[
+      hiddenTotal>0?`Other employees: ${money(hiddenTotal)}`:'',
+      remainder>0.005?`Unknown / unassigned difference: ${money(remainder)}`:'',
+      hiddenNames.length?`Included: ${esc(hiddenNames.slice(0,6).join(', '))}${hiddenNames.length>6?'...':''}`:''
+    ].filter(Boolean).join('<br>');
+    data.push({employeeName:'Others',employeeDisplayName:'Others',approvedAmount:otherTotal,otherTip:details||`Others<br>${money(otherTotal)}`});
+  }
+  const colors=['#3b82f6','#22c55e','#f59e0b','#ec4899','#8b5cf6','#14b8a6','#94a3b8','#64748b'];
+  let cursor=0;
+  const segments=[];
+  const stops=data.map((row,i)=>{
+    const value=Number(row.approvedAmount||0);
+    const next=cursor+value/total*100;
+    const name=clean(row.employeeDisplayName||row.employeeName);
+    const tip=row.otherTip||`${esc(name)}<br>${money(value)}`;
+    segments.push({start:cursor,end:next,name,value,tip});
+    const stop=`${colors[i%colors.length]} ${cursor}% ${next}%`;
+    cursor=next;
+    return stop;
+  }).join(',');
+  const legend=data.map((row,i)=>{
+    const name=clean(row.employeeDisplayName||row.employeeName);
+    const value=Number(row.approvedAmount||0);
+    const pct=Math.round(value/total*100);
+    const tip=row.otherTip||`${esc(name)}<br>${money(value)}`;
+    return `<div class="partsPieRow" data-tip="${tip.replace(/"/g,'&quot;')}"><span class="partsPieDot" style="background:${colors[i%colors.length]}"></span><span class="partsPieName" title="${esc(name)}">${name==="Others"?'Others':employeeNameHtml(row.employeeName||name)}</span><b>${pct}%</b></div>`;
+  }).join('');
+  wrap.className='partsAmountPie';
+  wrap.innerHTML=`<div class="partsPieDonut" data-tip="Approved Amount Total<br>${money(total)}" style="background:conic-gradient(${stops})"><span>${money(total)}</span></div><div class="partsPieLegend">${legend}</div>`;
+  const donut=wrap.querySelector('.partsPieDonut');
+  if(donut){
+    donut.onmousemove=e=>{
+      const rect=donut.getBoundingClientRect();
+      const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+      const dx=e.clientX-cx, dy=e.clientY-cy;
+      const dist=Math.sqrt(dx*dx+dy*dy);
+      const inner=rect.width*.24;
+      const outer=rect.width*.52;
+      if(dist<inner||dist>outer){
+        setTooltip(e,`Approved Amount Total<br>${money(total)}`);
+        return;
+      }
+      const pct=((Math.atan2(dy,dx)*180/Math.PI+90+360)%360)/360*100;
+      const seg=segments.find(s=>pct>=s.start&&pct<=s.end)||segments[segments.length-1];
+      setTooltip(e,seg.tip||`${esc(seg.name)}<br>${money(seg.value)}`);
+    };
+    donut.onmouseleave=hideTooltip;
+  }
+  wrap.querySelectorAll('[data-tip]').forEach(row=>{
+    if(row.classList.contains('partsPieDonut'))return;
+    row.onmousemove=e=>setTooltip(e,row.dataset.tip||'');
+    row.onmouseleave=hideTooltip;
+  });
+}
+function renderPartsApproval(from,to){
+  const summary=buildPartsApprovalSummary(from,to);
+  const prevBounds=previousBounds(from,to);
+  const prev=buildPartsApprovalSummary(prevBounds.from,prevBounds.to);
+  const ratio=pctValue(summary.unapprovedCount,summary.approvedCount);
+  const prevRatio=pctValue(prev.unapprovedCount,prev.approvedCount);
+  $('partsApprovedCount').textContent=num(summary.approvedCount);
+  $('partsUnapprovedCount').textContent=num(summary.unapprovedCount);
+  $('partsApprovedAmount').textContent=money(summary.approvedAmount);
+  if($('partsUnapprovedRatio'))$('partsUnapprovedRatio').textContent=pctText(ratio,2);
+  if($('partsRatioBase'))$('partsRatioBase').textContent=`${num(summary.unapprovedCount)} / ${num(summary.approvedCount)}`;
+  setMetricTrend('partsApprovedTrend','approved',summary.approvedCount,prev.approvedCount);
+  setMetricTrend('partsAmountTrend','approved',summary.approvedAmount,prev.approvedAmount,'money');
+  setMetricTrend('partsUnapprovedTrend','unapproved',summary.unapprovedCount,prev.unapprovedCount);
+  setMetricTrend('partsRatioTrend','ratio',ratio,prevRatio,'percent');
+  renderPartsBars('partsCountBars',summary.byEmployee,['approvedCount','unapprovedCount'],['green','amber'],v=>num(v),(row,total)=>{
+    const approvedPct=total?pctText(Number(row.approvedCount||0)/total*100,0):'0%';
+    const unapprovedPct=total?pctText(Number(row.unapprovedCount||0)/total*100,0):'0%';
+    return `<span style="color:#16a34a">${approvedPct}</span> / <span style="color:#f59e0b">${unapprovedPct}</span>`;
+  });
+  renderPartsAmountPie(summary.byEmployee,summary.approvedAmount);
+  renderPartsBars('partsUnapprovedBars',summary.byEmployee,['unapprovedCount'],['amber'],v=>num(v));
+}
+function selectEmployee(name){selectedEmployee=selectedEmployee===name?'':name;drawEmployeeChart();renderDetails()}
+function setTooltip(ev,html){const tip=$('tooltip');tip.innerHTML=html;tip.style.display='block';tip.style.left=(ev.clientX+14)+'px';tip.style.top=(ev.clientY+14)+'px'}
+function hideTooltip(){const tip=$('tooltip');if(tip)tip.style.display='none'}
+function bindChart(){
+  const wrap=$('employeeBarList'); if(!wrap)return;
+  wrap.addEventListener('click',ev=>{
+    const row=ev.target.closest('.employeeBarRow'); if(!row)return;
+    selectEmployee(row.getAttribute('data-employee')||'');
+  });
+}
+function renderDetails(){
+  const q=clean($('searchBox').value).toLowerCase(); const nf=$('nameFilter');
+  if(selectedEmployee){nf.style.display='block';nf.innerHTML=`Filtered by: ${employeeNameHtml(selectedEmployee)} <button type="button" onclick="selectedEmployee='';drawEmployeeChart();renderDetails()">Clear</button>`}else{nf.style.display='none';nf.innerHTML=''}
+  const rows=detailRows.filter(t=>isRealEmployeeName(t.employee)).filter(t=>!selectedEmployee||t.employee===selectedEmployee).filter(t=>{if(!q)return true;return [t.employee,t.id,t.status,t.dealer,t.created,t.claimType].join(' ').toLowerCase().includes(q)}).slice(0,400).map(t=>`<tr><td><span class="detailEmployee">${employeeNameHtml(t.employee)}</span></td><td>#${esc(t.id)}</td><td>${esc(t.status)}</td><td>${esc(t.dealer)}</td><td>${esc(t.created)}</td><td>${Number(t.removedTotal||0)>0?'<span class="pill">Removed '+num(t.removedTotal)+'</span>':'-'}</td></tr>`).join('');
+  $('detailRows').innerHTML=rows||`<tr><td colspan="6">No matching tickets.</td></tr>`;
+}
+function arrayFromMaybe(v){
+  if(Array.isArray(v)) return v;
+  if(v && typeof v==='object') return Object.values(v);
+  return [];
+}
+function emptyAnalytics(){
+  return {generatedAt:'',minDate:DASHBOARD_MIN_DATE,summary:{employees:0,totalTickets:0,criticalTickets:0,assignedCriticalTickets:0,notAssignedCriticalTickets:0,assignmentRate:0,criticalRemoved:0},stats:[],detailRows:[],notAssignedRows:[]};
+}
+async function loadEmployeeAnalytics(){
+  // Support all versions of the Python writer. Firebase returns null when a node does not exist,
+  // so we must not touch analytics.stats until we confirm the object is real.
+  const a1=await readJson(MONITOR_ROOT+'/analytics/employee').catch(()=>null);
+  if(a1 && typeof a1==='object') return a1;
+  const a2=await readJson(MONITOR_ROOT+'/employeeAnalytics').catch(()=>null);
+  if(a2 && typeof a2==='object') return a2;
+  const a3=await readJson(MONITOR_ROOT+'/analytics').catch(()=>null);
+  if(a3 && typeof a3==='object' && a3.employee && typeof a3.employee==='object') return a3.employee;
+  return null;
+}
+async function loadData(){
+  try{
+    setCalcStatus(true,['Loading pre-calculated Firebase analytics','Rendering employee dashboard cache','Preparing employee directory']);
+    $('loadError').style.display='none';
+    analytics=await loadEmployeeAnalytics();
+    teamAnalytics=await readJson(MONITOR_ROOT+'/analytics/team').catch(()=>null);
+    rawCritical={loaded:false,views:{}};
+    rawPartsTickets=[];
+    statusMapping={};
+    await loadEmployeeDirectory().catch(()=>{employeeDirectory=defaultEmployeeDirectory()});
+    activeClaim=(analytics&&analytics.defaultView)||'all';
+    if(!analytics){
+      analytics=emptyAnalytics();
+      $('loadError').textContent='No employee analytics found in Firebase.';
+      $('loadError').style.display='block';
+    }
+    const view=currentEmployeeView();
+    baseStats=arrayFromMaybe(view.stats);
+    detailRows=arrayFromMaybe(view.detailRows);
+    const min=view.minDate||analytics.minDate||DASHBOARD_MIN_DATE;
+    $('dateFrom').min=min;$('dateTo').min=min;$('dateFrom').value=min;$('dateTo').value=toISODate(new Date());
+    applyPresetRange();
+    recalc();
+    finishCalcStatus();
+  }catch(err){
+    analytics=emptyAnalytics();baseStats=[];detailRows=[];recalc();
+    finishCalcStatus();
+    $('loadError').textContent='Cannot load employee analytics from Firebase. Detail: '+(err.message||err);
+    $('loadError').style.display='block';
+  }
+}
+function bindSharedUi(){
+  const tt=$('tooltip');
+  if(tt){tt.onmouseleave=hideTooltip;}
+  const close=$('ticketModalClose');
+  if(close) close.onclick=()=>{$('ticketModal').style.display='none'};
+  const modal=$('ticketModal');
+  if(modal) modal.onclick=(e)=>{if(e.target===modal)modal.style.display='none'};
+}
+function placeMappingPanel(){
+  const panel=$('mappingPanel');
+  const host=document.querySelector('.employeePanel');
+  if(!panel||!host)return;
+  const desc=panel.querySelector('.panelDesc');
+  if(desc)desc.remove();
+  if(!host.contains(panel))host.appendChild(panel);
+}
+document.querySelectorAll('.btn[data-metric]').forEach(btn=>btn.addEventListener('click',()=>{selectedMetric=btn.dataset.metric;document.querySelectorAll('.btn[data-metric]').forEach(b=>b.classList.toggle('active',b===btn));recalc()}));
+$('clearFilter').addEventListener('click',()=>{selectedEmployee='';drawEmployeeChart();renderDetails()});function manualEmployeeRangeChanged(){manualDateMode=true;setCalcStatus(true,['Applying selected date range','Recomputing approved and unapproved tickets','Updating charts and employee rows']);recalc();finishCalcStatus()}$('dateFrom').addEventListener('change',manualEmployeeRangeChanged);$('dateTo').addEventListener('change',manualEmployeeRangeChanged);$('searchBox').addEventListener('input',renderDetails);$('mappingEditBtn').addEventListener('click',()=>setMappingEditor($('mappingPanel').classList.contains('collapsed')));$('employeeAddBtn').addEventListener('click',async()=>{const input=$('employeeAddName');const name=clean(input&&input.value);if(!name)return;employeeDirectory[employeeDirectoryKey(name)]={name,status:"active"};if(input)input.value='';await saveEmployeeDirectory();renderEmployeeDirectory();renderPartsApproval($('dateFrom').value,$('dateTo').value);drawEmployeeChart();renderDetails()});window.addEventListener('resize',drawEmployeeChart);placeMappingPanel();bindSharedUi();bindChart();loadData();
+</script></body></html>
+
+
+
+
+
+
+
+
+
+
+
