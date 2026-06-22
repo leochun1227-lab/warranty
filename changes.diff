@@ -1,0 +1,471 @@
+diff --git a/approved-unapproved.html b/approved-unapproved.html
+deleted file mode 100644
+index 6c954b7..0000000
+--- a/approved-unapproved.html
++++ /dev/null
+@@ -1,75 +0,0 @@
+-<!doctype html>
+-<html lang="en">
+-<head>
+-<meta charset="utf-8">
+-<meta name="viewport" content="width=device-width,initial-scale=1">
+-<title>Approved vs Unapproved</title>
+-<style>
+-:root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#d7dce5;--blue:#156082;--orange:#e97132;--soft:#bfe5f3;--shadow:0 18px 48px rgba(16,24,40,.09)}
+-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#f7f9fd,#eef3f9);color:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif}.shell{width:min(1500px,calc(100vw - 28px));margin:22px auto 36px}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:16px}.eyebrow{margin:0 0 5px;color:#2467c8;font-size:11px;font-weight:850;letter-spacing:.12em;text-transform:uppercase}.title{margin:0;font-size:28px;line-height:1.15}.note{max-width:940px;margin:8px 0 0;color:#52627a;font-size:13px;line-height:1.45}.updated{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;color:#475569;font-size:12px;font-weight:800}.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin-bottom:16px}.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:16px;padding:10px 12px;box-shadow:var(--shadow);margin-bottom:18px}.controls label{display:inline-flex;align-items:center;gap:7px;color:#64748b;font-size:12px;font-weight:800}.controls input,.controls select{height:36px;border:1px solid #dbe5f0;border-radius:10px;padding:0 10px;color:#0f172a;font-weight:700;background:#fff}.controls button{height:36px;border:1px solid #dbe5f0;border-radius:10px;background:#fff;color:#172033;font-weight:800;padding:0 12px;cursor:pointer}.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:18px}.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}.kpiLabel{font-size:11px;color:#64748b;font-weight:850;letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px}.kpiValue{font-size:28px;font-weight:800}.kpiHint{font-size:12px;color:#64748b;margin-top:6px}.report{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px 18px 16px;margin-bottom:22px}.reportHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}.reportTitle{margin:0;font-size:20px}.reportDesc{margin:5px 0 0;color:#64748b;font-size:13px}.grid{display:grid;grid-template-columns:450px minmax(0,1fr);gap:18px;align-items:start}.pivotWrap{overflow:auto;border:1px solid #475569;border-radius:4px;background:#fff}.pivot{width:100%;border-collapse:collapse;min-width:440px}.pivot th,.pivot td{border:1px solid #475569;padding:5px 7px;font-size:12px}.pivot th{background:var(--soft);text-align:left;font-weight:850}.pivot td.num{text-align:right;font-weight:800}.yearRow td{font-weight:850;background:#f8fafc}.grandRow td{background:var(--soft);font-weight:900}.chartBox{border:1px solid #d1d5db;background:#fff;border-radius:4px;padding:10px;min-height:420px}.chartToolbar{display:flex;gap:4px;margin-bottom:8px}.chip{font-size:11px;border:1px solid #cbd5e1;background:linear-gradient(#f8fafc,#e5e7eb);padding:4px 8px;border-radius:2px;color:#334155}.chartWrap{height:355px}.chartWrap canvas{width:100%;height:100%;display:block}.legend{display:flex;gap:18px;align-items:center;justify-content:flex-end;font-size:12px;color:#475569}.legend span{display:inline-flex;align-items:center;gap:6px}.legend i{width:18px;height:3px;display:inline-block}.empty{padding:24px;color:#64748b;text-align:center}@media(max-width:1050px){.grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.top{display:block}.updated{display:inline-block;margin-top:12px}}@media(max-width:640px){.shell{width:calc(100vw - 18px)}.summary{grid-template-columns:1fr}.controls{display:grid}.controls label{display:grid}.chartWrap{height:320px}}
+-</style>
+-</head>
+-<body>
+-<main class="shell">
+-  <div class="top">
+-    <div>
+-      <p class="eyebrow">Warranty Claims</p>
+-      <h1 class="title">Approved vs Unapproved</h1>
+-      <p class="note">For reporting and filtering purposes, approved tickets have been filtered based on the Claim Approved Date rather than their current status. This ensures that all tickets approved within the selected period are included, regardless of their present stage in the workflow.</p>
+-    </div>
+-    <div id="updated" class="updated">Loading...</div>
+-  </div>
+-  <div id="error" class="error"></div>
+-  <div class="controls">
+-    <label>Year <select id="yearSelect"></select></label>
+-    <label>From <input id="fromMonth" type="month"></label>
+-    <label>To <input id="toMonth" type="month"></label>
+-    <button id="applyRange" type="button">Apply range</button>
+-    <button id="allRange" type="button">2025 onwards</button>
+-  </div>
+-  <section class="summary">
+-    <div class="kpi"><div class="kpiLabel">Approved In Field</div><div id="approvedIn" class="kpiValue">0</div><div class="kpiHint">Claim Approved Date</div></div>
+-    <div class="kpi"><div class="kpiLabel">Approved Pre Delivery</div><div id="approvedPre" class="kpiValue">0</div><div class="kpiHint">Claim Approved Date</div></div>
+-    <div class="kpi"><div class="kpiLabel">Unapproved In Field</div><div id="unapprovedIn" class="kpiValue">0</div><div class="kpiHint">Closed / resolved month</div></div>
+-    <div class="kpi"><div class="kpiLabel">Unapproved Pre Delivery</div><div id="unapprovedPre" class="kpiValue">0</div><div class="kpiHint">Closed / resolved month</div></div>
+-  </section>
+-  <section class="report">
+-    <div class="reportHead"><div><h2 class="reportTitle">Approved Tickets</h2><p class="reportDesc">Monthly approved counts split by In Field and Pre Delivery warranty claims. Date basis: Claim Approved Date.</p></div></div>
+-    <div class="grid">
+-      <div class="pivotWrap"><table class="pivot"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims</th><th>Sum of Pre Delivery Warranty Claims</th></tr></thead><tbody id="approvedPivot"></tbody></table></div>
+-      <div class="chartBox"><div class="chartToolbar"><span class="chip">Sum of In Field Warranty Claims</span><span class="chip">Sum of Pre Delivery Warranty Claims</span></div><div class="chartWrap"><canvas id="approvedChart"></canvas></div><div class="legend"><span><i style="background:var(--blue)"></i>Sum of In Field Warranty Claims</span><span><i style="background:var(--orange)"></i>Sum of Pre Delivery Warranty Claims</span></div></div>
+-    </div>
+-  </section>
+-  <section class="report">
+-    <div class="reportHead"><div><h2 class="reportTitle">Unapproved Tickets</h2><p class="reportDesc">Monthly unapproved closed counts split by In Field and Pre Delivery warranty claims.</p></div></div>
+-    <div class="grid">
+-      <div class="pivotWrap"><table class="pivot"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims - Unapproved Claims Closed (Closed)</th><th>Sum of Pre Delivery Warranty Claims - Unapproved Claims Closed (Closed)</th></tr></thead><tbody id="unapprovedPivot"></tbody></table></div>
+-      <div class="chartBox"><div class="chartToolbar"><span class="chip">Sum of In Field Warranty Claims</span><span class="chip">Sum of Pre Delivery Warranty Claims</span></div><div class="chartWrap"><canvas id="unapprovedChart"></canvas></div><div class="legend"><span><i style="background:var(--blue)"></i>In Field Warranty Claims - Unapproved Claims Closed</span><span><i style="background:var(--orange)"></i>Pre Delivery Warranty Claims - Unapproved Claims Closed</span></div></div>
+-    </div>
+-  </section>
+-</main>
+-<script>
+-const FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
+-const ROOT="ctmTicketStatusMonitorV44";
+-const START_MONTH="2025-01";
+-let allRows=[],activeStart=START_MONTH,activeEnd=START_MONTH,customRange=false;
+-const $=id=>document.getElementById(id);
+-const clean=v=>String(v==null?"":v).trim();
+-const num=v=>Number(v||0).toLocaleString();
+-function showError(msg){$("error").style.display="block";$("error").textContent=msg}
+-async function readJson(path){const res=await fetch(`${FIREBASE}/${path}.json`,{cache:"no-store"});if(!res.ok)throw new Error(`${res.status} ${res.statusText}`);return await res.json()}
+-function monthLabel(month){const [y,m]=clean(month).split("-").map(Number);if(!y||!m)return month;return new Date(Date.UTC(y,m-1,1)).toLocaleString("en-AU",{month:"short",timeZone:"UTC"})}
+-function longMonth(month){const [y,m]=clean(month).split("-").map(Number);if(!y||!m)return month;return new Date(Date.UTC(y,m-1,1)).toLocaleString("en-AU",{month:"long",year:"numeric",timeZone:"UTC"})}
+-function addMonths(month,delta){const [y,m]=clean(month).split("-").map(Number);const d=new Date(Date.UTC(y||2025,(m||1)-1,1));d.setUTCMonth(d.getUTCMonth()+delta);return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}`}
+-function iterMonths(start,end){const out=[];let cur=start;if(!cur||!end||cur>end)return out;while(cur<=end){out.push(cur);cur=addMonths(cur,1)}return out}
+-function normaliseRows(view){return (Array.isArray(view.approvalClosedMonthly)?view.approvalClosedMonthly:[]).map(r=>({month:clean(r.month),year:clean(r.year||clean(r.month).slice(0,4)),approvedIn:Number(r.inFieldApproved||0),approvedPre:Number(r.preDeliveryApproved||0),unapprovedIn:Number(r.inFieldUnapproved||0),unapprovedPre:Number(r.preDeliveryUnapproved||0)})).filter(r=>r.month&&r.month>=START_MONTH).sort((a,b)=>a.month.localeCompare(b.month))}
+-function rowsForRange(){const from=activeStart,to=activeEnd;const byMonth=Object.fromEntries(allRows.map(r=>[r.month,r]));return iterMonths(from,to).map(month=>({month,year:month.slice(0,4),...(byMonth[month]||{approvedIn:0,approvedPre:0,unapprovedIn:0,unapprovedPre:0})}))}
+-function renderPivot(tbodyId,rows,inKey,preKey,emptyText){let html="",currentYear="",yearIn=0,yearPre=0,grandIn=0,grandPre=0;function closeYear(){if(!currentYear)return;html+=`<tr class="yearRow"><td>${currentYear}</td><td class="num">${num(yearIn)}</td><td class="num">${num(yearPre)}</td></tr>`}rows.forEach(r=>{if(r.year!==currentYear){closeYear();currentYear=r.year;yearIn=0;yearPre=0}const inv=Number(r[inKey]||0),prev=Number(r[preKey]||0);yearIn+=inv;yearPre+=prev;grandIn+=inv;grandPre+=prev;html+=`<tr><td>&nbsp;&nbsp;${monthLabel(r.month)}</td><td class="num">${num(inv)}</td><td class="num">${num(prev)}</td></tr>`});closeYear();html+=`<tr class="grandRow"><td>Grand Total</td><td class="num">${num(grandIn)}</td><td class="num">${num(grandPre)}</td></tr>`;$(tbodyId).innerHTML=rows.length?html:`<tr><td colspan="3" class="empty">${emptyText}</td></tr>`;return {inField:grandIn,preDelivery:grandPre}}
+-function drawChart(canvasId,rows,inKey,preKey){const c=$(canvasId),rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1,w=Math.max(1,rect.width),h=Math.max(1,rect.height);c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.fillText("No monthly data found.",w/2,h/2);return}const left=48,right=120,top=24,bottom=72,plotW=w-left-right,plotH=h-top-bottom,maxRaw=Math.max(10,...rows.flatMap(r=>[r[inKey]||0,r[preKey]||0])),max=Math.ceil(maxRaw/100)*100||10;ctx.strokeStyle="#d1d5db";ctx.fillStyle="#64748b";ctx.font="12px Segoe UI,Arial";ctx.textAlign="right";for(let i=0;i<=5;i++){const y=top+plotH*i/5,val=Math.round(max*(1-i/5));ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillText(String(val),left-8,y+4)}const x=i=>left+(rows.length<=1?plotW/2:plotW*i/(rows.length-1));const y=v=>top+plotH-plotH*(Number(v||0)/max);function line(key,color,offset){ctx.strokeStyle=color;ctx.lineWidth=3;ctx.beginPath();rows.forEach((r,i)=>{const px=x(i),py=y(r[key]);if(i)ctx.lineTo(px,py);else ctx.moveTo(px,py)});ctx.stroke();rows.forEach((r,i)=>{const px=x(i),py=y(r[key]),val=Number(r[key]||0);ctx.fillStyle=color;ctx.beginPath();ctx.arc(px,py,3,0,Math.PI*2);ctx.fill();if(val){ctx.fillStyle="#334155";ctx.font="11px Segoe UI,Arial";ctx.textAlign="center";ctx.fillText(String(val),px,py+offset)}})}line(inKey,"#156082",-10);line(preKey,"#e97132",18);ctx.strokeStyle="#d1d5db";ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="12px Segoe UI,Arial";const step=Math.max(1,Math.ceil(rows.length/18));rows.forEach((r,i)=>{const px=x(i);if(i%step===0||i===rows.length-1)ctx.fillText(monthLabel(r.month),px,h-50);if(i===0||rows[i-1].year!==r.year){ctx.beginPath();ctx.moveTo(px,top+plotH+8);ctx.lineTo(px,h-14);ctx.stroke()}});ctx.beginPath();ctx.moveTo(w-right,top+plotH+8);ctx.lineTo(w-right,h-14);ctx.stroke();ctx.font="700 12px Segoe UI,Arial";let start=0;while(start<rows.length){let end=start;while(end+1<rows.length&&rows[end+1].year===rows[start].year)end++;ctx.fillText(rows[start].year,(x(start)+x(end))/2,h-18);start=end+1}}
+-function syncControls(){const years=[...new Set(allRows.map(r=>r.year))].filter(Boolean);$("yearSelect").innerHTML=`<option value="">----</option>`+years.map(y=>`<option value="${y}">${y}</option>`).join("");$("fromMonth").min=START_MONTH;$("toMonth").min=START_MONTH;$("fromMonth").max=activeEnd;$("toMonth").max=activeEnd;$("fromMonth").value=activeStart;$("toMonth").value=activeEnd}
+-function render(){const rows=rowsForRange();const approvedTotals=renderPivot("approvedPivot",rows,"approvedIn","approvedPre","No approved monthly data found.");const unapprovedTotals=renderPivot("unapprovedPivot",rows,"unapprovedIn","unapprovedPre","No unapproved monthly data found.");$("approvedIn").textContent=num(approvedTotals.inField);$("approvedPre").textContent=num(approvedTotals.preDelivery);$("unapprovedIn").textContent=num(unapprovedTotals.inField);$("unapprovedPre").textContent=num(unapprovedTotals.preDelivery);drawChart("approvedChart",rows,"approvedIn","approvedPre");drawChart("unapprovedChart",rows,"unapprovedIn","unapprovedPre");$("updated").textContent=`${longMonth(activeStart)} to ${longMonth(activeEnd)}`}
+-function applyYear(year){if(!year){activeStart=START_MONTH;activeEnd=allRows.length?allRows[allRows.length-1].month:START_MONTH;return}activeStart=`${year}-01`;activeEnd=`${year}-12`;const latest=allRows.length?allRows[allRows.length-1].month:activeEnd;if(activeEnd>latest)activeEnd=latest;if(activeStart<START_MONTH)activeStart=START_MONTH}
+-readJson(`${ROOT}/analytics/teamDashboard`).then(data=>{const view=(data.views&&data.views.all)||data;allRows=normaliseRows(view);activeStart=START_MONTH;activeEnd=allRows.length?allRows[allRows.length-1].month:START_MONTH;syncControls();$("yearSelect").onchange=()=>{applyYear($("yearSelect").value);syncControls();render()};$("applyRange").onclick=()=>{let a=$("fromMonth").value||START_MONTH,b=$("toMonth").value||activeEnd;if(a>b)[a,b]=[b,a];activeStart=a<START_MONTH?START_MONTH:a;activeEnd=b;render()};$("allRange").onclick=()=>{activeStart=START_MONTH;activeEnd=allRows.length?allRows[allRows.length-1].month:START_MONTH;$("yearSelect").value="";syncControls();render()};addEventListener("resize",render);render()}).catch(err=>showError(`Unable to load approved/unapproved monthly analytics: ${err.message}`));
+-</script>
+-</body>
+-</html>
+diff --git a/in-field-pre-delivery.html b/in-field-pre-delivery.html
+index 0043b27..43cc436 100644
+--- a/in-field-pre-delivery.html
++++ b/in-field-pre-delivery.html
+@@ -3,12 +3,67 @@
+ <head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+-<title>In Field / Pre Delivery</title>
++<title>In Field / Pre Delivery · Approved vs Unapproved</title>
+ <style>
+-:root{--bg:#f5f7fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#dbe5f0;--blue:#3b82f6;--green:#22c55e;--shadow:0 14px 34px rgba(15,23,42,.06)}
+-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif}.app{min-height:100vh;display:grid;grid-template-columns:288px 1fr}.sidebar{background:#0b1222;color:#e5e7eb;min-height:100vh;padding:22px 16px;position:sticky;top:0}.brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 28px}.brandMark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#2563eb);display:flex;align-items:center;justify-content:center}.brandText span{display:block;font-size:18px;font-weight:600}.brandText small{display:block;color:#9aa8bc;font-size:12px;margin-top:2px}.navSection{font-size:12px;letter-spacing:4px;color:#8ea0b8;text-transform:uppercase;margin:25px 8px 10px}.navLink{width:100%;display:flex;align-items:center;gap:13px;color:#d9e1ec;padding:13px 14px;border-radius:12px;font-weight:600;text-decoration:none}.navLink.active{background:rgba(255,255,255,.10);color:#fff}.navLink:hover{background:rgba(255,255,255,.07)}.navLink svg{width:18px;height:18px;stroke-width:1.8;color:#aebcd1}.main{min-width:0;padding:30px 40px 46px}.pageTop{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:18px}.pageTitle{font-size:28px;line-height:1.15;font-weight:650;margin:0 0 8px}.subTitle{color:#52627a;font-size:14px;margin:0}.datePill{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;color:#475569;font-size:12px;font-weight:700}.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:0 0 22px}.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:var(--shadow);min-height:116px}.kpiLabel{font-size:12px;color:#64748b;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px}.kpiValue{font-size:32px;font-weight:700;letter-spacing:-.02em}.kpiHint{font-size:12px;color:#64748b;margin-top:8px}.panel{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px 28px;margin-bottom:24px}.panelTitle{font-size:22px;font-weight:650;margin:0 0 8px}.panelDesc{color:#64748b;font-size:13px;margin:0}.splitGrid{display:grid;grid-template-columns:330px 1fr;gap:28px;align-items:center;margin-top:16px}.donutWrap{height:300px;display:grid;place-items:center}.legendRows{display:grid;gap:12px}.legendRow{display:grid;grid-template-columns:170px 1fr 74px;gap:14px;align-items:center}.legendLabel{font-weight:650;color:#334155}.track{height:16px;border-radius:999px;background:#eef3f8;border:1px solid #e2e8f0;overflow:hidden}.fill{height:100%;border-radius:999px}.value{text-align:right;font-weight:700}.monthlyGrid{display:grid;grid-template-columns:1fr 1.15fr;gap:22px;align-items:start}.monthList{display:grid;gap:10px;max-height:520px;overflow:auto;padding-right:4px}.monthRow{display:grid;grid-template-columns:108px 1fr 74px 74px;gap:12px;align-items:center;padding:10px 12px;border:1px solid #e5edf6;border-radius:12px;background:#f9fbfe}.monthName{font-weight:750;color:#0f172a}.monthMini{display:grid;gap:5px}.monthMiniBar{height:8px;border-radius:999px;background:#e2e8f0;overflow:hidden}.monthMiniBar span{display:block;height:100%;border-radius:999px}.monthValue{text-align:right;font-weight:750;color:#334155}.pivotWrap{overflow:auto;border:1px solid #475569;border-radius:6px;background:#fff}.pivotTable{width:100%;border-collapse:collapse;min-width:560px}.pivotTable th,.pivotTable td{border:1px solid #475569;padding:6px 8px;font-size:13px}.pivotTable th{background:#bfe5f3;text-align:left;font-weight:800}.pivotTable td.num{text-align:right;font-weight:750}.pivotYear td{font-weight:800;background:#f8fafc}.pivotGrand td{background:#bfe5f3;font-weight:850}.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin-bottom:16px}@media(max-width:1000px){.monthlyGrid{grid-template-columns:1fr}}@media(max-width:900px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}.kpis{grid-template-columns:1fr 1fr}.splitGrid{grid-template-columns:1fr}}@media(max-width:620px){.kpis{grid-template-columns:1fr}.legendRow{grid-template-columns:1fr}.monthRow{grid-template-columns:1fr 1fr}.monthMini{grid-column:1/-1}}
+-/* Monthly created trend copied into this dashboard, backed by Python pre-calculated claimCreatedMonthly. */
+-.createdChartCard{margin-top:22px;border:1px solid #d1d5db;border-radius:6px;background:linear-gradient(180deg,#fff,#fbfdff);padding:14px}.createdChartHead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:10px}.createdChartTitle{font-size:16px;font-weight:750;color:#172033;margin:0}.createdChartTools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.createdChartTools label{display:inline-flex;align-items:center;gap:7px;color:#64748b;font-size:12px;font-weight:800}.createdChartTools select,.createdChartTools input{height:34px;border:1px solid #d7dce5;border-radius:9px;background:#fff;color:#172033;font:inherit;font-size:12px;font-weight:700;padding:6px 9px}.createdChartBtn{height:34px;border:1px solid #d7dce5;border-radius:9px;background:#fff;color:#172033;font-weight:800;font-size:12px;padding:0 11px;cursor:pointer}.createdChartBtn.primary{border:0;background:linear-gradient(135deg,#4c8ee8,#2467c8);color:#fff}.createdChartWrap{height:430px}.createdChartWrap canvas{width:100%;height:100%;display:block}.createdChartLegend{display:flex;gap:18px;align-items:center;justify-content:flex-end;font-size:12px;color:#475569;margin-top:8px}.createdChartLegend span{display:inline-flex;align-items:center;gap:6px}.createdChartLegend i{width:18px;height:3px;display:inline-block}.createdChartStatus{min-height:18px;color:#64748b;font-size:12px;margin-top:8px}@media(max-width:1000px){.createdChartHead{display:block}.createdChartTools{margin-top:12px}}@media(max-width:620px){.createdChartTools{display:grid;grid-template-columns:1fr}.createdChartTools label{display:grid}.createdChartWrap{height:360px}.createdChartLegend{justify-content:flex-start;flex-wrap:wrap}}
++:root{--bg:#f5f7fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#dbe5f0;--blue:#156082;--orange:#e97132;--soft:#bfe5f3;--shadow:0 14px 34px rgba(15,23,42,.06)}
++*{box-sizing:border-box}
++html{scroll-behavior:smooth}
++body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif}
++.app{min-height:100vh;display:grid;grid-template-columns:288px 1fr}
++.sidebar{background:#0b1222;color:#e5e7eb;min-height:100vh;padding:22px 16px;position:sticky;top:0;align-self:start}
++.brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 28px}
++.brandMark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#2563eb);display:flex;align-items:center;justify-content:center}
++.brandText span{display:block;font-size:18px;font-weight:600}
++.brandText small{display:block;color:#9aa8bc;font-size:12px;margin-top:2px}
++.navSection{font-size:12px;letter-spacing:4px;color:#8ea0b8;text-transform:uppercase;margin:25px 8px 10px}
++.navLink{width:100%;display:flex;align-items:center;gap:13px;color:#d9e1ec;padding:13px 14px;border-radius:12px;font-weight:600;text-decoration:none}
++.navLink.active{background:rgba(255,255,255,.10);color:#fff}
++.navLink:hover{background:rgba(255,255,255,.07)}
++.navLink svg{width:18px;height:18px;stroke-width:1.8;color:#aebcd1}
++.main{min-width:0;padding:30px 40px 60px}
++.pageTop{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:14px}
++.pageTitle{font-size:28px;line-height:1.15;font-weight:650;margin:0 0 8px}
++.subTitle{color:#52627a;font-size:14px;margin:0;max-width:780px}
++.datePill{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;color:#475569;font-size:12px;font-weight:700;white-space:nowrap}
++/* sticky tab + filter bar */
++.toolbar{position:sticky;top:0;z-index:30;background:rgba(245,247,251,.92);backdrop-filter:blur(6px);padding:12px 0 14px;margin-bottom:10px;border-bottom:1px solid #e6ecf4}
++.tabs{display:inline-flex;gap:4px;background:#eef3f9;border:1px solid var(--line);border-radius:999px;padding:4px}
++.tab{appearance:none;border:0;background:transparent;color:#475569;font-weight:750;font-size:13px;padding:8px 16px;border-radius:999px;cursor:pointer;text-decoration:none;display:inline-block}
++.tab.active{background:#fff;color:#0b3a52;box-shadow:0 2px 8px rgba(15,23,42,.10)}
++.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
++.controls label{display:inline-flex;align-items:center;gap:7px;color:#64748b;font-size:12px;font-weight:800}
++.controls input,.controls select{height:34px;border:1px solid var(--line);border-radius:9px;padding:0 10px;color:#0f172a;font-weight:700;background:#fff;font:inherit;font-size:12px}
++.controls button{height:34px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#172033;font-weight:800;padding:0 12px;cursor:pointer;font-size:12px}
++.controls button.primary{border:0;background:linear-gradient(135deg,#4c8ee8,#2467c8);color:#fff}
++.rangeNote{margin-left:auto;color:#64748b;font-size:12px;font-weight:700}
++.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin:10px 0 16px}
++.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:6px 0 24px}
++.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}
++.kpiLabel{font-size:11px;color:#64748b;font-weight:850;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
++.kpiValue{font-size:30px;font-weight:800;letter-spacing:-.02em}
++.kpiHint{font-size:12px;color:#64748b;margin-top:7px}
++.panel{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:26px;scroll-margin-top:96px}
++.panelHead{margin-bottom:14px}
++.panelTitle{font-size:21px;font-weight:650;margin:0 0 6px}
++.panelDesc{color:#64748b;font-size:13px;margin:0;max-width:880px;line-height:1.5}
++.grid{display:grid;grid-template-columns:430px minmax(0,1fr);gap:22px;align-items:start}
++.pivotWrap{overflow:auto;border:1px solid #475569;border-radius:6px;background:#fff;max-height:560px}
++.pivot{width:100%;border-collapse:collapse;min-width:420px}
++.pivot th,.pivot td{border:1px solid #475569;padding:6px 8px;font-size:12px}
++.pivot th{background:var(--soft);text-align:left;font-weight:850;position:sticky;top:0}
++.pivot td.num{text-align:right;font-weight:780}
++.yearRow td{font-weight:850;background:#f1f5fb}
++.grandRow td{background:var(--soft);font-weight:900}
++.chartBox{border:1px solid #d1d5db;background:linear-gradient(180deg,#fff,#fbfdff);border-radius:8px;padding:12px}
++.chartWrap{height:430px}
++.chartWrap canvas{width:100%;height:100%;display:block}
++.legend{display:flex;gap:18px;align-items:center;justify-content:flex-end;font-size:12px;color:#475569;margin-top:6px}
++.legend span{display:inline-flex;align-items:center;gap:6px}
++.legend i{width:18px;height:3px;display:inline-block;border-radius:2px}
++.empty{padding:24px;color:#64748b;text-align:center}
++@media(max-width:1050px){.grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
++@media(max-width:900px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}}
++@media(max-width:620px){.kpis{grid-template-columns:1fr}.controls{display:grid}.controls label{display:grid}.chartWrap{height:340px}.rangeNote{margin-left:0}}
+ </style>
+ </head>
+ <body>
+@@ -21,81 +76,247 @@
+     <div class="navSection">Tickets</div>
+     <a class="navLink" href="dealer-workbench.html#tickets">Critical Tickets</a>
+     <a class="navLink" href="index.html#repair-analytics">Repair Analytics</a>
+-    <a class="navLink active" href="in-field-pre-delivery.html">In Field / Pre Delivery</a>
+-    <a class="navLink" href="approved-unapproved.html">Approved vs Unapproved</a>
++    <a class="navLink active" href="in-field-pre-delivery.html#created">In Field / Pre Delivery</a>
++    <a class="navLink active" href="in-field-pre-delivery.html#approved">Approved vs Unapproved</a>
+     <a class="navLink" href="dealer-workbench.html#parts">Parts Delivery</a>
+   </aside>
+   <main class="main">
+     <div class="pageTop">
+-      <div><h1 class="pageTitle">In Field / Pre Delivery</h1><p class="subTitle">Current split and monthly CreatedOn claim volumes.</p></div>
++      <div>
++        <h1 class="pageTitle">In Field / Pre Delivery &amp; Approved vs Unapproved</h1>
++        <p class="subTitle">Monthly In Field and Pre Delivery warranty claim volumes. History up to May 2026 is taken from the SAP reports; June 2026 onward updates live from this dashboard. Approved totals include both In Field and Pre Delivery claims.</p>
++      </div>
+       <div id="asOf" class="datePill">As of --</div>
+     </div>
++
++    <div class="toolbar">
++      <div class="tabs">
++        <a class="tab" data-target="created" href="#created">Created by Month</a>
++        <a class="tab" data-target="approved" href="#approved">Approved</a>
++        <a class="tab" data-target="unapproved" href="#unapproved">Unapproved</a>
++      </div>
++      <div class="controls">
++        <label>Year <select id="yearSelect"></select></label>
++        <label>From <input id="fromMonth" type="month"></label>
++        <label>To <input id="toMonth" type="month"></label>
++        <button id="applyRange" class="primary" type="button">Apply range</button>
++        <button id="last12" type="button">Last 12 months</button>
++        <button id="clearRange" type="button">All (2025+)</button>
++        <span id="rangeNote" class="rangeNote"></span>
++      </div>
++    </div>
++
+     <div id="error" class="error"></div>
++
+     <section class="kpis">
+-      <div class="kpi"><div class="kpiLabel">Total Critical</div><div id="total" class="kpiValue">0</div><div class="kpiHint">Current tickets</div></div>
+-      <div class="kpi"><div class="kpiLabel">In Field</div><div id="inField" class="kpiValue">0</div><div id="inFieldPct" class="kpiHint">0%</div></div>
+-      <div class="kpi"><div class="kpiLabel">Pre Delivery</div><div id="preDelivery" class="kpiValue">0</div><div id="preDeliveryPct" class="kpiHint">0%</div></div>
+-      <div class="kpi"><div class="kpiLabel">Balance</div><div id="balance" class="kpiValue">0</div><div class="kpiHint">In Field minus Pre Delivery</div></div>
++      <div class="kpi"><div class="kpiLabel">Created (In Field + Pre)</div><div id="kpiCreated" class="kpiValue">0</div><div class="kpiHint">Tickets created in range</div></div>
++      <div class="kpi"><div class="kpiLabel">Approved</div><div id="kpiApproved" class="kpiValue">0</div><div class="kpiHint">In Field + Pre Delivery approved</div></div>
++      <div class="kpi"><div class="kpiLabel">Unapproved Closed</div><div id="kpiUnapproved" class="kpiValue">0</div><div class="kpiHint">In Field + Pre Delivery</div></div>
++      <div class="kpi"><div class="kpiLabel">Approval Rate</div><div id="kpiRate" class="kpiValue">0%</div><div class="kpiHint">Approved / (Approved + Unapproved)</div></div>
++    </section>
++
++    <section class="panel" id="created">
++      <div class="panelHead">
++        <h2 class="panelTitle">In Field &amp; Pre Delivery Warranty Tickets Created by Month</h2>
++        <p class="panelDesc">Tickets grouped by the month they were created (CreatedOn). History through May 2026 matches the SAP "tickets created by month" report; June 2026 onward is calculated live from this dashboard.</p>
++      </div>
++      <div class="grid">
++        <div class="pivotWrap"><table class="pivot"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims</th><th>Sum of Pre Delivery Warranty Claims</th></tr></thead><tbody id="createdPivot"></tbody></table></div>
++        <div class="chartBox">
++          <div class="chartWrap"><canvas id="createdChart"></canvas></div>
++          <div class="legend"><span><i style="background:var(--blue)"></i>In Field Warranty Claims</span><span><i style="background:var(--orange)"></i>Pre Delivery Warranty Claims</span></div>
++        </div>
++      </div>
+     </section>
+-    <section class="panel">
+-      <h2 class="panelTitle">Current Total Tickets Distribution</h2>
+-      <p class="panelDesc">This page uses the pre-calculated critical claim split from Python analytics.</p>
+-      <div class="splitGrid">
+-        <div class="donutWrap"><canvas id="donut" width="300" height="300"></canvas></div>
+-        <div id="legendRows" class="legendRows"></div>
++
++    <section class="panel" id="approved">
++      <div class="panelHead">
++        <h2 class="panelTitle">Approved Tickets</h2>
++        <p class="panelDesc">Monthly approved counts split by In Field and Pre Delivery warranty claims. Date basis: Claim Approved Date. Approved tickets are filtered by approval date rather than current status, so every ticket approved in the period is included regardless of its present workflow stage.</p>
++      </div>
++      <div class="grid">
++        <div class="pivotWrap"><table class="pivot"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims</th><th>Sum of Pre Delivery Warranty Claims</th></tr></thead><tbody id="approvedPivot"></tbody></table></div>
++        <div class="chartBox">
++          <div class="chartWrap"><canvas id="approvedChart"></canvas></div>
++          <div class="legend"><span><i style="background:var(--blue)"></i>In Field Warranty Claims</span><span><i style="background:var(--orange)"></i>Pre Delivery Warranty Claims</span></div>
++        </div>
+       </div>
+     </section>
+-    <section class="panel">
+-      <h2 class="panelTitle">Tickets Created by Month</h2>
+-      <p class="panelDesc">Monthly CreatedOn counts for In Field and Pre Delivery warranty claims.</p>
+-      <div class="monthlyGrid">
+-        <div id="monthList" class="monthList"></div>
+-        <div class="pivotWrap"><table class="pivotTable"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims</th><th>Sum of Pre Delivery Warranty Claims</th></tr></thead><tbody id="pivotRows"></tbody></table></div>
++
++    <section class="panel" id="unapproved">
++      <div class="panelHead">
++        <h2 class="panelTitle">Unapproved Tickets</h2>
++        <p class="panelDesc">Monthly "Unapproved Claims Closed (Closed)" counts split by In Field and Pre Delivery warranty claims. Date basis: the resolved / closed month.</p>
+       </div>
+-      <div class="createdChartCard">
+-        <div class="createdChartHead">
+-          <h3 class="createdChartTitle">In Field &amp; Pre Delivery Warranty Tickets Created by Month</h3>
+-          <div class="createdChartTools">
+-            <label>Year <select id="createdYearSelect"></select></label>
+-            <label>From <input id="createdStartMonth" type="month"></label>
+-            <label>To <input id="createdEndMonth" type="month"></label>
+-            <button id="createdApplyRange" class="createdChartBtn primary" type="button">Apply range</button>
+-            <button id="createdLast12" class="createdChartBtn" type="button">Last 12 months</button>
+-            <button id="createdClearRange" class="createdChartBtn" type="button">Clear range</button>
+-          </div>
++      <div class="grid">
++        <div class="pivotWrap"><table class="pivot"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims<br>Unapproved Claims Closed (Closed)</th><th>Sum of Pre Delivery Warranty Claims<br>Unapproved Claims Closed (Closed)</th></tr></thead><tbody id="unapprovedPivot"></tbody></table></div>
++        <div class="chartBox">
++          <div class="chartWrap"><canvas id="unapprovedChart"></canvas></div>
++          <div class="legend"><span><i style="background:var(--blue)"></i>In Field Warranty Claims</span><span><i style="background:var(--orange)"></i>Pre Delivery Warranty Claims</span></div>
+         </div>
+-        <div class="createdChartWrap"><canvas id="createdClaimsChart"></canvas></div>
+-        <div class="createdChartLegend"><span><i style="background:#4c8ee8"></i>In Field Warranty Claims</span><span><i style="background:#ff7438"></i>Pre Delivery Warranty Claims</span></div>
+-        <div id="createdChartStatus" class="createdChartStatus"></div>
+       </div>
+     </section>
+   </main>
+ </div>
++
+ <script>
+ const FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
+ const ROOT="ctmTicketStatusMonitorV44";
++const HARD_MIN="2025-01";          // first hardcoded month
++const LIVE_START="2026-06";        // live dashboard values take over from this month
++
++/* Hardcoded baseline from the SAP report screenshots (Jan 2025 - May 2026).
++   createdIn/createdPre  = "In Field & Pre Delivery tickets created by month"
++   approvedIn/approvedPre = "Approved Tickets" pivot (Claim Approved On)
++   unapprovedIn/unapprovedPre = "Unapproved Tickets" pivot (Unapproved Claims Closed) */
++const HISTORICAL={
++  "2025-01":{createdIn:765,createdPre:148,approvedIn:504,approvedPre:133,unapprovedIn:101,unapprovedPre:10},
++  "2025-02":{createdIn:740,createdPre:119,approvedIn:558,approvedPre:117,unapprovedIn:52,unapprovedPre:20},
++  "2025-03":{createdIn:807,createdPre:122,approvedIn:681,approvedPre:121,unapprovedIn:68,unapprovedPre:7},
++  "2025-04":{createdIn:709,createdPre:161,approvedIn:654,approvedPre:140,unapprovedIn:124,unapprovedPre:9},
++  "2025-05":{createdIn:873,createdPre:133,approvedIn:729,approvedPre:134,unapprovedIn:65,unapprovedPre:7},
++  "2025-06":{createdIn:864,createdPre:154,approvedIn:738,approvedPre:146,unapprovedIn:128,unapprovedPre:4},
++  "2025-07":{createdIn:794,createdPre:153,approvedIn:655,approvedPre:116,unapprovedIn:62,unapprovedPre:10},
++  "2025-08":{createdIn:784,createdPre:179,approvedIn:557,approvedPre:124,unapprovedIn:56,unapprovedPre:9},
++  "2025-09":{createdIn:739,createdPre:254,approvedIn:613,approvedPre:112,unapprovedIn:53,unapprovedPre:2},
++  "2025-10":{createdIn:870,createdPre:193,approvedIn:377,approvedPre:126,unapprovedIn:41,unapprovedPre:1},
++  "2025-11":{createdIn:740,createdPre:158,approvedIn:450,approvedPre:120,unapprovedIn:76,unapprovedPre:3},
++  "2025-12":{createdIn:672,createdPre:164,approvedIn:424,approvedPre:99,unapprovedIn:358,unapprovedPre:21},
++  "2026-01":{createdIn:586,createdPre:123,approvedIn:340,approvedPre:100,unapprovedIn:517,unapprovedPre:67},
++  "2026-02":{createdIn:885,createdPre:169,approvedIn:823,approvedPre:221,unapprovedIn:269,unapprovedPre:18},
++  "2026-03":{createdIn:757,createdPre:197,approvedIn:1059,approvedPre:145,unapprovedIn:422,unapprovedPre:27},
++  "2026-04":{createdIn:790,createdPre:177,approvedIn:888,approvedPre:268,unapprovedIn:268,unapprovedPre:15},
++  "2026-05":{createdIn:782,createdPre:208,approvedIn:1080,approvedPre:245,unapprovedIn:235,unapprovedPre:22}
++};
++
+ const $=id=>document.getElementById(id);
++const clean=v=>String(v==null?"":v).trim();
+ const num=v=>Number(v||0).toLocaleString();
+-const pct=(v,t)=>t?`${(Number(v||0)/t*100).toFixed(1)}%`:"0%";
++const arr=v=>Array.isArray(v)?v:(v&&typeof v==="object"?Object.values(v):[]);
+ function showError(msg){$("error").style.display="block";$("error").textContent=msg}
+ async function readJson(path){const res=await fetch(`${FIREBASE}/${path}.json`,{cache:"no-store"});if(!res.ok)throw new Error(`${res.status} ${res.statusText}`);return await res.json()}
+-function viewFrom(team){return (team.views&&team.views.all)||team}
+-function splitFrom(view){const s=view.summary||{};const py=(s.dashboardKpis&&s.dashboardKpis.criticalClaimSplit)||s.criticalClaimSplit||{};return {inField:Number(py.inField||0),preDelivery:Number(py.preDelivery||0)}}
+-function monthLabel(month){const [y,m]=String(month||"").split("-").map(Number);if(!y||!m)return month;return new Date(Date.UTC(y,m-1,1)).toLocaleString("en-AU",{month:"short",year:"numeric",timeZone:"UTC"})}
+-function shortMonth(month){const [y,m]=String(month||"").split("-").map(Number);if(!y||!m)return month;return new Date(Date.UTC(y,m-1,1)).toLocaleString("en-AU",{month:"short",timeZone:"UTC"})}
+-function monthlyRows(view){return Array.isArray(view.claimCreatedMonthly)?view.claimCreatedMonthly.map(r=>({month:String(r.month||""),year:String(r.year||String(r.month||"").slice(0,4)),inField:Number(r.inField||0),preDelivery:Number(r.preDelivery||0),total:Number(r.total||0)||Number(r.inField||0)+Number(r.preDelivery||0)})).filter(r=>r.month).sort((a,b)=>a.month.localeCompare(b.month)):[]}
+-function drawDonut(values){const c=$("donut"),ctx=c.getContext("2d"),w=c.width,h=c.height,total=values.reduce((a,b)=>a+b.value,0);ctx.clearRect(0,0,w,h);let a=-Math.PI/2;values.forEach(v=>{const arc=total?Math.PI*2*v.value/total:0;ctx.beginPath();ctx.moveTo(w/2,h/2);ctx.arc(w/2,h/2,118,a,a+arc);ctx.closePath();ctx.fillStyle=v.color;ctx.fill();a+=arc});ctx.globalCompositeOperation="destination-out";ctx.beginPath();ctx.arc(w/2,h/2,70,0,Math.PI*2);ctx.fill();ctx.globalCompositeOperation="source-over";ctx.fillStyle="#0f172a";ctx.font="700 28px Inter,Arial";ctx.textAlign="center";ctx.fillText(num(total),w/2,h/2+8);ctx.fillStyle="#64748b";ctx.font="700 12px Inter,Arial";ctx.fillText("tickets",w/2,h/2+30)}
+-function renderMonthly(view){const rows=monthlyRows(view),max=Math.max(1,...rows.map(r=>Math.max(r.inField,r.preDelivery)));$("monthList").innerHTML=rows.length?rows.slice().reverse().map(r=>`<div class="monthRow"><div class="monthName">${monthLabel(r.month)}</div><div class="monthMini"><div class="monthMiniBar"><span style="width:${Math.max(2,r.inField/max*100)}%;background:#22c55e"></span></div><div class="monthMiniBar"><span style="width:${Math.max(2,r.preDelivery/max*100)}%;background:#3b82f6"></span></div></div><div class="monthValue">${num(r.inField)}</div><div class="monthValue">${num(r.preDelivery)}</div></div>`).join(""):`<div class="panelDesc">No monthly CreatedOn data found. Rebuild analytics to generate this table.</div>`;let html="",currentYear="",yearIn=0,yearPre=0,grandIn=0,grandPre=0;function closeYear(){if(!currentYear)return;html+=`<tr class="pivotYear"><td>${currentYear}</td><td class="num">${num(yearIn)}</td><td class="num">${num(yearPre)}</td></tr>`}rows.forEach(r=>{if(r.year!==currentYear){closeYear();currentYear=r.year;yearIn=0;yearPre=0}yearIn+=r.inField;yearPre+=r.preDelivery;grandIn+=r.inField;grandPre+=r.preDelivery;html+=`<tr><td>&nbsp;&nbsp;${shortMonth(r.month)}</td><td class="num">${num(r.inField)}</td><td class="num">${num(r.preDelivery)}</td></tr>`});closeYear();html+=`<tr class="pivotGrand"><td>Grand Total</td><td class="num">${num(grandIn)}</td><td class="num">${num(grandPre)}</td></tr>`;$("pivotRows").innerHTML=rows.length?html:`<tr><td colspan="3">No monthly data found.</td></tr>`}
+-let createdMonthlyRows=[],createdCustomRange=false,createdBound=false;
+-function addMonths(month,delta){const [y,m]=String(month||"").split("-").map(Number);const d=new Date(Date.UTC(y||2025,(m||1)-1,1));d.setUTCMonth(d.getUTCMonth()+delta);return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}`}
++function monthShort(m){const [y,mm]=clean(m).split("-").map(Number);if(!y||!mm)return m;return new Date(Date.UTC(y,mm-1,1)).toLocaleString("en-AU",{month:"short",timeZone:"UTC"})}
++function monthLong(m){const [y,mm]=clean(m).split("-").map(Number);if(!y||!mm)return m;return new Date(Date.UTC(y,mm-1,1)).toLocaleString("en-AU",{month:"long",year:"numeric",timeZone:"UTC"})}
++function addMonths(m,delta){const [y,mm]=clean(m).split("-").map(Number);const d=new Date(Date.UTC(y||2025,(mm||1)-1,1));d.setUTCMonth(d.getUTCMonth()+delta);return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}`}
+ function iterMonths(start,end){const out=[];let cur=start;if(!cur||!end||cur>end)return out;while(cur<=end){out.push(cur);cur=addMonths(cur,1)}return out}
+-function longMonth(month){const [y,m]=String(month||"").split("-").map(Number);if(!y||!m)return month;return new Date(Date.UTC(y,m-1,1)).toLocaleString("en-AU",{month:"long",year:"numeric",timeZone:"UTC"})}
+-function createdChartData(){const byMonth=Object.fromEntries(createdMonthlyRows.map(r=>[r.month,r]));const months=createdMonthlyRows.map(r=>r.month);const min=months[0]||"2025-01",max=months[months.length-1]||min;return {byMonth,min,max,years:[...new Set(months.map(m=>m.slice(0,4)))].sort()}}
+-function createdRange(data){if(createdCustomRange){let start=$("createdStartMonth").value||data.min,end=$("createdEndMonth").value||data.max;if(start< data.min)start=data.min;if(end>data.max)end=data.max;if(start>end)[start,end]=[end,start];return {start,end,label:`${longMonth(start)} to ${longMonth(end)}`}}const year=$("createdYearSelect").value;if(year){let start=`${year}-01`,end=`${year}-12`;if(start<data.min)start=data.min;if(end>data.max)end=data.max;return {start,end,label:year}}const start=addMonths(data.max,-23)<data.min?data.min:addMonths(data.max,-23);return {start,end:data.max,label:"latest 24 months"}}
+-function drawCreatedChart(series){const c=$("createdClaimsChart");if(!c)return;const rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1,w=Math.max(1,rect.width),h=Math.max(1,rect.height);c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);if(!series.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="600 13px Segoe UI,Arial";ctx.fillText("No monthly CreatedOn data found.",w/2,h/2);return}const left=46,right=54,top=24,bottom=76,plotW=w-left-right,plotH=h-top-bottom,max=Math.max(100,...series.flatMap(r=>[r.inField,r.preDelivery]));const yMax=Math.ceil(max/100)*100;ctx.strokeStyle="#edf0f5";ctx.fillStyle="#64748b";ctx.font="12px Segoe UI,Arial";ctx.textAlign="right";for(let i=0;i<=5;i++){const y=top+plotH*i/5,val=Math.round(yMax*(1-i/5));ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillText(String(val),left-8,y+4);ctx.textAlign="left";ctx.fillText(String(val),w-right+8,y+4);ctx.textAlign="right"}const x=i=>left+(series.length<=1?plotW/2:plotW*i/(series.length-1));const y=v=>top+plotH-plotH*(Number(v||0)/yMax);function line(key,color,labelOffset){ctx.strokeStyle=color;ctx.lineWidth=2.4;ctx.beginPath();series.forEach((r,i)=>{const px=x(i),py=y(r[key]);if(i)ctx.lineTo(px,py);else ctx.moveTo(px,py)});ctx.stroke();series.forEach((r,i)=>{const px=x(i),py=y(r[key]),val=Number(r[key]||0);ctx.fillStyle=color;ctx.beginPath();ctx.arc(px,py,3.2,0,Math.PI*2);ctx.fill();ctx.fillStyle="#172033";ctx.font="700 11px Segoe UI,Arial";ctx.textAlign="center";ctx.fillText(String(val),px,py+labelOffset)})}line("inField","#4c8ee8",-10);line("preDelivery","#ff7438",18);ctx.strokeStyle="#d1d5db";ctx.fillStyle="#667085";ctx.textAlign="center";ctx.font="12px Segoe UI,Arial";const step=Math.max(1,Math.ceil(series.length/18));series.forEach((r,i)=>{const px=x(i);if(i%step===0||i===series.length-1)ctx.fillText(shortMonth(r.month),px,h-48);if(i===0||series[i-1].year!==r.year){ctx.beginPath();ctx.moveTo(px,top+plotH+8);ctx.lineTo(px,h-12);ctx.stroke()}});ctx.beginPath();ctx.moveTo(w-right,top+plotH+8);ctx.lineTo(w-right,h-12);ctx.stroke();ctx.font="700 12px Segoe UI,Arial";let start=0;while(start<series.length){let end=start;while(end+1<series.length&&series[end+1].year===series[start].year)end++;ctx.fillText(series[start].year,(x(start)+x(end))/2,h-18);start=end+1}}
+-function renderCreatedChartPanel(view){createdMonthlyRows=monthlyRows(view);const data=createdChartData();const yearSelect=$("createdYearSelect");if(!yearSelect)return;const selectedYear=yearSelect.value;yearSelect.innerHTML=`<option value="">----</option>`+data.years.map(y=>`<option value="${y}">${y}</option>`).join("");if(data.years.includes(selectedYear))yearSelect.value=selectedYear;$("createdStartMonth").min=data.min;$("createdStartMonth").max=data.max;$("createdEndMonth").min=data.min;$("createdEndMonth").max=data.max;if(!$("createdStartMonth").value)$("createdStartMonth").value=addMonths(data.max,-11)<data.min?data.min:addMonths(data.max,-11);if(!$("createdEndMonth").value)$("createdEndMonth").value=data.max;if(!createdBound){createdBound=true;yearSelect.onchange=()=>{createdCustomRange=false;renderCreatedChartPanel({claimCreatedMonthly:createdMonthlyRows})};$("createdApplyRange").onclick=()=>{createdCustomRange=true;renderCreatedChartPanel({claimCreatedMonthly:createdMonthlyRows})};$("createdLast12").onclick=()=>{$("createdStartMonth").value=addMonths(data.max,-11)<data.min?data.min:addMonths(data.max,-11);$("createdEndMonth").value=data.max;createdCustomRange=true;renderCreatedChartPanel({claimCreatedMonthly:createdMonthlyRows})};$("createdClearRange").onclick=()=>{createdCustomRange=false;yearSelect.value="";renderCreatedChartPanel({claimCreatedMonthly:createdMonthlyRows})};window.addEventListener("resize",()=>renderCreatedChartPanel({claimCreatedMonthly:createdMonthlyRows}))}const range=createdRange(data);const series=iterMonths(range.start,range.end).map(month=>({month,year:month.slice(0,4),inField:Number((data.byMonth[month]||{}).inField||0),preDelivery:Number((data.byMonth[month]||{}).preDelivery||0)}));drawCreatedChart(series);$("createdChartStatus").textContent=series.length?`Showing ${range.label}: ${longMonth(range.start)} to ${longMonth(range.end)}.`:"No monthly CreatedOn data found. Rebuild analytics to generate this chart."}
+-function render(team){const view=viewFrom(team),split=splitFrom(view),total=split.inField+split.preDelivery;$("total").textContent=num(total);$("inField").textContent=num(split.inField);$("preDelivery").textContent=num(split.preDelivery);$("balance").textContent=num(split.inField-split.preDelivery);$("inFieldPct").textContent=pct(split.inField,total);$("preDeliveryPct").textContent=pct(split.preDelivery,total);$("asOf").textContent=`As of ${(team.generatedAt||"").slice(0,10)||"--"}`;const rows=[{label:"In Field",value:split.inField,color:"#22c55e"},{label:"Pre Delivery",value:split.preDelivery,color:"#3b82f6"}];drawDonut(rows);$("legendRows").innerHTML=rows.map(r=>`<div class="legendRow"><div class="legendLabel">${r.label}</div><div class="track"><div class="fill" style="width:${total?Math.max(2,r.value/total*100):0}%;background:${r.color}"></div></div><div class="value">${num(r.value)}</div></div>`).join("");renderMonthly(view);renderCreatedChartPanel(view)}
+-readJson(`${ROOT}/analytics/teamDashboard`).then(render).catch(err=>showError(`Unable to load analytics: ${err.message}`));
++
++let MONTHLY=[],MONTHS_INDEX={},activeStart=HARD_MIN,activeEnd=HARD_MIN,customRange=false;
++
++function emptyMonth(m){return {month:m,createdIn:0,createdPre:0,approvedIn:0,approvedPre:0,unapprovedIn:0,unapprovedPre:0}}
++
++function buildMonthly(view){
++  const out={};
++  Object.entries(HISTORICAL).forEach(([m,v])=>{out[m]={month:m,...v}});
++  arr(view.claimCreatedMonthly).forEach(r=>{const m=clean(r.month);if(m>=LIVE_START){if(!out[m])out[m]=emptyMonth(m);out[m].createdIn=Number(r.inField||0);out[m].createdPre=Number(r.preDelivery||0)}});
++  arr(view.approvalClosedMonthly).forEach(r=>{const m=clean(r.month);if(m>=LIVE_START){if(!out[m])out[m]=emptyMonth(m);out[m].approvedIn=Number(r.inFieldApproved||0);out[m].approvedPre=Number(r.preDeliveryApproved||0);out[m].unapprovedIn=Number(r.inFieldUnapproved||0);out[m].unapprovedPre=Number(r.preDeliveryUnapproved||0)}});
++  return Object.values(out).filter(r=>r.month>=HARD_MIN).sort((a,b)=>a.month.localeCompare(b.month));
++}
++
++function dataBounds(){const months=MONTHLY.map(r=>r.month);return {min:months[0]||HARD_MIN,max:months[months.length-1]||HARD_MIN,years:[...new Set(months.map(m=>m.slice(0,4)))].sort()}}
++
++function rowsForRange(){
++  return iterMonths(activeStart,activeEnd).map(m=>({...(MONTHS_INDEX[m]||emptyMonth(m)),month:m,year:m.slice(0,4)}));
++}
++
++function renderPivot(tbodyId,rows,inKey,preKey,emptyText){
++  let html="",cy="",yi=0,yp=0,gi=0,gp=0;
++  const closeYear=()=>{if(cy)html+=`<tr class="yearRow"><td>${cy}</td><td class="num">${num(yi)}</td><td class="num">${num(yp)}</td></tr>`};
++  rows.forEach(r=>{if(r.year!==cy){closeYear();cy=r.year;yi=0;yp=0}const iv=Number(r[inKey]||0),pv=Number(r[preKey]||0);yi+=iv;yp+=pv;gi+=iv;gp+=pv;html+=`<tr><td>&nbsp;&nbsp;${monthShort(r.month)}</td><td class="num">${num(iv)}</td><td class="num">${num(pv)}</td></tr>`});
++  closeYear();
++  html+=`<tr class="grandRow"><td>Grand Total</td><td class="num">${num(gi)}</td><td class="num">${num(gp)}</td></tr>`;
++  $(tbodyId).innerHTML=rows.length?html:`<tr><td colspan="3" class="empty">${emptyText}</td></tr>`;
++  return {inField:gi,preDelivery:gp,total:gi+gp};
++}
++
++function drawChart(canvasId,rows,inKey,preKey){
++  const c=$(canvasId);if(!c)return;
++  const rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1,w=Math.max(1,rect.width),h=Math.max(1,rect.height);
++  c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
++  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="600 13px Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
++  const left=48,right=54,top=26,bottom=74,plotW=w-left-right,plotH=h-top-bottom;
++  const maxRaw=Math.max(100,...rows.flatMap(r=>[Number(r[inKey]||0),Number(r[preKey]||0)]));
++  const yMax=Math.ceil(maxRaw/100)*100;
++  ctx.strokeStyle="#edf0f5";ctx.fillStyle="#64748b";ctx.font="12px Segoe UI,Arial";
++  for(let i=0;i<=5;i++){const y=top+plotH*i/5,val=Math.round(yMax*(1-i/5));ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.textAlign="right";ctx.fillText(String(val),left-8,y+4);ctx.textAlign="left";ctx.fillText(String(val),w-right+8,y+4)}
++  const x=i=>left+(rows.length<=1?plotW/2:plotW*i/(rows.length-1));
++  const y=v=>top+plotH-plotH*(Number(v||0)/yMax);
++  const line=(key,color,off)=>{ctx.strokeStyle=color;ctx.lineWidth=2.4;ctx.beginPath();rows.forEach((r,i)=>{const px=x(i),py=y(r[key]);if(i)ctx.lineTo(px,py);else ctx.moveTo(px,py)});ctx.stroke();rows.forEach((r,i)=>{const px=x(i),py=y(r[key]);ctx.fillStyle=color;ctx.beginPath();ctx.arc(px,py,3.1,0,Math.PI*2);ctx.fill();ctx.fillStyle="#172033";ctx.font="700 11px Segoe UI,Arial";ctx.textAlign="center";ctx.fillText(String(Number(r[key]||0)),px,py+off)})};
++  line(inKey,"#156082",-10);line(preKey,"#e97132",18);
++  // x labels + year separators
++  ctx.strokeStyle="#d1d5db";ctx.fillStyle="#667085";ctx.textAlign="center";ctx.font="12px Segoe UI,Arial";
++  const step=Math.max(1,Math.ceil(rows.length/18));
++  rows.forEach((r,i)=>{const px=x(i);if(i%step===0||i===rows.length-1)ctx.fillText(monthShort(r.month),px,h-50);if(i===0||rows[i-1].year!==r.year){ctx.beginPath();ctx.moveTo(px,top+plotH+8);ctx.lineTo(px,h-14);ctx.stroke()}});
++  ctx.beginPath();ctx.moveTo(w-right,top+plotH+8);ctx.lineTo(w-right,h-14);ctx.stroke();
++  ctx.font="700 12px Segoe UI,Arial";ctx.fillStyle="#475569";
++  let s=0;while(s<rows.length){let e=s;while(e+1<rows.length&&rows[e+1].year===rows[s].year)e++;ctx.fillText(rows[s].year,(x(s)+x(e))/2,h-18);s=e+1}
++}
++
++function render(){
++  const rows=rowsForRange();
++  const created=renderPivot("createdPivot",rows,"createdIn","createdPre","No created data found.");
++  const approved=renderPivot("approvedPivot",rows,"approvedIn","approvedPre","No approved data found.");
++  const unapproved=renderPivot("unapprovedPivot",rows,"unapprovedIn","unapprovedPre","No unapproved data found.");
++  drawChart("createdChart",rows,"createdIn","createdPre");
++  drawChart("approvedChart",rows,"approvedIn","approvedPre");
++  drawChart("unapprovedChart",rows,"unapprovedIn","unapprovedPre");
++  $("kpiCreated").textContent=num(created.total);
++  $("kpiApproved").textContent=num(approved.total);
++  $("kpiUnapproved").textContent=num(unapproved.total);
++  const denom=approved.total+unapproved.total;
++  $("kpiRate").textContent=denom?`${(approved.total/denom*100).toFixed(1)}%`:"0%";
++  $("rangeNote").textContent=`${monthLong(activeStart)} – ${monthLong(activeEnd)}`;
++}
++
++function syncControls(){
++  const b=dataBounds();
++  $("yearSelect").innerHTML=`<option value="">All years</option>`+b.years.map(y=>`<option value="${y}">${y}</option>`).join("");
++  if(b.years.includes(activeStart.slice(0,4))&&customRange===false&&activeStart.slice(0,4)===activeEnd.slice(0,4))$("yearSelect").value=activeStart.slice(0,4);
++  ["fromMonth","toMonth"].forEach(id=>{$(id).min=b.min;$(id).max=b.max});
++  $("fromMonth").value=activeStart;$("toMonth").value=activeEnd;
++}
++
++function applyYear(year){
++  const b=dataBounds();
++  if(!year){activeStart=b.min;activeEnd=b.max;return}
++  activeStart=`${year}-01`<b.min?b.min:`${year}-01`;
++  activeEnd=`${year}-12`>b.max?b.max:`${year}-12`;
++}
++
++function setActiveTab(id){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.target===id))}
++
++function init(view){
++  MONTHLY=buildMonthly(view||{});
++  MONTHS_INDEX=Object.fromEntries(MONTHLY.map(r=>[r.month,r]));
++  const b=dataBounds();
++  activeStart=b.min;activeEnd=b.max;customRange=false;
++  syncControls();
++  render();
++  // controls
++  $("yearSelect").onchange=()=>{customRange=false;applyYear($("yearSelect").value);syncControls();render()};
++  $("applyRange").onclick=()=>{let a=$("fromMonth").value||b.min,c=$("toMonth").value||b.max;if(a>c)[a,c]=[c,a];const bb=dataBounds();activeStart=a<bb.min?bb.min:a;activeEnd=c>bb.max?bb.max:c;customRange=true;$("yearSelect").value="";render()};
++  $("last12").onclick=()=>{const bb=dataBounds();activeEnd=bb.max;activeStart=addMonths(bb.max,-11)<bb.min?bb.min:addMonths(bb.max,-11);customRange=true;$("yearSelect").value="";syncControls();render()};
++  $("clearRange").onclick=()=>{customRange=false;applyYear("");$("yearSelect").value="";syncControls();render()};
++  // tabs / scrollspy
++  const sections=["created","approved","unapproved"].map(id=>$(id));
++  if("IntersectionObserver" in window){
++    const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)setActiveTab(e.target.id)})},{rootMargin:"-45% 0px -50% 0px"});
++    sections.forEach(s=>io.observe(s));
++  }
++  setActiveTab((location.hash||"#created").slice(1));
++  if(location.hash){const el=document.querySelector(location.hash);if(el)setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),60)}
++  window.addEventListener("resize",render);
++}
++
++readJson(`${ROOT}/analytics/teamDashboard`).then(data=>{
++  const view=(data&&data.views&&data.views.all)||data||{};
++  $("asOf").textContent=`As of ${clean(data&&data.generatedAt).slice(0,10)||"--"}`;
++  init(view);
++}).catch(err=>{
++  // Firebase unavailable: still render the hardcoded SAP baseline.
++  showError(`Live dashboard data unavailable, showing SAP baseline only. (${err.message})`);
++  $("asOf").textContent="As of --";
++  init({});
++});
+ </script>
+ </body>
+ </html>
+diff --git a/index.html b/index.html
+index f8a5fe5..1d83d78 100644
+--- a/index.html
++++ b/index.html
+@@ -2691,8 +2691,8 @@ html{zoom:.8!important;}
+     <div class="navDivider"></div>
+     <div class="navSection">Tickets</div>
+     <a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a>
+-    <a class="navLink" href="in-field-pre-delivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M16 17l2-2 2 2"/></svg><span>In Field / Pre Delivery</span></a>
+-    <a class="navLink" href="approved-unapproved.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l2 2 4-5"/><path d="M21 12a9 9 0 1 1-9-9"/><path d="M17 3h4v4"/></svg><span>Approved vs Unapproved</span></a>
++    <a class="navLink" href="in-field-pre-delivery.html#created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M16 17l2-2 2 2"/></svg><span>In Field / Pre Delivery</span></a>
++    <a class="navLink" href="in-field-pre-delivery.html#approved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l2 2 4-5"/><path d="M21 12a9 9 0 1 1-9-9"/><path d="M17 3h4v4"/></svg><span>Approved vs Unapproved</span></a>
+     <a class="navLink" href="dealer-workbench.html#parts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7h11v10H3z"/><path d="M14 10h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg><span>Parts Delivery</span></a>
+     <div id="claimSwitch" class="sidebarFilters"></div>
+   </aside>
