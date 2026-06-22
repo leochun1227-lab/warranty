@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>In Field / Pre Delivery · Approved vs Unapproved</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#dbe5f0;--blue:#156082;--orange:#e97132;--soft:#bfe5f3;--shadow:0 14px 34px rgba(15,23,42,.06)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif}
+.app{min-height:100vh;display:grid;grid-template-columns:288px 1fr}
+.sidebar{background:#0b1222;color:#e5e7eb;min-height:100vh;padding:22px 16px;position:sticky;top:0;align-self:start}
+.brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 28px}
+.brandMark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#2563eb);display:flex;align-items:center;justify-content:center}
+.brandText span{display:block;font-size:18px;font-weight:600}
+.brandText small{display:block;color:#9aa8bc;font-size:12px;margin-top:2px}
+.navSection{font-size:12px;letter-spacing:4px;color:#8ea0b8;text-transform:uppercase;margin:25px 8px 10px}
+.navLink{width:100%;display:flex;align-items:center;gap:13px;color:#d9e1ec;padding:13px 14px;border-radius:12px;font-weight:600;text-decoration:none}
+.navLink.active{background:rgba(255,255,255,.10);color:#fff}
+.navLink:hover{background:rgba(255,255,255,.07)}
+.navLink svg{width:18px;height:18px;stroke-width:1.8;color:#aebcd1}
+.main{min-width:0;padding:30px 40px 60px}
+.pageTop{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:14px}
+.pageTitle{font-size:28px;line-height:1.15;font-weight:650;margin:0 0 8px}
+.subTitle{color:#52627a;font-size:14px;margin:0;max-width:780px}
+.datePill{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;color:#475569;font-size:12px;font-weight:700;white-space:nowrap}
+/* sticky tab + filter bar */
+.toolbar{position:sticky;top:0;z-index:30;background:rgba(245,247,251,.92);backdrop-filter:blur(6px);padding:12px 0 14px;margin-bottom:10px;border-bottom:1px solid #e6ecf4}
+.tabs{display:inline-flex;gap:4px;background:#eef3f9;border:1px solid var(--line);border-radius:999px;padding:4px}
+.tab{appearance:none;border:0;background:transparent;color:#475569;font-weight:750;font-size:13px;padding:8px 16px;border-radius:999px;cursor:pointer;text-decoration:none;display:inline-block}
+.tab.active{background:#fff;color:#0b3a52;box-shadow:0 2px 8px rgba(15,23,42,.10)}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.controls label{display:inline-flex;align-items:center;gap:7px;color:#64748b;font-size:12px;font-weight:800}
+.controls input,.controls select{height:34px;border:1px solid var(--line);border-radius:9px;padding:0 10px;color:#0f172a;font-weight:700;background:#fff;font:inherit;font-size:12px}
+.controls button{height:34px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#172033;font-weight:800;padding:0 12px;cursor:pointer;font-size:12px}
+.controls button.primary{border:0;background:linear-gradient(135deg,#4c8ee8,#2467c8);color:#fff}
+.rangeNote{margin-left:auto;color:#64748b;font-size:12px;font-weight:700}
+.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin:10px 0 16px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:6px 0 24px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}
+.kpiLabel{font-size:11px;color:#64748b;font-weight:850;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.kpiValue{font-size:30px;font-weight:800;letter-spacing:-.02em}
+.kpiHint{font-size:12px;color:#64748b;margin-top:7px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:26px;scroll-margin-top:96px}
+.panelHead{margin-bottom:14px}
+.panelTitle{font-size:21px;font-weight:650;margin:0 0 6px}
+.panelDesc{color:#64748b;font-size:13px;margin:0;max-width:880px;line-height:1.5}
+.grid{display:grid;grid-template-columns:430px minmax(0,1fr);gap:22px;align-items:start}
+.pivotWrap{overflow:auto;border:1px solid #475569;border-radius:6px;background:#fff;max-height:560px}
+.pivot{width:100%;border-collapse:collapse;min-width:420px}
+.pivot th,.pivot td{border:1px solid #475569;padding:6px 8px;font-size:12px}
+.pivot th{background:var(--soft);text-align:left;font-weight:850;position:sticky;top:0}
+.pivot td.num{text-align:right;font-weight:780}
+.yearRow td{font-weight:850;background:#f1f5fb}
+.grandRow td{background:var(--soft);font-weight:900}
+.chartBox{border:1px solid #d1d5db;background:linear-gradient(180deg,#fff,#fbfdff);border-radius:8px;padding:12px}
+.chartWrap{height:430px}
+.chartWrap canvas{width:100%;height:100%;display:block}
+.legend{display:flex;gap:18px;align-items:center;justify-content:flex-end;font-size:12px;color:#475569;margin-top:6px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:18px;height:3px;display:inline-block;border-radius:2px}
+.empty{padding:24px;color:#64748b;text-align:center}
+@media(max-width:1050px){.grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}}
+@media(max-width:620px){.kpis{grid-template-columns:1fr}.controls{display:grid}.controls label{display:grid}.chartWrap{height:340px}.rangeNote{margin-left:0}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M4 12h16M12 4v16"/></svg></div><div class="brandText"><span>Warranty KPI</span><small>After-Sales Team Dashboard</small></div></div>
+    <div class="navSection">Workspace</div>
+    <a class="navLink" href="index.html">Team Dashboard</a>
+    <a class="navLink" href="dealer-workbench.html">Dealer Workbench</a>
+    <div class="navSection">Tickets</div>
+    <a class="navLink" href="dealer-workbench.html#tickets">Critical Tickets</a>
+    <a class="navLink" href="index.html#repair-analytics">Repair Analytics</a>
+    <a class="navLink active" href="in-field-pre-delivery.html#created">In Field / Pre Delivery</a>
+    <a class="navLink active" href="in-field-pre-delivery.html#approved">Approved vs Unapproved</a>
+    <a class="navLink" href="dealer-workbench.html#parts">Parts Delivery</a>
+  </aside>
+  <main class="main">
+    <div class="pageTop">
+      <div>
+        <h1 class="pageTitle">In Field / Pre Delivery &amp; Approved vs Unapproved</h1>
+        <p class="subTitle">Monthly In Field and Pre Delivery warranty claim volumes. History up to May 2026 is taken from the SAP reports; June 2026 onward updates live from this dashboard. Approved totals include both In Field and Pre Delivery claims.</p>
+      </div>
+      <div id="asOf" class="datePill">As of --</div>
+    </div>
+
+    <div class="toolbar">
+      <div class="tabs">
+        <a class="tab" data-target="created" href="#created">Created by Month</a>
+        <a class="tab" data-target="approved" href="#approved">Approved</a>
+        <a class="tab" data-target="unapproved" href="#unapproved">Unapproved</a>
+      </div>
+      <div class="controls">
+        <label>Year <select id="yearSelect"></select></label>
+        <label>From <input id="fromMonth" type="month"></label>
+        <label>To <input id="toMonth" type="month"></label>
+        <button id="applyRange" class="primary" type="button">Apply range</button>
+        <button id="last12" type="button">Last 12 months</button>
+        <button id="clearRange" type="button">All (2025+)</button>
+        <span id="rangeNote" class="rangeNote"></span>
+      </div>
+    </div>
+
+    <div id="error" class="error"></div>
+
+    <section class="kpis">
+      <div class="kpi"><div class="kpiLabel">Created (In Field + Pre)</div><div id="kpiCreated" class="kpiValue">0</div><div class="kpiHint">Tickets created in range</div></div>
+      <div class="kpi"><div class="kpiLabel">Approved</div><div id="kpiApproved" class="kpiValue">0</div><div class="kpiHint">In Field + Pre Delivery approved</div></div>
+      <div class="kpi"><div class="kpiLabel">Unapproved Closed</div><div id="kpiUnapproved" class="kpiValue">0</div><div class="kpiHint">In Field + Pre Delivery</div></div>
+      <div class="kpi"><div class="kpiLabel">Approval Rate</div><div id="kpiRate" class="kpiValue">0%</div><div class="kpiHint">Approved / (Approved + Unapproved)</div></div>
+    </section>
+
+    <section class="panel" id="created">
+      <div class="panelHead">
+        <h2 class="panelTitle">In Field &amp; Pre Delivery Warranty Tickets Created by Month</h2>
+        <p class="panelDesc">Tickets grouped by the month they were created (CreatedOn). History through May 2026 matches the SAP "tickets created by month" report; June 2026 onward is calculated live from this dashboard.</p>
+      </div>
+      <div class="grid">
+        <div class="pivotWrap"><table class="pivot"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims</th><th>Sum of Pre Delivery Warranty Claims</th></tr></thead><tbody id="createdPivot"></tbody></table></div>
+        <div class="chartBox">
+          <div class="chartWrap"><canvas id="createdChart"></canvas></div>
+          <div class="legend"><span><i style="background:var(--blue)"></i>In Field Warranty Claims</span><span><i style="background:var(--orange)"></i>Pre Delivery Warranty Claims</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="approved">
+      <div class="panelHead">
+        <h2 class="panelTitle">Approved Tickets</h2>
+        <p class="panelDesc">Monthly approved counts split by In Field and Pre Delivery warranty claims. Date basis: Claim Approved Date. Approved tickets are filtered by approval date rather than current status, so every ticket approved in the period is included regardless of its present workflow stage.</p>
+      </div>
+      <div class="grid">
+        <div class="pivotWrap"><table class="pivot"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims</th><th>Sum of Pre Delivery Warranty Claims</th></tr></thead><tbody id="approvedPivot"></tbody></table></div>
+        <div class="chartBox">
+          <div class="chartWrap"><canvas id="approvedChart"></canvas></div>
+          <div class="legend"><span><i style="background:var(--blue)"></i>In Field Warranty Claims</span><span><i style="background:var(--orange)"></i>Pre Delivery Warranty Claims</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="unapproved">
+      <div class="panelHead">
+        <h2 class="panelTitle">Unapproved Tickets</h2>
+        <p class="panelDesc">Monthly "Unapproved Claims Closed (Closed)" counts split by In Field and Pre Delivery warranty claims. Date basis: the resolved / closed month.</p>
+      </div>
+      <div class="grid">
+        <div class="pivotWrap"><table class="pivot"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims<br>Unapproved Claims Closed (Closed)</th><th>Sum of Pre Delivery Warranty Claims<br>Unapproved Claims Closed (Closed)</th></tr></thead><tbody id="unapprovedPivot"></tbody></table></div>
+        <div class="chartBox">
+          <div class="chartWrap"><canvas id="unapprovedChart"></canvas></div>
+          <div class="legend"><span><i style="background:var(--blue)"></i>In Field Warranty Claims</span><span><i style="background:var(--orange)"></i>Pre Delivery Warranty Claims</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
+const ROOT="ctmTicketStatusMonitorV44";
+const HARD_MIN="2025-01";          // first hardcoded month
+const LIVE_START="2026-06";        // live dashboard values take over from this month
+
+/* Hardcoded baseline from the SAP report screenshots (Jan 2025 - May 2026).
+   createdIn/createdPre  = "In Field & Pre Delivery tickets created by month"
+   approvedIn/approvedPre = "Approved Tickets" pivot (Claim Approved On)
+   unapprovedIn/unapprovedPre = "Unapproved Tickets" pivot (Unapproved Claims Closed) */
+const HISTORICAL={
+  "2025-01":{createdIn:765,createdPre:148,approvedIn:504,approvedPre:133,unapprovedIn:101,unapprovedPre:10},
+  "2025-02":{createdIn:740,createdPre:119,approvedIn:558,approvedPre:117,unapprovedIn:52,unapprovedPre:20},
+  "2025-03":{createdIn:807,createdPre:122,approvedIn:681,approvedPre:121,unapprovedIn:68,unapprovedPre:7},
+  "2025-04":{createdIn:709,createdPre:161,approvedIn:654,approvedPre:140,unapprovedIn:124,unapprovedPre:9},
+  "2025-05":{createdIn:873,createdPre:133,approvedIn:729,approvedPre:134,unapprovedIn:65,unapprovedPre:7},
+  "2025-06":{createdIn:864,createdPre:154,approvedIn:738,approvedPre:146,unapprovedIn:128,unapprovedPre:4},
+  "2025-07":{createdIn:794,createdPre:153,approvedIn:655,approvedPre:116,unapprovedIn:62,unapprovedPre:10},
+  "2025-08":{createdIn:784,createdPre:179,approvedIn:557,approvedPre:124,unapprovedIn:56,unapprovedPre:9},
+  "2025-09":{createdIn:739,createdPre:254,approvedIn:613,approvedPre:112,unapprovedIn:53,unapprovedPre:2},
+  "2025-10":{createdIn:870,createdPre:193,approvedIn:377,approvedPre:126,unapprovedIn:41,unapprovedPre:1},
+  "2025-11":{createdIn:740,createdPre:158,approvedIn:450,approvedPre:120,unapprovedIn:76,unapprovedPre:3},
+  "2025-12":{createdIn:672,createdPre:164,approvedIn:424,approvedPre:99,unapprovedIn:358,unapprovedPre:21},
+  "2026-01":{createdIn:586,createdPre:123,approvedIn:340,approvedPre:100,unapprovedIn:517,unapprovedPre:67},
+  "2026-02":{createdIn:885,createdPre:169,approvedIn:823,approvedPre:221,unapprovedIn:269,unapprovedPre:18},
+  "2026-03":{createdIn:757,createdPre:197,approvedIn:1059,approvedPre:145,unapprovedIn:422,unapprovedPre:27},
+  "2026-04":{createdIn:790,createdPre:177,approvedIn:888,approvedPre:268,unapprovedIn:268,unapprovedPre:15},
+  "2026-05":{createdIn:782,createdPre:208,approvedIn:1080,approvedPre:245,unapprovedIn:235,unapprovedPre:22}
+};
+
+const $=id=>document.getElementById(id);
+const clean=v=>String(v==null?"":v).trim();
+const num=v=>Number(v||0).toLocaleString();
+const arr=v=>Array.isArray(v)?v:(v&&typeof v==="object"?Object.values(v):[]);
+function showError(msg){$("error").style.display="block";$("error").textContent=msg}
+async function readJson(path){const res=await fetch(`${FIREBASE}/${path}.json`,{cache:"no-store"});if(!res.ok)throw new Error(`${res.status} ${res.statusText}`);return await res.json()}
+function monthShort(m){const [y,mm]=clean(m).split("-").map(Number);if(!y||!mm)return m;return new Date(Date.UTC(y,mm-1,1)).toLocaleString("en-AU",{month:"short",timeZone:"UTC"})}
+function monthLong(m){const [y,mm]=clean(m).split("-").map(Number);if(!y||!mm)return m;return new Date(Date.UTC(y,mm-1,1)).toLocaleString("en-AU",{month:"long",year:"numeric",timeZone:"UTC"})}
+function addMonths(m,delta){const [y,mm]=clean(m).split("-").map(Number);const d=new Date(Date.UTC(y||2025,(mm||1)-1,1));d.setUTCMonth(d.getUTCMonth()+delta);return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}`}
+function iterMonths(start,end){const out=[];let cur=start;if(!cur||!end||cur>end)return out;while(cur<=end){out.push(cur);cur=addMonths(cur,1)}return out}
+
+let MONTHLY=[],MONTHS_INDEX={},activeStart=HARD_MIN,activeEnd=HARD_MIN,customRange=false;
+
+function emptyMonth(m){return {month:m,createdIn:0,createdPre:0,approvedIn:0,approvedPre:0,unapprovedIn:0,unapprovedPre:0}}
+
+function buildMonthly(view){
+  const out={};
+  Object.entries(HISTORICAL).forEach(([m,v])=>{out[m]={month:m,...v}});
+  arr(view.claimCreatedMonthly).forEach(r=>{const m=clean(r.month);if(m>=LIVE_START){if(!out[m])out[m]=emptyMonth(m);out[m].createdIn=Number(r.inField||0);out[m].createdPre=Number(r.preDelivery||0)}});
+  arr(view.approvalClosedMonthly).forEach(r=>{const m=clean(r.month);if(m>=LIVE_START){if(!out[m])out[m]=emptyMonth(m);out[m].approvedIn=Number(r.inFieldApproved||0);out[m].approvedPre=Number(r.preDeliveryApproved||0);out[m].unapprovedIn=Number(r.inFieldUnapproved||0);out[m].unapprovedPre=Number(r.preDeliveryUnapproved||0)}});
+  return Object.values(out).filter(r=>r.month>=HARD_MIN).sort((a,b)=>a.month.localeCompare(b.month));
+}
+
+function dataBounds(){const months=MONTHLY.map(r=>r.month);return {min:months[0]||HARD_MIN,max:months[months.length-1]||HARD_MIN,years:[...new Set(months.map(m=>m.slice(0,4)))].sort()}}
+
+function rowsForRange(){
+  return iterMonths(activeStart,activeEnd).map(m=>({...(MONTHS_INDEX[m]||emptyMonth(m)),month:m,year:m.slice(0,4)}));
+}
+
+function renderPivot(tbodyId,rows,inKey,preKey,emptyText){
+  let html="",cy="",yi=0,yp=0,gi=0,gp=0;
+  const closeYear=()=>{if(cy)html+=`<tr class="yearRow"><td>${cy}</td><td class="num">${num(yi)}</td><td class="num">${num(yp)}</td></tr>`};
+  rows.forEach(r=>{if(r.year!==cy){closeYear();cy=r.year;yi=0;yp=0}const iv=Number(r[inKey]||0),pv=Number(r[preKey]||0);yi+=iv;yp+=pv;gi+=iv;gp+=pv;html+=`<tr><td>&nbsp;&nbsp;${monthShort(r.month)}</td><td class="num">${num(iv)}</td><td class="num">${num(pv)}</td></tr>`});
+  closeYear();
+  html+=`<tr class="grandRow"><td>Grand Total</td><td class="num">${num(gi)}</td><td class="num">${num(gp)}</td></tr>`;
+  $(tbodyId).innerHTML=rows.length?html:`<tr><td colspan="3" class="empty">${emptyText}</td></tr>`;
+  return {inField:gi,preDelivery:gp,total:gi+gp};
+}
+
+function drawChart(canvasId,rows,inKey,preKey){
+  const c=$(canvasId);if(!c)return;
+  const rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1,w=Math.max(1,rect.width),h=Math.max(1,rect.height);
+  c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
+  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="600 13px Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
+  const left=48,right=54,top=26,bottom=74,plotW=w-left-right,plotH=h-top-bottom;
+  const maxRaw=Math.max(100,...rows.flatMap(r=>[Number(r[inKey]||0),Number(r[preKey]||0)]));
+  const yMax=Math.ceil(maxRaw/100)*100;
+  ctx.strokeStyle="#edf0f5";ctx.fillStyle="#64748b";ctx.font="12px Segoe UI,Arial";
+  for(let i=0;i<=5;i++){const y=top+plotH*i/5,val=Math.round(yMax*(1-i/5));ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.textAlign="right";ctx.fillText(String(val),left-8,y+4);ctx.textAlign="left";ctx.fillText(String(val),w-right+8,y+4)}
+  const x=i=>left+(rows.length<=1?plotW/2:plotW*i/(rows.length-1));
+  const y=v=>top+plotH-plotH*(Number(v||0)/yMax);
+  const line=(key,color,off)=>{ctx.strokeStyle=color;ctx.lineWidth=2.4;ctx.beginPath();rows.forEach((r,i)=>{const px=x(i),py=y(r[key]);if(i)ctx.lineTo(px,py);else ctx.moveTo(px,py)});ctx.stroke();rows.forEach((r,i)=>{const px=x(i),py=y(r[key]);ctx.fillStyle=color;ctx.beginPath();ctx.arc(px,py,3.1,0,Math.PI*2);ctx.fill();ctx.fillStyle="#172033";ctx.font="700 11px Segoe UI,Arial";ctx.textAlign="center";ctx.fillText(String(Number(r[key]||0)),px,py+off)})};
+  line(inKey,"#156082",-10);line(preKey,"#e97132",18);
+  // x labels + year separators
+  ctx.strokeStyle="#d1d5db";ctx.fillStyle="#667085";ctx.textAlign="center";ctx.font="12px Segoe UI,Arial";
+  const step=Math.max(1,Math.ceil(rows.length/18));
+  rows.forEach((r,i)=>{const px=x(i);if(i%step===0||i===rows.length-1)ctx.fillText(monthShort(r.month),px,h-50);if(i===0||rows[i-1].year!==r.year){ctx.beginPath();ctx.moveTo(px,top+plotH+8);ctx.lineTo(px,h-14);ctx.stroke()}});
+  ctx.beginPath();ctx.moveTo(w-right,top+plotH+8);ctx.lineTo(w-right,h-14);ctx.stroke();
+  ctx.font="700 12px Segoe UI,Arial";ctx.fillStyle="#475569";
+  let s=0;while(s<rows.length){let e=s;while(e+1<rows.length&&rows[e+1].year===rows[s].year)e++;ctx.fillText(rows[s].year,(x(s)+x(e))/2,h-18);s=e+1}
+}
+
+function render(){
+  const rows=rowsForRange();
+  const created=renderPivot("createdPivot",rows,"createdIn","createdPre","No created data found.");
+  const approved=renderPivot("approvedPivot",rows,"approvedIn","approvedPre","No approved data found.");
+  const unapproved=renderPivot("unapprovedPivot",rows,"unapprovedIn","unapprovedPre","No unapproved data found.");
+  drawChart("createdChart",rows,"createdIn","createdPre");
+  drawChart("approvedChart",rows,"approvedIn","approvedPre");
+  drawChart("unapprovedChart",rows,"unapprovedIn","unapprovedPre");
+  $("kpiCreated").textContent=num(created.total);
+  $("kpiApproved").textContent=num(approved.total);
+  $("kpiUnapproved").textContent=num(unapproved.total);
+  const denom=approved.total+unapproved.total;
+  $("kpiRate").textContent=denom?`${(approved.total/denom*100).toFixed(1)}%`:"0%";
+  $("rangeNote").textContent=`${monthLong(activeStart)} – ${monthLong(activeEnd)}`;
+}
+
+function syncControls(){
+  const b=dataBounds();
+  $("yearSelect").innerHTML=`<option value="">All years</option>`+b.years.map(y=>`<option value="${y}">${y}</option>`).join("");
+  if(b.years.includes(activeStart.slice(0,4))&&customRange===false&&activeStart.slice(0,4)===activeEnd.slice(0,4))$("yearSelect").value=activeStart.slice(0,4);
+  ["fromMonth","toMonth"].forEach(id=>{$(id).min=b.min;$(id).max=b.max});
+  $("fromMonth").value=activeStart;$("toMonth").value=activeEnd;
+}
+
+function applyYear(year){
+  const b=dataBounds();
+  if(!year){activeStart=b.min;activeEnd=b.max;return}
+  activeStart=`${year}-01`<b.min?b.min:`${year}-01`;
+  activeEnd=`${year}-12`>b.max?b.max:`${year}-12`;
+}
+
+function setActiveTab(id){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.target===id))}
+
+function init(view){
+  MONTHLY=buildMonthly(view||{});
+  MONTHS_INDEX=Object.fromEntries(MONTHLY.map(r=>[r.month,r]));
+  const b=dataBounds();
+  activeStart=b.min;activeEnd=b.max;customRange=false;
+  syncControls();
+  render();
+  // controls
+  $("yearSelect").onchange=()=>{customRange=false;applyYear($("yearSelect").value);syncControls();render()};
+  $("applyRange").onclick=()=>{let a=$("fromMonth").value||b.min,c=$("toMonth").value||b.max;if(a>c)[a,c]=[c,a];const bb=dataBounds();activeStart=a<bb.min?bb.min:a;activeEnd=c>bb.max?bb.max:c;customRange=true;$("yearSelect").value="";render()};
+  $("last12").onclick=()=>{const bb=dataBounds();activeEnd=bb.max;activeStart=addMonths(bb.max,-11)<bb.min?bb.min:addMonths(bb.max,-11);customRange=true;$("yearSelect").value="";syncControls();render()};
+  $("clearRange").onclick=()=>{customRange=false;applyYear("");$("yearSelect").value="";syncControls();render()};
+  // tabs / scrollspy
+  const sections=["created","approved","unapproved"].map(id=>$(id));
+  if("IntersectionObserver" in window){
+    const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)setActiveTab(e.target.id)})},{rootMargin:"-45% 0px -50% 0px"});
+    sections.forEach(s=>io.observe(s));
+  }
+  setActiveTab((location.hash||"#created").slice(1));
+  if(location.hash){const el=document.querySelector(location.hash);if(el)setTimeout(()=>el.scrollIntoView({behavior:"smooth",block:"start"}),60)}
+  window.addEventListener("resize",render);
+}
+
+readJson(`${ROOT}/analytics/teamDashboard`).then(data=>{
+  const view=(data&&data.views&&data.views.all)||data||{};
+  $("asOf").textContent=`As of ${clean(data&&data.generatedAt).slice(0,10)||"--"}`;
+  init(view);
+}).catch(err=>{
+  // Firebase unavailable: still render the hardcoded SAP baseline.
+  showError(`Live dashboard data unavailable, showing SAP baseline only. (${err.message})`);
+  $("asOf").textContent="As of --";
+  init({});
+});
+</script>
+</body>
+</html>
