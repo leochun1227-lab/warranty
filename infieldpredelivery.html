@@ -1,9 +1,9 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>In Field / Pre Delivery · Approved vs Unapproved</title>
+<title>In Field / Pre Delivery - Approved vs Unapproved</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#dbe5f0;--blue:#156082;--orange:#e97132;--soft:#bfe5f3;--shadow:0 14px 34px rgba(15,23,42,.06)}
 *{box-sizing:border-box}
@@ -75,6 +75,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI"
 @media(max-width:900px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}}
 @media(max-width:620px){.kpis{grid-template-columns:1fr}.controls{display:grid}.controls label{display:grid}.chartWrap{height:340px}.rangeNote{margin-left:0}}
 </style>
+<link rel="stylesheet" href="flow-polish.css">
 </head>
 <body>
 <div class="app">
@@ -83,12 +84,13 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI"
     <div class="navSection">Workspace</div>
     <a class="navLink" href="index.html">Team Dashboard</a>
     <a class="navLink" href="dealer-workbench.html">Dealer Workbench</a>
+    <a class="navLink" href="delivery_flow.html">Parts Delivery Flow</a>
     <div class="navSection">Tickets</div>
     <a class="navLink" href="dealer-workbench.html#tickets">Critical Tickets</a>
     <a class="navLink" href="index.html#repair-analytics">Repair Analytics</a>
     <a class="navLink active" href="infieldpredelivery.html#created">In Field / Pre Delivery</a>
     <a class="navLink active" href="infieldpredelivery.html#approved">Approved vs Unapproved</a>
-    <a class="navLink" href="dealer-workbench.html#parts">Parts Delivery</a>
+    
   </aside>
   <main class="main">
     <div class="pageTop">
@@ -174,8 +176,10 @@ const LIVE_START="2026-06";        // live dashboard values take over from this 
 
 /* Hardcoded baseline from the SAP report screenshots (Jan 2025 - May 2026).
    createdIn/createdPre  = "In Field & Pre Delivery tickets created by month"
-   approvedIn/approvedPre = "Approved Tickets" pivot (Claim Approved On)
-   unapprovedIn/unapprovedPre = "Unapproved Tickets" pivot (Unapproved Claims Closed) */
+   approvedIn/approvedPre = "Approved Tickets" pivot (direct Claim Approved On when available,
+   otherwise Posting Date as backup)
+   unapprovedIn/unapprovedPre = "Unapproved Tickets" pivot (direct Resolved On / Changed On when available,
+   otherwise legacy unapproved backup) */
 const HISTORICAL={
   "2025-01":{createdIn:765,createdPre:148,approvedIn:504,approvedPre:133,unapprovedIn:101,unapprovedPre:10},
   "2025-02":{createdIn:740,createdPre:119,approvedIn:558,approvedPre:117,unapprovedIn:52,unapprovedPre:20},
@@ -271,7 +275,7 @@ function render(){
   $("kpiUnapproved").textContent=num(unapproved.total);
   const denom=approved.total+unapproved.total;
   $("kpiRate").textContent=denom?`${(approved.total/denom*100).toFixed(1)}%`:"0%";
-  $("rangeNote").textContent=`${monthLong(activeStart)} – ${monthLong(activeEnd)}`;
+  $("rangeNote").textContent=`${monthLong(activeStart)} - ${monthLong(activeEnd)}`;
 }
 
 function syncControls(){

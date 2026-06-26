@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -61,7 +61,7 @@
   line-height:1;
 }
 .kpis .kpi:nth-child(1):after{content:"#";}
-.kpis .kpi:nth-child(2):after{content:"✓";color:#10b981;}
+.kpis .kpi:nth-child(2):after{content:"OK";color:#10b981;font-size:14px;}
 .kpis .kpi:nth-child(2):before{background:#dcfce7;}
 .kpis .kpi:nth-child(3):after{content:"!";color:#f59e0b;}
 .kpis .kpi:nth-child(3):before{background:#fff7ed;}
@@ -100,9 +100,10 @@
   font-size:12px!important;
   font-weight:650!important;
 }
-</style></head>
+</style><link rel="stylesheet" href="flow-polish.css">
+</head>
 <body><main class="main">
-<div class="header"><div><h1 id="title" class="title">Repair Insights</h1></div><div><button class="btn" onclick="location.href='repairs.html'">Back to Repairs</button></div></div>
+<div class="header"><div><h1 id="title" class="title">Repair Insights</h1></div><div><button class="btn" onclick="location.href='delivery_flow.html'">Parts Delivery Flow</button> <button class="btn" onclick="location.href='repairs.html'">Back to Repairs</button></div></div>
 <div id="loadError" class="error"></div>
 <section class="kpis"><div class="kpi"><div class="kpiLabel">Tickets</div><div id="kpiTickets" class="kpiValue">0</div></div><div class="kpi"><div class="kpiLabel">Total Cost</div><div id="kpiCost" class="kpiValue">$0</div></div><div class="kpi"><div class="kpiLabel">Avg Cost</div><div id="kpiAvg" class="kpiValue">$0</div></div></section>
 <section class="grid">
