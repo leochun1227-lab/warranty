@@ -589,3 +589,39 @@ C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_M
 2026-06-26 13:33:14,432 - INFO - [FB SO UPLOAD] batch=3 done
 2026-06-26 13:33:54,942 - INFO - [FB SO UPLOAD] batch=4 paths=8000 bytes~=1156416
 2026-06-26 13:33:55,372 - INFO - [FB SO UPLOAD] batch=4 done
+2026-06-26 13:34:46,940 - INFO - [FB SO UPLOAD] batch=5 paths=8000 bytes~=1131502
+2026-06-26 13:34:47,381 - INFO - [FB SO UPLOAD] batch=5 done
+2026-06-26 13:35:25,168 - INFO - [FB SO UPLOAD] batch=6 paths=8000 bytes~=1071620
+2026-06-26 13:35:25,603 - INFO - [FB SO UPLOAD] batch=6 done
+2026-06-26 13:35:58,594 - INFO - [FB SO UPLOAD] batch=7 paths=8000 bytes~=1130672
+2026-06-26 13:35:59,008 - INFO - [FB SO UPLOAD] batch=7 done
+2026-06-26 13:36:42,985 - INFO - [FB SO UPLOAD] batch=8 paths=8000 bytes~=1211207
+2026-06-26 13:36:43,428 - INFO - [FB SO UPLOAD] batch=8 done
+2026-06-26 13:37:25,999 - INFO - [FB SO UPLOAD] batch=9 paths=8000 bytes~=1184059
+2026-06-26 13:37:26,409 - INFO - [FB SO UPLOAD] batch=9 done
+2026-06-26 13:38:14,122 - INFO - [FB SO UPLOAD] batch=10 paths=8000 bytes~=1012069
+2026-06-26 13:38:14,544 - INFO - [FB SO UPLOAD] batch=10 done
+2026-06-26 13:38:57,228 - INFO - [FB SO UPLOAD] batch=11 paths=8000 bytes~=1008983
+2026-06-26 13:38:57,633 - INFO - [FB SO UPLOAD] batch=11 done
+2026-06-26 13:39:04,570 - INFO - [FB SO UPLOAD] batch=12 paths=3920 bytes~=496716
+2026-06-26 13:39:04,846 - INFO - [FB SO UPLOAD] batch=12 done
+2026-06-26 13:39:05,011 - INFO - Step 9/9: Updating changed ticket hash snapshot ...
+2026-06-26 13:39:31,900 - INFO - [FB HASH SNAPSHOT] batch=1 paths=8000 bytes~=870349
+2026-06-26 13:39:32,684 - INFO - [FB HASH SNAPSHOT] batch=1 done
+2026-06-26 13:40:00,699 - INFO - [FB HASH SNAPSHOT] batch=2 paths=8000 bytes~=869606
+2026-06-26 13:40:01,723 - INFO - [FB HASH SNAPSHOT] batch=2 done
+2026-06-26 13:40:31,974 - INFO - [FB HASH SNAPSHOT] batch=3 paths=8000 bytes~=870771
+2026-06-26 13:40:32,804 - INFO - [FB HASH SNAPSHOT] batch=3 done
+2026-06-26 13:41:10,434 - INFO - [FB HASH SNAPSHOT] batch=4 paths=8000 bytes~=866748
+2026-06-26 13:41:11,398 - INFO - [FB HASH SNAPSHOT] batch=4 done
+2026-06-26 13:41:11,399 - INFO - [FB HASH SNAPSHOT] batch=5 paths=49 bytes~=5341
+2026-06-26 13:41:11,526 - INFO - [FB HASH SNAPSHOT] batch=5 done
+2026-06-26 13:41:11,526 - INFO - Excel export disabled. Firebase is the source for dashboard data.
+2026-06-26 13:41:11,526 - INFO - Analytics rebuild skipped after fetch because SKIP_ANALYTICS_REBUILD_AFTER_FETCH=1.
+2026-06-26 13:41:11,526 - INFO - Done. Firebase updated. Excel export is disabled by default for automation.
+2026-06-26 13:41:11,527 - INFO - Total elapsed: 2823.8s
+[FETCH DONE] Company fetch finished successfully.
+[COMPARE] Loading current Firebase tickets ...
+[C4C SAP] Using posting date index CSV: C:\Users\Leo.Li\Documents\GitHub\warranty\SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv
+[COMPARE] approvalState: newlyApproved=37, newlyUnapproved=1, correctedDetected=28246
+[ANALYTICS] Building pre-calculated dashboard nodes ...

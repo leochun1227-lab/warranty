@@ -1,0 +1,500 @@
+/* Shared visual polish for the warranty dashboards.
+   Loaded after each page's inline styles, so it can gently refine the
+   existing layout without rewriting the app structure. */
+
+:root{
+  --flow-bg: #f3f7fc;
+  --flow-bg-2: #eef4fb;
+  --flow-surface: rgba(255,255,255,.96);
+  --flow-surface-strong: #ffffff;
+  --flow-ink: #0f172a;
+  --flow-muted: #5f6f86;
+  --flow-faint: #91a0b5;
+  --flow-line: #dde6f1;
+  --flow-shadow: 0 16px 38px rgba(15,23,42,.07);
+  --flow-shadow-soft: 0 8px 20px rgba(15,23,42,.045);
+  --flow-blue: #1677f2;
+  --flow-cyan: #16b8e6;
+  --flow-green: #10b981;
+  --flow-amber: #f59e0b;
+  --flow-orange: #ea7a2f;
+  --flow-red: #ef4444;
+  --flow-violet: #7c3aed;
+}
+
+html,body{
+  background:
+    radial-gradient(circle at top left, rgba(22,119,242,.08), transparent 28%),
+    radial-gradient(circle at top right, rgba(124,58,237,.06), transparent 24%),
+    linear-gradient(180deg, var(--flow-bg) 0%, #f7f9fd 42%, #eef3f8 100%) !important;
+  color: var(--flow-ink);
+}
+
+body{
+  position: relative;
+}
+
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 16% 8%, rgba(22,119,242,.08), transparent 0 17%),
+    radial-gradient(circle at 90% 12%, rgba(16,185,129,.06), transparent 0 15%),
+    radial-gradient(circle at 82% 88%, rgba(245,158,11,.05), transparent 0 16%);
+  z-index: 0;
+}
+
+.app,
+.main,
+.wrap{
+  position: relative;
+  z-index: 1;
+}
+
+.sidebar{
+  background:
+    linear-gradient(180deg, #07111f 0%, #0b1324 48%, #0b1220 100%) !important;
+  box-shadow: inset -1px 0 0 rgba(255,255,255,.06);
+}
+
+.sidebar::after{
+  content:"";
+  position:absolute;
+  inset:auto 0 0 0;
+  height:120px;
+  background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.04));
+  pointer-events:none;
+}
+
+.brandWrap{
+  position: relative;
+}
+
+.brandMark{
+  box-shadow: 0 14px 32px rgba(37,99,235,.24) !important;
+}
+
+.brandText span{
+  letter-spacing: -.02em;
+}
+
+.navSection{
+  color: #8fa0ba !important;
+}
+
+.navLink,
+.navBtn{
+  transition: transform .16s ease, background-color .16s ease, box-shadow .16s ease, color .16s ease;
+}
+
+.navLink:hover,
+.navBtn:hover{
+  transform: translateX(2px);
+  background: rgba(255,255,255,.08) !important;
+}
+
+.navLink.active,
+.navBtn.active{
+  background: linear-gradient(90deg, rgba(22,119,242,.26), rgba(255,255,255,.08)) !important;
+  color: #fff !important;
+  box-shadow: inset 3px 0 0 var(--flow-blue), 0 8px 24px rgba(22,119,242,.16);
+}
+
+.navLink.active svg,
+.navBtn.active svg{
+  color: #dbeafe !important;
+}
+
+.main{
+  padding-top: 28px;
+  padding-bottom: 40px;
+}
+
+.pageTop,
+.head,
+.topbar{
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.pageTitle,
+.h1{
+  color: #07111f !important;
+  letter-spacing: -.03em;
+}
+
+.pageTitleNote,
+.subTitle,
+.panelDesc,
+.desc,
+.cardDesc,
+.pdesc{
+  color: var(--flow-muted) !important;
+}
+
+.workspace,
+.datePill,
+.dateNote,
+.rangeNote,
+.kpi .hint,
+.kpiHint,
+.foot,
+.legend,
+.pieLegend,
+.topRow,
+.tip,
+.tooltip{
+  color: var(--flow-muted);
+}
+
+.workspace,
+.datePill,
+.dateNote,
+.rangeNote,
+.kpiExportBtn,
+.summaryExportBtn,
+.claimToggleBtn,
+.tab,
+.chip,
+.btn,
+.exportBtn,
+.controls button,
+.linkBtn{
+  border-radius: 12px;
+}
+
+:is(.panel,.card,.kpi,.tableWrap,.pivotWrap,.chartBox,.globalDateRange,.dealerSwitcher,.nameFilter,.claimToggle,.tabs,.toolbar,.repairFilterPanel,.filters,.modal,.employeeModal,.topList){
+  background: linear-gradient(180deg, var(--flow-surface-strong) 0%, #fbfdff 100%) !important;
+  border-color: var(--flow-line) !important;
+  box-shadow: var(--flow-shadow-soft) !important;
+}
+
+:is(.panel,.card,.kpi,.tableWrap,.pivotWrap,.chartBox,.globalDateRange,.dealerSwitcher,.nameFilter,.claimToggle,.tabs,.toolbar,.repairFilterPanel,.filters,.modal,.employeeModal,.topList){
+  border-radius: 18px;
+}
+
+:is(.panel,.card,.kpi,.dealerSwitcher,.globalDateRange,.repairFilterPanel,.filters,.modal,.employeeModal,.topList){
+  position: relative;
+  overflow: hidden;
+}
+
+:is(.panel,.card,.kpi,.dealerSwitcher,.globalDateRange,.repairFilterPanel,.filters,.modal,.employeeModal,.topList) > *{
+  position: relative;
+  z-index: 1;
+}
+
+:is(.panel,.card,.kpi,.dealerSwitcher,.globalDateRange,.repairFilterPanel,.filters,.modal,.employeeModal,.topList)::before{
+  content:"";
+  position:absolute;
+  inset:0 auto auto 0;
+  width:100%;
+  height:4px;
+  background: linear-gradient(90deg, rgba(22,119,242,.95), rgba(16,185,129,.82), rgba(245,158,11,.78));
+  opacity:.48;
+  z-index:0;
+  pointer-events:none;
+}
+
+:is(.panel,.card,.kpi,.dealerSwitcher,.globalDateRange,.repairFilterPanel,.filters,.modal,.employeeModal,.topList):hover{
+  box-shadow: 0 20px 46px rgba(15,23,42,.10) !important;
+}
+
+.panel,
+.card{
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+.panel:hover,
+.card:hover,
+.kpi:hover{
+  transform: translateY(-2px);
+}
+
+.panelTitle,
+.cardTitle,
+.panelTitleRow .panelTitle,
+.title,
+.pageTitle{
+  font-weight: 700 !important;
+  letter-spacing: -.02em !important;
+}
+
+.panelTitle,
+.cardTitle{
+  color: #09111f !important;
+}
+
+.panelDesc,
+.desc,
+.cardDesc,
+.subTitle{
+  line-height: 1.55;
+}
+
+.kpis,
+.kpiGrid{
+  gap: 16px !important;
+}
+
+.kpi{
+  min-height: 112px;
+}
+
+.kpiLabel{
+  color: #44536a !important;
+  letter-spacing: .02em;
+}
+
+.kpiValue{
+  color: #09111f !important;
+}
+
+.kpi:nth-child(4n+1)::before,
+.teamKpiGrid .kpi:nth-child(4n+1)::before,
+.employeeModalKpis .kpi:nth-child(4n+1)::before,
+.partsGrid .kpi:nth-child(4n+1)::before{
+  background: linear-gradient(90deg, rgba(22,119,242,.95), rgba(22,184,230,.8));
+}
+
+.kpi:nth-child(4n+2)::before,
+.teamKpiGrid .kpi:nth-child(4n+2)::before,
+.employeeModalKpis .kpi:nth-child(4n+2)::before,
+.partsGrid .kpi:nth-child(4n+2)::before{
+  background: linear-gradient(90deg, rgba(16,185,129,.95), rgba(34,197,94,.82));
+}
+
+.kpi:nth-child(4n+3)::before,
+.teamKpiGrid .kpi:nth-child(4n+3)::before,
+.employeeModalKpis .kpi:nth-child(4n+3)::before,
+.partsGrid .kpi:nth-child(4n+3)::before{
+  background: linear-gradient(90deg, rgba(245,158,11,.95), rgba(234,179,8,.82));
+}
+
+.kpi:nth-child(4n+4)::before,
+.teamKpiGrid .kpi:nth-child(4n+4)::before,
+.employeeModalKpis .kpi:nth-child(4n+4)::before,
+.partsGrid .kpi:nth-child(4n+4)::before{
+  background: linear-gradient(90deg, rgba(124,58,237,.95), rgba(99,102,241,.82));
+}
+
+.controls,
+.tabs,
+.chips,
+.legend,
+.trendAxisLegend,
+.teamAssignLegend,
+.employeeApprovalTitle,
+.pieLegend,
+.pieLegendRow,
+.topRow{
+  color: #52627a;
+}
+
+.tab,
+.chip,
+.btn,
+.exportBtn,
+.controls button,
+.seg button,
+.navLink,
+.navBtn,
+.claimToggleBtn,
+.linkBtn{
+  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.tab:hover,
+.chip:hover,
+.btn:hover,
+.exportBtn:hover,
+.controls button:hover,
+.seg button:hover,
+.claimToggleBtn:hover,
+.linkBtn:hover{
+  transform: translateY(-1px);
+}
+
+.tab.active,
+.chip.active,
+.btn.active,
+.btn.dark,
+.controls button.primary,
+.seg button.on,
+.claimToggleBtn.active,
+.navLink.active,
+.navBtn.active,
+.exportBtn,
+.linkBtn{
+  background: linear-gradient(135deg, var(--flow-blue), #2467c8) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: 0 10px 22px rgba(22,119,242,.18) !important;
+}
+
+.btn,
+.controls button:not(.primary),
+.seg button,
+.tab:not(.active),
+.chip:not(.active),
+.claimToggleBtn{
+  background: rgba(255,255,255,.92) !important;
+  border: 1px solid var(--flow-line) !important;
+}
+
+input,
+select,
+.input,
+.search,
+.dealerSelect{
+  background: #fff !important;
+  border-color: var(--flow-line) !important;
+  color: #09111f !important;
+}
+
+input:focus,
+select:focus,
+.input:focus,
+.search:focus,
+.dealerSelect:focus{
+  border-color: rgba(22,119,242,.35) !important;
+  box-shadow: 0 0 0 4px rgba(22,119,242,.12) !important;
+}
+
+.tableWrap,
+.pivotWrap{
+  border-radius: 16px !important;
+  border-color: var(--flow-line) !important;
+}
+
+table{
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th{
+  background: linear-gradient(180deg, #f8fbff 0%, #f3f7fc 100%) !important;
+  color: #516178 !important;
+  font-weight: 700 !important;
+}
+
+tbody tr:nth-child(odd) td{
+  background: rgba(248,250,252,.45);
+}
+
+tr:hover td{
+  background: rgba(230,241,255,.58) !important;
+}
+
+.legend span,
+.trendAxisLegend span,
+.teamAssignLegend span,
+.pieLegendRow,
+.topRow{
+  transition: background-color .15s ease, transform .15s ease;
+}
+
+.legend span:hover,
+.trendAxisLegend span:hover,
+.teamAssignLegend span:hover,
+.pieLegendRow:hover,
+.topRow:hover{
+  background: rgba(230,241,255,.55);
+}
+
+.legend i,
+.dot,
+.pieSwatch{
+  box-shadow: 0 0 0 3px rgba(255,255,255,.7);
+}
+
+.chartBox,
+.chartWrap,
+.miniChartWrap,
+.trendWrap{
+  border-color: var(--flow-line) !important;
+}
+
+canvas{
+  filter: saturate(1.05) contrast(1.01);
+}
+
+.tooltip,
+.tip{
+  background: rgba(255,255,255,.97) !important;
+  border: 1px solid rgba(221,230,241,.95) !important;
+  box-shadow: 0 16px 36px rgba(15,23,42,.14) !important;
+  color: #09111f !important;
+}
+
+.dateNote,
+.datePill,
+.pageTitleNote,
+.workspace,
+.rangeNote,
+.kpiHint,
+.panelDesc,
+.desc,
+.subTitle{
+  font-weight: 500;
+}
+
+.pageTop::after,
+.head::after,
+.topbar::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-12px;
+  height:1px;
+  background: linear-gradient(90deg, rgba(22,119,242,.12), rgba(16,185,129,.10), rgba(245,158,11,.10), transparent);
+}
+
+.repairFilterPanel .field label,
+.controls label{
+  color: #4b5b72 !important;
+}
+
+.repairFilterPanel .filterHintPill,
+.globalDateRange{
+  background: linear-gradient(180deg, #fff, #f8fbff) !important;
+}
+
+.repairComboTitle,
+.employeeApprovalTitle{
+  color: #09111f;
+  font-weight: 700;
+}
+
+.statusMixPanel,
+.speedPanel,
+.avgCostTrendPanel,
+.dealerRankPanel,
+.teamAssignPanel,
+.repairCostPanel,
+.trendPanel{
+  border-color: rgba(214,225,237,.96) !important;
+}
+
+.claimToggleBtn.active{
+  box-shadow: inset 0 -2px 0 var(--flow-cyan) !important;
+}
+
+@media (max-width: 900px){
+  .pageTop::after,
+  .head::after,
+  .topbar::after{
+    bottom:-10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,
+  *::before,
+  *::after{
+    transition:none !important;
+    animation:none !important;
+  }
+}
