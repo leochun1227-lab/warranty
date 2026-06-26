@@ -23,21 +23,11 @@
 }
 
 html,body{
-  overflow-x: hidden;
-  overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
   background:
     radial-gradient(circle at top left, rgba(22,119,242,.08), transparent 28%),
     radial-gradient(circle at top right, rgba(124,58,237,.06), transparent 24%),
     linear-gradient(180deg, var(--flow-bg) 0%, #f7f9fd 42%, #eef3f8 100%) !important;
   color: var(--flow-ink);
-}
-
-html::-webkit-scrollbar,
-body::-webkit-scrollbar{
-  width: 0;
-  height: 0;
 }
 
 body{
