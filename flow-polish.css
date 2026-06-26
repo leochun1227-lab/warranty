@@ -23,6 +23,7 @@
 }
 
 html,body{
+  overflow-x: hidden;
   background:
     radial-gradient(circle at top left, rgba(22,119,242,.08), transparent 28%),
     radial-gradient(circle at top right, rgba(124,58,237,.06), transparent 24%),
