@@ -594,9 +594,9 @@
   }
 }
 
-/* Requested: widen right dealer rail and align analysis cards below it */
+/* Keep the right dealer rail compact enough to avoid horizontal overflow */
 .dashboardTop{
-  grid-template-columns:minmax(0,1fr) 416px!important;
+  grid-template-columns:minmax(0,1fr) 340px!important;
 }
 .featureSideStack{
   display:flex!important;
@@ -820,13 +820,13 @@
   }
 }
 
-/* Give the right-side dealer/status/aging stack more horizontal room */
+/* Keep the right-side dealer/status/aging stack compact */
 .dashboardTop{
-  grid-template-columns:minmax(0,1fr) 530px!important;
+  grid-template-columns:minmax(0,1fr) 340px!important;
 }
 .featureSideStack{
-  width:530px!important;
-  max-width:530px!important;
+  width:340px!important;
+  max-width:340px!important;
 }
 .featureSideStack .dealerRankPanel,
 .featureSideStack .dashboardAnalysisGrid .statusMixPanel,
@@ -2908,11 +2908,6 @@ function isApprovedStatus(ticket){
   if(text.includes("closed")&&text.includes("approved"))return false;
   return ["Z9","Y0","Y1","Y2","Y4","YB"].includes(code)||["sales order approved","partially picked","dispatch parts","repair in progress","repairer invoiced received","repairer invoiced processed"].includes(text);
 }
-function isClosedApprovedStatus(ticket){
-  const code=ticketApprovedStatusCode(ticket);
-  const text=ticketApprovedStatusText(ticket);
-  return code==="Y7"||text.includes("approved claims closed")||(text.includes("closed")&&text.includes("approved"));
-}
 function ticketC4CApprovedDate(ticket){
   const claimApproved=ticketClaimApprovedOn(ticket);
   if(claimApproved)return dateKey(claimApproved);
@@ -2922,7 +2917,7 @@ function ticketC4CApprovedDate(ticket){
 }
 function isUnapprovedTicket(ticket){const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status).toUpperCase();const text=clean(ticket.TicketStatusText||ticket.statusText).toLowerCase();return code==="Y8"||text.includes("unapproved claims closed")||text.includes("unapproved")}
 function hasApprovedSapSignal(ticket){return !!(ticketPoNumber(ticket)||ticketSalesOrderNumber(ticket))}
-function approvalBucket(ticket){if(isClosedApprovedStatus(ticket))return "other";if(hasApprovedSapSignal(ticket)||isApprovedStatus(ticket))return "approved";if(isUnapprovedTicket(ticket))return "unapproved";return "other"}
+function approvalBucket(ticket){if(hasApprovedSapSignal(ticket)||isApprovedStatus(ticket))return "approved";if(isUnapprovedTicket(ticket))return "unapproved";return "other"}
 function approvalDecisionTime(ticket){
   const bucket=approvalBucket(ticket);
   if(bucket==="approved"){
@@ -5674,25 +5669,4 @@ async function load(){try{const started=performance.now();showCalcFloat(true,"Lo
 window.addEventListener("hashchange",()=>{repairAnalyticsScrollPending=location.hash===REPAIR_ANALYTICS_HASH;settleRepairAnalyticsScroll();});
 window.addEventListener("load",()=>{settleRepairAnalyticsScroll();});
 document.querySelectorAll("[data-period]").forEach(btn=>btn.addEventListener("click",()=>{activePeriod=btn.dataset.period||"all";syncRangeInputsToActivePeriod();renderAllWithLoading();}));if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",()=>{drawTrend();applyLayoutAdjustWidth();scheduleStatusMixBottomAlignment();});bindTooltip();bindLayoutAdjustPanel();bindDashboardExportButtons();loadEmployeeStatusMapping();load();
-</script><script>
-(function(){
-  let autoScaleRaf = 0;
-  function applyAutoScale(){
-    const vw = window.innerWidth || document.documentElement.clientWidth || 0;
-    const scale = vw >= 1200 ? Math.min(1, Math.max(0.8, vw / 1600)) : 1;
-    if (document.documentElement.style.zoom !== String(scale)) {
-      document.documentElement.style.zoom = String(scale);
-    }
-  }
-  function scheduleAutoScale(){
-    if (autoScaleRaf) return;
-    autoScaleRaf = requestAnimationFrame(() => {
-      autoScaleRaf = 0;
-      applyAutoScale();
-    });
-  }
-  window.addEventListener("resize", scheduleAutoScale);
-  window.addEventListener("load", scheduleAutoScale);
-  scheduleAutoScale();
-})();
 </script></body></html>
