@@ -1,0 +1,261 @@
+import csv
+import json
+import re
+from collections import Counter, defaultdict
+from datetime import datetime, timezone
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parent
+PARTS_CSV = ROOT / "outputs" / "parts_classification_2026-07-06" / "parts_classified.csv"
+PARTS_META = ROOT / "outputs" / "parts_classification_2026-07-06" / "parts_classified_meta.json"
+PARTS_TICKET_MAP = ROOT / "outputs" / "analysis_parts_ticket_cost_map.json"
+OUT = ROOT / "outputs" / "analysis_parts_failure_summary.json"
+OUT_JS = ROOT / "outputs" / "analysis_parts_failure_summary.js"
+
+SERIES_ORDER = ["SRC", "SRH", "SRT", "SRM", "SRP", "SRL", "SRV", "NG"]
+EXCLUDED_SERIES = {"UNKNOWN", "RO", "SR", "SCR", "VRV"}
+
+
+def clean(value):
+    if value is None:
+        return ""
+    return str(value).strip()
+
+
+def parse_amount(value):
+    text = clean(value).replace(",", "")
+    if not text or text == "#":
+        return 0.0
+    try:
+        return float(text)
+    except ValueError:
+        return 0.0
+
+
+def title_case(text):
+    value = clean(text)
+    if not value:
+        return "Other"
+    parts = re.split(r"(\s+)", value)
+    out = []
+    for part in parts:
+        if not part or part.isspace():
+            out.append(part)
+            continue
+        if part.isupper() or part.isdigit():
+            out.append(part)
+        else:
+            out.append(part[:1].upper() + part[1:].lower())
+    return "".join(out)
+
+
+def relative_path(path):
+    try:
+        return path.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def normalize_series_code(code):
+    raw = clean(code).upper()
+    if not raw:
+        return "UNKNOWN"
+    if raw.startswith("NG"):
+        return "NG"
+    if raw == "RV" or raw == "RRV" or raw.startswith("RRV"):
+        return "SRL"
+    if raw == "LRV" or raw.startswith("LRV"):
+        return "SRC"
+    if raw.startswith("L"):
+        return f"S{raw[1:]}"
+    return raw
+
+
+def is_excluded_series(series):
+    return normalize_series_code(series) in EXCLUDED_SERIES
+
+
+def extract_series(row):
+    parts = [
+        row.get("Registered Product"),
+        row.get("Product"),
+        row.get("Ticket ID"),
+        row.get("Ticket"),
+        row.get("Serial ID"),
+        row.get("Chassis Number"),
+    ]
+    text = " ".join(clean(v) for v in parts if clean(v) and clean(v) != "#").upper()
+    if re.search(r"NG[A-Z0-9-]*", text):
+        return "NG"
+    known = ["SRC", "SRH", "SRT", "SRM", "SRP", "SRL", "SRV", "LRV", "LRT", "LRH", "LRP", "LRL", "LRC", "LTR", "LVR", "LPV", "LEP", "RRV"]
+    for code in known:
+        if code in text:
+            return normalize_series_code(code)
+    match = re.search(r"([A-Z]{2,4})\d{2,6}[A-Z]?", text)
+    return normalize_series_code(match.group(1)) if match else "UNKNOWN"
+
+
+def read_csv_rows(path):
+    with path.open("r", encoding="utf-8-sig", newline="") as f:
+        reader = csv.reader(f)
+        headers = next(reader)
+        for row in reader:
+            if not any(clean(cell) for cell in row):
+                continue
+            yield headers, row
+
+
+def build_index(headers):
+    return {name: idx for idx, name in enumerate(headers)}
+
+
+def get_value(row, index_map, key):
+    idx = index_map.get(key)
+    if idx is None or idx >= len(row):
+        return ""
+    return row[idx]
+
+
+def add_component(bucket, ticket_id, category, cost):
+    bucket["lineItems"] += 1
+    bucket["tickets"].add(ticket_id)
+    bucket["cost"] += cost
+    if category:
+        bucket["categories"][category] += 1
+
+
+def finalize_bucket(bucket, total_tickets, total_cost):
+    items = []
+    for key, stat in bucket.items():
+        categories = stat["categories"]
+        category = categories.most_common(1)[0][0] if categories else "Other"
+        items.append({
+            "component": key,
+            "category": category,
+            "tickets": len(stat["tickets"]),
+            "lineItems": stat["lineItems"],
+            "cost": round(stat["cost"], 3),
+            "ticketShare": round(len(stat["tickets"]) / total_tickets, 6) if total_tickets else 0,
+            "costShare": round(stat["cost"] / total_cost, 6) if total_cost else 0,
+        })
+    items.sort(key=lambda item: (-item["tickets"], -item["cost"], item["component"]))
+    return items[:10]
+
+
+def main():
+    ticket_map_payload = json.loads(PARTS_TICKET_MAP.read_text(encoding="utf-8"))
+    ticket_series = {}
+    ticket_series_counts = defaultdict(Counter)
+    series_ticket_sets = defaultdict(set)
+    for row in ticket_map_payload.get("rows", []):
+        ticket_id = clean(row.get("ticketId"))
+        if not ticket_id:
+            continue
+        series = extract_series({
+            "Serial ID": row.get("serialId"),
+            "Chassis Number": row.get("chassisNumber"),
+            "Ticket ID": row.get("ticketId"),
+        })
+        if is_excluded_series(series):
+            continue
+        ticket_series_counts[ticket_id][series] += 1
+        series_ticket_sets[series].add(ticket_id)
+
+    for ticket_id, counter in ticket_series_counts.items():
+        ticket_series[ticket_id] = counter.most_common(1)[0][0]
+
+    parts_stats_all = defaultdict(lambda: {"lineItems": 0, "tickets": set(), "cost": 0.0, "categories": Counter()})
+    parts_stats_by_series = defaultdict(lambda: defaultdict(lambda: {"lineItems": 0, "tickets": set(), "cost": 0.0, "categories": Counter()}))
+    unmatched_rows = 0
+    excluded_rows = 0
+    total_rows = 0
+    included_rows = 0
+    total_cost = 0.0
+
+    parts_headers = None
+    parts_index = {}
+    for headers, row in read_csv_rows(PARTS_CSV):
+        if parts_headers is None:
+            parts_headers = headers
+            parts_index = build_index(headers)
+        total_rows += 1
+        ticket_id = clean(get_value(row, parts_index, "Ticket ID"))
+        series = ticket_series.get(ticket_id, "UNKNOWN")
+        if series == "UNKNOWN":
+            unmatched_rows += 1
+        if is_excluded_series(series):
+            excluded_rows += 1
+            continue
+        included_rows += 1
+
+        keyword = clean(get_value(row, parts_index, "Matched Keyword"))
+        category = clean(get_value(row, parts_index, "Part Category")) or "Other"
+        component = keyword or category or "Other"
+        component_label = title_case(component)
+        cost = parse_amount(get_value(row, parts_index, "Preferred Line Cost (AUD)"))
+        if cost == 0:
+            cost = parse_amount(get_value(row, parts_index, "Amount Including Tax"))
+        total_cost += cost
+
+        add_component(parts_stats_all[component_label], ticket_id, category, cost)
+        add_component(parts_stats_by_series[series][component_label], ticket_id, category, cost)
+
+    total_tickets_all = len({ticket for ticket, series in ticket_series.items() if not is_excluded_series(series)})
+    overall = {
+        "lineItems": included_rows,
+        "tickets": total_tickets_all,
+        "cost": round(total_cost, 3),
+        "topComponents": finalize_bucket(parts_stats_all, total_tickets_all, total_cost),
+    }
+
+    series_payload = {}
+    all_series_keys = sorted(
+        set(parts_stats_by_series.keys()),
+        key=lambda s: (s not in SERIES_ORDER, SERIES_ORDER.index(s) if s in SERIES_ORDER else 999, s),
+    )
+    for series in all_series_keys:
+        bucket = parts_stats_by_series[series]
+        ticket_total = len(series_ticket_sets.get(series, set()))
+        if ticket_total == 0:
+            ticket_total = len({ticket for stat in bucket.values() for ticket in stat["tickets"]})
+        series_cost = sum(stat["cost"] for stat in bucket.values())
+        series_payload[series] = {
+            "lineItems": sum(stat["lineItems"] for stat in bucket.values()),
+            "tickets": ticket_total,
+            "cost": round(series_cost, 3),
+            "topComponents": finalize_bucket(bucket, ticket_total, series_cost),
+        }
+
+    payload = {
+        "meta": {
+            "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "partsRows": total_rows,
+            "includedPartsRows": included_rows,
+            "mappedTickets": total_tickets_all,
+            "seriesCount": len(series_payload),
+            "unmatchedRows": unmatched_rows,
+            "excludedRows": excluded_rows,
+            "partsSource": relative_path(PARTS_CSV),
+            "ticketMapSource": relative_path(PARTS_TICKET_MAP),
+            "partsMetaSource": relative_path(PARTS_META),
+        },
+        "all": overall,
+        "series": series_payload,
+    }
+
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    payload_text = json.dumps(payload, ensure_ascii=False, indent=2)
+    OUT.write_text(payload_text, encoding="utf-8")
+    OUT_JS.write_text(
+        "globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = "
+        + payload_text
+        + ";\n",
+        encoding="utf-8",
+    )
+    print(f"Wrote {OUT}")
+    print(f"Wrote {OUT_JS}")
+
+
+if __name__ == "__main__":
+    main()

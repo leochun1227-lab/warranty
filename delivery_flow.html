@@ -1,97 +1,941 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="Cache-Control" content="no-store" />
 <meta http-equiv="Pragma" content="no-cache" />
-<title>Parts Delivery Flow - Dealer Workbench</title>
+<title>Parts Delivery - Dealer Workbench</title>
 <style>
   :root{
-    --bg:#f5f6f8; --panel:#ffffff; --panelHi:#fbfcfd; --grid:#eceef1; --line:#e2e5ea;
-    --ink:#1b2330; --inkDim:#5d6776; --inkFaint:#929bab;
-    --open:#e07b39; --issued:#1f9d6b; --rejected:#cf4b46; --flow:#3f6fe0;
-    --a0:#1f9d6b; --a1:#d39a1f; --a2:#e07b39; --a3:#cf4b46;
-    --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
-    --sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --bg:#f5f6f8;
+    --panel:#ffffff;
+    --panelHi:#fbfcfd;
+    --grid:#eceef1;
+    --line:#e2e5ea;
+    --ink:#1b2330;
+    --inkDim:#5d6776;
+    --inkFaint:#929bab;
+    --open:#e07b39;
+    --issued:#1f9d6b;
+    --rejected:#cf4b46;
+    --flow:#3f6fe0;
+    --a0:#1f9d6b;
+    --a1:#d39a1f;
+    --a2:#e07b39;
+    --a3:#cf4b46;
+    --violet:#7c3aed;
+    --sky:#0284c7;
+    --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+    --sans:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);font-family:var(--sans);color:var(--ink)}
-  .mono{font-family:var(--mono)}
+  html,body{margin:0;background:radial-gradient(circle at top left, #ffffff 0%, #f6f8fc 36%, #eef3fb 100%);font-family:var(--sans);color:var(--ink)}
+  body{min-height:100vh}
+  body.is-loading{overflow:hidden}
   button{font-family:inherit;cursor:pointer}
-  .app{min-height:100vh;display:grid;grid-template-columns:288px minmax(0,1fr)}
-  .sidebar{background:#0b1222;color:#e5e7eb;min-height:100vh;padding:22px 16px;position:sticky;top:0;align-self:start}
-  .brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 28px}
-  .brandMark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#2563eb);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(37,99,235,.25)}
+  .app{min-height:100vh;display:grid;grid-template-columns:276px minmax(0,1fr)}
+  body.is-loading .app{
+    filter:blur(1px);
+    opacity:.68;
+    pointer-events:none;
+    user-select:none;
+  }
+  .sidebar{
+    background:#0b1222;
+    color:#e5e7eb;
+    min-height:100vh;
+    padding:22px 16px;
+    position:sticky;
+    top:0;
+    align-self:start;
+  }
+  .brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 26px}
+  .brandMark{
+    width:38px;height:38px;border-radius:12px;
+    background:linear-gradient(135deg,#38bdf8,#2563eb);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 12px 30px rgba(37,99,235,.25);
+  }
   .brandMark svg{width:20px;height:20px;stroke-width:1.8}
   .brandText span{display:block;font-size:18px;font-weight:600}
   .brandText small{display:block;color:#9aa8bc;font-size:12px;margin-top:2px}
-  .navSection{font-size:12px;letter-spacing:4px;color:#8ea0b8;text-transform:uppercase;margin:25px 8px 10px}
-  .navLink{width:100%;display:flex;align-items:center;gap:13px;color:#d9e1ec;padding:13px 14px;border-radius:12px;font-weight:600;text-decoration:none}
+  .navSection{
+    font-size:12px;
+    letter-spacing:4px;
+    color:#8ea0b8;
+    text-transform:uppercase;
+    margin:25px 8px 10px;
+  }
+  .navLink{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:13px;
+    color:#d9e1ec;
+    padding:13px 14px;
+    border-radius:12px;
+    font-weight:600;
+    text-decoration:none;
+  }
   .navLink.active{background:rgba(255,255,255,.10);color:#fff}
   .navLink:hover{background:rgba(255,255,255,.07)}
   .navLink svg{width:18px;height:18px;stroke-width:1.8;color:#aebcd1}
   .navDivider{height:1px;background:rgba(255,255,255,.10);margin:22px 8px}
-  .main{min-width:0;padding:24px}
-  .wrap{max-width:1280px;margin:0 auto}
-  .head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:20px}
-  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--flow)}
-  h1{margin:4px 0 0;font-size:26px;font-weight:700}
-  .sub{font-size:13px;color:var(--inkFaint);margin-top:4px;max-width:620px}
-  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .seg{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:2px}
-  .seg button{background:transparent;color:var(--inkFaint);border:none;border-radius:6px;padding:7px 12px;font-family:var(--mono);font-size:12px}
-  .seg button.on{background:var(--panelHi);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
-  .exportBtn{background:var(--issued);color:#fff;border:none;border-radius:8px;padding:9px 14px;font-family:var(--mono);font-size:12px;font-weight:600}
-  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
-  @media(max-width:1080px){.kpis{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:560px){.kpis{grid-template-columns:1fr}}
-  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;
-    display:flex;flex-direction:column;gap:6px;min-height:104px;box-shadow:0 1px 2px rgba(20,30,50,.04);
-    animation:rise .5s cubic-bezier(.22,.61,.36,1) both;transition:transform .18s ease,box-shadow .18s ease}
-  .kpi:hover{transform:translateY(-3px);box-shadow:0 18px 38px rgba(15,23,42,.10)}
-  .kpi .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#657189;font-weight:700}
-  .kpi .val{font-family:var(--mono);font-size:30px;font-weight:600;line-height:1;margin-top:auto}
-  .kpi .val small{font-size:13px;color:var(--inkFaint);font-weight:400;margin-left:4px}
-  .kpi .meta{display:flex;justify-content:space-between;align-items:center;gap:8px}
-  .kpi .delta{font-family:var(--mono);font-size:12px}
-  .kpi .hint{font-size:11px;color:var(--inkFaint)}
-  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px;
-    box-shadow:0 1px 2px rgba(20,30,50,.04);animation:rise .5s cubic-bezier(.22,.61,.36,1) both;transition:box-shadow .2s ease}
-  .panel:hover{box-shadow:0 18px 40px rgba(15,23,42,.07)}
-  .panel h2{margin:0;font-size:14px;font-weight:600}
-  .panel .pdesc{font-size:12px;color:var(--inkFaint);margin-top:2px}
-  .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  @media(max-width:900px){.row2{grid-template-columns:1fr}}
-  .chartBox{position:relative;width:100%;margin-top:12px}
-  canvas{display:block;width:100%}
-  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--inkDim)}
-  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-  .foot{font-family:var(--mono);font-size:11px;color:var(--inkFaint);margin-top:4px}
-  .tip{position:fixed;pointer-events:none;background:#fff;border:1px solid var(--line);border-radius:8px;
-    padding:8px 10px;font-family:var(--mono);font-size:12px;box-shadow:0 4px 16px rgba(20,30,50,.14);opacity:0;transition:opacity .1s;z-index:50}
-  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-  @media(prefers-reduced-motion:reduce){.kpi,.panel{animation:none}.kpi:hover{transform:none}}
-  @media(max-width:900px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:18px}}
-</style>
-<link rel="stylesheet" href="flow-polish.css">
-<style>
-  /* Delivery Flow keeps segmented controls readable when flow-polish is loaded */
-  .controls #granSeg button.on,
-  .controls #rangeSeg button.on{
-    background: linear-gradient(135deg, #eaf3ff, #dbeafe) !important;
-    color: #1e3a8a !important;
-    border-color: #93c5fd !important;
-    box-shadow: inset 0 0 0 1px rgba(59,130,246,.18) !important;
+  .main{min-width:0}
+  .wrap{
+    max-width:1440px;
+    margin:0 auto;
+    padding:22px 18px 26px;
+    position:relative;
   }
-  .controls #granSeg button,
-  .controls #rangeSeg button{
-    min-width: 42px;
-    letter-spacing: .01em;
+  .wrap::before,
+  .wrap::after{
+    content:"";
+    position:absolute;
+    inset:auto;
+    pointer-events:none;
+    z-index:0;
+    filter:blur(28px);
+    opacity:.7;
+  }
+  .wrap::before{
+    width:220px;
+    height:220px;
+    right:26px;
+    top:70px;
+    background:radial-gradient(circle, rgba(59,130,246,.16), rgba(59,130,246,0) 68%);
+  }
+  .wrap::after{
+    width:260px;
+    height:260px;
+    left:40px;
+    top:320px;
+    background:radial-gradient(circle, rgba(124,58,237,.10), rgba(124,58,237,0) 70%);
+  }
+  .wrap > *{position:relative;z-index:1}
+  .head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+    position:relative;
+    background:linear-gradient(180deg,#ffffff,#fbfcff);
+    border:1px solid #dfe7f1;
+    border-radius:20px;
+    padding:16px 18px;
+    box-shadow:0 10px 24px rgba(15,23,42,.045);
+    overflow:hidden;
+  }
+  .head > *{position:relative;z-index:1}
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--flow)}
+  h1{
+    margin:5px 0 0;
+    font-size:25px;
+    line-height:1.12;
+    letter-spacing:-.03em;
+    font-weight:650;
+    color:var(--ink);
+    text-shadow:none;
+  }
+  .sub{font-size:13px;line-height:1.5;color:var(--inkFaint);margin-top:5px;max-width:760px}
+  .headRight{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;margin-left:auto}
+  .seg{
+    display:inline-flex;
+    align-items:center;
+    gap:0;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:3px;
+    box-shadow:0 6px 18px rgba(15,23,42,.04);
+  }
+  .seg button{
+    border:0;
+    background:transparent;
+    color:var(--inkFaint);
+    border-radius:999px;
+    padding:7px 12px;
+    font-family:var(--mono);
+    font-size:11px;
+    font-weight:700;
+    min-width:62px;
+  }
+  .seg button.on{
+    background:linear-gradient(180deg,#f8fbff,#edf4ff);
+    color:#15203b;
+    box-shadow:inset 0 0 0 1px var(--line);
+  }
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--inkDim);
+    border-radius:999px;
+    padding:8px 11px;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.02em;
+    box-shadow:0 6px 18px rgba(15,23,42,.04);
+    white-space:nowrap;
+  }
+  .pill strong{color:var(--ink);font-weight:700}
+  .kpis{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:12px;
+    margin-top:20px;
+    width:100%;
+  }
+  @media(max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:520px){.kpis{grid-template-columns:1fr}}
+  .kpi{
+    background:linear-gradient(180deg,#fff,#fbfdff);
+    border:1px solid #dce7f4;
+    border-radius:22px;
+    padding:12px 12px 34px;
+    min-height:102px;
+    box-shadow:0 10px 24px rgba(15,23,42,.04);
+    display:grid;
+    grid-template-rows:auto minmax(0,1fr);
+    gap:8px;
+    position:relative;
+    overflow:hidden;
+  }
+  .kpi::after{
+    content:"";
+    position:absolute;
+    inset:0 0 auto 0;
+    height:3px;
+    background:linear-gradient(90deg, rgba(63,111,224,.95), rgba(31,157,107,.92), rgba(224,123,57,.92), rgba(124,58,237,.92));
+    opacity:.7;
+  }
+  .kpi:hover{box-shadow:0 16px 34px rgba(15,23,42,.08);transform:translateY(-1px)}
+  .lbl{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#6b768a;
+    font-weight:700;
+    line-height:1.25;
+  }
+  .kpiHead{
+    min-width:0;
+    width:100%;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    gap:8px;
+  }
+  .kpiHead .lbl{
+    width:100%;
+    text-align:center;
+  }
+  .kpiAction{
+    position:absolute;
+    right:9px;
+    bottom:9px;
+    z-index:2;
+    padding:3px 6px;
+    font-size:8px;
+    letter-spacing:.04em;
+    box-shadow:none;
+  }
+  .kpiAction svg{
+    width:10px;
+    height:10px;
+  }
+  .val{
+    grid-row:2;
+    align-self:center;
+    justify-self:center;
+    width:100%;
+    margin:0;
+    font-family:var(--mono);
+    font-size:clamp(24px, 2.1vw, 30px);
+    font-weight:700;
+    line-height:1;
+    letter-spacing:-.03em;
+    text-align:center;
+  }
+  .val small{
+    font-size:13px;
+    color:var(--inkFaint);
+    font-weight:400;
+    margin-left:2px;
+  }
+  .meta{
+    display:none;
+  }
+  .hint{
+    font-size:11px;
+    color:var(--inkFaint);
+    line-height:1.35;
+  }
+  .panel{
+    background:linear-gradient(180deg,#fff,#fcfdff);
+    border:1px solid #dfe7f1;
+    border-radius:20px;
+    padding:18px;
+    box-shadow:0 10px 24px rgba(15,23,42,.045);
+    margin-bottom:14px;
+    overflow:hidden;
+    position:relative;
+  }
+  .panel::before{
+    content:"";
+    position:absolute;
+    inset:0 auto auto 0;
+    width:100%;
+    height:4px;
+    background:linear-gradient(90deg, rgba(59,130,246,.58), rgba(16,185,129,.48), rgba(249,115,22,.44), rgba(124,58,237,.48));
+    opacity:.55;
+  }
+  .panel > *{position:relative;z-index:1}
+  .panelTopic{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    min-width:0;
+  }
+  .panelIcon{
+    width:34px;
+    height:34px;
+    border-radius:12px;
+    display:grid;
+    place-items:center;
+    flex:0 0 auto;
+    box-shadow:0 8px 18px rgba(15,23,42,.06);
+  }
+  .panelIcon svg{
+    width:17px;
+    height:17px;
+    stroke-width:2;
+  }
+  .panelIcon.blue{background:#eff6ff;color:#2563eb}
+  .panelIcon.green{background:#ecfdf5;color:#10b981}
+  .panelIcon.orange{background:#fff7ed;color:#f97316}
+  .panelIcon.red{background:#fff1f2;color:#e11d48}
+  .panelIcon.violet{background:#f5f3ff;color:#7c3aed}
+  .panelIcon.sky{background:#f0f9ff;color:#0284c7}
+  .panelRow{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;
+    margin-bottom:14px;
+    align-items:stretch;
+  }
+  .panelRow > .panel{
+    margin-bottom:0;
+    height:100%;
+  }
+  .panelHead{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+  }
+  .panelActions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex:0 0 auto;
+  }
+  .panelTitle{
+    margin:0;
+    font-size:15px;
+    line-height:1.25;
+    font-weight:650;
+    letter-spacing:-.015em;
+  }
+  .panelDesc{
+    margin:4px 0 0;
+    color:var(--inkFaint);
+    font-size:12px;
+    line-height:1.45;
+    max-width:780px;
+  }
+  .badge{
+    flex:0 0 auto;
+    padding:7px 10px;
+    border-radius:999px;
+    border:1px solid rgba(63,111,224,.14);
+    background:rgba(63,111,224,.08);
+    color:var(--flow);
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .flowExportBtn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 10px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--flow);
+    font-family:var(--mono);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    white-space:nowrap;
+    box-shadow:0 6px 18px rgba(15,23,42,.04);
+    transition:transform .15s ease, box-shadow .15s ease, background-color .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .flowExportBtn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 10px 22px rgba(15,23,42,.08);
+  }
+  .flowExportBtn svg{
+    width:15px;
+    height:15px;
+    stroke-width:2;
+  }
+  @media(max-width:560px){
+    .panelActions{
+      width:100%;
+      justify-content:flex-start;
+    }
+    .kpi{
+      min-height:96px;
+      padding:11px 11px 32px;
+      gap:6px;
+    }
+    .kpiAction{
+      right:7px;
+      bottom:7px;
+      padding:2px 5px;
+    }
+  }
+  .chartBox{position:relative;width:100%}
+  canvas{width:100%;display:block}
+  .chartFlow{height:292px}
+  .flowTableWrap{
+    max-height:292px;
+    overflow:auto;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:#fff;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
+  }
+  .flowTable{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    font-size:12px;
+  }
+  .flowTable thead th{
+    position:sticky;
+    top:0;
+    z-index:1;
+    background:linear-gradient(180deg,#fff 0%,#f8fbff 100%);
+    color:#42526a;
+    text-align:center;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:10px 12px;
+    border-bottom:1px solid rgba(148,163,184,.28);
+    white-space:nowrap;
+  }
+  .flowTable tbody td{
+    padding:10px 12px;
+    border-bottom:1px solid rgba(226,232,240,.9);
+    color:#334155;
+    vertical-align:middle;
+    text-align:center;
+  }
+  .flowTable tbody tr:nth-child(even){background:#fbfdff}
+  .flowTable tbody tr:hover{background:#f2f7ff}
+  .flowTable td.num{
+    font-family:var(--mono);
+    font-variant-numeric:tabular-nums;
+  }
+  .flowTable td.period{
+    font-weight:650;
+    color:var(--ink);
+  }
+  .flowTable td.range{
+    color:var(--inkFaint);
+    font-family:var(--mono);
+    white-space:nowrap;
+  }
+  .flowTableEmpty{
+    padding:18px 14px;
+    color:var(--inkFaint);
+    font-size:12px;
+  }
+  .chartIssued{height:236px}
+  .chartLead{height:236px}
+  .chartMix{height:auto}
+  .chartAging{height:auto}
+  .costGrid{
+    display:grid;
+    gap:12px;
+  }
+  .costBody{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+    align-items:start;
+  }
+  .costSummary{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;
+  }
+  .costStat{
+    border:1px solid #dce7f4;
+    background:linear-gradient(180deg,#fff,#f9fbfe);
+    border-radius:16px;
+    padding:14px 13px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    min-height:0;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 8px 18px rgba(15,23,42,.04);
+    position:relative;
+    overflow:hidden;
+    text-align:center;
+  }
+  .costSummary .costStat:nth-child(1){
+    border-color:#d8e7ff;
+    background:linear-gradient(180deg,#fafdff 0%,#eef5ff 100%);
+  }
+  .costSummary .costStat:nth-child(2){
+    border-color:#ffd9b5;
+    background:linear-gradient(180deg,#fffdf8 0%,#fff3e4 100%);
+  }
+  .costSummary .costStat:nth-child(3){
+    border-color:#c9f0d6;
+    background:linear-gradient(180deg,#fbfffd 0%,#edf9f1 100%);
+  }
+  .costStat::after{
+    content:"";
+    position:absolute;
+    inset:auto 0 0 0;
+    height:3px;
+    background:linear-gradient(90deg, rgba(37,99,235,.75), rgba(16,185,129,.68), rgba(249,115,22,.68), rgba(124,58,237,.72));
+    opacity:.28;
+  }
+  .costSummary .costStat:nth-child(1)::after{background:linear-gradient(90deg, rgba(37,99,235,.78), rgba(59,130,246,.48));}
+  .costSummary .costStat:nth-child(2)::after{background:linear-gradient(90deg, rgba(249,115,22,.78), rgba(245,158,11,.45));}
+  .costSummary .costStat:nth-child(3)::after{background:linear-gradient(90deg, rgba(16,185,129,.78), rgba(34,197,94,.45));}
+  .costStatTop{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    width:100%;
+  }
+  .costStatIcon{
+    width:30px;
+    height:30px;
+    border-radius:11px;
+    display:grid;
+    place-items:center;
+    flex:0 0 auto;
+  }
+  .costStatIcon svg{
+    width:15px;
+    height:15px;
+    stroke-width:2;
+  }
+  .costStatIcon.blue{background:#eff6ff;color:#2563eb}
+  .costStatIcon.green{background:#ecfdf5;color:#10b981}
+  .costStatIcon.orange{background:#fff7ed;color:#f97316}
+  .costStatIcon.red{background:#fff1f2;color:#e11d48}
+  .costStatIcon.violet{background:#f5f3ff;color:#7c3aed}
+  .costStatIcon.sky{background:#f0f9ff;color:#0284c7}
+  .costStatHead{
+    min-width:0;
+    flex:0 0 auto;
+    width:100%;
+  }
+  .costStat .k{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#6b768a;
+    font-weight:700;
+  }
+  .costStat .v{
+    font-family:var(--mono);
+    font-size:24px;
+    font-weight:700;
+    line-height:1;
+    color:var(--ink);
+    width:100%;
+    text-align:center;
+  }
+  .costSummary .costStat:nth-child(1) .v{color:#1d4ed8}
+  .costSummary .costStat:nth-child(2) .v{color:#c2410c}
+  .costSummary .costStat:nth-child(3) .v{color:#047857}
+  .costStat .s{display:none}
+  .costTrendList,.compareList{
+    display:grid;
+    gap:8px;
+  }
+  .costRow{
+    display:grid;
+    grid-template-columns:120px 1fr 110px;
+    gap:10px;
+    align-items:center;
+  }
+  .costLabel{
+    font-weight:650;
+    color:#314056;
+    font-size:13px;
+  }
+  .costTrack{
+    height:14px;
+    border-radius:999px;
+    background:#eef3f8;
+    border:1px solid #e2e8f0;
+    overflow:hidden;
+  }
+  .costFill{
+    height:100%;
+    display:block;
+    border-radius:999px;
+    background:linear-gradient(90deg,#fb923c,#e07b39);
+  }
+  .costValue{
+    text-align:right;
+    font-family:var(--mono);
+    font-weight:700;
+    color:#334155;
+    font-size:12px;
+  }
+  .compareRow{
+    border:1px solid #dce7f4;
+    background:linear-gradient(180deg,#fff,#f9fbfe);
+    border-radius:14px;
+    padding:11px 12px;
+    display:grid;
+    gap:8px;
+    box-shadow:0 8px 18px rgba(15,23,42,.035);
+    position:relative;
+    overflow:hidden;
+  }
+  .compareRow::before{
+    content:"";
+    position:absolute;
+    inset:0 auto 0 0;
+    width:4px;
+    background:linear-gradient(180deg,#7c3aed,#3f6fe0,#1f9d6b,#e07b39);
+    opacity:.5;
+  }
+  .compareTop{
+    display:flex;
+    gap:10px;
+    align-items:baseline;
+    justify-content:space-between;
+    font-size:12px;
+  }
+  .compareTop .label{
+    font-weight:700;
+    color:#314056;
+  }
+  .compareTop .meta{
+    color:var(--inkFaint);
+    font-size:11px;
+    text-align:right;
+  }
+  .compareBars{
+    display:grid;
+    gap:8px;
+  }
+  .compareMeter{
+    display:grid;
+    grid-template-columns:100px 1fr 110px;
+    gap:10px;
+    align-items:center;
+    font-size:12px;
+  }
+  .compareMeter .label{
+    font-weight:650;
+    color:#314056;
+  }
+  .compareMeter .track{
+    height:12px;
+    border-radius:999px;
+    background:#eef3f8;
+    border:1px solid #e2e8f0;
+    overflow:hidden;
+  }
+  .compareMeter .fill{
+    height:100%;
+    display:block;
+    border-radius:999px;
+  }
+  .compareMeter .fill.purchaser{
+    background:linear-gradient(90deg,#7c99f3,#3f6fe0);
+  }
+  .compareMeter .fill.parts{
+    background:linear-gradient(90deg,#fb923c,#e07b39);
+  }
+  .compareMeter .value{
+    text-align:right;
+    font-family:var(--mono);
+    font-weight:700;
+    color:#334155;
+    font-size:12px;
+  }
+  .selectedRow{
+    border:1px solid rgba(31,157,107,.18);
+    background:rgba(31,157,107,.06);
+    border-radius:14px;
+    padding:10px 12px;
+    display:grid;
+    grid-template-columns:1fr auto auto;
+    gap:10px;
+    align-items:center;
+    font-size:12px;
+    color:#334155;
+  }
+  .selectedRow strong{
+    color:var(--ink);
+  }
+  @media (max-width: 1120px){
+    .costBody{grid-template-columns:1fr}
+  }
+  .agingGrid{
+    display:grid;
+    gap:10px;
+    margin-top:10px;
+  }
+  #agingGrid{
+    margin-top:14px !important;
+  }
+  .panelAging{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .panelAging .agingGrid{
+    align-content:start;
+    position:static;
+    margin-top:0;
+    margin-bottom:0;
+  }
+  .panelAging #agingFoot{
+    margin-top:0;
+    align-self:start;
+  }
+  .panelAging .kpis{
+    margin-top:20px;
+    margin-bottom:20px;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    align-content:start;
+  }
+  .panelAging #agingFoot{
+    display:none;
+  }
+  .agingRow{
+    display:grid;
+    grid-template-columns:110px 1fr 82px;
+    gap:12px;
+    align-items:center;
+  }
+  .agingLabel{
+    font-weight:650;
+    color:#314056;
+    font-size:13px;
+  }
+  .agingTrack{
+    height:14px;
+    border-radius:999px;
+    background:linear-gradient(180deg,#f7faff,#edf3f9);
+    border:1px solid #dfe7f1;
+    box-shadow:inset 0 1px 2px rgba(15,23,42,.05);
+    overflow:hidden;
+  }
+  .agingTrack{height:16px}
+  .agingFill{
+    height:100%;
+    border-radius:999px;
+    display:block;
+    box-shadow:inset 0 -1px 0 rgba(255,255,255,.18), 0 0 0 1px rgba(255,255,255,.08);
+  }
+  .agingValue{
+    text-align:right;
+    font-family:var(--mono);
+    color:#334155;
+    font-size:12px;
+    font-weight:700;
+  }
+  .legend{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-top:10px;
+    color:#52627a;
+    font-size:12px;
+    font-family:var(--mono);
+  }
+  .legend span{display:flex;align-items:center;gap:6px}
+  .dot{width:10px;height:10px;border-radius:999px;display:inline-block}
+  .blue{background:var(--flow)}
+  .green{background:var(--issued)}
+  .orange{background:var(--open)}
+  .red{background:var(--rejected)}
+  .violet{background:var(--violet)}
+  .foot{
+    margin-top:10px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--inkFaint);
+  }
+  .tip{
+    position:fixed;
+    pointer-events:none;
+    opacity:0;
+    z-index:60;
+    padding:8px 10px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:#fff;
+    box-shadow:0 10px 28px rgba(20,30,50,.16);
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:2px;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--ink);
+    line-height:1.25;
+    transition:opacity .12s ease;
+    max-width:360px;
+  }
+  .tipTitle{
+    display:block;
+    font-weight:700;
+    margin-bottom:4px;
+    white-space:normal;
+  }
+  .tipLine{
+    display:block;
+    line-height:1.35;
+    white-space:normal;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @media(max-width:900px){
+    .chartFlow{height:314px}
+    .chartLead{height:250px}
+    .panelRow,.costSummary{grid-template-columns:1fr}
+    .panelAging{
+      display:flex;
+      flex-direction:column;
+      gap:0;
+    }
+    .panelAging .kpis{
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      margin-top:20px;
+      margin-bottom:20px;
+    }
+    .agingRow{grid-template-columns:1fr}
+    .costRow,.purchaserRow,.compareTop,.compareMeter{grid-template-columns:1fr}
+    .costValue,.purchaserValue{text-align:left}
+    .compareMeter .value{text-align:left}
+    .agingValue{text-align:left}
+  }
+  @media(max-width:720px){
+    .app{display:block}
+    .sidebar{position:relative;min-height:auto}
+    .wrap{padding:18px 14px 22px}
+    .headRight{justify-content:flex-start}
+  }
+  .pageLoading{
+    position:fixed;
+    inset:0;
+    z-index:120;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,.68);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    color:#155e9f;
+    letter-spacing:0;
+  }
+  .pageLoading.active{display:flex}
+  .pageLoading::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:radial-gradient(circle at 50% 40%, rgba(59,130,246,.10), rgba(59,130,246,0) 55%);
+    pointer-events:none;
+  }
+  .pageLoadingCard{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:26px 30px;
+    border:1px solid rgba(37,99,235,.14);
+    border-radius:22px;
+    background:rgba(255,255,255,.82);
+    box-shadow:0 16px 44px rgba(37,99,235,.12);
+    min-width:240px;
+  }
+  .pageLoadingText{
+    font-size:16px;
+    font-weight:650;
+    color:#155e9f;
+    text-align:center;
+  }
+  .pageLoadingSub{
+    font-size:12px;
+    color:#5d7c9c;
+    text-align:center;
+    line-height:1.45;
+    max-width:190px;
+  }
+  .pageLoading .calcSpinner{
+    width:64px;
+    height:64px;
+    border-radius:999px;
+    border:6px solid #dbeafe;
+    border-top-color:#2563eb;
+    border-right-color:#60a5fa;
+    animation:calcSpin .78s linear infinite;
+    flex:0 0 auto;
+    box-shadow:0 10px 28px rgba(37,99,235,.16);
+  }
+  @keyframes calcSpin{to{transform:rotate(360deg)}}
+  @media(max-width:760px){
+    .pageLoadingCard{min-width:210px;padding:22px 24px}
+    .pageLoading .calcSpinner{width:54px;height:54px;border-width:5px}
+    .pageLoadingText{font-size:14px}
+    .pageLoadingSub{font-size:11px}
   }
 </style>
 </head>
-<body>
+<body class="is-loading">
+<div id="pageLoading" class="pageLoading active" aria-live="polite" aria-busy="true" aria-label="Loading Parts Delivery">
+  <div class="pageLoadingCard">
+    <div class="calcSpinner" aria-hidden="true"></div>
+    <div class="pageLoadingText">Loading Parts Delivery</div>
+  </div>
+</div>
 <div class="app">
 <aside class="sidebar">
   <div class="brandWrap">
@@ -101,574 +945,2247 @@
   <div class="navSection">Workspace</div>
   <a class="navLink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></a>
   <a class="navLink" href="dealer-workbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a>
-  <a class="navLink active" href="delivery_flow.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17h2l2-7h10l2 7h2"/><path d="M7 17a2 2 0 1 0 4 0"/><path d="M15 17a2 2 0 1 0 4 0"/><path d="M8 10V6h8v4"/></svg><span>Parts Delivery Flow</span></a>
-  <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairs</span></a>
+  <a class="navLink active" href="delivery_flow.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17h2l2-7h10l2 7h2"/><path d="M7 17a2 2 0 1 0 4 0"/><path d="M15 17a2 2 0 1 0 4 0"/><path d="M8 10V6h8v4"/></svg><span>Parts Delivery</span></a>
+  <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repair</span></a>
   <div class="navDivider"></div>
-  <div class="navSection">Tickets</div>
-  <a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a>
-  <a class="navLink" href="infieldpredelivery.html#created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M16 17l2-2 2 2"/></svg><span>In Field / Pre Delivery</span></a>
-  <a class="navLink" href="infieldpredelivery.html#approved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l2 2 4-5"/><path d="M21 12a9 9 0 1 1-9-9"/><path d="M17 3h4v4"/></svg><span>Approved vs Unapproved</span></a>
-</aside>
+  <div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="infieldpredelivery.html#created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/></svg><span>In Field / Pre Delivery</span></a><a class="navLink" href="infieldpredelivery.html#approved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l2 2 4-5"/><path d="M21 12a9 9 0 1 1-9-9"/><path d="M17 3h4v4"/></svg><span>Approved vs Unapproved</span></a><div class="navDivider"></div>
+<div class="navSection">Analysis</div>
+ <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Analysis</span></a></aside>
 <main class="main">
-<div class="wrap">
-  <div class="head">
-    <div>
-      <div class="eyebrow">Dealer Workbench</div>
-      <h1>Parts Delivery Flow</h1>
-      <div class="sub">Is parts issuing keeping up with new orders? Track backlog, aging, and time-to-issue over time.</div>
-    </div>
-    <div class="controls">
-      <div class="seg" id="granSeg"></div>
-      <div class="seg" id="rangeSeg"></div>
-      <button class="exportBtn" id="exportBtn">Export Excel</button>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="eyebrow">Dealer Workbench</div>
+        <h1>Parts Delivery</h1>
+      </div>
+    <div class="headRight">
+      <div class="pill" id="snapshotPill"><strong>Latest</strong> loading...</div>
     </div>
   </div>
 
-  <div class="kpis" id="kpis"></div>
+  <div class="panelRow">
+    <section class="panel panelAging">
+      <div class="kpis" id="kpis"></div>
+      <div class="panelHead">
+        <div class="panelTopic">
+          <div class="panelIcon orange" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/><path d="M12 4v2"/><path d="M20 12h-2"/><path d="M6 12H4"/></svg>
+          </div>
+          <div>
+            <h2 class="panelTitle">Open Parts (Not Issued)</h2>
+            <p class="panelDesc">Ageing analysis by days outstanding for unique SOs that are still open and not issued yet.</p>
+          </div>
+        </div>
+        <div class="badge">Current</div>
+      </div>
+      <div class="agingGrid" id="agingGrid"></div>
+      <div class="foot" id="agingFoot"></div>
+    </section>
 
-  <div class="panel">
-    <h2>Delivery Flow</h2>
-    <div class="pdesc">New SO items vs items issued. The backlog line rises when issuing falls behind new orders.</div>
-    <div class="chartBox"><canvas id="cFlow"></canvas></div>
+    <section class="panel">
+      <div class="panelHead">
+        <div class="panelTopic">
+          <div class="panelIcon blue" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M7 15V11"/><path d="M12 15V8"/><path d="M17 15V6"/></svg>
+          </div>
+          <div>
+            <h2 class="panelTitle">Parts Selected</h2>
+          </div>
+        </div>
+        <div class="panelActions">
+          <div class="seg" id="granSeg" aria-label="Granularity"></div>
+          <button class="flowExportBtn" id="flowExportBtn" type="button" title="Export Parts Selected with Ticket Details to Excel" aria-label="Export Parts Selected with Ticket Details to Excel"></button>
+          <div class="badge" id="flowBadge">Weekly</div>
+        </div>
+      </div>
+    <div class="chartBox">
+      <div id="flowTable" class="flowTableWrap"></div>
+    </div>
     <div class="legend">
-      <span><i style="background:var(--flow)"></i>New SO Items</span>
-      <span><i style="background:var(--issued)"></i>Items Issued</span>
-      <span><i style="background:var(--open)"></i>Backlog (right axis)</span>
+      <span><i class="dot blue"></i> Parts selected</span>
     </div>
+    <div class="foot" id="flowFoot"></div>
+    </section>
   </div>
 
-  <div class="row2">
-    <div class="panel">
-      <h2>Issue Status Split</h2>
-      <div class="pdesc">Share of SO items by state. This shows how much is issued, still open, or rejected.</div>
-      <div class="chartBox"><canvas id="cMix"></canvas></div>
+  <div class="panelRow">
+    <section class="panel panelAging">
+      <div class="panelHead">
+        <div class="panelTopic">
+          <div class="panelIcon green" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/><path d="M12 4v4"/><path d="M4 12h4"/></svg>
+          </div>
+          <div>
+            <h2 class="panelTitle">Parts Issued</h2>
+          </div>
+        </div>
+        <div class="panelActions">
+          <button class="flowExportBtn" id="issuedExportBtn" type="button" title="Export Parts Issued Materials with Ticket Details to Excel" aria-label="Export Parts Issued Materials with Ticket Details to Excel"></button>
+          <div class="badge" id="issuedBadge"></div>
+        </div>
+      </div>
+      <div class="chartBox">
+        <canvas id="issuedChart" class="chartIssued"></canvas>
+      </div>
       <div class="legend">
-        <span><i style="background:var(--issued)"></i>Already Issued</span>
-        <span><i style="background:var(--open)"></i>Still Open</span>
-        <span><i style="background:var(--rejected)"></i>Rejected</span>
+        <span><i class="dot green"></i> Issued materials</span>
+      </div>
+      <div class="foot" id="issuedFoot"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panelHead">
+        <div class="panelTopic">
+          <div class="panelIcon violet" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/><path d="M9 3.5h6"/><path d="M12 20.5v-2"/></svg>
+          </div>
+          <div>
+            <h2 class="panelTitle">Average Parts Issuing Time</h2>
+          </div>
+        </div>
+        <div class="badge" id="leadBadge"></div>
+      </div>
+      <div class="chartBox">
+        <canvas id="leadChart" class="chartLead"></canvas>
+      </div>
+      <div class="legend">
+        <span><i class="dot blue"></i> Avg parts issuing time</span>
+        <span><i class="dot violet"></i> 3M moving average</span>
+      </div>
+      <div class="foot" id="leadFoot"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="panelHead">
+      <div class="panelTopic">
+        <div class="panelIcon sky" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 7h14"/><path d="M7 7l1 10h8l1-10"/><path d="M9 7V5h6v2"/><path d="M10 11h0"/><path d="M14 11h0"/></svg>
+        </div>
+        <div>
+          <h2 class="panelTitle">Total Parts Cost</h2>
+        </div>
+      </div>
+      <div class="panelActions">
+        <button class="flowExportBtn" id="costExportBtn" type="button" title="Export Total Parts Cost with monthly ticket details to Excel" aria-label="Export Total Parts Cost with monthly ticket details to Excel"></button>
+        <div class="badge" id="costBadge">Since 2025-07</div>
       </div>
     </div>
-    <div class="panel">
-      <h2>Open Backlog Age</h2>
-      <div class="pdesc">Age of still-open items. Longer bars mean the backlog is waiting longer to move.</div>
-      <div class="chartBox"><canvas id="cAging"></canvas></div>
-      <div class="legend">
-        <span><i style="background:var(--a0)"></i>0-7 days</span>
-        <span><i style="background:var(--a1)"></i>8-14 days</span>
-        <span><i style="background:var(--a2)"></i>15-30 days</span>
-        <span><i style="background:var(--a3)"></i>30+ days</span>
+    <div class="costGrid">
+      <div class="costSummary" id="costSummary"></div>
+      <div class="costBody">
+        <div class="costTrendList" id="costTrend"></div>
+        <div class="compareList" id="costCompare"></div>
       </div>
     </div>
-  </div>
-
-  <div class="panel">
-    <h2>Time to First Issue</h2>
-    <div class="pdesc">Average days from SO creation to first goods issue. Lower and falling is faster fulfilment.</div>
-    <div class="chartBox"><canvas id="cLead"></canvas></div>
-  </div>
-
-  <div class="foot" id="foot"></div>
+  </section>
 </div>
 </main>
 </div>
 <div class="tip" id="tip"></div>
 
-<!-- ===== DATA =====================================================
-  Replace the JSON below with live data, OR set window.__DELIVERY_FLOW_DAILY__
-  before this script runs (e.g. after a Firebase REST fetch). Live wiring with
-  no SDK needed - plain REST works because RTDB exposes .json endpoints:
-
-    const ROOT="c4cTickets_test";
-    const URL="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/"
-            + ROOT + "/deliveryFlowHistory/daily.json";
-    fetch(URL).then(r=>r.json()).then(obj=>{
-      window.__DELIVERY_FLOW_DAILY__ =
-        Object.values(obj||{}).sort((a,b)=>a.asOf.localeCompare(b.asOf));
-      window.renderDeliveryFlow && window.renderDeliveryFlow();
-    });
-================================================================= -->
-<script id="sample-data" type="application/json">[{"asOf":"2026-05-01","flow":{"newSoItems":16,"itemsIssued":9,"netBacklogChange":7,"backlogTotal":217},"statusMix":{"openItems":217,"issuedItems":230,"rejectedItems":18},"agingBuckets":{"0-7":66,"8-14":53,"15-30":36,"30+":62},"kpi":{"openSoItems":217,"partiallyIssuedTickets":36,"fullyIssuedTickets":133,"notIssuedTickets":31,"avgDaysToFirstIssue":13.1,"oldestNotIssuedDays":36}},{"asOf":"2026-05-02","flow":{"newSoItems":19,"itemsIssued":18,"netBacklogChange":1,"backlogTotal":218},"statusMix":{"openItems":218,"issuedItems":188,"rejectedItems":11},"agingBuckets":{"0-7":67,"8-14":46,"15-30":49,"30+":56},"kpi":{"openSoItems":218,"partiallyIssuedTickets":27,"fullyIssuedTickets":160,"notIssuedTickets":50,"avgDaysToFirstIssue":9.8,"oldestNotIssuedDays":52}},{"asOf":"2026-05-03","flow":{"newSoItems":7,"itemsIssued":17,"netBacklogChange":-10,"backlogTotal":208},"statusMix":{"openItems":208,"issuedItems":186,"rejectedItems":11},"agingBuckets":{"0-7":63,"8-14":51,"15-30":38,"30+":56},"kpi":{"openSoItems":208,"partiallyIssuedTickets":23,"fullyIssuedTickets":156,"notIssuedTickets":39,"avgDaysToFirstIssue":9.9,"oldestNotIssuedDays":51}},{"asOf":"2026-05-04","flow":{"newSoItems":11,"itemsIssued":8,"netBacklogChange":3,"backlogTotal":211},"statusMix":{"openItems":211,"issuedItems":254,"rejectedItems":17},"agingBuckets":{"0-7":79,"8-14":44,"15-30":43,"30+":45},"kpi":{"openSoItems":211,"partiallyIssuedTickets":21,"fullyIssuedTickets":159,"notIssuedTickets":36,"avgDaysToFirstIssue":9.3,"oldestNotIssuedDays":49}},{"asOf":"2026-05-05","flow":{"newSoItems":19,"itemsIssued":15,"netBacklogChange":4,"backlogTotal":215},"statusMix":{"openItems":215,"issuedItems":239,"rejectedItems":17},"agingBuckets":{"0-7":88,"8-14":44,"15-30":38,"30+":45},"kpi":{"openSoItems":215,"partiallyIssuedTickets":27,"fullyIssuedTickets":125,"notIssuedTickets":48,"avgDaysToFirstIssue":10.0,"oldestNotIssuedDays":43}},{"asOf":"2026-05-06","flow":{"newSoItems":22,"itemsIssued":20,"netBacklogChange":2,"backlogTotal":217},"statusMix":{"openItems":217,"issuedItems":223,"rejectedItems":19},"agingBuckets":{"0-7":76,"8-14":49,"15-30":35,"30+":57},"kpi":{"openSoItems":217,"partiallyIssuedTickets":25,"fullyIssuedTickets":168,"notIssuedTickets":40,"avgDaysToFirstIssue":12.3,"oldestNotIssuedDays":38}},{"asOf":"2026-05-07","flow":{"newSoItems":21,"itemsIssued":18,"netBacklogChange":3,"backlogTotal":220},"statusMix":{"openItems":220,"issuedItems":185,"rejectedItems":18},"agingBuckets":{"0-7":68,"8-14":49,"15-30":49,"30+":54},"kpi":{"openSoItems":220,"partiallyIssuedTickets":30,"fullyIssuedTickets":164,"notIssuedTickets":41,"avgDaysToFirstIssue":14.4,"oldestNotIssuedDays":53}},{"asOf":"2026-05-08","flow":{"newSoItems":21,"itemsIssued":19,"netBacklogChange":2,"backlogTotal":222},"statusMix":{"openItems":222,"issuedItems":188,"rejectedItems":9},"agingBuckets":{"0-7":91,"8-14":48,"15-30":47,"30+":36},"kpi":{"openSoItems":222,"partiallyIssuedTickets":29,"fullyIssuedTickets":161,"notIssuedTickets":48,"avgDaysToFirstIssue":9.0,"oldestNotIssuedDays":55}},{"asOf":"2026-05-09","flow":{"newSoItems":20,"itemsIssued":14,"netBacklogChange":6,"backlogTotal":228},"statusMix":{"openItems":228,"issuedItems":229,"rejectedItems":18},"agingBuckets":{"0-7":77,"8-14":58,"15-30":42,"30+":51},"kpi":{"openSoItems":228,"partiallyIssuedTickets":35,"fullyIssuedTickets":123,"notIssuedTickets":36,"avgDaysToFirstIssue":12.8,"oldestNotIssuedDays":58}},{"asOf":"2026-05-10","flow":{"newSoItems":15,"itemsIssued":9,"netBacklogChange":6,"backlogTotal":234},"statusMix":{"openItems":234,"issuedItems":211,"rejectedItems":14},"agingBuckets":{"0-7":81,"8-14":58,"15-30":38,"30+":57},"kpi":{"openSoItems":234,"partiallyIssuedTickets":37,"fullyIssuedTickets":137,"notIssuedTickets":58,"avgDaysToFirstIssue":11.7,"oldestNotIssuedDays":38}},{"asOf":"2026-05-11","flow":{"newSoItems":19,"itemsIssued":13,"netBacklogChange":6,"backlogTotal":240},"statusMix":{"openItems":240,"issuedItems":233,"rejectedItems":13},"agingBuckets":{"0-7":91,"8-14":50,"15-30":42,"30+":57},"kpi":{"openSoItems":240,"partiallyIssuedTickets":24,"fullyIssuedTickets":134,"notIssuedTickets":51,"avgDaysToFirstIssue":9.0,"oldestNotIssuedDays":41}},{"asOf":"2026-05-12","flow":{"newSoItems":6,"itemsIssued":20,"netBacklogChange":-14,"backlogTotal":226},"statusMix":{"openItems":226,"issuedItems":255,"rejectedItems":10},"agingBuckets":{"0-7":74,"8-14":40,"15-30":43,"30+":69},"kpi":{"openSoItems":226,"partiallyIssuedTickets":38,"fullyIssuedTickets":140,"notIssuedTickets":60,"avgDaysToFirstIssue":11.0,"oldestNotIssuedDays":38}},{"asOf":"2026-05-13","flow":{"newSoItems":22,"itemsIssued":6,"netBacklogChange":16,"backlogTotal":242},"statusMix":{"openItems":242,"issuedItems":238,"rejectedItems":20},"agingBuckets":{"0-7":100,"8-14":56,"15-30":49,"30+":37},"kpi":{"openSoItems":242,"partiallyIssuedTickets":32,"fullyIssuedTickets":126,"notIssuedTickets":45,"avgDaysToFirstIssue":11.1,"oldestNotIssuedDays":54}},{"asOf":"2026-05-14","flow":{"newSoItems":18,"itemsIssued":6,"netBacklogChange":12,"backlogTotal":254},"statusMix":{"openItems":254,"issuedItems":204,"rejectedItems":9},"agingBuckets":{"0-7":106,"8-14":54,"15-30":42,"30+":52},"kpi":{"openSoItems":254,"partiallyIssuedTickets":23,"fullyIssuedTickets":120,"notIssuedTickets":48,"avgDaysToFirstIssue":12.5,"oldestNotIssuedDays":38}},{"asOf":"2026-05-15","flow":{"newSoItems":9,"itemsIssued":16,"netBacklogChange":-7,"backlogTotal":247},"statusMix":{"openItems":247,"issuedItems":258,"rejectedItems":8},"agingBuckets":{"0-7":76,"8-14":48,"15-30":46,"30+":77},"kpi":{"openSoItems":247,"partiallyIssuedTickets":31,"fullyIssuedTickets":158,"notIssuedTickets":41,"avgDaysToFirstIssue":12.7,"oldestNotIssuedDays":49}},{"asOf":"2026-05-16","flow":{"newSoItems":9,"itemsIssued":8,"netBacklogChange":1,"backlogTotal":248},"statusMix":{"openItems":248,"issuedItems":242,"rejectedItems":15},"agingBuckets":{"0-7":88,"8-14":50,"15-30":42,"30+":68},"kpi":{"openSoItems":248,"partiallyIssuedTickets":28,"fullyIssuedTickets":150,"notIssuedTickets":56,"avgDaysToFirstIssue":13.4,"oldestNotIssuedDays":56}},{"asOf":"2026-05-17","flow":{"newSoItems":11,"itemsIssued":21,"netBacklogChange":-10,"backlogTotal":238},"statusMix":{"openItems":238,"issuedItems":182,"rejectedItems":11},"agingBuckets":{"0-7":98,"8-14":52,"15-30":40,"30+":48},"kpi":{"openSoItems":238,"partiallyIssuedTickets":20,"fullyIssuedTickets":168,"notIssuedTickets":46,"avgDaysToFirstIssue":11.9,"oldestNotIssuedDays":43}},{"asOf":"2026-05-18","flow":{"newSoItems":8,"itemsIssued":13,"netBacklogChange":-5,"backlogTotal":233},"statusMix":{"openItems":233,"issuedItems":246,"rejectedItems":13},"agingBuckets":{"0-7":95,"8-14":48,"15-30":41,"30+":49},"kpi":{"openSoItems":233,"partiallyIssuedTickets":36,"fullyIssuedTickets":141,"notIssuedTickets":50,"avgDaysToFirstIssue":11.9,"oldestNotIssuedDays":41}},{"asOf":"2026-05-19","flow":{"newSoItems":12,"itemsIssued":12,"netBacklogChange":0,"backlogTotal":233},"statusMix":{"openItems":233,"issuedItems":231,"rejectedItems":19},"agingBuckets":{"0-7":92,"8-14":45,"15-30":46,"30+":50},"kpi":{"openSoItems":233,"partiallyIssuedTickets":20,"fullyIssuedTickets":170,"notIssuedTickets":38,"avgDaysToFirstIssue":13.2,"oldestNotIssuedDays":49}},{"asOf":"2026-05-20","flow":{"newSoItems":14,"itemsIssued":11,"netBacklogChange":3,"backlogTotal":236},"statusMix":{"openItems":236,"issuedItems":257,"rejectedItems":13},"agingBuckets":{"0-7":83,"8-14":60,"15-30":56,"30+":37},"kpi":{"openSoItems":236,"partiallyIssuedTickets":31,"fullyIssuedTickets":125,"notIssuedTickets":37,"avgDaysToFirstIssue":14.7,"oldestNotIssuedDays":37}},{"asOf":"2026-05-21","flow":{"newSoItems":13,"itemsIssued":20,"netBacklogChange":-7,"backlogTotal":229},"statusMix":{"openItems":229,"issuedItems":205,"rejectedItems":13},"agingBuckets":{"0-7":74,"8-14":52,"15-30":53,"30+":50},"kpi":{"openSoItems":229,"partiallyIssuedTickets":35,"fullyIssuedTickets":178,"notIssuedTickets":50,"avgDaysToFirstIssue":13.8,"oldestNotIssuedDays":45}},{"asOf":"2026-05-22","flow":{"newSoItems":8,"itemsIssued":8,"netBacklogChange":0,"backlogTotal":229},"statusMix":{"openItems":229,"issuedItems":229,"rejectedItems":20},"agingBuckets":{"0-7":88,"8-14":44,"15-30":52,"30+":45},"kpi":{"openSoItems":229,"partiallyIssuedTickets":40,"fullyIssuedTickets":141,"notIssuedTickets":32,"avgDaysToFirstIssue":10.9,"oldestNotIssuedDays":59}},{"asOf":"2026-05-23","flow":{"newSoItems":18,"itemsIssued":19,"netBacklogChange":-1,"backlogTotal":228},"statusMix":{"openItems":228,"issuedItems":231,"rejectedItems":19},"agingBuckets":{"0-7":94,"8-14":54,"15-30":39,"30+":41},"kpi":{"openSoItems":228,"partiallyIssuedTickets":24,"fullyIssuedTickets":157,"notIssuedTickets":58,"avgDaysToFirstIssue":8.7,"oldestNotIssuedDays":48}},{"asOf":"2026-05-24","flow":{"newSoItems":10,"itemsIssued":20,"netBacklogChange":-10,"backlogTotal":218},"statusMix":{"openItems":218,"issuedItems":224,"rejectedItems":10},"agingBuckets":{"0-7":79,"8-14":41,"15-30":35,"30+":63},"kpi":{"openSoItems":218,"partiallyIssuedTickets":40,"fullyIssuedTickets":126,"notIssuedTickets":46,"avgDaysToFirstIssue":14.6,"oldestNotIssuedDays":57}},{"asOf":"2026-05-25","flow":{"newSoItems":10,"itemsIssued":18,"netBacklogChange":-8,"backlogTotal":210},"statusMix":{"openItems":210,"issuedItems":204,"rejectedItems":11},"agingBuckets":{"0-7":63,"8-14":41,"15-30":42,"30+":64},"kpi":{"openSoItems":210,"partiallyIssuedTickets":30,"fullyIssuedTickets":136,"notIssuedTickets":47,"avgDaysToFirstIssue":13.1,"oldestNotIssuedDays":47}},{"asOf":"2026-05-26","flow":{"newSoItems":10,"itemsIssued":6,"netBacklogChange":4,"backlogTotal":214},"statusMix":{"openItems":214,"issuedItems":225,"rejectedItems":15},"agingBuckets":{"0-7":81,"8-14":52,"15-30":43,"30+":38},"kpi":{"openSoItems":214,"partiallyIssuedTickets":36,"fullyIssuedTickets":128,"notIssuedTickets":47,"avgDaysToFirstIssue":13.5,"oldestNotIssuedDays":38}},{"asOf":"2026-05-27","flow":{"newSoItems":22,"itemsIssued":21,"netBacklogChange":1,"backlogTotal":215},"statusMix":{"openItems":215,"issuedItems":182,"rejectedItems":15},"agingBuckets":{"0-7":84,"8-14":49,"15-30":47,"30+":35},"kpi":{"openSoItems":215,"partiallyIssuedTickets":24,"fullyIssuedTickets":150,"notIssuedTickets":49,"avgDaysToFirstIssue":8.7,"oldestNotIssuedDays":57}},{"asOf":"2026-05-28","flow":{"newSoItems":9,"itemsIssued":6,"netBacklogChange":3,"backlogTotal":218},"statusMix":{"openItems":218,"issuedItems":221,"rejectedItems":18},"agingBuckets":{"0-7":78,"8-14":48,"15-30":48,"30+":44},"kpi":{"openSoItems":218,"partiallyIssuedTickets":37,"fullyIssuedTickets":123,"notIssuedTickets":37,"avgDaysToFirstIssue":8.3,"oldestNotIssuedDays":40}},{"asOf":"2026-05-29","flow":{"newSoItems":14,"itemsIssued":6,"netBacklogChange":8,"backlogTotal":226},"statusMix":{"openItems":226,"issuedItems":192,"rejectedItems":16},"agingBuckets":{"0-7":80,"8-14":41,"15-30":52,"30+":53},"kpi":{"openSoItems":226,"partiallyIssuedTickets":30,"fullyIssuedTickets":159,"notIssuedTickets":46,"avgDaysToFirstIssue":7.9,"oldestNotIssuedDays":53}},{"asOf":"2026-05-30","flow":{"newSoItems":22,"itemsIssued":11,"netBacklogChange":11,"backlogTotal":237},"statusMix":{"openItems":237,"issuedItems":215,"rejectedItems":15},"agingBuckets":{"0-7":85,"8-14":57,"15-30":47,"30+":48},"kpi":{"openSoItems":237,"partiallyIssuedTickets":36,"fullyIssuedTickets":176,"notIssuedTickets":58,"avgDaysToFirstIssue":9.2,"oldestNotIssuedDays":42}},{"asOf":"2026-05-31","flow":{"newSoItems":12,"itemsIssued":19,"netBacklogChange":-7,"backlogTotal":230},"statusMix":{"openItems":230,"issuedItems":197,"rejectedItems":14},"agingBuckets":{"0-7":72,"8-14":49,"15-30":38,"30+":71},"kpi":{"openSoItems":230,"partiallyIssuedTickets":22,"fullyIssuedTickets":133,"notIssuedTickets":51,"avgDaysToFirstIssue":9.1,"oldestNotIssuedDays":43}},{"asOf":"2026-06-01","flow":{"newSoItems":9,"itemsIssued":9,"netBacklogChange":0,"backlogTotal":230},"statusMix":{"openItems":230,"issuedItems":226,"rejectedItems":10},"agingBuckets":{"0-7":75,"8-14":43,"15-30":45,"30+":67},"kpi":{"openSoItems":230,"partiallyIssuedTickets":23,"fullyIssuedTickets":145,"notIssuedTickets":58,"avgDaysToFirstIssue":12.6,"oldestNotIssuedDays":49}},{"asOf":"2026-06-02","flow":{"newSoItems":11,"itemsIssued":12,"netBacklogChange":-1,"backlogTotal":229},"statusMix":{"openItems":229,"issuedItems":200,"rejectedItems":19},"agingBuckets":{"0-7":80,"8-14":50,"15-30":42,"30+":57},"kpi":{"openSoItems":229,"partiallyIssuedTickets":30,"fullyIssuedTickets":125,"notIssuedTickets":53,"avgDaysToFirstIssue":8.7,"oldestNotIssuedDays":45}},{"asOf":"2026-06-03","flow":{"newSoItems":6,"itemsIssued":15,"netBacklogChange":-9,"backlogTotal":220},"statusMix":{"openItems":220,"issuedItems":250,"rejectedItems":15},"agingBuckets":{"0-7":77,"8-14":39,"15-30":41,"30+":63},"kpi":{"openSoItems":220,"partiallyIssuedTickets":36,"fullyIssuedTickets":124,"notIssuedTickets":33,"avgDaysToFirstIssue":11.6,"oldestNotIssuedDays":59}},{"asOf":"2026-06-04","flow":{"newSoItems":13,"itemsIssued":8,"netBacklogChange":5,"backlogTotal":225},"statusMix":{"openItems":225,"issuedItems":190,"rejectedItems":12},"agingBuckets":{"0-7":74,"8-14":56,"15-30":39,"30+":56},"kpi":{"openSoItems":225,"partiallyIssuedTickets":33,"fullyIssuedTickets":174,"notIssuedTickets":59,"avgDaysToFirstIssue":12.5,"oldestNotIssuedDays":55}},{"asOf":"2026-06-05","flow":{"newSoItems":14,"itemsIssued":19,"netBacklogChange":-5,"backlogTotal":220},"statusMix":{"openItems":220,"issuedItems":248,"rejectedItems":16},"agingBuckets":{"0-7":81,"8-14":51,"15-30":36,"30+":52},"kpi":{"openSoItems":220,"partiallyIssuedTickets":25,"fullyIssuedTickets":147,"notIssuedTickets":58,"avgDaysToFirstIssue":7.5,"oldestNotIssuedDays":36}},{"asOf":"2026-06-06","flow":{"newSoItems":14,"itemsIssued":6,"netBacklogChange":8,"backlogTotal":228},"statusMix":{"openItems":228,"issuedItems":213,"rejectedItems":9},"agingBuckets":{"0-7":85,"8-14":45,"15-30":41,"30+":57},"kpi":{"openSoItems":228,"partiallyIssuedTickets":20,"fullyIssuedTickets":141,"notIssuedTickets":47,"avgDaysToFirstIssue":7.9,"oldestNotIssuedDays":47}},{"asOf":"2026-06-07","flow":{"newSoItems":14,"itemsIssued":10,"netBacklogChange":4,"backlogTotal":232},"statusMix":{"openItems":232,"issuedItems":247,"rejectedItems":19},"agingBuckets":{"0-7":76,"8-14":43,"15-30":40,"30+":73},"kpi":{"openSoItems":232,"partiallyIssuedTickets":26,"fullyIssuedTickets":179,"notIssuedTickets":39,"avgDaysToFirstIssue":7.4,"oldestNotIssuedDays":54}},{"asOf":"2026-06-08","flow":{"newSoItems":15,"itemsIssued":23,"netBacklogChange":-8,"backlogTotal":224},"statusMix":{"openItems":224,"issuedItems":217,"rejectedItems":15},"agingBuckets":{"0-7":80,"8-14":43,"15-30":42,"30+":59},"kpi":{"openSoItems":224,"partiallyIssuedTickets":28,"fullyIssuedTickets":122,"notIssuedTickets":30,"avgDaysToFirstIssue":7.1,"oldestNotIssuedDays":34}},{"asOf":"2026-06-09","flow":{"newSoItems":22,"itemsIssued":16,"netBacklogChange":6,"backlogTotal":230},"statusMix":{"openItems":230,"issuedItems":240,"rejectedItems":11},"agingBuckets":{"0-7":94,"8-14":43,"15-30":51,"30+":42},"kpi":{"openSoItems":230,"partiallyIssuedTickets":35,"fullyIssuedTickets":154,"notIssuedTickets":56,"avgDaysToFirstIssue":9.9,"oldestNotIssuedDays":46}},{"asOf":"2026-06-10","flow":{"newSoItems":22,"itemsIssued":16,"netBacklogChange":6,"backlogTotal":236},"statusMix":{"openItems":236,"issuedItems":209,"rejectedItems":13},"agingBuckets":{"0-7":76,"8-14":59,"15-30":51,"30+":50},"kpi":{"openSoItems":236,"partiallyIssuedTickets":31,"fullyIssuedTickets":123,"notIssuedTickets":56,"avgDaysToFirstIssue":7.8,"oldestNotIssuedDays":38}},{"asOf":"2026-06-11","flow":{"newSoItems":6,"itemsIssued":10,"netBacklogChange":-4,"backlogTotal":232},"statusMix":{"openItems":232,"issuedItems":235,"rejectedItems":10},"agingBuckets":{"0-7":71,"8-14":54,"15-30":44,"30+":63},"kpi":{"openSoItems":232,"partiallyIssuedTickets":29,"fullyIssuedTickets":158,"notIssuedTickets":37,"avgDaysToFirstIssue":10.3,"oldestNotIssuedDays":56}},{"asOf":"2026-06-12","flow":{"newSoItems":15,"itemsIssued":10,"netBacklogChange":5,"backlogTotal":237},"statusMix":{"openItems":237,"issuedItems":203,"rejectedItems":10},"agingBuckets":{"0-7":78,"8-14":42,"15-30":44,"30+":73},"kpi":{"openSoItems":237,"partiallyIssuedTickets":37,"fullyIssuedTickets":140,"notIssuedTickets":37,"avgDaysToFirstIssue":9.1,"oldestNotIssuedDays":35}},{"asOf":"2026-06-13","flow":{"newSoItems":15,"itemsIssued":14,"netBacklogChange":1,"backlogTotal":238},"statusMix":{"openItems":238,"issuedItems":203,"rejectedItems":8},"agingBuckets":{"0-7":80,"8-14":44,"15-30":43,"30+":71},"kpi":{"openSoItems":238,"partiallyIssuedTickets":27,"fullyIssuedTickets":152,"notIssuedTickets":54,"avgDaysToFirstIssue":11.3,"oldestNotIssuedDays":34}},{"asOf":"2026-06-14","flow":{"newSoItems":8,"itemsIssued":14,"netBacklogChange":-6,"backlogTotal":232},"statusMix":{"openItems":232,"issuedItems":198,"rejectedItems":14},"agingBuckets":{"0-7":85,"8-14":49,"15-30":42,"30+":56},"kpi":{"openSoItems":232,"partiallyIssuedTickets":22,"fullyIssuedTickets":157,"notIssuedTickets":60,"avgDaysToFirstIssue":11.1,"oldestNotIssuedDays":50}},{"asOf":"2026-06-15","flow":{"newSoItems":10,"itemsIssued":20,"netBacklogChange":-10,"backlogTotal":222},"statusMix":{"openItems":222,"issuedItems":243,"rejectedItems":10},"agingBuckets":{"0-7":74,"8-14":50,"15-30":38,"30+":60},"kpi":{"openSoItems":222,"partiallyIssuedTickets":36,"fullyIssuedTickets":160,"notIssuedTickets":43,"avgDaysToFirstIssue":12.4,"oldestNotIssuedDays":57}},{"asOf":"2026-06-16","flow":{"newSoItems":22,"itemsIssued":14,"netBacklogChange":8,"backlogTotal":230},"statusMix":{"openItems":230,"issuedItems":244,"rejectedItems":17},"agingBuckets":{"0-7":92,"8-14":56,"15-30":52,"30+":30},"kpi":{"openSoItems":230,"partiallyIssuedTickets":40,"fullyIssuedTickets":134,"notIssuedTickets":32,"avgDaysToFirstIssue":10.6,"oldestNotIssuedDays":34}},{"asOf":"2026-06-17","flow":{"newSoItems":7,"itemsIssued":12,"netBacklogChange":-5,"backlogTotal":225},"statusMix":{"openItems":225,"issuedItems":193,"rejectedItems":14},"agingBuckets":{"0-7":90,"8-14":50,"15-30":47,"30+":38},"kpi":{"openSoItems":225,"partiallyIssuedTickets":27,"fullyIssuedTickets":151,"notIssuedTickets":38,"avgDaysToFirstIssue":10.9,"oldestNotIssuedDays":34}},{"asOf":"2026-06-18","flow":{"newSoItems":20,"itemsIssued":12,"netBacklogChange":8,"backlogTotal":233},"statusMix":{"openItems":233,"issuedItems":248,"rejectedItems":9},"agingBuckets":{"0-7":88,"8-14":43,"15-30":51,"30+":51},"kpi":{"openSoItems":233,"partiallyIssuedTickets":22,"fullyIssuedTickets":174,"notIssuedTickets":38,"avgDaysToFirstIssue":8.2,"oldestNotIssuedDays":41}},{"asOf":"2026-06-19","flow":{"newSoItems":12,"itemsIssued":16,"netBacklogChange":-4,"backlogTotal":229},"statusMix":{"openItems":229,"issuedItems":243,"rejectedItems":14},"agingBuckets":{"0-7":70,"8-14":57,"15-30":41,"30+":61},"kpi":{"openSoItems":229,"partiallyIssuedTickets":40,"fullyIssuedTickets":161,"notIssuedTickets":36,"avgDaysToFirstIssue":6.7,"oldestNotIssuedDays":36}},{"asOf":"2026-06-20","flow":{"newSoItems":10,"itemsIssued":18,"netBacklogChange":-8,"backlogTotal":221},"statusMix":{"openItems":221,"issuedItems":218,"rejectedItems":17},"agingBuckets":{"0-7":81,"8-14":40,"15-30":36,"30+":64},"kpi":{"openSoItems":221,"partiallyIssuedTickets":23,"fullyIssuedTickets":164,"notIssuedTickets":36,"avgDaysToFirstIssue":8.2,"oldestNotIssuedDays":55}},{"asOf":"2026-06-21","flow":{"newSoItems":21,"itemsIssued":19,"netBacklogChange":2,"backlogTotal":223},"statusMix":{"openItems":223,"issuedItems":216,"rejectedItems":15},"agingBuckets":{"0-7":79,"8-14":53,"15-30":53,"30+":38},"kpi":{"openSoItems":223,"partiallyIssuedTickets":29,"fullyIssuedTickets":125,"notIssuedTickets":59,"avgDaysToFirstIssue":10.1,"oldestNotIssuedDays":49}},{"asOf":"2026-06-22","flow":{"newSoItems":6,"itemsIssued":18,"netBacklogChange":-12,"backlogTotal":211},"statusMix":{"openItems":211,"issuedItems":189,"rejectedItems":16},"agingBuckets":{"0-7":87,"8-14":45,"15-30":38,"30+":41},"kpi":{"openSoItems":211,"partiallyIssuedTickets":26,"fullyIssuedTickets":124,"notIssuedTickets":48,"avgDaysToFirstIssue":7.7,"oldestNotIssuedDays":36}},{"asOf":"2026-06-23","flow":{"newSoItems":10,"itemsIssued":24,"netBacklogChange":-14,"backlogTotal":197},"statusMix":{"openItems":197,"issuedItems":226,"rejectedItems":10},"agingBuckets":{"0-7":73,"8-14":45,"15-30":35,"30+":44},"kpi":{"openSoItems":197,"partiallyIssuedTickets":31,"fullyIssuedTickets":134,"notIssuedTickets":45,"avgDaysToFirstIssue":6.9,"oldestNotIssuedDays":49}},{"asOf":"2026-06-24","flow":{"newSoItems":18,"itemsIssued":7,"netBacklogChange":11,"backlogTotal":208},"statusMix":{"openItems":208,"issuedItems":180,"rejectedItems":15},"agingBuckets":{"0-7":79,"8-14":44,"15-30":45,"30+":40},"kpi":{"openSoItems":208,"partiallyIssuedTickets":32,"fullyIssuedTickets":140,"notIssuedTickets":33,"avgDaysToFirstIssue":9.0,"oldestNotIssuedDays":60}},{"asOf":"2026-06-25","flow":{"newSoItems":16,"itemsIssued":8,"netBacklogChange":8,"backlogTotal":216},"statusMix":{"openItems":216,"issuedItems":223,"rejectedItems":14},"agingBuckets":{"0-7":67,"8-14":54,"15-30":46,"30+":49},"kpi":{"openSoItems":216,"partiallyIssuedTickets":29,"fullyIssuedTickets":136,"notIssuedTickets":41,"avgDaysToFirstIssue":12.4,"oldestNotIssuedDays":36}}]</script>
-
 <script>
 "use strict";
 (function(){
-  var C = getComputedStyle(document.documentElement);
-  function cv(n){ return C.getPropertyValue(n).trim(); }
-  var COL = {
-    panel:cv('--panel'), grid:cv('--grid'), line:cv('--line'),
-    ink:cv('--ink'), inkDim:cv('--inkDim'), inkFaint:cv('--inkFaint'),
-    open:cv('--open'), issued:cv('--issued'), rejected:cv('--rejected'), flow:cv('--flow'),
-    a0:cv('--a0'), a1:cv('--a1'), a2:cv('--a2'), a3:cv('--a3'),
+  const FB_HISTORY = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/deliveryFlowHistory/daily.json";
+  const FB_TICKETS = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/tickets.json";
+  const state = {
+    granularity: "week",
+    history: [],
+    currentTickets: [],
+    latest: null,
+    groups: [],
+    costReport: null,
   };
-  var MONO = "11px 'JetBrains Mono',monospace";
 
-  var SAMPLE = JSON.parse(document.getElementById('sample-data').textContent);
-  var FIREBASE = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
-  var FIREBASE_ROOT = "c4cTickets_test";
-  var DELIVERY_FLOW_PATH = FIREBASE + "/" + FIREBASE_ROOT + "/deliveryFlowHistory/daily.json";
+  const els = {
+    kpis: document.getElementById("kpis"),
+    granSeg: document.getElementById("granSeg"),
+    snapshotPill: document.getElementById("snapshotPill"),
+    flowBadge: document.getElementById("flowBadge"),
+    flowTable: document.getElementById("flowTable"),
+    flowFoot: document.getElementById("flowFoot"),
+    issuedExportBtn: document.getElementById("issuedExportBtn"),
+    issuedBadge: document.getElementById("issuedBadge"),
+    issuedChart: document.getElementById("issuedChart"),
+    issuedFoot: document.getElementById("issuedFoot"),
+    agingGrid: document.getElementById("agingGrid"),
+    agingFoot: document.getElementById("agingFoot"),
+    leadBadge: document.getElementById("leadBadge"),
+    leadChart: document.getElementById("leadChart"),
+    leadFoot: document.getElementById("leadFoot"),
+    costExportBtn: document.getElementById("costExportBtn"),
+    costBadge: document.getElementById("costBadge"),
+    costSummary: document.getElementById("costSummary"),
+    costTrend: document.getElementById("costTrend"),
+    costCompare: document.getElementById("costCompare"),
+    tip: document.getElementById("tip"),
+    flowExportBtn: document.getElementById("flowExportBtn"),
+    pageLoading: document.getElementById("pageLoading"),
+  };
 
-  // ---------- helpers ----------
-  function getNum(o,path){ return path.split('.').reduce(function(a,k){return a&&a[k]!=null?a[k]:0;},o)||0; }
-  function shortDay(iso){ if(!iso) return ''; var p=iso.split('-'); return p[1]+'/'+p[2]; }
-  function isoDate(iso){ return new Date(iso+'T00:00:00Z'); }
-  function norm(d){
-    var ab=d.agingBuckets||{};
-    return {
-      asOf:d.asOf, label:shortDay(d.asOf),
-      newSoItems:getNum(d,'flow.newSoItems'), itemsIssued:getNum(d,'flow.itemsIssued'),
-      netBacklogChange:getNum(d,'flow.netBacklogChange'), backlogTotal:getNum(d,'flow.backlogTotal'),
-      openItems:getNum(d,'statusMix.openItems'), issuedItems:getNum(d,'statusMix.issuedItems'),
-      rejectedItems:getNum(d,'statusMix.rejectedItems'),
-      a0:ab['0-7']||0, a1:ab['8-14']||0, a2:ab['15-30']||0, a3:ab['30+']||0,
-      avgDaysToFirstIssue:getNum(d,'kpi.avgDaysToFirstIssue'),
-      oldestNotIssuedDays:getNum(d,'kpi.oldestNotIssuedDays'),
-      partiallyIssuedTickets:getNum(d,'kpi.partiallyIssuedTickets'),
-      fullyIssuedTickets:getNum(d,'kpi.fullyIssuedTickets'),
-      notIssuedTickets:getNum(d,'kpi.notIssuedTickets'),
-      openSoItems:getNum(d,'kpi.openSoItems')
-    };
-  }
-  function rollup(daily,gran){
-    if(gran==='day') return daily.map(norm);
-    var buckets={};
-    daily.forEach(function(d){
-      var dt=isoDate(d.asOf),key;
-      if(gran==='week'){ var wd=dt.getUTCDay(); var mon=new Date(dt);
-        mon.setUTCDate(dt.getUTCDate()-((wd+6)%7)); key=mon.toISOString().slice(0,10); }
-      else if(gran==='month'){ key=d.asOf.slice(0,7)+'-01'; }
-      else { key=d.asOf.slice(0,4)+'-01-01'; }
-      (buckets[key]=buckets[key]||[]).push(d);
-    });
-    return Object.keys(buckets).sort().map(function(key){
-      var rows=buckets[key], last=rows[rows.length-1];
-      function sum(p){ return rows.reduce(function(a,r){return a+getNum(r,p);},0); }
-      function avg(p){ var v=rows.map(function(r){return getNum(r,p);}).filter(function(x){return x>0;});
-        return v.length?+(v.reduce(function(a,b){return a+b;},0)/v.length).toFixed(1):0; }
-      return norm({
-        asOf:key,
-        flow:{ newSoItems:sum('flow.newSoItems'), itemsIssued:sum('flow.itemsIssued'),
-          netBacklogChange:sum('flow.newSoItems')-sum('flow.itemsIssued'),
-          backlogTotal:getNum(last,'flow.backlogTotal') },
-        statusMix:{ openItems:getNum(last,'statusMix.openItems'),
-          issuedItems:getNum(last,'statusMix.issuedItems'),
-          rejectedItems:getNum(last,'statusMix.rejectedItems') },
-        agingBuckets:last.agingBuckets||{},
-        kpi:{ openSoItems:getNum(last,'kpi.openSoItems'),
-          partiallyIssuedTickets:getNum(last,'kpi.partiallyIssuedTickets'),
-          fullyIssuedTickets:getNum(last,'kpi.fullyIssuedTickets'),
-          notIssuedTickets:getNum(last,'kpi.notIssuedTickets'),
-          avgDaysToFirstIssue:avg('kpi.avgDaysToFirstIssue'),
-          oldestNotIssuedDays:Math.max.apply(null,rows.map(function(r){return getNum(r,'kpi.oldestNotIssuedDays');})) }
-      });
-    });
-  }
+  const money = new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 });
+  const integer = new Intl.NumberFormat("en-AU", { maximumFractionDigits: 0 });
+  const daysFmt = new Intl.NumberFormat("en-AU", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
-  // ---------- canvas chart toolkit ----------
-  function setup(canvas,h){
-    var dpr=window.devicePixelRatio||1;
-    var w=canvas.parentNode.clientWidth;
-    canvas.width=w*dpr; canvas.height=h*dpr; canvas.style.height=h+'px';
-    var ctx=canvas.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0);
-    ctx.clearRect(0,0,w,h);
-    return {ctx:ctx,w:w,h:h};
-  }
-  var PAD={l:44,r:44,t:12,b:26};
-  function niceMax(v){ if(v<=0) return 10; var p=Math.pow(10,Math.floor(Math.log10(v)));
-    var n=v/p; var m=n<=1?1:n<=2?2:n<=5?5:10; return m*p; }
-  function xPositions(n,w){ var x0=PAD.l,x1=w-PAD.r; var arr=[];
-    for(var i=0;i<n;i++){ arr.push(n===1?(x0+x1)/2:x0+(x1-x0)*i/(n-1)); } return arr; }
-  function drawAxes(ctx,w,h,maxL,maxR,labels){
-    ctx.strokeStyle=COL.grid; ctx.lineWidth=1; ctx.fillStyle=COL.inkFaint; ctx.font=MONO;
-    ctx.textAlign='right'; ctx.textBaseline='middle';
-    var rows=4;
-    for(var i=0;i<=rows;i++){
-      var y=PAD.t+(h-PAD.t-PAD.b)*i/rows;
-      ctx.beginPath(); ctx.setLineDash([2,4]); ctx.moveTo(PAD.l,y); ctx.lineTo(w-PAD.r,y); ctx.stroke(); ctx.setLineDash([]);
-      var vL=maxL*(1-i/rows); ctx.fillText(fmtNum(vL),PAD.l-8,y);
-      if(maxR!=null){ ctx.textAlign='left'; var vR=maxR*(1-i/rows); ctx.fillText(fmtNum(vR),w-PAD.r+8,y); ctx.textAlign='right'; }
+  function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, s => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[s])); }
+  function n(v){ const x = Number(String(v == null ? 0 : v).replace(/,/g, "")); return Number.isFinite(x) ? x : 0; }
+  function clean(v){ return String(v == null ? "" : v).trim(); }
+  function freshJsonUrl(url){
+    try{
+      const u = new URL(url);
+      u.searchParams.set("_ts", String(Date.now()));
+      return u.toString();
+    }catch(err){
+      return url;
     }
-    // x labels (thinned)
-    ctx.textAlign='center'; ctx.textBaseline='top';
-    var xs=xPositions(labels.length,w);
-    var step=Math.max(1,Math.ceil(labels.length/12));
-    for(var j=0;j<labels.length;j+=step){ ctx.fillText(labels[j],xs[j],h-PAD.b+6); }
   }
-  function fmtNum(v){ v=Math.round(v*10)/10; if(Math.abs(v)>=1000) return (v/1000).toFixed(v%1000?1:0)+'k'; return (v%1?v.toFixed(1):v.toFixed(0)); }
-  function yScale(h,max){ var y0=h-PAD.b,y1=PAD.t; return function(v){ return y0+(y1-y0)*(v/max); }; }
-  function roundRect(ctx,x,y,w,h,r){
-    var rr=Math.min(r,w/2,h/2);
-    ctx.beginPath();
-    if(ctx.roundRect){ ctx.roundRect(x,y,w,h,rr); return; }
-    ctx.moveTo(x+rr,y);
-    ctx.arcTo(x+w,y,x+w,y+h,rr);
-    ctx.arcTo(x+w,y+h,x,y+h,rr);
-    ctx.arcTo(x,y+h,x,y,rr);
-    ctx.arcTo(x,y,x+w,y,rr);
-    ctx.closePath();
+  function salesOrderKey(v){ return clean(v).replace(/\s+/g, "").toUpperCase(); }
+  const APPROVED_CLOSED_STATUS_CODES = new Set(["Z9", "Y0", "Y1", "Y2", "Y4", "YB"]);
+  const APPROVED_CLOSED_STATUS_TEXTS = new Set([
+    "sales order approved",
+    "partially picked",
+    "dispatch parts",
+    "repair in progress",
+    "repairer invoiced received",
+    "repairer invoiced processed",
+  ]);
+
+  function parseDate(iso){
+    if (!iso) return null;
+    const d = new Date(`${iso}T00:00:00Z`);
+    return Number.isNaN(d.getTime()) ? null : d;
   }
-  function buildPointLabels(series,valueFn,xs,yFn,h,opts){
-    var limit=opts.limit||5;
-    var color=opts.color||COL.flow;
-    var unit=opts.unit||'';
-    var vals=series.map(function(d){ return +valueFn(d) || 0; });
-    var n=vals.length;
-    if(!n) return [];
-    var minV=vals[0], maxV=vals[0], minI=0, maxI=0;
-    vals.forEach(function(v,i){
-      if(v<minV){ minV=v; minI=i; }
-      if(v>maxV){ maxV=v; maxI=i; }
-    });
-    var marks={};
-    function keep(i,score,kind){
-      if(i<0||i>=n) return;
-      var cur=marks[i];
-      if(!cur || score>cur.score) marks[i]={i:i,score:score,kind:kind};
+  function dateKey(d){
+    return d ? d.toISOString().slice(0, 10) : "";
+  }
+  function copyUTC(d){
+    return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  }
+  function addDaysUTC(d, days){
+    const x = copyUTC(d);
+    x.setUTCDate(x.getUTCDate() + days);
+    return x;
+  }
+  function addMonthsUTC(d, months){
+    return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + months, 1));
+  }
+  function weekStartUTC(d){
+    const x = copyUTC(d);
+    const off = (x.getUTCDay() + 6) % 7;
+    x.setUTCDate(x.getUTCDate() - off);
+    return x;
+  }
+  function fmtDate(d){
+    return d.toLocaleDateString("en-AU", { day:"2-digit", month:"short", year:"numeric", timeZone:"UTC" });
+  }
+  function fmtDateRangeShort(start, end){
+    if (!start || !end) return "";
+    const opts = { day:"2-digit", month:"2-digit", year:"numeric", timeZone:"UTC" };
+    return `${start.toLocaleDateString("en-GB", opts)} - ${end.toLocaleDateString("en-GB", opts)}`;
+  }
+  function fmtMonth(d){
+    return d.toLocaleDateString("en-AU", { month:"short", year:"numeric", timeZone:"UTC" });
+  }
+  function fmtYear(d){
+    return d.toLocaleDateString("en-AU", { year:"numeric", timeZone:"UTC" });
+  }
+  function fmtShortRange(start, end){
+    return `${fmtDate(start)} - ${fmtDate(end)}`;
+  }
+  function monthSeriesRange(series){
+    const rows = Array.isArray(series) ? series.filter(Boolean) : [];
+    if (!rows.length) return "";
+    const first = rows[0];
+    const last = rows[rows.length - 1];
+    const start = first.start instanceof Date ? first.start : parseDate(first.key ? `${first.key}-01` : first.label);
+    const end = last.end instanceof Date
+      ? last.end
+      : last.start instanceof Date
+        ? addDaysUTC(addMonthsUTC(last.start, 1), -1)
+        : parseDate(last.key ? `${last.key}-01` : last.label);
+    return fmtDateRangeShort(start, end);
+  }
+  function fmtAxis(v){
+    const abs = Math.abs(v);
+    if (abs >= 1000000) return `${(v / 1000000).toFixed(1)}m`;
+    if (abs >= 1000) return `${(v / 1000).toFixed(1)}k`;
+    if (abs >= 100) return Math.round(v).toString();
+    if (abs >= 10) return Math.round(v).toString();
+    return (Math.round(v * 10) / 10).toFixed(v % 1 ? 1 : 0);
+  }
+  function niceMax(v){
+    if (v <= 0) return 10;
+    const p = Math.pow(10, Math.floor(Math.log10(v)));
+    const n = v / p;
+    const m = n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10;
+    return m * p;
+  }
+  function formatPct(v){
+    return `${(Math.round(v * 10) / 10).toFixed(v % 1 ? 1 : 0)}%`;
+  }
+  function exportCellValue(v){
+    if(v == null) return "";
+    if(typeof v === "object"){
+      try{return JSON.stringify(v);}
+      catch(err){return String(v);}
     }
-    keep(0,1000,'start');
-    keep(n-1,1000,'end');
-    keep(minI,940,'min');
-    keep(maxI,950,'max');
-    var range=Math.max(1e-9,maxV-minV);
-    for(var i=1;i<n-1;i++){
-      var prev=vals[i-1], cur=vals[i], next=vals[i+1];
-      var d1=cur-prev, d2=next-cur;
-      if(d1===0 && d2===0) continue;
-      var isTurn=(d1<=0 && d2>=0) || (d1>=0 && d2<=0);
-      if(isTurn){
-        keep(i,120+Math.abs(d1)+Math.abs(d2),'turn');
-      } else if(Math.abs(d2-d1) >= range*0.45){
-        keep(i,50+Math.abs(d2-d1),'bend');
+    return String(v);
+  }
+  function excelEscape(v){
+    return esc(exportCellValue(v)).replace(/\r?\n/g, " ");
+  }
+  function xmlEscape(v){
+    return exportCellValue(v).replace(/[<>&'"]/g, s => ({ "<":"&lt;", ">":"&gt;", "&":"&amp;", "'":"&apos;", "\"":"&quot;" }[s]));
+  }
+  function excelSheetName(name){
+    return clean(name).replace(/[:\\/?*\[\]]/g, " ").slice(0, 31) || "Sheet";
+  }
+  function exportWorkbook(sheets, filename){
+    const valid = (sheets || []).filter(sheet => sheet && Array.isArray(sheet.rows) && sheet.rows.length);
+    if(!valid.length){
+      alert("No export data found for the selected view.");
+      return;
+    }
+    const workbook = `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<Styles><Style ss:ID="Header"><Font ss:Bold="1"/><Interior ss:Color="#EEF6FF" ss:Pattern="Solid"/></Style></Styles>
+${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name))}"><Table>${sheet.rows.map((row, i) => `<Row>${row.map(cell => `<Cell${i === 0 ? ' ss:StyleID="Header"' : ''}><Data ss:Type="${typeof cell === "number" && Number.isFinite(cell) ? "Number" : "String"}">${xmlEscape(cell)}</Data></Cell>`).join("")}</Row>`).join("")}</Table></Worksheet>`).join("")}
+</Workbook>`;
+    const blob = new Blob([workbook], { type:"application/vnd.ms-excel;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename.endsWith(".xls") ? filename : `${filename}.xls`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  function exportDateSuffix(){
+    return (state.latest && state.latest.asOf) ? state.latest.asOf.slice(0, 10) : new Date().toISOString().slice(0, 10);
+  }
+  function exportIcon(){
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>`;
+  }
+  function setPageLoading(isLoading){
+    document.body.classList.toggle("is-loading", !!isLoading);
+    if (els.pageLoading){
+      els.pageLoading.classList.toggle("active", !!isLoading);
+      els.pageLoading.setAttribute("aria-busy", isLoading ? "true" : "false");
+    }
+  }
+  function ticketValues(node){
+    if (!node || typeof node !== "object") return [];
+    if (Array.isArray(node)) return node.filter(Boolean).map((value, index) => [String(index), value]);
+    return Object.entries(node);
+  }
+  function parseSalesOrderDetails(value){
+    if (!value) return [];
+    if (typeof value === "string"){
+      try{
+        value = JSON.parse(value);
+      }catch(err){
+        return [];
       }
     }
-    var arr=Object.keys(marks).map(function(k){ return marks[k]; });
-    arr.sort(function(a,b){ return b.score-a.score || a.i-b.i; });
-    arr=arr.slice(0,limit).sort(function(a,b){ return a.i-b.i; });
-    var out=[];
-    var minGap=Math.max(42,(xs.length>1?(xs[xs.length-1]-xs[0])/Math.max(4,Math.min(12,xs.length/4)):42));
-    arr.forEach(function(m){
-      var x=xs[m.i], y=yFn(vals[m.i]), text=fmtNum(vals[m.i])+unit;
-      var slopePrev=m.i>0 ? vals[m.i]-vals[m.i-1] : 0;
-      var slopeNext=m.i<n-1 ? vals[m.i+1]-vals[m.i] : 0;
-      var dir;
-      if(m.kind==='max') dir=-1;
-      else if(m.kind==='min') dir=1;
-      else if(m.kind==='start') dir=slopeNext>=0 ? -1 : 1;
-      else if(m.kind==='end') dir=slopePrev>=0 ? -1 : 1;
-      else dir=(y < h*0.35 ? 1 : -1);
-      out.push({i:m.i,x:x,y:y,text:text,color:color,dir:dir,score:m.score});
-    });
-    // Keep only the strongest labels while preserving spacing between them.
-    var placed=[];
-    out.sort(function(a,b){ return b.score-a.score || a.i-b.i; }).forEach(function(p){
-      if(placed.some(function(q){ return Math.abs(q.x-p.x) < minGap && Math.abs(q.y-p.y) < 22; })) return;
-      placed.push(p);
-    });
-    return placed.sort(function(a,b){ return a.i-b.i; });
+    if (Array.isArray(value)){
+      return value.flatMap(item => parseSalesOrderDetails(item));
+    }
+    if (!value || typeof value !== "object") return [];
+    if (Object.keys(value).some(k => ["Delivery Count", "Description", "Material", "Order Qty", "Sales Order Item"].includes(k))){
+      return [{
+        salesOrderItem: clean(value["Sales Order Item"]),
+        material: clean(value.Material),
+        description: clean(value.Description),
+        orderQty: clean(value["Order Qty"]),
+        salesUnit: clean(value["Sales Unit"]),
+        purchaser: clean(value.Purchaser),
+        currency: clean(value.Currency),
+        netValue: clean(value["Net Value"]),
+        erpPurchaseOrder: clean(value.ERPPurchaseOrder),
+        amountIncludingTax: clean(value.AmountIncludingTax),
+        deliveryCount: n(value["Delivery Count"]),
+        firstIssueDate: clean(value["First Issue Date"]),
+        rejectionReason: clean(value["Rejection Reason"]),
+        itemRejectionStatus: clean(value["Item Rejection Status"]),
+        // SAP material prices (written by fetch_all_tickets_fast_*.py via sap_material_prices.py).
+        // Numbers are stored raw in their original currency; CNY -> AUD conversion happens in
+        // materialPriceCols() at export time.
+        cnSoPrice:    clean(value["3090 SO Net Price"]),
+        cnSoCurrency: clean(value["3090 SO Currency"]),
+        cnSoDate:     clean(value["3090 SO Date"]),
+        cnSoDoc:      clean(value["3090 SO Doc"]),
+        auPoPrice:    clean(value["3110 PO Net Price"]),
+        auPoCurrency: clean(value["3110 PO Currency"]),
+        auPoDate:     clean(value["3110 PO Date"]),
+        auPoDoc:      clean(value["3110 PO Doc"]),
+        cnPoPrice:    clean(value["3091 PO Net Price"]),
+        cnPoCurrency: clean(value["3091 PO Currency"]),
+        cnPoDate:     clean(value["3091 PO Date"]),
+        cnPoDoc:      clean(value["3091 PO Doc"]),
+      }];
+    }
+    return Object.values(value).flatMap(item => parseSalesOrderDetails(item));
   }
-  function drawPointLabels(ctx,w,h,labels){
-    if(!labels.length) return;
-    ctx.save();
-    ctx.font=MONO;
-    ctx.textAlign='center';
-    ctx.textBaseline='middle';
-    var boxes=[];
-    labels.forEach(function(p){
-      var padX=6, padY=4, boxH=18, gap=10;
-      var textW=ctx.measureText(p.text).width;
-      var boxW=Math.ceil(textW+padX*2);
-      var boxX=Math.round(p.x-boxW/2);
-      var boxY=Math.round(p.y + (p.dir<0 ? -(gap+boxH) : gap));
-      boxX=Math.max(PAD.l+2,Math.min(boxX,w-PAD.r-2-boxW));
-      boxY=Math.max(PAD.t+2,Math.min(boxY,h-PAD.b-2-boxH));
-      var rect={x:boxX,y:boxY,w:boxW,h:boxH};
-      if(boxes.some(function(r){
-        return !(rect.x+rect.w < r.x-4 || r.x+r.w < rect.x-4 || rect.y+rect.h < r.y-2 || r.y+r.h < rect.y-2);
-      })) return;
-      boxes.push(rect);
-
-      ctx.beginPath();
-      ctx.moveTo(p.x,p.y);
-      ctx.lineTo(p.x, boxY + (p.dir<0 ? boxH : 0));
-      ctx.strokeStyle=p.color;
-      ctx.globalAlpha=.28;
-      ctx.lineWidth=1;
-      ctx.stroke();
-      ctx.globalAlpha=1;
-
-      roundRect(ctx,boxX,boxY,boxW,boxH,6);
-      ctx.fillStyle='rgba(255,255,255,.94)';
-      ctx.fill();
-      ctx.strokeStyle=p.color;
-      ctx.lineWidth=1;
-      ctx.stroke();
-      ctx.fillStyle=p.color;
-      ctx.fillText(p.text,boxX+boxW/2,boxY+boxH/2+0.5);
-
-      ctx.beginPath();
-      ctx.arc(p.x,p.y,2.6,0,Math.PI*2);
-      ctx.fillStyle=p.color;
-      ctx.fill();
-      ctx.strokeStyle='#fff';
-      ctx.lineWidth=1.2;
-      ctx.stroke();
+  // ---- SAP material price columns for exports -------------------------------
+  // CNY prices are converted to AUD using a fixed rate. If the rate needs to
+  // change, this constant is the only edit required.
+  const CNY_TO_AUD_RATE = 5;
+  function priceToAud(rawPrice, rawCurrency){
+    const num = Number(rawPrice);
+    if (!Number.isFinite(num) || num === 0) return rawPrice === 0 || rawPrice === "0" ? 0 : "";
+    const cur = clean(rawCurrency).toUpperCase();
+    if (cur === "CNY") return Math.round((num / CNY_TO_AUD_RATE) * 10000) / 10000;
+    return num;
+  }
+  // Twelve columns: 3 sources x { AUD-normalized price, original currency, date, doc }.
+  // Kept in one helper so both row builders (ticketItemRows and statusMixItemRows)
+  // stay in sync automatically.
+  const MATERIAL_PRICE_HEADERS = [
+    "3090 SO Net Price (AUD)", "3090 SO Original Currency", "3090 SO Date", "3090 SO Doc Number",
+    "3110 PO Net Price (AUD)", "3110 PO Original Currency", "3110 PO Date", "3110 PO Doc Number",
+    "3091 PO Net Price (AUD)", "3091 PO Original Currency", "3091 PO Date", "3091 PO Doc Number",
+  ];
+  function materialPriceCols(item){
+    if (!item) return new Array(MATERIAL_PRICE_HEADERS.length).fill("");
+    return [
+      priceToAud(item.cnSoPrice, item.cnSoCurrency), item.cnSoCurrency || "", item.cnSoDate || "", item.cnSoDoc || "",
+      priceToAud(item.auPoPrice, item.auPoCurrency), item.auPoCurrency || "", item.auPoDate || "", item.auPoDoc || "",
+      priceToAud(item.cnPoPrice, item.cnPoCurrency), item.cnPoCurrency || "", item.cnPoDate || "", item.cnPoDoc || "",
+    ];
+  }
+  function preferredPartsUnitPrice(item){
+    if (!item) return "";
+    const auPo = priceToAud(item.auPoPrice, item.auPoCurrency);
+    if (auPo !== "" && auPo !== null && auPo !== undefined) return auPo;
+    const cnSo = priceToAud(item.cnSoPrice, item.cnSoCurrency);
+    if (cnSo !== "" && cnSo !== null && cnSo !== undefined) return cnSo;
+    return "";
+  }
+  function preferredPartsLineCost(item){
+    const unit = preferredPartsUnitPrice(item);
+    if (unit === "" || unit === null || unit === undefined) return "";
+    const qty = n(item && item.orderQty);
+    if (!Number.isFinite(qty) || qty <= 0) return unit;
+    return Math.round(unit * qty * 10000) / 10000;
+  }
+  function ticketPreferredPartsCost(ticket){
+    const details = Array.isArray(ticket?.details) ? ticket.details : [];
+    let total = 0;
+    let hit = false;
+    details.forEach(item => {
+      const lineCost = preferredPartsLineCost(item);
+      if (lineCost === "" || lineCost === null || lineCost === undefined) return;
+      total += Number(lineCost) || 0;
+      hit = true;
     });
+    return hit ? Math.round(total * 10000) / 10000 : "";
+  }
+  function sortCreatedOnValue(v){
+    const s = clean(v);
+    if (!s) return 0;
+    const parsed = parseLooseDate(s);
+    if (parsed) return parsed.getTime();
+    const ms = Date.parse(s);
+    if (Number.isFinite(ms)) return ms;
+    const ymd = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (ymd) return Date.UTC(+ymd[1], +ymd[2] - 1, +ymd[3]);
+    return 0;
+  }
+  function normalizeTicketExportRow(ticketKey, rawTicket){
+    const ticket = rawTicket && typeof rawTicket === "object" && rawTicket.ticket && typeof rawTicket.ticket === "object"
+      ? rawTicket.ticket
+      : (rawTicket && typeof rawTicket === "object" ? rawTicket : {});
+    const details = parseSalesOrderDetails(ticket["Sales Order Details"]);
+    const itemCount = details.length;
+    const issuedCount = details.filter(item => isIssuedMaterialItem(item)).length;
+    const openCount = details.filter(item => isOpenMaterialItem(item)).length;
+    const firstIssueDates = details.map(item => clean(item.firstIssueDate)).filter(Boolean).sort((a, b) => {
+      const da = parseLooseDate(a) || parseDate(a);
+      const db = parseLooseDate(b) || parseDate(b);
+      if (da && db && da.getTime() !== db.getTime()) return da - db;
+      return a.localeCompare(b);
+    });
+    const firstIssueDate = firstIssueDates[0] || clean(ticket["First Issue Date"]);
+    return {
+      ticketKey: clean(ticketKey),
+      ticketId: clean(ticket.TicketID || ticket.TicketId || ticket.id || ticketKey),
+      salesOrder: clean(ticket["Sales Order"] || ticket.SalesOrder || ticket.salesOrder || ticket.LookupSalesOrder || ticket.lookupSalesOrder),
+      soCreatedDate: clean(ticket["SO Created Date"] || ticket.soCreatedDate || ticket.CreatedOn || ticket.createdOn || ticket.created),
+      dealerId: clean(ticket.DealerID),
+      dealerName: clean(ticket.DealerName),
+      createdOn: clean(ticket.CreatedOn || ticket.createdOn || ticket.createdAt || ticket.CreatedAt),
+      ticketStatus: clean(ticket.TicketStatus),
+      ticketStatusText: clean(ticket.TicketStatusText),
+      issueStatus: clean(ticket["Issue Status"]),
+      orderRejectionStatus: clean(ticket["Order Rejection Status"]),
+      erpPurchaseOrder: clean(ticket.ERPPurchaseOrder),
+      amountIncludingTax: n(ticket.AmountIncludingTax),
+      firstIssueDate,
+      purchaser: clean(ticket.Purchaser),
+      currency: clean(ticket.Currency),
+      detailItems: itemCount,
+      issuedItems: issuedCount,
+      openItems: openCount,
+      details,
+    };
+  }
+  function isIssuedMaterialItem(item){
+    if (!item) return false;
+    if (!clean(item.material)) return false;
+    if (clean(item.itemRejectionStatus).toLowerCase() !== "not rejected") return false;
+    if (clean(item.rejectionReason)) return false;
+    return clean(item.firstIssueDate) !== "";
+  }
+  function isOpenMaterialItem(item){
+    if (!item) return false;
+    if (!clean(item.material)) return false;
+    if (clean(item.itemRejectionStatus).toLowerCase() !== "not rejected") return false;
+    if (clean(item.rejectionReason)) return false;
+    return clean(item.firstIssueDate) === "";
+  }
+  function materialIssueDate(ticket, item){
+    return parseLooseDate(item?.firstIssueDate) || null;
+  }
+  function uniqueTicketsBySalesOrder(tickets, predicate){
+    const seen = new Set();
+    return tickets.filter(ticket => {
+      const soKey = salesOrderKey(ticket.salesOrder);
+      if (!ticket.salesOrder || !soKey || seen.has(soKey)) return false;
+      if (predicate && !predicate(ticket)) return false;
+      seen.add(soKey);
+      return true;
+    });
+  }
+  function isAwaitingPartsTicket(ticket){
+    const code = clean(ticket.ticketStatus).toUpperCase();
+    const text = clean(ticket.ticketStatusText).toLowerCase();
+    return code === "YA" || text === "awaiting parts";
+  }
+  function awaitingTicketRows(tickets){
+    return uniqueTicketsBySalesOrder(tickets, ticket => isAwaitingPartsTicket(ticket));
+  }
+  function isIssuedPartsTicket(ticket){
+    return Number(ticket.issuedItems || 0) > 0 || (ticket.details || []).some(item => isIssuedMaterialItem(item));
+  }
+  function issuedTicketRows(tickets){
+    return uniqueTicketsBySalesOrder(tickets, ticket => isIssuedPartsTicket(ticket));
+  }
+  function openSoTicketRows(tickets){
+    return uniqueTicketsBySalesOrder(tickets, ticket => Number(ticket.openItems || 0) > 0 && Number(ticket.issuedItems || 0) === 0);
+  }
+  function materialMetricsFromTickets(tickets){
+    let issuedCount = 0;
+    let openCount = 0;
+    let leadSum = 0;
+    let leadCount = 0;
+    (tickets || []).forEach(ticket => {
+      const soCreated = parseLooseDate(ticket.soCreatedDate);
+      (ticket.details || []).forEach(item => {
+        if (isIssuedMaterialItem(item)){
+          issuedCount += 1;
+          const d = materialIssueDate(ticket, item);
+          if (d && soCreated){
+            leadSum += Math.max(0, Math.round((d - soCreated) / 86400000));
+            leadCount += 1;
+          }
+          return;
+        }
+        if (isOpenMaterialItem(item)){
+          openCount += 1;
+        }
+      });
+    });
+    return {
+      issuedCount,
+      openCount,
+      avgDaysToFirstIssue: leadCount ? (leadSum / leadCount) : 0,
+    };
+  }
+  function materialAgingFromTickets(tickets, latestAsOf){
+    const buckets = {"0-7": 0, "8-14": 0, "15-30": 0, "30+": 0};
+    const asOf = parseLooseDate(latestAsOf);
+    (tickets || []).forEach(ticket => {
+      const soCreated = parseLooseDate(ticket.soCreatedDate);
+      if (!soCreated || !asOf) return;
+      (ticket.details || []).forEach(item => {
+        if (!isOpenMaterialItem(item)) return;
+        const age = Math.max(0, Math.round((asOf - soCreated) / 86400000));
+        if (age <= 7) buckets["0-7"] += 1;
+        else if (age <= 14) buckets["8-14"] += 1;
+        else if (age <= 30) buckets["15-30"] += 1;
+        else buckets["30+"] += 1;
+      });
+    });
+    return buckets;
+  }
+  function ticketSummaryRows(tickets, scopeLabel=""){
+    const uniqueSalesOrders = new Set(tickets.map(row => salesOrderKey(row.salesOrder)).filter(Boolean)).size;
+    const rows = [["Metric","Value"]];
+    if (scopeLabel) rows.push(["Scope", scopeLabel]);
+    rows.push(
+      ["Tickets Exported", tickets.length],
+      ["Tickets With Sales Orders (rows)", tickets.filter(row => row.salesOrder).length],
+      ["Unique Sales Orders", uniqueSalesOrders],
+      ["Tickets With Detail Items", tickets.filter(row => row.detailItems > 0).length],
+      ["Total Detail Items", tickets.reduce((sum, row) => sum + Number(row.detailItems || 0), 0)],
+      ["Issued Detail Items", tickets.reduce((sum, row) => sum + Number(row.issuedItems || 0), 0)],
+      ["Open Detail Items", tickets.reduce((sum, row) => sum + Number(row.openItems || 0), 0)],
+      ["Latest Snapshot Date", state.latest?.asOf ? fmtDate(parseDate(state.latest.asOf)) : ""],
+      ["Granularity", state.granularity],
+    );
+    return rows;
+  }
+  function ticketDetailRows(tickets){
+    return [["Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Created On","Ticket Status","Ticket Status Text","Issue Status","Order Rejection Status","ERP Purchase Order","Amount Including Tax","Preferred Parts Cost (AUD)","First Issue Date","Purchaser","Currency","Detail Items","Issued Items","Open Items"]].concat(tickets.map(row => [
+      row.ticketKey,
+      row.ticketId,
+      row.salesOrder,
+      row.soCreatedDate,
+      row.dealerId,
+      row.dealerName,
+      row.createdOn,
+      row.ticketStatus,
+      row.ticketStatusText,
+      row.issueStatus,
+      row.orderRejectionStatus,
+      row.erpPurchaseOrder,
+      row.amountIncludingTax,
+      ticketPreferredPartsCost(row),
+      row.firstIssueDate,
+      row.purchaser,
+      row.currency,
+      row.detailItems,
+      row.issuedItems,
+      row.openItems,
+    ]));
+  }
+  function ticketItemRows(tickets){
+    const rows = [["Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Ticket Status","Ticket Status Text","Sales Order Item","Material","Description","Order Qty","Sales Unit","Purchaser","Currency","Net Value","ERP Purchase Order","Amount Including Tax","Preferred Line Cost (AUD)", ...MATERIAL_PRICE_HEADERS, "Delivery Count","First Issue Date","Rejection Reason","Item Rejection Status"]];
+    tickets.forEach(ticket => {
+      (ticket.details || []).forEach(item => {
+        const po = item.erpPurchaseOrder || ticket.erpPurchaseOrder;
+        rows.push([
+          ticket.ticketKey,
+          ticket.ticketId,
+          ticket.salesOrder,
+          ticket.soCreatedDate,
+          ticket.dealerId,
+          ticket.dealerName,
+          ticket.ticketStatus,
+          ticket.ticketStatusText,
+          item.salesOrderItem,
+          item.material,
+          item.description,
+          item.orderQty,
+          item.salesUnit,
+          item.purchaser || ticket.purchaser,
+          item.currency || ticket.currency,
+          item.netValue,
+          po,
+          item.amountIncludingTax || ticket.amountIncludingTax,
+          preferredPartsLineCost(item),
+          ...materialPriceCols(item),
+          item.deliveryCount,
+          item.firstIssueDate || ticket.firstIssueDate,
+          item.rejectionReason,
+          item.itemRejectionStatus,
+        ]);
+      });
+    });
+    return rows;
+  }
+  function isApprovedOrClosedTicket(ticket){
+    const code = clean(ticket.ticketStatus).toUpperCase();
+    const text = clean(ticket.ticketStatusText).toLowerCase();
+    return APPROVED_CLOSED_STATUS_CODES.has(code) || APPROVED_CLOSED_STATUS_TEXTS.has(text);
+  }
+  function classifyStatusMixItem(ticket, item){
+    const rejected = clean(item.itemRejectionStatus).toLowerCase() !== "not rejected" || clean(item.rejectionReason) !== "";
+    const issued = clean(item.firstIssueDate) !== "";
+    const ticketAwaiting = isAwaitingPartsTicket(ticket);
+    if (rejected) return { group: "Rejected", ticketAwaiting, openNotIssued: false };
+    if (issued) return { group: "Issued", ticketAwaiting, openNotIssued: false };
+    return { group: "Open", ticketAwaiting, openNotIssued: true };
+  }
+  function statusMixSummaryRows(latest, currentTickets){
+    const awaiting = Array.isArray(currentTickets) && currentTickets.length
+      ? awaitingTicketRows(currentTickets).length
+      : (latest.statusMix.awaitingItems ?? latest.awaitingParts?.current ?? 0);
+    const openParts = latest.statusMix.openItems ?? 0;
+    const rejectedParts = latest.statusMix.rejectedItems ?? 0;
+    const total = awaiting + openParts + rejectedParts || 1;
+    return [
+      ["Metric", "Value"],
+      ["Latest As Of", latest?.asOf ? fmtDate(parseDate(latest.asOf)) : ""],
+      ["Awaiting SOs", awaiting],
+      ["OPEN SO", openParts],
+      ["Rejected SOs", rejectedParts],
+      ["Open Parts Not Issued", latest.kpi.openNotIssuedParts ?? 0],
+      ["Status Mix Total (sum)", awaiting + openParts + rejectedParts],
+      ["Awaiting Share", `${Math.round(awaiting / total * 100)}%`],
+      ["Open Share", `${Math.round(openParts / total * 100)}%`],
+      ["Rejected Share", `${Math.round(rejectedParts / total * 100)}%`],
+      ["Count Basis", "All rows are unique SO counts."],
+    ];
+  }
+  function statusMixAwaitingRows(tickets, latest){
+    const seen = new Set();
+    const rows = [["Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Ticket Status","Ticket Status Text","Issue Status","Order Rejection Status","ERP Purchase Order","Amount Including Tax","Preferred Parts Cost (AUD)","Detail Items","Issued Items","Open Items","Latest Snapshot Date"]];
+    tickets.forEach(ticket => {
+      const soKey = salesOrderKey(ticket.salesOrder);
+      if (!ticket.salesOrder || !soKey || seen.has(soKey) || !isAwaitingPartsTicket(ticket)) return;
+      seen.add(soKey);
+      rows.push([
+        ticket.ticketKey,
+        ticket.ticketId,
+        ticket.salesOrder,
+        ticket.soCreatedDate,
+        ticket.dealerId,
+        ticket.dealerName,
+        ticket.ticketStatus,
+        ticket.ticketStatusText,
+        ticket.issueStatus,
+        ticket.orderRejectionStatus,
+        ticket.erpPurchaseOrder,
+        ticket.amountIncludingTax,
+        ticketPreferredPartsCost(ticket),
+        ticket.detailItems,
+        ticket.issuedItems,
+        ticket.openItems,
+        latest?.asOf ? latest.asOf : "",
+      ]);
+    });
+    return rows;
+  }
+  function statusMixItemRows(tickets, latest){
+    const rows = [["Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Ticket Status","Ticket Status Text","Sales Order Item","Material","Description","Order Qty","Sales Unit","Purchaser","Currency","Net Value","ERP Purchase Order","Amount Including Tax","Preferred Line Cost (AUD)", ...MATERIAL_PRICE_HEADERS, "Delivery Count","First Issue Date","Rejection Reason","Item Rejection Status","Status Mix Group","Ticket Awaiting","Open Not Issued","Aging Days","Latest Snapshot Date"]];
+    const latestDate = parseLooseDate(latest?.asOf);
+    tickets.forEach(ticket => {
+      (ticket.details || []).forEach(item => {
+        const mix = classifyStatusMixItem(ticket, item);
+        const soCreated = parseLooseDate(ticket.soCreatedDate);
+        const agingDays = latestDate && soCreated ? Math.max(0, Math.round((latestDate - soCreated) / 86400000)) : "";
+        rows.push([
+          ticket.ticketKey,
+          ticket.ticketId,
+          ticket.salesOrder,
+          ticket.soCreatedDate,
+          ticket.dealerId,
+          ticket.dealerName,
+          ticket.ticketStatus,
+          ticket.ticketStatusText,
+          item.salesOrderItem,
+          item.material,
+          item.description,
+          item.orderQty,
+          item.salesUnit,
+          item.purchaser || ticket.purchaser,
+          item.currency || ticket.currency,
+          item.netValue,
+          item.erpPurchaseOrder || ticket.erpPurchaseOrder,
+          item.amountIncludingTax || ticket.amountIncludingTax,
+          preferredPartsLineCost(item),
+          ...materialPriceCols(item),
+          item.deliveryCount,
+          item.firstIssueDate || ticket.firstIssueDate,
+          item.rejectionReason,
+          item.itemRejectionStatus,
+          mix.group,
+          mix.ticketAwaiting ? "Yes" : "No",
+          mix.openNotIssued ? "Yes" : "No",
+          agingDays,
+          latest?.asOf ? latest.asOf : "",
+        ]);
+      });
+    });
+    return rows;
+  }
+  async function loadCurrentTickets(){
+    const res = await fetch(freshJsonUrl(FB_TICKETS), { cache: "no-store" });
+    if (!res.ok) throw new Error(`Firebase HTTP ${res.status}`);
+    const data = await res.json();
+    const entries = ticketValues(data);
+    return entries
+      .map(([ticketKey, raw]) => normalizeTicketExportRow(ticketKey, raw))
+      .filter(row => row.ticketId || row.salesOrder || row.detailItems)
+      .sort((a, b) => {
+        const byCreated = sortCreatedOnValue(b.createdOn) - sortCreatedOnValue(a.createdOn);
+        if (byCreated) return byCreated;
+        return clean(b.ticketId).localeCompare(clean(a.ticketId)) || clean(b.ticketKey).localeCompare(clean(a.ticketKey));
+      });
+  }
+  function partsSelectedExportRows(series){
+    const visible = state.granularity === "year" ? series : series.slice(-12);
+    return [["Period Start","Period End","Label","Tooltip Range","Unique SOs Selected"]].concat(visible.map(row => [
+      row.start ? dateKey(row.start) : "",
+      row.end ? dateKey(row.end) : "",
+      row.label || "",
+      row.tooltip || "",
+      Number(row.partsSelected || 0),
+    ]));
+  }
+  function partsIssuedSummaryRows(series, latest){
+    const visible = series;
+    const latestRow = visible[visible.length - 1] || null;
+    return [
+      ["Metric", "Value"],
+      ["Latest As Of", latest?.asOf ? fmtDate(parseDate(latest.asOf)) : ""],
+      ["Current Granularity", "month"],
+      ["Series Start", visible[0]?.label || FLOW_MONTHLY_START.slice(0, 7)],
+      ["Visible Points", visible.length],
+      ["Latest Period", latestRow ? latestRow.tooltip : ""],
+      ["Latest Month Issued Materials", latestRow ? Number(latestRow.partsIssued || 0) : 0],
+      ["Snapshot MTD Issued Materials", latest?.partsIssued?.mtd || 0],
+      ["Snapshot Today Issued Materials", latest?.partsIssued?.today || 0],
+    ];
+  }
+  function partsIssuedExportRows(series){
+    const visible = series;
+    return [["Period Start","Period End","Label","Tooltip Range","Issued Materials"]].concat(visible.map(row => [
+      row.start ? dateKey(row.start) : "",
+      row.end ? dateKey(row.end) : "",
+      row.label || "",
+      row.tooltip || "",
+      Number(row.partsIssued || 0),
+    ]));
+  }
+  function monthKeyFromTicket(ticket){
+    const candidates = [ticket?.soCreatedDate, ticket?.createdOn, ticket?.firstIssueDate];
+    for (const candidate of candidates){
+      const d = parseLooseDate(candidate);
+      if (d) return dateKey(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1)));
+    }
+    return "";
+  }
+  function monthLabelFromKey(key){
+    const d = parseDate(key);
+    return d ? fmtMonth(d) : clean(key);
+  }
+  function costTrendRows(series){
+    return [["Month","Period Start","Period End","Label","Tooltip Range","Total Parts Cost","3110 PO Cost","3090 SO Fallback Cost","PO Hit Count","Fallback Count","Material Rows","SO Count","PO Share","Fallback Share","Avg Cost / SO"]].concat(series.map(row => [
+      row.key || "",
+      row.start ? dateKey(row.start) : "",
+      row.end ? dateKey(row.end) : "",
+      row.label || "",
+      row.tooltip || "",
+      Number(row.cost || 0),
+      Number(row.poCost || 0),
+      Number(row.fallbackCost || 0),
+      Number(row.poHitCount || 0),
+      Number(row.fallbackCount || 0),
+      Number(row.materialRows || 0),
+      Number(row.soCount || 0),
+      Number(row.poShare || 0),
+      Number(row.fallbackShare || 0),
+      Number(row.avgPerSo || 0),
+    ]));
+  }
+  function costSummaryRows(report, latest, tickets, series){
+    const totalCost = report?.totalCost || latest?.partsCost?.total || 0;
+    const poTotalCost = report?.poTotalCost || latest?.partsCost?.poCost || 0;
+    const fallbackTotalCost = report?.fallbackTotalCost || latest?.partsCost?.fallbackCost || 0;
+    const poHitCount = report?.poHitCount || latest?.partsCost?.poHitCount || 0;
+    const fallbackCount = report?.fallbackCount || latest?.partsCost?.fallbackCount || 0;
+    const materialRows = report?.materialRows || latest?.partsCost?.materialRows || 0;
+    const totalSoCount = report?.totalSoCount || latest?.partsCost?.soCount || (Array.isArray(tickets) ? tickets.length : 0);
+    const ticketCount = Array.isArray(tickets) && tickets.length ? tickets.length : totalSoCount;
+    const avgPartsCostPerTicket = ticketCount ? (totalCost / ticketCount) : 0;
+    const reportStartRaw = report?.periodStart || report?.source?.periodStart || FLOW_MONTHLY_START;
+    const reportStart = reportStartRaw && reportStartRaw < FLOW_MONTHLY_START ? FLOW_MONTHLY_START : reportStartRaw;
+    const reportEnd = report?.periodEnd || "";
+    const latestMonth = series && series.length ? series[series.length - 1] : null;
+    return [
+      ["Metric","Value"],
+      ["Latest As Of", latest?.asOf ? fmtDate(parseDate(latest.asOf)) : ""],
+      ["Report Period Start", reportStart],
+      ["Report Period End", reportEnd],
+      ["Monthly Points", series.length || 0],
+      ["Latest Month", latestMonth ? latestMonth.label : ""],
+      ["Total Parts Cost", totalCost],
+      ["3110 PO Cost", poTotalCost],
+      ["3090 SO Fallback Cost", fallbackTotalCost],
+      ["PO Hit Count", poHitCount],
+      ["Fallback Count", fallbackCount],
+      ["Material Rows", materialRows],
+      ["Ticket Count", ticketCount],
+      ["Avg Parts Cost / Ticket", avgPartsCostPerTicket],
+      ["Total SO Count", totalSoCount],
+      ["Source Name", report?.source?.name || ""],
+      ["Source Type", report?.source?.sourceType || ""],
+    ];
+  }
+  function costMonthlyTicketSummaryRows(tickets){
+    const byMonth = new Map();
+    (tickets || []).forEach(ticket => {
+      const monthKey = monthKeyFromTicket(ticket);
+      if (!monthKey) return;
+      if (!byMonth.has(monthKey)){
+        byMonth.set(monthKey, {
+          monthKey,
+          ticketCount: 0,
+          detailItems: 0,
+          issuedItems: 0,
+          openItems: 0,
+          preferredCost: 0,
+        });
+      }
+      const bucket = byMonth.get(monthKey);
+      bucket.ticketCount += 1;
+      bucket.detailItems += Number(ticket.detailItems || 0);
+      bucket.issuedItems += Number(ticket.issuedItems || 0);
+      bucket.openItems += Number(ticket.openItems || 0);
+      const cost = ticketPreferredPartsCost(ticket);
+      if (cost !== "" && cost !== null && cost !== undefined) bucket.preferredCost += Number(cost) || 0;
+    });
+    const rows = [["Month","Ticket Count","Detail Items","Issued Items","Open Items","Preferred Parts Cost (AUD)"]];
+    Array.from(byMonth.values()).sort((a, b) => a.monthKey.localeCompare(b.monthKey)).forEach(bucket => {
+      rows.push([
+        monthLabelFromKey(bucket.monthKey),
+        bucket.ticketCount,
+        bucket.detailItems,
+        bucket.issuedItems,
+        bucket.openItems,
+        Math.round(bucket.preferredCost * 10000) / 10000,
+      ]);
+    });
+    return rows;
+  }
+  function costMonthlyTicketRows(tickets){
+    const rows = [["Month","Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Created On","Ticket Status","Ticket Status Text","Issue Status","Order Rejection Status","ERP Purchase Order","Amount Including Tax","Preferred Parts Cost (AUD)","First Issue Date","Purchaser","Currency","Detail Items","Issued Items","Open Items"]];
+    const ordered = [...(tickets || [])].sort((a, b) => {
+      const monthCmp = monthKeyFromTicket(a).localeCompare(monthKeyFromTicket(b));
+      if (monthCmp) return monthCmp;
+      return clean(a.ticketId).localeCompare(clean(b.ticketId)) || clean(a.ticketKey).localeCompare(clean(b.ticketKey));
+    });
+    ordered.forEach(ticket => {
+      rows.push([
+        monthLabelFromKey(monthKeyFromTicket(ticket)),
+        ticket.ticketKey,
+        ticket.ticketId,
+        ticket.salesOrder,
+        ticket.soCreatedDate,
+        ticket.dealerId,
+        ticket.dealerName,
+        ticket.createdOn,
+        ticket.ticketStatus,
+        ticket.ticketStatusText,
+        ticket.issueStatus,
+        ticket.orderRejectionStatus,
+        ticket.erpPurchaseOrder,
+        ticket.amountIncludingTax,
+        ticketPreferredPartsCost(ticket),
+        ticket.firstIssueDate,
+        ticket.purchaser,
+        ticket.currency,
+        ticket.detailItems,
+        ticket.issuedItems,
+        ticket.openItems,
+      ]);
+    });
+    return rows;
+  }
+  function costMonthlyItemRows(tickets){
+    const rows = [["Month","Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Ticket Status","Ticket Status Text","Sales Order Item","Material","Description","Order Qty","Sales Unit","Purchaser","Currency","Net Value","ERP Purchase Order","Amount Including Tax","Preferred Line Cost (AUD)", ...MATERIAL_PRICE_HEADERS, "Delivery Count","First Issue Date","Rejection Reason","Item Rejection Status"]];
+    const ordered = [...(tickets || [])].sort((a, b) => {
+      const monthCmp = monthKeyFromTicket(a).localeCompare(monthKeyFromTicket(b));
+      if (monthCmp) return monthCmp;
+      return clean(a.ticketId).localeCompare(clean(b.ticketId)) || clean(a.ticketKey).localeCompare(clean(b.ticketKey));
+    });
+    ordered.forEach(ticket => {
+      (ticket.details || []).forEach(item => {
+        const po = item.erpPurchaseOrder || ticket.erpPurchaseOrder;
+        rows.push([
+          monthLabelFromKey(monthKeyFromTicket(ticket)),
+          ticket.ticketKey,
+          ticket.ticketId,
+          ticket.salesOrder,
+          ticket.soCreatedDate,
+          ticket.dealerId,
+          ticket.dealerName,
+          ticket.ticketStatus,
+          ticket.ticketStatusText,
+          item.salesOrderItem,
+          item.material,
+          item.description,
+          item.orderQty,
+          item.salesUnit,
+          item.purchaser || ticket.purchaser,
+          item.currency || ticket.currency,
+          item.netValue,
+          po,
+          item.amountIncludingTax || ticket.amountIncludingTax,
+          preferredPartsLineCost(item),
+          ...materialPriceCols(item),
+          item.deliveryCount,
+          item.firstIssueDate || ticket.firstIssueDate,
+          item.rejectionReason,
+          item.itemRejectionStatus,
+        ]);
+      });
+    });
+    return rows;
+  }
+  function addMovingAverage(series, windowSize, fieldName){
+    const rows = Array.isArray(series) ? series : [];
+    const window = Math.max(1, Number(windowSize) || 1);
+    const field = fieldName || "partsIssued";
+    return rows.map((row, index) => {
+      const start = Math.max(0, index - window + 1);
+      const slice = rows.slice(start, index + 1);
+      const total = slice.reduce((sum, item) => sum + (Number(item[field]) || 0), 0);
+      return {
+        ...row,
+        movingAvg: slice.length ? total / slice.length : 0,
+      };
+    });
+  }
+  const FLOW_MONTHLY_START = "2025-07-01";
+  function padMonthlySeriesFromStart(series, startIso){
+    const rows = Array.isArray(series) ? series.filter(row => row && row.start) : [];
+    if (!rows.length) return [];
+    const byKey = new Map(rows.map(row => [dateKey(row.start), row]));
+    const startRef = parseDate(startIso) || (rows[0].start instanceof Date ? rows[0].start : parseDate(rows[0].key));
+    const lastRow = rows[rows.length - 1];
+    const endRef = lastRow.start instanceof Date ? lastRow.start : parseDate(lastRow.key);
+    if (!startRef || !endRef) return rows;
+    const start = new Date(Date.UTC(startRef.getUTCFullYear(), startRef.getUTCMonth(), 1));
+    const end = new Date(Date.UTC(endRef.getUTCFullYear(), endRef.getUTCMonth(), 1));
+    const out = [];
+    for (let cur = new Date(start); cur <= end; cur = addMonthsUTC(cur, 1)){
+      const key = dateKey(cur);
+      const existing = byKey.get(key);
+      if (existing){
+        out.push(existing);
+        continue;
+      }
+      const monthEnd = addDaysUTC(addMonthsUTC(cur, 1), -1);
+      out.push({
+        key,
+        start: new Date(cur),
+        end: monthEnd,
+        label: groupLabel(cur, "month"),
+        tooltip: fmtShortRange(cur, monthEnd),
+        partsSelected: 0,
+        partsIssued: 0,
+        openParts: 0,
+        latest: null,
+      });
+    }
+    return out;
+  }
+  function buildIssuedMaterialSeriesFromTickets(tickets, granularity){
+    const groups = new Map();
+    (tickets || []).forEach(ticket => {
+      (ticket.details || []).forEach(item => {
+        if (!isIssuedMaterialItem(item)) return;
+        const d = materialIssueDate(ticket, item);
+        if (!d) return;
+        const start = granularity === "month" ? new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1))
+          : granularity === "year" ? new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+            : weekStartUTC(d);
+        const key = dateKey(start);
+        if (!groups.has(key)){
+          const end = granularity === "month"
+            ? addDaysUTC(addMonthsUTC(start, 1), -1)
+            : granularity === "year"
+              ? new Date(Date.UTC(start.getUTCFullYear(), 11, 31))
+              : addDaysUTC(start, 6);
+          groups.set(key, {
+            key,
+            start,
+            end,
+            label: groupLabel(start, granularity),
+            tooltip: fmtShortRange(start, end),
+            partsSelected: 0,
+            partsIssued: 0,
+            openParts: 0,
+            latest: null,
+          });
+        }
+        const group = groups.get(key);
+        group.partsIssued += 1;
+      });
+    });
+    const monthly = Array.from(groups.values()).sort((a, b) => a.start - b.start);
+    return granularity === "month" ? padMonthlySeriesFromStart(monthly, FLOW_MONTHLY_START) : monthly;
+  }
+  function buildUniqueSeriesFromTickets(tickets, granularity, dateGetter, countKey){
+    const perSo = new Map();
+    (tickets || []).forEach(ticket => {
+      const soKey = salesOrderKey(ticket.salesOrder);
+      const d = dateGetter(ticket);
+      if (!soKey || !d) return;
+      const prev = perSo.get(soKey);
+      if (!prev || d < prev) perSo.set(soKey, d);
+    });
+
+    const groups = new Map();
+    perSo.forEach(d => {
+      const start = granularity === "month" ? new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1))
+        : granularity === "year" ? new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+          : weekStartUTC(d);
+      const key = dateKey(start);
+      if (!groups.has(key)){
+        const end = granularity === "month"
+          ? addDaysUTC(addMonthsUTC(start, 1), -1)
+          : granularity === "year"
+            ? new Date(Date.UTC(start.getUTCFullYear(), 11, 31))
+            : addDaysUTC(start, 6);
+        groups.set(key, {
+          key,
+          start,
+          end,
+          label: groupLabel(start, granularity),
+          tooltip: fmtShortRange(start, end),
+          partsSelected: 0,
+          partsIssued: 0,
+          openParts: 0,
+          latest: null,
+        });
+      }
+      const group = groups.get(key);
+      group[countKey] += 1;
+    });
+    return Array.from(groups.values()).sort((a, b) => a.start - b.start);
+  }
+  function buildMonthlyIssuedLeadSeries(latest){
+    const byMonth = latest?.avgIssuingTime?.byMonth || {};
+    const volumeByMonth = latest?.avgIssuingTime?.volumeByMonth || {};
+    const keys = Object.keys(byMonth).sort();
+    const endKey = keys.length ? keys[keys.length - 1] : (latest?.asOf ? clean(latest.asOf).slice(0, 7) : FLOW_MONTHLY_START.slice(0, 7));
+    const start = parseDate(FLOW_MONTHLY_START);
+    const end = parseDate(`${endKey}-01`) || start;
+    if (!start || !end) return [];
+    const out = [];
+    for (let cur = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), 1)); cur <= end; cur = addMonthsUTC(cur, 1)){
+      const key = `${cur.getUTCFullYear()}-${String(cur.getUTCMonth() + 1).padStart(2, "0")}`;
+      const monthStart = new Date(Date.UTC(cur.getUTCFullYear(), cur.getUTCMonth(), 1));
+      const monthEnd = addDaysUTC(addMonthsUTC(monthStart, 1), -1);
+      out.push({
+        key,
+        label: fmtMonth(cur),
+        start: monthStart,
+        end: monthEnd,
+        tooltip: fmtDateRangeShort(monthStart, monthEnd),
+        partsIssued: n(volumeByMonth[key]),
+        avgDaysToFirstIssue: n(byMonth[key]),
+      });
+    }
+    return out;
+  }
+  function partsSelectedSummaryRows(series, latest){
+    const visible = state.granularity === "year" ? series : series.slice(-12);
+    const latestRow = visible[visible.length - 1] || null;
+    return [
+      ["Metric","Value"],
+      ["Latest As Of", latest?.asOf ? fmtDate(parseDate(latest.asOf)) : ""],
+      ["Current Granularity", state.granularity],
+      ["Visible Points", visible.length],
+      ["Latest Period", latestRow ? latestRow.tooltip : ""],
+      ["Latest Selected Parts", latestRow ? Number(latestRow.partsSelected || 0) : 0],
+      ["Snapshot Total Selected Parts", latest?.partsSelected?.total || 0],
+      ["Today Selected Parts", latest?.partsSelected?.today || 0],
+    ];
+  }
+  function renderPartsSelectedTable(series){
+    const visible = state.granularity === "year" ? series : series.slice(-12);
+    const table = els.flowTable;
+    if (!table) return;
+    if (!visible.length){
+      table.innerHTML = `<div class="flowTableEmpty">No Parts Selected data found.</div>`;
+      return;
+    }
+    table.innerHTML = `
+      <table class="flowTable" aria-label="Parts Selected table">
+        <thead>
+          <tr>
+            <th>Period</th>
+            <th>Sales Order Selected</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${visible.map(row => `
+            <tr>
+              <td class="period">${esc(row.tooltip || "")}</td>
+              <td class="num">${integer.format(Number(row.partsSelected || 0))}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+  }
+  function exportPartsSelected(){
+    const series = state.groups && state.groups.length ? state.groups : buildSeries(state.history, state.granularity);
+    if(!series.length){
+      alert("No Parts Selected data found to export.");
+      return;
+    }
+    const latest = state.latest || state.history[state.history.length - 1] || null;
+    const btn = els.flowExportBtn;
+    if (btn) btn.disabled = true;
+    (async()=>{
+      let tickets = [];
+      try{
+        tickets = state.currentTickets && state.currentTickets.length ? state.currentTickets : await loadCurrentTickets();
+      }catch(err){
+        console.warn("Ticket detail export load failed:", err);
+        alert("已导出汇总，但当前 ticket 明细拉取失败，所以这次只会包含汇总和趋势。");
+      }
+      const sheets = [
+        { name:"Snapshot Summary", rows:partsSelectedSummaryRows(series, latest) },
+        { name:"Parts Selected Trend", rows:partsSelectedExportRows(series) },
+      ];
+      if (tickets.length){
+        sheets.push(
+          { name:"Ticket Summary", rows:ticketSummaryRows(tickets) },
+          { name:"Ticket Detail", rows:ticketDetailRows(tickets) },
+          { name:"Ticket Item Detail", rows:ticketItemRows(tickets) },
+        );
+      }
+      exportWorkbook(sheets, `parts-selected-${state.granularity}-${exportDateSuffix()}.xls`);
+    })().finally(() => {
+      if (btn) btn.disabled = false;
+    });
+  }
+  function exportPartsIssued(){
+    const btn = els.issuedExportBtn;
+    if (btn) btn.disabled = true;
+    (async()=>{
+      let tickets = [];
+      try{
+        tickets = state.currentTickets && state.currentTickets.length ? state.currentTickets : await loadCurrentTickets();
+      }catch(err){
+        console.warn("Parts issued detail export load failed:", err);
+        alert("已导出汇总，但当前 ticket 明细拉取失败，所以这次只会包含汇总和趋势。");
+      }
+      const series = tickets.length
+        ? buildIssuedMaterialSeriesFromTickets(tickets, "month")
+        : buildSeries(state.history, "month");
+      const issuedSeries = padMonthlySeriesFromStart(series, FLOW_MONTHLY_START);
+      const latest = state.latest || state.history[state.history.length - 1] || null;
+      const sheets = [
+        { name:"Parts Issued Summary", rows:partsIssuedSummaryRows(issuedSeries, latest) },
+        { name:"Parts Issued Trend", rows:partsIssuedExportRows(issuedSeries) },
+      ];
+      if (tickets.length){
+        const issued = issuedTicketRows(tickets);
+        sheets.push(
+          { name:"Ticket Summary", rows:ticketSummaryRows(issued, "Parts Issued Materials") },
+          { name:"Ticket Detail", rows:ticketDetailRows(issued) },
+          { name:"Ticket Item Detail", rows:ticketItemRows(issued) },
+        );
+      }
+      exportWorkbook(sheets, `parts-issued-${exportDateSuffix()}.xls`);
+    })().finally(() => {
+      if (btn) btn.disabled = false;
+    });
+  }
+  function exportTotalPartsCost(){
+    const btn = els.costExportBtn;
+    if (btn) btn.disabled = true;
+    (async()=>{
+      let tickets = [];
+      try{
+        tickets = state.currentTickets && state.currentTickets.length ? state.currentTickets : await loadCurrentTickets();
+      }catch(err){
+        console.warn("Total parts cost detail export load failed:", err);
+        alert("已导出汇总，但当前 ticket 明细拉取失败，所以这次只会包含成本汇总和月度趋势。");
+      }
+      const latest = state.latest || state.history[state.history.length - 1] || null;
+      const report = latest?.costReport || state.costReport || null;
+      const reportSeries = buildCostSeries(
+        report && Array.isArray(report.months) ? report.months : [],
+        report?.periodStart || report?.source?.periodStart || FLOW_MONTHLY_START
+      );
+      const partsByMonth = latest?.partsCost?.byMonth || {};
+      const poByMonth = reportSeries.length ? Object.fromEntries(reportSeries.map(month => [month.key, month.poCost || 0])) : (latest?.partsCost?.byMonthPo || {});
+      const fallbackByMonth = reportSeries.length ? Object.fromEntries(reportSeries.map(month => [month.key, month.fallbackCost || 0])) : (latest?.partsCost?.byMonthFallback || {});
+      const monthKeys = Array.from(new Set([...Object.keys(partsByMonth), ...Object.keys(poByMonth), ...Object.keys(fallbackByMonth)])).sort();
+      const fallbackSeries = buildCostSeries(monthKeys.map(key => ({
+        key,
+        cost: Number(partsByMonth[key]) || 0,
+        poCost: Number(poByMonth[key]) || 0,
+        fallbackCost: Number(fallbackByMonth[key]) || 0,
+        poHitCount: Number((latest?.partsCost?.poHitCountByMonth || {})[key]) || 0,
+        fallbackCount: Number((latest?.partsCost?.fallbackCountByMonth || {})[key]) || 0,
+        materialRows: Number((latest?.partsCost?.materialRowsByMonth || {})[key]) || 0,
+        soCount: Number((latest?.partsCost?.soCountByMonth || {})[key]) || 0,
+        poShare: 0,
+        fallbackShare: 0,
+        avgPerSo: 0,
+      })), FLOW_MONTHLY_START);
+      const series = reportSeries.length ? reportSeries : fallbackSeries;
+      const sheets = [
+        { name:"Cost Summary", rows:costSummaryRows(report, latest, tickets, series) },
+        { name:"Monthly Trend", rows:costTrendRows(series) },
+      ];
+      if (tickets.length){
+        sheets.push(
+          { name:"Monthly Ticket Summary", rows:costMonthlyTicketSummaryRows(tickets) },
+          { name:"Monthly Ticket Detail", rows:costMonthlyTicketRows(tickets) },
+          { name:"Monthly Item Detail", rows:costMonthlyItemRows(tickets) },
+        );
+      }
+      exportWorkbook(sheets, `total-parts-cost-${exportDateSuffix()}.xls`);
+    })().finally(() => {
+      if (btn) btn.disabled = false;
+    });
+  }
+  async function exportTicketScope(scopeLabel, filenameBase, rowFilter, sheetPrefix, btn){
+    if (btn) btn.disabled = true;
+    try{
+      const tickets = await loadCurrentTickets();
+      const filtered = uniqueTicketsBySalesOrder(tickets, rowFilter);
+      if (!filtered.length){
+        alert(`No ${scopeLabel} data found to export.`);
+        return;
+      }
+      exportWorkbook([
+        { name: `${sheetPrefix} Summary`, rows: ticketSummaryRows(filtered, scopeLabel) },
+        { name: `${sheetPrefix} Detail`, rows: ticketDetailRows(filtered) },
+        { name: `${sheetPrefix} Item Detail`, rows: ticketItemRows(filtered) },
+      ], `${filenameBase}-${exportDateSuffix()}.xls`);
+    }catch(err){
+      console.warn(`${scopeLabel} detail export load failed:`, err);
+      alert(`Unable to load ticket details for ${scopeLabel} export.`);
+    }finally{
+      if (btn) btn.disabled = false;
+    }
+  }
+  function exportCurrentAwaitingParts(){
+    return exportTicketScope(
+      "Current Awaiting Parts",
+      "current-awaiting-parts",
+      ticket => isAwaitingPartsTicket(ticket),
+      "Current Awaiting",
+      els.kpis ? els.kpis.querySelector('[data-export-kind="awaiting"]') : null
+    );
+  }
+  function exportOpenSo(){
+    return exportTicketScope(
+      "Open Parts",
+      "open-parts",
+      ticket => Number(ticket.openItems || 0) > 0,
+      "Open Parts",
+      els.kpis ? els.kpis.querySelector('[data-export-kind="open-so"]') : null
+    );
+  }
+  function bindExportButtons(){
+    const btn = els.flowExportBtn;
+    if(!btn || btn.dataset.bound) return;
+    btn.innerHTML = `${exportIcon()}<span>Export Excel</span>`;
+    btn.onclick = exportPartsSelected;
+    btn.dataset.bound = "1";
+    const costBtn = els.costExportBtn;
+    if (costBtn && !costBtn.dataset.bound){
+      costBtn.innerHTML = `${exportIcon()}<span>Export Excel</span>`;
+      costBtn.onclick = exportTotalPartsCost;
+      costBtn.dataset.bound = "1";
+    }
+    const issuedBtn = els.issuedExportBtn;
+    if (issuedBtn && !issuedBtn.dataset.bound){
+      issuedBtn.innerHTML = `${exportIcon()}<span>Export Excel</span>`;
+      issuedBtn.onclick = exportPartsIssued;
+      issuedBtn.dataset.bound = "1";
+    }
+  }
+
+  function parseLooseDate(text){
+    const v = clean(text);
+    if (!v || v === "#") return null;
+    const iso = v.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (iso) return new Date(Date.UTC(+iso[1], +iso[2] - 1, +iso[3]));
+    const dmySlash = v.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (dmySlash) return new Date(Date.UTC(+dmySlash[3], +dmySlash[2] - 1, +dmySlash[1]));
+    const dmy = v.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+    if (dmy) return new Date(Date.UTC(+dmy[3], +dmy[2] - 1, +dmy[1]));
+    const slash = v.match(/^(\d{4})\/(\d{2})\/(\d{2})$/);
+    if (slash) return new Date(Date.UTC(+slash[1], +slash[2] - 1, +slash[3]));
+    const d = new Date(v);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+
+  function normalizeSnapshot(raw){
+    const flow = raw.flow || {};
+    const kpi = raw.kpi || {};
+    const status = raw.statusMix || {};
+    const aging = raw.agingBuckets || {};
+    const awaitingParts = raw.awaitingParts && typeof raw.awaitingParts === "object" ? raw.awaitingParts : null;
+    const partsSelected = raw.partsSelected && typeof raw.partsSelected === "object" ? raw.partsSelected : null;
+    const partsIssued = raw.partsIssued && typeof raw.partsIssued === "object" ? raw.partsIssued : null;
+    const avgIssuingTime = raw.avgIssuingTime && typeof raw.avgIssuingTime === "object" ? raw.avgIssuingTime : null;
+    return {
+      asOf: clean(raw.asOf),
+      generatedAt: clean(raw.generatedAt),
+      awaitingParts: awaitingParts ? {
+        current: n(awaitingParts.current),
+      } : null,
+      partsSelected: partsSelected ? {
+        today: n(partsSelected.today),
+        total: n(partsSelected.total),
+        last12Weeks: Array.isArray(partsSelected.last12Weeks) ? partsSelected.last12Weeks.map(week => ({
+          week: clean(week.week),
+          weekStart: clean(week.weekStart),
+          weekEnd: clean(week.weekEnd),
+          count: n(week.count),
+        })) : [],
+        byMonth: partsSelected.byMonth || {},
+      } : null,
+      partsIssued: partsIssued ? {
+        today: n(partsIssued.today),
+        mtd: n(partsIssued.mtd),
+        byMonth: partsIssued.byMonth || {},
+      } : null,
+      avgIssuingTime: avgIssuingTime ? {
+        byMonth: avgIssuingTime.byMonth || {},
+        volumeByMonth: avgIssuingTime.volumeByMonth || {},
+      } : null,
+      flow: {
+        newSoItems: n(flow.newSoItems),
+        itemsIssued: n(flow.itemsIssued),
+        netBacklogChange: n(flow.netBacklogChange),
+        backlogTotal: n(flow.backlogTotal),
+      },
+      statusMix: {
+        awaitingItems: n(status.awaitingItems),
+        openItems: n(status.openItems),
+        rejectedItems: n(status.rejectedItems),
+      },
+      agingBuckets: {
+        "0-7": n(aging["0-7"]),
+        "8-14": n(aging["8-14"]),
+        "15-30": n(aging["15-30"]),
+        "30+": n(aging["30+"]),
+      },
+      kpi: {
+        openSoItems: n(kpi.openSoItems),
+        openNotIssuedParts: n(kpi.openNotIssuedParts),
+        partiallyIssuedTickets: n(kpi.partiallyIssuedTickets),
+        fullyIssuedTickets: n(kpi.fullyIssuedTickets),
+        notIssuedTickets: n(kpi.notIssuedTickets),
+        avgDaysToFirstIssue: n(kpi.avgDaysToFirstIssue),
+        oldestNotIssuedDays: n(kpi.oldestNotIssuedDays),
+      },
+      partsCost: {
+        total: n(raw.partsCost?.total),
+        byMonth: raw.partsCost?.byMonth || {},
+        poCost: n(raw.partsCost?.poCost || raw.partsCost?.purchaserCost),
+        fallbackCost: n(raw.partsCost?.fallbackCost),
+        poHitCount: n(raw.partsCost?.poHitCount),
+        fallbackCount: n(raw.partsCost?.fallbackCount),
+        materialRows: n(raw.partsCost?.materialRows),
+        avgPerSO: n(raw.partsCost?.avgPerSO),
+        soCount: n(raw.partsCost?.soCount),
+      },
+      nishiE03: {
+        ytdCost: n(raw.nishiE03?.ytdCost),
+        ytdYear: n(raw.nishiE03?.ytdYear) || new Date().getFullYear(),
+        count: n(raw.nishiE03?.count),
+        byMonth: raw.nishiE03?.byMonth || {},
+      },
+      costReport: normalizeCostReport(raw.costReport),
+    };
+  }
+
+  function historyDayKey(snapshot){
+    const d = parseLooseDate(snapshot?.asOf) || parseDate(snapshot?.asOf);
+    return d ? dateKey(d) : clean(snapshot?.asOf);
+  }
+
+  function collapseHistoryByDay(history){
+    const ordered = [...history].sort((a, b) => {
+      const da = parseLooseDate(a.asOf) || parseDate(a.asOf);
+      const db = parseLooseDate(b.asOf) || parseDate(b.asOf);
+      if (da && db && da.getTime() !== db.getTime()) return da - db;
+      const asOfCmp = clean(a.asOf).localeCompare(clean(b.asOf));
+      if (asOfCmp) return asOfCmp;
+      return clean(a.generatedAt).localeCompare(clean(b.generatedAt));
+    });
+    const byDay = new Map();
+    ordered.forEach(snapshot => {
+      const key = historyDayKey(snapshot);
+      if (!key) return;
+      byDay.set(key, snapshot);
+    });
+    return Array.from(byDay.values()).sort((a, b) => {
+      const da = parseLooseDate(a.asOf) || parseDate(a.asOf);
+      const db = parseLooseDate(b.asOf) || parseDate(b.asOf);
+      if (da && db && da.getTime() !== db.getTime()) return da - db;
+      const asOfCmp = clean(a.asOf).localeCompare(clean(b.asOf));
+      if (asOfCmp) return asOfCmp;
+      return clean(a.generatedAt).localeCompare(clean(b.generatedAt));
+    });
+  }
+
+  function normalizeCostPerson(raw){
+    if (!raw || typeof raw !== "object") return null;
+    return {
+      agent: clean(raw.agent),
+      cost: n(raw.cost),
+      factoryCost: n(raw.factoryCost),
+      claimTotal: n(raw.claimTotal),
+      repairerCost: n(raw.repairerCost),
+      rows: n(raw.rows),
+      poCount: n(raw.poCount),
+      soCount: n(raw.soCount),
+      avgCostPerSo: n(raw.avgCostPerSo),
+    };
+  }
+
+  function normalizeCostReport(raw){
+    if (!raw || typeof raw !== "object") return null;
+    const months = Array.isArray(raw.months) ? raw.months.map(month => ({
+      key: clean(month.key),
+      label: clean(month.label),
+      cost: n(month.cost),
+      poCost: n(month.poCost || month.purchaserCost),
+      fallbackCost: n(month.fallbackCost),
+      poHitCount: n(month.poHitCount || month.poCount),
+      fallbackCount: n(month.fallbackCount || month.purchaserPoCount),
+      materialRows: n(month.materialRows),
+      soCount: n(month.soCount),
+      poShare: n(month.poShare || month.purchaserShare),
+      fallbackShare: n(month.fallbackShare),
+      gap: n(month.gap),
+      avgPerSo: n(month.avgPerSo),
+    })).filter(month => month.label) : [];
+    return {
+      periodStart: clean(raw.periodStart) || clean(raw.source?.periodStart) || "2025-01-01",
+      periodEnd: clean(raw.periodEnd),
+      periodLabel: clean(raw.periodLabel),
+      ytdYear: n(raw.ytdYear),
+      latestDate: clean(raw.latestDate),
+      totalCost: n(raw.totalCost),
+      poTotalCost: n(raw.poTotalCost || raw.purchaserTotalCost),
+      fallbackTotalCost: n(raw.fallbackTotalCost),
+      poHitCount: n(raw.poHitCount),
+      fallbackCount: n(raw.fallbackCount),
+      materialRows: n(raw.materialRows),
+      totalSoCount: n(raw.totalSoCount),
+      months,
+      avgCostPerSo: n(raw.avgCostPerSo),
+      source: raw.source && typeof raw.source === "object" ? {
+        name: clean(raw.source.name),
+        sourceType: clean(raw.source.sourceType),
+        periodStart: clean(raw.source.periodStart),
+      } : null,
+    };
+  }
+
+  function groupKeyFor(date, granularity){
+    const d = parseDate(date);
+    if (!d) return null;
+    if (granularity === "month") return dateKey(addMonthsUTC(d, 0));
+    if (granularity === "year") return `${d.getUTCFullYear()}-01-01`;
+    return dateKey(weekStartUTC(d));
+  }
+
+  function groupLabel(start, granularity){
+    if (granularity === "month") return fmtMonth(start);
+    if (granularity === "year") return fmtYear(start);
+    return fmtDate(start);
+  }
+
+  function buildSeries(history, granularity){
+    const groups = new Map();
+    history.forEach(snapshot => {
+      const d = parseDate(snapshot.asOf);
+      if (!d) return;
+      const start = granularity === "month" ? new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1))
+        : granularity === "year" ? new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+        : weekStartUTC(d);
+      const key = dateKey(start);
+      if (!groups.has(key)){
+        const end = granularity === "month"
+          ? addDaysUTC(addMonthsUTC(start, 1), -1)
+          : granularity === "year"
+            ? new Date(Date.UTC(start.getUTCFullYear(), 11, 31))
+            : addDaysUTC(start, 6);
+        groups.set(key, {
+          key,
+          start,
+          end,
+          label: groupLabel(start, granularity),
+          tooltip: fmtShortRange(start, end),
+          partsSelected: 0,
+          partsIssued: 0,
+          openParts: 0,
+          latest: snapshot,
+        });
+      }
+      const group = groups.get(key);
+      group.partsSelected += n(snapshot.partsSelected?.today ?? snapshot.flow.newSoItems);
+      group.partsIssued += n(snapshot.partsIssued?.today ?? snapshot.flow.itemsIssued);
+      group.openParts += n(snapshot.flow.backlogTotal);
+      group.latest = snapshot;
+    });
+    return Array.from(groups.values()).sort((a, b) => a.start - b.start);
+  }
+
+  function renderCards(latest, latestGroup, issuedSeries, report, currentTickets){
+    const materialStats = Array.isArray(currentTickets) && currentTickets.length ? materialMetricsFromTickets(currentTickets) : null;
+    const avgIssueSourceLabel = materialStats ? "current tickets" : "latest snapshot";
+    const awaitingNow = Array.isArray(currentTickets) && currentTickets.length
+      ? awaitingTicketRows(currentTickets).length
+      : (latest.awaitingParts?.current ?? latest.statusMix.awaitingItems ?? latest.kpi.openSoItems ?? 0);
+    const openNotIssuedParts = materialStats ? materialStats.openCount : (latest.kpi.openNotIssuedParts ?? latest.kpi.openSoItems ?? 0);
+    const avgDaysToFirstIssue = materialStats ? materialStats.avgDaysToFirstIssue : (latest.kpi.avgDaysToFirstIssue ?? 0);
+    const icon = {
+      awaiting: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M7 15V11"/><path d="M12 15V8"/><path d="M17 15V6"/></svg>`,
+      issued: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/><path d="M12 4v4"/><path d="M4 12h4"/></svg>`,
+      open: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/></svg>`,
+      lead: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>`,
+    };
+    const cards = [
+      { label:"Current Awaiting Parts", value: integer.format(awaitingNow), left:"Ticket status YA / Awaiting Parts", right:"unique SOs awaiting parts", hint:`Awaiting unique SOs ${integer.format(awaitingNow)}`, theme:"blue", icon: icon.awaiting, action:{ kind:"awaiting", label:"Export", title:"Export Current Awaiting Parts with ticket details" } },
+      { label:"Open Parts (Not Issued)", value: integer.format(openNotIssuedParts), left:"Material rows", right:"still open today", hint:`Age bands use ${integer.format(openNotIssuedParts)} open parts`, theme:"orange", icon: icon.open, action:{ kind:"open-so", label:"Export", title:"Export Open Parts with ticket details" } },
+      { label:"Average Parts Issuing Time", value: `${daysFmt.format(avgDaysToFirstIssue)}<small>d</small>`, left:avgIssueSourceLabel, right:"issued material rows from creation to first issue", hint:"Weighted across issued material rows in the current snapshot", theme:"violet", icon: icon.lead },
+    ];
+
+    els.kpis.innerHTML = cards.map(card => `
+      <article class="kpi">
+        <div class="costStatTop">
+          <div class="costStatIcon ${card.theme}">
+            ${card.icon}
+          </div>
+          <div class="kpiHead">
+            <div class="lbl">${esc(card.label)}</div>
+          </div>
+        </div>
+        <div class="val">${card.value}</div>
+        ${card.action ? `<button class="flowExportBtn kpiAction" type="button" data-export-kind="${esc(card.action.kind)}" title="${esc(card.action.title)}" aria-label="${esc(card.action.title)}">${exportIcon()}<span>${esc(card.action.label || "Export")}</span></button>` : ""}
+      </article>
+    `).join("");
+    const awaitingBtn = els.kpis.querySelector('[data-export-kind="awaiting"]');
+    if (awaitingBtn) awaitingBtn.onclick = exportCurrentAwaitingParts;
+    const openSoBtn = els.kpis.querySelector('[data-export-kind="open-so"]');
+    if (openSoBtn) openSoBtn.onclick = exportOpenSo;
+  }
+
+  function setTip(html, x, y){
+    els.tip.innerHTML = html;
+    els.tip.style.left = `${x + 14}px`;
+    els.tip.style.top = `${y + 14}px`;
+    els.tip.style.opacity = 1;
+  }
+  function hideTip(){ els.tip.style.opacity = 0; }
+
+  function renderCanvas(canvas, height, draw){
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const w = Math.max(1, rect.width);
+    const h = Math.max(1, height);
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.height = `${h}px`;
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    draw(ctx, w, h);
+    return { ctx, w, h };
+  }
+
+  function drawChartLabel(ctx, text, x, y, color){
+    if (text === "" || text == null) return;
+    ctx.save();
+    ctx.fillStyle = color || getComputedStyle(document.documentElement).getPropertyValue("--ink").trim();
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 3;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "bottom";
+    ctx.strokeText(String(text), x, y);
+    ctx.fillText(String(text), x, y);
     ctx.restore();
   }
 
-  var hover={idx:-1};
-  function attachHover(canvas, series, w, labelFn){
-    canvas.onmousemove=function(e){
-      var rect=canvas.getBoundingClientRect();
-      var xs=xPositions(series.length,w);
-      var mx=e.clientX-rect.left;
-      var best=0,bd=1e9;
-      for(var i=0;i<xs.length;i++){ var d=Math.abs(xs[i]-mx); if(d<bd){bd=d;best=i;} }
-      var tip=document.getElementById('tip');
-      tip.innerHTML=labelFn(series[best]);
-      tip.style.left=(e.clientX+14)+'px'; tip.style.top=(e.clientY+14)+'px'; tip.style.opacity=1;
+  function drawXAxisLabels(ctx, visible, xFor, y, tickStep, options={}){
+    if (!visible.length) return;
+    const lastIndex = visible.length - 1;
+    const entries = [];
+    const gap = options.gap == null ? 12 : options.gap;
+    const addEntry = (i, align) => {
+      if (i < 0 || i >= visible.length) return;
+      entries.push({ i, align });
     };
-    canvas.onmouseleave=function(){ document.getElementById('tip').style.opacity=0; };
-  }
 
-  // ---------- individual charts ----------
-  function chartFlow(series,prog){
-    var s=setup(document.getElementById('cFlow'),300); var ctx=s.ctx,w=s.w,h=s.h;
-    var maxL=niceMax(Math.max.apply(null,series.map(function(d){return Math.max(d.newSoItems,d.itemsIssued);})));
-    var maxR=niceMax(Math.max.apply(null,series.map(function(d){return d.backlogTotal;})));
-    drawAxes(ctx,w,h,maxL,maxR,series.map(function(d){return d.label;}));
-    var xs=xPositions(series.length,w), yL=yScale(h,maxL), yR=yScale(h,maxR);
-    // backlog area (right axis)
-    ctx.beginPath(); ctx.moveTo(xs[0],h-PAD.b);
-    series.forEach(function(d,i){ ctx.lineTo(xs[i],yR(d.backlogTotal*prog)); });
-    ctx.lineTo(xs[xs.length-1],h-PAD.b); ctx.closePath();
-    var g=ctx.createLinearGradient(0,PAD.t,0,h-PAD.b);
-    g.addColorStop(0,'rgba(224,123,57,.20)'); g.addColorStop(1,'rgba(224,123,57,0)');
-    ctx.fillStyle=g; ctx.fill();
-    ctx.beginPath(); series.forEach(function(d,i){ i?ctx.lineTo(xs[i],yR(d.backlogTotal*prog)):ctx.moveTo(xs[i],yR(d.backlogTotal*prog)); });
-    ctx.strokeStyle=COL.open; ctx.lineWidth=2; ctx.stroke();
-    // new SO bars (left)
-    var bw=Math.max(2,Math.min(10,(w-PAD.l-PAD.r)/series.length*0.5));
-    ctx.fillStyle='rgba(63,111,224,.45)';
-    series.forEach(function(d,i){ var bh=(h-PAD.b)-yL(d.newSoItems*prog); ctx.fillRect(xs[i]-bw/2,yL(d.newSoItems*prog),bw,bh); });
-    // issued line (left)
-    ctx.beginPath(); series.forEach(function(d,i){ i?ctx.lineTo(xs[i],yL(d.itemsIssued*prog)):ctx.moveTo(xs[i],yL(d.itemsIssued*prog)); });
-    ctx.strokeStyle=COL.issued; ctx.lineWidth=2; ctx.stroke();
-    if(prog>=.99){
-      drawPointLabels(ctx,w,h,
-        buildPointLabels(series,function(d){ return d.backlogTotal; },xs,yR,h,{color:COL.open,unit:'',limit:6})
-          .concat(buildPointLabels(series,function(d){ return d.itemsIssued; },xs,yL,h,{color:COL.issued,unit:'',limit:5}))
-      );
+    for (let i = tickStep; i < lastIndex; i += tickStep){
+      addEntry(i, "center");
     }
-    attachHover(document.getElementById('cFlow'),series,w,function(d){
-      return d.label+'<br>New: '+d.newSoItems+'<br>Issued: '+d.itemsIssued+'<br>Backlog: '+d.backlogTotal; });
-  }
+    addEntry(0, options.firstAlign || "left");
+    if (lastIndex > 0) addEntry(lastIndex, options.lastAlign || "right");
 
-  function chartMix(series,prog){
-    var s=setup(document.getElementById('cMix'),260); var ctx=s.ctx,w=s.w,h=s.h;
-    drawAxes(ctx,w,h,100,null,series.map(function(d){return d.label;}));
-    var xs=xPositions(series.length,w), y0=h-PAD.b, y1=PAD.t, H=y0-y1;
-    function band(key,color,base){
-      ctx.beginPath();
-      series.forEach(function(d,i){
-        var tot=d.issuedItems+d.openItems+d.rejectedItems||1;
-        var top=(base(d)+d[key])/tot, y=y0-H*top*prog;
-        i?ctx.lineTo(xs[i],y):ctx.moveTo(xs[i],y);
+    const boxes = [];
+    const acceptEntry = ({ i, align }) => {
+      const text = String(visible[i].label || "");
+      if (!text) return null;
+      const x = xFor(i);
+      const width = ctx.measureText(text).width;
+      const box = align === "left"
+        ? { left: x - gap, right: x + width + gap }
+        : align === "right"
+          ? { left: x - width - gap, right: x + gap }
+          : { left: x - width / 2 - gap, right: x + width / 2 + gap };
+      if (boxes.some(existing => !(box.right <= existing.left || box.left >= existing.right))) return null;
+      boxes.push(box);
+      return { i, align, text, x };
+    };
+
+    const ordered = [];
+    const pushIf = item => {
+      const accepted = acceptEntry(item);
+      if (accepted) ordered.push(accepted);
+    };
+    if (lastIndex > 0) pushIf({ i: lastIndex, align: options.lastAlign || "right" });
+    pushIf({ i: 0, align: options.firstAlign || "left" });
+    entries
+      .filter(entry => entry.i !== 0 && entry.i !== lastIndex)
+      .sort((a, b) => a.i - b.i)
+      .forEach(pushIf);
+
+    ordered
+      .sort((a, b) => a.i - b.i)
+      .forEach(({ align, text, x }) => {
+        ctx.textAlign = align;
+        ctx.fillText(text, x, y);
       });
-      for(var i=series.length-1;i>=0;i--){
-        var d=series[i], tot=d.issuedItems+d.openItems+d.rejectedItems||1;
-        var b=base(d)/tot, y=y0-H*b*prog; ctx.lineTo(xs[i],y);
+  }
+
+  function drawIssuedChart(series){
+    const canvas = els.issuedChart;
+    const visible = series;
+    const { w, h } = renderCanvas(canvas, 236, (ctx, width, height) => {
+      const ml = 56, mr = 20, mt = 24, mb = 40;
+      const plotW = width - ml - mr, plotH = height - mt - mb;
+      const values = visible.map(r => Math.max(0, Number(r.partsIssued) || 0));
+      const axisMax = niceMax(Math.max(1, ...values));
+      const step = plotW / Math.max(1, visible.length);
+      const barW = Math.max(12, Math.min(28, step * 0.56));
+      const xFor = i => ml + step * i + step / 2;
+      const yFor = v => mt + plotH - (Math.max(0, Number(v) || 0) / axisMax) * plotH;
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--grid").trim();
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
+      ctx.font = "11px " + getComputedStyle(document.documentElement).getPropertyValue("--mono").trim();
+      ctx.textAlign = "right";
+      for (let i = 0; i <= 4; i++){
+        const t = i / 4;
+        const y = mt + plotH * t;
+        ctx.beginPath();
+        ctx.setLineDash([2, 4]);
+        ctx.moveTo(ml, y);
+        ctx.lineTo(width - mr, y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillText(fmtAxis(axisMax * (1 - t)), ml - 8, y + 4);
       }
-      ctx.closePath(); ctx.fillStyle=color; ctx.globalAlpha=.55; ctx.fill(); ctx.globalAlpha=1;
-    }
-    band('issuedItems',COL.issued,function(){return 0;});
-    band('openItems',COL.open,function(d){return d.issuedItems;});
-    band('rejectedItems',COL.rejected,function(d){return d.issuedItems+d.openItems;});
-    attachHover(document.getElementById('cMix'),series,w,function(d){
-      var tot=d.issuedItems+d.openItems+d.rejectedItems||1;
-      function pct(x){return Math.round(x/tot*100)+'%';}
-      return d.label+'<br>Issued: '+pct(d.issuedItems)+'<br>Open: '+pct(d.openItems)+'<br>Rejected: '+pct(d.rejectedItems); });
-  }
-
-  function chartAging(series,prog){
-    var s=setup(document.getElementById('cAging'),260); var ctx=s.ctx,w=s.w,h=s.h;
-    var maxV=niceMax(Math.max.apply(null,series.map(function(d){return d.a0+d.a1+d.a2+d.a3;})));
-    drawAxes(ctx,w,h,maxV,null,series.map(function(d){return d.label;}));
-    var xs=xPositions(series.length,w), y=yScale(h,maxV);
-    var keys=[['a0',COL.a0],['a1',COL.a1],['a2',COL.a2],['a3',COL.a3]];
-    var base=series.map(function(){return 0;});
-    keys.forEach(function(k){
-      ctx.beginPath();
-      series.forEach(function(d,i){ var v=base[i]+d[k[0]]; var yy=y(v*prog); i?ctx.lineTo(xs[i],yy):ctx.moveTo(xs[i],yy); });
-      for(var i=series.length-1;i>=0;i--){ ctx.lineTo(xs[i],y(base[i]*prog)); }
-      ctx.closePath(); ctx.fillStyle=k[1]; ctx.globalAlpha=.62; ctx.fill(); ctx.globalAlpha=1;
-      series.forEach(function(d,i){ base[i]+=d[k[0]]; });
+      visible.forEach((r, i) => {
+        const x = xFor(i);
+        const y = yFor(r.partsIssued);
+        const barH = mt + plotH - y;
+        ctx.fillStyle = "rgba(31,157,107,.50)";
+        ctx.fillRect(x - barW / 2, y, barW, barH);
+        drawChartLabel(ctx, integer.format(r.partsIssued), x, Math.max(mt + 12, y - 6), "rgba(31,157,107,.98)");
+      });
+      const tickStep = visible.length > 6 ? Math.ceil(visible.length / 6) : 1;
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
+      drawXAxisLabels(ctx, visible, xFor, height - 14, tickStep, { lastPadding: 16 });
     });
-    attachHover(document.getElementById('cAging'),series,w,function(d){
-      return d.label+'<br>0-7d: '+d.a0+'<br>8-14d: '+d.a1+'<br>15-30d: '+d.a2+'<br>30+d: '+d.a3; });
-  }
 
-  function chartLead(series,prog){
-    var s=setup(document.getElementById('cLead'),220); var ctx=s.ctx,w=s.w,h=s.h;
-    var maxV=niceMax(Math.max.apply(null,series.map(function(d){return d.avgDaysToFirstIssue;})));
-    drawAxes(ctx,w,h,maxV,null,series.map(function(d){return d.label;}));
-    var xs=xPositions(series.length,w), y=yScale(h,maxV);
-    ctx.beginPath();
-    series.forEach(function(d,i){ var yy=y(d.avgDaysToFirstIssue*prog); i?ctx.lineTo(xs[i],yy):ctx.moveTo(xs[i],yy); });
-    ctx.strokeStyle=COL.flow; ctx.lineWidth=2.5; ctx.stroke();
-    if(prog>=.99){
-      drawPointLabels(ctx,w,h,
-        buildPointLabels(series,function(d){ return d.avgDaysToFirstIssue; },xs,y,h,{color:COL.flow,unit:'d',limit:6})
+    const ml = 56, mr = 20, plotW = w - ml - mr, step = plotW / Math.max(1, visible.length);
+    canvas.onmousemove = e => {
+      if (!visible.length) return;
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      let idx = 0, best = Infinity;
+      for (let i = 0; i < visible.length; i++){
+        const x = ml + step * i + step / 2;
+        const d = Math.abs(x - mx);
+        if (d < best){ best = d; idx = i; }
+      }
+      const r = visible[idx];
+      setTip(
+        `<div class="tipTitle">${esc(r.label)}</div><div class="tipLine">Monthly issued materials: ${integer.format(r.partsIssued)}</div>`,
+        e.clientX, e.clientY
       );
-    }
-    attachHover(document.getElementById('cLead'),series,w,function(d){
-      return d.label+'<br>Avg: '+d.avgDaysToFirstIssue+'d'; });
+    };
+    canvas.onmouseleave = hideTip;
   }
 
-  // ---------- KPIs ----------
-  function deltaStr(delta,unit,goodWhenDown){
-    if(delta==null||!isFinite(delta)||Math.abs(delta)<0.05) return {t:'-',c:COL.inkDim};
-    var down=delta<0, good=goodWhenDown?down:!down;
-    var u=(unit==='d')?'d':'';
-    var sign=down?'-':'+';
-    return {t:sign+Math.abs(delta).toFixed(delta%1?1:0)+u, c:good?COL.issued:COL.rejected};
+  function drawLeadChart(latest){
+    const canvas = els.leadChart;
+    const visible = buildMonthlyIssuedLeadSeries(latest);
+    const visibleWithMA = addMovingAverage(visible, 3, "avgDaysToFirstIssue");
+    const { w, h } = renderCanvas(canvas, 236, (ctx, width, height) => {
+      const ml = 56, mr = 22, mt = 18, mb = 38;
+      const plotW = width - ml - mr, plotH = height - mt - mb;
+      const axisMax = niceMax(Math.max(1, ...visible.map(r => r.avgDaysToFirstIssue), ...visibleWithMA.map(r => r.movingAvg || 0)));
+      const step = plotW / Math.max(1, visible.length);
+      const barW = Math.max(12, Math.min(28, step * 0.56));
+      const xFor = i => ml + step * i + step / 2;
+      const yFor = v => mt + plotH - (Number(v) || 0) / axisMax * plotH;
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--grid").trim();
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
+      ctx.font = "11px " + getComputedStyle(document.documentElement).getPropertyValue("--mono").trim();
+      ctx.textAlign = "right";
+      for (let i = 0; i <= 4; i++){
+        const y = mt + plotH * i / 4;
+        ctx.beginPath();
+        ctx.setLineDash([2, 4]);
+        ctx.moveTo(ml, y);
+        ctx.lineTo(width - mr, y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillText(fmtAxis(axisMax * (1 - i / 4)), ml - 8, y + 4);
+      }
+      visible.forEach((r, i) => {
+        const x = xFor(i);
+        const y = yFor(r.avgDaysToFirstIssue || 0);
+        const barH = mt + plotH - y;
+        ctx.fillStyle = "rgba(63,111,224,.50)";
+        ctx.fillRect(x - barW / 2, y, barW, barH);
+        drawChartLabel(ctx, daysFmt.format(r.avgDaysToFirstIssue || 0), x, Math.max(mt + 12, y - 6), "rgba(63,111,224,.98)");
+      });
+      visibleWithMA.forEach((r, i) => {
+        const x = xFor(i);
+        const y = yFor(r.movingAvg || 0);
+        if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+      });
+      ctx.strokeStyle = "rgba(124,58,237,.96)";
+      ctx.lineWidth = 2.25;
+      ctx.setLineDash([6, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      visibleWithMA.forEach((r, i) => {
+        const x = xFor(i);
+        const y = yFor(r.movingAvg || 0);
+        ctx.beginPath();
+        ctx.fillStyle = "#fff";
+        ctx.arc(x, y, 3.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(124,58,237,.96)";
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+      });
+      const tickStep = visible.length > 6 ? Math.ceil(visible.length / 6) : 1;
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
+      drawXAxisLabels(ctx, visible, xFor, height - 14, tickStep, { lastPadding: 16 });
+    });
+
+    const ml = 56, mr = 22, plotW = w - ml - mr, step = plotW / Math.max(1, visible.length);
+    canvas.onmousemove = e => {
+      if (!visible.length) return;
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      let idx = 0, best = Infinity;
+      for (let i = 0; i < visible.length; i++){
+        const x = ml + step * i + step / 2;
+        const d = Math.abs(x - mx);
+        if (d < best){ best = d; idx = i; }
+      }
+      const r = visible[idx];
+      const ma = visibleWithMA[idx] ? visibleWithMA[idx].movingAvg || 0 : 0;
+      setTip(
+        `<div class="tipTitle">${esc(r.label)}</div><div class="tipLine">Avg parts issuing time: ${daysFmt.format(r.avgDaysToFirstIssue || 0)}d</div><div class="tipLine">3M moving average: ${daysFmt.format(ma)}d</div>`,
+        e.clientX, e.clientY
+      );
+    };
+    canvas.onmouseleave = hideTip;
   }
-  function renderKpis(latest,prev){
-    var completionDenom=latest.fullyIssuedTickets+latest.partiallyIssuedTickets+latest.notIssuedTickets;
-    var prevCompletionDenom=prev?prev.fullyIssuedTickets+prev.partiallyIssuedTickets+prev.notIssuedTickets:0;
-    var completion=completionDenom?+(latest.fullyIssuedTickets/completionDenom*100).toFixed(1):0;
-    var prevCompletion=prev&&prevCompletionDenom?+(prev.fullyIssuedTickets/prevCompletionDenom*100).toFixed(1):null;
-    var items=[
-      {lbl:'Avg First Issue Leadtime',val:latest.avgDaysToFirstIssue,unit:'d',d:prev?+(latest.avgDaysToFirstIssue-prev.avgDaysToFirstIssue).toFixed(1):null,down:true,hint:'SO created to first issue'},
-      {lbl:'Not Issued Backlog',val:latest.notIssuedTickets,unit:'tkts',d:prev?latest.notIssuedTickets-prev.notIssuedTickets:null,down:true,hint:'tickets still waiting'},
-      {lbl:'Partially Issued',val:latest.partiallyIssuedTickets,unit:'tkts',d:prev?latest.partiallyIssuedTickets-prev.partiallyIssuedTickets:null,down:true,hint:'some items shipped'},
-      {lbl:'Fully Issued Completion',val:completion,unit:'%',d:prevCompletion==null?null:+(completion-prevCompletion).toFixed(1),down:false,hint:'fully issued share'}
+
+  function renderAging(latest, currentTickets){
+    const agingBuckets = Array.isArray(currentTickets) && currentTickets.length
+      ? materialAgingFromTickets(currentTickets, latest.asOf)
+      : (latest.agingBuckets || {"0-7": 0, "8-14": 0, "15-30": 0, "30+": 0});
+    const maxBucket = Math.max(
+      agingBuckets["0-7"] || 0,
+      agingBuckets["8-14"] || 0,
+      agingBuckets["15-30"] || 0,
+      agingBuckets["30+"] || 0,
+      1
+    );
+    const rows = [
+      ["0-7 days", agingBuckets["0-7"], "var(--a0)"],
+      ["8-14 days", agingBuckets["8-14"], "var(--a1)"],
+      ["15-30 days", agingBuckets["15-30"], "var(--a2)"],
+      ["30+ days", agingBuckets["30+"], "var(--a3)"],
     ];
-    var box=document.getElementById('kpis'); box.innerHTML='';
-    items.forEach(function(k){
-      var ds=deltaStr(k.d,k.unit,k.down);
-      var el=document.createElement('div'); el.className='kpi';
-      el.innerHTML='<div class="lbl">'+k.lbl+'</div>'+
-        '<div class="val"><span class="num" data-target="'+k.val+'">0</span>'+(k.unit?'<small>'+k.unit+'</small>':'')+'</div>'+
-        '<div class="meta"><span class="delta" style="color:'+ds.c+'">'+ds.t+'</span><span class="hint">'+k.hint+'</span></div>';
-      box.appendChild(el);
-    });
-    cleanMojibake(box);
-    countUp();
-  }
-  function cleanMojibake(root){
-    (root||document).querySelectorAll('.delta,.foot,.pdesc,.legend span').forEach(function(el){
-      el.textContent=el.textContent
-        .replace(new RegExp('\\u00e2[^\\s]*','g'),'')
-        .replace(new RegExp('\\u00c2\\u00b7','g'),'-')
-        .replace(new RegExp('\\u00c3[^\\s]*','g'),'')
-        .replace(/\s{2,}/g,' ')
-        .trim();
-    });
-  }
-  function countUp(){
-    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    document.querySelectorAll('.kpi .num').forEach(function(el){
-      var target=parseFloat(el.getAttribute('data-target'))||0;
-      var dec=(String(target).split('.')[1]||'').length;
-      var dur=reduce?0:650,start=performance.now();
-      function step(now){
-        var p=dur?Math.min(1,(now-start)/dur):1, e=1-Math.pow(1-p,3), v=target*e;
-        el.textContent=dec?v.toFixed(dec):Math.round(v).toLocaleString();
-        if(p<1) requestAnimationFrame(step); else el.textContent=dec?target.toFixed(dec):target.toLocaleString();
-      }
-      requestAnimationFrame(step);
-    });
+    els.agingGrid.innerHTML = rows.map(([label, value, color]) => `
+      <div class="agingRow">
+        <div class="agingLabel">${esc(label)}</div>
+        <div class="agingTrack"><span class="agingFill" style="width:${Math.max(6, value / maxBucket * 100)}%;background:${color}"></span></div>
+        <div class="agingValue">${integer.format(value)}</div>
+      </div>
+    `).join("");
+    els.agingFoot.textContent = "";
   }
 
-  // ---------- chart entrance animation ----------
-  function animateCharts(series){
-    var start=performance.now(), dur=650;
-    var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    function frame(now){
-      var prog=reduce?1:Math.min(1,(now-start)/dur);
-      var e=1-Math.pow(1-prog,3);
-      chartFlow(series,e); chartMix(series,e); chartAging(series,e); chartLead(series,e);
-      if(prog<1) requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
-  }
-
-  // ---------- state + controls ----------
-  var state={gran:'day',range:56};
-  function rawData(){ return window.__DELIVERY_FLOW_DAILY__||SAMPLE; }
-
-  function loadLiveData(){
-    return fetch(DELIVERY_FLOW_PATH,{cache:'no-store'})
-      .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
-      .then(function(obj){
-        var rows=Object.keys(obj||{}).map(function(k){ return obj[k]; }).filter(function(row){ return row&&row.asOf; });
-        rows.sort(function(a,b){ return a.asOf.localeCompare(b.asOf); });
-        if(rows.length){
-          window.__DELIVERY_FLOW_DAILY__=rows;
-          render();
-        }
-      })
-      .catch(function(){
-        document.getElementById('foot').textContent='Sample data - live delivery flow history is not available yet.';
+  function buildCostSeries(reportMonths, periodStart){
+    const months = Array.isArray(reportMonths) ? reportMonths.filter(month => month && month.key) : [];
+    if (!months.length) return [];
+    const monthMap = new Map(months.map(month => [month.key, month]));
+    const floorStart = parseDate(FLOW_MONTHLY_START);
+    const requestedStart = parseDate(periodStart) || parseDate(months[0].key) || floorStart;
+    const startRef = requestedStart && floorStart && requestedStart < floorStart ? floorStart : requestedStart;
+    const endRef = parseDate(months[months.length - 1].key) || parseDate(months[months.length - 1].label) || startRef;
+    if (!startRef || !endRef) return months;
+    const start = new Date(Date.UTC(startRef.getUTCFullYear(), startRef.getUTCMonth(), 1));
+    const end = new Date(Date.UTC(endRef.getUTCFullYear(), endRef.getUTCMonth(), 1));
+    const out = [];
+    for (let cur = new Date(start); cur <= end; cur = addMonthsUTC(cur, 1)){
+      const key = dateKey(cur);
+      const src = monthMap.get(key) || {};
+      out.push({
+        key,
+        label: fmtMonth(cur),
+        cost: n(src.cost),
+        poCost: n(src.poCost),
+        fallbackCost: n(src.fallbackCost),
+        poHitCount: n(src.poHitCount),
+        fallbackCount: n(src.fallbackCount),
+        materialRows: n(src.materialRows),
+        soCount: n(src.soCount),
+        poShare: n(src.poShare),
+        fallbackShare: n(src.fallbackShare),
+        gap: n(src.gap),
+        avgPerSo: n(src.avgPerSo),
       });
+    }
+    return out;
   }
 
-  function buildSeg(id,opts,cur,onPick){
-    var seg=document.getElementById(id); seg.innerHTML='';
-    opts.forEach(function(o){
-      var b=document.createElement('button'); b.textContent=o[1];
-      if(o[0]===cur) b.className='on';
-      b.onclick=function(){ onPick(o[0]); };
-      seg.appendChild(b);
+  function drawCostLineChart(canvas, series){
+    if (!canvas) return;
+    if (!series.length){
+      renderCanvas(canvas, 260, (ctx) => {
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
+        ctx.font = "12px " + getComputedStyle(document.documentElement).getPropertyValue("--mono").trim();
+        ctx.fillText("No cost data found.", 18, 28);
+      });
+      return;
+    }
+
+    const movingAverageSeries = addMovingAverage(series, 3, "cost");
+    const colors = {
+      total: "#3f6fe0",
+      po: "#1f9d6b",
+      mean: "#7c3aed",
+      grid: getComputedStyle(document.documentElement).getPropertyValue("--grid").trim(),
+      inkFaint: getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim(),
+      mono: getComputedStyle(document.documentElement).getPropertyValue("--mono").trim(),
+    };
+
+    renderCanvas(canvas, 290, (ctx, width, height) => {
+      const ml = 60, mr = 20, mt = 18, mb = 42;
+      const plotW = width - ml - mr;
+      const plotH = height - mt - mb;
+      const values = series.flatMap(row => [Number(row.cost) || 0, Number(row.poCost) || 0])
+        .concat(movingAverageSeries.map(row => Number(row.movingAvg) || 0));
+      const axisMax = niceMax(Math.max(1, ...values));
+      const step = plotW / Math.max(1, series.length);
+      const barW = Math.max(14, Math.min(30, step * 0.28));
+      const gap = Math.max(4, Math.min(10, step * 0.08));
+      const xFor = i => ml + step * i + step / 2;
+      const yFor = v => mt + plotH - ((Number(v) || 0) / axisMax) * plotH;
+      const avgPoints = movingAverageSeries.map((row, i) => ({ x: xFor(i), y: yFor(Number(row.movingAvg) || 0) }));
+      const drawSmoothPath = (points) => {
+        if (!points.length) return;
+        if (points.length === 1){
+          ctx.moveTo(points[0].x, points[0].y);
+          return;
+        }
+        ctx.moveTo(points[0].x, points[0].y);
+        if (points.length === 2){
+          ctx.lineTo(points[1].x, points[1].y);
+          return;
+        }
+        for (let i = 1; i < points.length - 1; i++){
+          const xc = (points[i].x + points[i + 1].x) / 2;
+          const yc = (points[i].y + points[i + 1].y) / 2;
+          ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+        }
+        const last = points[points.length - 1];
+        const prev = points[points.length - 2];
+        ctx.quadraticCurveTo(prev.x, prev.y, last.x, last.y);
+      };
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.strokeStyle = colors.grid;
+      ctx.fillStyle = colors.inkFaint;
+      ctx.font = "11px " + colors.mono;
+      ctx.textAlign = "right";
+      for (let i = 0; i <= 4; i++){
+        const t = i / 4;
+        const y = mt + plotH * t;
+        ctx.beginPath();
+        ctx.setLineDash([2, 4]);
+        ctx.moveTo(ml, y);
+        ctx.lineTo(width - mr, y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillText(fmtAxis(axisMax - axisMax * t), ml - 8, y + 4);
+      }
+
+      series.forEach((row, i) => {
+        const center = xFor(i);
+        const poH = mt + plotH - yFor(row.poCost);
+        ctx.fillStyle = "rgba(31,157,107,.55)";
+        ctx.fillRect(center - barW - gap / 2, yFor(row.poCost), barW, poH);
+        drawChartLabel(ctx, money.format(row.poCost || 0), center - barW - gap / 2 + barW / 2, Math.max(mt + 12, yFor(row.poCost) - 6), "rgba(31,157,107,.98)");
+      });
+
+      if (avgPoints.length > 1){
+        ctx.beginPath();
+        drawSmoothPath(avgPoints);
+        ctx.strokeStyle = colors.mean;
+        ctx.lineWidth = 2.5;
+        ctx.setLineDash([]);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = colors.inkFaint;
+      ctx.textAlign = "center";
+      const labelStep = Math.max(1, Math.ceil(series.length / 8));
+      for (let i = 0; i < series.length; i += labelStep){
+        ctx.fillText(series[i].label, xFor(i), height - 14);
+      }
+      if (series.length > 1 && ((series.length - 1) % labelStep) !== 0){
+        const last = series.length - 1;
+        ctx.textAlign = "right";
+        ctx.fillText(series[last].label, xFor(last), height - 14);
+      }
     });
+
+    canvas.onmousemove = e => {
+      if (!series.length) return;
+      const rect = canvas.getBoundingClientRect();
+      const ml = 60, mr = 20, plotW = rect.width - ml - mr, step = plotW / Math.max(1, series.length);
+      const mx = e.clientX - rect.left;
+      let idx = 0, best = Infinity;
+      for (let i = 0; i < series.length; i++){
+        const x = ml + step * i + step / 2;
+        const d = Math.abs(x - mx);
+        if (d < best){ best = d; idx = i; }
+      }
+      const r = series[idx];
+      const ma = movingAverageSeries[idx] ? movingAverageSeries[idx].movingAvg || 0 : 0;
+      setTip(
+        `<div class="tipTitle">${esc(r.label)}</div><div class="tipLine">Monthly total parts cost: ${money.format(r.cost)}</div><div class="tipLine">3M moving average: ${money.format(ma)}</div>`,
+        e.clientX,
+        e.clientY
+      );
+    };
+    canvas.onmouseleave = hideTip;
   }
+
+  function renderCost(report, latest, currentTickets){
+    const reportMonths = report && Array.isArray(report.months) ? report.months : [];
+    // Period label mirrors the costBadge wording so the summary cards and
+    // footer stay in sync when periodStart changes in Firebase (e.g. once
+    // the baseline moves past 2025).
+    const periodStart = report?.periodStart || report?.source?.periodStart || FLOW_MONTHLY_START;
+    const displayPeriodStart = periodStart && periodStart < FLOW_MONTHLY_START ? FLOW_MONTHLY_START : periodStart;
+    const periodLabel = displayPeriodStart ? `Since ${displayPeriodStart.slice(0, 7)}` : "Since 2025-07";
+    const partsByMonth = latest?.partsCost?.byMonth || {};
+    const poByMonth = reportMonths.length ? Object.fromEntries(reportMonths.map(month => [month.key, month.poCost || 0])) : (latest?.partsCost?.byMonthPo || {});
+    const fallbackByMonth = reportMonths.length ? Object.fromEntries(reportMonths.map(month => [month.key, month.fallbackCost || 0])) : (latest?.partsCost?.byMonthFallback || {});
+    const ticketMonthKeys = Array.from(new Set([...Object.keys(partsByMonth), ...Object.keys(poByMonth), ...Object.keys(fallbackByMonth)])).sort();
+    const reportSeries = buildCostSeries(reportMonths, report?.periodStart || report?.source?.periodStart || FLOW_MONTHLY_START);
+    const fallbackSeries = buildCostSeries(ticketMonthKeys.map(key => ({
+      key,
+      cost: Number(partsByMonth[key]) || 0,
+      poCost: Number(poByMonth[key]) || 0,
+      fallbackCost: Number(fallbackByMonth[key]) || 0,
+      poHitCount: Number((latest.partsCost?.poHitCountByMonth || {})[key]) || 0,
+      fallbackCount: Number((latest.partsCost?.fallbackCountByMonth || {})[key]) || 0,
+      materialRows: Number((latest.partsCost?.materialRowsByMonth || {})[key]) || 0,
+      soCount: Number((latest.partsCost?.soCountByMonth || {})[key]) || 0,
+      poShare: 0,
+      fallbackShare: 0,
+      avgPerSo: 0,
+    })), FLOW_MONTHLY_START);
+    const lineSeries = reportSeries.length ? reportSeries : fallbackSeries;
+    const ticketCount = Array.isArray(currentTickets) && currentTickets.length
+      ? currentTickets.length
+      : (latest?.partsCost?.soCount || 0);
+    const totalPeriodCost = report?.totalCost || latest.partsCost?.total || 0;
+    const totalCardCount = ticketCount || latest?.partsCost?.soCount || 0;
+    const avgPartsCostPerTicket = ticketCount ? (totalPeriodCost / ticketCount) : 0;
+    els.costCompare.style.display = "none";
+    els.costCompare.innerHTML = "";
+    if (!lineSeries.length){
+      if (els.costSummary) {
+        els.costSummary.style.display = "none";
+        els.costSummary.innerHTML = "";
+      }
+      els.costTrend.innerHTML = `<div class="hint">No cost data found.</div>`;
+      return;
+    }
+    const latestPoint = lineSeries[lineSeries.length - 1] || null;
+    const poTotalCost = report?.poTotalCost || latest.partsCost?.poCost || 0;
+    const fallbackTotalCost = report?.fallbackTotalCost || latest.partsCost?.fallbackCost || 0;
+    const poHitCount = report?.poHitCount || latest.partsCost?.poHitCount || 0;
+    const fallbackCount = report?.fallbackCount || latest.partsCost?.fallbackCount || 0;
+    const materialRows = report?.materialRows || latest.partsCost?.materialRows || 0;
+    const costPeriodLabel = `${displayPeriodStart || FLOW_MONTHLY_START} onward`;
+    const coverageText = materialRows
+      ? `${integer.format(poHitCount)} rows from 3110 PO, ${integer.format(fallbackCount)} rows from 3090 SO fallback`
+      : "No material rows";
+    const summaryIcons = {
+      total: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 7h14"/><path d="M7 7l1 10h8l1-10"/><path d="M9 7V5h6v2"/><path d="M10 11h0"/><path d="M14 11h0"/></svg>`,
+      po: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 8h12"/><path d="M7 12h10"/><path d="M9 16h6"/></svg>`,
+      fallback: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14"/><path d="M12 5v14"/><circle cx="12" cy="12" r="8"/></svg>`,
+      avg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 18h12"/><path d="M9 6h6"/><path d="M12 6v12"/><path d="M9 12h6"/></svg>`,
+      coverage: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 12h16"/><path d="M12 4v16"/><circle cx="12" cy="12" r="8"/></svg>`,
+    };
+    if (els.costSummary) {
+      els.costSummary.style.display = "grid";
+      els.costSummary.innerHTML = [
+        { label:"Total Cost", value: money.format(totalPeriodCost), theme:"sky", icon: summaryIcons.total },
+        { label:"Avg Parts Cost / Ticket", value: money.format(avgPartsCostPerTicket), left:"", right:`${integer.format(ticketCount)} tickets`, theme:"red", icon: summaryIcons.avg },
+      ].map(card => `
+        <div class="costStat">
+          <div class="costStatTop">
+            <div class="costStatIcon ${card.theme}">${card.icon}</div>
+            <div class="costStatHead">
+              <div class="k">${esc(card.label)}</div>
+              ${card.left ? `<div class="sub">${esc(card.left)}</div>` : ""}
+              ${card.right ? `<div class="sub">${esc(card.right)}</div>` : ""}
+            </div>
+          </div>
+          <div class="v">${card.value}</div>
+        </div>
+      `).join("");
+    }
+
+    els.costTrend.innerHTML = `
+      <div class="legend">
+        <span><i class="dot green"></i> 3110 PO Cost</span>
+        <span><i class="dot violet"></i> 3M moving average</span>
+      </div>
+      <canvas class="costLineChart" id="costLineChart"></canvas>
+    `;
+    drawCostLineChart(els.costTrend.querySelector("#costLineChart"), lineSeries);
+  }
+
+  function renderFooter(series, latest, issuedSeries, leadSeries){
+    const visible = state.granularity === "year" ? series : series.slice(-12);
+    if (!series.length){
+      els.flowFoot.textContent = "No trend data found.";
+      els.issuedFoot.textContent = "No trend data found.";
+      els.leadFoot.textContent = "No trend data found.";
+      return;
+    }
+    els.flowFoot.textContent = `Parts selected ${state.granularity.toUpperCase()} table by unique SO - ${visible.length} visible rows - latest period ${visible[visible.length - 1].tooltip}.`;
+    const issuedVisible = issuedSeries;
+    els.issuedFoot.textContent = `${issuedVisible.length} visible points - ${monthSeriesRange(issuedVisible)}`;
+    els.leadFoot.textContent = `${leadSeries.length} monthly points - ${monthSeriesRange(leadSeries)} - snapshot ${fmtDate(parseDate(latest.asOf))}`;
+  }
+
   function renderControls(){
-    buildSeg('granSeg',[['day','Day'],['week','Week'],['month','Month'],['year','Year']],state.gran,function(v){state.gran=v;render();});
-    var rs=document.getElementById('rangeSeg');
-    if(state.gran==='day'){ rs.style.display='inline-flex';
-      buildSeg('rangeSeg',[[28,'4w'],[56,'8w'],[90,'13w']],state.range,function(v){state.range=v;render();});
-    } else { rs.style.display='none'; }
+    const opts = [
+      ["week", "Week"],
+      ["month", "Month"],
+      ["year", "Year"],
+    ];
+    els.granSeg.innerHTML = opts.map(([key, label]) => `<button type="button" class="${key === state.granularity ? "on" : ""}" data-gran="${key}">${label}</button>`).join("");
+    els.granSeg.querySelectorAll("button").forEach(btn => {
+      btn.onclick = () => {
+        state.granularity = btn.dataset.gran || "week";
+        render();
+      };
+    });
+    bindExportButtons();
   }
 
-  function currentSeries(){
-    var sorted=rawData().slice().sort(function(a,b){return a.asOf.localeCompare(b.asOf);});
-    var win=state.gran==='day'?sorted.slice(-state.range):sorted;
-    return rollup(win,state.gran);
-  }
-
-  function exportCsv(series){
-    var cols=['asOf','newSoItems','itemsIssued','netBacklogChange','backlogTotal','openItems','issuedItems','rejectedItems','avgDaysToFirstIssue','oldestNotIssuedDays','a0','a1','a2','a3'];
-    var head=['Date','New SO Items','Items Issued','Net Backlog Change','Backlog Total','Open Items','Issued Items','Rejected Items','Avg Days First Issue','Oldest Not Issued','Aging 0-7','Aging 8-14','Aging 15-30','Aging 30+'];
-    var lines=[head.join(',')].concat(series.map(function(r){return cols.map(function(c){return r[c];}).join(',');}));
-    var blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8;'});
-    var url=URL.createObjectURL(blob), a=document.createElement('a');
-    a.href=url; a.download='delivery_flow_'+state.gran+'_'+(series.length?series[series.length-1].asOf:'export')+'.csv';
-    a.click(); URL.revokeObjectURL(url);
+  async function loadHistory(){
+    const res = await fetch(freshJsonUrl(FB_HISTORY), { cache: "no-store" });
+    if (!res.ok) throw new Error(`Firebase HTTP ${res.status}`);
+    const data = await res.json();
+    const raw = Array.isArray(data) ? data : Object.values(data || {});
+    return collapseHistoryByDay(raw.map(normalizeSnapshot).filter(row => row.asOf));
   }
 
   function render(){
     renderControls();
-    var series=currentSeries();
-    if(!series.length){ document.getElementById('foot').textContent='No data.'; return; }
-    var latest=series[series.length-1], prev=series.length>1?series[series.length-2]:null;
-    renderKpis(latest,prev);
-    animateCharts(series);
-    var live=!!window.__DELIVERY_FLOW_DAILY__;
-    document.getElementById('foot').textContent=(live?'Live':'Sample')+' data - '+series.length+' '+state.gran+' points - last updated '+latest.asOf;
-    document.getElementById('exportBtn').onclick=function(){ exportCsv(series); };
+    if (!state.history.length){
+      els.snapshotPill.innerHTML = "<strong>Latest</strong> no data";
+      els.kpis.innerHTML = "";
+      if (els.flowTable) els.flowTable.innerHTML = `<div class="flowTableEmpty">No Parts Selected data found.</div>`;
+      els.issuedChart.getContext("2d").clearRect(0, 0, els.issuedChart.width, els.issuedChart.height);
+      els.leadChart.getContext("2d").clearRect(0, 0, els.leadChart.width, els.leadChart.height);
+      els.agingGrid.innerHTML = "<div class='hint'>No data loaded.</div>";
+      return;
+    }
+
+    const latest = state.history[state.history.length - 1];
+    const series = state.currentTickets && state.currentTickets.length
+      ? buildUniqueSeriesFromTickets(state.currentTickets, state.granularity, ticket => parseLooseDate(ticket.soCreatedDate), "partsSelected")
+      : buildSeries(state.history, state.granularity);
+    const issuedSeries = state.currentTickets && state.currentTickets.length
+      ? buildIssuedMaterialSeriesFromTickets(state.currentTickets, "month")
+      : buildSeries(state.history, "month");
+    const normalizedIssuedSeries = padMonthlySeriesFromStart(issuedSeries, FLOW_MONTHLY_START);
+    const leadSeries = buildMonthlyIssuedLeadSeries(latest);
+    const latestGroup = series[series.length - 1] || null;
+    state.latest = latest;
+    state.groups = series;
+    state.costReport = latest.costReport || state.costReport || null;
+    renderPartsSelectedTable(series);
+
+    els.snapshotPill.innerHTML = `<strong>Latest</strong> ${fmtDate(parseDate(latest.asOf))}`;
+    els.flowBadge.textContent = state.granularity === "week" ? "Weekly" : state.granularity === "month" ? "Monthly" : "Yearly";
+    els.leadBadge.textContent = monthSeriesRange(leadSeries);
+    els.issuedBadge.textContent = monthSeriesRange(normalizedIssuedSeries);
+    els.costBadge.textContent = state.costReport?.periodStart && state.costReport.periodStart < FLOW_MONTHLY_START
+      ? `Since ${FLOW_MONTHLY_START.slice(0, 7)}`
+      : state.costReport?.periodStart
+        ? `Since ${state.costReport.periodStart.slice(0, 7)}`
+        : `Since 2025-07`;
+
+    const costReport = latest.costReport || state.costReport;
+    renderCards(latest, latestGroup, normalizedIssuedSeries, costReport, state.currentTickets);
+    drawIssuedChart(normalizedIssuedSeries);
+    drawLeadChart(latest);
+    renderAging(latest, state.currentTickets);
+    renderCost(costReport, latest, state.currentTickets);
+    renderFooter(series, latest, normalizedIssuedSeries, leadSeries);
   }
 
-  window.renderDeliveryFlow=render;
-  window.addEventListener('resize',function(){
-    clearTimeout(window.__rt); window.__rt=setTimeout(function(){
-      var series=currentSeries();
-      chartFlow(series,1); chartMix(series,1); chartAging(series,1); chartLead(series,1);
-    },150);
+  Promise.allSettled([loadHistory(), loadCurrentTickets()]).then(results => {
+    const historyResult = results[0];
+    const ticketsResult = results[1];
+    if (historyResult.status === "fulfilled") {
+      state.history = historyResult.value;
+      state.costReport = state.history.length ? (state.history[state.history.length - 1].costReport || null) : null;
+    }
+    if (ticketsResult.status === "fulfilled") {
+      state.currentTickets = ticketsResult.value;
+    }
+    if (!state.history.length){
+      throw new Error("No history data");
+    }
+    render();
+  }).catch(err => {
+    els.snapshotPill.innerHTML = `<strong>Latest</strong> unavailable`;
+    els.kpis.innerHTML = "";
+    els.agingGrid.innerHTML = `<div class="hint">Unable to load delivery-flow history: ${esc(err.message)}</div>`;
+    els.flowFoot.textContent = "Unable to load delivery-flow history.";
+    els.leadFoot.textContent = "Unable to load delivery-flow history.";
+  }).finally(() => {
+    setPageLoading(false);
   });
 
-  render();
-  loadLiveData();
+  window.addEventListener("resize", () => {
+    if (!state.history.length) return;
+    if (state.latest) drawLeadChart(state.latest);
+  });
 })();
 </script>
 </body>
 </html>
+

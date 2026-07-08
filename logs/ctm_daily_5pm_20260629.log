@@ -1,0 +1,371 @@
+==================================================
+CTM V44 daily 5:00 PM run started at Mon 29/06/2026 15:16:31.61
+==================================================
+[FETCH] Running company file:
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py
+2026-06-29 15:16:33,978 - INFO - Script version: MANDT800_FULLJOIN_REJECTION_FILTER
+2026-06-29 15:16:33,978 - INFO - SAP HANA rule: MANDT=800 full join + exclude VBAP.ABGRU rejected items from Sales Order Details
+2026-06-29 15:16:33,978 - INFO - Step 1/9: Fetching latest C4C snapshot ...
+2026-06-29 15:16:33,979 - INFO - ===== START ROLE 1001 =====
+2026-06-29 15:16:33,980 - INFO - ===== START ROLE 40 =====
+2026-06-29 15:16:33,981 - INFO - ===== START ROLE 43 =====
+2026-06-29 15:16:59,217 - INFO - [FETCH] role=43 page=1 skip=0 rows=1000
+2026-06-29 15:17:04,413 - INFO - [FETCH] role=40 page=1 skip=0 rows=1000
+2026-06-29 15:17:05,688 - INFO - [FETCH] role=1001 page=1 skip=0 rows=1000
+2026-06-29 15:17:24,838 - INFO - [FETCH] role=43 page~=2 skip=7000 rows=1000
+2026-06-29 15:17:24,893 - INFO - [FETCH] role=43 page~=3 skip=2000 rows=1000
+2026-06-29 15:17:25,029 - INFO - [FETCH] role=43 page~=4 skip=8000 rows=1000
+2026-06-29 15:17:25,091 - INFO - [FETCH] role=43 page~=5 skip=1000 rows=1000
+2026-06-29 15:17:25,322 - INFO - [FETCH] role=43 page~=6 skip=4000 rows=1000
+2026-06-29 15:17:25,640 - INFO - [FETCH] role=43 page~=7 skip=10000 rows=1000
+2026-06-29 15:17:25,711 - INFO - [FETCH] role=43 page~=8 skip=9000 rows=1000
+2026-06-29 15:17:27,173 - INFO - [FETCH] role=43 page~=9 skip=11000 rows=1000
+2026-06-29 15:17:27,428 - INFO - [FETCH] role=43 page~=10 skip=6000 rows=1000
+2026-06-29 15:17:27,442 - INFO - [FETCH] role=43 page~=11 skip=5000 rows=1000
+2026-06-29 15:17:27,488 - INFO - [FETCH] role=43 page~=12 skip=12000 rows=1000
+2026-06-29 15:17:28,319 - INFO - [FETCH] role=43 page~=13 skip=3000 rows=1000
+2026-06-29 15:17:33,405 - INFO - [FETCH] role=40 page~=2 skip=9000 rows=1000
+2026-06-29 15:17:33,754 - INFO - [FETCH] role=40 page~=3 skip=8000 rows=1000
+2026-06-29 15:17:34,065 - INFO - [FETCH] role=40 page~=4 skip=6000 rows=1000
+2026-06-29 15:17:34,383 - INFO - [FETCH] role=40 page~=5 skip=3000 rows=1000
+2026-06-29 15:17:35,292 - INFO - [FETCH] role=40 page~=6 skip=7000 rows=1000
+2026-06-29 15:17:35,580 - INFO - [FETCH] role=40 page~=7 skip=5000 rows=1000
+2026-06-29 15:17:35,825 - INFO - [FETCH] role=40 page~=8 skip=10000 rows=1000
+2026-06-29 15:17:35,837 - INFO - [FETCH] role=40 page~=9 skip=11000 rows=1000
+2026-06-29 15:17:35,846 - INFO - [FETCH] role=40 page~=10 skip=2000 rows=1000
+2026-06-29 15:17:35,856 - INFO - [FETCH] role=40 page~=11 skip=1000 rows=1000
+2026-06-29 15:17:36,550 - INFO - [FETCH] role=40 page~=12 skip=12000 rows=1000
+2026-06-29 15:17:36,883 - INFO - [FETCH] role=1001 page~=2 skip=2000 rows=1000
+2026-06-29 15:17:36,954 - INFO - [FETCH] role=40 page~=13 skip=4000 rows=1000
+2026-06-29 15:17:37,746 - INFO - [FETCH] role=1001 page~=3 skip=6000 rows=1000
+2026-06-29 15:17:37,849 - INFO - [FETCH] role=1001 page~=4 skip=12000 rows=1000
+2026-06-29 15:17:37,948 - INFO - [FETCH] role=1001 page~=5 skip=10000 rows=1000
+2026-06-29 15:17:39,582 - INFO - [FETCH] role=1001 page~=6 skip=5000 rows=1000
+2026-06-29 15:17:39,913 - INFO - [FETCH] role=1001 page~=7 skip=3000 rows=1000
+2026-06-29 15:17:39,927 - INFO - [FETCH] role=1001 page~=8 skip=7000 rows=1000
+2026-06-29 15:17:40,094 - INFO - [FETCH] role=1001 page~=9 skip=11000 rows=1000
+2026-06-29 15:17:40,300 - INFO - [FETCH] role=1001 page~=10 skip=8000 rows=1000
+2026-06-29 15:17:40,391 - INFO - [FETCH] role=1001 page~=11 skip=1000 rows=1000
+2026-06-29 15:17:40,791 - INFO - [FETCH] role=1001 page~=12 skip=4000 rows=1000
+2026-06-29 15:17:41,184 - INFO - [FETCH] role=1001 page~=13 skip=9000 rows=1000
+2026-06-29 15:17:47,254 - INFO - [FETCH] role=43 page~=14 skip=13000 rows=1000
+2026-06-29 15:17:47,985 - INFO - [FETCH] role=43 page~=15 skip=16000 rows=1000
+2026-06-29 15:17:48,284 - INFO - [FETCH] role=43 page~=16 skip=15000 rows=1000
+2026-06-29 15:17:48,460 - INFO - [FETCH] role=43 page~=17 skip=17000 rows=1000
+2026-06-29 15:17:48,993 - INFO - [FETCH] role=43 page~=18 skip=19000 rows=1000
+2026-06-29 15:17:49,889 - INFO - [FETCH] role=43 page~=19 skip=14000 rows=1000
+2026-06-29 15:17:50,599 - INFO - [FETCH] role=43 page~=20 skip=18000 rows=1000
+2026-06-29 15:17:50,978 - INFO - [FETCH] role=43 page~=21 skip=23000 rows=1000
+2026-06-29 15:17:52,018 - INFO - [FETCH] role=43 page~=22 skip=20000 rows=1000
+2026-06-29 15:17:53,163 - INFO - [FETCH] role=43 page~=23 skip=22000 rows=1000
+2026-06-29 15:17:54,549 - INFO - [FETCH] role=43 page~=24 skip=21000 rows=1000
+2026-06-29 15:17:54,654 - INFO - [FETCH] role=43 page~=25 skip=24000 rows=1000
+2026-06-29 15:17:59,196 - INFO - [FETCH] role=40 page~=14 skip=13000 rows=1000
+2026-06-29 15:17:59,463 - INFO - [FETCH] role=40 page~=15 skip=14000 rows=1000
+2026-06-29 15:18:00,369 - INFO - [FETCH] role=40 page~=16 skip=16000 rows=1000
+2026-06-29 15:18:01,797 - INFO - [FETCH] role=40 page~=17 skip=19000 rows=1000
+2026-06-29 15:18:01,997 - INFO - [FETCH] role=40 page~=18 skip=20000 rows=1000
+2026-06-29 15:18:02,223 - INFO - [FETCH] role=40 page~=19 skip=15000 rows=1000
+2026-06-29 15:18:02,336 - INFO - [FETCH] role=40 page~=20 skip=21000 rows=1000
+2026-06-29 15:18:02,443 - INFO - [FETCH] role=40 page~=21 skip=22000 rows=1000
+2026-06-29 15:18:02,461 - INFO - [FETCH] role=40 page~=22 skip=23000 rows=1000
+2026-06-29 15:18:03,382 - INFO - [FETCH] role=40 page~=23 skip=24000 rows=1000
+2026-06-29 15:18:03,698 - INFO - [FETCH] role=40 page~=24 skip=17000 rows=1000
+2026-06-29 15:18:05,065 - INFO - [FETCH] role=40 page~=25 skip=18000 rows=1000
+2026-06-29 15:18:06,505 - INFO - [FETCH] role=1001 page~=14 skip=14000 rows=1000
+2026-06-29 15:18:07,256 - INFO - [FETCH] role=1001 page~=15 skip=13000 rows=1000
+2026-06-29 15:18:07,646 - INFO - [FETCH] role=43 page~=26 skip=25000 rows=64
+2026-06-29 15:18:09,229 - INFO - [FETCH] role=1001 page~=16 skip=16000 rows=1000
+2026-06-29 15:18:09,246 - INFO - [FETCH] role=1001 page~=17 skip=23000 rows=1000
+2026-06-29 15:18:09,389 - INFO - [FETCH] role=1001 page~=18 skip=15000 rows=1000
+2026-06-29 15:18:10,364 - INFO - [FETCH] role=1001 page~=19 skip=19000 rows=1000
+2026-06-29 15:18:10,817 - INFO - [FETCH] role=1001 page~=20 skip=18000 rows=1000
+2026-06-29 15:18:10,835 - INFO - [FETCH] role=1001 page~=21 skip=17000 rows=1000
+2026-06-29 15:18:10,897 - INFO - [FETCH] role=1001 page~=22 skip=20000 rows=1000
+2026-06-29 15:18:11,779 - INFO - [FETCH] role=1001 page~=23 skip=21000 rows=1000
+2026-06-29 15:18:11,976 - INFO - [FETCH] role=1001 page~=24 skip=22000 rows=1000
+2026-06-29 15:18:12,342 - INFO - [FETCH] role=1001 page~=25 skip=24000 rows=1000
+2026-06-29 15:18:24,554 - INFO - [FETCH] role=40 page~=26 skip=25000 rows=1000
+2026-06-29 15:18:24,579 - INFO - [FETCH] role=40 page~=27 skip=26000 rows=1000
+2026-06-29 15:18:25,538 - INFO - [FETCH] role=40 page~=28 skip=27000 rows=1000
+2026-06-29 15:18:26,977 - INFO - [FETCH] role=40 page~=29 skip=32000 rows=121
+2026-06-29 15:18:27,114 - INFO - [FETCH] role=40 page~=30 skip=28000 rows=1000
+2026-06-29 15:18:27,150 - INFO - [FETCH] role=40 page~=31 skip=29000 rows=1000
+2026-06-29 15:18:27,312 - INFO - [FETCH] role=40 page~=32 skip=31000 rows=1000
+2026-06-29 15:18:27,522 - INFO - [FETCH] role=40 page~=33 skip=30000 rows=1000
+2026-06-29 15:18:29,022 - INFO - [FETCH] role=43 tail_probe=1 skip=26000 rows=0
+2026-06-29 15:18:29,022 - INFO - ===== END ROLE 43 rows=25064 elapsed=115.0s =====
+2026-06-29 15:18:29,573 - INFO - [ROLE MERGED] role=43 rows=25064 total_rows=25064 unique_tickets=25063
+2026-06-29 15:18:33,728 - INFO - [FETCH] role=1001 page~=26 skip=25000 rows=1000
+2026-06-29 15:18:35,533 - INFO - [FETCH] role=1001 page~=27 skip=26000 rows=1000
+2026-06-29 15:18:36,427 - INFO - [FETCH] role=1001 page~=28 skip=27000 rows=1000
+2026-06-29 15:18:36,748 - INFO - [FETCH] role=1001 page~=29 skip=29000 rows=1000
+2026-06-29 15:18:37,517 - INFO - [FETCH] role=1001 page~=30 skip=28000 rows=1000
+2026-06-29 15:18:37,962 - INFO - [FETCH] role=1001 page~=31 skip=31000 rows=297
+2026-06-29 15:18:38,255 - INFO - [FETCH] role=1001 page~=32 skip=30000 rows=1000
+2026-06-29 15:18:51,441 - INFO - [FETCH] role=40 tail_probe=1 skip=33000 rows=0
+2026-06-29 15:18:51,442 - INFO - ===== END ROLE 40 rows=32121 elapsed=137.5s =====
+2026-06-29 15:18:51,949 - INFO - [ROLE MERGED] role=40 rows=32121 total_rows=57185 unique_tickets=32121
+2026-06-29 15:19:06,818 - INFO - [FETCH] role=1001 tail_probe=1 skip=32000 rows=0
+2026-06-29 15:19:06,819 - INFO - ===== END ROLE 1001 rows=31297 elapsed=152.8s =====
+2026-06-29 15:19:07,353 - INFO - [ROLE MERGED] role=1001 rows=31297 total_rows=88482 unique_tickets=32121
+2026-06-29 15:19:07,429 - INFO - C4C total API rows processed: 88482
+2026-06-29 15:19:07,429 - INFO - C4C total unique TicketIDs: 32121
+2026-06-29 15:19:07,429 - INFO - Step 2/9: Initializing Firebase and loading previous sync snapshot ...
+2026-06-29 15:19:09,208 - INFO - Previous synced TicketIDs in hash snapshot: 32075
+2026-06-29 15:19:09,208 - INFO - Step 3/9: Detecting changed/deleted tickets ...
+2026-06-29 15:19:10,911 - INFO - Changed tickets: 1408
+2026-06-29 15:19:10,912 - INFO - Deleted tickets: 0
+2026-06-29 15:19:10,912 - INFO - Step 3A/9: Uploading changed C4C core ticket fields to Firebase ...
+2026-06-29 15:19:18,139 - INFO - [FB CORE TICKET UPLOAD] batch=1 paths=8000 bytes~=433869
+2026-06-29 15:19:18,952 - INFO - [FB CORE TICKET UPLOAD] batch=1 done
+2026-06-29 15:19:27,363 - INFO - [FB CORE TICKET UPLOAD] batch=2 paths=8000 bytes~=430633
+2026-06-29 15:19:27,862 - INFO - [FB CORE TICKET UPLOAD] batch=2 done
+2026-06-29 15:19:36,047 - INFO - [FB CORE TICKET UPLOAD] batch=3 paths=8000 bytes~=433933
+2026-06-29 15:19:36,432 - INFO - [FB CORE TICKET UPLOAD] batch=3 done
+2026-06-29 15:19:45,200 - INFO - [FB CORE TICKET UPLOAD] batch=4 paths=8000 bytes~=432774
+2026-06-29 15:19:45,529 - INFO - [FB CORE TICKET UPLOAD] batch=4 done
+2026-06-29 15:19:54,383 - INFO - [FB CORE TICKET UPLOAD] batch=5 paths=8000 bytes~=424812
+2026-06-29 15:19:54,716 - INFO - [FB CORE TICKET UPLOAD] batch=5 done
+2026-06-29 15:19:55,383 - INFO - [FB CORE TICKET UPLOAD] batch=6 paths=2240 bytes~=118269
+2026-06-29 15:19:55,576 - INFO - [FB CORE TICKET UPLOAD] batch=6 done
+2026-06-29 15:19:55,703 - INFO - Step 3B/9: Uploading C4C involved-party roles to Firebase, including role 40 Assign To ...
+2026-06-29 15:21:00,351 - INFO - [FB C4C ROLES UPLOAD] batch=1 paths=8000 bytes~=1631951
+2026-06-29 15:21:00,873 - INFO - [FB C4C ROLES UPLOAD] batch=1 done
+2026-06-29 15:21:52,896 - INFO - [FB C4C ROLES UPLOAD] batch=2 paths=8000 bytes~=1628668
+2026-06-29 15:21:54,072 - INFO - [FB C4C ROLES UPLOAD] batch=2 done
+2026-06-29 15:22:39,323 - INFO - [FB C4C ROLES UPLOAD] batch=3 paths=8000 bytes~=1667035
+2026-06-29 15:22:39,885 - INFO - [FB C4C ROLES UPLOAD] batch=3 done
+2026-06-29 15:23:35,147 - INFO - [FB C4C ROLES UPLOAD] batch=4 paths=8000 bytes~=1656715
+2026-06-29 15:23:35,722 - INFO - [FB C4C ROLES UPLOAD] batch=4 done
+2026-06-29 15:24:24,376 - INFO - [FB C4C ROLES UPLOAD] batch=5 paths=8000 bytes~=1655467
+2026-06-29 15:24:24,933 - INFO - [FB C4C ROLES UPLOAD] batch=5 done
+2026-06-29 15:25:20,336 - INFO - [FB C4C ROLES UPLOAD] batch=6 paths=8000 bytes~=1672165
+2026-06-29 15:25:20,886 - INFO - [FB C4C ROLES UPLOAD] batch=6 done
+2026-06-29 15:26:17,051 - INFO - [FB C4C ROLES UPLOAD] batch=7 paths=8000 bytes~=1657165
+2026-06-29 15:26:17,624 - INFO - [FB C4C ROLES UPLOAD] batch=7 done
+2026-06-29 15:27:07,423 - INFO - [FB C4C ROLES UPLOAD] batch=8 paths=8000 bytes~=1656754
+2026-06-29 15:27:07,978 - INFO - [FB C4C ROLES UPLOAD] batch=8 done
+2026-06-29 15:27:55,630 - INFO - [FB C4C ROLES UPLOAD] batch=9 paths=8000 bytes~=1647301
+2026-06-29 15:27:56,182 - INFO - [FB C4C ROLES UPLOAD] batch=9 done
+2026-06-29 15:28:49,050 - INFO - [FB C4C ROLES UPLOAD] batch=10 paths=8000 bytes~=1626744
+2026-06-29 15:28:49,637 - INFO - [FB C4C ROLES UPLOAD] batch=10 done
+2026-06-29 15:29:50,224 - INFO - [FB C4C ROLES UPLOAD] batch=11 paths=8000 bytes~=1603040
+2026-06-29 15:29:51,089 - INFO - [FB C4C ROLES UPLOAD] batch=11 done
+2026-06-29 15:29:51,237 - INFO - [FB C4C ROLES UPLOAD] batch=12 paths=480 bytes~=96842
+2026-06-29 15:29:51,391 - INFO - [FB C4C ROLES UPLOAD] batch=12 done
+2026-06-29 15:29:51,540 - INFO - Step 4/9: Uploading critical-removed metrics ...
+2026-06-29 15:29:54,218 - INFO - Step 5/9: Extracting ERPFreeOrder from ALL current tickets for SAP HANA refresh ...
+2026-06-29 15:29:55,008 - INFO - Changed tickets without ERPFreeOrder. Clearing old SO fields: 626
+2026-06-29 15:29:57,416 - INFO - [FB CLEAR NO ERPFreeOrder] batch=1 paths=4382 bytes~=215833
+2026-06-29 15:29:57,978 - INFO - [FB CLEAR NO ERPFreeOrder] batch=1 done
+2026-06-29 15:29:57,978 - INFO - Current tickets with ERPFreeOrder for HANA refresh: 15369
+2026-06-29 15:29:57,978 - INFO - Step 6/9: Connecting SAP HANA and fetching SO/item data for changed tickets only ...
+2026-06-29 15:30:01,017 - INFO - Total input lookup rows: 23214
+2026-06-29 15:30:01,017 - INFO - Total SQL batches: 78
+2026-06-29 15:30:01,017 - INFO - Running batch 1/78 with 300 lookup rows...
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:723: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-29 15:30:02,630 - INFO - Batch 1 returned 304 rows
+2026-06-29 15:30:02,630 - INFO - Running batch 2/78 with 300 lookup rows...
+2026-06-29 15:30:04,245 - INFO - Batch 2 returned 429 rows
+2026-06-29 15:30:04,245 - INFO - Running batch 3/78 with 300 lookup rows...
+2026-06-29 15:30:05,803 - INFO - Batch 3 returned 442 rows
+2026-06-29 15:30:05,803 - INFO - Running batch 4/78 with 300 lookup rows...
+2026-06-29 15:30:07,353 - INFO - Batch 4 returned 460 rows
+2026-06-29 15:30:07,353 - INFO - Running batch 5/78 with 300 lookup rows...
+2026-06-29 15:30:08,971 - INFO - Batch 5 returned 582 rows
+2026-06-29 15:30:08,971 - INFO - Running batch 6/78 with 300 lookup rows...
+2026-06-29 15:30:10,622 - INFO - Batch 6 returned 702 rows
+2026-06-29 15:30:10,622 - INFO - Running batch 7/78 with 300 lookup rows...
+2026-06-29 15:30:12,106 - INFO - Batch 7 returned 476 rows
+2026-06-29 15:30:12,106 - INFO - Running batch 8/78 with 300 lookup rows...
+2026-06-29 15:30:13,477 - INFO - Batch 8 returned 357 rows
+2026-06-29 15:30:13,477 - INFO - Running batch 9/78 with 300 lookup rows...
+2026-06-29 15:30:14,802 - INFO - Batch 9 returned 287 rows
+2026-06-29 15:30:14,802 - INFO - Running batch 10/78 with 300 lookup rows...
+2026-06-29 15:30:16,163 - INFO - Batch 10 returned 283 rows
+2026-06-29 15:30:16,163 - INFO - Running batch 11/78 with 300 lookup rows...
+2026-06-29 15:30:17,558 - INFO - Batch 11 returned 348 rows
+2026-06-29 15:30:17,559 - INFO - Running batch 12/78 with 300 lookup rows...
+2026-06-29 15:30:19,064 - INFO - Batch 12 returned 331 rows
+2026-06-29 15:30:19,064 - INFO - Running batch 13/78 with 300 lookup rows...
+2026-06-29 15:30:20,584 - INFO - Batch 13 returned 363 rows
+2026-06-29 15:30:20,584 - INFO - Running batch 14/78 with 300 lookup rows...
+2026-06-29 15:30:22,118 - INFO - Batch 14 returned 317 rows
+2026-06-29 15:30:22,119 - INFO - Running batch 15/78 with 300 lookup rows...
+2026-06-29 15:30:23,639 - INFO - Batch 15 returned 314 rows
+2026-06-29 15:30:23,639 - INFO - Running batch 16/78 with 300 lookup rows...
+2026-06-29 15:30:25,279 - INFO - Batch 16 returned 474 rows
+2026-06-29 15:30:25,279 - INFO - Running batch 17/78 with 300 lookup rows...
+2026-06-29 15:30:26,911 - INFO - Batch 17 returned 672 rows
+2026-06-29 15:30:26,912 - INFO - Running batch 18/78 with 300 lookup rows...
+2026-06-29 15:30:28,536 - INFO - Batch 18 returned 676 rows
+2026-06-29 15:30:28,536 - INFO - Running batch 19/78 with 300 lookup rows...
+2026-06-29 15:30:30,192 - INFO - Batch 19 returned 758 rows
+2026-06-29 15:30:30,192 - INFO - Running batch 20/78 with 300 lookup rows...
+2026-06-29 15:30:31,663 - INFO - Batch 20 returned 397 rows
+2026-06-29 15:30:31,663 - INFO - Running batch 21/78 with 300 lookup rows...
+2026-06-29 15:30:33,103 - INFO - Batch 21 returned 287 rows
+2026-06-29 15:30:33,103 - INFO - Running batch 22/78 with 300 lookup rows...
+2026-06-29 15:30:34,553 - INFO - Batch 22 returned 349 rows
+2026-06-29 15:30:34,553 - INFO - Running batch 23/78 with 300 lookup rows...
+2026-06-29 15:30:35,980 - INFO - Batch 23 returned 362 rows
+2026-06-29 15:30:35,980 - INFO - Running batch 24/78 with 300 lookup rows...
+2026-06-29 15:30:37,530 - INFO - Batch 24 returned 631 rows
+2026-06-29 15:30:37,530 - INFO - Running batch 25/78 with 300 lookup rows...
+2026-06-29 15:30:39,071 - INFO - Batch 25 returned 597 rows
+2026-06-29 15:30:39,071 - INFO - Running batch 26/78 with 300 lookup rows...
+2026-06-29 15:30:40,468 - INFO - Batch 26 returned 316 rows
+2026-06-29 15:30:40,468 - INFO - Running batch 27/78 with 300 lookup rows...
+2026-06-29 15:30:41,899 - INFO - Batch 27 returned 303 rows
+2026-06-29 15:30:41,899 - INFO - Running batch 28/78 with 300 lookup rows...
+2026-06-29 15:30:43,330 - INFO - Batch 28 returned 299 rows
+2026-06-29 15:30:43,330 - INFO - Running batch 29/78 with 300 lookup rows...
+2026-06-29 15:30:44,738 - INFO - Batch 29 returned 355 rows
+2026-06-29 15:30:44,738 - INFO - Running batch 30/78 with 300 lookup rows...
+2026-06-29 15:30:46,233 - INFO - Batch 30 returned 492 rows
+2026-06-29 15:30:46,233 - INFO - Running batch 31/78 with 300 lookup rows...
+2026-06-29 15:30:47,707 - INFO - Batch 31 returned 454 rows
+2026-06-29 15:30:47,707 - INFO - Running batch 32/78 with 300 lookup rows...
+2026-06-29 15:30:49,138 - INFO - Batch 32 returned 337 rows
+2026-06-29 15:30:49,138 - INFO - Running batch 33/78 with 300 lookup rows...
+2026-06-29 15:30:50,544 - INFO - Batch 33 returned 355 rows
+2026-06-29 15:30:50,544 - INFO - Running batch 34/78 with 300 lookup rows...
+2026-06-29 15:30:51,979 - INFO - Batch 34 returned 342 rows
+2026-06-29 15:30:51,979 - INFO - Running batch 35/78 with 300 lookup rows...
+2026-06-29 15:30:53,349 - INFO - Batch 35 returned 268 rows
+2026-06-29 15:30:53,349 - INFO - Running batch 36/78 with 300 lookup rows...
+2026-06-29 15:30:54,695 - INFO - Batch 36 returned 335 rows
+2026-06-29 15:30:54,695 - INFO - Running batch 37/78 with 300 lookup rows...
+2026-06-29 15:30:56,006 - INFO - Batch 37 returned 341 rows
+2026-06-29 15:30:56,006 - INFO - Running batch 38/78 with 300 lookup rows...
+2026-06-29 15:30:57,363 - INFO - Batch 38 returned 426 rows
+2026-06-29 15:30:57,363 - INFO - Running batch 39/78 with 300 lookup rows...
+2026-06-29 15:30:58,752 - INFO - Batch 39 returned 645 rows
+2026-06-29 15:30:58,753 - INFO - Running batch 40/78 with 300 lookup rows...
+2026-06-29 15:31:00,092 - INFO - Batch 40 returned 372 rows
+2026-06-29 15:31:00,092 - INFO - Running batch 41/78 with 300 lookup rows...
+2026-06-29 15:31:01,342 - INFO - Batch 41 returned 252 rows
+2026-06-29 15:31:01,342 - INFO - Running batch 42/78 with 300 lookup rows...
+2026-06-29 15:31:02,551 - INFO - Batch 42 returned 248 rows
+2026-06-29 15:31:02,552 - INFO - Running batch 43/78 with 300 lookup rows...
+2026-06-29 15:31:03,835 - INFO - Batch 43 returned 246 rows
+2026-06-29 15:31:03,836 - INFO - Running batch 44/78 with 300 lookup rows...
+2026-06-29 15:31:05,077 - INFO - Batch 44 returned 250 rows
+2026-06-29 15:31:05,077 - INFO - Running batch 45/78 with 300 lookup rows...
+2026-06-29 15:31:06,357 - INFO - Batch 45 returned 348 rows
+2026-06-29 15:31:06,357 - INFO - Running batch 46/78 with 300 lookup rows...
+2026-06-29 15:31:07,631 - INFO - Batch 46 returned 335 rows
+2026-06-29 15:31:07,632 - INFO - Running batch 47/78 with 300 lookup rows...
+2026-06-29 15:31:08,909 - INFO - Batch 47 returned 307 rows
+2026-06-29 15:31:08,909 - INFO - Running batch 48/78 with 300 lookup rows...
+2026-06-29 15:31:10,200 - INFO - Batch 48 returned 374 rows
+2026-06-29 15:31:10,200 - INFO - Running batch 49/78 with 300 lookup rows...
+2026-06-29 15:31:11,501 - INFO - Batch 49 returned 428 rows
+2026-06-29 15:31:11,501 - INFO - Running batch 50/78 with 300 lookup rows...
+2026-06-29 15:31:12,768 - INFO - Batch 50 returned 334 rows
+2026-06-29 15:31:12,768 - INFO - Running batch 51/78 with 300 lookup rows...
+2026-06-29 15:31:14,097 - INFO - Batch 51 returned 524 rows
+2026-06-29 15:31:14,097 - INFO - Running batch 52/78 with 300 lookup rows...
+2026-06-29 15:31:15,408 - INFO - Batch 52 returned 474 rows
+2026-06-29 15:31:15,408 - INFO - Running batch 53/78 with 300 lookup rows...
+2026-06-29 15:31:16,728 - INFO - Batch 53 returned 482 rows
+2026-06-29 15:31:16,728 - INFO - Running batch 54/78 with 300 lookup rows...
+2026-06-29 15:31:18,131 - INFO - Batch 54 returned 607 rows
+2026-06-29 15:31:18,131 - INFO - Running batch 55/78 with 300 lookup rows...
+2026-06-29 15:31:19,481 - INFO - Batch 55 returned 676 rows
+2026-06-29 15:31:19,481 - INFO - Running batch 56/78 with 300 lookup rows...
+2026-06-29 15:31:20,866 - INFO - Batch 56 returned 738 rows
+2026-06-29 15:31:20,866 - INFO - Running batch 57/78 with 300 lookup rows...
+2026-06-29 15:31:22,187 - INFO - Batch 57 returned 475 rows
+2026-06-29 15:31:22,187 - INFO - Running batch 58/78 with 300 lookup rows...
+2026-06-29 15:31:23,595 - INFO - Batch 58 returned 515 rows
+2026-06-29 15:31:23,596 - INFO - Running batch 59/78 with 300 lookup rows...
+2026-06-29 15:31:24,935 - INFO - Batch 59 returned 477 rows
+2026-06-29 15:31:24,935 - INFO - Running batch 60/78 with 300 lookup rows...
+2026-06-29 15:31:26,379 - INFO - Batch 60 returned 456 rows
+2026-06-29 15:31:26,379 - INFO - Running batch 61/78 with 300 lookup rows...
+2026-06-29 15:31:27,924 - INFO - Batch 61 returned 740 rows
+2026-06-29 15:31:27,924 - INFO - Running batch 62/78 with 300 lookup rows...
+2026-06-29 15:31:29,443 - INFO - Batch 62 returned 800 rows
+2026-06-29 15:31:29,443 - INFO - Running batch 63/78 with 300 lookup rows...
+2026-06-29 15:31:30,975 - INFO - Batch 63 returned 764 rows
+2026-06-29 15:31:30,975 - INFO - Running batch 64/78 with 300 lookup rows...
+2026-06-29 15:31:32,448 - INFO - Batch 64 returned 387 rows
+2026-06-29 15:31:32,449 - INFO - Running batch 65/78 with 300 lookup rows...
+2026-06-29 15:31:33,909 - INFO - Batch 65 returned 381 rows
+2026-06-29 15:31:33,909 - INFO - Running batch 66/78 with 300 lookup rows...
+2026-06-29 15:31:35,403 - INFO - Batch 66 returned 374 rows
+2026-06-29 15:31:35,403 - INFO - Running batch 67/78 with 300 lookup rows...
+2026-06-29 15:31:36,875 - INFO - Batch 67 returned 540 rows
+2026-06-29 15:31:36,875 - INFO - Running batch 68/78 with 300 lookup rows...
+2026-06-29 15:31:38,321 - INFO - Batch 68 returned 381 rows
+2026-06-29 15:31:38,321 - INFO - Running batch 69/78 with 300 lookup rows...
+2026-06-29 15:31:39,781 - INFO - Batch 69 returned 360 rows
+2026-06-29 15:31:39,781 - INFO - Running batch 70/78 with 300 lookup rows...
+2026-06-29 15:31:41,188 - INFO - Batch 70 returned 380 rows
+2026-06-29 15:31:41,188 - INFO - Running batch 71/78 with 300 lookup rows...
+2026-06-29 15:31:42,647 - INFO - Batch 71 returned 459 rows
+2026-06-29 15:31:42,647 - INFO - Running batch 72/78 with 300 lookup rows...
+2026-06-29 15:31:44,026 - INFO - Batch 72 returned 369 rows
+2026-06-29 15:31:44,026 - INFO - Running batch 73/78 with 300 lookup rows...
+2026-06-29 15:31:45,447 - INFO - Batch 73 returned 345 rows
+2026-06-29 15:31:45,447 - INFO - Running batch 74/78 with 300 lookup rows...
+2026-06-29 15:31:46,820 - INFO - Batch 74 returned 311 rows
+2026-06-29 15:31:46,820 - INFO - Running batch 75/78 with 300 lookup rows...
+2026-06-29 15:31:48,300 - INFO - Batch 75 returned 486 rows
+2026-06-29 15:31:48,300 - INFO - Running batch 76/78 with 300 lookup rows...
+2026-06-29 15:31:49,761 - INFO - Batch 76 returned 651 rows
+2026-06-29 15:31:49,761 - INFO - Running batch 77/78 with 300 lookup rows...
+2026-06-29 15:31:51,202 - INFO - Batch 77 returned 302 rows
+2026-06-29 15:31:51,202 - INFO - Running batch 78/78 with 114 lookup rows...
+2026-06-29 15:31:51,931 - INFO - Batch 78 returned 147 rows
+2026-06-29 15:31:52,192 - INFO - Matched SO item rows for current ERPFreeOrder tickets: 33561
+2026-06-29 15:31:52,192 - INFO - Step 7/9: Building final output for refreshed HANA tickets ...
+2026-06-29 15:31:58,256 - INFO - SAP unmatched changed tickets. Clearing old SO fields: 269
+2026-06-29 15:31:58,733 - INFO - [FB CLEAR UNMATCHED SO] batch=1 paths=1883 bytes~=91513
+2026-06-29 15:31:59,539 - INFO - [FB CLEAR UNMATCHED SO] batch=1 done
+2026-06-29 15:31:59,539 - INFO - Step 8/9: Uploading refreshed SO fields to Firebase ...
+2026-06-29 15:33:38,479 - INFO - [FB SO UPLOAD] batch=1 paths=8000 bytes~=1038453
+2026-06-29 15:33:39,741 - INFO - [FB SO UPLOAD] batch=1 done
+2026-06-29 15:34:32,039 - INFO - [FB SO UPLOAD] batch=2 paths=8000 bytes~=1085743
+2026-06-29 15:34:32,604 - INFO - [FB SO UPLOAD] batch=2 done
+2026-06-29 15:35:24,748 - INFO - [FB SO UPLOAD] batch=3 paths=8000 bytes~=1155192
+2026-06-29 15:35:25,213 - INFO - [FB SO UPLOAD] batch=3 done
+2026-06-29 15:36:17,276 - INFO - [FB SO UPLOAD] batch=4 paths=8000 bytes~=1194594
+2026-06-29 15:36:17,801 - INFO - [FB SO UPLOAD] batch=4 done
+2026-06-29 15:36:58,964 - INFO - [FB SO UPLOAD] batch=5 paths=8000 bytes~=1133554
+2026-06-29 15:36:59,515 - INFO - [FB SO UPLOAD] batch=5 done
+2026-06-29 15:37:37,363 - INFO - [FB SO UPLOAD] batch=6 paths=8000 bytes~=1108152
+2026-06-29 15:37:37,928 - INFO - [FB SO UPLOAD] batch=6 done
+2026-06-29 15:38:17,597 - INFO - [FB SO UPLOAD] batch=7 paths=8000 bytes~=1057626
+2026-06-29 15:38:18,136 - INFO - [FB SO UPLOAD] batch=7 done
+2026-06-29 15:39:01,973 - INFO - [FB SO UPLOAD] batch=8 paths=8000 bytes~=1118590
+2026-06-29 15:39:02,486 - INFO - [FB SO UPLOAD] batch=8 done
+2026-06-29 15:39:48,157 - INFO - [FB SO UPLOAD] batch=9 paths=8000 bytes~=1177484
+2026-06-29 15:39:48,867 - INFO - [FB SO UPLOAD] batch=9 done
+2026-06-29 15:40:40,808 - INFO - [FB SO UPLOAD] batch=10 paths=8000 bytes~=1199418
+2026-06-29 15:40:41,505 - INFO - [FB SO UPLOAD] batch=10 done
+2026-06-29 15:41:30,637 - INFO - [FB SO UPLOAD] batch=11 paths=8000 bytes~=1103910
+2026-06-29 15:41:31,337 - INFO - [FB SO UPLOAD] batch=11 done
+2026-06-29 15:42:14,290 - INFO - [FB SO UPLOAD] batch=12 paths=8000 bytes~=954415
+2026-06-29 15:42:14,948 - INFO - [FB SO UPLOAD] batch=12 done
+2026-06-29 15:42:56,739 - INFO - [FB SO UPLOAD] batch=13 paths=8000 bytes~=1003867
+2026-06-29 15:42:57,407 - INFO - [FB SO UPLOAD] batch=13 done
+2026-06-29 15:43:03,953 - INFO - [FB SO UPLOAD] batch=14 paths=3583 bytes~=449197
+2026-06-29 15:43:04,433 - INFO - [FB SO UPLOAD] batch=14 done
+2026-06-29 15:43:04,667 - INFO - Step 9/9: Updating changed ticket hash snapshot ...
+2026-06-29 15:43:05,364 - INFO - [FB HASH SNAPSHOT] batch=1 paths=1408 bytes~=153280
+2026-06-29 15:43:05,594 - INFO - [FB HASH SNAPSHOT] batch=1 done
+2026-06-29 15:43:05,594 - INFO - Excel export disabled. Firebase is the source for dashboard data.
+2026-06-29 15:43:05,594 - INFO - Analytics rebuild skipped after fetch because SKIP_ANALYTICS_REBUILD_AFTER_FETCH=1.
+2026-06-29 15:43:05,594 - INFO - Done. Firebase updated. Excel export is disabled by default for automation.
+2026-06-29 15:43:05,594 - INFO - Total elapsed: 1591.6s
+[FETCH DONE] Company fetch finished successfully.
+[COMPARE] Loading current Firebase tickets ...
+[C4C SAP] Using posting date index CSV: C:\Users\Leo.Li\Documents\GitHub\warranty\SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv
+[COMPARE] approvalState: newlyApproved=47, newlyUnapproved=0, correctedDetected=14
+[ANALYTICS] Building pre-calculated dashboard nodes ...
+[ANALYTICS DONE] employees=25, employeeCriticalTickets=551, removed=854, dealerAnalytics=updated
+[COMPARE DONE] tickets=32121, criticalNow=551, entered=82, moved=54, exited=96, events=232

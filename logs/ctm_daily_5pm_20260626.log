@@ -625,3 +625,387 @@ C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_M
 [C4C SAP] Using posting date index CSV: C:\Users\Leo.Li\Documents\GitHub\warranty\SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv
 [COMPARE] approvalState: newlyApproved=37, newlyUnapproved=1, correctedDetected=28246
 [ANALYTICS] Building pre-calculated dashboard nodes ...
+[ANALYTICS DONE] employees=25, employeeCriticalTickets=557, removed=783, dealerAnalytics=updated
+[COMPARE DONE] tickets=32049, criticalNow=557, entered=46, moved=52, exited=82, events=181
+==================================================
+CTM V44 daily 5:00 PM run started at Fri 26/06/2026 16:45:44.67
+==================================================
+[FETCH] Running company file:
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py
+2026-06-26 16:45:49,545 - INFO - Script version: MANDT800_FULLJOIN_REJECTION_FILTER
+2026-06-26 16:45:49,547 - INFO - SAP HANA rule: MANDT=800 full join + exclude VBAP.ABGRU rejected items from Sales Order Details
+2026-06-26 16:45:49,547 - INFO - Step 1/9: Fetching latest C4C snapshot ...
+2026-06-26 16:45:49,547 - INFO - ===== START ROLE 1001 =====
+2026-06-26 16:45:49,549 - INFO - ===== START ROLE 40 =====
+2026-06-26 16:45:49,550 - INFO - ===== START ROLE 43 =====
+2026-06-26 16:46:14,512 - INFO - [FETCH] role=43 page=1 skip=0 rows=1000
+2026-06-26 16:46:18,346 - INFO - [FETCH] role=40 page=1 skip=0 rows=1000
+2026-06-26 16:46:51,033 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=0&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'1001')
+2026-06-26 16:47:15,258 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=11000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'43')
+2026-06-26 16:47:15,466 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=10000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'43')
+2026-06-26 16:47:15,747 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=4000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'43')
+2026-06-26 16:47:15,768 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=6000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'43')
+2026-06-26 16:47:15,801 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=2000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'43')
+2026-06-26 16:47:15,810 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=8000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'43')
+2026-06-26 16:47:16,777 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=9000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'43')
+2026-06-26 16:47:16,802 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=7000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'43')
+2026-06-26 16:47:16,939 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=1000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'43')
+2026-06-26 16:47:16,961 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=12000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'43')
+2026-06-26 16:47:17,217 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=3000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'43')
+2026-06-26 16:47:17,243 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=5000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'43')
+2026-06-26 16:47:18,966 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=4000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'40')
+2026-06-26 16:47:19,077 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=9000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'40')
+2026-06-26 16:47:19,086 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=3000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'40')
+2026-06-26 16:47:19,090 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=1000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'40')
+2026-06-26 16:47:19,106 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=7000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'40')
+2026-06-26 16:47:19,128 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=5000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'40')
+2026-06-26 16:47:19,134 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=12000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'40')
+2026-06-26 16:47:19,134 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=11000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'40')
+2026-06-26 16:47:19,143 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=2000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'40')
+2026-06-26 16:47:19,143 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=8000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'40')
+2026-06-26 16:47:19,150 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=6000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'40')
+2026-06-26 16:47:21,826 - WARNING - Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPSConnectionPool(host='longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn', port=443): Read timed out. (read timeout=60)")': /http/PC4C/Ticket/queryOdataBatch?$top=1000&$skip=10000&$filter=(CCSRQ_DPY_ROLE_CD%20eq%20'40')
+2026-06-26 16:47:44,567 - INFO - [FETCH] role=43 page~=2 skip=12000 rows=1000
+2026-06-26 16:47:44,621 - INFO - [FETCH] role=43 page~=3 skip=1000 rows=1000
+2026-06-26 16:47:44,666 - INFO - [FETCH] role=43 page~=4 skip=11000 rows=1000
+2026-06-26 16:47:45,422 - INFO - [FETCH] role=43 page~=5 skip=4000 rows=1000
+2026-06-26 16:47:46,701 - INFO - [FETCH] role=43 page~=6 skip=6000 rows=1000
+2026-06-26 16:47:46,766 - INFO - [FETCH] role=43 page~=7 skip=3000 rows=1000
+2026-06-26 16:47:47,045 - INFO - [FETCH] role=43 page~=8 skip=8000 rows=1000
+2026-06-26 16:47:47,207 - INFO - [FETCH] role=40 page~=2 skip=8000 rows=1000
+2026-06-26 16:47:47,565 - INFO - [FETCH] role=43 page~=9 skip=5000 rows=1000
+2026-06-26 16:47:48,075 - INFO - [FETCH] role=43 page~=10 skip=2000 rows=1000
+2026-06-26 16:47:48,330 - INFO - [FETCH] role=40 page~=3 skip=3000 rows=1000
+2026-06-26 16:47:48,339 - INFO - [FETCH] role=40 page~=4 skip=4000 rows=1000
+2026-06-26 16:47:48,361 - INFO - [FETCH] role=40 page~=5 skip=6000 rows=1000
+2026-06-26 16:47:48,680 - INFO - [FETCH] role=40 page~=6 skip=12000 rows=1000
+2026-06-26 16:47:49,454 - INFO - [FETCH] role=40 page~=7 skip=10000 rows=1000
+2026-06-26 16:47:49,931 - INFO - [FETCH] role=40 page~=8 skip=2000 rows=1000
+2026-06-26 16:47:50,022 - INFO - [FETCH] role=40 page~=9 skip=1000 rows=1000
+2026-06-26 16:47:50,214 - INFO - [FETCH] role=40 page~=10 skip=9000 rows=1000
+2026-06-26 16:47:50,257 - INFO - [FETCH] role=40 page~=11 skip=11000 rows=1000
+2026-06-26 16:47:51,006 - INFO - [FETCH] role=40 page~=12 skip=5000 rows=1000
+2026-06-26 16:47:51,362 - INFO - [FETCH] role=40 page~=13 skip=7000 rows=1000
+2026-06-26 16:47:53,639 - INFO - [FETCH] role=43 page~=11 skip=9000 rows=1000
+2026-06-26 16:47:53,982 - INFO - [FETCH] role=43 page~=12 skip=10000 rows=1000
+2026-06-26 16:48:00,359 - INFO - [FETCH] role=43 page~=13 skip=7000 rows=1000
+2026-06-26 16:48:02,373 - INFO - [FETCH] role=1001 page=1 skip=0 rows=1000
+2026-06-26 16:48:06,305 - INFO - [FETCH] role=43 page~=14 skip=14000 rows=1000
+2026-06-26 16:48:07,163 - INFO - [FETCH] role=43 page~=15 skip=13000 rows=1000
+2026-06-26 16:48:07,590 - INFO - [FETCH] role=43 page~=16 skip=15000 rows=1000
+2026-06-26 16:48:07,834 - INFO - [FETCH] role=43 page~=17 skip=16000 rows=1000
+2026-06-26 16:48:08,465 - INFO - [FETCH] role=43 page~=18 skip=19000 rows=1000
+2026-06-26 16:48:09,265 - INFO - [FETCH] role=43 page~=19 skip=17000 rows=1000
+2026-06-26 16:48:09,821 - INFO - [FETCH] role=43 page~=20 skip=18000 rows=1000
+2026-06-26 16:48:10,346 - INFO - [FETCH] role=43 page~=21 skip=20000 rows=1000
+2026-06-26 16:48:10,823 - INFO - [FETCH] role=43 page~=22 skip=21000 rows=1000
+2026-06-26 16:48:12,457 - INFO - [FETCH] role=40 page~=14 skip=13000 rows=1000
+2026-06-26 16:48:14,133 - INFO - [FETCH] role=40 page~=15 skip=14000 rows=1000
+2026-06-26 16:48:14,463 - INFO - [FETCH] role=40 page~=16 skip=15000 rows=1000
+2026-06-26 16:48:14,503 - INFO - [FETCH] role=40 page~=17 skip=16000 rows=1000
+2026-06-26 16:48:14,968 - INFO - [FETCH] role=40 page~=18 skip=17000 rows=1000
+2026-06-26 16:48:15,529 - INFO - [FETCH] role=40 page~=19 skip=18000 rows=1000
+2026-06-26 16:48:16,303 - INFO - [FETCH] role=40 page~=20 skip=19000 rows=1000
+2026-06-26 16:48:16,351 - INFO - [FETCH] role=40 page~=21 skip=20000 rows=1000
+2026-06-26 16:48:16,732 - INFO - [FETCH] role=40 page~=22 skip=21000 rows=1000
+2026-06-26 16:48:16,903 - INFO - [FETCH] role=40 page~=23 skip=22000 rows=1000
+2026-06-26 16:48:17,117 - INFO - [FETCH] role=40 page~=24 skip=24000 rows=1000
+2026-06-26 16:48:17,441 - INFO - [FETCH] role=40 page~=25 skip=23000 rows=1000
+2026-06-26 16:48:19,294 - INFO - [FETCH] role=43 page~=23 skip=23000 rows=1000
+2026-06-26 16:48:20,771 - INFO - [FETCH] role=43 page~=24 skip=22000 rows=1000
+2026-06-26 16:48:23,638 - INFO - [FETCH] role=43 page~=25 skip=24000 rows=1000
+2026-06-26 16:48:27,417 - INFO - [FETCH] role=43 page~=26 skip=25000 rows=7
+2026-06-26 16:48:32,197 - INFO - [FETCH] role=1001 page~=2 skip=11000 rows=1000
+2026-06-26 16:48:32,823 - INFO - [FETCH] role=1001 page~=3 skip=4000 rows=1000
+2026-06-26 16:48:32,880 - INFO - [FETCH] role=1001 page~=4 skip=1000 rows=1000
+2026-06-26 16:48:32,887 - INFO - [FETCH] role=1001 page~=5 skip=3000 rows=1000
+2026-06-26 16:48:33,544 - INFO - [FETCH] role=1001 page~=6 skip=10000 rows=1000
+2026-06-26 16:48:33,633 - INFO - [FETCH] role=1001 page~=7 skip=6000 rows=1000
+2026-06-26 16:48:34,060 - INFO - [FETCH] role=1001 page~=8 skip=7000 rows=1000
+2026-06-26 16:48:34,137 - INFO - [FETCH] role=1001 page~=9 skip=2000 rows=1000
+2026-06-26 16:48:34,258 - INFO - [FETCH] role=1001 page~=10 skip=5000 rows=1000
+2026-06-26 16:48:36,141 - INFO - [FETCH] role=1001 page~=11 skip=12000 rows=1000
+2026-06-26 16:48:37,242 - INFO - [FETCH] role=40 page~=26 skip=25000 rows=1000
+2026-06-26 16:48:38,059 - INFO - [FETCH] role=1001 page~=12 skip=8000 rows=1000
+2026-06-26 16:48:38,909 - INFO - [FETCH] role=1001 page~=13 skip=9000 rows=1000
+2026-06-26 16:48:39,779 - INFO - [FETCH] role=40 page~=27 skip=27000 rows=1000
+2026-06-26 16:48:40,458 - INFO - [FETCH] role=40 page~=28 skip=28000 rows=1000
+2026-06-26 16:48:40,587 - INFO - [FETCH] role=40 page~=29 skip=30000 rows=1000
+2026-06-26 16:48:40,823 - INFO - [FETCH] role=40 page~=30 skip=29000 rows=1000
+2026-06-26 16:48:40,972 - INFO - [FETCH] role=40 page~=31 skip=26000 rows=1000
+2026-06-26 16:48:41,101 - INFO - [FETCH] role=40 page~=32 skip=32000 rows=65
+2026-06-26 16:48:41,306 - INFO - [FETCH] role=40 page~=33 skip=31000 rows=1000
+2026-06-26 16:48:49,790 - INFO - [FETCH] role=43 tail_probe=1 skip=26000 rows=0
+2026-06-26 16:48:49,790 - INFO - ===== END ROLE 43 rows=25007 elapsed=180.2s =====
+2026-06-26 16:48:50,195 - INFO - [ROLE MERGED] role=43 rows=25007 total_rows=25007 unique_tickets=25006
+2026-06-26 16:48:59,620 - INFO - [FETCH] role=1001 page~=14 skip=15000 rows=1000
+2026-06-26 16:49:00,385 - INFO - [FETCH] role=1001 page~=15 skip=18000 rows=1000
+2026-06-26 16:49:00,546 - INFO - [FETCH] role=1001 page~=16 skip=13000 rows=1000
+2026-06-26 16:49:00,896 - INFO - [FETCH] role=1001 page~=17 skip=19000 rows=1000
+2026-06-26 16:49:00,908 - INFO - [FETCH] role=1001 page~=18 skip=14000 rows=1000
+2026-06-26 16:49:01,186 - INFO - [FETCH] role=1001 page~=19 skip=17000 rows=1000
+2026-06-26 16:49:01,672 - INFO - [FETCH] role=1001 page~=20 skip=16000 rows=1000
+2026-06-26 16:49:02,220 - INFO - [FETCH] role=1001 page~=21 skip=21000 rows=1000
+2026-06-26 16:49:02,681 - INFO - [FETCH] role=1001 page~=22 skip=20000 rows=1000
+2026-06-26 16:49:03,543 - INFO - [FETCH] role=1001 page~=23 skip=22000 rows=1000
+2026-06-26 16:49:04,883 - INFO - [FETCH] role=1001 page~=24 skip=23000 rows=1000
+2026-06-26 16:49:07,147 - INFO - [FETCH] role=1001 page~=25 skip=24000 rows=1000
+2026-06-26 16:49:09,237 - INFO - [FETCH] role=40 tail_probe=1 skip=33000 rows=0
+2026-06-26 16:49:09,237 - INFO - ===== END ROLE 40 rows=32065 elapsed=199.7s =====
+2026-06-26 16:49:09,579 - INFO - [ROLE MERGED] role=40 rows=32065 total_rows=57072 unique_tickets=32065
+2026-06-26 16:49:26,309 - INFO - [FETCH] role=1001 page~=26 skip=25000 rows=1000
+2026-06-26 16:49:27,296 - INFO - [FETCH] role=1001 page~=27 skip=26000 rows=1000
+2026-06-26 16:49:27,557 - INFO - [FETCH] role=1001 page~=28 skip=28000 rows=1000
+2026-06-26 16:49:27,963 - INFO - [FETCH] role=1001 page~=29 skip=27000 rows=1000
+2026-06-26 16:49:28,246 - INFO - [FETCH] role=1001 page~=30 skip=30000 rows=1000
+2026-06-26 16:49:28,358 - INFO - [FETCH] role=1001 page~=31 skip=31000 rows=249
+2026-06-26 16:49:29,323 - INFO - [FETCH] role=1001 page~=32 skip=29000 rows=1000
+2026-06-26 16:49:55,877 - INFO - [FETCH] role=1001 tail_probe=1 skip=32000 rows=0
+2026-06-26 16:49:55,877 - INFO - ===== END ROLE 1001 rows=31249 elapsed=246.3s =====
+2026-06-26 16:49:56,266 - INFO - [ROLE MERGED] role=1001 rows=31249 total_rows=88321 unique_tickets=32066
+2026-06-26 16:49:56,334 - INFO - C4C total API rows processed: 88321
+2026-06-26 16:49:56,334 - INFO - C4C total unique TicketIDs: 32066
+2026-06-26 16:49:56,334 - INFO - Step 2/9: Initializing Firebase and loading previous sync snapshot ...
+2026-06-26 16:49:58,294 - INFO - Previous synced TicketIDs in hash snapshot: 32065
+2026-06-26 16:49:58,294 - INFO - Step 3/9: Detecting changed/deleted tickets ...
+2026-06-26 16:49:59,457 - INFO - Changed tickets: 102
+2026-06-26 16:49:59,458 - INFO - Deleted tickets: 0
+2026-06-26 16:49:59,458 - INFO - Step 3A/9: Uploading changed C4C core ticket fields to Firebase ...
+2026-06-26 16:50:00,233 - INFO - [FB CORE TICKET UPLOAD] batch=1 paths=3060 bytes~=165144
+2026-06-26 16:50:00,589 - INFO - [FB CORE TICKET UPLOAD] batch=1 done
+2026-06-26 16:50:00,715 - INFO - Step 3B/9: Uploading C4C involved-party roles to Firebase, including role 40 Assign To ...
+2026-06-26 16:50:43,887 - INFO - [FB C4C ROLES UPLOAD] batch=1 paths=8000 bytes~=1631926
+2026-06-26 16:50:44,576 - INFO - [FB C4C ROLES UPLOAD] batch=1 done
+2026-06-26 16:51:24,318 - INFO - [FB C4C ROLES UPLOAD] batch=2 paths=8000 bytes~=1628690
+2026-06-26 16:51:24,718 - INFO - [FB C4C ROLES UPLOAD] batch=2 done
+2026-06-26 16:52:03,980 - INFO - [FB C4C ROLES UPLOAD] batch=3 paths=8000 bytes~=1667521
+2026-06-26 16:52:04,390 - INFO - [FB C4C ROLES UPLOAD] batch=3 done
+2026-06-26 16:52:43,324 - INFO - [FB C4C ROLES UPLOAD] batch=4 paths=8000 bytes~=1656287
+2026-06-26 16:52:43,703 - INFO - [FB C4C ROLES UPLOAD] batch=4 done
+2026-06-26 16:53:20,316 - INFO - [FB C4C ROLES UPLOAD] batch=5 paths=8000 bytes~=1655887
+2026-06-26 16:53:20,710 - INFO - [FB C4C ROLES UPLOAD] batch=5 done
+2026-06-26 16:54:06,538 - INFO - [FB C4C ROLES UPLOAD] batch=6 paths=8000 bytes~=1671803
+2026-06-26 16:54:07,139 - INFO - [FB C4C ROLES UPLOAD] batch=6 done
+2026-06-26 16:54:47,114 - INFO - [FB C4C ROLES UPLOAD] batch=7 paths=8000 bytes~=1657443
+2026-06-26 16:54:47,656 - INFO - [FB C4C ROLES UPLOAD] batch=7 done
+2026-06-26 16:55:26,584 - INFO - [FB C4C ROLES UPLOAD] batch=8 paths=8000 bytes~=1656038
+2026-06-26 16:55:27,141 - INFO - [FB C4C ROLES UPLOAD] batch=8 done
+2026-06-26 16:56:10,363 - INFO - [FB C4C ROLES UPLOAD] batch=9 paths=8000 bytes~=1647950
+2026-06-26 16:56:11,297 - INFO - [FB C4C ROLES UPLOAD] batch=9 done
+2026-06-26 16:56:52,242 - INFO - [FB C4C ROLES UPLOAD] batch=10 paths=8000 bytes~=1625466
+2026-06-26 16:56:52,879 - INFO - [FB C4C ROLES UPLOAD] batch=10 done
+2026-06-26 16:57:26,255 - INFO - [FB C4C ROLES UPLOAD] batch=11 paths=8000 bytes~=1603059
+2026-06-26 16:57:26,861 - INFO - [FB C4C ROLES UPLOAD] batch=11 done
+2026-06-26 16:57:26,900 - INFO - [FB C4C ROLES UPLOAD] batch=12 paths=319 bytes~=64490
+2026-06-26 16:57:27,038 - INFO - [FB C4C ROLES UPLOAD] batch=12 done
+2026-06-26 16:57:27,181 - INFO - Step 4/9: Uploading critical-removed metrics ...
+2026-06-26 16:57:29,662 - INFO - Step 5/9: Extracting ERPFreeOrder from ALL current tickets for SAP HANA refresh ...
+2026-06-26 16:57:30,120 - INFO - Changed tickets without ERPFreeOrder. Clearing old SO fields: 43
+2026-06-26 16:57:30,125 - INFO - [FB CLEAR NO ERPFreeOrder] batch=1 paths=258 bytes~=12871
+2026-06-26 16:57:30,559 - INFO - [FB CLEAR NO ERPFreeOrder] batch=1 done
+2026-06-26 16:57:30,559 - INFO - Current tickets with ERPFreeOrder for HANA refresh: 15330
+2026-06-26 16:57:30,559 - INFO - Step 6/9: Connecting SAP HANA and fetching SO/item data for changed tickets only ...
+2026-06-26 16:57:33,338 - INFO - Total input lookup rows: 23175
+2026-06-26 16:57:33,338 - INFO - Total SQL batches: 78
+2026-06-26 16:57:33,338 - INFO - Running batch 1/78 with 300 lookup rows...
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:720: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-26 16:57:33,994 - INFO - Batch 1 returned 304 rows
+2026-06-26 16:57:33,995 - INFO - Running batch 2/78 with 300 lookup rows...
+2026-06-26 16:57:34,552 - INFO - Batch 2 returned 429 rows
+2026-06-26 16:57:34,552 - INFO - Running batch 3/78 with 300 lookup rows...
+2026-06-26 16:57:35,105 - INFO - Batch 3 returned 442 rows
+2026-06-26 16:57:35,105 - INFO - Running batch 4/78 with 300 lookup rows...
+2026-06-26 16:57:35,685 - INFO - Batch 4 returned 460 rows
+2026-06-26 16:57:35,686 - INFO - Running batch 5/78 with 300 lookup rows...
+2026-06-26 16:57:36,257 - INFO - Batch 5 returned 582 rows
+2026-06-26 16:57:36,258 - INFO - Running batch 6/78 with 300 lookup rows...
+2026-06-26 16:57:37,645 - INFO - Batch 6 returned 711 rows
+2026-06-26 16:57:37,645 - INFO - Running batch 7/78 with 300 lookup rows...
+2026-06-26 16:57:38,979 - INFO - Batch 7 returned 451 rows
+2026-06-26 16:57:38,979 - INFO - Running batch 8/78 with 300 lookup rows...
+2026-06-26 16:57:39,514 - INFO - Batch 8 returned 358 rows
+2026-06-26 16:57:39,514 - INFO - Running batch 9/78 with 300 lookup rows...
+2026-06-26 16:57:40,022 - INFO - Batch 9 returned 290 rows
+2026-06-26 16:57:40,023 - INFO - Running batch 10/78 with 300 lookup rows...
+2026-06-26 16:57:40,530 - INFO - Batch 10 returned 282 rows
+2026-06-26 16:57:40,530 - INFO - Running batch 11/78 with 300 lookup rows...
+2026-06-26 16:57:41,050 - INFO - Batch 11 returned 349 rows
+2026-06-26 16:57:41,051 - INFO - Running batch 12/78 with 300 lookup rows...
+2026-06-26 16:57:41,563 - INFO - Batch 12 returned 331 rows
+2026-06-26 16:57:41,563 - INFO - Running batch 13/78 with 300 lookup rows...
+2026-06-26 16:57:42,082 - INFO - Batch 13 returned 370 rows
+2026-06-26 16:57:42,082 - INFO - Running batch 14/78 with 300 lookup rows...
+2026-06-26 16:57:42,593 - INFO - Batch 14 returned 308 rows
+2026-06-26 16:57:42,593 - INFO - Running batch 15/78 with 300 lookup rows...
+2026-06-26 16:57:43,106 - INFO - Batch 15 returned 319 rows
+2026-06-26 16:57:43,106 - INFO - Running batch 16/78 with 300 lookup rows...
+2026-06-26 16:57:43,640 - INFO - Batch 16 returned 478 rows
+2026-06-26 16:57:43,640 - INFO - Running batch 17/78 with 300 lookup rows...
+2026-06-26 16:57:44,204 - INFO - Batch 17 returned 675 rows
+2026-06-26 16:57:44,204 - INFO - Running batch 18/78 with 300 lookup rows...
+2026-06-26 16:57:44,767 - INFO - Batch 18 returned 685 rows
+2026-06-26 16:57:44,767 - INFO - Running batch 19/78 with 300 lookup rows...
+2026-06-26 16:57:46,130 - INFO - Batch 19 returned 744 rows
+2026-06-26 16:57:46,130 - INFO - Running batch 20/78 with 300 lookup rows...
+2026-06-26 16:57:47,404 - INFO - Batch 20 returned 371 rows
+2026-06-26 16:57:47,404 - INFO - Running batch 21/78 with 300 lookup rows...
+2026-06-26 16:57:47,904 - INFO - Batch 21 returned 293 rows
+2026-06-26 16:57:47,904 - INFO - Running batch 22/78 with 300 lookup rows...
+2026-06-26 16:57:48,414 - INFO - Batch 22 returned 358 rows
+2026-06-26 16:57:48,414 - INFO - Running batch 23/78 with 300 lookup rows...
+2026-06-26 16:57:48,916 - INFO - Batch 23 returned 362 rows
+2026-06-26 16:57:48,916 - INFO - Running batch 24/78 with 300 lookup rows...
+2026-06-26 16:57:49,464 - INFO - Batch 24 returned 638 rows
+2026-06-26 16:57:49,464 - INFO - Running batch 25/78 with 300 lookup rows...
+2026-06-26 16:57:50,000 - INFO - Batch 25 returned 577 rows
+2026-06-26 16:57:50,000 - INFO - Running batch 26/78 with 300 lookup rows...
+2026-06-26 16:57:50,495 - INFO - Batch 26 returned 315 rows
+2026-06-26 16:57:50,495 - INFO - Running batch 27/78 with 300 lookup rows...
+2026-06-26 16:57:50,995 - INFO - Batch 27 returned 305 rows
+2026-06-26 16:57:50,995 - INFO - Running batch 28/78 with 300 lookup rows...
+2026-06-26 16:57:51,489 - INFO - Batch 28 returned 303 rows
+2026-06-26 16:57:51,489 - INFO - Running batch 29/78 with 300 lookup rows...
+2026-06-26 16:57:51,998 - INFO - Batch 29 returned 351 rows
+2026-06-26 16:57:51,998 - INFO - Running batch 30/78 with 300 lookup rows...
+2026-06-26 16:57:52,522 - INFO - Batch 30 returned 505 rows
+2026-06-26 16:57:52,522 - INFO - Running batch 31/78 with 300 lookup rows...
+2026-06-26 16:57:53,037 - INFO - Batch 31 returned 444 rows
+2026-06-26 16:57:53,037 - INFO - Running batch 32/78 with 300 lookup rows...
+2026-06-26 16:57:53,528 - INFO - Batch 32 returned 342 rows
+2026-06-26 16:57:53,528 - INFO - Running batch 33/78 with 300 lookup rows...
+2026-06-26 16:57:54,020 - INFO - Batch 33 returned 352 rows
+2026-06-26 16:57:54,020 - INFO - Running batch 34/78 with 300 lookup rows...
+2026-06-26 16:57:54,513 - INFO - Batch 34 returned 334 rows
+2026-06-26 16:57:54,513 - INFO - Running batch 35/78 with 300 lookup rows...
+2026-06-26 16:57:55,001 - INFO - Batch 35 returned 273 rows
+2026-06-26 16:57:55,001 - INFO - Running batch 36/78 with 300 lookup rows...
+2026-06-26 16:57:55,500 - INFO - Batch 36 returned 351 rows
+2026-06-26 16:57:55,500 - INFO - Running batch 37/78 with 300 lookup rows...
+2026-06-26 16:57:55,993 - INFO - Batch 37 returned 319 rows
+2026-06-26 16:57:55,993 - INFO - Running batch 38/78 with 300 lookup rows...
+2026-06-26 16:57:56,510 - INFO - Batch 38 returned 438 rows
+2026-06-26 16:57:56,510 - INFO - Running batch 39/78 with 300 lookup rows...
+2026-06-26 16:57:57,054 - INFO - Batch 39 returned 639 rows
+2026-06-26 16:57:57,054 - INFO - Running batch 40/78 with 300 lookup rows...
+2026-06-26 16:57:57,560 - INFO - Batch 40 returned 370 rows
+2026-06-26 16:57:57,560 - INFO - Running batch 41/78 with 300 lookup rows...
+2026-06-26 16:57:58,041 - INFO - Batch 41 returned 250 rows
+2026-06-26 16:57:58,041 - INFO - Running batch 42/78 with 300 lookup rows...
+2026-06-26 16:57:58,513 - INFO - Batch 42 returned 245 rows
+2026-06-26 16:57:58,514 - INFO - Running batch 43/78 with 300 lookup rows...
+2026-06-26 16:57:58,992 - INFO - Batch 43 returned 251 rows
+2026-06-26 16:57:58,992 - INFO - Running batch 44/78 with 300 lookup rows...
+2026-06-26 16:57:59,468 - INFO - Batch 44 returned 250 rows
+2026-06-26 16:57:59,468 - INFO - Running batch 45/78 with 300 lookup rows...
+2026-06-26 16:57:59,964 - INFO - Batch 45 returned 362 rows
+2026-06-26 16:57:59,964 - INFO - Running batch 46/78 with 300 lookup rows...
+2026-06-26 16:58:00,452 - INFO - Batch 46 returned 324 rows
+2026-06-26 16:58:00,452 - INFO - Running batch 47/78 with 300 lookup rows...
+2026-06-26 16:58:00,938 - INFO - Batch 47 returned 299 rows
+2026-06-26 16:58:00,938 - INFO - Running batch 48/78 with 300 lookup rows...
+2026-06-26 16:58:01,431 - INFO - Batch 48 returned 383 rows
+2026-06-26 16:58:01,431 - INFO - Running batch 49/78 with 300 lookup rows...
+2026-06-26 16:58:01,930 - INFO - Batch 49 returned 424 rows
+2026-06-26 16:58:01,930 - INFO - Running batch 50/78 with 300 lookup rows...
+2026-06-26 16:58:02,416 - INFO - Batch 50 returned 340 rows
+2026-06-26 16:58:02,416 - INFO - Running batch 51/78 with 300 lookup rows...
+2026-06-26 16:58:02,938 - INFO - Batch 51 returned 544 rows
+2026-06-26 16:58:02,938 - INFO - Running batch 52/78 with 300 lookup rows...
+2026-06-26 16:58:03,441 - INFO - Batch 52 returned 449 rows
+2026-06-26 16:58:03,441 - INFO - Running batch 53/78 with 300 lookup rows...
+2026-06-26 16:58:03,951 - INFO - Batch 53 returned 499 rows
+2026-06-26 16:58:03,951 - INFO - Running batch 54/78 with 300 lookup rows...
+2026-06-26 16:58:04,474 - INFO - Batch 54 returned 611 rows
+2026-06-26 16:58:04,475 - INFO - Running batch 55/78 with 300 lookup rows...
+2026-06-26 16:58:05,013 - INFO - Batch 55 returned 674 rows
+2026-06-26 16:58:05,013 - INFO - Running batch 56/78 with 300 lookup rows...
+2026-06-26 16:58:06,571 - INFO - Batch 56 returned 716 rows
+2026-06-26 16:58:06,571 - INFO - Running batch 57/78 with 300 lookup rows...
+2026-06-26 16:58:07,075 - INFO - Batch 57 returned 478 rows
+2026-06-26 16:58:07,075 - INFO - Running batch 58/78 with 300 lookup rows...
+2026-06-26 16:58:07,578 - INFO - Batch 58 returned 492 rows
+2026-06-26 16:58:07,578 - INFO - Running batch 59/78 with 300 lookup rows...
+2026-06-26 16:58:08,091 - INFO - Batch 59 returned 521 rows
+2026-06-26 16:58:08,091 - INFO - Running batch 60/78 with 300 lookup rows...
+2026-06-26 16:58:08,586 - INFO - Batch 60 returned 436 rows
+2026-06-26 16:58:08,586 - INFO - Running batch 61/78 with 300 lookup rows...
+2026-06-26 16:58:09,138 - INFO - Batch 61 returned 754 rows
+2026-06-26 16:58:09,138 - INFO - Running batch 62/78 with 300 lookup rows...
+2026-06-26 16:58:09,687 - INFO - Batch 62 returned 787 rows
+2026-06-26 16:58:09,687 - INFO - Running batch 63/78 with 300 lookup rows...
+2026-06-26 16:58:11,228 - INFO - Batch 63 returned 733 rows
+2026-06-26 16:58:11,229 - INFO - Running batch 64/78 with 300 lookup rows...
+2026-06-26 16:58:11,731 - INFO - Batch 64 returned 466 rows
+2026-06-26 16:58:11,731 - INFO - Running batch 65/78 with 300 lookup rows...
+2026-06-26 16:58:12,210 - INFO - Batch 65 returned 304 rows
+2026-06-26 16:58:12,210 - INFO - Running batch 66/78 with 300 lookup rows...
+2026-06-26 16:58:12,701 - INFO - Batch 66 returned 426 rows
+2026-06-26 16:58:12,701 - INFO - Running batch 67/78 with 300 lookup rows...
+2026-06-26 16:58:14,187 - INFO - Batch 67 returned 509 rows
+2026-06-26 16:58:14,187 - INFO - Running batch 68/78 with 300 lookup rows...
+2026-06-26 16:58:14,668 - INFO - Batch 68 returned 363 rows
+2026-06-26 16:58:14,668 - INFO - Running batch 69/78 with 300 lookup rows...
+2026-06-26 16:58:15,148 - INFO - Batch 69 returned 378 rows
+2026-06-26 16:58:15,148 - INFO - Running batch 70/78 with 300 lookup rows...
+2026-06-26 16:58:15,625 - INFO - Batch 70 returned 358 rows
+2026-06-26 16:58:15,625 - INFO - Running batch 71/78 with 300 lookup rows...
+2026-06-26 16:58:16,120 - INFO - Batch 71 returned 474 rows
+2026-06-26 16:58:16,120 - INFO - Running batch 72/78 with 300 lookup rows...
+2026-06-26 16:58:16,604 - INFO - Batch 72 returned 362 rows
+2026-06-26 16:58:16,604 - INFO - Running batch 73/78 with 300 lookup rows...
+2026-06-26 16:58:17,079 - INFO - Batch 73 returned 333 rows
+2026-06-26 16:58:17,079 - INFO - Running batch 74/78 with 300 lookup rows...
+2026-06-26 16:58:17,553 - INFO - Batch 74 returned 325 rows
+2026-06-26 16:58:17,553 - INFO - Running batch 75/78 with 300 lookup rows...
+2026-06-26 16:58:18,058 - INFO - Batch 75 returned 529 rows
+2026-06-26 16:58:18,058 - INFO - Running batch 76/78 with 300 lookup rows...
+2026-06-26 16:58:19,554 - INFO - Batch 76 returned 635 rows
+2026-06-26 16:58:19,554 - INFO - Running batch 77/78 with 300 lookup rows...
+2026-06-26 16:58:20,019 - INFO - Batch 77 returned 272 rows
+2026-06-26 16:58:20,019 - INFO - Running batch 78/78 with 75 lookup rows...
+2026-06-26 16:58:20,453 - INFO - Batch 78 returned 99 rows
+2026-06-26 16:58:20,602 - INFO - Matched SO item rows for current ERPFreeOrder tickets: 33463
+2026-06-26 16:58:20,603 - INFO - Step 7/9: Building final output for refreshed HANA tickets ...
+2026-06-26 16:58:23,608 - INFO - SAP unmatched changed tickets. Clearing old SO fields: 269
+2026-06-26 16:58:23,786 - INFO - [FB CLEAR UNMATCHED SO] batch=1 paths=1614 bytes~=79631
+2026-06-26 16:58:24,005 - INFO - [FB CLEAR UNMATCHED SO] batch=1 done
+2026-06-26 16:58:24,005 - INFO - Step 8/9: Uploading refreshed SO fields to Firebase ...
+2026-06-26 16:59:19,679 - INFO - [FB SO UPLOAD] batch=1 paths=8000 bytes~=1057323
+2026-06-26 16:59:20,193 - INFO - [FB SO UPLOAD] batch=1 done
+2026-06-26 16:59:47,966 - INFO - [FB SO UPLOAD] batch=2 paths=8000 bytes~=1112891
+2026-06-26 16:59:48,520 - INFO - [FB SO UPLOAD] batch=2 done
+2026-06-26 17:00:19,749 - INFO - [FB SO UPLOAD] batch=3 paths=8000 bytes~=1203693
+2026-06-26 17:00:20,261 - INFO - [FB SO UPLOAD] batch=3 done
+2026-06-26 17:00:51,302 - INFO - [FB SO UPLOAD] batch=4 paths=8000 bytes~=1156416
+2026-06-26 17:00:51,894 - INFO - [FB SO UPLOAD] batch=4 done
+2026-06-26 17:01:27,195 - INFO - [FB SO UPLOAD] batch=5 paths=8000 bytes~=1131502
+2026-06-26 17:01:27,764 - INFO - [FB SO UPLOAD] batch=5 done
+2026-06-26 17:01:53,978 - INFO - [FB SO UPLOAD] batch=6 paths=8000 bytes~=1072089
+2026-06-26 17:01:54,525 - INFO - [FB SO UPLOAD] batch=6 done
+2026-06-26 17:02:15,454 - INFO - [FB SO UPLOAD] batch=7 paths=8000 bytes~=1130676
+2026-06-26 17:02:15,949 - INFO - [FB SO UPLOAD] batch=7 done
+2026-06-26 17:02:43,501 - INFO - [FB SO UPLOAD] batch=8 paths=8000 bytes~=1210946
+2026-06-26 17:02:44,049 - INFO - [FB SO UPLOAD] batch=8 done
+2026-06-26 17:03:04,235 - INFO - [FB SO UPLOAD] batch=9 paths=8000 bytes~=1183557
+2026-06-26 17:03:04,799 - INFO - [FB SO UPLOAD] batch=9 done
+2026-06-26 17:03:33,740 - INFO - [FB SO UPLOAD] batch=10 paths=8000 bytes~=1013403
+2026-06-26 17:03:34,271 - INFO - [FB SO UPLOAD] batch=10 done
+2026-06-26 17:04:00,484 - INFO - [FB SO UPLOAD] batch=11 paths=8000 bytes~=1009474
+2026-06-26 17:04:01,113 - INFO - [FB SO UPLOAD] batch=11 done
+2026-06-26 17:04:05,477 - INFO - [FB SO UPLOAD] batch=12 paths=3980 bytes~=503393
+2026-06-26 17:04:05,866 - INFO - [FB SO UPLOAD] batch=12 done
+2026-06-26 17:04:06,001 - INFO - Step 9/9: Updating changed ticket hash snapshot ...
+2026-06-26 17:04:06,004 - INFO - [FB HASH SNAPSHOT] batch=1 paths=102 bytes~=11105
+2026-06-26 17:04:06,126 - INFO - [FB HASH SNAPSHOT] batch=1 done
+2026-06-26 17:04:06,126 - INFO - Excel export disabled. Firebase is the source for dashboard data.
+2026-06-26 17:04:06,126 - INFO - Analytics rebuild skipped after fetch because SKIP_ANALYTICS_REBUILD_AFTER_FETCH=1.
+2026-06-26 17:04:06,126 - INFO - Done. Firebase updated. Excel export is disabled by default for automation.
+2026-06-26 17:04:06,126 - INFO - Total elapsed: 1096.6s
+[FETCH DONE] Company fetch finished successfully.
+[COMPARE] Loading current Firebase tickets ...
+[C4C SAP] Using posting date index CSV: C:\Users\Leo.Li\Documents\GitHub\warranty\SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv
+[COMPARE] approvalState: newlyApproved=11, newlyUnapproved=0, correctedDetected=1
+[ANALYTICS] Building pre-calculated dashboard nodes ...
+[ANALYTICS DONE] employees=25, employeeCriticalTickets=561, removed=795, dealerAnalytics=updated
+[COMPARE DONE] tickets=32066, criticalNow=561, entered=2, moved=5, exited=2, events=9

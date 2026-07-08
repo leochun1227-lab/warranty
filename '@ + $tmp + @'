@@ -1,0 +1,788 @@
+
+"use strict";
+(function(){
+  const FB_HISTORY = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/deliveryFlowHistory/daily.json";
+  const state = {
+    granularity: "week",
+    history: [],
+    latest: null,
+    groups: [],
+    costRows: [],
+    costReport: null,
+  };
+
+  const els = {
+    kpis: document.getElementById("kpis"),
+    granSeg: document.getElementById("granSeg"),
+    snapshotPill: document.getElementById("snapshotPill"),
+    flowBadge: document.getElementById("flowBadge"),
+    flowChart: document.getElementById("flowChart"),
+    flowFoot: document.getElementById("flowFoot"),
+    mixGrid: document.getElementById("mixGrid"),
+    mixNote: document.getElementById("mixNote"),
+    agingGrid: document.getElementById("agingGrid"),
+    agingFoot: document.getElementById("agingFoot"),
+    leadBadge: document.getElementById("leadBadge"),
+    leadChart: document.getElementById("leadChart"),
+    leadFoot: document.getElementById("leadFoot"),
+    costBadge: document.getElementById("costBadge"),
+    costSummary: document.getElementById("costSummary"),
+    costTrend: document.getElementById("costTrend"),
+    costSelected: document.getElementById("costSelected"),
+    costCompare: document.getElementById("costCompare"),
+    costFoot: document.getElementById("costFoot"),
+    tip: document.getElementById("tip"),
+  };
+
+  const money = new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD", maximumFractionDigits: 0 });
+  const integer = new Intl.NumberFormat("en-AU", { maximumFractionDigits: 0 });
+  const daysFmt = new Intl.NumberFormat("en-AU", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+  function esc(v){ return String(v == null ? "" : v).replace(/[&<>"']/g, s => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[s])); }
+  function n(v){ const x = Number(String(v == null ? 0 : v).replace(/,/g, "")); return Number.isFinite(x) ? x : 0; }
+  function clean(v){ return String(v == null ? "" : v).trim(); }
+
+  function parseDate(iso){
+    if (!iso) return null;
+    const d = new Date(`${iso}T00:00:00Z`);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+  function dateKey(d){
+    return d ? d.toISOString().slice(0, 10) : "";
+  }
+  function copyUTC(d){
+    return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()));
+  }
+  function addDaysUTC(d, days){
+    const x = copyUTC(d);
+    x.setUTCDate(x.getUTCDate() + days);
+    return x;
+  }
+  function addMonthsUTC(d, months){
+    return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + months, 1));
+  }
+  function weekStartUTC(d){
+    const x = copyUTC(d);
+    const off = (x.getUTCDay() + 6) % 7;
+    x.setUTCDate(x.getUTCDate() - off);
+    return x;
+  }
+  function fmtDate(d){
+    return d.toLocaleDateString("en-AU", { day:"2-digit", month:"short", year:"numeric", timeZone:"UTC" });
+  }
+  function fmtMonth(d){
+    return d.toLocaleDateString("en-AU", { month:"short", year:"numeric", timeZone:"UTC" });
+  }
+  function fmtYear(d){
+    return d.toLocaleDateString("en-AU", { year:"numeric", timeZone:"UTC" });
+  }
+  function fmtShortRange(start, end){
+    return `${fmtDate(start)} - ${fmtDate(end)}`;
+  }
+  function fmtAxis(v){
+    const abs = Math.abs(v);
+    if (abs >= 1000000) return `${(v / 1000000).toFixed(1)}m`;
+    if (abs >= 1000) return `${(v / 1000).toFixed(1)}k`;
+    if (abs >= 100) return Math.round(v).toString();
+    if (abs >= 10) return Math.round(v).toString();
+    return (Math.round(v * 10) / 10).toFixed(v % 1 ? 1 : 0);
+  }
+  function niceMax(v){
+    if (v <= 0) return 10;
+    const p = Math.pow(10, Math.floor(Math.log10(v)));
+    const n = v / p;
+    const m = n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10;
+    return m * p;
+  }
+  function formatPct(v){
+    return `${(Math.round(v * 10) / 10).toFixed(v % 1 ? 1 : 0)}%`;
+  }
+
+  function parseLooseDate(text){
+    const v = clean(text);
+    if (!v || v === "#") return null;
+    const iso = v.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (iso) return new Date(Date.UTC(+iso[1], +iso[2] - 1, +iso[3]));
+    const dmy = v.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+    if (dmy) return new Date(Date.UTC(+dmy[3], +dmy[2] - 1, +dmy[1]));
+    const slash = v.match(/^(\d{4})\/(\d{2})\/(\d{2})$/);
+    if (slash) return new Date(Date.UTC(+slash[1], +slash[2] - 1, +slash[3]));
+    const d = new Date(v);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+
+  function parseCsv(text){
+    const rows = [];
+    let row = [];
+    let cur = "";
+    let inQuotes = false;
+    for (let i = 0; i < text.length; i++){
+      const ch = text[i];
+      if (inQuotes){
+        if (ch === '"'){
+          if (text[i + 1] === '"'){ cur += '"'; i++; }
+          else inQuotes = false;
+        }else{
+          cur += ch;
+        }
+      }else if (ch === '"'){
+        inQuotes = true;
+      }else if (ch === ","){
+        row.push(cur);
+        cur = "";
+      }else if (ch === "\n"){
+        row.push(cur);
+        rows.push(row);
+        row = [];
+        cur = "";
+      }else if (ch !== "\r"){
+        cur += ch;
+      }
+    }
+    if (cur.length || row.length){
+      row.push(cur);
+      rows.push(row);
+    }
+    return rows.filter(r => r.length && r.some(cell => String(cell).trim() !== ""));
+  }
+
+  function normalizeSnapshot(raw){
+    const flow = raw.flow || {};
+    const kpi = raw.kpi || {};
+    const status = raw.statusMix || {};
+    const aging = raw.agingBuckets || {};
+    return {
+      asOf: clean(raw.asOf),
+      generatedAt: clean(raw.generatedAt),
+      flow: {
+        newSoItems: n(flow.newSoItems),
+        itemsIssued: n(flow.itemsIssued),
+        netBacklogChange: n(flow.netBacklogChange),
+        backlogTotal: n(flow.backlogTotal),
+      },
+      statusMix: {
+        openItems: n(status.openItems),
+        issuedItems: n(status.issuedItems),
+        rejectedItems: n(status.rejectedItems),
+      },
+      agingBuckets: {
+        "0-7": n(aging["0-7"]),
+        "8-14": n(aging["8-14"]),
+        "15-30": n(aging["15-30"]),
+        "30+": n(aging["30+"]),
+      },
+      kpi: {
+        openSoItems: n(kpi.openSoItems),
+        partiallyIssuedTickets: n(kpi.partiallyIssuedTickets),
+        fullyIssuedTickets: n(kpi.fullyIssuedTickets),
+        notIssuedTickets: n(kpi.notIssuedTickets),
+        avgDaysToFirstIssue: n(kpi.avgDaysToFirstIssue),
+        oldestNotIssuedDays: n(kpi.oldestNotIssuedDays),
+      },
+    };
+  }
+
+  function groupKeyFor(date, granularity){
+    const d = parseDate(date);
+    if (!d) return null;
+    if (granularity === "month") return dateKey(addMonthsUTC(d, 0));
+    if (granularity === "year") return `${d.getUTCFullYear()}-01-01`;
+    return dateKey(weekStartUTC(d));
+  }
+
+  function groupLabel(start, granularity){
+    if (granularity === "month") return fmtMonth(start);
+    if (granularity === "year") return fmtYear(start);
+    return fmtDate(start);
+  }
+
+  function buildSeries(history, granularity){
+    const groups = new Map();
+    history.forEach(snapshot => {
+      const d = parseDate(snapshot.asOf);
+      if (!d) return;
+      const start = granularity === "month" ? new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1))
+        : granularity === "year" ? new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+        : weekStartUTC(d);
+      const key = dateKey(start);
+      if (!groups.has(key)){
+        const end = granularity === "month"
+          ? addDaysUTC(addMonthsUTC(start, 1), -1)
+          : granularity === "year"
+            ? new Date(Date.UTC(start.getUTCFullYear(), 11, 31))
+            : addDaysUTC(start, 6);
+        groups.set(key, {
+          key,
+          start,
+          end,
+          label: groupLabel(start, granularity),
+          tooltip: fmtShortRange(start, end),
+          newSoItems: 0,
+          partiallyIssuedTickets: 0,
+          notIssuedTickets: 0,
+          activeTickets: 0,
+          issuedTickets: 0,
+          latest: snapshot,
+        });
+      }
+      const group = groups.get(key);
+      group.newSoItems += n(snapshot.flow.newSoItems);
+      const partiallyIssuedTickets = n(snapshot.kpi.partiallyIssuedTickets);
+      const notIssuedTickets = n(snapshot.kpi.notIssuedTickets);
+      const fullyIssuedTickets = n(snapshot.kpi.fullyIssuedTickets);
+      group.partiallyIssuedTickets = partiallyIssuedTickets;
+      group.notIssuedTickets = notIssuedTickets;
+      group.activeTickets = partiallyIssuedTickets + notIssuedTickets;
+      group.issuedTickets = partiallyIssuedTickets + fullyIssuedTickets;
+      group.latest = snapshot;
+    });
+    return Array.from(groups.values()).sort((a, b) => a.start - b.start);
+  }
+
+  function normalizeCostRow(row){
+    const soKey = clean(row[1]) || clean(row[3]) || clean(row[2]) || clean(row[0]);
+    return {
+      ticket: clean(row[0]),
+      ticketId: clean(row[1]) || clean(row[3]) || clean(row[2]),
+      agent: clean(row[5]),
+      poId: clean(row[12]),
+      soKey,
+      postingDate: clean(row[33]),
+      changedOn: clean(row[32]),
+      createdOn: clean(row[14]),
+      partsCost: n(row[28]),
+      factoryPartsCost: n(row[29]),
+      repairerPartsCost: n(row[31]),
+      claimTotal: n(row[28]),
+    };
+  }
+
+  function buildCostReport(rows){
+    const normalized = rows.filter(Boolean);
+    if (!normalized.length) return null;
+    const dated = normalized.map(row => {
+      const d = parseLooseDate(row.postingDate) || parseLooseDate(row.changedOn) || parseLooseDate(row.createdOn);
+      return { ...row, date: d };
+    }).filter(row => row.date);
+    if (!dated.length) return null;
+    dated.sort((a, b) => a.date - b.date);
+    const latestDate = dated[dated.length - 1].date;
+    const ytdYear = latestDate.getUTCFullYear();
+    const ytd = dated.filter(row => row.date.getUTCFullYear() === ytdYear);
+    const monthMap = new Map();
+    const purchaserMap = new Map();
+    let totalCost = 0;
+    let purchaserTotalCost = 0;
+    const totalSoSet = new Set();
+    const totalPoSet = new Set();
+    const isNishiProxy = agent => /nishi/i.test(agent || "");
+
+    ytd.forEach(row => {
+      const monthStart = new Date(Date.UTC(row.date.getUTCFullYear(), row.date.getUTCMonth(), 1));
+      const monthKey = dateKey(monthStart);
+      if (!monthMap.has(monthKey)){
+        monthMap.set(monthKey, {
+          key: monthKey,
+          start: monthStart,
+          label: fmtMonth(monthStart),
+          cost: 0,
+          purchaserCost: 0,
+          soSet: new Set(),
+          poSet: new Set(),
+          purchaserPoSet: new Set(),
+        });
+      }
+      const month = monthMap.get(monthKey);
+      month.cost += row.partsCost;
+      if (row.soKey) month.soSet.add(row.soKey);
+      if (row.poId && row.poId !== "#") month.poSet.add(row.poId);
+      totalCost += row.partsCost;
+      if (row.soKey) totalSoSet.add(row.soKey);
+      if (row.poId && row.poId !== "#") totalPoSet.add(row.poId);
+
+      const agent = row.agent || "Unknown";
+      if (!purchaserMap.has(agent)){
+        purchaserMap.set(agent, {
+          agent,
+          cost: 0,
+          poSet: new Set(),
+          soSet: new Set(),
+          rows: 0,
+        });
+      }
+      const purchaser = purchaserMap.get(agent);
+      purchaser.cost += row.partsCost;
+      purchaser.factoryCost = (purchaser.factoryCost || 0) + row.factoryPartsCost;
+      purchaser.claimTotal = (purchaser.claimTotal || 0) + row.claimTotal;
+      purchaser.repairerCost = (purchaser.repairerCost || 0) + row.repairerPartsCost;
+      purchaser.rows += 1;
+      if (row.poId && row.poId !== "#") purchaser.poSet.add(row.poId);
+      if (row.soKey) purchaser.soSet.add(row.soKey);
+
+      if (isNishiProxy(agent)){
+        month.purchaserCost += row.factoryPartsCost;
+        if (row.poId && row.poId !== "#") month.purchaserPoSet.add(row.poId);
+        purchaserTotalCost += row.factoryPartsCost;
+      }
+    });
+
+    const months = Array.from(monthMap.values()).sort((a, b) => a.start - b.start).map(month => ({
+      ...month,
+      avgPerSo: month.soSet.size ? month.cost / month.soSet.size : 0,
+      poCount: month.poSet.size,
+      soCount: month.soSet.size,
+      purchaserPoCount: month.purchaserPoSet.size,
+      purchaserShare: month.cost ? month.purchaserCost / month.cost : 0,
+      gap: month.cost - month.purchaserCost,
+    }));
+    const purchasers = Array.from(purchaserMap.values()).sort((a, b) => b.cost - a.cost).map(row => ({
+      ...row,
+      poCount: row.poSet.size,
+      soCount: row.soSet.size,
+      avgCostPerSo: row.soSet.size ? row.cost / row.soSet.size : 0,
+    }));
+    const selected = purchasers.find(row => isNishiProxy(row.agent)) || purchasers[0] || null;
+    return {
+      ytdYear,
+      latestDate,
+      totalCost,
+      purchaserTotalCost,
+      totalSoCount: totalSoSet.size,
+      totalPoCount: totalPoSet.size,
+      months,
+      purchasers,
+      selected,
+      selectedProxy: selected,
+      avgCostPerSo: totalSoSet.size ? totalCost / totalSoSet.size : 0,
+      gapToPurchaser: totalCost - purchaserTotalCost,
+    };
+  }
+
+  function renderCards(latest, latestGroup, report){
+    const completionBase = latest.kpi.fullyIssuedTickets + latest.kpi.partiallyIssuedTickets + latest.kpi.notIssuedTickets;
+    const completion = completionBase ? latest.kpi.fullyIssuedTickets / completionBase : 0;
+    const totalPartsCost = report ? money.format(report.totalCost) : "$0";
+    const avgPartsCostPerSo = report ? money.format(report.avgCostPerSo) : "$0";
+    const cards = [
+      ["Current Awaiting Parts", integer.format(latest.kpi.openSoItems), "item rows", "open and waiting for first issue", `Partially issued ${integer.format(latest.kpi.partiallyIssuedTickets)} tickets`],
+      ["Parts Issued", integer.format(latest.kpi.partiallyIssuedTickets), "current snapshot", "month-to-date issued parts", `Partially issued ${integer.format(latest.kpi.partiallyIssuedTickets)} tickets`],
+      ["Open Parts (Not Issued)", integer.format(latest.kpi.notIssuedTickets), "tickets", "still open today", `Age bands use ${integer.format(latest.kpi.openSoItems)} open items`],
+      ["Average Parts Issuing Time", `${daysFmt.format(latest.kpi.avgDaysToFirstIssue)}<small>d</small>`, "latest snapshot", "ticket created to first issue", "Weighted across issue events in the current snapshot"],
+      ["Total Parts Cost", totalPartsCost, "YTD parts cost", "claim total from SAP", report ? `${report.ytdYear} parts cost view` : "No cost data loaded"],
+      ["Average Parts Cost / SO", avgPartsCostPerSo, "YTD average", "unique SO proxy", report ? `${integer.format(report.totalSoCount)} SO keys` : "No cost data loaded"],
+    ];
+
+    els.kpis.innerHTML = cards.map(([label, value, left, right, hint]) => `
+      <article class="kpi">
+        <div class="lbl">${esc(label)}</div>
+        <div class="val">${value}</div>
+        <div class="meta"><span>${esc(left)}</span><span>${esc(right)}</span></div>
+        <div class="hint">${esc(hint)}</div>
+      </article>
+    `).join("");
+  }
+
+  function setTip(html, x, y){
+    els.tip.innerHTML = html;
+    els.tip.style.left = `${x + 14}px`;
+    els.tip.style.top = `${y + 14}px`;
+    els.tip.style.opacity = 1;
+  }
+  function hideTip(){ els.tip.style.opacity = 0; }
+
+  function renderCanvas(canvas, height, draw){
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const w = Math.max(1, rect.width);
+    const h = Math.max(1, height);
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.height = `${h}px`;
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    draw(ctx, w, h);
+    return { ctx, w, h };
+  }
+
+  function drawFlowChart(series){
+    const canvas = els.flowChart;
+    const visible = state.granularity === "year" ? series : series.slice(-12);
+    const { w, h } = renderCanvas(canvas, 292, (ctx, width, height) => {
+      const ml = 56, mr = 20, mt = 18, mb = 40;
+      const plotW = width - ml - mr, plotH = height - mt - mb;
+      const leftMax = niceMax(Math.max(1, ...visible.map(r => r.newSoItems)));
+      const step = plotW / Math.max(1, visible.length);
+      const barW = Math.max(12, Math.min(28, step * 0.56));
+      const xFor = i => ml + step * i + step / 2;
+      const yLeft = v => mt + plotH - (Number(v) || 0) / leftMax * plotH;
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--grid").trim();
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
+      ctx.font = "11px " + getComputedStyle(document.documentElement).getPropertyValue("--mono").trim();
+      ctx.textAlign = "right";
+      for (let i = 0; i <= 4; i++){
+        const y = mt + plotH * i / 4;
+        ctx.beginPath();
+        ctx.setLineDash([2, 4]);
+        ctx.moveTo(ml, y);
+        ctx.lineTo(width - mr, y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillText(fmtAxis(leftMax * (1 - i / 4)), ml - 8, y + 4);
+      }
+      visible.forEach((r, i) => {
+        const x = xFor(i);
+        const y = yLeft(r.newSoItems);
+        const barH = mt + plotH - y;
+        ctx.fillStyle = "rgba(63,111,224,.44)";
+        ctx.fillRect(x - barW / 2, y, barW, barH);
+      });
+      const tickStep = visible.length > 6 ? Math.ceil(visible.length / 6) : 1;
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
+      ctx.textAlign = "center";
+      for (let i = tickStep; i < visible.length - 1; i += tickStep){
+        ctx.fillText(visible[i].label, xFor(i), height - 14);
+      }
+      if (visible.length){
+        ctx.textAlign = "left";
+        ctx.fillText(visible[0].label, xFor(0), height - 14);
+        if (visible.length > 1){
+          ctx.textAlign = "right";
+          ctx.fillText(visible[visible.length - 1].label, xFor(visible.length - 1), height - 14);
+        }
+      }
+    });
+
+    const step = w / Math.max(1, visible.length);
+    canvas.onmousemove = e => {
+      if (!visible.length) return;
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      let idx = 0, best = Infinity;
+      for (let i = 0; i < visible.length; i++){
+        const x = step * i + step / 2;
+        const d = Math.abs(x - mx);
+        if (d < best){ best = d; idx = i; }
+      }
+      const r = visible[idx];
+      setTip(
+        `<b>${esc(r.tooltip)}</b><span>Parts selected: ${integer.format(r.newSoItems)}</span><span>Period rank: ${idx + 1}/${visible.length}</span>`,
+        e.clientX, e.clientY
+      );
+    };
+    canvas.onmouseleave = hideTip;
+  }
+
+  function drawLeadChart(series){
+    const canvas = els.leadChart;
+    const visible = state.granularity === "year" ? series : series.slice(-12);
+    const { w, h } = renderCanvas(canvas, 236, (ctx, width, height) => {
+      const ml = 56, mr = 22, mt = 18, mb = 38;
+      const plotW = width - ml - mr, plotH = height - mt - mb;
+      const leftMax = niceMax(Math.max(1, ...visible.map(r => r.partiallyIssuedTickets)));
+      const rightMax = niceMax(Math.max(1, ...visible.map(r => r.latest.kpi.avgDaysToFirstIssue || 0)));
+      const step = plotW / Math.max(1, visible.length);
+      const barW = Math.max(12, Math.min(28, step * 0.56));
+      const xFor = i => ml + step * i + step / 2;
+      const yLeft = v => mt + plotH - (Number(v) || 0) / leftMax * plotH;
+      const yRight = v => mt + plotH - (Number(v) || 0) / rightMax * plotH;
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--grid").trim();
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
+      ctx.font = "11px " + getComputedStyle(document.documentElement).getPropertyValue("--mono").trim();
+      ctx.textAlign = "right";
+      for (let i = 0; i <= 4; i++){
+        const y = mt + plotH * i / 4;
+        ctx.beginPath();
+        ctx.setLineDash([2, 4]);
+        ctx.moveTo(ml, y);
+        ctx.lineTo(width - mr, y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillText(fmtAxis(leftMax * (1 - i / 4)), ml - 8, y + 4);
+        ctx.textAlign = "left";
+        ctx.fillText(fmtAxis(rightMax * (1 - i / 4)), width - mr + 8, y + 4);
+        ctx.textAlign = "right";
+      }
+      visible.forEach((r, i) => {
+        const x = xFor(i);
+        const y = yLeft(r.partiallyIssuedTickets);
+        ctx.fillStyle = "rgba(31,157,107,.50)";
+        ctx.fillRect(x - barW / 2, y, barW, mt + plotH - y);
+      });
+      ctx.beginPath();
+      visible.forEach((r, i) => {
+        const x = xFor(i);
+        const y = yRight(r.latest.kpi.avgDaysToFirstIssue || 0);
+        if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+      });
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--flow").trim();
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+      const tickStep = visible.length > 6 ? Math.ceil(visible.length / 6) : 1;
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
+      ctx.textAlign = "center";
+      for (let i = tickStep; i < visible.length - 1; i += tickStep){
+        ctx.fillText(visible[i].label, xFor(i), height - 14);
+      }
+      if (visible.length){
+        ctx.textAlign = "left";
+        ctx.fillText(visible[0].label, xFor(0), height - 14);
+        if (visible.length > 1){
+          ctx.textAlign = "right";
+          ctx.fillText(visible[visible.length - 1].label, xFor(visible.length - 1), height - 14);
+        }
+      }
+    });
+
+    const step = w / Math.max(1, visible.length);
+    canvas.onmousemove = e => {
+      if (!visible.length) return;
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      let idx = 0, best = Infinity;
+      for (let i = 0; i < visible.length; i++){
+        const x = step * i + step / 2;
+        const d = Math.abs(x - mx);
+        if (d < best){ best = d; idx = i; }
+      }
+      const r = visible[idx];
+      setTip(
+        `<b>${esc(r.tooltip)}</b><span>Partially issued tickets: ${integer.format(r.partiallyIssuedTickets)}</span><span>Avg first issue: ${daysFmt.format(r.latest.kpi.avgDaysToFirstIssue || 0)}d</span>`,
+        e.clientX, e.clientY
+      );
+    };
+    canvas.onmouseleave = hideTip;
+  }
+
+  function renderStatusMix(latest){
+    const total = latest.kpi.fullyIssuedTickets + latest.kpi.partiallyIssuedTickets + latest.kpi.notIssuedTickets || 1;
+    const rows = [
+      ["Fully issued", latest.kpi.fullyIssuedTickets, "var(--issued)"],
+      ["Partially issued", latest.kpi.partiallyIssuedTickets, "var(--open)"],
+      ["Not issued", latest.kpi.notIssuedTickets, "var(--rejected)"],
+    ];
+    els.mixGrid.innerHTML = rows.map(([label, value, color]) => `
+      <div class="mixRow">
+        <div class="mixLabel">${esc(label)}</div>
+        <div class="mixTrack"><span class="mixFill" style="width:${Math.max(3, value / total * 100)}%;background:${color}"></span></div>
+        <div class="mixValue">${integer.format(value)} ${Math.round(value / total * 100)}%</div>
+      </div>
+    `).join("");
+    els.mixNote.innerHTML = `
+      <span>Fully issued: <strong>${integer.format(latest.kpi.fullyIssuedTickets)}</strong></span>
+      <span>Partially issued: <strong>${integer.format(latest.kpi.partiallyIssuedTickets)}</strong></span>
+      <span>Open tickets not issued: <strong>${integer.format(latest.kpi.notIssuedTickets)}</strong></span>
+    `;
+  }
+
+  function renderAging(latest){
+    const total = latest.agingBuckets["0-7"] + latest.agingBuckets["8-14"] + latest.agingBuckets["15-30"] + latest.agingBuckets["30+"] || 1;
+    const rows = [
+      ["0-7 days", latest.agingBuckets["0-7"], "var(--a0)"],
+      ["8-14 days", latest.agingBuckets["8-14"], "var(--a1)"],
+      ["15-30 days", latest.agingBuckets["15-30"], "var(--a2)"],
+      ["30+ days", latest.agingBuckets["30+"], "var(--a3)"],
+    ];
+    els.agingGrid.innerHTML = rows.map(([label, value, color]) => `
+      <div class="agingRow">
+        <div class="agingLabel">${esc(label)}</div>
+        <div class="agingTrack"><span class="agingFill" style="width:${Math.max(3, value / total * 100)}%;background:${color}"></span></div>
+        <div class="agingValue">${integer.format(value)}</div>
+      </div>
+    `).join("");
+    els.agingFoot.textContent = `Latest snapshot ${fmtDate(parseDate(latest.asOf))} - ${integer.format(total)} open tickets across the visible aging bands.`;
+  }
+
+  function renderCost(report){
+    if (!report){
+      els.costSummary.innerHTML = `<div class="hint">No cost data found.</div>`;
+      els.costTrend.innerHTML = `<div class="hint">No cost data found.</div>`;
+      els.costSelected.innerHTML = `<div><strong>Purchaser</strong></div><div>-</div><div>-</div>`;
+      els.costCompare.innerHTML = `<div class="hint">No purchaser comparison available.</div>`;
+      els.costFoot.textContent = "No cost report loaded.";
+      return;
+    }
+    const maxMonthCost = Math.max(1, ...report.months.map(m => m.cost));
+    const maxPurchaserMonth = Math.max(1, ...report.months.map(m => Math.max(m.purchaserCost, m.cost)));
+    const topPurchaser = report.selected || report.purchasers[0] || null;
+    els.costSummary.innerHTML = [
+      ["Total Parts Cost", money.format(report.totalCost), `${report.ytdYear} claim total from SAP`, `${report.months.length} active months`],
+      ["Purchaser (Nishi E03)", money.format(report.purchaserTotalCost), "factory buyback spend proxy", topPurchaser ? `${integer.format(topPurchaser.poCount)} POs in the selected agent` : "No purchaser rows"],
+      ["Parts - Purchaser", money.format(report.gapToPurchaser), "total parts cost minus purchaser spend", report.gapToPurchaser >= 0 ? "positive gap" : "negative gap"],
+      ["Avg Parts Cost / SO", money.format(report.avgCostPerSo), "unique SO proxy from the export", `${integer.format(report.totalSoCount)} SO keys`],
+      ["YTD PO Count", integer.format(report.totalPoCount), "ERP Purchase Order ID values", topPurchaser ? `Top purchaser: ${topPurchaser.agent}` : "No purchaser rows"],
+    ].map(([k, v, s, h]) => `
+      <div class="costStat">
+        <div class="k">${esc(k)}</div>
+        <div class="v">${esc(v)}</div>
+        <div class="s">${esc(s)}<br>${esc(h)}</div>
+      </div>
+    `).join("");
+
+    els.costTrend.innerHTML = report.months.map(month => {
+      const pct = Math.max(4, month.cost / maxMonthCost * 100);
+      return `
+        <div class="costRow">
+          <div class="costLabel">${esc(month.label)}</div>
+          <div class="costTrack"><span class="costFill" style="width:${pct}%"></span></div>
+          <div class="costValue">${money.format(month.cost)} <span style="color:var(--inkFaint);font-weight:600">${integer.format(month.soCount)} SO</span></div>
+        </div>
+        <div class="costRow" style="margin-top:-4px">
+          <div class="costLabel"></div>
+          <div class="costTrack" style="height:10px"><span class="costFill" style="width:${Math.max(4, month.avgPerSo / Math.max(1, ...report.months.map(m => m.avgPerSo)) * 100)}%;opacity:.38"></span></div>
+          <div class="costValue" style="font-size:11px;color:var(--inkFaint)">${money.format(month.avgPerSo)} / SO</div>
+        </div>
+      `;
+    }).join("");
+
+    if (topPurchaser){
+      els.costSelected.innerHTML = `
+        <div><strong>${esc(topPurchaser.agent)}</strong> proxy</div>
+        <div>${integer.format(topPurchaser.poCount)} POs</div>
+        <div>${money.format(report.purchaserTotalCost)} factory spend<br><span style="font-weight:600;color:var(--inkFaint)">${money.format(topPurchaser.claimTotal || 0)} claim total</span></div>
+      `;
+    }else{
+      els.costSelected.innerHTML = `<div><strong>Purchaser</strong></div><div>-</div><div>-</div>`;
+    }
+
+    els.costCompare.innerHTML = report.months.map(month => {
+      const purchaserPct = Math.max(4, month.purchaserCost / maxPurchaserMonth * 100);
+      const partsPct = Math.max(4, month.cost / maxPurchaserMonth * 100);
+      const share = month.purchaserShare * 100;
+      return `
+        <div class="compareRow">
+          <div class="compareTop">
+            <div class="label">${esc(month.label)}</div>
+            <div class="meta">${money.format(month.gap)} gap - ${formatPct(share)} purchaser share</div>
+          </div>
+          <div class="compareBars">
+            <div class="compareMeter">
+              <div class="label">Purchaser</div>
+              <div class="track"><span class="fill purchaser" style="width:${purchaserPct}%"></span></div>
+              <div class="value">${money.format(month.purchaserCost)}</div>
+            </div>
+            <div class="compareMeter">
+              <div class="label">Parts cost</div>
+              <div class="track"><span class="fill parts" style="width:${partsPct}%"></span></div>
+              <div class="value">${money.format(month.cost)}</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+    els.costFoot.textContent = `Latest loaded cost month ${fmtMonth(new Date(Date.UTC(report.ytdYear, report.months[report.months.length - 1].start.getUTCMonth(), 1)))} - purchaser compare uses Agent = Nishi Arachchige as the SAP proxy, with factory parts claim amount shown as the buyback spend.`;
+  }
+
+  function renderFooter(series, latest){
+    const visible = state.granularity === "year" ? series : series.slice(-12);
+    if (!series.length){
+      els.flowFoot.textContent = "No trend data found.";
+      els.leadFoot.textContent = "No trend data found.";
+      return;
+    }
+    els.flowFoot.textContent = `${state.granularity.toUpperCase()} rollup - ${visible.length} visible points - latest period ${visible[visible.length - 1].tooltip}`;
+    els.leadFoot.textContent = `${state.granularity.toUpperCase()} rollup - latest period ${visible[visible.length - 1].tooltip} - snapshot ${fmtDate(parseDate(latest.asOf))}`;
+  }
+
+  function renderControls(){
+    const opts = [
+      ["week", "Week"],
+      ["month", "Month"],
+      ["year", "Year"],
+    ];
+    els.granSeg.innerHTML = opts.map(([key, label]) => `<button type="button" class="${key === state.granularity ? "on" : ""}" data-gran="${key}">${label}</button>`).join("");
+    els.granSeg.querySelectorAll("button").forEach(btn => {
+      btn.onclick = () => {
+        state.granularity = btn.dataset.gran || "week";
+        render();
+      };
+    });
+  }
+
+  async function loadHistory(){
+    const res = await fetch(FB_HISTORY, { cache: "no-store" });
+    if (!res.ok) throw new Error(`Firebase HTTP ${res.status}`);
+    const data = await res.json();
+    const raw = Array.isArray(data) ? data : Object.values(data || {});
+    return raw.map(normalizeSnapshot).filter(row => row.asOf).sort((a, b) => a.asOf.localeCompare(b.asOf));
+  }
+
+  async function loadCostRows(){
+    const res = await fetch("SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv", { cache: "no-store" });
+    if (!res.ok) throw new Error(`Cost CSV HTTP ${res.status}`);
+    const text = await res.text();
+    const rows = parseCsv(text);
+    if (!rows.length) return [];
+    return rows.slice(1).map(normalizeCostRow).filter(row => row.ticket || row.ticketId || row.agent);
+  }
+
+  function render(){
+    renderControls();
+    if (!state.history.length){
+      els.snapshotPill.innerHTML = "<strong>Latest</strong> no data";
+      els.kpis.innerHTML = "";
+      els.flowChart.getContext("2d").clearRect(0, 0, els.flowChart.width, els.flowChart.height);
+      els.leadChart.getContext("2d").clearRect(0, 0, els.leadChart.width, els.leadChart.height);
+      els.mixGrid.innerHTML = "<div class='hint'>No data loaded.</div>";
+      els.agingGrid.innerHTML = "<div class='hint'>No data loaded.</div>";
+      return;
+    }
+
+    const latest = state.history[state.history.length - 1];
+    const series = buildSeries(state.history, state.granularity);
+    const latestGroup = series[series.length - 1] || null;
+    state.latest = latest;
+    state.groups = series;
+
+    els.snapshotPill.innerHTML = `<strong>Latest</strong> ${fmtDate(parseDate(latest.asOf))}`;
+    els.flowBadge.textContent = state.granularity === "week" ? "Weekly" : state.granularity === "month" ? "Monthly" : "Yearly";
+    els.leadBadge.textContent = els.flowBadge.textContent;
+    els.costBadge.textContent = `YTD ${state.costReport ? state.costReport.ytdYear : ""}`.trim();
+
+    renderCards(latest, latestGroup, state.costReport);
+    drawFlowChart(series);
+    drawLeadChart(series);
+    renderStatusMix(latest);
+    renderAging(latest);
+    renderCost(state.costReport);
+    renderFooter(series, latest);
+  }
+
+  Promise.allSettled([loadHistory(), loadCostRows()]).then(results => {
+    const historyResult = results[0];
+    const costResult = results[1];
+    if (historyResult.status === "fulfilled"){
+      state.history = historyResult.value;
+    }
+    if (costResult.status === "fulfilled"){
+      state.costRows = costResult.value;
+      state.costReport = buildCostReport(state.costRows);
+    }
+    if (!state.history.length){
+      const err = historyResult.status === "rejected" ? historyResult.reason : new Error("No history data");
+      els.snapshotPill.innerHTML = `<strong>Latest</strong> unavailable`;
+      els.kpis.innerHTML = "";
+      els.mixGrid.innerHTML = `<div class="hint">Unable to load delivery-flow history: ${esc(err.message)}</div>`;
+      els.agingGrid.innerHTML = `<div class="hint">Unable to load delivery-flow history: ${esc(err.message)}</div>`;
+      els.flowFoot.textContent = "Unable to load delivery-flow history.";
+      els.leadFoot.textContent = "Unable to load delivery-flow history.";
+      els.costFoot.textContent = "Unable to load cost data.";
+      return;
+    }
+    render();
+  }).catch(err => {
+    els.snapshotPill.innerHTML = `<strong>Latest</strong> unavailable`;
+    els.kpis.innerHTML = "";
+    els.mixGrid.innerHTML = `<div class="hint">Unable to load delivery-flow history: ${esc(err.message)}</div>`;
+    els.agingGrid.innerHTML = `<div class="hint">Unable to load delivery-flow history: ${esc(err.message)}</div>`;
+    els.flowFoot.textContent = "Unable to load delivery-flow history.";
+    els.leadFoot.textContent = "Unable to load delivery-flow history.";
+    els.costFoot.textContent = "Unable to load cost data.";
+  });
+
+  window.addEventListener("resize", () => {
+    if (!state.history.length) return;
+    drawFlowChart(state.groups);
+    drawLeadChart(state.groups);
+  });
+})();

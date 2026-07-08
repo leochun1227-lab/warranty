@@ -1,0 +1,953 @@
+==================================================
+CTM V44 daily 5:00 PM run started at Tue 30/06/2026 13:36:35.74
+==================================================
+[FETCH] Running company file:
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py
+2026-06-30 13:36:36,962 - INFO - Script version: MANDT800_FULLJOIN_REJECTION_FILTER
+2026-06-30 13:36:36,963 - INFO - SAP HANA rule: MANDT=800 full join + exclude VBAP.ABGRU rejected items from Sales Order Details
+2026-06-30 13:36:36,963 - INFO - Step 1/9: Fetching latest C4C snapshot ...
+2026-06-30 13:36:36,964 - INFO - ===== START ROLE 1001 =====
+2026-06-30 13:36:36,965 - INFO - ===== START ROLE 40 =====
+2026-06-30 13:36:36,966 - INFO - ===== START ROLE 43 =====
+^C==================================================
+CTM V44 daily 5:00 PM run started at Tue 30/06/2026 15:46:44.04
+==================================================
+[FETCH] Running company file:
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py
+2026-06-30 15:46:45,259 - INFO - Script version: MANDT800_FULLJOIN_REJECTION_FILTER
+2026-06-30 15:46:45,260 - INFO - SAP HANA rule: MANDT=800 full join + exclude VBAP.ABGRU rejected items from Sales Order Details
+2026-06-30 15:46:45,260 - INFO - Step 1/9: Fetching latest C4C snapshot ...
+2026-06-30 15:46:45,260 - INFO - ===== START ROLE 1001 =====
+2026-06-30 15:46:45,261 - INFO - ===== START ROLE 40 =====
+2026-06-30 15:46:45,261 - INFO - ===== START ROLE 43 =====
+2026-06-30 15:47:08,483 - INFO - [FETCH] role=43 page=1 skip=0 rows=1000
+2026-06-30 15:47:14,639 - INFO - [FETCH] role=40 page=1 skip=0 rows=1000
+2026-06-30 15:47:16,083 - INFO - [FETCH] role=1001 page=1 skip=0 rows=1000
+2026-06-30 15:47:32,594 - INFO - [FETCH] role=43 page~=2 skip=6000 rows=1000
+2026-06-30 15:47:32,890 - INFO - [FETCH] role=43 page~=3 skip=8000 rows=1000
+2026-06-30 15:47:33,202 - INFO - [FETCH] role=43 page~=4 skip=10000 rows=1000
+2026-06-30 15:47:33,257 - INFO - [FETCH] role=43 page~=5 skip=7000 rows=1000
+2026-06-30 15:47:33,271 - INFO - [FETCH] role=43 page~=6 skip=9000 rows=1000
+2026-06-30 15:47:33,279 - INFO - [FETCH] role=43 page~=7 skip=3000 rows=1000
+2026-06-30 15:47:34,848 - INFO - [FETCH] role=43 page~=8 skip=2000 rows=1000
+2026-06-30 15:47:34,911 - INFO - [FETCH] role=43 page~=9 skip=11000 rows=1000
+2026-06-30 15:47:34,978 - INFO - [FETCH] role=43 page~=10 skip=12000 rows=1000
+2026-06-30 15:47:35,778 - INFO - [FETCH] role=43 page~=11 skip=4000 rows=1000
+2026-06-30 15:47:37,044 - INFO - [FETCH] role=43 page~=12 skip=5000 rows=1000
+2026-06-30 15:47:37,821 - INFO - [FETCH] role=43 page~=13 skip=1000 rows=1000
+2026-06-30 15:47:41,937 - INFO - [FETCH] role=40 page~=2 skip=6000 rows=1000
+2026-06-30 15:47:42,927 - INFO - [FETCH] role=40 page~=3 skip=8000 rows=1000
+2026-06-30 15:47:43,649 - INFO - [FETCH] role=40 page~=4 skip=11000 rows=1000
+2026-06-30 15:47:43,960 - INFO - [FETCH] role=40 page~=5 skip=9000 rows=1000
+2026-06-30 15:47:44,159 - INFO - [FETCH] role=40 page~=6 skip=7000 rows=1000
+2026-06-30 15:47:46,179 - INFO - [FETCH] role=1001 page~=2 skip=7000 rows=1000
+2026-06-30 15:47:46,328 - INFO - [FETCH] role=40 page~=7 skip=1000 rows=1000
+2026-06-30 15:47:46,381 - INFO - [FETCH] role=40 page~=8 skip=4000 rows=1000
+2026-06-30 15:47:46,644 - INFO - [FETCH] role=40 page~=9 skip=3000 rows=1000
+2026-06-30 15:47:46,825 - INFO - [FETCH] role=1001 page~=3 skip=6000 rows=1000
+2026-06-30 15:47:46,988 - INFO - [FETCH] role=1001 page~=4 skip=1000 rows=1000
+2026-06-30 15:47:47,031 - INFO - [FETCH] role=40 page~=10 skip=12000 rows=1000
+2026-06-30 15:47:47,290 - INFO - [FETCH] role=40 page~=11 skip=10000 rows=1000
+2026-06-30 15:47:47,662 - INFO - [FETCH] role=1001 page~=5 skip=8000 rows=1000
+2026-06-30 15:47:48,021 - INFO - [FETCH] role=1001 page~=6 skip=10000 rows=1000
+2026-06-30 15:47:48,049 - INFO - [FETCH] role=40 page~=12 skip=5000 rows=1000
+2026-06-30 15:47:48,267 - INFO - [FETCH] role=40 page~=13 skip=2000 rows=1000
+2026-06-30 15:47:49,991 - INFO - [FETCH] role=1001 page~=7 skip=5000 rows=1000
+2026-06-30 15:47:50,776 - INFO - [FETCH] role=1001 page~=8 skip=12000 rows=1000
+2026-06-30 15:47:50,831 - INFO - [FETCH] role=1001 page~=9 skip=3000 rows=1000
+2026-06-30 15:47:51,480 - INFO - [FETCH] role=1001 page~=10 skip=11000 rows=1000
+2026-06-30 15:47:51,703 - INFO - [FETCH] role=1001 page~=11 skip=2000 rows=1000
+2026-06-30 15:47:52,256 - INFO - [FETCH] role=1001 page~=12 skip=4000 rows=1000
+2026-06-30 15:47:52,289 - INFO - [FETCH] role=1001 page~=13 skip=9000 rows=1000
+2026-06-30 15:47:54,936 - INFO - [FETCH] role=43 page~=14 skip=13000 rows=1000
+2026-06-30 15:47:55,126 - INFO - [FETCH] role=43 page~=15 skip=14000 rows=1000
+2026-06-30 15:47:55,510 - INFO - [FETCH] role=43 page~=16 skip=16000 rows=1000
+2026-06-30 15:47:55,558 - INFO - [FETCH] role=43 page~=17 skip=18000 rows=1000
+2026-06-30 15:47:55,982 - INFO - [FETCH] role=43 page~=18 skip=17000 rows=1000
+2026-06-30 15:47:56,003 - INFO - [FETCH] role=43 page~=19 skip=15000 rows=1000
+2026-06-30 15:47:57,449 - INFO - [FETCH] role=43 page~=20 skip=19000 rows=1000
+2026-06-30 15:47:57,586 - INFO - [FETCH] role=43 page~=21 skip=20000 rows=1000
+2026-06-30 15:47:59,171 - INFO - [FETCH] role=43 page~=22 skip=21000 rows=1000
+2026-06-30 15:48:00,392 - INFO - [FETCH] role=43 page~=23 skip=22000 rows=1000
+2026-06-30 15:48:01,464 - INFO - [FETCH] role=43 page~=24 skip=23000 rows=1000
+2026-06-30 15:48:02,834 - INFO - [FETCH] role=43 page~=25 skip=24000 rows=1000
+2026-06-30 15:48:07,281 - INFO - [FETCH] role=40 page~=14 skip=13000 rows=1000
+2026-06-30 15:48:07,651 - INFO - [FETCH] role=40 page~=15 skip=14000 rows=1000
+2026-06-30 15:48:09,082 - INFO - [FETCH] role=40 page~=16 skip=15000 rows=1000
+2026-06-30 15:48:10,031 - INFO - [FETCH] role=40 page~=17 skip=16000 rows=1000
+2026-06-30 15:48:11,872 - INFO - [FETCH] role=40 page~=18 skip=18000 rows=1000
+2026-06-30 15:48:12,607 - INFO - [FETCH] role=40 page~=19 skip=20000 rows=1000
+2026-06-30 15:48:12,726 - INFO - [FETCH] role=40 page~=20 skip=17000 rows=1000
+2026-06-30 15:48:14,149 - INFO - [FETCH] role=1001 page~=14 skip=13000 rows=1000
+2026-06-30 15:48:14,260 - INFO - [FETCH] role=40 page~=21 skip=24000 rows=1000
+2026-06-30 15:48:14,494 - INFO - [FETCH] role=1001 page~=15 skip=14000 rows=1000
+2026-06-30 15:48:14,757 - INFO - [FETCH] role=43 page~=26 skip=25000 rows=104
+2026-06-30 15:48:14,786 - INFO - [FETCH] role=1001 page~=16 skip=15000 rows=1000
+2026-06-30 15:48:14,930 - INFO - [FETCH] role=40 page~=22 skip=19000 rows=1000
+2026-06-30 15:48:15,059 - INFO - [FETCH] role=40 page~=23 skip=22000 rows=1000
+2026-06-30 15:48:15,597 - INFO - [FETCH] role=40 page~=24 skip=23000 rows=1000
+2026-06-30 15:48:16,502 - INFO - [FETCH] role=1001 page~=17 skip=17000 rows=1000
+2026-06-30 15:48:16,510 - INFO - [FETCH] role=40 page~=25 skip=21000 rows=1000
+2026-06-30 15:48:17,728 - INFO - [FETCH] role=1001 page~=18 skip=16000 rows=1000
+2026-06-30 15:48:19,598 - INFO - [FETCH] role=1001 page~=19 skip=18000 rows=1000
+2026-06-30 15:48:20,894 - INFO - [FETCH] role=1001 page~=20 skip=19000 rows=1000
+2026-06-30 15:48:20,932 - INFO - [FETCH] role=1001 page~=21 skip=20000 rows=1000
+2026-06-30 15:48:21,854 - INFO - [FETCH] role=1001 page~=22 skip=22000 rows=1000
+2026-06-30 15:48:22,405 - INFO - [FETCH] role=1001 page~=23 skip=21000 rows=1000
+2026-06-30 15:48:22,716 - INFO - [FETCH] role=1001 page~=24 skip=24000 rows=1000
+2026-06-30 15:48:22,939 - INFO - [FETCH] role=1001 page~=25 skip=23000 rows=1000
+2026-06-30 15:48:31,392 - INFO - [FETCH] role=40 page~=26 skip=25000 rows=1000
+2026-06-30 15:48:32,286 - INFO - [FETCH] role=40 page~=27 skip=26000 rows=1000
+2026-06-30 15:48:32,927 - INFO - [FETCH] role=40 page~=28 skip=27000 rows=1000
+2026-06-30 15:48:34,098 - INFO - [FETCH] role=40 page~=29 skip=28000 rows=1000
+2026-06-30 15:48:35,317 - INFO - [FETCH] role=43 tail_probe=1 skip=26000 rows=0
+2026-06-30 15:48:35,317 - INFO - ===== END ROLE 43 rows=25104 elapsed=110.1s =====
+2026-06-30 15:48:35,790 - INFO - [ROLE MERGED] role=43 rows=25104 total_rows=25104 unique_tickets=25103
+2026-06-30 15:48:35,959 - INFO - [FETCH] role=40 page~=30 skip=29000 rows=1000
+2026-06-30 15:48:36,692 - INFO - [FETCH] role=40 page~=31 skip=30000 rows=1000
+2026-06-30 15:48:39,439 - INFO - [FETCH] role=40 page~=32 skip=32000 rows=153
+2026-06-30 15:48:39,489 - INFO - [FETCH] role=40 page~=33 skip=31000 rows=1000
+2026-06-30 15:48:40,496 - INFO - [FETCH] role=1001 page~=26 skip=25000 rows=1000
+2026-06-30 15:48:40,503 - INFO - [FETCH] role=1001 page~=27 skip=26000 rows=1000
+2026-06-30 15:48:40,621 - INFO - [FETCH] role=1001 page~=28 skip=27000 rows=1000
+2026-06-30 15:48:42,757 - INFO - [FETCH] role=1001 page~=29 skip=28000 rows=1000
+2026-06-30 15:48:46,477 - INFO - [FETCH] role=1001 page~=30 skip=29000 rows=1000
+2026-06-30 15:48:48,100 - INFO - [FETCH] role=1001 page~=31 skip=30000 rows=1000
+2026-06-30 15:48:48,625 - INFO - [FETCH] role=1001 page~=32 skip=31000 rows=330
+2026-06-30 15:49:05,665 - INFO - [FETCH] role=40 tail_probe=1 skip=33000 rows=0
+2026-06-30 15:49:05,665 - INFO - ===== END ROLE 40 rows=32153 elapsed=140.4s =====
+2026-06-30 15:49:06,155 - INFO - [ROLE MERGED] role=40 rows=32153 total_rows=57257 unique_tickets=32153
+2026-06-30 15:49:17,293 - INFO - [FETCH] role=1001 tail_probe=1 skip=32000 rows=0
+2026-06-30 15:49:17,293 - INFO - ===== END ROLE 1001 rows=31330 elapsed=152.0s =====
+2026-06-30 15:49:17,793 - INFO - [ROLE MERGED] role=1001 rows=31330 total_rows=88587 unique_tickets=32153
+2026-06-30 15:49:17,862 - INFO - C4C total API rows processed: 88587
+2026-06-30 15:49:17,863 - INFO - C4C total unique TicketIDs: 32153
+2026-06-30 15:49:17,863 - INFO - Step 2/9: Initializing Firebase and loading previous sync snapshot ...
+2026-06-30 15:49:19,967 - INFO - Previous synced TicketIDs in hash snapshot: 32121
+2026-06-30 15:49:19,967 - INFO - Step 3/9: Detecting changed/deleted tickets ...
+2026-06-30 15:49:21,489 - INFO - Changed tickets: 1301
+2026-06-30 15:49:21,489 - INFO - Deleted tickets: 0
+2026-06-30 15:49:21,489 - INFO - Step 3A/9: Uploading changed C4C core ticket fields to Firebase ...
+2026-06-30 15:49:28,252 - INFO - [FB CORE TICKET UPLOAD] batch=1 paths=8000 bytes~=435960
+2026-06-30 15:49:28,987 - INFO - [FB CORE TICKET UPLOAD] batch=1 done
+2026-06-30 15:49:37,560 - INFO - [FB CORE TICKET UPLOAD] batch=2 paths=8000 bytes~=430185
+2026-06-30 15:49:38,203 - INFO - [FB CORE TICKET UPLOAD] batch=2 done
+2026-06-30 15:49:45,054 - INFO - [FB CORE TICKET UPLOAD] batch=3 paths=8000 bytes~=434986
+2026-06-30 15:49:45,592 - INFO - [FB CORE TICKET UPLOAD] batch=3 done
+2026-06-30 15:49:54,220 - INFO - [FB CORE TICKET UPLOAD] batch=4 paths=8000 bytes~=433269
+2026-06-30 15:49:54,756 - INFO - [FB CORE TICKET UPLOAD] batch=4 done
+2026-06-30 15:50:00,990 - INFO - [FB CORE TICKET UPLOAD] batch=5 paths=7030 bytes~=371141
+2026-06-30 15:50:01,487 - INFO - [FB CORE TICKET UPLOAD] batch=5 done
+2026-06-30 15:50:01,685 - INFO - Step 3B/9: Uploading C4C involved-party roles to Firebase, including role 40 Assign To ...
+2026-06-30 15:51:00,294 - INFO - [FB C4C ROLES UPLOAD] batch=1 paths=8000 bytes~=1631977
+2026-06-30 15:51:01,388 - INFO - [FB C4C ROLES UPLOAD] batch=1 done
+2026-06-30 15:51:44,417 - INFO - [FB C4C ROLES UPLOAD] batch=2 paths=8000 bytes~=1628637
+2026-06-30 15:51:45,297 - INFO - [FB C4C ROLES UPLOAD] batch=2 done
+2026-06-30 15:52:29,514 - INFO - [FB C4C ROLES UPLOAD] batch=3 paths=8000 bytes~=1666843
+2026-06-30 15:52:30,367 - INFO - [FB C4C ROLES UPLOAD] batch=3 done
+2026-06-30 15:53:15,082 - INFO - [FB C4C ROLES UPLOAD] batch=4 paths=8000 bytes~=1656936
+2026-06-30 15:53:15,844 - INFO - [FB C4C ROLES UPLOAD] batch=4 done
+2026-06-30 15:54:06,439 - INFO - [FB C4C ROLES UPLOAD] batch=5 paths=8000 bytes~=1655366
+2026-06-30 15:54:07,114 - INFO - [FB C4C ROLES UPLOAD] batch=5 done
+2026-06-30 15:55:06,131 - INFO - [FB C4C ROLES UPLOAD] batch=6 paths=8000 bytes~=1672266
+2026-06-30 15:55:06,798 - INFO - [FB C4C ROLES UPLOAD] batch=6 done
+2026-06-30 15:55:49,735 - INFO - [FB C4C ROLES UPLOAD] batch=7 paths=8000 bytes~=1656976
+2026-06-30 15:55:51,648 - INFO - [FB C4C ROLES UPLOAD] batch=7 done
+2026-06-30 15:56:44,411 - INFO - [FB C4C ROLES UPLOAD] batch=8 paths=8000 bytes~=1657215
+2026-06-30 15:56:45,053 - INFO - [FB C4C ROLES UPLOAD] batch=8 done
+2026-06-30 15:57:35,592 - INFO - [FB C4C ROLES UPLOAD] batch=9 paths=8000 bytes~=1646822
+2026-06-30 15:57:36,125 - INFO - [FB C4C ROLES UPLOAD] batch=9 done
+2026-06-30 15:58:19,913 - INFO - [FB C4C ROLES UPLOAD] batch=10 paths=8000 bytes~=1627664
+2026-06-30 15:58:20,460 - INFO - [FB C4C ROLES UPLOAD] batch=10 done
+2026-06-30 15:58:55,959 - INFO - [FB C4C ROLES UPLOAD] batch=11 paths=8000 bytes~=1602871
+2026-06-30 15:58:56,516 - INFO - [FB C4C ROLES UPLOAD] batch=11 done
+2026-06-30 15:58:56,710 - INFO - [FB C4C ROLES UPLOAD] batch=12 paths=585 bytes~=118171
+2026-06-30 15:58:56,859 - INFO - [FB C4C ROLES UPLOAD] batch=12 done
+2026-06-30 15:58:57,003 - INFO - Step 4/9: Uploading critical-removed metrics ...
+2026-06-30 15:58:59,786 - INFO - Step 5/9: Extracting ERPFreeOrder from ALL current tickets for SAP HANA refresh ...
+2026-06-30 15:59:00,546 - INFO - Changed tickets without ERPFreeOrder. Clearing old SO fields: 605
+2026-06-30 15:59:02,844 - INFO - [FB CLEAR NO ERPFreeOrder] batch=1 paths=4235 bytes~=208742
+2026-06-30 15:59:03,468 - INFO - [FB CLEAR NO ERPFreeOrder] batch=1 done
+2026-06-30 15:59:03,468 - INFO - Current tickets with ERPFreeOrder for HANA refresh: 15390
+2026-06-30 15:59:03,469 - INFO - Step 6/9: Connecting SAP HANA and fetching SO/item data for changed tickets only ...
+2026-06-30 15:59:06,475 - INFO - Total input lookup rows: 23235
+2026-06-30 15:59:06,475 - INFO - Total SQL batches: 78
+2026-06-30 15:59:06,475 - INFO - Running batch 1/78 with 300 lookup rows...
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:746: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 15:59:07,070 - INFO - Batch 1 returned 304 rows
+2026-06-30 15:59:07,070 - INFO - Running batch 2/78 with 300 lookup rows...
+2026-06-30 15:59:07,732 - INFO - Batch 2 returned 429 rows
+2026-06-30 15:59:07,732 - INFO - Running batch 3/78 with 300 lookup rows...
+2026-06-30 15:59:08,392 - INFO - Batch 3 returned 442 rows
+2026-06-30 15:59:08,392 - INFO - Running batch 4/78 with 300 lookup rows...
+2026-06-30 15:59:09,056 - INFO - Batch 4 returned 460 rows
+2026-06-30 15:59:09,056 - INFO - Running batch 5/78 with 300 lookup rows...
+2026-06-30 15:59:09,769 - INFO - Batch 5 returned 566 rows
+2026-06-30 15:59:09,769 - INFO - Running batch 6/78 with 300 lookup rows...
+2026-06-30 15:59:11,571 - INFO - Batch 6 returned 683 rows
+2026-06-30 15:59:11,572 - INFO - Running batch 7/78 with 300 lookup rows...
+2026-06-30 15:59:13,090 - INFO - Batch 7 returned 512 rows
+2026-06-30 15:59:13,090 - INFO - Running batch 8/78 with 300 lookup rows...
+2026-06-30 15:59:13,675 - INFO - Batch 8 returned 359 rows
+2026-06-30 15:59:13,675 - INFO - Running batch 9/78 with 300 lookup rows...
+2026-06-30 15:59:14,216 - INFO - Batch 9 returned 287 rows
+2026-06-30 15:59:14,216 - INFO - Running batch 10/78 with 300 lookup rows...
+2026-06-30 15:59:14,757 - INFO - Batch 10 returned 283 rows
+2026-06-30 15:59:14,757 - INFO - Running batch 11/78 with 300 lookup rows...
+2026-06-30 15:59:15,334 - INFO - Batch 11 returned 346 rows
+2026-06-30 15:59:15,334 - INFO - Running batch 12/78 with 300 lookup rows...
+2026-06-30 15:59:15,900 - INFO - Batch 12 returned 333 rows
+2026-06-30 15:59:15,900 - INFO - Running batch 13/78 with 300 lookup rows...
+2026-06-30 15:59:16,477 - INFO - Batch 13 returned 361 rows
+2026-06-30 15:59:16,477 - INFO - Running batch 14/78 with 300 lookup rows...
+2026-06-30 15:59:17,025 - INFO - Batch 14 returned 317 rows
+2026-06-30 15:59:17,026 - INFO - Running batch 15/78 with 300 lookup rows...
+2026-06-30 15:59:17,571 - INFO - Batch 15 returned 314 rows
+2026-06-30 15:59:17,571 - INFO - Running batch 16/78 with 300 lookup rows...
+2026-06-30 15:59:18,208 - INFO - Batch 16 returned 474 rows
+2026-06-30 15:59:18,209 - INFO - Running batch 17/78 with 300 lookup rows...
+2026-06-30 15:59:18,907 - INFO - Batch 17 returned 667 rows
+2026-06-30 15:59:18,908 - INFO - Running batch 18/78 with 300 lookup rows...
+2026-06-30 15:59:20,529 - INFO - Batch 18 returned 677 rows
+2026-06-30 15:59:20,529 - INFO - Running batch 19/78 with 300 lookup rows...
+2026-06-30 15:59:22,090 - INFO - Batch 19 returned 754 rows
+2026-06-30 15:59:22,090 - INFO - Running batch 20/78 with 300 lookup rows...
+2026-06-30 15:59:23,541 - INFO - Batch 20 returned 411 rows
+2026-06-30 15:59:23,541 - INFO - Running batch 21/78 with 300 lookup rows...
+2026-06-30 15:59:24,072 - INFO - Batch 21 returned 283 rows
+2026-06-30 15:59:24,072 - INFO - Running batch 22/78 with 300 lookup rows...
+2026-06-30 15:59:24,621 - INFO - Batch 22 returned 350 rows
+2026-06-30 15:59:24,621 - INFO - Running batch 23/78 with 300 lookup rows...
+2026-06-30 15:59:25,177 - INFO - Batch 23 returned 351 rows
+2026-06-30 15:59:25,177 - INFO - Running batch 24/78 with 300 lookup rows...
+2026-06-30 15:59:26,683 - INFO - Batch 24 returned 629 rows
+2026-06-30 15:59:26,683 - INFO - Running batch 25/78 with 300 lookup rows...
+2026-06-30 15:59:27,323 - INFO - Batch 25 returned 609 rows
+2026-06-30 15:59:27,323 - INFO - Running batch 26/78 with 300 lookup rows...
+2026-06-30 15:59:27,852 - INFO - Batch 26 returned 317 rows
+2026-06-30 15:59:27,852 - INFO - Running batch 27/78 with 300 lookup rows...
+2026-06-30 15:59:28,381 - INFO - Batch 27 returned 306 rows
+2026-06-30 15:59:28,381 - INFO - Running batch 28/78 with 300 lookup rows...
+2026-06-30 15:59:28,903 - INFO - Batch 28 returned 300 rows
+2026-06-30 15:59:28,903 - INFO - Running batch 29/78 with 300 lookup rows...
+2026-06-30 15:59:29,436 - INFO - Batch 29 returned 351 rows
+2026-06-30 15:59:29,436 - INFO - Running batch 30/78 with 300 lookup rows...
+2026-06-30 15:59:30,872 - INFO - Batch 30 returned 488 rows
+2026-06-30 15:59:30,872 - INFO - Running batch 31/78 with 300 lookup rows...
+2026-06-30 15:59:31,443 - INFO - Batch 31 returned 457 rows
+2026-06-30 15:59:31,443 - INFO - Running batch 32/78 with 300 lookup rows...
+2026-06-30 15:59:31,981 - INFO - Batch 32 returned 329 rows
+2026-06-30 15:59:31,981 - INFO - Running batch 33/78 with 300 lookup rows...
+2026-06-30 15:59:32,522 - INFO - Batch 33 returned 363 rows
+2026-06-30 15:59:32,522 - INFO - Running batch 34/78 with 300 lookup rows...
+2026-06-30 15:59:33,049 - INFO - Batch 34 returned 339 rows
+2026-06-30 15:59:33,050 - INFO - Running batch 35/78 with 300 lookup rows...
+2026-06-30 15:59:33,560 - INFO - Batch 35 returned 269 rows
+2026-06-30 15:59:33,561 - INFO - Running batch 36/78 with 300 lookup rows...
+2026-06-30 15:59:34,102 - INFO - Batch 36 returned 338 rows
+2026-06-30 15:59:34,102 - INFO - Running batch 37/78 with 300 lookup rows...
+2026-06-30 15:59:34,633 - INFO - Batch 37 returned 341 rows
+2026-06-30 15:59:34,633 - INFO - Running batch 38/78 with 300 lookup rows...
+2026-06-30 15:59:35,195 - INFO - Batch 38 returned 428 rows
+2026-06-30 15:59:35,195 - INFO - Running batch 39/78 with 300 lookup rows...
+2026-06-30 15:59:35,842 - INFO - Batch 39 returned 632 rows
+2026-06-30 15:59:35,842 - INFO - Running batch 40/78 with 300 lookup rows...
+2026-06-30 15:59:36,392 - INFO - Batch 40 returned 383 rows
+2026-06-30 15:59:36,392 - INFO - Running batch 41/78 with 300 lookup rows...
+2026-06-30 15:59:36,889 - INFO - Batch 41 returned 255 rows
+2026-06-30 15:59:36,889 - INFO - Running batch 42/78 with 300 lookup rows...
+2026-06-30 15:59:37,384 - INFO - Batch 42 returned 246 rows
+2026-06-30 15:59:37,384 - INFO - Running batch 43/78 with 300 lookup rows...
+2026-06-30 15:59:37,873 - INFO - Batch 43 returned 241 rows
+2026-06-30 15:59:37,873 - INFO - Running batch 44/78 with 300 lookup rows...
+2026-06-30 15:59:38,369 - INFO - Batch 44 returned 249 rows
+2026-06-30 15:59:38,369 - INFO - Running batch 45/78 with 300 lookup rows...
+2026-06-30 15:59:38,905 - INFO - Batch 45 returned 354 rows
+2026-06-30 15:59:38,905 - INFO - Running batch 46/78 with 300 lookup rows...
+2026-06-30 15:59:39,433 - INFO - Batch 46 returned 329 rows
+2026-06-30 15:59:39,433 - INFO - Running batch 47/78 with 300 lookup rows...
+2026-06-30 15:59:39,948 - INFO - Batch 47 returned 312 rows
+2026-06-30 15:59:39,948 - INFO - Running batch 48/78 with 300 lookup rows...
+2026-06-30 15:59:40,472 - INFO - Batch 48 returned 357 rows
+2026-06-30 15:59:40,472 - INFO - Running batch 49/78 with 300 lookup rows...
+2026-06-30 15:59:41,036 - INFO - Batch 49 returned 447 rows
+2026-06-30 15:59:41,036 - INFO - Running batch 50/78 with 300 lookup rows...
+2026-06-30 15:59:41,553 - INFO - Batch 50 returned 333 rows
+2026-06-30 15:59:41,553 - INFO - Running batch 51/78 with 300 lookup rows...
+2026-06-30 15:59:42,131 - INFO - Batch 51 returned 522 rows
+2026-06-30 15:59:42,131 - INFO - Running batch 52/78 with 300 lookup rows...
+2026-06-30 15:59:42,699 - INFO - Batch 52 returned 474 rows
+2026-06-30 15:59:42,699 - INFO - Running batch 53/78 with 300 lookup rows...
+2026-06-30 15:59:43,253 - INFO - Batch 53 returned 477 rows
+2026-06-30 15:59:43,253 - INFO - Running batch 54/78 with 300 lookup rows...
+2026-06-30 15:59:43,846 - INFO - Batch 54 returned 614 rows
+2026-06-30 15:59:43,846 - INFO - Running batch 55/78 with 300 lookup rows...
+2026-06-30 15:59:44,468 - INFO - Batch 55 returned 675 rows
+2026-06-30 15:59:44,468 - INFO - Running batch 56/78 with 300 lookup rows...
+2026-06-30 15:59:46,147 - INFO - Batch 56 returned 756 rows
+2026-06-30 15:59:46,147 - INFO - Running batch 57/78 with 300 lookup rows...
+2026-06-30 15:59:46,702 - INFO - Batch 57 returned 470 rows
+2026-06-30 15:59:46,702 - INFO - Running batch 58/78 with 300 lookup rows...
+2026-06-30 15:59:47,268 - INFO - Batch 58 returned 524 rows
+2026-06-30 15:59:47,268 - INFO - Running batch 59/78 with 300 lookup rows...
+2026-06-30 15:59:47,821 - INFO - Batch 59 returned 460 rows
+2026-06-30 15:59:47,821 - INFO - Running batch 60/78 with 300 lookup rows...
+2026-06-30 15:59:48,369 - INFO - Batch 60 returned 463 rows
+2026-06-30 15:59:48,369 - INFO - Running batch 61/78 with 300 lookup rows...
+2026-06-30 15:59:48,994 - INFO - Batch 61 returned 731 rows
+2026-06-30 15:59:48,994 - INFO - Running batch 62/78 with 300 lookup rows...
+2026-06-30 15:59:49,671 - INFO - Batch 62 returned 792 rows
+2026-06-30 15:59:49,672 - INFO - Running batch 63/78 with 300 lookup rows...
+2026-06-30 15:59:51,347 - INFO - Batch 63 returned 802 rows
+2026-06-30 15:59:51,347 - INFO - Running batch 64/78 with 300 lookup rows...
+2026-06-30 15:59:52,890 - INFO - Batch 64 returned 367 rows
+2026-06-30 15:59:52,890 - INFO - Running batch 65/78 with 300 lookup rows...
+2026-06-30 15:59:54,471 - INFO - Batch 65 returned 404 rows
+2026-06-30 15:59:54,471 - INFO - Running batch 66/78 with 300 lookup rows...
+2026-06-30 15:59:56,037 - INFO - Batch 66 returned 368 rows
+2026-06-30 15:59:56,037 - INFO - Running batch 67/78 with 300 lookup rows...
+2026-06-30 15:59:57,625 - INFO - Batch 67 returned 542 rows
+2026-06-30 15:59:57,626 - INFO - Running batch 68/78 with 300 lookup rows...
+2026-06-30 15:59:59,223 - INFO - Batch 68 returned 398 rows
+2026-06-30 15:59:59,223 - INFO - Running batch 69/78 with 300 lookup rows...
+2026-06-30 16:00:00,731 - INFO - Batch 69 returned 337 rows
+2026-06-30 16:00:00,731 - INFO - Running batch 70/78 with 300 lookup rows...
+2026-06-30 16:00:02,214 - INFO - Batch 70 returned 371 rows
+2026-06-30 16:00:02,214 - INFO - Running batch 71/78 with 300 lookup rows...
+2026-06-30 16:00:03,794 - INFO - Batch 71 returned 441 rows
+2026-06-30 16:00:03,794 - INFO - Running batch 72/78 with 300 lookup rows...
+2026-06-30 16:00:05,366 - INFO - Batch 72 returned 408 rows
+2026-06-30 16:00:05,366 - INFO - Running batch 73/78 with 300 lookup rows...
+2026-06-30 16:00:06,884 - INFO - Batch 73 returned 348 rows
+2026-06-30 16:00:06,884 - INFO - Running batch 74/78 with 300 lookup rows...
+2026-06-30 16:00:08,399 - INFO - Batch 74 returned 304 rows
+2026-06-30 16:00:08,400 - INFO - Running batch 75/78 with 300 lookup rows...
+2026-06-30 16:00:09,917 - INFO - Batch 75 returned 489 rows
+2026-06-30 16:00:09,918 - INFO - Running batch 76/78 with 300 lookup rows...
+2026-06-30 16:00:11,523 - INFO - Batch 76 returned 641 rows
+2026-06-30 16:00:11,523 - INFO - Running batch 77/78 with 300 lookup rows...
+2026-06-30 16:00:13,158 - INFO - Batch 77 returned 320 rows
+2026-06-30 16:00:13,158 - INFO - Running batch 78/78 with 135 lookup rows...
+2026-06-30 16:00:14,012 - INFO - Batch 78 returned 174 rows
+2026-06-30 16:00:14,179 - INFO - Matched SO item rows for current ERPFreeOrder tickets: 33637
+2026-06-30 16:00:14,179 - INFO - Step 7/9: Building final output for refreshed HANA tickets ...
+2026-06-30 16:00:18,960 - INFO - SAP unmatched changed tickets. Clearing old SO fields: 269
+2026-06-30 16:00:19,304 - INFO - [FB CLEAR UNMATCHED SO] batch=1 paths=1883 bytes~=91513
+2026-06-30 16:00:20,054 - INFO - [FB CLEAR UNMATCHED SO] batch=1 done
+2026-06-30 16:00:20,054 - INFO - Step 8/9: Uploading refreshed SO fields to Firebase ...
+2026-06-30 16:01:39,756 - INFO - [FB SO UPLOAD] batch=1 paths=8000 bytes~=924354
+2026-06-30 16:01:40,972 - INFO - [FB SO UPLOAD] batch=1 done
+2026-06-30 16:02:10,207 - INFO - [FB SO UPLOAD] batch=2 paths=8000 bytes~=951461
+2026-06-30 16:02:10,763 - INFO - [FB SO UPLOAD] batch=2 done
+2026-06-30 16:02:35,157 - INFO - [FB SO UPLOAD] batch=3 paths=8000 bytes~=956396
+2026-06-30 16:02:35,692 - INFO - [FB SO UPLOAD] batch=3 done
+2026-06-30 16:02:58,987 - INFO - [FB SO UPLOAD] batch=4 paths=8000 bytes~=1010754
+2026-06-30 16:02:59,519 - INFO - [FB SO UPLOAD] batch=4 done
+2026-06-30 16:03:23,381 - INFO - [FB SO UPLOAD] batch=5 paths=8000 bytes~=1016942
+2026-06-30 16:03:24,007 - INFO - [FB SO UPLOAD] batch=5 done
+2026-06-30 16:03:52,470 - INFO - [FB SO UPLOAD] batch=6 paths=8000 bytes~=1109647
+2026-06-30 16:03:53,033 - INFO - [FB SO UPLOAD] batch=6 done
+2026-06-30 16:04:28,012 - INFO - [FB SO UPLOAD] batch=7 paths=8000 bytes~=1039992
+2026-06-30 16:04:28,550 - INFO - [FB SO UPLOAD] batch=7 done
+2026-06-30 16:05:04,233 - INFO - [FB SO UPLOAD] batch=8 paths=8000 bytes~=1003998
+2026-06-30 16:05:04,662 - INFO - [FB SO UPLOAD] batch=8 done
+2026-06-30 16:05:35,590 - INFO - [FB SO UPLOAD] batch=9 paths=8000 bytes~=1010437
+2026-06-30 16:05:36,140 - INFO - [FB SO UPLOAD] batch=9 done
+2026-06-30 16:05:57,251 - INFO - [FB SO UPLOAD] batch=10 paths=8000 bytes~=991694
+2026-06-30 16:05:57,674 - INFO - [FB SO UPLOAD] batch=10 done
+2026-06-30 16:06:18,102 - INFO - [FB SO UPLOAD] batch=11 paths=8000 bytes~=935083
+2026-06-30 16:06:18,637 - INFO - [FB SO UPLOAD] batch=11 done
+2026-06-30 16:06:39,331 - INFO - [FB SO UPLOAD] batch=12 paths=8000 bytes~=967564
+2026-06-30 16:06:39,868 - INFO - [FB SO UPLOAD] batch=12 done
+2026-06-30 16:07:08,533 - INFO - [FB SO UPLOAD] batch=13 paths=8000 bytes~=977500
+2026-06-30 16:07:08,953 - INFO - [FB SO UPLOAD] batch=13 done
+2026-06-30 16:07:45,182 - INFO - [FB SO UPLOAD] batch=14 paths=8000 bytes~=1023144
+2026-06-30 16:07:45,737 - INFO - [FB SO UPLOAD] batch=14 done
+2026-06-30 16:08:29,890 - INFO - [FB SO UPLOAD] batch=15 paths=8000 bytes~=1084178
+2026-06-30 16:08:30,336 - INFO - [FB SO UPLOAD] batch=15 done
+2026-06-30 16:09:04,794 - INFO - [FB SO UPLOAD] batch=16 paths=8000 bytes~=1057163
+2026-06-30 16:09:05,254 - INFO - [FB SO UPLOAD] batch=16 done
+2026-06-30 16:09:34,133 - INFO - [FB SO UPLOAD] batch=17 paths=8000 bytes~=1063817
+2026-06-30 16:09:34,581 - INFO - [FB SO UPLOAD] batch=17 done
+2026-06-30 16:10:06,069 - INFO - [FB SO UPLOAD] batch=18 paths=8000 bytes~=1024559
+2026-06-30 16:10:06,545 - INFO - [FB SO UPLOAD] batch=18 done
+2026-06-30 16:10:46,119 - INFO - [FB SO UPLOAD] batch=19 paths=8000 bytes~=979418
+2026-06-30 16:10:46,631 - INFO - [FB SO UPLOAD] batch=19 done
+2026-06-30 16:11:17,787 - INFO - [FB SO UPLOAD] batch=20 paths=8000 bytes~=829015
+2026-06-30 16:11:18,254 - INFO - [FB SO UPLOAD] batch=20 done
+2026-06-30 16:11:46,724 - INFO - [FB SO UPLOAD] batch=21 paths=8000 bytes~=877651
+2026-06-30 16:11:47,131 - INFO - [FB SO UPLOAD] batch=21 done
+2026-06-30 16:12:15,043 - INFO - [FB SO UPLOAD] batch=22 paths=8000 bytes~=912655
+2026-06-30 16:12:15,474 - INFO - [FB SO UPLOAD] batch=22 done
+2026-06-30 16:12:40,668 - INFO - [FB SO UPLOAD] batch=23 paths=8000 bytes~=894932
+2026-06-30 16:12:41,107 - INFO - [FB SO UPLOAD] batch=23 done
+2026-06-30 16:12:41,244 - INFO - [FB SO UPLOAD] batch=24 paths=680 bytes~=79619
+2026-06-30 16:12:41,395 - INFO - [FB SO UPLOAD] batch=24 done
+2026-06-30 16:12:42,679 - INFO - Fetching EKPO cost batch 1/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:43,289 - INFO - Fetching EKPO cost batch 2/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:43,709 - INFO - Fetching EKPO cost batch 3/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:44,310 - INFO - Fetching EKPO cost batch 4/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:44,727 - INFO - Fetching EKPO cost batch 5/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:45,169 - INFO - Fetching EKPO cost batch 6/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:45,593 - INFO - Fetching EKPO cost batch 7/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:46,013 - INFO - Fetching EKPO cost batch 8/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:46,466 - INFO - Fetching EKPO cost batch 9/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:46,894 - INFO - Fetching EKPO cost batch 10/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:47,321 - INFO - Fetching EKPO cost batch 11/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:47,757 - INFO - Fetching EKPO cost batch 12/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:48,184 - INFO - Fetching EKPO cost batch 13/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:48,620 - INFO - Fetching EKPO cost batch 14/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:49,050 - INFO - Fetching EKPO cost batch 15/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:49,482 - INFO - Fetching EKPO cost batch 16/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:49,904 - INFO - Fetching EKPO cost batch 17/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:50,352 - INFO - Fetching EKPO cost batch 18/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:50,782 - INFO - Fetching EKPO cost batch 19/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:51,218 - INFO - Fetching EKPO cost batch 20/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:51,655 - INFO - Fetching EKPO cost batch 21/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:52,092 - INFO - Fetching EKPO cost batch 22/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:52,510 - INFO - Fetching EKPO cost batch 23/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:52,941 - INFO - Fetching EKPO cost batch 24/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:53,376 - INFO - Fetching EKPO cost batch 25/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:53,796 - INFO - Fetching EKPO cost batch 26/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:54,221 - INFO - Fetching EKPO cost batch 27/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:12:54,647 - INFO - Fetching EKPO cost batch 28/28 with 190 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:13:05,678 - INFO - Step 8B/9: Writing HANA-derived delivery-flow cost sidecar to Firebase ...
+2026-06-30 16:13:05,933 - INFO - Wrote HANA cost sidecar for 2026-06-30 (totalCost=6160663.22, nishiYTD=0.0, rows=0)
+2026-06-30 16:13:05,934 - INFO - Step 9/9: Updating changed ticket hash snapshot ...
+2026-06-30 16:13:06,624 - INFO - [FB HASH SNAPSHOT] batch=1 paths=1301 bytes~=141664
+2026-06-30 16:13:06,865 - INFO - [FB HASH SNAPSHOT] batch=1 done
+2026-06-30 16:13:06,865 - INFO - Excel export disabled. Firebase is the source for dashboard data.
+2026-06-30 16:13:06,865 - INFO - Analytics rebuild skipped after fetch because SKIP_ANALYTICS_REBUILD_AFTER_FETCH=1.
+2026-06-30 16:13:06,865 - INFO - Done. Firebase updated. Excel export is disabled by default for automation.
+2026-06-30 16:13:06,865 - INFO - Total elapsed: 1581.6s
+[FETCH DONE] Company fetch finished successfully.
+[COMPARE] Loading current Firebase tickets ...
+[C4C SAP] Using posting date index CSV: C:\Users\Leo.Li\Documents\GitHub\warranty\SAPAnalyticsReport(ZF8C06456D7698BCB54F44D).csv
+[COMPARE] approvalState: newlyApproved=42, newlyUnapproved=0, correctedDetected=117
+[ANALYTICS] Building pre-calculated dashboard nodes ...
+[ANALYTICS DONE] employees=25, employeeCriticalTickets=537, removed=900, dealerAnalytics=updated
+[COMPARE DONE] tickets=32153, criticalNow=537, entered=66, moved=51, exited=94, events=211
+==================================================
+CTM V44 daily 5:00 PM run started at Tue 30/06/2026 16:39:31.44
+==================================================
+[FETCH] Running company file:
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py
+2026-06-30 16:39:33,034 - INFO - Script version: MANDT800_FULLJOIN_REJECTION_FILTER
+2026-06-30 16:39:33,034 - INFO - SAP HANA rule: MANDT=800 full join + exclude VBAP.ABGRU rejected items from Sales Order Details
+2026-06-30 16:39:33,034 - INFO - Step 1/9: Fetching latest C4C snapshot ...
+2026-06-30 16:39:33,034 - INFO - ===== START ROLE 1001 =====
+2026-06-30 16:39:33,035 - INFO - ===== START ROLE 40 =====
+2026-06-30 16:39:33,036 - INFO - ===== START ROLE 43 =====
+2026-06-30 16:39:57,684 - INFO - [FETCH] role=43 page=1 skip=0 rows=1000
+2026-06-30 16:40:01,763 - INFO - [FETCH] role=40 page=1 skip=0 rows=1000
+2026-06-30 16:40:04,087 - INFO - [FETCH] role=1001 page=1 skip=0 rows=1000
+2026-06-30 16:40:22,441 - INFO - [FETCH] role=43 page~=2 skip=5000 rows=1000
+2026-06-30 16:40:23,073 - INFO - [FETCH] role=43 page~=3 skip=11000 rows=1000
+2026-06-30 16:40:23,318 - INFO - [FETCH] role=43 page~=4 skip=4000 rows=1000
+2026-06-30 16:40:23,418 - INFO - [FETCH] role=43 page~=5 skip=9000 rows=1000
+2026-06-30 16:40:23,566 - INFO - [FETCH] role=43 page~=6 skip=3000 rows=1000
+2026-06-30 16:40:23,962 - INFO - [FETCH] role=43 page~=7 skip=10000 rows=1000
+2026-06-30 16:40:24,520 - INFO - [FETCH] role=43 page~=8 skip=8000 rows=1000
+2026-06-30 16:40:24,835 - INFO - [FETCH] role=43 page~=9 skip=6000 rows=1000
+2026-06-30 16:40:25,831 - INFO - [FETCH] role=43 page~=10 skip=1000 rows=1000
+2026-06-30 16:40:27,171 - INFO - [FETCH] role=43 page~=11 skip=2000 rows=1000
+2026-06-30 16:40:27,344 - INFO - [FETCH] role=43 page~=12 skip=12000 rows=1000
+2026-06-30 16:40:28,318 - INFO - [FETCH] role=43 page~=13 skip=7000 rows=1000
+2026-06-30 16:40:31,661 - INFO - [FETCH] role=40 page~=2 skip=3000 rows=1000
+2026-06-30 16:40:31,668 - INFO - [FETCH] role=40 page~=3 skip=6000 rows=1000
+2026-06-30 16:40:31,699 - INFO - [FETCH] role=40 page~=4 skip=11000 rows=1000
+2026-06-30 16:40:32,199 - INFO - [FETCH] role=40 page~=5 skip=1000 rows=1000
+2026-06-30 16:40:32,229 - INFO - [FETCH] role=40 page~=6 skip=5000 rows=1000
+2026-06-30 16:40:32,540 - INFO - [FETCH] role=40 page~=7 skip=12000 rows=1000
+2026-06-30 16:40:33,020 - INFO - [FETCH] role=40 page~=8 skip=10000 rows=1000
+2026-06-30 16:40:34,371 - INFO - [FETCH] role=40 page~=9 skip=8000 rows=1000
+2026-06-30 16:40:34,473 - INFO - [FETCH] role=40 page~=10 skip=4000 rows=1000
+2026-06-30 16:40:34,759 - INFO - [FETCH] role=40 page~=11 skip=7000 rows=1000
+2026-06-30 16:40:35,458 - INFO - [FETCH] role=40 page~=12 skip=2000 rows=1000
+2026-06-30 16:40:35,654 - INFO - [FETCH] role=40 page~=13 skip=9000 rows=1000
+2026-06-30 16:40:35,977 - INFO - [FETCH] role=1001 page~=2 skip=8000 rows=1000
+2026-06-30 16:40:37,217 - INFO - [FETCH] role=1001 page~=3 skip=11000 rows=1000
+2026-06-30 16:40:37,440 - INFO - [FETCH] role=1001 page~=4 skip=10000 rows=1000
+2026-06-30 16:40:37,516 - INFO - [FETCH] role=1001 page~=5 skip=9000 rows=1000
+2026-06-30 16:40:37,561 - INFO - [FETCH] role=1001 page~=6 skip=4000 rows=1000
+2026-06-30 16:40:38,843 - INFO - [FETCH] role=1001 page~=7 skip=6000 rows=1000
+2026-06-30 16:40:39,059 - INFO - [FETCH] role=1001 page~=8 skip=1000 rows=1000
+2026-06-30 16:40:39,185 - INFO - [FETCH] role=1001 page~=9 skip=12000 rows=1000
+2026-06-30 16:40:39,368 - INFO - [FETCH] role=1001 page~=10 skip=3000 rows=1000
+2026-06-30 16:40:39,444 - INFO - [FETCH] role=1001 page~=11 skip=7000 rows=1000
+2026-06-30 16:40:39,726 - INFO - [FETCH] role=1001 page~=12 skip=2000 rows=1000
+2026-06-30 16:40:39,893 - INFO - [FETCH] role=1001 page~=13 skip=5000 rows=1000
+2026-06-30 16:40:44,809 - INFO - [FETCH] role=43 page~=14 skip=13000 rows=1000
+2026-06-30 16:40:45,388 - INFO - [FETCH] role=43 page~=15 skip=16000 rows=1000
+2026-06-30 16:40:46,766 - INFO - [FETCH] role=43 page~=16 skip=15000 rows=1000
+2026-06-30 16:40:47,243 - INFO - [FETCH] role=43 page~=17 skip=19000 rows=1000
+2026-06-30 16:40:47,538 - INFO - [FETCH] role=43 page~=18 skip=14000 rows=1000
+2026-06-30 16:40:48,022 - INFO - [FETCH] role=43 page~=19 skip=18000 rows=1000
+2026-06-30 16:40:49,276 - INFO - [FETCH] role=43 page~=20 skip=17000 rows=1000
+2026-06-30 16:40:50,496 - INFO - [FETCH] role=43 page~=21 skip=20000 rows=1000
+2026-06-30 16:40:51,159 - INFO - [FETCH] role=43 page~=22 skip=21000 rows=1000
+2026-06-30 16:40:52,953 - INFO - [FETCH] role=43 page~=23 skip=22000 rows=1000
+2026-06-30 16:40:52,969 - INFO - [FETCH] role=43 page~=24 skip=24000 rows=1000
+2026-06-30 16:40:52,974 - INFO - [FETCH] role=43 page~=25 skip=23000 rows=1000
+2026-06-30 16:40:56,978 - INFO - [FETCH] role=40 page~=14 skip=15000 rows=1000
+2026-06-30 16:40:57,978 - INFO - [FETCH] role=40 page~=15 skip=16000 rows=1000
+2026-06-30 16:40:58,226 - INFO - [FETCH] role=40 page~=16 skip=17000 rows=1000
+2026-06-30 16:40:58,474 - INFO - [FETCH] role=40 page~=17 skip=14000 rows=1000
+2026-06-30 16:40:58,588 - INFO - [FETCH] role=40 page~=18 skip=18000 rows=1000
+2026-06-30 16:40:58,605 - INFO - [FETCH] role=40 page~=19 skip=19000 rows=1000
+2026-06-30 16:41:00,034 - INFO - [FETCH] role=40 page~=20 skip=21000 rows=1000
+2026-06-30 16:41:00,089 - INFO - [FETCH] role=40 page~=21 skip=22000 rows=1000
+2026-06-30 16:41:00,661 - INFO - [FETCH] role=40 page~=22 skip=13000 rows=1000
+2026-06-30 16:41:01,127 - INFO - [FETCH] role=40 page~=23 skip=23000 rows=1000
+2026-06-30 16:41:01,687 - INFO - [FETCH] role=40 page~=24 skip=24000 rows=1000
+2026-06-30 16:41:02,555 - INFO - [FETCH] role=40 page~=25 skip=20000 rows=1000
+2026-06-30 16:41:04,577 - INFO - [FETCH] role=43 page~=26 skip=25000 rows=105
+2026-06-30 16:41:05,001 - INFO - [FETCH] role=1001 page~=14 skip=13000 rows=1000
+2026-06-30 16:41:07,237 - INFO - [FETCH] role=1001 page~=15 skip=15000 rows=1000
+2026-06-30 16:41:07,248 - INFO - [FETCH] role=1001 page~=16 skip=14000 rows=1000
+2026-06-30 16:41:07,248 - INFO - [FETCH] role=1001 page~=17 skip=19000 rows=1000
+2026-06-30 16:41:07,358 - INFO - [FETCH] role=1001 page~=18 skip=16000 rows=1000
+2026-06-30 16:41:07,624 - INFO - [FETCH] role=1001 page~=19 skip=17000 rows=1000
+2026-06-30 16:41:07,739 - INFO - [FETCH] role=1001 page~=20 skip=24000 rows=1000
+2026-06-30 16:41:08,859 - INFO - [FETCH] role=1001 page~=21 skip=18000 rows=1000
+2026-06-30 16:41:09,923 - INFO - [FETCH] role=1001 page~=22 skip=21000 rows=1000
+2026-06-30 16:41:09,942 - INFO - [FETCH] role=1001 page~=23 skip=23000 rows=1000
+2026-06-30 16:41:09,987 - INFO - [FETCH] role=1001 page~=24 skip=20000 rows=1000
+2026-06-30 16:41:10,385 - INFO - [FETCH] role=1001 page~=25 skip=22000 rows=1000
+2026-06-30 16:41:22,140 - INFO - [FETCH] role=40 page~=26 skip=26000 rows=1000
+2026-06-30 16:41:22,593 - INFO - [FETCH] role=40 page~=27 skip=29000 rows=1000
+2026-06-30 16:41:22,663 - INFO - [FETCH] role=40 page~=28 skip=27000 rows=1000
+2026-06-30 16:41:22,913 - INFO - [FETCH] role=40 page~=29 skip=30000 rows=1000
+2026-06-30 16:41:24,118 - INFO - [FETCH] role=40 page~=30 skip=25000 rows=1000
+2026-06-30 16:41:24,193 - INFO - [FETCH] role=40 page~=31 skip=31000 rows=1000
+2026-06-30 16:41:25,248 - INFO - [FETCH] role=40 page~=32 skip=28000 rows=1000
+2026-06-30 16:41:26,102 - INFO - [FETCH] role=40 page~=33 skip=32000 rows=154
+2026-06-30 16:41:26,971 - INFO - [FETCH] role=43 tail_probe=1 skip=26000 rows=0
+2026-06-30 16:41:26,971 - INFO - ===== END ROLE 43 rows=25105 elapsed=113.9s =====
+2026-06-30 16:41:27,348 - INFO - [ROLE MERGED] role=43 rows=25105 total_rows=25105 unique_tickets=25104
+2026-06-30 16:41:30,658 - INFO - [FETCH] role=1001 page~=26 skip=25000 rows=1000
+2026-06-30 16:41:32,882 - INFO - [FETCH] role=1001 page~=27 skip=27000 rows=1000
+2026-06-30 16:41:32,894 - INFO - [FETCH] role=1001 page~=28 skip=26000 rows=1000
+2026-06-30 16:41:33,123 - INFO - [FETCH] role=1001 page~=29 skip=28000 rows=1000
+2026-06-30 16:41:33,521 - INFO - [FETCH] role=1001 page~=30 skip=30000 rows=1000
+2026-06-30 16:41:35,094 - INFO - [FETCH] role=1001 page~=31 skip=31000 rows=331
+2026-06-30 16:41:35,675 - INFO - [FETCH] role=1001 page~=32 skip=29000 rows=1000
+2026-06-30 16:41:51,499 - INFO - [FETCH] role=40 tail_probe=1 skip=33000 rows=0
+2026-06-30 16:41:51,499 - INFO - ===== END ROLE 40 rows=32154 elapsed=138.5s =====
+2026-06-30 16:41:51,822 - INFO - [ROLE MERGED] role=40 rows=32154 total_rows=57259 unique_tickets=32154
+2026-06-30 16:42:03,636 - INFO - [FETCH] role=1001 tail_probe=1 skip=32000 rows=0
+2026-06-30 16:42:03,636 - INFO - ===== END ROLE 1001 rows=31331 elapsed=150.6s =====
+2026-06-30 16:42:03,975 - INFO - [ROLE MERGED] role=1001 rows=31331 total_rows=88590 unique_tickets=32154
+2026-06-30 16:42:04,045 - INFO - C4C total API rows processed: 88590
+2026-06-30 16:42:04,045 - INFO - C4C total unique TicketIDs: 32154
+2026-06-30 16:42:04,045 - INFO - Step 2/9: Initializing Firebase and loading previous sync snapshot ...
+2026-06-30 16:42:06,231 - INFO - Previous synced TicketIDs in hash snapshot: 32153
+2026-06-30 16:42:06,231 - INFO - Step 3/9: Detecting changed/deleted tickets ...
+2026-06-30 16:42:07,272 - INFO - Changed tickets: 66
+2026-06-30 16:42:07,272 - INFO - Deleted tickets: 0
+2026-06-30 16:42:07,272 - INFO - Step 3A/9: Uploading changed C4C core ticket fields to Firebase ...
+2026-06-30 16:42:07,557 - INFO - [FB CORE TICKET UPLOAD] batch=1 paths=1980 bytes~=107244
+2026-06-30 16:42:07,847 - INFO - [FB CORE TICKET UPLOAD] batch=1 done
+2026-06-30 16:42:07,973 - INFO - Step 3B/9: Uploading C4C involved-party roles to Firebase, including role 40 Assign To ...
+2026-06-30 16:42:54,915 - INFO - [FB C4C ROLES UPLOAD] batch=1 paths=8000 bytes~=1631977
+2026-06-30 16:42:55,950 - INFO - [FB C4C ROLES UPLOAD] batch=1 done
+2026-06-30 16:43:38,161 - INFO - [FB C4C ROLES UPLOAD] batch=2 paths=8000 bytes~=1628637
+2026-06-30 16:43:38,601 - INFO - [FB C4C ROLES UPLOAD] batch=2 done
+2026-06-30 16:44:28,990 - INFO - [FB C4C ROLES UPLOAD] batch=3 paths=8000 bytes~=1666843
+2026-06-30 16:44:29,371 - INFO - [FB C4C ROLES UPLOAD] batch=3 done
+2026-06-30 16:45:13,975 - INFO - [FB C4C ROLES UPLOAD] batch=4 paths=8000 bytes~=1656936
+2026-06-30 16:45:14,352 - INFO - [FB C4C ROLES UPLOAD] batch=4 done
+2026-06-30 16:45:51,198 - INFO - [FB C4C ROLES UPLOAD] batch=5 paths=8000 bytes~=1655366
+2026-06-30 16:45:51,738 - INFO - [FB C4C ROLES UPLOAD] batch=5 done
+2026-06-30 16:46:26,903 - INFO - [FB C4C ROLES UPLOAD] batch=6 paths=8000 bytes~=1672266
+2026-06-30 16:46:27,465 - INFO - [FB C4C ROLES UPLOAD] batch=6 done
+2026-06-30 16:46:54,027 - INFO - [FB C4C ROLES UPLOAD] batch=7 paths=8000 bytes~=1656961
+2026-06-30 16:46:54,578 - INFO - [FB C4C ROLES UPLOAD] batch=7 done
+2026-06-30 16:47:19,482 - INFO - [FB C4C ROLES UPLOAD] batch=8 paths=8000 bytes~=1657227
+2026-06-30 16:47:20,038 - INFO - [FB C4C ROLES UPLOAD] batch=8 done
+2026-06-30 16:47:46,953 - INFO - [FB C4C ROLES UPLOAD] batch=9 paths=8000 bytes~=1646815
+2026-06-30 16:47:47,484 - INFO - [FB C4C ROLES UPLOAD] batch=9 done
+2026-06-30 16:48:23,379 - INFO - [FB C4C ROLES UPLOAD] batch=10 paths=8000 bytes~=1627691
+2026-06-30 16:48:23,935 - INFO - [FB C4C ROLES UPLOAD] batch=10 done
+2026-06-30 16:48:54,784 - INFO - [FB C4C ROLES UPLOAD] batch=11 paths=8000 bytes~=1602868
+2026-06-30 16:48:55,357 - INFO - [FB C4C ROLES UPLOAD] batch=11 done
+2026-06-30 16:48:55,531 - INFO - [FB C4C ROLES UPLOAD] batch=12 paths=588 bytes~=118776
+2026-06-30 16:48:55,684 - INFO - [FB C4C ROLES UPLOAD] batch=12 done
+2026-06-30 16:48:55,822 - INFO - Step 4/9: Uploading critical-removed metrics ...
+2026-06-30 16:48:58,591 - INFO - Step 5/9: Extracting ERPFreeOrder from ALL current tickets for SAP HANA refresh ...
+2026-06-30 16:48:59,210 - INFO - Changed tickets without ERPFreeOrder. Clearing old SO fields: 27
+2026-06-30 16:48:59,214 - INFO - [FB CLEAR NO ERPFreeOrder] batch=1 paths=189 bytes~=9342
+2026-06-30 16:48:59,650 - INFO - [FB CLEAR NO ERPFreeOrder] batch=1 done
+2026-06-30 16:48:59,650 - INFO - Current tickets with ERPFreeOrder for HANA refresh: 15390
+2026-06-30 16:48:59,650 - INFO - Step 6/9: Connecting SAP HANA and fetching SO/item data for changed tickets only ...
+2026-06-30 16:49:02,456 - INFO - Total input lookup rows: 23235
+2026-06-30 16:49:02,456 - INFO - Total SQL batches: 78
+2026-06-30 16:49:02,456 - INFO - Running batch 1/78 with 300 lookup rows...
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:746: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:49:03,403 - INFO - Batch 1 returned 304 rows
+2026-06-30 16:49:03,403 - INFO - Running batch 2/78 with 300 lookup rows...
+2026-06-30 16:49:04,431 - INFO - Batch 2 returned 429 rows
+2026-06-30 16:49:04,432 - INFO - Running batch 3/78 with 300 lookup rows...
+2026-06-30 16:49:05,406 - INFO - Batch 3 returned 442 rows
+2026-06-30 16:49:05,406 - INFO - Running batch 4/78 with 300 lookup rows...
+2026-06-30 16:49:06,330 - INFO - Batch 4 returned 460 rows
+2026-06-30 16:49:06,330 - INFO - Running batch 5/78 with 300 lookup rows...
+2026-06-30 16:49:07,321 - INFO - Batch 5 returned 566 rows
+2026-06-30 16:49:07,321 - INFO - Running batch 6/78 with 300 lookup rows...
+2026-06-30 16:49:08,372 - INFO - Batch 6 returned 683 rows
+2026-06-30 16:49:08,372 - INFO - Running batch 7/78 with 300 lookup rows...
+2026-06-30 16:49:09,239 - INFO - Batch 7 returned 512 rows
+2026-06-30 16:49:09,239 - INFO - Running batch 8/78 with 300 lookup rows...
+2026-06-30 16:49:09,942 - INFO - Batch 8 returned 359 rows
+2026-06-30 16:49:09,942 - INFO - Running batch 9/78 with 300 lookup rows...
+2026-06-30 16:49:10,565 - INFO - Batch 9 returned 287 rows
+2026-06-30 16:49:10,565 - INFO - Running batch 10/78 with 300 lookup rows...
+2026-06-30 16:49:11,186 - INFO - Batch 10 returned 283 rows
+2026-06-30 16:49:11,186 - INFO - Running batch 11/78 with 300 lookup rows...
+2026-06-30 16:49:11,879 - INFO - Batch 11 returned 346 rows
+2026-06-30 16:49:11,879 - INFO - Running batch 12/78 with 300 lookup rows...
+2026-06-30 16:49:12,567 - INFO - Batch 12 returned 333 rows
+2026-06-30 16:49:12,567 - INFO - Running batch 13/78 with 300 lookup rows...
+2026-06-30 16:49:13,247 - INFO - Batch 13 returned 361 rows
+2026-06-30 16:49:13,248 - INFO - Running batch 14/78 with 300 lookup rows...
+2026-06-30 16:49:13,865 - INFO - Batch 14 returned 317 rows
+2026-06-30 16:49:13,865 - INFO - Running batch 15/78 with 300 lookup rows...
+2026-06-30 16:49:14,483 - INFO - Batch 15 returned 314 rows
+2026-06-30 16:49:14,483 - INFO - Running batch 16/78 with 300 lookup rows...
+2026-06-30 16:49:15,179 - INFO - Batch 16 returned 474 rows
+2026-06-30 16:49:15,179 - INFO - Running batch 17/78 with 300 lookup rows...
+2026-06-30 16:49:16,898 - INFO - Batch 17 returned 658 rows
+2026-06-30 16:49:16,898 - INFO - Running batch 18/78 with 300 lookup rows...
+2026-06-30 16:49:18,594 - INFO - Batch 18 returned 683 rows
+2026-06-30 16:49:18,594 - INFO - Running batch 19/78 with 300 lookup rows...
+2026-06-30 16:49:20,305 - INFO - Batch 19 returned 749 rows
+2026-06-30 16:49:20,305 - INFO - Running batch 20/78 with 300 lookup rows...
+2026-06-30 16:49:21,815 - INFO - Batch 20 returned 419 rows
+2026-06-30 16:49:21,815 - INFO - Running batch 21/78 with 300 lookup rows...
+2026-06-30 16:49:22,382 - INFO - Batch 21 returned 283 rows
+2026-06-30 16:49:22,382 - INFO - Running batch 22/78 with 300 lookup rows...
+2026-06-30 16:49:22,975 - INFO - Batch 22 returned 350 rows
+2026-06-30 16:49:22,976 - INFO - Running batch 23/78 with 300 lookup rows...
+2026-06-30 16:49:23,572 - INFO - Batch 23 returned 351 rows
+2026-06-30 16:49:23,572 - INFO - Running batch 24/78 with 300 lookup rows...
+2026-06-30 16:49:24,553 - INFO - Batch 24 returned 629 rows
+2026-06-30 16:49:24,553 - INFO - Running batch 25/78 with 300 lookup rows...
+2026-06-30 16:49:25,932 - INFO - Batch 25 returned 609 rows
+2026-06-30 16:49:25,932 - INFO - Running batch 26/78 with 300 lookup rows...
+2026-06-30 16:49:26,517 - INFO - Batch 26 returned 317 rows
+2026-06-30 16:49:26,517 - INFO - Running batch 27/78 with 300 lookup rows...
+2026-06-30 16:49:27,094 - INFO - Batch 27 returned 306 rows
+2026-06-30 16:49:27,094 - INFO - Running batch 28/78 with 300 lookup rows...
+2026-06-30 16:49:27,672 - INFO - Batch 28 returned 300 rows
+2026-06-30 16:49:27,672 - INFO - Running batch 29/78 with 300 lookup rows...
+2026-06-30 16:49:28,261 - INFO - Batch 29 returned 351 rows
+2026-06-30 16:49:28,261 - INFO - Running batch 30/78 with 300 lookup rows...
+2026-06-30 16:49:28,922 - INFO - Batch 30 returned 488 rows
+2026-06-30 16:49:28,922 - INFO - Running batch 31/78 with 300 lookup rows...
+2026-06-30 16:49:29,577 - INFO - Batch 31 returned 457 rows
+2026-06-30 16:49:29,577 - INFO - Running batch 32/78 with 300 lookup rows...
+2026-06-30 16:49:30,155 - INFO - Batch 32 returned 329 rows
+2026-06-30 16:49:30,155 - INFO - Running batch 33/78 with 300 lookup rows...
+2026-06-30 16:49:30,742 - INFO - Batch 33 returned 363 rows
+2026-06-30 16:49:30,742 - INFO - Running batch 34/78 with 300 lookup rows...
+2026-06-30 16:49:31,316 - INFO - Batch 34 returned 339 rows
+2026-06-30 16:49:31,316 - INFO - Running batch 35/78 with 300 lookup rows...
+2026-06-30 16:49:31,857 - INFO - Batch 35 returned 269 rows
+2026-06-30 16:49:31,857 - INFO - Running batch 36/78 with 300 lookup rows...
+2026-06-30 16:49:32,426 - INFO - Batch 36 returned 338 rows
+2026-06-30 16:49:32,426 - INFO - Running batch 37/78 with 300 lookup rows...
+2026-06-30 16:49:32,994 - INFO - Batch 37 returned 341 rows
+2026-06-30 16:49:32,995 - INFO - Running batch 38/78 with 300 lookup rows...
+2026-06-30 16:49:33,602 - INFO - Batch 38 returned 428 rows
+2026-06-30 16:49:33,602 - INFO - Running batch 39/78 with 300 lookup rows...
+2026-06-30 16:49:34,295 - INFO - Batch 39 returned 632 rows
+2026-06-30 16:49:34,295 - INFO - Running batch 40/78 with 300 lookup rows...
+2026-06-30 16:49:34,877 - INFO - Batch 40 returned 383 rows
+2026-06-30 16:49:34,877 - INFO - Running batch 41/78 with 300 lookup rows...
+2026-06-30 16:49:35,403 - INFO - Batch 41 returned 255 rows
+2026-06-30 16:49:35,403 - INFO - Running batch 42/78 with 300 lookup rows...
+2026-06-30 16:49:35,932 - INFO - Batch 42 returned 246 rows
+2026-06-30 16:49:35,932 - INFO - Running batch 43/78 with 300 lookup rows...
+2026-06-30 16:49:36,458 - INFO - Batch 43 returned 241 rows
+2026-06-30 16:49:36,458 - INFO - Running batch 44/78 with 300 lookup rows...
+2026-06-30 16:49:36,985 - INFO - Batch 44 returned 249 rows
+2026-06-30 16:49:36,985 - INFO - Running batch 45/78 with 300 lookup rows...
+2026-06-30 16:49:37,547 - INFO - Batch 45 returned 354 rows
+2026-06-30 16:49:37,547 - INFO - Running batch 46/78 with 300 lookup rows...
+2026-06-30 16:49:38,096 - INFO - Batch 46 returned 329 rows
+2026-06-30 16:49:38,096 - INFO - Running batch 47/78 with 300 lookup rows...
+2026-06-30 16:49:38,642 - INFO - Batch 47 returned 312 rows
+2026-06-30 16:49:38,642 - INFO - Running batch 48/78 with 300 lookup rows...
+2026-06-30 16:49:39,206 - INFO - Batch 48 returned 357 rows
+2026-06-30 16:49:39,207 - INFO - Running batch 49/78 with 300 lookup rows...
+2026-06-30 16:49:39,801 - INFO - Batch 49 returned 447 rows
+2026-06-30 16:49:39,801 - INFO - Running batch 50/78 with 300 lookup rows...
+2026-06-30 16:49:40,343 - INFO - Batch 50 returned 333 rows
+2026-06-30 16:49:40,343 - INFO - Running batch 51/78 with 300 lookup rows...
+2026-06-30 16:49:40,955 - INFO - Batch 51 returned 522 rows
+2026-06-30 16:49:40,955 - INFO - Running batch 52/78 with 300 lookup rows...
+2026-06-30 16:49:41,556 - INFO - Batch 52 returned 474 rows
+2026-06-30 16:49:41,556 - INFO - Running batch 53/78 with 300 lookup rows...
+2026-06-30 16:49:42,159 - INFO - Batch 53 returned 477 rows
+2026-06-30 16:49:42,159 - INFO - Running batch 54/78 with 300 lookup rows...
+2026-06-30 16:49:42,818 - INFO - Batch 54 returned 614 rows
+2026-06-30 16:49:42,818 - INFO - Running batch 55/78 with 300 lookup rows...
+2026-06-30 16:49:43,479 - INFO - Batch 55 returned 675 rows
+2026-06-30 16:49:43,479 - INFO - Running batch 56/78 with 300 lookup rows...
+2026-06-30 16:49:45,260 - INFO - Batch 56 returned 756 rows
+2026-06-30 16:49:45,260 - INFO - Running batch 57/78 with 300 lookup rows...
+2026-06-30 16:49:45,848 - INFO - Batch 57 returned 470 rows
+2026-06-30 16:49:45,849 - INFO - Running batch 58/78 with 300 lookup rows...
+2026-06-30 16:49:46,456 - INFO - Batch 58 returned 524 rows
+2026-06-30 16:49:46,456 - INFO - Running batch 59/78 with 300 lookup rows...
+2026-06-30 16:49:47,040 - INFO - Batch 59 returned 460 rows
+2026-06-30 16:49:47,040 - INFO - Running batch 60/78 with 300 lookup rows...
+2026-06-30 16:49:47,628 - INFO - Batch 60 returned 463 rows
+2026-06-30 16:49:47,628 - INFO - Running batch 61/78 with 300 lookup rows...
+2026-06-30 16:49:49,406 - INFO - Batch 61 returned 733 rows
+2026-06-30 16:49:49,406 - INFO - Running batch 62/78 with 300 lookup rows...
+2026-06-30 16:49:51,218 - INFO - Batch 62 returned 790 rows
+2026-06-30 16:49:51,218 - INFO - Running batch 63/78 with 300 lookup rows...
+2026-06-30 16:49:53,219 - INFO - Batch 63 returned 802 rows
+2026-06-30 16:49:53,219 - INFO - Running batch 64/78 with 300 lookup rows...
+2026-06-30 16:49:53,767 - INFO - Batch 64 returned 367 rows
+2026-06-30 16:49:53,768 - INFO - Running batch 65/78 with 300 lookup rows...
+2026-06-30 16:49:54,326 - INFO - Batch 65 returned 404 rows
+2026-06-30 16:49:54,327 - INFO - Running batch 66/78 with 300 lookup rows...
+2026-06-30 16:49:54,874 - INFO - Batch 66 returned 368 rows
+2026-06-30 16:49:54,874 - INFO - Running batch 67/78 with 300 lookup rows...
+2026-06-30 16:49:55,472 - INFO - Batch 67 returned 542 rows
+2026-06-30 16:49:55,472 - INFO - Running batch 68/78 with 300 lookup rows...
+2026-06-30 16:49:56,022 - INFO - Batch 68 returned 398 rows
+2026-06-30 16:49:56,023 - INFO - Running batch 69/78 with 300 lookup rows...
+2026-06-30 16:49:56,551 - INFO - Batch 69 returned 337 rows
+2026-06-30 16:49:56,551 - INFO - Running batch 70/78 with 300 lookup rows...
+2026-06-30 16:49:57,089 - INFO - Batch 70 returned 371 rows
+2026-06-30 16:49:57,089 - INFO - Running batch 71/78 with 300 lookup rows...
+2026-06-30 16:49:57,639 - INFO - Batch 71 returned 441 rows
+2026-06-30 16:49:57,640 - INFO - Running batch 72/78 with 300 lookup rows...
+2026-06-30 16:49:58,182 - INFO - Batch 72 returned 408 rows
+2026-06-30 16:49:58,182 - INFO - Running batch 73/78 with 300 lookup rows...
+2026-06-30 16:49:58,719 - INFO - Batch 73 returned 348 rows
+2026-06-30 16:49:58,719 - INFO - Running batch 74/78 with 300 lookup rows...
+2026-06-30 16:49:59,234 - INFO - Batch 74 returned 304 rows
+2026-06-30 16:49:59,234 - INFO - Running batch 75/78 with 300 lookup rows...
+2026-06-30 16:49:59,804 - INFO - Batch 75 returned 489 rows
+2026-06-30 16:49:59,804 - INFO - Running batch 76/78 with 300 lookup rows...
+2026-06-30 16:50:01,404 - INFO - Batch 76 returned 641 rows
+2026-06-30 16:50:01,404 - INFO - Running batch 77/78 with 300 lookup rows...
+2026-06-30 16:50:02,954 - INFO - Batch 77 returned 320 rows
+2026-06-30 16:50:02,954 - INFO - Running batch 78/78 with 135 lookup rows...
+2026-06-30 16:50:03,400 - INFO - Batch 78 returned 174 rows
+2026-06-30 16:50:03,618 - INFO - Matched SO item rows for current ERPFreeOrder tickets: 33637
+2026-06-30 16:50:03,619 - INFO - Step 7/9: Building final output for refreshed HANA tickets ...
+2026-06-30 16:50:08,135 - INFO - SAP unmatched changed tickets. Clearing old SO fields: 269
+2026-06-30 16:50:08,392 - INFO - [FB CLEAR UNMATCHED SO] batch=1 paths=1883 bytes~=91513
+2026-06-30 16:50:08,586 - INFO - [FB CLEAR UNMATCHED SO] batch=1 done
+2026-06-30 16:50:08,586 - INFO - Step 8/9: Uploading refreshed SO fields to Firebase ...
+2026-06-30 16:50:59,101 - INFO - [FB SO UPLOAD] batch=1 paths=8000 bytes~=924354
+2026-06-30 16:50:59,572 - INFO - [FB SO UPLOAD] batch=1 done
+2026-06-30 16:51:17,313 - INFO - [FB SO UPLOAD] batch=2 paths=8000 bytes~=951461
+2026-06-30 16:51:17,824 - INFO - [FB SO UPLOAD] batch=2 done
+2026-06-30 16:51:34,615 - INFO - [FB SO UPLOAD] batch=3 paths=8000 bytes~=956396
+2026-06-30 16:51:34,974 - INFO - [FB SO UPLOAD] batch=3 done
+2026-06-30 16:51:51,360 - INFO - [FB SO UPLOAD] batch=4 paths=8000 bytes~=1010754
+2026-06-30 16:51:51,890 - INFO - [FB SO UPLOAD] batch=4 done
+2026-06-30 16:52:07,916 - INFO - [FB SO UPLOAD] batch=5 paths=8000 bytes~=1016942
+2026-06-30 16:52:08,470 - INFO - [FB SO UPLOAD] batch=5 done
+2026-06-30 16:52:26,217 - INFO - [FB SO UPLOAD] batch=6 paths=8000 bytes~=1109647
+2026-06-30 16:52:26,763 - INFO - [FB SO UPLOAD] batch=6 done
+2026-06-30 16:52:42,090 - INFO - [FB SO UPLOAD] batch=7 paths=8000 bytes~=1039992
+2026-06-30 16:52:42,489 - INFO - [FB SO UPLOAD] batch=7 done
+2026-06-30 16:53:01,036 - INFO - [FB SO UPLOAD] batch=8 paths=8000 bytes~=1003998
+2026-06-30 16:53:01,584 - INFO - [FB SO UPLOAD] batch=8 done
+2026-06-30 16:53:24,277 - INFO - [FB SO UPLOAD] batch=9 paths=8000 bytes~=1010437
+2026-06-30 16:53:24,858 - INFO - [FB SO UPLOAD] batch=9 done
+2026-06-30 16:53:42,573 - INFO - [FB SO UPLOAD] batch=10 paths=8000 bytes~=991694
+2026-06-30 16:53:43,127 - INFO - [FB SO UPLOAD] batch=10 done
+2026-06-30 16:53:59,815 - INFO - [FB SO UPLOAD] batch=11 paths=8000 bytes~=935083
+2026-06-30 16:54:00,182 - INFO - [FB SO UPLOAD] batch=11 done
+2026-06-30 16:54:14,390 - INFO - [FB SO UPLOAD] batch=12 paths=8000 bytes~=967564
+2026-06-30 16:54:14,950 - INFO - [FB SO UPLOAD] batch=12 done
+2026-06-30 16:54:29,367 - INFO - [FB SO UPLOAD] batch=13 paths=8000 bytes~=977500
+2026-06-30 16:54:29,906 - INFO - [FB SO UPLOAD] batch=13 done
+2026-06-30 16:54:45,272 - INFO - [FB SO UPLOAD] batch=14 paths=8000 bytes~=1023144
+2026-06-30 16:54:45,836 - INFO - [FB SO UPLOAD] batch=14 done
+2026-06-30 16:55:09,538 - INFO - [FB SO UPLOAD] batch=15 paths=8000 bytes~=1084178
+2026-06-30 16:55:09,943 - INFO - [FB SO UPLOAD] batch=15 done
+2026-06-30 16:55:33,741 - INFO - [FB SO UPLOAD] batch=16 paths=8000 bytes~=1057163
+2026-06-30 16:55:34,279 - INFO - [FB SO UPLOAD] batch=16 done
+2026-06-30 16:55:54,863 - INFO - [FB SO UPLOAD] batch=17 paths=8000 bytes~=1063817
+2026-06-30 16:55:55,422 - INFO - [FB SO UPLOAD] batch=17 done
+2026-06-30 16:56:11,343 - INFO - [FB SO UPLOAD] batch=18 paths=8000 bytes~=1024559
+2026-06-30 16:56:11,729 - INFO - [FB SO UPLOAD] batch=18 done
+2026-06-30 16:56:29,558 - INFO - [FB SO UPLOAD] batch=19 paths=8000 bytes~=979458
+2026-06-30 16:56:30,178 - INFO - [FB SO UPLOAD] batch=19 done
+2026-06-30 16:56:43,847 - INFO - [FB SO UPLOAD] batch=20 paths=8000 bytes~=829015
+2026-06-30 16:56:44,335 - INFO - [FB SO UPLOAD] batch=20 done
+2026-06-30 16:57:02,235 - INFO - [FB SO UPLOAD] batch=21 paths=8000 bytes~=877651
+2026-06-30 16:57:02,709 - INFO - [FB SO UPLOAD] batch=21 done
+2026-06-30 16:57:22,521 - INFO - [FB SO UPLOAD] batch=22 paths=8000 bytes~=912655
+2026-06-30 16:57:22,891 - INFO - [FB SO UPLOAD] batch=22 done
+2026-06-30 16:57:41,931 - INFO - [FB SO UPLOAD] batch=23 paths=8000 bytes~=894932
+2026-06-30 16:57:42,443 - INFO - [FB SO UPLOAD] batch=23 done
+2026-06-30 16:57:42,541 - INFO - [FB SO UPLOAD] batch=24 paths=680 bytes~=79619
+2026-06-30 16:57:42,813 - INFO - [FB SO UPLOAD] batch=24 done
+2026-06-30 16:57:43,884 - INFO - Fetching EKPO cost batch 1/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:44,307 - INFO - Fetching EKPO cost batch 2/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:44,729 - INFO - Fetching EKPO cost batch 3/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:45,153 - INFO - Fetching EKPO cost batch 4/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:45,574 - INFO - Fetching EKPO cost batch 5/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:45,995 - INFO - Fetching EKPO cost batch 6/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:46,417 - INFO - Fetching EKPO cost batch 7/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:46,836 - INFO - Fetching EKPO cost batch 8/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:47,254 - INFO - Fetching EKPO cost batch 9/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:47,671 - INFO - Fetching EKPO cost batch 10/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:48,090 - INFO - Fetching EKPO cost batch 11/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:48,514 - INFO - Fetching EKPO cost batch 12/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:48,933 - INFO - Fetching EKPO cost batch 13/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:49,355 - INFO - Fetching EKPO cost batch 14/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:49,775 - INFO - Fetching EKPO cost batch 15/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:50,199 - INFO - Fetching EKPO cost batch 16/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:50,620 - INFO - Fetching EKPO cost batch 17/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:51,036 - INFO - Fetching EKPO cost batch 18/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:51,462 - INFO - Fetching EKPO cost batch 19/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:51,881 - INFO - Fetching EKPO cost batch 20/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:52,302 - INFO - Fetching EKPO cost batch 21/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:52,723 - INFO - Fetching EKPO cost batch 22/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:53,151 - INFO - Fetching EKPO cost batch 23/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:53,570 - INFO - Fetching EKPO cost batch 24/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:54,008 - INFO - Fetching EKPO cost batch 25/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:54,425 - INFO - Fetching EKPO cost batch 26/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:54,843 - INFO - Fetching EKPO cost batch 27/28 with 300 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:57:55,263 - INFO - Fetching EKPO cost batch 28/28 with 190 POs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1385: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-06-30 16:58:01,084 - INFO - Step 8B/9: Writing HANA-derived delivery-flow cost sidecar to Firebase ...
+2026-06-30 16:58:01,331 - INFO - Wrote HANA cost sidecar for 2026-06-30 (totalCost=6160663.22, nishiYTD=0.0, rows=0)
+2026-06-30 16:58:01,331 - INFO - Step 9/9: Updating changed ticket hash snapshot ...
+2026-06-30 16:58:01,335 - INFO - [FB HASH SNAPSHOT] batch=1 paths=66 bytes~=7194
+2026-06-30 16:58:01,465 - INFO - [FB HASH SNAPSHOT] batch=1 done
+2026-06-30 16:58:01,466 - INFO - Excel export disabled. Firebase is the source for dashboard data.
+2026-06-30 16:58:01,466 - INFO - Analytics rebuild skipped after fetch because SKIP_ANALYTICS_REBUILD_AFTER_FETCH=1.
+2026-06-30 16:58:01,466 - INFO - Done. Firebase updated. Excel export is disabled by default for automation.
+2026-06-30 16:58:01,466 - INFO - Total elapsed: 1108.4s
+[FETCH DONE] Company fetch finished successfully.
+[COMPARE] Loading current Firebase tickets ...
+[C4C SAP] Using posting date index CSV: C:\Users\Leo.Li\Documents\GitHub\warranty\SAPAnalyticsReport(ZF8C06456D7698BCB54F44D).csv
+[COMPARE] approvalState: newlyApproved=0, newlyUnapproved=0, correctedDetected=1
+[ANALYTICS] Building pre-calculated dashboard nodes ...
+[ANALYTICS DONE] employees=25, employeeCriticalTickets=537, removed=901, dealerAnalytics=updated
+[COMPARE DONE] tickets=32154, criticalNow=537, entered=2, moved=5, exited=2, events=9

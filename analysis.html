@@ -1,0 +1,3848 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Model Series</title>
+<style>
+:root{
+  --bg:#eef3fb;
+  --panel:#ffffff;
+  --ink:#0f172a;
+  --ink2:#1e293b;
+  --muted:#475569;
+  --muted2:#64748b;
+  --line:#e2e8f0;
+  --line2:#eef2f7;
+  --blue:#1677f2;
+  --blue2:#2563eb;
+  --blueSoft:#e8f1ff;
+  --green:#10b981;
+  --greenSoft:#e8f8f1;
+  --amber:#f59e0b;
+  --amberSoft:#fef3c7;
+  --red:#ef4444;
+  --redSoft:#fee2e2;
+  --shadow:0 14px 34px rgba(15,23,42,.055);
+  --shadow-soft:0 8px 22px rgba(15,23,42,.04);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  color:var(--ink);
+  background:#f6f8fc;
+  font:14px/1.5 "Aptos","Segoe UI Variable","Segoe UI","Inter",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:geometricPrecision;
+}
+a{color:inherit}
+
+/* ---------- Loading state ---------- */
+.loadingOverlay{
+  position:fixed;inset:0;z-index:1000;display:none;place-items:center;
+  background:rgba(246,248,252,.58);backdrop-filter:blur(10px);
+  transition:opacity .18s ease;
+}
+.loadingOverlay.show{display:grid}
+.loadingCard{
+  min-width:220px;border:1px solid rgba(226,232,240,.9);border-radius:14px;
+  background:rgba(255,255,255,.86);box-shadow:0 18px 46px rgba(15,23,42,.12);
+  padding:18px 20px;display:flex;align-items:center;gap:12px;color:var(--ink2);
+  font-weight:700;
+}
+.loadingSpin{
+  width:22px;height:22px;border-radius:50%;border:3px solid #dbeafe;
+  border-top-color:var(--blue);animation:spin .8s linear infinite;flex:0 0 auto;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- App shell ---------- */
+.app{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:264px 1fr;
+}
+.sidebar{
+  background:#0b1222;
+  color:#e5e7eb;
+  min-height:100vh;
+  padding:22px 14px;
+  position:sticky;
+  top:0;
+}
+.brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 26px;padding:0 8px;}
+.brandMark{
+  width:38px;height:38px;border-radius:12px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#2f6df6,#22aeea);
+  box-shadow:0 12px 26px rgba(34,174,234,.23);
+}
+.brandMark svg,.navBtn svg,.navLink svg{width:18px;height:18px;stroke-width:1.85}
+.brandText span{display:block;font-size:17px;font-weight:800;letter-spacing:-.02em}
+.brandText small{display:block;margin-top:2px;color:#93a4bd;font-size:12px;font-weight:600}
+.navSection{
+  font-size:11px;letter-spacing:.16em;color:#8493aa;text-transform:uppercase;
+  margin:20px 10px 8px;font-weight:700;
+}
+.navBtn,.navLink{
+  width:100%;min-height:44px;display:flex;align-items:center;gap:13px;
+  border:0;background:transparent;color:#d6deeb;padding:11px 14px;border-radius:12px;
+  font-weight:600;text-decoration:none;cursor:pointer;text-align:left;
+  transition:.15s ease;font-size:14px;
+}
+.navBtn:hover,.navLink:hover{background:#172238;color:#fff;transform:translateX(1px)}
+.navBtn.active,.navLink.active{background:#1667d9;color:#fff;box-shadow:0 10px 24px rgba(37,99,235,.22)}
+.navDivider{height:1px;background:rgba(255,255,255,.08);margin:12px 8px}
+
+.main{padding:26px 34px 60px}
+.shell{max-width:1520px;margin:0 auto}
+
+/* ---------- Header ---------- */
+.topbar{margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}
+.eyebrow{color:var(--muted);text-transform:uppercase;letter-spacing:.16em;font-size:11px;font-weight:700;margin-bottom:6px}
+.title{font-size:30px;font-weight:800;letter-spacing:-.025em;margin:0}
+.subtitle{color:var(--muted);margin:8px 0 0;max-width:680px;font-size:14px}
+.statusRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);
+  padding:8px 14px;border-radius:999px;font-size:12px;color:var(--ink2);font-weight:600;
+  box-shadow:var(--shadow-soft);
+}
+.pill strong{color:var(--ink);font-weight:800;font-size:13px}
+.pill.blue{background:var(--blueSoft);border-color:#c9dcff;color:var(--blue2)}
+.pill.green{background:var(--greenSoft);border-color:#c8ebd8;color:#0d8a63}
+.pill.amber{background:var(--amberSoft);border-color:#facc9d;color:#a05a00}
+.toolRow{display:flex;gap:8px}
+.btn{
+  height:38px;padding:0 16px;border-radius:11px;border:1px solid var(--line);
+  background:#fff;color:var(--ink2);cursor:pointer;font:600 13px/1 "Inter","Segoe UI",sans-serif;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:.15s ease;
+}
+.btn:hover{border-color:#c7d3e3;background:#fbfcfe}
+.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue);box-shadow:0 8px 18px rgba(22,119,242,.22)}
+.btn.primary:hover{background:#0f66db}
+.btn svg{width:14px;height:14px;stroke-width:2}
+
+
+/* ---------- Panel ---------- */
+.panel{
+  background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;
+  box-shadow:var(--shadow);
+}
+.panelHead{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:18px;flex-wrap:wrap}
+.panelTitle{font-size:16px;font-weight:700;letter-spacing:-.01em;margin:0;color:var(--ink)}
+.panelDesc{color:#52637a;font-size:12.5px;margin:4px 0 0;max-width:560px;font-weight:500}
+
+/* ---------- Chip selector ---------- */
+.chipRow{display:flex;gap:6px;flex-wrap:wrap}
+.chip{
+  border:1px solid var(--line);background:#fff;color:var(--ink2);
+  padding:7px 13px;border-radius:10px;font:600 12.5px/1 "Inter","Segoe UI",sans-serif;
+  cursor:pointer;display:inline-flex;align-items:center;gap:7px;
+  transition:.15s ease;
+}
+.chip:hover{border-color:#c7d3e3;background:#fbfcfe}
+.chip small{color:var(--muted);font-weight:600;font-size:11px}
+.chip.active{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 8px 18px rgba(22,119,242,.22)}
+.chip.active small{color:rgba(255,255,255,.85)}
+
+/* ---------- Layout ---------- */
+.section{margin-bottom:22px}
+.twoCol{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+.twoCol > .panel{min-width:0;width:100%}
+.oneCol{display:grid;grid-template-columns:1fr;gap:22px}
+.oneCol > .panel{min-width:0;width:100%}
+
+/* ---------- Sticky analysis controls ---------- */
+.stickyControls{
+  position:sticky;top:0;z-index:20;margin:-4px 0 18px;
+  background:rgba(246,248,252,.94);backdrop-filter:blur(10px);
+  border:1px solid var(--line);border-radius:14px;padding:10px 12px;
+  box-shadow:0 10px 24px rgba(15,23,42,.07);
+  display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;
+}
+.scopeSwitch{display:inline-flex;gap:5px;padding:3px;background:#eef2f7;border-radius:11px;border:1px solid var(--line)}
+.scopeBtn{
+  height:30px;border:0;border-radius:8px;background:transparent;color:var(--ink2);
+  padding:0 11px;font:700 12px/1 "Inter","Segoe UI",sans-serif;cursor:pointer;
+  white-space:nowrap;
+}
+.scopeBtn.active{background:#fff;color:var(--blue2);box-shadow:0 4px 12px rgba(15,23,42,.08)}
+.stickySeriesScroller{overflow:auto;white-space:nowrap;scrollbar-width:thin}
+.stickySeriesScroller .chipRow{flex-wrap:nowrap}
+.detailSwitchRow{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:8px 0 12px}
+.detailSwitchRow .chipRow{max-width:100%;overflow:auto;flex-wrap:nowrap;padding-bottom:2px;scrollbar-width:thin}
+
+/* ---------- Leaderboard rows (visual) ---------- */
+.lbRows{display:flex;flex-direction:column;gap:10px;max-height:430px;overflow:auto;padding-right:3px;scrollbar-width:thin}
+.lbRow{
+  display:grid;grid-template-columns:62px minmax(230px,270px) repeat(8,minmax(74px,auto));
+  gap:10px;align-items:center;padding:12px 14px;border-radius:12px;
+  border:1px solid transparent;cursor:pointer;transition:.15s ease;
+}
+.lbRow:hover{background:#fafcff;border-color:var(--line2)}
+.lbRow.active{background:var(--blueSoft);border-color:#c9dcff}
+.lbSeries{display:flex;align-items:center;gap:8px}
+.lbBadge{
+  width:44px;height:44px;border-radius:11px;display:grid;place-items:center;
+  background:linear-gradient(135deg,#1e3a8a,#1677f2);color:#fff;
+  font:800 13px/1 "Inter",sans-serif;letter-spacing:-.02em;
+  box-shadow:0 8px 18px rgba(22,119,242,.25);
+}
+.lbBadge.g{background:linear-gradient(135deg,#065f46,#10b981)}
+.lbBadge.a{background:linear-gradient(135deg,#92400e,#f59e0b)}
+.lbBadge.r{background:linear-gradient(135deg,#7f1d1d,#ef4444)}
+.lbBadge.p{background:linear-gradient(135deg,#5b21b6,#8b5cf6)}
+.lbBadge.c{background:linear-gradient(135deg,#075985,#0ea5e9)}
+.lbSeriesName{font-weight:800;font-size:15px;letter-spacing:-.01em}
+.lbSeriesSub{color:var(--muted);font-size:11.5px;font-weight:500}
+.lbBarWrap{display:flex;flex-direction:column;gap:5px;min-width:0}
+.lbBarLabel{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:600}
+.lbBar{height:8px;background:#eef2f7;border-radius:99px;overflow:hidden}
+.lbBarFill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),#22aeea);transition:width .35s ease}
+.lbBarFill.risk-lo{background:linear-gradient(90deg,#10b981,#34d399)}
+.lbBarFill.risk-md{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.lbBarFill.risk-hi{background:linear-gradient(90deg,#ef4444,#f87171)}
+.lbMetric{text-align:right;min-width:74px}
+.lbMetricLabel{color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:9.5px;font-weight:700;margin-bottom:2px}
+.lbMetricValue{font-weight:700;font-size:13px;letter-spacing:-.01em;color:var(--ink)}
+.lbMetricValue.na{color:var(--muted2);font-weight:600}
+
+/* ---------- Table ---------- */
+.tableWrap{border:1px solid var(--line);border-radius:12px;overflow:auto;background:#fff;max-height:520px}
+table{width:100%;border-collapse:collapse;font-size:13px;color:#0f172a;font-variant-numeric:tabular-nums}
+thead th{
+  text-align:left;padding:11px 14px;background:#f8fafc;color:#41536b;
+  font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;
+  border-bottom:1px solid var(--line);white-space:nowrap;
+  position:sticky;top:0;z-index:2;
+}
+thead th.number{text-align:right}
+thead th.sortable{cursor:pointer;user-select:none}
+thead th.sortable:hover{background:#eef2f7;color:var(--ink2)}
+thead th .arrow{display:inline-flex;width:10px;justify-content:center;margin-left:4px;color:var(--blue2);font-size:9px;vertical-align:1px}
+thead th.sortActive{color:var(--blue2)}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--line2);vertical-align:middle;color:#111827;font-weight:500}
+tbody tr:last-child td{border-bottom:0}
+tbody tr.active td{background:var(--blueSoft)}
+tbody tr:hover td{background:#fafcff}
+tbody tr.active:hover td{background:#dcebff}
+td.number{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+td.mono{font-variant-numeric:tabular-nums;font-family:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace}
+td strong{font-weight:700}
+.metricsTable{table-layout:fixed;min-width:980px}
+.metricsTable th:nth-child(1),.metricsTable td:nth-child(1){width:11%}
+.metricsTable th:nth-child(2),.metricsTable td:nth-child(2){width:8%}
+.metricsTable th:nth-child(3),.metricsTable td:nth-child(3){width:9%}
+.metricsTable th:nth-child(4),.metricsTable td:nth-child(4){width:8%}
+.metricsTable th:nth-child(5),.metricsTable td:nth-child(5){width:11%}
+.metricsTable th:nth-child(6),.metricsTable td:nth-child(6){width:9%}
+.metricsTable th:nth-child(7),.metricsTable td:nth-child(7){width:13%}
+.metricsTable th:nth-child(8),.metricsTable td:nth-child(8){width:10%}
+.metricsTable th:nth-child(9),.metricsTable td:nth-child(9){width:10%}
+.metricsTable th:nth-child(10),.metricsTable td:nth-child(10){width:11%}
+
+/* Rate badges inside tables */
+.rateBadge{
+  display:inline-flex;align-items:center;gap:6px;
+  justify-content:center;min-width:58px;
+  padding:3px 10px;border-radius:99px;font-weight:800;font-size:12px;
+  font-variant-numeric:tabular-nums;
+}
+.rateBadge.lo{background:var(--greenSoft);color:#0d8a63}
+.rateBadge.md{background:var(--amberSoft);color:#a05a00}
+.rateBadge.hi{background:var(--redSoft);color:#b91c1c}
+
+/* Repairer table: inline visual bar */
+.repRateCell{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+.repRateBar{width:80px;height:6px;background:#eef2f7;border-radius:99px;overflow:hidden}
+.repRateBarFill{height:100%;border-radius:99px}
+.repRateBarFill.lo{background:linear-gradient(90deg,#10b981,#34d399)}
+.repRateBarFill.md{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.repRateBarFill.hi{background:linear-gradient(90deg,#ef4444,#f87171)}
+
+/* ---------- Selected series detail ---------- */
+.detailStack{display:flex;flex-direction:column;gap:16px;min-width:0}
+.detailKpiGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.miniKpi{padding:14px 16px;background:#f8fafc;border-radius:12px;border:1px solid var(--line2)}
+.miniKpi .lbl{color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:.12em;font-weight:700;margin-bottom:4px}
+.miniKpi .val{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.15}
+.miniKpi .sub{color:var(--muted);font-size:11.5px;margin-top:2px}
+
+/* Timing distribution */
+.timingWrap{display:flex;flex-direction:column;gap:10px;max-height:210px;overflow:auto;padding-right:3px;scrollbar-width:thin}
+.timingRow{display:grid;grid-template-columns:minmax(180px,240px) 1fr;gap:14px;align-items:center}
+.timingMeta{display:flex;align-items:baseline;justify-content:space-between;gap:12px;min-width:0}
+.timingLabel{font-size:12.5px;font-weight:600;color:var(--ink2)}
+.timingBarTrack{height:16px;background:#f1f5f9;border-radius:99px;overflow:hidden;position:relative}
+.timingBarFill{height:100%;border-radius:99px;transition:width .3s ease}
+.timingBarFill.b0{background:linear-gradient(90deg,#ef4444,#f87171)}
+.timingBarFill.b1{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+.timingBarFill.b2{background:linear-gradient(90deg,#0ea5e9,#38bdf8)}
+.timingBarFill.b3{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}
+.timingCount{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;font-size:13px;color:var(--ink);white-space:nowrap}
+.timingCount small{color:var(--muted);font-weight:600;margin-left:4px}
+
+/* Components: horizontal bars */
+.compRows{display:flex;flex-direction:column;gap:9px;max-height:430px;overflow:auto;padding-right:3px;scrollbar-width:thin;min-width:0}
+.compRow{
+  display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
+  padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid var(--line2);
+}
+.compHead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+.compName{font-weight:700;font-size:13px;color:var(--ink);text-transform:capitalize}
+.compCat{color:var(--muted);font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.compBar{height:6px;background:#eef2f7;border-radius:99px;overflow:hidden}
+.compBarFill{height:100%;background:linear-gradient(90deg,#1677f2,#22aeea);border-radius:99px;transition:width .3s ease}
+.compRight{display:flex;flex-direction:column;align-items:flex-end;gap:1px;min-width:100px}
+.compTickets{font-weight:800;font-size:15px;color:var(--ink);letter-spacing:-.01em}
+.compCost{font-size:11.5px;color:var(--muted);font-weight:600}
+/* Components: mode row + tooltip + totals */
+.compModeRow{display:inline-flex;gap:0;background:#f1f5f9;border-radius:999px;padding:3px;border:1px solid var(--line2)}
+.compModeRow .scopeBtn{padding:6px 12px;font-size:11.5px;border-radius:999px}
+.compRow.clickable{cursor:pointer;transition:background .12s ease,border-color .12s ease}
+.compRow.clickable:hover{background:#eef4ff;border-color:#c7d7ee}
+.compRow .compScopeChip{display:inline-block;margin-left:6px;font-size:9.5px;font-weight:800;letter-spacing:.04em;padding:2px 6px;border-radius:999px;background:#e0e7ff;color:#3730a3;text-transform:uppercase;vertical-align:middle}
+.compRow .compScopeChip.field{background:#dcfce7;color:#166534}
+.compRow .compSurge{font-size:10.5px;font-weight:700;color:#b45309;background:#fff7ed;border:1px solid #fed7aa;padding:2px 6px;border-radius:999px;margin-top:2px;display:inline-block}
+.compTooltip{
+  position:fixed;z-index:60;pointer-events:none;
+  background:#0f172a;color:#f8fafc;border-radius:10px;padding:10px 12px;
+  box-shadow:0 12px 32px rgba(15,23,42,.28);font-size:11.5px;min-width:220px;max-width:280px;
+  opacity:0;transition:opacity .12s ease;
+}
+.compTooltip.visible{opacity:1}
+.compTooltipHead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.compTooltipName{font-weight:800;font-size:12.5px;text-transform:capitalize}
+.compTooltipMode{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:#1e293b;color:#a5b4fc}
+.compTooltipMode.field{color:#86efac}
+.compTooltipTotal{font-size:10.5px;color:#94a3b8;font-weight:600;margin-bottom:6px}
+.compTooltipBars{display:grid;grid-template-columns:repeat(var(--cols,12),1fr);gap:6px;align-items:end;height:140px;margin-top:10px}
+.compTooltipBar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;min-width:0}
+.compTooltipBar .val{font-size:9px;color:#e2e8f0;font-weight:800;line-height:1;white-space:nowrap}
+.compTooltipBar .bar{width:100%;background:linear-gradient(180deg,#60a5fa,#3b82f6);border-radius:5px;min-height:4px}
+.compTooltipBar.field .bar{background:linear-gradient(180deg,#4ade80,#16a34a)}
+.compTooltipBar .lbl{font-size:9.5px;color:#94a3b8;font-weight:700;letter-spacing:.02em}
+.compTooltipHint{font-size:9.5px;color:#94a3b8;margin-top:6px;font-weight:600}
+
+.compTotalsWrap{margin-top:14px;padding:12px 14px;border:1px solid var(--line2);border-radius:12px;background:#fbfcfe;min-width:0}
+.compTotalsHead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.compTotalsTitle{font-size:12.5px;font-weight:800;color:var(--ink)}
+.compTotalsTitle small{color:var(--muted);font-weight:600;margin-left:6px;text-transform:none;letter-spacing:0}
+.compTotalsMeta{font-size:11px;color:var(--muted);font-weight:600}
+.compTotalsTable{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:12px}
+.compTotalsTable th,.compTotalsTable td{padding:5px 6px;text-align:right;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums}
+.compTotalsTable th:first-child,.compTotalsTable td:first-child{text-align:left}
+.compTotalsTable thead th{color:var(--muted);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--line)}
+.compTotalsTable tr.totalRow td{font-weight:800;color:var(--ink);border-bottom:none;background:#eff6ff}
+.compTotalsBars{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(54px,1fr));gap:14px;align-items:end;
+  margin:18px 0 10px;padding:8px 4px 0;position:static;min-width:0;min-height:250px
+}
+.compTotalsBar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;min-width:0;position:static;height:100%}
+.compTotalsBar .barTrack{
+  width:38px;height:190px;background:linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);
+  border-radius:16px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;
+  box-shadow:inset 0 0 0 1px rgba(148,163,184,.18)
+}
+.compTotalsBar .barStack{
+  width:100%;display:flex;flex-direction:column-reverse;border-radius:14px 14px 10px 10px;
+  overflow:hidden;box-shadow:0 6px 16px rgba(15,23,42,.10)
+}
+.compTotalsBar .barSeg{width:100%;flex:0 0 auto}
+.compTotalsBar .barSeg.pre{background:linear-gradient(180deg,#93c5fd,#3b82f6)}
+.compTotalsBar .barSeg.field{background:linear-gradient(180deg,#86efac,#16a34a)}
+.compTotalsBar .barSeg.other{background:linear-gradient(180deg,#d1d5db,#6b7280)}
+.compTotalsBar .barVal{
+  position:static;font-size:13px;font-weight:900;color:var(--ink);line-height:1;
+  text-align:center;white-space:nowrap;min-height:13px
+}
+.compTotalsBar .barLbl{
+  position:static;font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.01em;
+  line-height:1.15;white-space:normal;text-align:center;max-width:100%
+}
+.compTotalsLegend{display:flex;gap:12px;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:8px}
+.compTotalsLegend .swatch{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:middle;margin-right:4px}
+.compTotalsLegend .swatch.pre{background:#3b82f6}
+.compTotalsLegend .swatch.field{background:#16a34a}
+.compTotalsLegend .swatch.other{background:#6b7280}
+
+/* Base panel (compact) */
+.baseCard{background:#fbfcfe;border:1px dashed var(--line);border-radius:14px;padding:14px 18px}
+.baseCardRow{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.baseCardTitle{font-weight:700;font-size:13.5px;color:var(--ink2)}
+.baseCardMeta{color:var(--muted);font-size:12px;margin-top:2px}
+.baseEditor{display:none;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+.baseEditor.open{display:block}
+.baseEditor textarea{
+  width:100%;min-height:120px;border:1px solid var(--line);border-radius:12px;
+  padding:12px;font:13px/1.5 "JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  color:var(--ink2);background:#fff;resize:vertical;
+}
+
+/* Empty states */
+.empty{color:var(--muted);font-size:13px;padding:24px 0;text-align:center}
+
+/* ---------- Insight cards ---------- */
+.insightsPanel{display:none;background:linear-gradient(180deg,#fff 0%,#fbfcfe 100%)}
+.insightGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;max-height:225px;overflow:auto;padding-right:3px;scrollbar-width:thin}
+.insightCard{
+  padding:11px 13px;border-radius:12px;border:1px solid var(--line);
+  background:#fff;cursor:pointer;display:flex;gap:12px;align-items:flex-start;
+  transition:.15s ease;border-left:4px solid var(--red);position:relative;
+}
+.insightCard:hover{transform:translateY(-1px);box-shadow:var(--shadow);border-color:#c7d3e3}
+.insightCard.warning{border-left-color:var(--amber)}
+.insightCard.info{border-left-color:var(--blue)}
+.insightIcon{
+  flex-shrink:0;width:28px;height:28px;border-radius:8px;
+  display:grid;place-items:center;background:var(--redSoft);color:var(--red);
+}
+.insightCard.warning .insightIcon{background:var(--amberSoft);color:#a05a00}
+.insightCard.info .insightIcon{background:var(--blueSoft);color:var(--blue2)}
+.insightIcon svg{width:14px;height:14px;stroke-width:2.2}
+.insightBody{min-width:0;flex:1}
+.insightHead{font-weight:700;font-size:13px;color:var(--ink);line-height:1.3;margin-bottom:3px;letter-spacing:-.005em}
+.insightDetail{font-size:11.5px;color:var(--muted);line-height:1.35}
+.insightTag{
+  display:inline-block;font-size:9.5px;padding:2px 7px;border-radius:99px;
+  font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-right:6px;
+  background:var(--redSoft);color:#b91c1c;
+}
+.insightCard.warning .insightTag{background:var(--amberSoft);color:#a05a00}
+.insightCard.info .insightTag{background:var(--blueSoft);color:var(--blue2)}
+.insightEmpty{padding:22px;text-align:center;color:var(--muted);font-size:13px;background:var(--greenSoft);border-radius:12px;border:1px dashed #a7d9c0}
+.insightEmpty strong{color:#0d8a63;font-weight:800}
+
+/* Inline flags on leaderboard */
+.lbFlags{display:flex;gap:4px;align-items:center;margin-top:5px}
+.flagDot{
+  width:8px;height:8px;border-radius:50%;background:var(--muted2);
+  box-shadow:0 0 0 3px rgba(148,163,184,.15);
+}
+.flagDot.critical{background:var(--red);box-shadow:0 0 0 3px rgba(239,68,68,.18)}
+.flagDot.warning{background:var(--amber);box-shadow:0 0 0 3px rgba(245,158,11,.18)}
+.flagChip{
+  display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;
+  padding:2px 8px;border-radius:99px;background:var(--redSoft);color:#b91c1c;
+  letter-spacing:.04em;
+}
+.flagChip.warning{background:var(--amberSoft);color:#a05a00}
+.flagChip.info{background:var(--blueSoft);color:var(--blue2)}
+.flagChip svg{width:10px;height:10px;stroke-width:2.5}
+
+/* Highlighted table cells */
+td.cellAlert{background:linear-gradient(90deg,rgba(239,68,68,.06),transparent)!important;position:relative}
+td.cellAlert::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red)}
+td.cellWarn{background:linear-gradient(90deg,rgba(245,158,11,.06),transparent)!important;position:relative}
+td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--amber)}
+
+/* Analyst note box */
+.analystNote{
+  padding:14px 16px;border-radius:12px;background:#fff8ec;border:1px solid #fce4b4;
+  border-left:4px solid var(--amber);display:flex;gap:12px;align-items:flex-start;
+  margin-top:14px;
+}
+.analystNote.good{background:var(--greenSoft);border-color:#c8ebd8;border-left-color:var(--green)}
+.analystNote.critical{background:var(--redSoft);border-color:#fecaca;border-left-color:var(--red)}
+.analystNoteIcon{
+  flex-shrink:0;width:26px;height:26px;border-radius:7px;
+  display:grid;place-items:center;background:var(--amber);color:#fff;
+}
+.analystNote.good .analystNoteIcon{background:var(--green)}
+.analystNote.critical .analystNoteIcon{background:var(--red)}
+.analystNoteIcon svg{width:14px;height:14px;stroke-width:2.4}
+.analystNoteBody{font-size:12.5px;color:var(--ink2);line-height:1.5;flex:1}
+.analystNoteBody strong{color:var(--ink);font-weight:700}
+
+/* Component dominance flag */
+.compRow.dominant{border-color:#fce4b4;background:#fff8ec}
+.compRow.dominant .compName::after{
+  content:"DOMINANT";display:inline-block;margin-left:8px;font-size:9px;font-weight:800;
+  padding:1px 6px;border-radius:99px;background:var(--amber);color:#fff;
+  letter-spacing:.08em;vertical-align:middle;
+}
+
+/* ---------- Responsive ---------- */
+@media(max-width:1280px){
+  .kpiGrid{grid-template-columns:repeat(3,1fr)}
+  .twoCol{grid-template-columns:1fr}
+  .lbRow{grid-template-columns:64px minmax(170px,220px) repeat(8,minmax(72px,1fr))}
+}
+@media(max-width:900px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:relative;min-height:auto}
+  .main{padding:20px}
+  .kpiGrid{grid-template-columns:repeat(2,1fr)}
+  .title{font-size:24px}
+  .stickyControls{grid-template-columns:1fr;top:0}
+  .scopeSwitch{width:100%;overflow:auto}
+  .scopeBtn{flex:1}
+}
+</style>
+<script src="outputs/repairers_2026/repairers_2026_data.js"></script>
+<script src="outputs/analysis_parts_failure_summary.js"></script>
+<script src="outputs/analysis_vehicle_base_summary.js"></script>
+<script src="outputs/analysis_parts_ticket_cost_map.js"></script>
+<script src="outputs/analysis_ticket_failure_timing.js"></script>
+<script src="outputs/analysis_ticket_csv.js"></script>
+<script src="outputs/parts_classified_data.js"></script>
+</head>
+<body>
+<div class="loadingOverlay show" id="loadingOverlay">
+  <div class="loadingCard">
+    <div class="loadingSpin"></div>
+    <div>Loading analysis...</div>
+  </div>
+</div>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brandWrap">
+      <div class="brandMark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg>
+      </div>
+      <div class="brandText">
+        <span>After-Sales</span>
+        <small>Service analytics</small>
+      </div>
+    </div>
+    <div class="navSection">Workspace</div>
+    <a class="navLink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></a>
+    <a class="navLink" href="dealerworkbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a>
+    <a class="navLink" href="delivery_flow.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17h2l2-7h10l2 7h2"/><path d="M7 17a2 2 0 1 0 4 0"/><path d="M15 17a2 2 0 1 0 4 0"/><path d="M8 10V6h8v4"/></svg><span>Parts Delivery</span></a>
+    <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repair</span></a>
+    <a class="navLink" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M16 17l2-2 2 2"/></svg><span>In Field / Pre Delivery</span></a>
+    <div class="navDivider"></div>
+    <div class="navSection">Analysis</div>
+    <a class="navLink active" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Analysis</span></a>
+    <div class="navDivider"></div>
+    <div class="navSection">Tools</div>
+    <button class="navBtn" id="reloadBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12a9 9 0 0 0-15.5-6.2"/><path d="M3 12a9 9 0 0 0 15.5 6.2"/><path d="M18.5 2.5v3.3h-3.3"/><path d="M5.5 21.5v-3.3h3.3"/></svg><span>Reload Data</span></button>
+    <button class="navBtn" id="exportBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 15v4h14v-4"/></svg><span>Export Excel</span></button>
+  </aside>
+
+  <main class="main">
+    <div class="shell">
+      <!-- ============ HEADER ============ -->
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Warranty analytics · 2025 onward</div>
+          <h1 class="title">Model Series</h1>
+          <div style="margin-top:4px;color:var(--muted);font-size:12.5px;font-weight:600">Vehicles with valid PGI from 2025 onward, plus tickets matched to those vehicles</div>
+        </div>
+        <div class="statusRow">
+          <div class="pill blue"><strong id="sourceCount">…</strong> source rows</div>
+          <div class="pill"><strong id="ticketCount">–</strong> tickets</div>
+          <div class="pill green"><strong id="seriesCount">–</strong> model series</div>
+          <div class="pill amber"><strong id="repairerCount">–</strong> repairers</div>
+        </div>
+      </header>
+
+      <div class="stickyControls">
+        <div class="scopeSwitch" id="scopeButtons">
+          <button class="scopeBtn active" type="button" data-scope="ALL">Total</button>
+          <button class="scopeBtn" type="button" data-scope="PRE">Pre Delivery</button>
+          <button class="scopeBtn" type="button" data-scope="FIELD">In Field</button>
+        </div>
+        <div class="stickySeriesScroller">
+          <div class="chipRow" id="stickySeriesChips"></div>
+        </div>
+      </div>
+
+      <!-- ============ KPI ROW ============ -->
+
+      <!-- ============ INSIGHTS / WARNINGS ============ -->
+      <section class="section panel insightsPanel" id="insightsSection">
+        <div class="panelHead">
+          <div>
+            <h2 class="panelTitle">Analyst Insights <span class="pill" id="insightCount" style="margin-left:8px">–</span></h2>
+            <p class="panelDesc">Auto-generated warnings ranked by severity. Click a card to jump to that series.</p>
+          </div>
+        </div>
+        <div id="insightGrid"></div>
+      </section>
+
+      <!-- ============ MODEL SERIES LEADERBOARD ============ -->
+      <section class="section panel">
+        <div class="panelHead">
+          <div>
+            <h2 class="panelTitle">Model Series Leaderboard</h2>
+            <p class="panelDesc">Only chassis with a valid 2025+ PGI and at least one ticket are counted. Ranked by repaired chassis count. Click a row to drill into the panels below.</p>
+          </div>
+          <div class="chipRow" id="seriesChips"></div>
+        </div>
+        <div class="lbRows" id="lbRows"></div>
+      </section>
+
+      <!-- ============ SERIES DRILL-DOWN ============ -->
+      <section class="section oneCol">
+        <div class="panel">
+          <div class="panelHead">
+            <div>
+              <h2 class="panelTitle">Series Detail · <span id="selectedLabel">All Series</span></h2>
+              <p class="panelDesc">Only chassis with a valid 2025+ PGI and at least one ticket are counted once. Failure timing is calculated from each chassis's first ticket after PGI.</p>
+            </div>
+          </div>
+
+          <div class="detailStack">
+            <div class="detailKpiGrid">
+              <div class="miniKpi"><div class="lbl">Repaired Chassis</div><div class="val" id="dVehicles">–</div><div class="sub" id="dVehiclesSub">unique chassis with tickets</div></div>
+              <div class="miniKpi"><div class="lbl">Repair Tickets</div><div class="val" id="dTickets">–</div><div class="sub" id="dTicketsSub">repair events</div></div>
+              <div class="miniKpi"><div class="lbl">Avg Tickets / Chassis</div><div class="val" id="dRate">–</div><div class="sub" id="dRateSub">repair density</div></div>
+              <div class="miniKpi"><div class="lbl">Median Failure Age</div><div class="val" id="dAvg">–</div><div class="sub" id="dAvgSub">first ticket after PGI</div></div>
+              <div class="miniKpi"><div class="lbl">Warranty Cost</div><div class="val" id="dCost">–</div><div class="sub" id="dCostSub">confirmed AUD</div></div>
+              <div class="miniKpi"><div class="lbl">Cost / Ticket</div><div class="val" id="dCostVeh">–</div><div class="sub" id="dCostVehSub">average claim cost</div></div>
+            </div>
+
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px">
+                <div style="font-weight:700;font-size:14px;color:var(--ink)">Failure timing (delivery → ticket)</div>
+                <div style="font-size:12px;color:var(--muted);font-weight:600" id="timingTotal"></div>
+              </div>
+              <div class="detailSwitchRow">
+                <div class="scopeSwitch">
+                  <button class="scopeBtn active" type="button" data-scope="ALL">Total</button>
+                  <button class="scopeBtn" type="button" data-scope="PRE">Pre Delivery</button>
+                  <button class="scopeBtn" type="button" data-scope="FIELD">In Field</button>
+                </div>
+                <div class="chipRow" id="timingSeriesChips"></div>
+              </div>
+              <div class="timingWrap" id="timingWrap"></div>
+            </div>
+
+            <div id="analystNoteWrap"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panelHead">
+            <div>
+              <h2 class="panelTitle">Top Failure Components · <span id="compLabel">All Series</span></h2>
+              <p class="panelDesc">Hover a row for static ticket counts · click to toggle Pre-Delivery / In-Field.</p>
+            </div>
+            <div class="compModeRow" role="tablist" aria-label="Sort mode">
+              <button class="scopeBtn active" type="button" data-comp-mode="tickets">Tickets</button>
+              <button class="scopeBtn" type="button" data-comp-mode="cost">Cost</button>
+            </div>
+          </div>
+          <div class="compRows" id="compRows"><div class="empty">Loading component data…</div></div>
+          <div class="compTotalsWrap" id="compTotalsWrap"></div>
+        </div>
+      </section>
+
+      <!-- ============ CLAIM REJECTION BY REPAIRER ============ -->
+      <section class="section panel" hidden>
+        <div class="panelHead">
+          <div>
+            <h2 class="panelTitle">Claim Rejection Rate by Repairer</h2>
+            <p class="panelDesc">Share of tickets flagged rejected. Only repairers with ≥ 5 tickets shown. Sorted by rejection rate.</p>
+          </div>
+          <div class="chipRow">
+            <div class="pill red" style="background:var(--redSoft);color:#b91c1c;border-color:#fecaca"><strong id="repRejPct">–</strong> overall rejection</div>
+          </div>
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="sortable" data-repsort="name">Repairer <span class="arrow"></span></th>
+                <th class="sortable number" data-repsort="tickets">Tickets <span class="arrow"></span></th>
+                <th class="sortable number" data-repsort="rejected">Rejected <span class="arrow"></span></th>
+                <th class="sortable number" data-repsort="rejectionRate">Rejection Rate <span class="arrow"></span></th>
+                <th class="sortable number" data-repsort="cost">Warranty Cost <span class="arrow"></span></th>
+                <th>Top Series</th>
+              </tr>
+            </thead>
+            <tbody id="repRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ REJECTION BY MODEL ============ -->
+      <section class="section panel" hidden>
+        <div class="panelHead">
+          <div>
+            <h2 class="panelTitle">Rejection Rate by Model Series</h2>
+            <p class="panelDesc">Comparing rejection frequency across series to spot systemic parts or process issues.</p>
+          </div>
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Series</th>
+                <th class="number">Tickets</th>
+                <th class="number">Fully Rejected</th>
+                <th class="number">Partially Rejected</th>
+                <th class="number">Rejection Rate</th>
+              </tr>
+            </thead>
+            <tbody id="seriesRejRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ VEHICLE BASE (small, at bottom) ============ -->
+      <section class="section" hidden>
+        <div class="baseCard">
+          <div class="baseCardRow">
+            <div>
+              <div class="baseCardTitle">Vehicle base</div>
+              <div class="baseCardMeta" id="baseMeta">Loading…</div>
+            </div>
+            <div class="toolRow">
+              <button class="btn" id="baseToggle" type="button">Manual override</button>
+              <button class="btn" id="clearSoldBtn" type="button">Clear overrides</button>
+            </div>
+          </div>
+          <div class="baseEditor" id="baseEditor">
+            <p style="color:var(--muted);font-size:12.5px;margin:0 0 10px">Paste sold counts as <code>SRC,600</code> per line. Overrides beat traced values.</p>
+            <textarea id="soldPaste" placeholder="SRC,600&#10;SRH,450&#10;SRT,320"></textarea>
+            <div style="margin-top:10px;display:flex;gap:8px">
+              <button class="btn primary" id="applySoldBtn" type="button">Apply override</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  // ============ CONFIG ============
+  const CUTOFF = new Date(2025, 0, 1); // Jan 1 2025
+  const SALES_RATE_TOTAL_VEHICLES = 4613;
+  const SOLD_KEY = "warranty.analysis.soldBySeries.v1";
+  const FB_TICKETS = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/tickets.json";
+  const FB_VEHICLE_BASE_SUMMARY = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/analysisVehicleBaseSummary.json";
+  const PARTS_COST_CACHE = "outputs/analysis_parts_ticket_cost_map.json";
+  const VEHICLE_BASE_SUMMARY_CACHE = "outputs/analysis_vehicle_base_summary.json";
+  const PARTS_FAILURE_SUMMARY_CACHE = "outputs/analysis_parts_failure_summary.json";
+  // Meta lives at a stable path and points at the current dated CSV folder,
+  // e.g. `outputs/parts_classification_2026-07-06/parts_classified.csv`.
+  // We read meta first so the CSV path stays fresh across daily runs; the
+  // hard-coded PARTS_CLASSIFIED_CSV below is only a last-resort fallback.
+  const PARTS_CLASSIFIED_META = "outputs/parts_classified_meta.json";
+  const PARTS_CLASSIFIED_CSV = "outputs/parts_classification_2026-07-06/parts_classified.csv";
+  const PARTS_CLASSIFIED_CSV_FLAT = "outputs/parts_classified.csv";
+  const TICKET_FAILURE_TIMING_CSV = "outputs/analysis_ticket_failure_timing.csv";
+  const LEGACY_TICKET_CSV_URL = "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv";
+  const IS_FILE_CONTEXT = location.protocol === "file:";
+  const SERIES_ORDER = ["SRC","SRH","SRT","SRM","SRP","SRL","SRV","SRS","NG"];
+  const TRACKED_SERIES = new Set(SERIES_ORDER.map(code => code.toUpperCase()));
+  const EXCLUDED_SERIES = new Set(["UNKNOWN","RO","SR","SCR","STR","RVV","RR","SPV","SRO","SEV","RRC","VRV"]);
+  const CLAIM_SCOPES = {
+    ALL: { label:"Total", key:"ALL" },
+    PRE: { label:"Pre Delivery", key:"PRE" },
+    FIELD: { label:"In Field", key:"FIELD" },
+  };
+  const BADGE_COLORS = ["","g","a","r","p","c"]; // rotate
+
+  const $ = (id) => document.getElementById(id);
+  const moneyFmt = new Intl.NumberFormat("en-AU", { style:"currency", currency:"AUD", maximumFractionDigits:0 });
+  const moneyFmt2 = new Intl.NumberFormat("en-AU", { style:"currency", currency:"AUD", maximumFractionDigits:2 });
+  const numFmt = new Intl.NumberFormat("en-AU");
+
+  const state = {
+    rows: [],
+    viewRows: [],
+    summary: [],
+    selected: "ALL",
+    scope: "ALL",
+    soldBySeries: {},
+    autoBaseBySeries: {},         // Legacy: distinct chassis observed in tickets (problem-only)
+    salesBaseBySeries: {},        // 2025+ valid-PGI sold vehicles only
+    deliveredBaseBySeries: {},    // TRUE denominator from vehicle_base_summary (shipped + in-stock + in-transit)
+    vehicleBaseSummary: null,     // Raw payload with breakdown, sources, etc.
+    chassisPgiMap: {},            // chassis SERNR -> PGI YYYY-MM-DD (from MSEG)
+    salesOrderPgiMap: {},         // sales order -> PGI YYYY-MM-DD (fallback for tickets missing chassis)
+    chassisSeriesMap: {},         // chassis / serial / VIN aliases -> SAP-derived series
+    salesOrderSeriesMap: {},      // sales order aliases -> SAP-derived series
+    ticketCostRows: [],
+    partsCostByTicketId: {},
+    ticketCostMemo: new WeakMap(),
+    rejectionByTicketId: {},
+    dispatchByChassis: {},
+    partsFailureSummary: null,
+    partsClassifiedRows: null,
+    partsClassifiedIndex: null,     // Map<compKey, {rows:[], byTicketId:Map}>
+    partsClassifiedTicketMap: null, // Map<TicketID, [classifiedRow,...]>
+    partsIncludedTicketIds: null,   // Set<TicketID> aligned to outputs/analysis_parts_failure_summary.json
+    partsTicketSeriesById: null,    // Map<TicketID, normalized series code>
+    ticketRowById: null,            // Map<TicketID, ticket row from the full merged ticket pool>
+    sourceRows: 0,
+    sourceRowPool: [],
+    seriesSort: { key:"vehicles", dir:"desc" },
+    repairerSort: { key:"rejectionRate", dir:"desc" },
+    repairers: [],
+    seriesRej: [],
+    compMode: "tickets",            // tickets | cost
+    compTooltipScope: "PRE",        // PRE | FIELD (click toggles)
+  };
+
+  // ============ HELPERS ============
+  const clean = (v) => (v==null ? "" : String(v)).trim();
+  const esc = (v) => String(v == null ? "" : v).replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", "\"":"&quot;", "'":"&#39;" }[ch]));
+  const asNumber = (v) => {
+    const t = clean(v).replace(/,/g,"");
+    const n = Number(t);
+    return Number.isFinite(n) ? n : 0;
+  };
+  function parseDmy(v){
+    const t = clean(v);
+    if (!t || t==="#") return null;
+    let m = t.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+    if (m) return new Date(+m[3], +m[2]-1, +m[1]);
+    m = t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (m) return new Date(+m[3], +m[2]-1, +m[1]);
+    m = t.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return new Date(+m[1], +m[2]-1, +m[3]);
+    return null;
+  }
+  function diffDays(a,b){ if(!a||!b) return null; return Math.floor((a-b)/86400000); }
+  function median(arr){
+    const n = arr.filter(Number.isFinite).slice().sort((a,b)=>a-b);
+    if (!n.length) return null;
+    const mid = Math.floor(n.length/2);
+    return n.length%2 ? n[mid] : (n[mid-1]+n[mid])/2;
+  }
+
+  function parseCSV(text){
+    if (!text) return [];
+    if (text.charCodeAt(0)===0xFEFF) text=text.slice(1);
+    const rows=[]; let row=[]; let cell=""; let q=false;
+    for (let i=0;i<text.length;i++){
+      const ch=text[i];
+      if (q){
+        if (ch==='"'){ if (text[i+1]==='"'){cell+='"';i++} else q=false }
+        else cell+=ch;
+      } else if (ch==='"') q=true;
+      else if (ch===",") { row.push(cell); cell=""; }
+      else if (ch==="\n"){ row.push(cell); rows.push(row); row=[]; cell=""; }
+      else if (ch!=="\r") cell+=ch;
+    }
+    row.push(cell); rows.push(row);
+    return rows.filter(r=>r.some(c=>clean(c)!==""));
+  }
+  function rowsToObjects(rows){
+    if (!rows.length) return [];
+    const headers = rows[0].map(clean);
+    return rows.slice(1).map(r=>{
+      const o={};
+      let numericTicketId = "";
+      headers.forEach((h,i)=>{
+        const val = clean(r[i]);
+        if (h) {
+          o[h]=val;
+          return;
+        }
+        const prev = clean(headers[i-1]);
+        const next = clean(headers[i+1]);
+        if (!numericTicketId && /^\d+$/.test(val) && (prev === "Ticket" || prev === "Ticket ID" || next === "Ticket ID")) {
+          numericTicketId = val;
+        }
+      });
+      if (numericTicketId) {
+        const currentTicketId = clean(o["Ticket ID"]);
+        if (!/^\d+$/.test(currentTicketId) || currentTicketId === clean(o["Ticket"])) {
+          o["Ticket ID"] = numericTicketId;
+          o.TicketID = numericTicketId;
+          o.TicketId = numericTicketId;
+        }
+      }
+      return o;
+    });
+  }
+
+  function mergeTicketRow(base, incoming){
+    const merged = { ...base };
+    const keys = new Set([...Object.keys(base || {}), ...Object.keys(incoming || {})]);
+    keys.forEach(key => {
+      const current = clean(base?.[key]);
+      const next = clean(incoming?.[key]);
+      if (!current && next) merged[key] = incoming[key];
+      else if (!current && !next && !(key in merged) && key in (incoming || {})) merged[key] = incoming[key];
+    });
+    return merged;
+  }
+
+  // ============ SERIES / VEHICLE KEY ============
+  function normalizeSeriesCode(code){
+    const raw = clean(code).toUpperCase();
+    if (!raw) return "UNKNOWN";
+    if (raw.startsWith("NG")) return "NG";
+    if (raw === "RV" || raw === "RRV" || raw.startsWith("RRV")) return "SRL";
+    if (raw === "LRV" || raw.startsWith("LRV")) return "SRC";
+    if (raw.startsWith("L")) return `S${raw.slice(1)}`;
+    return raw;
+  }
+
+  function isExcludedSeries(series){
+    return EXCLUDED_SERIES.has(normalizeSeriesCode(series));
+  }
+
+  function isTrackedSeries(series){
+    return TRACKED_SERIES.has(normalizeSeriesCode(series));
+  }
+
+  function extractSeries(row){
+    const mapped = mappedSeriesForRow(row);
+    if (mapped && !isExcludedSeries(mapped)) return mapped;
+    const parts = [
+      row["Registered Product"], row["Product"],
+      row["Ticket ID"], row["Ticket"],
+      row["Serial ID"], row.SerialID, row.serialId,
+      row["Chassis Number"], row.ChassisNumber, row.chassisNumber,
+    ].map(clean).filter(v=>v && v!=="#");
+    const text = parts.join(" ").toUpperCase();
+    if (/\bNG[A-Z0-9-]*/.test(text)) return "NG";
+    const known = ["SRC","SRH","SRT","SRM","SRP","SRL","SRV","LRV","LRT","LRH","LRP","LRL","LRC","LTR","LVR","LPV","LEP","RRV"];
+    for (const code of known) if (text.includes(code)) return normalizeSeriesCode(code);
+    const m = text.match(/\b([A-Z]{2,4})\d{2,6}[A-Z]?\b/);
+    return m ? normalizeSeriesCode(m[1]) : "UNKNOWN";
+  }
+  function rawTicketIdValue(row){
+    return clean(row["Ticket ID"] || row.TicketID || row.TicketId || row.ticketId || row.id);
+  }
+  function numericTicketIdValue(row){
+    const raw = rawTicketIdValue(row);
+    return /^\d+$/.test(raw) ? raw : "";
+  }
+  function matchedVehicleKeyValue(row){
+    return clean(row["Matched Vehicle Key"] || row.MatchedVehicleKey || row.matchedVehicleKey);
+  }
+  function matchedSerialValue(row){
+    return clean(row["Matched Serial"] || row.MatchedSerial || row.matchedSerial);
+  }
+  function matchedChassisValue(row){
+    return clean(row["Matched Chassis"] || row.MatchedChassis || row.matchedChassis);
+  }
+  function matchedSalesOrderValue(row){
+    return clean(row["Matched Sales Order"] || row.MatchedSalesOrder || row.matchedSalesOrder);
+  }
+  function pgiDateValue(row){
+    return clean(row["PGI Date"] || row.PGIDate || row.pgiDate || row["Vehicle Delivery Date"] || row.vehicleDeliveryDate);
+  }
+  function hasWorkbookTicketTimingShape(row){
+    return !!(matchedVehicleKeyValue(row) || matchedChassisValue(row) || pgiDateValue(row));
+  }
+  function isWorkbookMatchedTicket(row){
+    const pgiDate = parseDmy(pgiDateValue(row));
+    return !!(numericTicketIdValue(row) && matchedChassisValue(row) && pgiDate && pgiDate >= CUTOFF);
+  }
+  function normalizedChassis(row){
+    const matchedChassis = matchedChassisValue(row);
+    const matchedSerial = matchedSerialValue(row);
+    const s = clean(row["Serial ID"]||row.SerialID||row.serialId||row["Ticket Serial ID"]||row.ticketSerialId);
+    const c = clean(row["Chassis Number"]||row.ChassisNumber||row.chassisNumber||row["Ticket Chassis Number"]||row.ticketChassisNumber);
+    if (matchedChassis) return matchedChassis.replace(/-/g,"");
+    if (matchedSerial) return matchedSerial.replace(/-/g,"");
+    if (s) return s.replace(/-/g,"");
+    if (c) return c.replace(/-/g,"");
+    const t = clean(row["Ticket Name"]||row["Ticket"]||row["Ticket ID"]);
+    const p = t.split(/\s+/).filter(Boolean);
+    return (p.length ? p[p.length-1] : "").replace(/-/g,"");
+  }
+  const vehicleLookupKey = (v) => clean(v).replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+  function vehicleSeriesLookupKeys(row){
+    const raw = [
+      row["Matched Chassis"], row.MatchedChassis, row.matchedChassis,
+      row["Matched Serial"], row.MatchedSerial, row.matchedSerial,
+      row["Chassis Number"], row.ChassisNumber, row.chassisNumber,
+      row["Ticket Chassis Number"], row.ticketChassisNumber,
+      row["Ticket Serial ID"], row.ticketSerialId,
+      row["Serial ID"], row.SerialID, row.SerialId, row.serialId,
+      row["Vehicle Dispatch Serial"], row.VehicleDispatchSerial, row.vehicleDispatchSerial,
+      normalizedChassis(row),
+    ].map(clean).filter(Boolean);
+    return Array.from(new Set(raw.flatMap(v => {
+      const canonical = vehicleLookupKey(v);
+      return canonical && canonical !== v ? [v, canonical] : [v];
+    })));
+  }
+  function salesOrderLookupKeys(row){
+    const raw = [
+      row["Matched Sales Order"], row.MatchedSalesOrder, row.matchedSalesOrder,
+      row["Sales Order"], row.SalesOrder, row.salesOrder,
+      row["Ticket Sales Order"], row.ticketSalesOrder,
+      row.LookupSalesOrder, row.lookupSalesOrder,
+      row["Vehicle Dispatch Sales Order"], row.VehicleDispatchSalesOrder, row.vehicleDispatchSalesOrder,
+    ].map(clean).filter(Boolean);
+    return Array.from(new Set(raw.flatMap(v => {
+      const canonical = vehicleLookupKey(v);
+      return canonical && canonical !== v ? [v, canonical] : [v];
+    })));
+  }
+  function mappedSeriesForRow(row){
+    for (const key of vehicleSeriesLookupKeys(row)) {
+      if (Object.prototype.hasOwnProperty.call(state.chassisSeriesMap, key)) {
+        return normalizeSeriesCode(state.chassisSeriesMap[key]);
+      }
+    }
+    for (const key of salesOrderLookupKeys(row)) {
+      if (Object.prototype.hasOwnProperty.call(state.salesOrderSeriesMap, key)) {
+        return normalizeSeriesCode(state.salesOrderSeriesMap[key]);
+      }
+    }
+    return "";
+  }
+
+  // ============ REJECTION HELPERS ============
+  function isRejectedStatus(text){
+    const t = clean(text).toLowerCase();
+    return t.includes("rejected"); // matches "Fully Rejected", "Partially Rejected", "Rejected"
+  }
+  function isFullyRejected(text){
+    return clean(text).toLowerCase() === "fully rejected";
+  }
+  function isPartiallyRejected(text){
+    return clean(text).toLowerCase() === "partially rejected";
+  }
+
+  // ============ COST LOOKUP ============
+  const partsCostKey = (v) => clean(v).replace(/\s+/g,"").toUpperCase();
+  function partsCostLookupKeys(row){
+    return [
+      row["Ticket ID"], row.TicketID, row["Ticket"], row.Ticket, row.TicketId,
+      row["Sales Order"], row.SalesOrder, row.salesOrder, row.LookupSalesOrder, row.lookupSalesOrder,
+      row["Serial ID"], row.SerialID, row.SerialId, row.serialId,
+      row["Chassis Number"], row.ChassisNumber, row.ChassisID, row.chassisNumber,
+      normalizedChassis(row),
+    ].map(partsCostKey).filter(Boolean);
+  }
+  function vehicleDispatchLookupKeys(row){
+    return [
+      row["Ticket ID"], row.TicketID, row.TicketId, row.ticketId,
+      row["Sales Order"], row.SalesOrder, row.salesOrder, row.LookupSalesOrder, row.lookupSalesOrder,
+      row["Vehicle Dispatch Sales Order"], row.VehicleDispatchSalesOrder, row.vehicleDispatchSalesOrder,
+      row["Vehicle Dispatch Serial"], row.VehicleDispatchSerial, row.vehicleDispatchSerial,
+      row["Serial ID"], row.SerialID, row.SerialId, row.serialId,
+      row["Chassis Number"], row.ChassisNumber, row.ChassisID, row.chassisNumber,
+      normalizedChassis(row),
+    ].map(partsCostKey).filter(Boolean);
+  }
+  function getWarrantyCost(row){
+    if (row && typeof row === "object" && state.ticketCostMemo.has(row)) {
+      return state.ticketCostMemo.get(row);
+    }
+    let cost = null;
+    for (const k of partsCostLookupKeys(row)) {
+      if (Object.prototype.hasOwnProperty.call(state.partsCostByTicketId,k)) {
+        cost = Number(state.partsCostByTicketId[k]) || 0;
+        break;
+      }
+    }
+    if (!Number.isFinite(cost) || cost <= 0) {
+      cost = asNumber(row.confirmed_cost_aud || row["confirmed_cost_aud"] || row.ClaimTotalAmount || row["ClaimTotalAmount"]);
+    }
+    if (row && typeof row === "object") state.ticketCostMemo.set(row, cost);
+    return cost;
+  }
+  function getRejection(row){
+    // 1) prefer CSV Order Rejection Status if present
+    const csvRej = clean(row["Order Rejection Status"]);
+    if (csvRej) return csvRej;
+    // 2) fallback to Firebase-derived map (by ticket id / sales order)
+    for (const k of partsCostLookupKeys(row)) {
+      if (Object.prototype.hasOwnProperty.call(state.rejectionByTicketId,k)) {
+        return state.rejectionByTicketId[k];
+      }
+    }
+    return "";
+  }
+
+  function getDeliveryDate(row){
+    const explicitPgi = parseDmy(pgiDateValue(row));
+    if (explicitPgi) return { date:explicitPgi, source:"pgi" };
+    const chassisKeys = vehicleSeriesLookupKeys(row);
+    for (const k of chassisKeys) {
+      if (Object.prototype.hasOwnProperty.call(state.chassisPgiMap, k)) {
+        const d = parseDmy(state.chassisPgiMap[k]);
+        if (d) return { date:d, source:"pgi" };
+      }
+    }
+    const salesOrderKeys = salesOrderLookupKeys(row);
+    for (const k of salesOrderKeys) {
+      if (Object.prototype.hasOwnProperty.call(state.salesOrderPgiMap, k)) {
+        const d = parseDmy(state.salesOrderPgiMap[k]);
+        if (d) return { date:d, source:"pgi" };
+      }
+    }
+    return { date:null, source:"missing" };
+  }
+
+  function failureAgeDays(row){
+    const created = parseDmy(row["Created On"] || row.CreatedOn);
+    const delivery = getDeliveryDate(row);
+    const age = diffDays(created, delivery.date);
+    return Number.isFinite(age) && age >= 0 ? { age, source:delivery.source } : { age:null, source:delivery.source };
+  }
+
+  function claimScope(row){
+    const text = [
+      row["Claim Scope"], row.ClaimScope, row.claimScope,
+      row.claimType, row.ClaimType, row["Claim Type"],
+      row["Ticket Type"], row.TicketType, row.TicketTypeText,
+      row["Ticket Type Text"], row.WarrantyClaimType, row["Warranty Claim Type"],
+    ].map(clean).join(" ").toLowerCase();
+    if (text.includes("pre delivery") || text.includes("pre-delivery") || text.includes("predelivery") || text.includes("pdi")) return "PRE";
+    if (text.includes("in field") || text.includes("in-field") || text.includes("infield") || text.includes("field warranty")) return "FIELD";
+    return "OTHER";
+  }
+
+  function rowMatchesScope(row, scope = state.scope){
+    const series = extractSeries(row);
+    if (isExcludedSeries(series)) return false;
+    if (!isTrackedSeries(series)) return false;
+    if (scope === "PRE") return claimScope(row) === "PRE";
+    if (scope === "FIELD") return claimScope(row) === "FIELD";
+    return true;
+  }
+
+  function scopedRows(){
+    return state.rows.filter(row => rowMatchesScope(row));
+  }
+
+  function sourceRowsInScope(){
+    return state.sourceRowPool.filter(row => rowMatchesScope(row));
+  }
+
+  function visibleSeriesKeys(){
+    return Array.from(new Set(
+      state.summary
+        .map(item => normalizeSeriesCode(item.series))
+        .filter(isTrackedSeries)
+    ));
+  }
+
+  function ticketIdentity(row){
+    const rawTicketId = rawTicketIdValue(row);
+    const numericTicketId = numericTicketIdValue(row);
+    if (numericTicketId) return `id:${numericTicketId}`;
+    const createdOn = clean(row["Created On"] || row.CreatedOn || row["Posting Date"] || row.PostingDate);
+    const salesOrder = clean(row["Sales Order"] || row.SalesOrder || row.salesOrder || row["Ticket Sales Order"] || row.ticketSalesOrder || row["Matched Sales Order"] || row.matchedSalesOrder || row["Vehicle Dispatch Sales Order"] || row.vehicleDispatchSalesOrder);
+    const chassis = normalizedChassis(row);
+    const serialId = clean(row["Serial ID"] || row.SerialID || row.SerialId || row.serialId || row["Ticket Serial ID"] || row.ticketSerialId || row["Matched Serial"] || row.matchedSerial);
+    const dealer = clean(row["Dealer Name"] || row.DealerName || row.dealerName);
+    const repairer = clean(row["Repair Shop"] || row["Repair Shop Name"] || row["Service Technician"]);
+    const ticketType = clean(row["Ticket Type"] || row.TicketType || row["Claim Type"]);
+    const fallback = [rawTicketId, salesOrder, chassis, serialId, createdOn, ticketType, dealer, repairer].filter(Boolean).join("|");
+    return fallback ? `sig:${fallback}` : "";
+  }
+
+  function ticketLookupKeys(row){
+    const rawTicketId = rawTicketIdValue(row);
+    const identity = ticketIdentity(row);
+    const keys = [];
+    if (identity) keys.push(identity);
+    if (rawTicketId) keys.push(`raw:${rawTicketId}`);
+    return Array.from(new Set(keys));
+  }
+
+  function uniqueTicketCount(rows){
+    const seen = new Set();
+    rows.forEach(row => {
+      const key = ticketIdentity(row);
+      if (key) seen.add(key);
+    });
+    return seen.size;
+  }
+
+  function pgiMatchedRows(rows){
+    const hasWorkbookRows = rows.some(hasWorkbookTicketTimingShape);
+    if (hasWorkbookRows) return rows.filter(isWorkbookMatchedTicket);
+    return rows.filter(row => getDeliveryDate(row).source === "pgi" && numericTicketIdValue(row) && normalizedChassis(row));
+  }
+
+  // ============ DATA LOADERS ============
+  const freshJsonUrl = (u) => `${u}${u.includes("?")?"&":"?"}t=${Date.now()}`;
+
+  function ticketValues(node){
+    if (!node || typeof node!=="object") return [];
+    if (Array.isArray(node)) return node.filter(Boolean).map((v,i)=>[String(i),v]);
+    return Object.entries(node);
+  }
+
+  function dateKeyFromDate(d){
+    if (!d) return "";
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const day = String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function setEarliestDate(map, key, date){
+    const k = partsCostKey(key);
+    if (!k || !date) return;
+    const next = dateKeyFromDate(date);
+    if (!next) return;
+    const current = parseDmy(map[k]);
+    if (!current || date < current) map[k] = next;
+  }
+
+  async function loadPartsTicketCosts(){
+    const costMap = {};
+    const rejMap = {};
+    const dispatchMap = {};
+    const dispatchRows = [];
+    const partsSeriesCounts = new Map();
+    let count = 0;
+    state.ticketCostMemo = new WeakMap();
+    const scriptFallback = globalThis.ANALYSIS_PARTS_TICKET_COST_MAP;
+
+    function notePartsTicketSeries(ticketId, ticketLike){
+      const tid = clean(ticketId);
+      if (!tid) return;
+      const series = extractSeries(ticketLike || {});
+      if (!series || isExcludedSeries(series)) return;
+      let counts = partsSeriesCounts.get(tid);
+      if (!counts) {
+        counts = new Map();
+        partsSeriesCounts.set(tid, counts);
+      }
+      counts.set(series, (counts.get(series) || 0) + 1);
+    }
+
+    async function ingest(source){
+      const entries = source==="cache"
+        ? await (async () => {
+            try {
+              const r = await fetch(freshJsonUrl(PARTS_COST_CACHE), { cache:"no-store" });
+              if (!r.ok) return null;
+              const p = await r.json();
+              const rows = Array.isArray(p) ? p : (Array.isArray(p?.rows) ? p.rows : []);
+              return rows.map((row,i)=>[String(i),row]);
+            } catch { return null; }
+          })()
+        : await (async () => {
+            try {
+              const r = await fetch(freshJsonUrl(FB_TICKETS), { cache:"no-store" });
+              if (!r.ok) throw 0;
+              const d = await r.json();
+              return ticketValues(d);
+            } catch { return []; }
+          })();
+      const fallbackEntries = source==="script"
+        ? (() => {
+            const p = scriptFallback;
+            if (!p || typeof p !== "object") return null;
+            const rows = Array.isArray(p) ? p : (Array.isArray(p?.rows) ? p.rows : []);
+            return rows.map((row,i)=>[String(i),row]);
+          })()
+        : null;
+
+      const finalEntries = source==="script" ? fallbackEntries : entries;
+      if (!finalEntries) return false;
+
+      for (const [key, raw] of finalEntries) {
+        const ticket = raw && raw.ticket && typeof raw.ticket==="object" ? raw.ticket : (raw || {});
+        const ticketId = clean(ticket.TicketID || ticket.TicketId || ticket.ticketId || ticket.id || ticket["Ticket ID"] || key);
+        const salesOrder = clean(ticket["Sales Order"] || ticket.SalesOrder || ticket.salesOrder || ticket.LookupSalesOrder);
+        const serialId = clean(ticket.SerialID || ticket.SerialId || ticket.serialId);
+        const chassis = clean(ticket.ChassisNumber || ticket.ChassisID || ticket.chassisNumber);
+        const rejection = clean(ticket["Order Rejection Status"] || ticket.orderRejectionStatus);
+        const dispatchDate = parseDmy(
+          ticket["Vehicle Dispatch Date"] || ticket.vehicleDispatchDate || raw["Vehicle Dispatch Date"] || raw.vehicleDispatchDate
+        );
+        const dispatchSource = clean(
+          ticket["Vehicle Dispatch Source"] || ticket.vehicleDispatchSource || raw["Vehicle Dispatch Source"] || raw.vehicleDispatchSource
+        );
+        const dispatchSerial = clean(
+          ticket["Vehicle Dispatch Serial"] || ticket.vehicleDispatchSerial || raw["Vehicle Dispatch Serial"] || raw.vehicleDispatchSerial || serialId
+        );
+        const dispatchSalesOrder = clean(
+          ticket["Vehicle Dispatch Sales Order"] || ticket.vehicleDispatchSalesOrder || raw["Vehicle Dispatch Sales Order"] || raw.vehicleDispatchSalesOrder || salesOrder
+        );
+
+        dispatchRows.push({
+          "Ticket ID": ticketId,
+          "Sales Order": salesOrder,
+          "Serial ID": serialId,
+          "Chassis Number": chassis,
+          "Vehicle Dispatch Date": ticket["Vehicle Dispatch Date"] || ticket.vehicleDispatchDate || raw["Vehicle Dispatch Date"] || raw.vehicleDispatchDate || "",
+          "Vehicle Dispatch Source": dispatchSource,
+          "Vehicle Dispatch Serial": dispatchSerial,
+          "Vehicle Dispatch Sales Order": dispatchSalesOrder,
+        });
+        notePartsTicketSeries(ticketId, {
+          "Ticket ID": ticketId,
+          "Serial ID": serialId,
+          "Chassis Number": chassis,
+        });
+
+        let cost = Number(ticket.preferredCost);
+        if (!Number.isFinite(cost) || cost <= 0) {
+          cost = asNumber(ticket.amountIncludingTax || ticket.AmountIncludingTax);
+        }
+
+        [ticketId, salesOrder, serialId, chassis, dispatchSerial, dispatchSalesOrder].map(partsCostKey).filter(Boolean).forEach(k => {
+          if (Number.isFinite(cost) && cost>0 && !Object.prototype.hasOwnProperty.call(costMap, k)) costMap[k] = cost;
+          if (rejection && !Object.prototype.hasOwnProperty.call(rejMap, k)) rejMap[k] = rejection;
+        });
+        [ticketId, salesOrder, serialId, chassis, dispatchSerial, dispatchSalesOrder].map(partsCostKey).filter(Boolean).forEach(k => {
+          setEarliestDate(dispatchMap, k, dispatchDate);
+        });
+        count++;
+      }
+      return true;
+    }
+
+    // Prefer script fallback when opened directly from file://, otherwise cache first.
+    const fileOk = IS_FILE_CONTEXT ? await ingest("script") : false;
+    const cacheOk = fileOk || await ingest("cache");
+    if ((!cacheOk || Object.keys(costMap).length < 100) && !IS_FILE_CONTEXT) {
+      await ingest("firebase");
+    }
+    if (Object.keys(dispatchMap).length < 100 && !IS_FILE_CONTEXT) {
+      await ingest("firebase");
+    }
+
+    state.partsCostByTicketId = costMap;
+    state.rejectionByTicketId = rejMap;
+    state.dispatchByChassis = dispatchMap;
+    state.ticketCostRows = dispatchRows;
+    state.partsIncludedTicketIds = new Set(partsSeriesCounts.keys());
+    state.partsTicketSeriesById = new Map(
+      Array.from(partsSeriesCounts.entries()).map(([ticketId, counts]) => {
+        let bestSeries = "";
+        let bestCount = -1;
+        for (const [series, hits] of counts.entries()) {
+          if (hits > bestCount) {
+            bestSeries = series;
+            bestCount = hits;
+          }
+        }
+        return [ticketId, bestSeries];
+      })
+    );
+  }
+
+  async function loadPartsFailureSummary(){
+    const fallback = globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY;
+    try {
+      const r = await fetch(freshJsonUrl(PARTS_FAILURE_SUMMARY_CACHE), { cache:"no-store" });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      state.partsFailureSummary = await r.json();
+      state.partsFailureError = "";
+    } catch (err) {
+      if (fallback && typeof fallback === "object") {
+        state.partsFailureSummary = fallback;
+        state.partsFailureError = `Loaded from script fallback after fetch failed: ${err.message || err}`;
+      } else {
+        state.partsFailureSummary = null;
+        state.partsFailureError = `${PARTS_FAILURE_SUMMARY_CACHE} (${err.message || err})`;
+      }
+    }
+  }
+
+  async function loadVehicleBaseSummary(){
+    // Prefer a payload that includes PGI maps, because failure timing and the
+    // exported PGI Date column both depend on them.
+    const scriptFallback = globalThis.ANALYSIS_VEHICLE_BASE_SUMMARY;
+    const applyPayload = (payload, label) => {
+      const pgiByChassis = (payload.pgiByChassis && typeof payload.pgiByChassis === "object") ? payload.pgiByChassis : {};
+      const pgiBySalesOrder = (payload.pgiBySalesOrder && typeof payload.pgiBySalesOrder === "object") ? payload.pgiBySalesOrder : {};
+      const seriesByChassis = (payload.seriesByChassis && typeof payload.seriesByChassis === "object") ? payload.seriesByChassis : {};
+      const seriesBySalesOrder = (payload.seriesBySalesOrder && typeof payload.seriesBySalesOrder === "object") ? payload.seriesBySalesOrder : {};
+      const salesBase =
+        (payload.seriesSales && typeof payload.seriesSales === "object") ? payload.seriesSales :
+        ((payload.seriesBaseBreakdown && typeof payload.seriesBaseBreakdown === "object")
+          ? Object.fromEntries(Object.entries(payload.seriesBaseBreakdown).map(([series, bucket]) => [series, Number(bucket?.shipped) || 0]))
+          : ((payload.seriesBase && typeof payload.seriesBase === "object") ? payload.seriesBase : {}));
+      state.vehicleBaseSummary = payload;
+      state.salesBaseBySeries = salesBase;
+      state.deliveredBaseBySeries = (payload.seriesBase && typeof payload.seriesBase === "object") ? payload.seriesBase : {};
+      state.chassisPgiMap = pgiByChassis;
+      state.salesOrderPgiMap = pgiBySalesOrder;
+      state.chassisSeriesMap = seriesByChassis;
+      state.salesOrderSeriesMap = seriesBySalesOrder;
+      console.log(`Vehicle base summary loaded from ${label}: ${payload.totalVehicles || 0} vehicles, ${Object.keys(state.chassisPgiMap).length} PGI dates, ${Object.keys(state.chassisSeriesMap).length} series keys`);
+    };
+    if (IS_FILE_CONTEXT && scriptFallback && typeof scriptFallback === "object") {
+      applyPayload(scriptFallback, "script");
+      return;
+    }
+    const attempts = [
+      { url: freshJsonUrl(VEHICLE_BASE_SUMMARY_CACHE), label:"cache" },
+      { url: FB_VEHICLE_BASE_SUMMARY, label:"firebase" },
+    ];
+    let fallbackPayload = null;
+    for (const { url, label } of attempts) {
+      try {
+        const r = await fetch(url, { cache:"no-store" });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const payload = await r.json();
+        if (!payload || typeof payload !== "object") throw new Error("empty payload");
+        const pgiByChassis = (payload.pgiByChassis && typeof payload.pgiByChassis === "object") ? payload.pgiByChassis : {};
+        const pgiBySalesOrder = (payload.pgiBySalesOrder && typeof payload.pgiBySalesOrder === "object") ? payload.pgiBySalesOrder : {};
+        if (!fallbackPayload) fallbackPayload = payload;
+        if (!Object.keys(pgiByChassis).length && !Object.keys(pgiBySalesOrder).length) {
+          console.warn(`Vehicle base summary from ${label} has no PGI maps; trying next source.`);
+          continue;
+        }
+        applyPayload(payload, label);
+        return;
+      } catch (err) {
+        console.warn(`Vehicle base summary load from ${label} failed:`, err.message || err);
+      }
+    }
+    if (fallbackPayload) {
+      applyPayload(fallbackPayload, "fetch fallback");
+      console.warn(`Vehicle base summary loaded without PGI maps; delivery matching will stay partial.`);
+      return;
+    }
+    if (scriptFallback && typeof scriptFallback === "object") {
+      applyPayload(scriptFallback, "script fallback");
+      return;
+    }
+    // Both failed — leave state.deliveredBaseBySeries empty and the dashboard
+    // will fall back to state.autoBaseBySeries (traced from tickets, i.e. only
+    // problematic vehicles), which is the pre-fix behaviour.
+    state.vehicleBaseSummary = null;
+  }
+
+  // ============ AGGREGATION ============
+  function isUnassignedRepairer(v){
+    const t = clean(v).toLowerCase();
+    if (!t) return true;
+    return ["not assigned","unassigned","notassigned","#","-","n/a","unknown"].includes(t);
+  }
+  function isCustomerLike(v){
+    const t = clean(v).toLowerCase();
+    return t.includes("customer") && (t.includes("repair") || t.includes("repairer"));
+  }
+
+  function traceBaseBySeries(rows){
+    const map = new Map();
+    for (const r of rows) {
+      const s = extractSeries(r);
+      if (isExcludedSeries(s)) continue;
+      const key = normalizedChassis(r);
+      if (!key) continue;
+      if (!map.has(s)) map.set(s, new Set());
+      map.get(s).add(key);
+    }
+    return Object.fromEntries(Array.from(map.entries()).map(([s,set])=>[s,set.size]));
+  }
+
+  function effectiveBase(series){
+    // Precedence:
+    //   1. Manual override (`state.soldBySeries`) — user-supplied truth.
+    //   2. `state.deliveredBaseBySeries` — TRUE denominator from SAP
+    //      (shipped + in-stock + in-transit chassis), the correct base for
+    //      Leaderboard / Full Metrics Table percentage columns.
+    //   3. `state.autoBaseBySeries` — legacy trace-from-tickets which only
+    //      counts problematic vehicles; used only when the SAP-sourced base
+    //      is unavailable (network / permission failure).
+    if (Object.prototype.hasOwnProperty.call(state.soldBySeries, series)) {
+      return Math.max(0, Number(state.soldBySeries[series])||0);
+    }
+    const sold = Number(state.salesBaseBySeries[series])||0;
+    if (sold > 0) return sold;
+    const delivered = Number(state.deliveredBaseBySeries[series])||0;
+    if (delivered > 0) return delivered;
+    return Math.max(0, Number(state.autoBaseBySeries[series])||0);
+  }
+
+  function csvBaseForSeries(series){
+    const key = normalizeSeriesCode(series);
+    const sales = Number(state.salesBaseBySeries[key]) || 0;
+    if (sales > 0) return sales;
+    const delivered = Number(state.deliveredBaseBySeries[key]) || 0;
+    if (delivered > 0) return delivered;
+    return 0;
+  }
+
+  function summaryBySeries(rows){
+    const map = new Map();
+    for (const row of pgiMatchedRows(rows)) {
+      const series = extractSeries(row);
+      if (!isTrackedSeries(series)) continue;
+      const cost = getWarrantyCost(row);
+      const failureAge = failureAgeDays(row);
+      const key = normalizedChassis(row);
+      const rej = getRejection(row);
+      if (!key) continue;
+
+      if (!map.has(series)) {
+        map.set(series, {
+          series, tickets:0, cost:0, vehicles:new Set(), ages:[],
+          firstFailureByVehicle:new Map(),
+          repairedTickets:0,
+          buckets:[0,0,0,0],
+          timingSources:{ pgi:0 },
+          fullyRej:0, partRej:0, anyRej:0,
+          dealers:new Map(),
+        });
+      }
+      const b = map.get(series);
+      b.tickets++;
+      b.cost += cost;
+      b.vehicles.add(key);
+      b.repairedTickets++;
+      if (isFullyRejected(rej)) { b.fullyRej++; b.anyRej++; }
+      else if (isPartiallyRejected(rej)) { b.partRej++; b.anyRej++; }
+      else if (isRejectedStatus(rej)) b.anyRej++;
+      if (row["Dealer Name"]) b.dealers.set(row["Dealer Name"], (b.dealers.get(row["Dealer Name"])||0)+1);
+      const age = failureAge.age;
+      if (Number.isFinite(age) && age >= 0) {
+        const prev = b.firstFailureByVehicle.get(key);
+        if (!Number.isFinite(prev) || age < prev) b.firstFailureByVehicle.set(key, age);
+      }
+    }
+    const summary = Array.from(map.values()).map(item => {
+      const vehicles = item.vehicles.size;
+      const firstFailureAges = Array.from(item.firstFailureByVehicle.values()).filter(Number.isFinite);
+      const buckets = [0,0,0,0];
+      firstFailureAges.forEach(age => {
+        if (age<=30) buckets[0]++;
+        else if (age<=90) buckets[1]++;
+        else if (age<=180) buckets[2]++;
+        else buckets[3]++;
+      });
+      const avgRepairs = vehicles ? (item.repairedTickets || 0)/vehicles : null;
+      const costPerVehicle = vehicles ? item.cost/vehicles : null;
+      const costPerTicket = item.tickets ? item.cost/item.tickets : null;
+      const rejectionRate = item.tickets ? item.anyRej/item.tickets : null;
+      const top = Array.from(item.dealers.entries()).sort((a,b)=>b[1]-a[1])[0];
+      return {
+        series:item.series, tickets:item.tickets, cost:item.cost, vehicles,
+        repairedTickets: item.repairedTickets || 0,
+        avgRepairs, costPerVehicle, costPerTicket,
+        medianAge: median(firstFailureAges), buckets,
+        timingSources: { pgi:firstFailureAges.length },
+        fullyRej:item.fullyRej, partRej:item.partRej, anyRej:item.anyRej, rejectionRate,
+        topDealer: top ? top[0] : "",
+      };
+    });
+    const totalTickets = summary.reduce((sum, item) => sum + (Number(item.tickets) || 0), 0);
+    const totalVehicles = summary.reduce((sum, item) => sum + (Number(item.vehicles) || 0), 0);
+    return summary.map(item => {
+      const salesBase = csvBaseForSeries(item.series);
+      const ticketShare = totalTickets ? item.tickets / totalTickets : null;
+      const vehicleShare = totalVehicles ? item.vehicles / totalVehicles : null;
+      const repairRate = salesBase ? item.vehicles / salesBase : null;
+      const salesRate = SALES_RATE_TOTAL_VEHICLES ? salesBase / SALES_RATE_TOTAL_VEHICLES : null;
+      const salesShare = salesRate;
+      const mixGap = Number.isFinite(ticketShare) && Number.isFinite(salesShare) ? ticketShare - salesShare : null;
+      const costPerSold = salesBase ? item.cost / salesBase : null;
+      return {
+        ...item,
+        sold: salesBase,
+        csvBase: salesBase,
+        repairRate,
+        salesRate,
+        salesShare,
+        mixGap,
+        costPerSold,
+        ticketShare,
+        vehicleShare,
+      };
+    });
+  }
+
+  function repairerAggregation(rows){
+    const map = new Map();
+    for (const row of rows) {
+      // Prefer Repair Shop as the business identity; fall back to Service Technician.
+      const name = clean(row["Repair Shop"] || row["Repair Shop Name"] || row["Service Technician"]);
+      if (!name || isUnassignedRepairer(name) || isCustomerLike(name)) continue;
+      if (!map.has(name)) map.set(name, { name, tickets:0, rejected:0, fullyRej:0, partRej:0, cost:0, series:new Map() });
+      const b = map.get(name);
+      b.tickets++;
+      b.cost += getWarrantyCost(row);
+      const rej = getRejection(row);
+      if (isFullyRejected(rej)) { b.fullyRej++; b.rejected++; }
+      else if (isPartiallyRejected(rej)) { b.partRej++; b.rejected++; }
+      else if (isRejectedStatus(rej)) b.rejected++;
+      const s = extractSeries(row);
+      b.series.set(s, (b.series.get(s)||0)+1);
+    }
+    return Array.from(map.values()).map(b => {
+      const top = Array.from(b.series.entries()).sort((a,b)=>b[1]-a[1])[0];
+      return {
+        name: b.name, tickets: b.tickets, rejected: b.rejected, cost: b.cost,
+        fullyRej: b.fullyRej, partRej: b.partRej,
+        rejectionRate: b.tickets ? b.rejected/b.tickets : 0,
+        topSeries: top ? `${top[0]} · ${numFmt.format(top[1])}` : "–",
+      };
+    });
+  }
+
+  // ============ FORMATTING ============
+  const fmtRate = (v) => Number.isFinite(v) ? `${(v*100).toFixed(1)}%` : "N/A";
+  const fmtDays = (v) => Number.isFinite(v) ? `${Math.round(v)} d` : "N/A";
+  const fmtPp = (v) => Number.isFinite(v) ? `${v > 0 ? "+" : ""}${(v*100).toFixed(1)} pp` : "N/A";
+  function rateBadge(v, benchLo=0.15, benchHi=0.35){
+    if (!Number.isFinite(v)) return `<span class="rateBadge lo" style="background:#f1f5f9;color:#64748b">N/A</span>`;
+    const cls = v>=benchHi ? "hi" : v>=benchLo ? "md" : "lo";
+    return `<span class="rateBadge ${cls}">${(v*100).toFixed(1)}%</span>`;
+  }
+  function rejectionBadge(v){
+    if (!Number.isFinite(v)) return `<span class="rateBadge lo" style="background:#f1f5f9;color:#64748b">N/A</span>`;
+    const cls = v>=0.25 ? "hi" : v>=0.10 ? "md" : "lo";
+    return `<span class="rateBadge ${cls}">${(v*100).toFixed(1)}%</span>`;
+  }
+
+  function riskClass(rate){
+    if (!Number.isFinite(rate)) return "";
+    return rate>=0.20 ? "risk-hi" : rate>=0.10 ? "risk-md" : "risk-lo";
+  }
+  function seriesBadgeColor(i){ return BADGE_COLORS[i % BADGE_COLORS.length]; }
+
+
+  // ============ SORT ============
+  function sortRows(rows, sort){
+    const { key, dir } = sort;
+    const mul = dir==="asc" ? 1 : -1;
+    return rows.slice().sort((a,b) => {
+      const av = a[key], bv = b[key];
+      if (av == null && bv == null) return 0;
+      if (av == null) return 1;
+      if (bv == null) return -1;
+      if (typeof av === "string") return av.localeCompare(bv) * mul;
+      return (av - bv) * mul;
+    });
+  }
+
+  // ============ RENDER: KPIs ============
+  function renderKpis(){
+    const rows = state.viewRows;
+    const totalTickets = rows.length;
+    const totalVehicles = new Set(rows.map(normalizedChassis).filter(Boolean)).size;
+    const totalCost = rows.reduce((s,r)=>s+getWarrantyCost(r),0);
+    const combinedKeys = new Set([
+      ...Object.keys(state.autoBaseBySeries).filter(isTrackedSeries),
+      ...Object.keys(state.soldBySeries).filter(isTrackedSeries),
+      ...Object.keys(state.salesBaseBySeries).filter(isTrackedSeries),
+      ...Object.keys(state.deliveredBaseBySeries).filter(isTrackedSeries),
+    ]);
+    const totalBase = Array.from(combinedKeys).reduce((s,k)=>s+effectiveBase(k),0);
+    const rate = totalBase ? totalVehicles/totalBase : null;
+    const perVeh = totalBase ? totalCost/totalBase : null;
+
+    $("kpiTickets").textContent = numFmt.format(totalTickets);
+    $("kpiVehicles").textContent = numFmt.format(totalVehicles);
+    $("kpiSold").textContent = totalBase ? numFmt.format(totalBase) : "N/A";
+    $("kpiRate").textContent = rate==null ? "N/A" : `${(rate*100).toFixed(1)}%`;
+    $("kpiCost").textContent = moneyFmt.format(totalCost);
+    $("kpiAvgCost").textContent = perVeh==null ? "N/A" : moneyFmt2.format(perVeh);
+
+    $("kpiTicketsSub").textContent = `${state.summary.length} model series`;
+    $("kpiVehiclesSub").textContent = `across ${combinedKeys.size} series`;
+    $("kpiSoldSub").textContent = totalBase ? `${Object.keys(state.soldBySeries).length} overridden` : "waiting for trace";
+    $("kpiRateSub").textContent = rate==null ? "waiting for base" : `${(rate*100).toFixed(1)}% of base`;
+    $("kpiCostSub").textContent = `${moneyFmt.format(totalCost/Math.max(1,totalTickets))} / ticket`;
+    $("kpiAvgCostSub").textContent = perVeh==null ? "no base" : "vs base";
+  }
+
+  // ============ RENDER: Leaderboard ============
+  function renderLeaderboard(){
+    const sorted = sortRows(state.summary, state.seriesSort);
+    const maxGap = Math.max(...sorted.map(r=>Math.max(0, Number(r.mixGap) || 0)), 0.01);
+    const target = $("lbRows");
+    if (!sorted.length) { target.innerHTML = `<div class="empty">No data yet.</div>`; return; }
+    target.innerHTML = sorted.map((row, i) => {
+      const gapWidth = Number.isFinite(row.mixGap) && row.mixGap > 0 ? Math.max(3, (row.mixGap/maxGap)*100) : 3;
+      const risk = riskClass(row.mixGap);
+      const active = state.selected===row.series ? "active" : "";
+      const badge = seriesBadgeColor(i);
+      const flags = flagsForSeries(row.series);
+      const flagHtml = flags.length
+        ? `<div class="lbFlags">${flags.slice(0,3).map(f => {
+            const cls = f.severity === "critical" ? "" : f.severity;
+            return `<span class="flagChip ${cls}" title="${f.headline}">${f.category}</span>`;
+          }).join("")}${flags.length>3?`<span class="flagChip info" title="${flags.length-3} more">+${flags.length-3}</span>`:""}</div>`
+        : "";
+      return `<div class="lbRow ${active}" data-series="${row.series}">
+        <div class="lbSeries">
+          <div class="lbBadge ${badge}">${row.series}</div>
+        </div>
+        <div class="lbBarWrap">
+          <div class="lbBarLabel">
+            <span><strong>${pctValue(row.ticketShare) || "0.0%"}</strong> tickets vs <strong>${pctValue(row.salesShare) || "0.0%"}</strong> sales mix</span>
+            <span>${fmtPp(row.mixGap)}</span>
+          </div>
+          <div class="lbBar"><div class="lbBarFill ${risk}" style="width:${gapWidth}%"></div></div>
+          ${flagHtml}
+        </div>
+        <div class="lbMetric"><div class="lbMetricLabel">Sales Share</div><div class="lbMetricValue">${pctValue(row.salesShare) || "N/A"}</div></div>
+        <div class="lbMetric"><div class="lbMetricLabel">Avg / Van</div><div class="lbMetricValue ${row.avgRepairs==null?"na":""}">${row.avgRepairs==null?"–":row.avgRepairs.toFixed(2)}</div></div>
+        <div class="lbMetric"><div class="lbMetricLabel">Tickets</div><div class="lbMetricValue">${numFmt.format(row.tickets)}</div></div>
+        <div class="lbMetric"><div class="lbMetricLabel">$/Vehicle</div><div class="lbMetricValue ${row.costPerSold==null?"na":""}">${row.costPerSold==null?"–":moneyFmt.format(row.costPerSold)}</div></div>
+      </div>`;
+    }).join("");
+  }
+
+  // ============ RENDER: chips ============
+  function renderChips(){
+    const totalVehicles = state.summary.reduce((sum, item) => sum + (Number(item.vehicles) || 0), 0);
+    const chips = [`<button class="chip ${state.selected==="ALL"?"active":""}" data-series="ALL">All <small>${numFmt.format(totalVehicles)}</small></button>`]
+      .concat(sortRows(state.summary, state.seriesSort).map(r => `<button class="chip ${state.selected===r.series?"active":""}" data-series="${r.series}">${r.series} <small>${numFmt.format(r.vehicles)}</small></button>`));
+    ["seriesChips","stickySeriesChips","timingSeriesChips"].forEach(id => {
+      const el = $(id);
+      if (el) el.innerHTML = chips.join("");
+    });
+  }
+
+  function renderScopeButtons(){
+    document.querySelectorAll("[data-scope]").forEach(btn => {
+      const active = btn.getAttribute("data-scope") === state.scope;
+      btn.classList.toggle("active", active);
+    });
+  }
+
+  // ============ RENDER: series table ============
+  function renderSeriesTable(){
+    const rows = sortRows(state.summary, state.seriesSort);
+    // fleet baselines for cell-level highlighting
+    const medCPS = median(rows.filter(r=>r.sold>=20).map(r=>r.costPerSold).filter(Number.isFinite)) || 0;
+    const cellCls = (cond, sev) => cond ? (sev==="critical" ? "cellAlert" : "cellWarn") : "";
+    $("seriesRows").innerHTML = rows.map(r => {
+      const active = state.selected===r.series ? "active" : "";
+      const soldTxt = r.sold ? numFmt.format(r.sold) : "N/A";
+      const rateAlert = cellCls(Number.isFinite(r.repairRate) && r.repairRate >= 0.35, "critical")
+        || cellCls(Number.isFinite(r.repairRate) && r.repairRate >= 0.20, "warn");
+      const avgAlert = cellCls(Number.isFinite(r.avgRepairs) && r.avgRepairs >= 2.5, "critical")
+        || cellCls(Number.isFinite(r.avgRepairs) && r.avgRepairs >= 2.0, "warn");
+      const cpsAlert = cellCls(Number.isFinite(r.costPerSold) && medCPS>0 && r.costPerSold >= medCPS*2, "critical")
+        || cellCls(Number.isFinite(r.costPerSold) && medCPS>0 && r.costPerSold >= medCPS*1.5, "warn");
+      return `<tr class="${active}" data-series="${r.series}">
+        <td><strong>${r.series}</strong></td>
+        <td class="number">${soldTxt}</td>
+        <td class="number">${numFmt.format(r.vehicles)}</td>
+        <td class="number">${numFmt.format(r.tickets)}</td>
+        <td class="number ${rateAlert}">${rateBadge(r.repairRate)}</td>
+        <td class="number ${avgAlert}">${r.avgRepairs==null?"N/A":r.avgRepairs.toFixed(2)}</td>
+        <td class="number">${moneyFmt.format(r.cost)}</td>
+        <td class="number ${cpsAlert}">${r.costPerSold==null?"N/A":moneyFmt.format(r.costPerSold)}</td>
+        <td class="number">${r.costPerTicket==null?"N/A":moneyFmt.format(r.costPerTicket)}</td>
+        <td class="number">${fmtDays(r.medianAge)}</td>
+      </tr>`;
+    }).join("");
+    // update sort arrows
+    document.querySelectorAll("th[data-sort]").forEach(th => {
+      const arrow = th.querySelector(".arrow");
+      const key = th.getAttribute("data-sort");
+      th.classList.toggle("sortActive", key===state.seriesSort.key);
+      arrow.textContent = key===state.seriesSort.key ? (state.seriesSort.dir==="asc"?"▲":"▼") : "";
+    });
+  }
+
+  // Override the legacy leaderboard to rank 2025+ ticket mix against
+  // Leaderboard bar now follows 2025+ ticket share within the active scope.
+  function renderLeaderboard(){
+    const sorted = sortRows(state.summary, state.seriesSort);
+    const target = $("lbRows");
+    if (!sorted.length) { target.innerHTML = `<div class="empty">No data yet.</div>`; return; }
+    const maxVehicles = Math.max(...sorted.map(row => Number(row.vehicles) || 0), 1);
+    target.innerHTML = sorted.map((row, i) => {
+      const barWidth = row.vehicles ? Math.max(4, (row.vehicles / maxVehicles) * 100) : 4;
+      const risk = riskClass(row.ticketShare);
+      const active = state.selected === row.series ? "active" : "";
+      const badge = seriesBadgeColor(i);
+      return `<div class="lbRow ${active}" data-series="${row.series}">
+        <div class="lbSeries">
+          <div class="lbBadge ${badge}">${row.series}</div>
+        </div>
+        <div class="lbBarWrap">
+          <div class="lbBarLabel">
+            <span>Tickets Rate</span>
+            <span><strong>${row.ticketShare==null?"N/A":pctValue(row.ticketShare)}</strong></span>
+          </div>
+          <div class="lbBar"><div class="lbBarFill ${risk}" style="width:${barWidth}%"></div></div>
+        </div>
+        <div class="lbMetric"><div class="lbMetricLabel">Sales Rate</div><div class="lbMetricValue ${row.salesRate==null?"na":""}">${row.salesRate==null?"N/A":pctValue(row.salesRate)}</div></div>
+        <div class="lbMetric"><div class="lbMetricLabel">Repaired</div><div class="lbMetricValue">${numFmt.format(row.vehicles)}</div></div>
+        <div class="lbMetric"><div class="lbMetricLabel">Tickets</div><div class="lbMetricValue">${numFmt.format(row.tickets)}</div></div>
+        <div class="lbMetric"><div class="lbMetricLabel">Tickets Rate</div><div class="lbMetricValue ${row.ticketShare==null?"na":""}">${row.ticketShare==null?"N/A":pctValue(row.ticketShare)}</div></div>
+        <div class="lbMetric"><div class="lbMetricLabel">Avg / Chassis</div><div class="lbMetricValue ${row.avgRepairs==null?"na":""}">${row.avgRepairs==null?"N/A":row.avgRepairs.toFixed(2)}</div></div>
+        <div class="lbMetric"><div class="lbMetricLabel">Median Age</div><div class="lbMetricValue ${row.medianAge==null?"na":""}">${fmtDays(row.medianAge)}</div></div>
+        <div class="lbMetric"><div class="lbMetricLabel">Cost / Ticket</div><div class="lbMetricValue ${row.costPerTicket==null?"na":""}">${row.costPerTicket==null?"N/A":moneyFmt.format(row.costPerTicket)}</div></div>
+        <div class="lbMetric"><div class="lbMetricLabel">Warranty Cost</div><div class="lbMetricValue">${moneyFmt.format(row.cost || 0)}</div></div>
+      </div>`;
+    }).join("");
+  }
+
+  function renderSeriesTable(){
+    const target = $("seriesRows");
+    if (!target) return;
+    const rows = sortRows(state.summary, state.seriesSort);
+    const medCPS = median(rows.filter(r=>r.vehicles>=10).map(r=>r.costPerVehicle).filter(Number.isFinite)) || 0;
+    const cellCls = (cond, sev) => cond ? (sev==="critical" ? "cellAlert" : "cellWarn") : "";
+    target.innerHTML = rows.map(r => {
+      const active = state.selected===r.series ? "active" : "";
+      const avgAlert = cellCls(Number.isFinite(r.avgRepairs) && r.avgRepairs >= 2.5, "critical")
+        || cellCls(Number.isFinite(r.avgRepairs) && r.avgRepairs >= 2.0, "warn");
+      const cpsAlert = cellCls(Number.isFinite(r.costPerVehicle) && medCPS>0 && r.costPerVehicle >= medCPS*2, "critical")
+        || cellCls(Number.isFinite(r.costPerVehicle) && medCPS>0 && r.costPerVehicle >= medCPS*1.5, "warn");
+      const rejectionAlert = cellCls(Number.isFinite(r.rejectionRate) && r.rejectionRate >= 0.25, "critical")
+        || cellCls(Number.isFinite(r.rejectionRate) && r.rejectionRate >= 0.10, "warn");
+      return `<tr class="${active}" data-series="${r.series}">
+        <td><strong>${r.series}</strong></td>
+        <td class="number">${numFmt.format(r.tickets)}</td>
+        <td class="number">${pctValue(r.ticketShare) || "N/A"}</td>
+        <td class="number ${avgAlert}">${r.avgRepairs==null?"N/A":r.avgRepairs.toFixed(2)}</td>
+        <td class="number">${moneyFmt.format(r.cost)}</td>
+        <td class="number ${cpsAlert}">${r.costPerVehicle==null?"N/A":moneyFmt.format(r.costPerVehicle)}</td>
+        <td class="number">${r.costPerTicket==null?"N/A":moneyFmt.format(r.costPerTicket)}</td>
+        <td class="number">${fmtDays(r.medianAge)}</td>
+        <td class="number">${numFmt.format(r.fullyRej||0)}</td>
+        <td class="number">${numFmt.format(r.partRej||0)}</td>
+        <td class="number ${rejectionAlert}">${rejectionBadge(r.rejectionRate)}</td>
+        <td>${r.topDealer || ""}</td>
+      </tr>`;
+    }).join("");
+    document.querySelectorAll("th[data-sort]").forEach(th => {
+      const arrow = th.querySelector(".arrow");
+      const key = th.getAttribute("data-sort");
+      th.classList.toggle("sortActive", key===state.seriesSort.key);
+      arrow.textContent = key===state.seriesSort.key ? (state.seriesSort.dir==="asc"?"â–²":"â–¼") : "";
+    });
+  }
+
+  // ============ RENDER: detail panel ============
+  function selectedSummaryData(){
+    if (state.selected==="ALL") {
+      const rows = pgiMatchedRows(state.viewRows);
+      const totalTickets = state.summary.reduce((sum, item) => sum + (Number(item.tickets) || 0), 0);
+      const totalVehicles = state.summary.reduce((sum, item) => sum + (Number(item.vehicles) || 0), 0);
+      const totalCost = state.summary.reduce((sum, item) => sum + (Number(item.cost) || 0), 0);
+      const totalRepairedTickets = state.summary.reduce((sum, item) => sum + (Number(item.repairedTickets) || 0), 0);
+      const buckets = [0,0,0,0];
+      const firstAgeByVehicle = new Map();
+      const timingSources = { pgi:0 };
+      state.summary.forEach(item => {
+        const itemBuckets = Array.isArray(item.buckets) ? item.buckets : [0,0,0,0];
+        itemBuckets.forEach((count, index) => { buckets[index] += Number(count) || 0; });
+        timingSources.pgi += Number(item.timingSources?.pgi) || 0;
+      });
+      rows.forEach(r => {
+        const { age, source } = failureAgeDays(r);
+        const key = normalizedChassis(r);
+        if (source === "pgi" && key && Number.isFinite(age) && age>=0) {
+          const prev = firstAgeByVehicle.get(key);
+          if (!Number.isFinite(prev) || age < prev) firstAgeByVehicle.set(key, age);
+        }
+      });
+      const ages = Array.from(firstAgeByVehicle.values()).filter(Number.isFinite);
+      return {
+        series:"All Series", tickets: totalTickets, vehicles: totalVehicles,
+        cost: totalCost,
+        avgRepairs: totalVehicles ? totalRepairedTickets/totalVehicles : null,
+        costPerVehicle: totalVehicles ? totalCost/totalVehicles : null,
+        costPerTicket: totalTickets ? totalCost/totalTickets : null,
+        buckets, medianAge: median(ages), timingSources,
+      };
+    }
+    return state.summary.find(r => r.series===state.selected) || null;
+  }
+
+  function renderDetail(){
+    const s = selectedSummaryData();
+    const label = state.selected==="ALL" ? "All Series" : state.selected;
+    $("selectedLabel").textContent = label;
+    $("compLabel").textContent = label;
+    const compTitle = $("compLabel")?.closest("h2");
+    if (compTitle && compTitle.firstChild) compTitle.firstChild.nodeValue = "Top Failure Components - ";
+    const compDesc = $("compLabel")?.closest(".panelHead")?.querySelector(".panelDesc");
+    if (compDesc) compDesc.textContent = "Top components below. Monthly bars show ticket volume over time, split by Pre-Delivery, In-Field, and Other.";
+    if (!s) {
+      ["dVehicles","dTickets","dRate","dAvg","dCost","dCostVeh"].forEach(id => $(id).textContent = "–");
+      $("timingWrap").innerHTML = "";
+      return;
+    }
+    $("dVehicles").textContent = numFmt.format(s.vehicles||0);
+    $("dTickets").textContent = numFmt.format(s.tickets||0);
+    $("dRate").textContent = s.avgRepairs==null?"N/A":s.avgRepairs.toFixed(2);
+    $("dAvg").textContent = fmtDays(s.medianAge);
+    $("dCost").textContent = moneyFmt.format(s.cost||0);
+    $("dCostVeh").textContent = s.costPerTicket==null ? "N/A" : moneyFmt.format(s.costPerTicket);
+
+    $("dVehiclesSub").textContent = "PGI-matched unique chassis";
+    $("dTicketsSub").textContent = s.medianAge==null ? "repair events" : `median age ${Math.round(s.medianAge)} d`;
+    $("dRateSub").textContent = s.avgRepairs && s.avgRepairs>=2 ? "repeat repairs visible" : "mostly one ticket each";
+    $("dAvgSub").textContent = s.medianAge==null ? "no dated chassis yet" : "from first ticket per chassis";
+    $("dCostSub").textContent = s.tickets ? `${moneyFmt.format(s.cost/s.tickets)} / ticket` : "confirmed AUD";
+    $("dCostVehSub").textContent = s.tickets ? "average claim cost" : "no tickets yet";
+
+    // Timing distribution
+    const buckets = s.buckets || [0,0,0,0];
+    const total = buckets.reduce((a,b)=>a+b,0);
+    const src = s.timingSources || {};
+    const timingLabels = ["0 - 30 days","31 - 90 days","91 - 180 days","180+ days"];
+    $("timingTotal").textContent = total
+      ? `${numFmt.format(total)} dated · ${numFmt.format(src.pgi||0)} PGI matched`
+      : "no PGI-dated tickets";
+    $("timingTotal").textContent = total
+      ? `${numFmt.format(total)} vehicles dated - ${numFmt.format(src.pgi||0)} PGI matched`
+      : "no PGI-dated vehicles";
+    const labels = ["0 – 30 days","31 – 90 days","91 – 180 days","180+ days"];
+    const classes = ["b0","b1","b2","b3"];
+    const max = Math.max(...buckets,1);
+    $("timingWrap").innerHTML = buckets.map((count, i) => {
+      const width = Math.max(3, (count/max)*100);
+      const pct = total ? (count/total*100).toFixed(1) : "0.0";
+      return `<div class="timingRow">
+        <div class="timingMeta">
+          <div class="timingLabel">${timingLabels[i]}</div>
+          <div class="timingCount">${numFmt.format(count)}<small>${pct}%</small></div>
+        </div>
+        <div class="timingBarTrack"><div class="timingBarFill ${classes[i]}" style="width:${width}%"></div></div>
+      </div>`;
+    }).join("");
+  }
+
+  // ============ RENDER: Components ============
+  function renderComponents(){
+    const summary = state.partsFailureSummary;
+    const target = $("compRows");
+    const totalsTarget = $("compTotalsWrap");
+    if (!summary) {
+      target.innerHTML = `<div class="empty">Parts classification summary not loaded.<br><small>${esc(state.partsFailureError || PARTS_FAILURE_SUMMARY_CACHE)}</small></div>`;
+      if (totalsTarget) totalsTarget.innerHTML = "";
+      return;
+    }
+    let rows = componentRowsForSelection(summary, state.selected).slice();
+    if (!rows.length) {
+      target.innerHTML = `<div class="empty">No components matched.</div>`;
+      if (totalsTarget) totalsTarget.innerHTML = "";
+      return;
+    }
+
+    // Sort by chosen mode
+    if (state.compMode === "cost") {
+      rows.sort((a,b) => (Number(b.cost)||0) - (Number(a.cost)||0));
+    } else {
+      rows.sort((a,b) => (Number(b.tickets)||0) - (Number(a.tickets)||0));
+    }
+    rows = rows.slice(0, 10);
+
+    const modeIsCost = state.compMode === "cost";
+    const primaryValues = rows.map(r => modeIsCost ? (Number(r.cost)||0) : (Number(r.tickets)||0));
+    const maxPrimary = Math.max(...primaryValues, 1);
+
+    const rowsHtml = rows.map((r, i) => {
+      const tickets = Number(r.tickets)||0;
+      const cost = Number(r.cost)||0;
+      const primary = primaryValues[i];
+      const width = Math.max(4, (primary / maxPrimary) * 100);
+      const name = r.component || "Other";
+      const cat = r.category || "Other";
+      const share = Number(r.ticketShare) || 0;
+      const dominant = share >= 0.20 ? "dominant" : "";
+      const primaryLabel = modeIsCost
+        ? moneyFmt.format(cost)
+        : numFmt.format(tickets);
+      const secondaryLabel = modeIsCost
+        ? `${numFmt.format(tickets)} tickets`
+        : (share > 0 ? `${(share*100).toFixed(1)}% of tickets` : moneyFmt.format(cost));
+      const key = componentKey(name, cat);
+      return `<div class="compRow clickable ${dominant}" data-comp-key="${esc(key)}" data-comp-name="${esc(name)}" data-comp-cat="${esc(cat)}">
+        <div>
+          <div class="compHead">
+            <div class="compName">${esc(name)}</div>
+            <div class="compCat">${esc(cat)}</div>
+          </div>
+          <div class="compBar"><div class="compBarFill" style="width:${width}%"></div></div>
+        </div>
+        <div class="compRight">
+          <div class="compTickets">${primaryLabel}</div>
+          <div class="compCost">${secondaryLabel}</div>
+        </div>
+      </div>`;
+    }).join("");
+
+    target.innerHTML = rowsHtml;
+
+    // Update mode button active state
+    document.querySelectorAll("[data-comp-mode]").forEach(btn => {
+      btn.classList.toggle("active", btn.getAttribute("data-comp-mode") === state.compMode);
+    });
+
+    // Wire tooltip + click handlers on the component rows
+    wireComponentRowInteractions();
+
+    // Render the bottom static totals table
+    renderComponentTotals(rows);
+  }
+
+  // ------- Component key + index (uses partsClassifiedRows) -------
+  function componentKey(name, category){
+    return `${clean(name).toLowerCase()}||${clean(category).toLowerCase()}`;
+  }
+  function buildPartsClassifiedIndex(){
+    const rows = state.partsClassifiedRows || [];
+    const byKey = new Map();       // compKey -> [rows]
+    const byTicket = new Map();    // ticketId -> [rows]
+    const includedTicketIds = state.partsIncludedTicketIds;
+    for (const r of rows) {
+      const tid = clean(r["Ticket ID"]);
+      if (includedTicketIds instanceof Set && tid && !includedTicketIds.has(tid)) continue;
+      const kw = clean(r["Matched Keyword"]);
+      const cat = clean(r["Part Category"]);
+      const key = componentKey(kw || "Other", cat || "Other");
+      if (!byKey.has(key)) byKey.set(key, []);
+      byKey.get(key).push(r);
+      if (tid) {
+        if (!byTicket.has(tid)) byTicket.set(tid, []);
+        byTicket.get(tid).push(r);
+      }
+    }
+    state.partsClassifiedIndex = byKey;
+    state.partsClassifiedTicketMap = byTicket;
+  }
+
+  function classifiedRowDate(cr){
+    // Prefer the ticket's own "Created On" (when the claim was raised) —
+    // this is what monthly / 30-day surge buckets are meant to reflect.
+    // "SO Created Date" is when the SALES ORDER was created (often years
+    // earlier when the caravan was ordered), which is why bucketing by it
+    // produced empty months in the 2026 view.
+    const tid = clean(cr["Ticket ID"]);
+    if (tid && state.ticketRowById) {
+      const t = state.ticketRowById.get(tid);
+      if (t) {
+        const d = parseDmy(t["Created On"] || t.CreatedOn);
+        if (d) return d;
+      }
+    }
+    return parseDmy(cr["First Issue Date"]) || parseDmy(cr["SO Created Date"]) || parseDmy(cr["3110 PO Date"]);
+  }
+
+  // Best-effort claim scope for a classified row via ticket lookup
+  function classifiedRowScope(cr){
+    const tid = clean(cr["Ticket ID"]);
+    if (!tid) return "OTHER";
+    const t = state.ticketRowById && state.ticketRowById.get(tid);
+    if (!t) return "OTHER";
+    return claimScope(t);
+  }
+  function classifiedRowSeries(cr){
+    const tid = clean(cr["Ticket ID"]);
+    if (!tid) return null;
+    const mapped = state.partsTicketSeriesById && state.partsTicketSeriesById.get(tid);
+    if (mapped) return mapped;
+    const t = state.ticketRowById && state.ticketRowById.get(tid);
+    if (!t) return null;
+    return extractSeries(t);
+  }
+
+  // Count tickets for each top-component in the last N days (dedupe by TicketID)
+  function computeSurgeCounts(days){
+    const out = new Map();
+    if (!state.partsClassifiedIndex) return out;
+    const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - days); cutoff.setHours(0,0,0,0);
+    const selectedSeries = state.selected;
+    for (const [key, list] of state.partsClassifiedIndex.entries()) {
+      const seen = new Set();
+      for (const cr of list) {
+        const d = classifiedRowDate(cr);
+        if (!d || d < cutoff) continue;
+        if (selectedSeries !== "ALL") {
+          const s = classifiedRowSeries(cr);
+          if (s !== selectedSeries) continue;
+        }
+        const tid = clean(cr["Ticket ID"]);
+        if (!tid || seen.has(tid)) continue;
+        seen.add(tid);
+      }
+      if (seen.size) out.set(key, seen.size);
+    }
+    return out;
+  }
+
+  // Monthly bucket over last N months (default 12) — dedupe by TicketID, filter by scope
+  function computeComponentMonthly(compKey, scope, months){
+    const nMonths = months || 12;
+    const list = state.partsClassifiedIndex && state.partsClassifiedIndex.get(compKey);
+    const now = new Date();
+    const buckets = [];
+    for (let i = nMonths - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      buckets.push({ y: d.getFullYear(), m: d.getMonth(), count: 0, label: d.toLocaleString("en-AU", { month:"short" }) });
+    }
+    if (!list || !list.length) return buckets;
+    const idx = new Map();
+    buckets.forEach((b, i) => idx.set(`${b.y}-${b.m}`, i));
+    const selectedSeries = state.selected;
+    const seenPerBucket = new Map();
+    for (const cr of list) {
+      const d = classifiedRowDate(cr);
+      if (!d) continue;
+      const bkey = `${d.getFullYear()}-${d.getMonth()}`;
+      const bi = idx.get(bkey);
+      if (bi == null) continue;
+      // series filter
+      if (selectedSeries !== "ALL") {
+        const s = classifiedRowSeries(cr);
+        if (s !== selectedSeries) continue;
+      }
+      // scope filter (PRE / FIELD only — ALL means both)
+      if (scope === "PRE" || scope === "FIELD") {
+        const s = classifiedRowScope(cr);
+        if (s !== scope) continue;
+      }
+      const tid = clean(cr["Ticket ID"]);
+      if (!tid) continue;
+      if (!seenPerBucket.has(bi)) seenPerBucket.set(bi, new Set());
+      const set = seenPerBucket.get(bi);
+      if (set.has(tid)) continue;
+      set.add(tid);
+      buckets[bi].count++;
+    }
+    return buckets;
+  }
+
+  // ------- Row interactions (hover tooltip + click toggle) -------
+  function ensureCompTooltipEl(){
+    let el = document.getElementById("compTooltip");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "compTooltip";
+      el.className = "compTooltip";
+      document.body.appendChild(el);
+    }
+    return el;
+  }
+  function hideCompTooltip(){
+    const el = document.getElementById("compTooltip");
+    if (el) el.classList.remove("visible");
+  }
+  function renderCompTooltip(compName, compCat, compKey, anchorEl){
+    const el = ensureCompTooltipEl();
+    if (!state.partsClassifiedIndex) {
+      el.innerHTML = `<div class="compTooltipName">${esc(compName)}</div><div class="compTooltipHint">Loading monthly data…</div>`;
+    } else {
+      const scope = state.compTooltipScope;
+      const buckets = computeComponentMonthly(compKey, scope, 12);
+      const total = buckets.reduce((s,b)=>s+b.count, 0);
+      const max = Math.max(...buckets.map(b=>b.count), 1);
+      const scopeLbl = scope === "FIELD" ? "In-Field" : "Pre-Delivery";
+      const scopeCls = scope === "FIELD" ? "field" : "";
+      const barsHtml = buckets.map(b => {
+        const h = Math.max(1, (b.count / max) * 60);
+        return `<div class="compTooltipBar ${scopeCls}">
+          <div class="bar" style="height:${h}px" title="${b.label}: ${b.count}"></div>
+          <div class="lbl">${b.label}</div>
+        </div>`;
+      }).join("");
+      el.style.setProperty("--cols", buckets.length);
+      el.innerHTML = `
+        <div class="compTooltipHead">
+          <div class="compTooltipName">${esc(compName)}</div>
+          <div class="compTooltipMode ${scopeCls}">${scopeLbl}</div>
+        </div>
+        <div class="compTooltipTotal">${numFmt.format(total)} tickets · last 12 months · ${esc(compCat)}</div>
+        <div class="compTooltipBars">${barsHtml}</div>
+        <div class="compTooltipHint">Click row to toggle Pre-Delivery ↔ In-Field</div>
+      `;
+    }
+    positionCompTooltip(el, anchorEl);
+    el.classList.add("visible");
+  }
+  function positionCompTooltip(el, anchor){
+    if (!anchor) return;
+    const r = anchor.getBoundingClientRect();
+    // Show initially to measure
+    el.style.left = "0px";
+    el.style.top = "0px";
+    el.style.visibility = "hidden";
+    el.classList.add("visible");
+    const w = el.offsetWidth;
+    const h = el.offsetHeight;
+    el.style.visibility = "";
+    let left = r.left - w - 12;         // prefer left side
+    if (left < 8) left = r.right + 12;  // fall back to right
+    if (left + w > window.innerWidth - 8) left = Math.max(8, window.innerWidth - w - 8);
+    let top = r.top + (r.height/2) - (h/2);
+    if (top < 8) top = 8;
+    if (top + h > window.innerHeight - 8) top = window.innerHeight - h - 8;
+    el.style.left = `${left}px`;
+    el.style.top = `${top}px`;
+  }
+  function wireComponentRowInteractions(){
+    const target = $("compRows");
+    if (!target || target.dataset.compWired === "1") return;
+    target.dataset.compWired = "1";
+
+    target.addEventListener("mouseover", (ev) => {
+      const row = ev.target.closest(".compRow.clickable");
+      if (!row || !target.contains(row)) { hideCompTooltip(); return; }
+      const name = row.getAttribute("data-comp-name") || "";
+      const cat = row.getAttribute("data-comp-cat") || "";
+      const key = row.getAttribute("data-comp-key") || "";
+      renderCompTooltip(name, cat, key, row);
+    });
+    target.addEventListener("mousemove", (ev) => {
+      const row = ev.target.closest(".compRow.clickable");
+      if (!row) return;
+      const el = document.getElementById("compTooltip");
+      if (el && el.classList.contains("visible")) positionCompTooltip(el, row);
+    });
+    target.addEventListener("mouseleave", hideCompTooltip);
+    target.addEventListener("click", (ev) => {
+      const row = ev.target.closest(".compRow.clickable");
+      if (!row || !target.contains(row)) return;
+      state.compTooltipScope = state.compTooltipScope === "PRE" ? "FIELD" : "PRE";
+      const name = row.getAttribute("data-comp-name") || "";
+      const cat = row.getAttribute("data-comp-cat") || "";
+      const key = row.getAttribute("data-comp-key") || "";
+      renderCompTooltip(name, cat, key, row);
+    });
+  }
+
+  // ------- Monthly totals table (bottom of components panel) -------
+  function renderComponentTotals(rows){
+    const target = $("compTotalsWrap");
+    if (!target) return;
+    if (!state.partsClassifiedIndex) {
+      target.innerHTML = `<div class="compTotalsHead">
+        <div class="compTotalsTitle">Monthly totals <small>loading…</small></div>
+      </div>`;
+      return;
+    }
+    // Empty index means the CSV failed to load or returned no rows — surface
+    // this explicitly so the user knows why everything is 0.
+    if (state.partsClassifiedIndex.size === 0) {
+      const err = state.partsClassifiedError;
+      const attempts = Array.isArray(err)
+        ? `<ul style="margin:6px 0 0 18px;padding:0;font-size:11px;color:var(--muted)">${err.map(a => `<li>${esc(a.url || "?")} — ${esc(a.reason || "failed")}</li>`).join("")}</ul>`
+        : "";
+      target.innerHTML = `<div class="compTotalsHead">
+        <div class="compTotalsTitle" style="color:#b91c1c">Monthly totals unavailable</div>
+      </div>
+      <div style="font-size:11.5px;color:var(--muted);line-height:1.5">
+        The parts classification CSV could not be loaded, so the monthly
+        breakdown and 30-day surge cannot be computed. Component list above
+        still works because it comes from the failure summary JSON.
+        ${attempts}
+      </div>`;
+      return;
+    }
+    const months = 6; // last 6 months for the visible chart+table (compact)
+    const seriesLabel = state.selected === "ALL" ? "All series" : state.selected;
+
+    // Aggregate monthly PRE / FIELD counts for the top-10 components combined
+    const now = new Date();
+    const buckets = [];
+    for (let i = months - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      buckets.push({
+        y: d.getFullYear(), m: d.getMonth(),
+        label: d.toLocaleString("en-AU", { month:"short" }),
+        yearLabel: `${d.getFullYear()}`.slice(-2),
+        pre: 0, field: 0, other: 0,
+        preSet: new Set(), fieldSet: new Set(), otherSet: new Set()
+      });
+    }
+    const bidx = new Map();
+    buckets.forEach((b,i) => bidx.set(`${b.y}-${b.m}`, i));
+    for (const cr of rows) {
+      const key = componentKey(cr.component, cr.category);
+      const list = state.partsClassifiedIndex.get(key) || [];
+      for (const line of list) {
+        const d = classifiedRowDate(line);
+        if (!d) continue;
+        const bi = bidx.get(`${d.getFullYear()}-${d.getMonth()}`);
+        if (bi == null) continue;
+        if (state.selected !== "ALL") {
+          const s = classifiedRowSeries(line);
+          if (s !== state.selected) continue;
+        }
+        const tid = clean(line["Ticket ID"]);
+        if (!tid) continue;
+        const scope = classifiedRowScope(line);
+        const b = buckets[bi];
+        if (scope === "PRE") { if (!b.preSet.has(tid)) { b.preSet.add(tid); b.pre++; } }
+        else if (scope === "FIELD") { if (!b.fieldSet.has(tid)) { b.fieldSet.add(tid); b.field++; } }
+        else { if (!b.otherSet.has(tid)) { b.otherSet.add(tid); b.other++; } }
+      }
+    }
+    const max = Math.max(...buckets.map(b => b.pre + b.field), 1);
+    const barsHtml = buckets.map(b => {
+      const total = b.pre + b.field;
+      const totalH = Math.max(2, (total / max) * 80);
+      const preH = total ? (b.pre / total) * totalH : 0;
+      const fieldH = total ? (b.field / total) * totalH : 0;
+      return `<div class="compTotalsBar">
+        <div class="barVal">${total ? numFmt.format(total) : ""}</div>
+        <div class="barStack" style="height:${totalH}px">
+          ${b.pre ? `<div class="barSeg pre" style="height:${preH}px" title="Pre-Delivery: ${b.pre}"></div>` : ""}
+          ${b.field ? `<div class="barSeg field" style="height:${fieldH}px" title="In-Field: ${b.field}"></div>` : ""}
+        </div>
+        <div class="barLbl">${b.label}</div>
+      </div>`;
+    }).join("");
+
+    const totalsRow = buckets.reduce((acc,b) => {
+      acc.pre += b.pre; acc.field += b.field; acc.other += b.other; return acc;
+    }, { pre:0, field:0, other:0 });
+    const grandTotal = totalsRow.pre + totalsRow.field + totalsRow.other;
+
+    const tableHtml = `
+      <table class="compTotalsTable">
+        <thead>
+          <tr>
+            <th>Month</th>
+            ${buckets.map(b => `<th>${b.label}</th>`).join("")}
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Pre-Delivery</td>
+            ${buckets.map(b => `<td>${numFmt.format(b.pre)}</td>`).join("")}
+            <td>${numFmt.format(totalsRow.pre)}</td>
+          </tr>
+          <tr>
+            <td>In-Field</td>
+            ${buckets.map(b => `<td>${numFmt.format(b.field)}</td>`).join("")}
+            <td>${numFmt.format(totalsRow.field)}</td>
+          </tr>
+          <tr class="totalRow">
+            <td>Total</td>
+            ${buckets.map(b => `<td>${numFmt.format(b.pre + b.field + b.other)}</td>`).join("")}
+            <td>${numFmt.format(grandTotal)}</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+
+    target.innerHTML = `
+      <div class="compTotalsHead">
+        <div class="compTotalsTitle">Monthly totals · Top 10 components <small>${esc(seriesLabel)} · last ${months} months</small></div>
+        <div class="compTotalsMeta">Unique tickets, split by claim scope</div>
+      </div>
+      <div class="compTotalsBars" style="--cols:${buckets.length}">${barsHtml}</div>
+      <div class="compTotalsLegend">
+        <span><span class="swatch pre"></span>Pre-Delivery (${numFmt.format(totalsRow.pre)})</span>
+        <span><span class="swatch field"></span>In-Field (${numFmt.format(totalsRow.field)})</span>
+      </div>
+      ${tableHtml}
+    `;
+  }
+
+  function componentRowsForSelection(summary, selected){
+    if (!summary) return [];
+    if (selected === "ALL") {
+      return Array.isArray(summary.all?.topComponents) ? summary.all.topComponents.slice() : [];
+    }
+    const seriesMap = summary.series || {};
+    const direct = seriesMap[selected];
+    if (direct && Array.isArray(direct.topComponents)) {
+      return direct.topComponents.slice();
+    }
+    const keys = Object.keys(seriesMap).filter(k => normalizeSeriesCode(k) === selected && !isExcludedSeries(k));
+    const grouped = new Map();
+    keys.forEach(k => {
+      const rows = Array.isArray(seriesMap[k]?.topComponents) ? seriesMap[k].topComponents : [];
+      rows.forEach(row => {
+        const name = row.component || "Other";
+        const cat = row.category || "Other";
+        const key = `${name.toLowerCase()}||${cat.toLowerCase()}`;
+        if (!grouped.has(key)) grouped.set(key, { component:name, category:cat, tickets:0, cost:0 });
+        const item = grouped.get(key);
+        item.tickets += Number(row.tickets) || 0;
+        item.cost += Number(row.cost) || 0;
+      });
+    });
+    const totalTickets = Array.from(grouped.values()).reduce((s,r)=>s+(Number(r.tickets)||0),0);
+    const totalCost = Array.from(grouped.values()).reduce((s,r)=>s+(Number(r.cost)||0),0);
+    return Array.from(grouped.values())
+      .map(r => ({ ...r, ticketShare: totalTickets ? r.tickets / totalTickets : 0, costShare: totalCost ? r.cost / totalCost : 0 }))
+      .sort((a,b)=>(Number(b.tickets)||0) - (Number(a.tickets)||0));
+  }
+
+  function computeComponentStatic(compKey){
+    const list = state.partsClassifiedIndex && state.partsClassifiedIndex.get(compKey);
+    const selectedSeries = state.selected;
+    const totalSet = new Set();
+    const preSet = new Set();
+    const fieldSet = new Set();
+    const otherSet = new Set();
+    if (!list || !list.length) {
+      return { total:0, pre:0, field:0, other:0 };
+    }
+    for (const line of list) {
+      if (selectedSeries !== "ALL") {
+        const s = classifiedRowSeries(line);
+        if (s !== selectedSeries) continue;
+      }
+      const tid = clean(line["Ticket ID"]);
+      if (!tid) continue;
+      totalSet.add(tid);
+      const scope = classifiedRowScope(line);
+      if (scope === "PRE") preSet.add(tid);
+      else if (scope === "FIELD") fieldSet.add(tid);
+      else otherSet.add(tid);
+    }
+    return {
+      total: totalSet.size,
+      pre: preSet.size,
+      field: fieldSet.size,
+      other: otherSet.size,
+    };
+  }
+
+  function renderCompTooltip(compName, compCat, compKey, anchorEl){
+    const el = ensureCompTooltipEl();
+    if (!state.partsClassifiedIndex) {
+      el.innerHTML = `<div class="compTooltipName">${esc(compName)}</div><div class="compTooltipHint">Loading static counts…</div>`;
+    } else {
+      const stats = computeComponentStatic(compKey);
+      const scope = state.compTooltipScope;
+      const scopeLbl = scope === "FIELD" ? "In-Field" : "Pre-Delivery";
+      const scopeCls = scope === "FIELD" ? "field" : "";
+      const focusCount = scope === "FIELD" ? stats.field : stats.pre;
+      el.innerHTML = `
+        <div class="compTooltipHead">
+          <div class="compTooltipName">${esc(compName)}</div>
+          <div class="compTooltipMode ${scopeCls}">${scopeLbl}</div>
+        </div>
+        <div class="compTooltipTotal">${numFmt.format(stats.total)} static tickets · ${esc(compCat)}</div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:10.5px;color:#cbd5e1;font-weight:600">
+          <div>Total</div><div>${numFmt.format(stats.total)}</div>
+          <div>Pre-Delivery</div><div>${numFmt.format(stats.pre)}</div>
+          <div>In-Field</div><div>${numFmt.format(stats.field)}</div>
+          <div>Other</div><div>${numFmt.format(stats.other)}</div>
+        </div>
+        <div class="compTooltipHint">${scopeLbl}: ${numFmt.format(focusCount)} · Click row to toggle Pre-Delivery ↔ In-Field</div>
+      `;
+    }
+    positionCompTooltip(el, anchorEl);
+    el.classList.add("visible");
+  }
+
+  function renderComponentTotals(rows){
+    const target = $("compTotalsWrap");
+    if (!target) return;
+    if (!state.partsClassifiedIndex) {
+      target.innerHTML = `<div class="compTotalsHead">
+        <div class="compTotalsTitle">Static totals <small>loading…</small></div>
+      </div>`;
+      return;
+    }
+    if (state.partsClassifiedIndex.size === 0) {
+      const err = state.partsClassifiedError;
+      const attempts = Array.isArray(err)
+        ? `<ul style="margin:6px 0 0 18px;padding:0;font-size:11px;color:var(--muted)">${err.map(a => `<li>${esc(a.url || "?")} — ${esc(a.reason || "failed")}</li>`).join("")}</ul>`
+        : "";
+      target.innerHTML = `<div class="compTotalsHead">
+        <div class="compTotalsTitle" style="color:#b91c1c">Static totals unavailable</div>
+      </div>
+      <div style="font-size:11.5px;color:var(--muted);line-height:1.5">
+        The parts classification CSV could not be loaded, so the static component split cannot be computed.
+        ${attempts}
+      </div>`;
+      return;
+    }
+
+    const seriesLabel = state.selected === "ALL" ? "All series" : state.selected;
+    const enriched = rows.map(r => {
+      const stats = computeComponentStatic(componentKey(r.component, r.category));
+      return { ...r, ...stats };
+    });
+    const previewRows = enriched.slice(0, 8);
+    const totals = enriched.reduce((acc, row) => {
+      acc.tickets += Number(row.total) || 0;
+      acc.pre += Number(row.pre) || 0;
+      acc.field += Number(row.field) || 0;
+      acc.other += Number(row.other) || 0;
+      return acc;
+    }, { tickets:0, pre:0, field:0, other:0 });
+    const previewMax = Math.max(...previewRows.map(row => Number(row.total) || 0), 1);
+    const barsHtml = previewRows.map(row => {
+      const total = Number(row.total) || 0;
+      const pre = Number(row.pre) || 0;
+      const field = Number(row.field) || 0;
+      const other = Number(row.other) || 0;
+      const totalH = Math.max(20, (total / previewMax) * 164);
+      const preH = total ? (pre / total) * totalH : 0;
+      const fieldH = total ? (field / total) * totalH : 0;
+      const otherH = total ? (other / total) * totalH : 0;
+      const label = String(row.component || "Other").split(/\s+/).slice(0, 3).join(" ");
+      return `<div class="compTotalsBar" title="${esc(row.component || "Other")}: ${numFmt.format(total)} tickets">
+        <div class="barVal">${numFmt.format(total)}</div>
+        <div class="barStack" style="height:${totalH}px">
+          ${pre ? `<div class="barSeg pre" style="height:${preH}px" title="Pre-Delivery: ${numFmt.format(pre)}"></div>` : ""}
+          ${field ? `<div class="barSeg field" style="height:${fieldH}px" title="In-Field: ${numFmt.format(field)}"></div>` : ""}
+          ${other ? `<div class="barSeg other" style="height:${otherH}px" title="Other: ${numFmt.format(other)}"></div>` : ""}
+        </div>
+        <div class="barLbl" title="${esc(row.component || "Other")}">${esc(label || "Other")}</div>
+      </div>`;
+    }).join("");
+
+    const tableHtml = `
+      <table class="compTotalsTable">
+        <thead>
+          <tr>
+            <th>Component</th>
+            <th>Category</th>
+            <th>Tickets</th>
+            <th>Share</th>
+            <th>Pre-Delivery</th>
+            <th>In-Field</th>
+            <th>Other</th>
+            <th>Cost AUD</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${enriched.map(row => `<tr>
+            <td>${esc(row.component || "Other")}</td>
+            <td>${esc(row.category || "Other")}</td>
+            <td>${numFmt.format(Number(row.total) || 0)}</td>
+            <td>${pctValue(Number(row.ticketShare) || 0) || "0.0%"}</td>
+            <td>${numFmt.format(Number(row.pre) || 0)}</td>
+            <td>${numFmt.format(Number(row.field) || 0)}</td>
+            <td>${numFmt.format(Number(row.other) || 0)}</td>
+            <td>${moneyFmt.format(Number(row.cost) || 0)}</td>
+          </tr>`).join("")}
+          <tr class="totalRow">
+            <td>Total</td>
+            <td></td>
+            <td>${numFmt.format(totals.tickets)}</td>
+            <td>${totals.tickets ? "100.0%" : "0.0%"}</td>
+            <td>${numFmt.format(totals.pre)}</td>
+            <td>${numFmt.format(totals.field)}</td>
+            <td>${numFmt.format(totals.other)}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+
+    target.innerHTML = `
+      <div class="compTotalsHead">
+        <div class="compTotalsTitle">Static totals · Top 8 components <small>${esc(seriesLabel)}</small></div>
+        <div class="compTotalsMeta">Unique tickets, no monthly bucketing</div>
+      </div>
+      <div class="compTotalsBars">${barsHtml}</div>
+      <div class="compTotalsLegend">
+        <span><span class="swatch pre"></span>Pre-Delivery (${numFmt.format(totals.pre)})</span>
+        <span><span class="swatch field"></span>In-Field (${numFmt.format(totals.field)})</span>
+        <span><span class="swatch other"></span>Other (${numFmt.format(totals.other)})</span>
+      </div>
+      ${tableHtml}
+    `;
+  }
+
+  // ============ RENDER: Repairer table ============
+  function renderCompTooltip(compName, compCat, compKey, anchorEl){
+    const el = ensureCompTooltipEl();
+    if (!state.partsClassifiedIndex) {
+      el.innerHTML = `<div class="compTooltipName">${esc(compName)}</div><div class="compTooltipHint">Loading monthly counts...</div>`;
+    } else {
+      const stats = computeComponentStatic(compKey);
+      const scope = state.compTooltipScope;
+      const buckets = computeComponentMonthly(compKey, scope, 12);
+      const total = buckets.reduce((sum, bucket) => sum + bucket.count, 0);
+      const max = Math.max(...buckets.map(bucket => bucket.count), 1);
+      const scopeLbl = scope === "FIELD" ? "In-Field" : "Pre-Delivery";
+      const scopeCls = scope === "FIELD" ? "field" : "";
+      const focusCount = scope === "FIELD" ? stats.field : stats.pre;
+      const barsHtml = buckets.map(bucket => {
+        const height = Math.max(8, (bucket.count / max) * 116);
+        return `<div class="compTooltipBar ${scopeCls}">
+          <div class="val">${numFmt.format(bucket.count)}</div>
+          <div class="bar" style="height:${height}px" title="${bucket.label}: ${numFmt.format(bucket.count)}"></div>
+          <div class="lbl">${bucket.label}</div>
+        </div>`;
+      }).join("");
+      el.style.setProperty("--cols", buckets.length);
+      el.innerHTML = `
+        <div class="compTooltipHead">
+          <div class="compTooltipName">${esc(compName)}</div>
+          <div class="compTooltipMode ${scopeCls}">${scopeLbl}</div>
+        </div>
+        <div class="compTooltipTotal">${numFmt.format(total)} tickets - last 12 months - ${esc(compCat)}</div>
+        <div class="compTooltipBars">${barsHtml}</div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:10.5px;color:#cbd5e1;font-weight:600;margin-top:10px">
+          <div>Total</div><div>${numFmt.format(stats.total)}</div>
+          <div>Pre-Delivery</div><div>${numFmt.format(stats.pre)}</div>
+          <div>In-Field</div><div>${numFmt.format(stats.field)}</div>
+          <div>Other</div><div>${numFmt.format(stats.other)}</div>
+        </div>
+        <div class="compTooltipHint">${scopeLbl}: ${numFmt.format(focusCount)} - click row to toggle Pre-Delivery / In-Field monthly trend</div>
+      `;
+    }
+    positionCompTooltip(el, anchorEl);
+    el.classList.add("visible");
+  }
+
+  function renderComponentTotals(rows){
+    const target = $("compTotalsWrap");
+    if (!target) return;
+    if (!state.partsClassifiedIndex) {
+      target.innerHTML = `<div class="compTotalsHead">
+        <div class="compTotalsTitle">Monthly component volume <small>loading...</small></div>
+      </div>`;
+      return;
+    }
+    if (state.partsClassifiedIndex.size === 0) {
+      const err = state.partsClassifiedError;
+      const attempts = Array.isArray(err)
+        ? `<ul style="margin:6px 0 0 18px;padding:0;font-size:11px;color:var(--muted)">${err.map(a => `<li>${esc(a.url || "?")} - ${esc(a.reason || "failed")}</li>`).join("")}</ul>`
+        : "";
+      target.innerHTML = `<div class="compTotalsHead">
+        <div class="compTotalsTitle" style="color:#b91c1c">Monthly component chart unavailable</div>
+      </div>
+      <div style="font-size:11.5px;color:var(--muted);line-height:1.5">
+        The parts classification CSV could not be loaded, so the monthly component chart cannot be computed.
+        ${attempts}
+      </div>`;
+      return;
+    }
+
+    const seriesLabel = state.selected === "ALL" ? "All series" : state.selected;
+    const months = 12;
+    const now = new Date();
+    const buckets = [];
+    for (let i = months - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      buckets.push({
+        y: d.getFullYear(),
+        m: d.getMonth(),
+        label: d.toLocaleString("en-AU", { month:"short" }),
+        yearLabel: String(d.getFullYear()).slice(-2),
+        pre: 0,
+        field: 0,
+        other: 0,
+        preSet: new Set(),
+        fieldSet: new Set(),
+        otherSet: new Set(),
+      });
+    }
+
+    const bucketIndex = new Map();
+    buckets.forEach((bucket, index) => bucketIndex.set(`${bucket.y}-${bucket.m}`, index));
+
+    for (const row of rows) {
+      const key = componentKey(row.component, row.category);
+      const classifiedRows = state.partsClassifiedIndex.get(key) || [];
+      for (const line of classifiedRows) {
+        const date = classifiedRowDate(line);
+        if (!date) continue;
+        const idx = bucketIndex.get(`${date.getFullYear()}-${date.getMonth()}`);
+        if (idx == null) continue;
+        if (state.selected !== "ALL") {
+          const series = classifiedRowSeries(line);
+          if (series !== state.selected) continue;
+        }
+        const ticketId = clean(line["Ticket ID"]);
+        if (!ticketId) continue;
+        const scope = classifiedRowScope(line);
+        const bucket = buckets[idx];
+        if (scope === "PRE") {
+          if (!bucket.preSet.has(ticketId)) {
+            bucket.preSet.add(ticketId);
+            bucket.pre++;
+          }
+        } else if (scope === "FIELD") {
+          if (!bucket.fieldSet.has(ticketId)) {
+            bucket.fieldSet.add(ticketId);
+            bucket.field++;
+          }
+        } else {
+          if (!bucket.otherSet.has(ticketId)) {
+            bucket.otherSet.add(ticketId);
+            bucket.other++;
+          }
+        }
+      }
+    }
+
+    const totals = buckets.reduce((acc, bucket) => {
+      acc.pre += bucket.pre;
+      acc.field += bucket.field;
+      acc.other += bucket.other;
+      return acc;
+    }, { pre:0, field:0, other:0 });
+    const maxTotal = Math.max(...buckets.map(bucket => bucket.pre + bucket.field + bucket.other), 1);
+    const barsHtml = buckets.map(bucket => {
+      const total = bucket.pre + bucket.field + bucket.other;
+      const totalHeight = total ? Math.max(12, (total / maxTotal) * 176) : 0;
+      const preH = total ? (bucket.pre / total) * totalHeight : 0;
+      const fieldH = total ? (bucket.field / total) * totalHeight : 0;
+      const otherH = total ? (bucket.other / total) * totalHeight : 0;
+      return `<div class="compTotalsBar" title="${bucket.label} ${bucket.y}: ${numFmt.format(total)} tickets">
+        <div class="barVal">${numFmt.format(total)}</div>
+        <div class="barTrack">
+          <div class="barStack" style="height:${totalHeight}px">
+            ${bucket.pre ? `<div class="barSeg pre" style="height:${preH}px" title="Pre-Delivery: ${numFmt.format(bucket.pre)}"></div>` : ""}
+            ${bucket.field ? `<div class="barSeg field" style="height:${fieldH}px" title="In-Field: ${numFmt.format(bucket.field)}"></div>` : ""}
+            ${bucket.other ? `<div class="barSeg other" style="height:${otherH}px" title="Other: ${numFmt.format(bucket.other)}"></div>` : ""}
+          </div>
+        </div>
+        <div class="barLbl" title="${bucket.label} ${bucket.y}">${bucket.label} '${bucket.yearLabel}</div>
+      </div>`;
+    }).join("");
+
+    const tableHtml = `
+      <table class="compTotalsTable">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Pre-Delivery</th>
+            <th>In-Field</th>
+            <th>Other</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${buckets.map(bucket => `<tr>
+            <td>${bucket.label} ${bucket.y}</td>
+            <td>${numFmt.format(bucket.pre)}</td>
+            <td>${numFmt.format(bucket.field)}</td>
+            <td>${numFmt.format(bucket.other)}</td>
+            <td>${numFmt.format(bucket.pre + bucket.field + bucket.other)}</td>
+          </tr>`).join("")}
+          <tr class="totalRow">
+            <td>Total</td>
+            <td>${numFmt.format(totals.pre)}</td>
+            <td>${numFmt.format(totals.field)}</td>
+            <td>${numFmt.format(totals.other)}</td>
+            <td>${numFmt.format(totals.pre + totals.field + totals.other)}</td>
+          </tr>
+        </tbody>
+      </table>
+    `;
+
+    target.innerHTML = `
+      <div class="compTotalsHead">
+        <div class="compTotalsTitle">Monthly totals - displayed top components <small>${esc(seriesLabel)} - last ${months} months</small></div>
+        <div class="compTotalsMeta">Monthly ticket volume by claim scope</div>
+      </div>
+      <div class="compTotalsBars">${barsHtml}</div>
+      <div class="compTotalsLegend">
+        <span><span class="swatch pre"></span>Pre-Delivery (${numFmt.format(totals.pre)})</span>
+        <span><span class="swatch field"></span>In-Field (${numFmt.format(totals.field)})</span>
+        <span><span class="swatch other"></span>Other (${numFmt.format(totals.other)})</span>
+      </div>
+      ${tableHtml}
+    `;
+  }
+
+  function renderRepairers(){
+    const matchedRows = pgiMatchedRows(state.viewRows);
+    const min = 5;
+    const filtered = state.repairers.filter(r => r.tickets >= min);
+    const sorted = sortRows(filtered, state.repairerSort);
+    const target = $("repRows");
+    if (!sorted.length) { target.innerHTML = `<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--muted)">No repairers with ≥ ${min} tickets in scope.</td></tr>`; return; }
+    target.innerHTML = sorted.map(r => {
+      const rate = r.rejectionRate;
+      const cls = rate>=0.25 ? "hi" : rate>=0.10 ? "md" : "lo";
+      const width = Math.min(100, Math.max(3, rate*100 * 2)); // 50% rate = full bar
+      const rowAlert = rate>=0.35 && r.tickets>=15 ? "cellAlert" : (rate>=0.25 && r.tickets>=20 ? "cellWarn" : "");
+      const nameFlag = rate>=0.35 && r.tickets>=15
+        ? ` <span class="flagChip" title="Critical rejection rate">CRITICAL</span>`
+        : rate>=0.25 && r.tickets>=20
+          ? ` <span class="flagChip warning" title="Elevated rejection rate">REVIEW</span>`
+          : "";
+      return `<tr>
+        <td class="${rowAlert}"><strong>${r.name}</strong>${nameFlag}</td>
+        <td class="number">${numFmt.format(r.tickets)}</td>
+        <td class="number">${numFmt.format(r.rejected)}</td>
+        <td class="number">
+          <div class="repRateCell">
+            <div class="repRateBar"><div class="repRateBarFill ${cls}" style="width:${width}%"></div></div>
+            <span style="min-width:52px">${rejectionBadge(rate)}</span>
+          </div>
+        </td>
+        <td class="number">${moneyFmt.format(r.cost)}</td>
+        <td>${r.topSeries}</td>
+      </tr>`;
+    }).join("");
+    // arrows
+    document.querySelectorAll("th[data-repsort]").forEach(th => {
+      const arrow = th.querySelector(".arrow");
+      const key = th.getAttribute("data-repsort");
+      th.classList.toggle("sortActive", key===state.repairerSort.key);
+      arrow.textContent = key===state.repairerSort.key ? (state.repairerSort.dir==="asc"?"▲":"▼") : "";
+    });
+
+    // overall
+    const totalT = matchedRows.length;
+    const totalR = matchedRows.filter(row => isRejectedStatus(getRejection(row))).length;
+    $("repRejPct").textContent = totalT ? `${(totalR/totalT*100).toFixed(1)}%` : "–";
+  }
+
+  // ============ RENDER: series rejection ============
+  function renderSeriesRejection(){
+    const rows = state.summary.slice().sort((a,b)=> (b.rejectionRate||0) - (a.rejectionRate||0));
+    const target = $("seriesRejRows");
+    if (!rows.length) { target.innerHTML = `<tr><td colspan="5" class="empty">No data.</td></tr>`; return; }
+    target.innerHTML = rows.map(r => `<tr>
+      <td><strong>${r.series}</strong></td>
+      <td class="number">${numFmt.format(r.tickets)}</td>
+      <td class="number">${numFmt.format(r.fullyRej||0)}</td>
+      <td class="number">${numFmt.format(r.partRej||0)}</td>
+      <td class="number">${rejectionBadge(r.rejectionRate)}</td>
+    </tr>`).join("");
+  }
+
+  // ============ RENDER: base card ============
+  function renderBaseCard(){
+    const trackedAutoKeys = Object.keys(state.autoBaseBySeries).filter(isTrackedSeries);
+    const trackedSalesKeys = Object.keys(state.salesBaseBySeries).filter(isTrackedSeries);
+    const trackedDeliveredKeys = Object.keys(state.deliveredBaseBySeries).filter(isTrackedSeries);
+    const trackedOverrideKeys = Object.keys(state.soldBySeries).filter(isTrackedSeries);
+    const autoTotal = trackedAutoKeys.reduce((s,k)=>s+(Number(state.autoBaseBySeries[k])||0),0);
+    const salesTotal = trackedSalesKeys.reduce((s,k)=>s+(Number(state.salesBaseBySeries[k])||0),0);
+    const deliveredTotal = trackedDeliveredKeys.reduce((s,k)=>s+(Number(state.deliveredBaseBySeries[k])||0),0);
+    const overrideCount = trackedOverrideKeys.length;
+    const overrideTotal = trackedOverrideKeys.reduce((s,k)=>s+(Number(state.soldBySeries[k])||0),0);
+    const overrideKeys = trackedOverrideKeys;
+    const combinedKeys = new Set([...trackedAutoKeys,...overrideKeys,...trackedSalesKeys,...trackedDeliveredKeys]);
+    const effectiveTotal = combinedKeys.size
+      ? Array.from(combinedKeys).reduce((s,k)=>s+effectiveBase(k),0)
+      : 0;
+    const bd = state.vehicleBaseSummary && state.vehicleBaseSummary.seriesBaseBreakdown ? state.vehicleBaseSummary : null;
+    const shipped = bd ? (state.vehicleBaseSummary.totalShipped || 0) : 0;
+    const inStock = bd ? (state.vehicleBaseSummary.totalInStock || 0) : 0;
+    const inTransit = bd ? (state.vehicleBaseSummary.totalInTransit || 0) : 0;
+    const sapMeta = deliveredTotal > 0
+      ? `<strong>${numFmt.format(deliveredTotal)}</strong> from SAP (shipped ${numFmt.format(shipped)} · in-stock ${numFmt.format(inStock)} · in-transit ${numFmt.format(inTransit)})`
+      : `<em style="color:#b45309">SAP baseline unavailable — falling back to ${numFmt.format(autoTotal)} traced from tickets (problem vehicles only)</em>`;
+    $("baseMeta").innerHTML = overrideCount
+      ? `<strong>${numFmt.format(effectiveTotal)}</strong> effective · ${sapMeta} · ${numFmt.format(overrideTotal)} overridden across ${overrideCount} series`
+      : sapMeta;
+
+    // Populate paste box
+    $("soldPaste").value = trackedOverrideKeys.sort().map(k => `${k},${state.soldBySeries[k]}`).join("\n");
+  }
+
+  function renderBaseCard(){
+    const trackedAutoKeys = Object.keys(state.autoBaseBySeries).filter(isTrackedSeries);
+    const trackedSalesKeys = Object.keys(state.salesBaseBySeries).filter(isTrackedSeries);
+    const trackedDeliveredKeys = Object.keys(state.deliveredBaseBySeries).filter(isTrackedSeries);
+    const trackedOverrideKeys = Object.keys(state.soldBySeries).filter(isTrackedSeries);
+    const autoTotal = trackedAutoKeys.reduce((sum, key) => sum + (Number(state.autoBaseBySeries[key]) || 0), 0);
+    const salesTotal = trackedSalesKeys.reduce((sum, key) => sum + (Number(state.salesBaseBySeries[key]) || 0), 0);
+    const deliveredTotal = trackedDeliveredKeys.reduce((sum, key) => sum + (Number(state.deliveredBaseBySeries[key]) || 0), 0);
+    const overrideCount = trackedOverrideKeys.length;
+    const overrideTotal = trackedOverrideKeys.reduce((sum, key) => sum + (Number(state.soldBySeries[key]) || 0), 0);
+    const combinedKeys = new Set([...trackedAutoKeys, ...trackedOverrideKeys, ...trackedSalesKeys, ...trackedDeliveredKeys]);
+    const effectiveTotal = combinedKeys.size
+      ? Array.from(combinedKeys).reduce((sum, key) => sum + effectiveBase(key), 0)
+      : 0;
+    const bd = state.vehicleBaseSummary && state.vehicleBaseSummary.seriesBaseBreakdown ? state.vehicleBaseSummary : null;
+    const shipped = bd ? (state.vehicleBaseSummary.totalShipped || 0) : 0;
+    const inStock = bd ? (state.vehicleBaseSummary.totalInStock || 0) : 0;
+    const inTransit = bd ? (state.vehicleBaseSummary.totalInTransit || 0) : 0;
+    const sapMeta = deliveredTotal > 0
+      ? (bd
+          ? `<strong>${numFmt.format(salesTotal || shipped)}</strong> sold with valid PGI (base ${numFmt.format(deliveredTotal)} = shipped ${numFmt.format(shipped)} · in-stock ${numFmt.format(inStock)} · in-transit ${numFmt.format(inTransit)})`
+          : `<strong>${numFmt.format(salesTotal || deliveredTotal)}</strong> sold with valid PGI`)
+      : `<em style="color:#b45309">SAP baseline unavailable - falling back to ${numFmt.format(autoTotal)} traced from tickets (problem vehicles only)</em>`;
+    $("baseMeta").innerHTML = overrideCount
+      ? `<strong>${numFmt.format(effectiveTotal)}</strong> effective sales · ${sapMeta} · ${numFmt.format(overrideTotal)} overridden across ${overrideCount} series`
+      : sapMeta;
+    $("soldPaste").value = trackedOverrideKeys.sort().map(key => `${key},${state.soldBySeries[key]}`).join("\n");
+  }
+
+  function renderBaseCard(){
+    const keys = visibleSeriesKeys();
+    const autoTotal = keys.reduce((sum, key) => sum + (Number(state.autoBaseBySeries[key]) || 0), 0);
+    const salesTotal = keys.reduce((sum, key) => sum + (Number(state.salesBaseBySeries[key]) || 0), 0);
+    const deliveredTotal = keys.reduce((sum, key) => sum + (Number(state.deliveredBaseBySeries[key]) || 0), 0);
+    const overrideKeys = keys.filter(key => Object.prototype.hasOwnProperty.call(state.soldBySeries, key));
+    const overrideCount = overrideKeys.length;
+    const overrideTotal = overrideKeys.reduce((sum, key) => sum + (Number(state.soldBySeries[key]) || 0), 0);
+    const effectiveTotal = keys.length
+      ? keys.reduce((sum, key) => sum + effectiveBase(key), 0)
+      : 0;
+    const bd = state.vehicleBaseSummary && state.vehicleBaseSummary.seriesBaseBreakdown ? state.vehicleBaseSummary : null;
+    const shipped = bd
+      ? keys.reduce((sum, key) => sum + (Number(state.vehicleBaseSummary.seriesBaseBreakdown?.[key]?.shipped) || 0), 0)
+      : 0;
+    const inStock = bd
+      ? keys.reduce((sum, key) => sum + (Number(state.vehicleBaseSummary.seriesBaseBreakdown?.[key]?.inStock) || 0), 0)
+      : 0;
+    const inTransit = bd
+      ? keys.reduce((sum, key) => sum + (Number(state.vehicleBaseSummary.seriesBaseBreakdown?.[key]?.inTransit) || 0), 0)
+      : 0;
+    const sapMeta = deliveredTotal > 0
+      ? (bd
+          ? `<strong>${numFmt.format(salesTotal || shipped)}</strong> sold with valid PGI (base ${numFmt.format(deliveredTotal)} = shipped ${numFmt.format(shipped)} Â· in-stock ${numFmt.format(inStock)} Â· in-transit ${numFmt.format(inTransit)})`
+          : `<strong>${numFmt.format(salesTotal || deliveredTotal)}</strong> sold with valid PGI`)
+      : `<em style="color:#b45309">SAP baseline unavailable - falling back to ${numFmt.format(autoTotal)} traced from tickets (problem vehicles only)</em>`;
+    $("baseMeta").innerHTML = overrideCount
+      ? `<strong>${numFmt.format(effectiveTotal)}</strong> effective sales Â· ${sapMeta} Â· ${numFmt.format(overrideTotal)} overridden across ${overrideCount} series`
+      : sapMeta;
+    $("soldPaste").value = overrideKeys.sort().map(key => `${key},${state.soldBySeries[key]}`).join("\n");
+  }
+
+  // ============ INSIGHT RULES ENGINE ============
+  const SEV_RANK = { critical:0, warning:1, info:2 };
+
+  function generateInsights(){
+    return [];
+    const insights = [];
+    const summary = state.summary;
+    if (!summary.length) return insights;
+
+    // Fleet-level baselines
+    const validAvgRepairs = summary.map(s=>s.avgRepairs).filter(Number.isFinite);
+    const medianAvgRepairs = median(validAvgRepairs) || 0;
+    const validCostPerVehicle = summary.filter(s=>s.vehicles>=10).map(s=>s.costPerVehicle).filter(Number.isFinite);
+    const medianCostPerVehicle = median(validCostPerVehicle) || 0;
+    const totalFleetTickets = summary.reduce((sum, item) => sum + (Number(item.tickets) || 0), 0);
+    const totalFleetCost = summary.reduce((a,b)=>a+b.cost,0);
+
+    // ---- Per-series rules ----
+    for (const s of summary) {
+      // R1: high volume + high failure rate + big spend
+      if (s.vehicles >= 80 && s.cost >= 40000) {
+        insights.push({
+          severity:"critical", target:s.series, category:"HIGH VOLUME & HIGH COST",
+          headline:`${s.series} — sells well but fails a lot`,
+          detail:`${numFmt.format(s.sold)} sold · ${(s.repairRate*100).toFixed(0)}% repair rate · ${moneyFmt.format(s.cost)} warranty spend. Fleet-wide problem, not a niche one.`,
+        });
+      }
+      // R2: rate 2× fleet median with meaningful base
+      else if (Number.isFinite(s.avgRepairs) && medianAvgRepairs>0 && s.avgRepairs >= medianAvgRepairs*1.5 && s.vehicles >= 15 && s.tickets >= 20) {
+        insights.push({
+          severity:"critical", target:s.series, category:"REPEAT REPAIR OUTLIER",
+          headline:`${s.series} breaks ${(s.repairRate/medianRate).toFixed(1)}× the fleet median`,
+          detail:`${(s.repairRate*100).toFixed(0)}% repair rate vs ${(medianRate*100).toFixed(0)}% fleet median. ${numFmt.format(s.vehicles)}/${numFmt.format(s.sold)} vehicles repaired.`,
+        });
+      }
+
+      // R3: chronic rework
+      if (Number.isFinite(s.avgRepairs) && s.avgRepairs >= 2.0 && s.tickets >= 25) {
+        insights.push({
+          severity:"warning", target:s.series, category:"CHRONIC REWORK",
+          headline:`${s.series} comes back repeatedly`,
+          detail:`${s.avgRepairs.toFixed(1)} tickets per repaired van — first-fix isn't sticking or there's a systemic defect.`,
+        });
+      }
+
+      // R4: cost per vehicle outlier
+      if (Number.isFinite(s.costPerVehicle) && medianCostPerVehicle>0 && s.costPerVehicle >= medianCostPerVehicle*2 && s.vehicles >= 15) {
+        insights.push({
+          severity:"warning", target:s.series, category:"COST OUTLIER",
+          headline:`${s.series} costs ${(s.costPerSold/medianCostPerSold).toFixed(1)}× fleet median per unit`,
+          detail:`${moneyFmt.format(s.costPerSold)} per vehicle vs ${moneyFmt.format(medianCostPerSold)} fleet median.`,
+        });
+      }
+
+      // R5: early failure spike
+      const totalDated = s.buckets.reduce((a,b)=>a+b,0);
+      if (totalDated >= 25) {
+        const earlyShare = s.buckets[0] / totalDated;
+        if (earlyShare >= 0.40) {
+          insights.push({
+            severity:"warning", target:s.series, category:"EARLY FAILURE",
+            headline:`${s.series} fails within 30 days of delivery`,
+            detail:`${(earlyShare*100).toFixed(0)}% of dated tickets are in the first 30 days (${s.buckets[0]} of ${totalDated}). Suggests PDI, install, or transit-damage issue rather than durability.`,
+          });
+        }
+        // R5b: late failure — durability
+        const lateShare = s.buckets[3] / totalDated;
+        if (lateShare >= 0.55 && s.buckets[3] >= 40) {
+          insights.push({
+            severity:"info", target:s.series, category:"LONG-TAIL FAILURE",
+            headline:`${s.series} failures skew late (180+ days)`,
+            detail:`${(lateShare*100).toFixed(0)}% of tickets happen after 180 days — likely component durability / supplier lifespan rather than build quality.`,
+          });
+        }
+      }
+
+      // R6: rejection hotspot
+      if (Number.isFinite(s.rejectionRate) && s.rejectionRate >= 0.25 && s.tickets >= 20) {
+        insights.push({
+          severity:"warning", target:s.series, category:"CLAIM REJECTION",
+          headline:`${s.series} claims rejected at ${(s.rejectionRate*100).toFixed(0)}%`,
+          detail:`${s.fullyRej||0} fully + ${s.partRej||0} partially rejected out of ${numFmt.format(s.tickets)} tickets. Dealer documentation or eligibility gap.`,
+        });
+      }
+
+      // R7: dominant cost concentration
+      if (s.cost >= totalFleetCost * 0.30 && totalFleetCost > 0) {
+        insights.push({
+          severity:"critical", target:s.series, category:"COST CONCENTRATION",
+          headline:`${s.series} alone is ${((s.cost/totalFleetCost)*100).toFixed(0)}% of fleet warranty spend`,
+          detail:`${moneyFmt.format(s.cost)} of ${moneyFmt.format(totalFleetCost)} total. Any improvement here moves the whole number.`,
+        });
+      }
+
+    }
+
+    // ---- Repairer rules ----
+    const busyRepairers = state.repairers.filter(r=>r.tickets >= 10);
+    for (const r of busyRepairers) {
+      if (r.rejectionRate >= 0.35 && r.tickets >= 15) {
+        insights.push({
+          severity:"critical", target:r.name, targetType:"repairer", category:"REPAIRER REJECTION",
+          headline:`${r.name} — ${(r.rejectionRate*100).toFixed(0)}% of claims rejected`,
+          detail:`${r.rejected} rejected out of ${r.tickets} tickets. Pattern is consistent enough to be a process problem, not bad luck.`,
+        });
+      } else if (r.rejectionRate >= 0.25 && r.tickets >= 20) {
+        insights.push({
+          severity:"warning", target:r.name, targetType:"repairer", category:"REPAIRER REJECTION",
+          headline:`${r.name} — elevated rejection rate`,
+          detail:`${(r.rejectionRate*100).toFixed(0)}% rejection across ${r.tickets} tickets. Worth a compliance review.`,
+        });
+      }
+    }
+
+    // ---- Component dominance (only when a specific series selected) ----
+    if (state.selected !== "ALL" && state.partsFailureSummary) {
+      const top = componentRowsForSelection(state.partsFailureSummary, state.selected)[0];
+      if (top && Number(top.ticketShare) >= 0.20) {
+        insights.push({
+          severity:"info", target:state.selected, category:"DOMINANT COMPONENT",
+          headline:`${top.component} drives ${(top.ticketShare*100).toFixed(0)}% of ${state.selected} tickets`,
+          detail:`One part appears in 1 in ${Math.round(1/top.ticketShare)} tickets. Fix that component and the whole series improves.`,
+        });
+      }
+    }
+
+    // Sort: critical first, then warning, then info; within severity, keep insertion order (roughly by series ticket volume)
+    return insights.sort((a,b) => SEV_RANK[a.severity] - SEV_RANK[b.severity]);
+  }
+
+  // Per-series flag lookup (used inline on rows/tables)
+  function flagsForSeries(series){
+    const list = state._insightCache || [];
+    return list.filter(i => i.target === series && i.targetType !== "repairer");
+  }
+  function highestSeverity(flags){
+    if (flags.some(f=>f.severity==="critical")) return "critical";
+    if (flags.some(f=>f.severity==="warning")) return "warning";
+    if (flags.length) return "info";
+    return "";
+  }
+
+  const ICON_ALERT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2L2 20h20L12 2z"/><path d="M12 9v5"/><circle cx="12" cy="17.5" r=".8" fill="currentColor"/></svg>`;
+  const ICON_INFO = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 8v.5M11 12h1v5h1"/></svg>`;
+  const ICON_BOLT = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>`;
+
+  function iconFor(sev){
+    if (sev === "info") return ICON_INFO;
+    return ICON_ALERT;
+  }
+
+  // ============ RENDER: Insights ============
+  function renderInsights(){
+    const list = state._insightCache = generateInsights();
+    const grid = $("insightGrid");
+    const badge = $("insightCount");
+    if (!grid || !badge) return;
+
+    const crit = list.filter(i=>i.severity==="critical").length;
+    const warn = list.filter(i=>i.severity==="warning").length;
+    const info = list.filter(i=>i.severity==="info").length;
+
+    if (!list.length) {
+      badge.textContent = "all clear";
+      badge.className = "pill green";
+      grid.innerHTML = `<div class="insightEmpty"><strong>No red flags in the current scope.</strong><br>Rework, timing, cost concentration, and rejection all sit within fleet norms.</div>`;
+      return;
+    }
+
+    const parts = [];
+    if (crit) parts.push(`<strong style="color:#b91c1c">${crit}</strong> critical`);
+    if (warn) parts.push(`<strong style="color:#a05a00">${warn}</strong> warning`);
+    if (info) parts.push(`<strong style="color:${'var(--blue2)'}">${info}</strong> note`);
+    badge.innerHTML = parts.join(" · ");
+    badge.className = "pill" + (crit ? " red" : warn ? " amber" : " blue");
+    if (crit) badge.style.cssText = "background:var(--redSoft);color:#b91c1c;border-color:#fecaca;margin-left:8px";
+    else if (warn) badge.style.cssText = "background:var(--amberSoft);color:#a05a00;border-color:#facc9d;margin-left:8px";
+    else badge.style.cssText = "background:var(--blueSoft);color:var(--blue2);border-color:#c9dcff;margin-left:8px";
+
+    grid.className = "insightGrid";
+    grid.innerHTML = list.map(i => {
+      const jumpAttr = i.targetType === "repairer" ? "" : `data-series="${i.target}"`;
+      return `<div class="insightCard ${i.severity==="critical"?"":i.severity}" ${jumpAttr}>
+        <div class="insightIcon">${iconFor(i.severity)}</div>
+        <div class="insightBody">
+          <div class="insightHead"><span class="insightTag">${i.category}</span>${i.headline}</div>
+          <div class="insightDetail">${i.detail}</div>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  // ============ RENDER: analyst note for selected series ============
+  function renderAnalystNote(){
+    const wrap = $("analystNoteWrap");
+    if (state.selected === "ALL") {
+      // top-level: summarize fleet health
+      const list = state._insightCache || [];
+      const crit = list.filter(i=>i.severity==="critical");
+      if (!list.length) {
+        wrap.innerHTML = `<div class="analystNote good">
+          <div class="analystNoteIcon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="analystNoteBody"><strong>Fleet health looks stable.</strong> No models are flagged for repeat repairs, cost concentration, timing spikes, or rejection issues in the current scope.</div></div>`;
+        return;
+      }
+      if (crit.length) {
+        const worst = crit[0];
+        wrap.innerHTML = `<div class="analystNote critical">
+          <div class="analystNoteIcon">${ICON_BOLT}</div>
+          <div class="analystNoteBody"><strong>Top fleet issue:</strong> ${worst.headline}. ${worst.detail} Pick a series above to drill in.</div></div>`;
+        return;
+      }
+      wrap.innerHTML = `<div class="analystNote">
+        <div class="analystNoteIcon">${ICON_ALERT}</div>
+        <div class="analystNoteBody"><strong>${list.length} advisory items open.</strong> No models are in the critical bucket — issues are localized rather than fleet-wide.</div></div>`;
+      return;
+    }
+
+    const flags = flagsForSeries(state.selected);
+    if (!flags.length) {
+      wrap.innerHTML = `<div class="analystNote good">
+        <div class="analystNoteIcon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="analystNoteBody"><strong>${state.selected} is within fleet norms.</strong> Rework, cost, timing, and rejection metrics don't cross the alert thresholds.</div></div>`;
+      return;
+    }
+    const critFlags = flags.filter(f=>f.severity==="critical");
+    const noteCls = critFlags.length ? "critical" : "";
+    const bullets = flags.slice(0,3).map(f => `<div style="margin-top:6px"><strong>${f.category}:</strong> ${f.detail}</div>`).join("");
+    wrap.innerHTML = `<div class="analystNote ${noteCls}">
+      <div class="analystNoteIcon">${critFlags.length ? ICON_BOLT : ICON_ALERT}</div>
+      <div class="analystNoteBody"><strong>${state.selected} — ${flags.length} flag${flags.length>1?"s":""} raised${critFlags.length?", including "+critFlags.length+" critical":""}.</strong>${bullets}</div></div>`;
+  }
+
+  // ============ RENDER: main ============
+  function render(){
+    state.viewRows = pgiMatchedRows(scopedRows());
+    state.summary = summaryBySeries(state.viewRows);
+    // Dashboard logic follows the sold-vehicle workbook:
+    // start from valid-PGI vehicles, then only keep tickets matched to them.
+    const matchedRows = state.viewRows;
+    state.repairers = repairerAggregation(matchedRows);
+    if (state.selected !== "ALL" && !state.summary.some(r => r.series === state.selected)) {
+      state.selected = "ALL";
+    }
+
+    renderScopeButtons();
+    renderInsights();
+    renderChips();
+    renderLeaderboard();
+    renderSeriesTable();
+    renderDetail();
+    renderAnalystNote();
+    renderComponents();
+    renderRepairers();
+    renderSeriesRejection();
+    renderBaseCard();
+
+    // status pills
+    $("sourceCount").textContent = numFmt.format(pgiMatchedRows(sourceRowsInScope()).length);
+    $("ticketCount").textContent = numFmt.format(uniqueTicketCount(matchedRows));
+    $("seriesCount").textContent = numFmt.format(state.summary.length);
+    $("repairerCount").textContent = numFmt.format(state.repairers.filter(r=>r.tickets>=5).length);
+  }
+
+  function selectSeries(s){
+    state.selected = s;
+    // regenerate insights because component-dominance rule depends on selection
+    renderInsights();
+    renderChips();
+    renderLeaderboard();
+    renderSeriesTable();
+    renderDetail();
+    renderAnalystNote();
+    renderComponents();
+  }
+
+  function selectScope(scope){
+    if (!Object.prototype.hasOwnProperty.call(CLAIM_SCOPES, scope)) return;
+    state.scope = scope;
+    render();
+  }
+
+  // ============ EVENTS ============
+  function wireEvents(){
+    // series selection (chips, leaderboard rows, table rows)
+    document.addEventListener("click", (ev) => {
+      const compModeEl = ev.target.closest("[data-comp-mode]");
+      if (compModeEl) {
+        const mode = compModeEl.getAttribute("data-comp-mode");
+        if (mode && mode !== state.compMode) {
+          state.compMode = mode;
+          renderComponents();
+        }
+        return;
+      }
+      const scopeEl = ev.target.closest("[data-scope]");
+      if (scopeEl) {
+        selectScope(scopeEl.getAttribute("data-scope"));
+        return;
+      }
+      const el = ev.target.closest("[data-series]");
+      if (el) {
+        const s = el.getAttribute("data-series");
+        if (s) selectSeries(s);
+      }
+    });
+
+    // series table sort
+    document.querySelectorAll("th[data-sort]").forEach(th => {
+      th.addEventListener("click", () => {
+        const key = th.getAttribute("data-sort");
+        if (state.seriesSort.key === key) {
+          state.seriesSort.dir = state.seriesSort.dir==="asc" ? "desc" : "asc";
+        } else {
+          state.seriesSort.key = key;
+          state.seriesSort.dir = key==="series" ? "asc" : "desc";
+        }
+        renderSeriesTable();
+        renderChips();
+        renderLeaderboard();
+      });
+    });
+
+    // repairer table sort
+    document.querySelectorAll("th[data-repsort]").forEach(th => {
+      th.addEventListener("click", () => {
+        const key = th.getAttribute("data-repsort");
+        if (state.repairerSort.key === key) {
+          state.repairerSort.dir = state.repairerSort.dir==="asc" ? "desc" : "asc";
+        } else {
+          state.repairerSort.key = key;
+          state.repairerSort.dir = key==="name" ? "asc" : "desc";
+        }
+        renderRepairers();
+      });
+    });
+
+    // base editor
+    $("baseToggle").addEventListener("click", () => {
+      $("baseEditor").classList.toggle("open");
+    });
+    $("applySoldBtn").addEventListener("click", () => {
+      const map = {};
+      String($("soldPaste").value||"").split(/\r?\n/).forEach(line => {
+        const m = line.trim().match(/^([A-Z]{2,4})\s*[,:\t ]\s*([\d,]+)/i);
+        if (m) {
+          const key = normalizeSeriesCode(m[1]);
+          map[key] = (map[key] || 0) + (Math.max(0, parseInt(m[2].replace(/,/g,""),10)||0));
+        }
+      });
+      state.soldBySeries = map;
+      localStorage.setItem(SOLD_KEY, JSON.stringify(map));
+      render();
+    });
+    $("clearSoldBtn").addEventListener("click", () => {
+      state.soldBySeries = {};
+      localStorage.removeItem(SOLD_KEY);
+      render();
+    });
+
+    $("reloadBtn").addEventListener("click", () => loadAll());
+    $("exportBtn").addEventListener("click", exportExcel);
+  }
+
+  async function exportExcel(){
+    const overlay = $("loadingOverlay");
+    if (overlay) overlay.classList.add("show");
+    try {
+      await loadPartsClassifiedRows();
+      exportExcelWorkbook();
+    } finally {
+      if (overlay) overlay.classList.remove("show");
+    }
+  }
+
+  function exportExcelWorkbook(){
+    const exportedAt = new Date().toISOString().slice(0,19).replace("T"," ");
+    const scope = CLAIM_SCOPES[state.scope]?.label || "Total";
+    const selected = state.selected === "ALL" ? "All Series" : state.selected;
+    const metricRows = sortRows(state.summary, state.seriesSort);
+    const leaderboardRows = sortRows(state.summary, { key:"ticketShare", dir:"desc" });
+    const selectedRows = rowsForSelectedSeries();
+    const selectedTicketMap = ticketMapForRows(selectedRows);
+    const selectedTicketIds = new Set(selectedTicketMap.keys());
+    const detail = selectedSummaryData();
+    const timingLabels = ["0 - 30 days","31 - 90 days","91 - 180 days","180+ days"];
+    const timingBuckets = detail?.buckets || [0,0,0,0];
+    const timingTotal = timingBuckets.reduce((a,b)=>a+b,0);
+    const timingSources = detail?.timingSources || {};
+    const componentRows = componentRowsForSelection(state.partsFailureSummary, state.selected).slice(0, 50);
+    const componentNames = new Set(componentRows.map(r => componentKey(r.component, r.category)));
+    const componentDetailRows = (state.partsClassifiedRows || [])
+      .filter(row => selectedTicketIds.has(clean(row["Ticket ID"])))
+      .filter(row => {
+        if (!componentNames.size) return true;
+        const component = row["Matched Keyword"] || row["Part Category"] || "Other";
+        return componentNames.has(componentKey(titleCaseText(component), row["Part Category"] || "Other"));
+      });
+    const repairerRows = sortRows(state.repairers.filter(r=>r.tickets>=5), state.repairerSort);
+    const repairerNames = new Set(repairerRows.map(r => r.name));
+    const rejectionRows = state.summary.slice().sort((a,b)=> (b.rejectionRate||0) - (a.rejectionRate||0));
+    const baseKeys = Array.from(new Set([...Object.keys(state.autoBaseBySeries), ...Object.keys(state.soldBySeries), ...Object.keys(state.salesBaseBySeries), ...Object.keys(state.deliveredBaseBySeries)]))
+      .map(normalizeSeriesCode)
+      .filter(isTrackedSeries)
+      .filter(s => !isExcludedSeries(s))
+      .filter((s, i, all) => all.indexOf(s) === i)
+      .sort((a,b)=>a.localeCompare(b));
+
+    const sheets = [
+      {
+        name:"Export Scope",
+        rows:[
+          ["Field","Value"],
+          ["Exported At", exportedAt],
+          ["Claim Scope", scope],
+          ["Selected Series", selected],
+          ["Tickets In Scope", state.viewRows.length],
+          ["Series In Scope", state.summary.length],
+          ["Repairers In Scope", state.repairers.filter(r=>r.tickets>=5).length],
+          ["Parts Summary Source", PARTS_FAILURE_SUMMARY_CACHE],
+          ["Ticket Cost Source", PARTS_COST_CACHE],
+          ["Parts Detail Source", PARTS_CLASSIFIED_CSV],
+        ],
+      },
+      {
+        name:"Leaderboard",
+        rows:[
+          ["Model Series","CSV Vehicle Base","Sales Rate","Repaired Chassis","Repair Tickets","Ticket Rate","Avg Tickets Per Chassis","Median Failure Days","Cost Per Ticket AUD","Warranty Cost AUD"],
+          ...leaderboardRows.map(r => [
+            r.series, r.csvBase || 0, pctValue(r.salesRate), r.vehicles, r.tickets, pctValue(r.ticketShare),
+            r.avgRepairs==null?"":round(r.avgRepairs, 4),
+            r.medianAge==null?"":Math.round(r.medianAge),
+            r.costPerTicket==null?"":round(r.costPerTicket, 2),
+            round(r.cost, 2),
+          ]),
+        ],
+      },
+      {
+        name:"Full Metrics",
+        rows:[
+          ["Model Series","CSV Vehicle Base","Sales Rate","Repaired Chassis","Tickets","Ticket Rate","Avg Per Chassis","Warranty Cost AUD","Cost Per Chassis AUD","Cost Per Ticket AUD","Median Failure Days","Fully Rejected","Partially Rejected","Rejection Rate","Top Dealer"],
+          ...metricRows.map(r => [
+            r.series, r.csvBase || 0, pctValue(r.salesRate), r.vehicles, r.tickets, pctValue(r.ticketShare),
+            r.avgRepairs==null?"":round(r.avgRepairs, 4),
+            round(r.cost, 2), r.costPerVehicle==null?"":round(r.costPerVehicle, 2),
+            r.costPerTicket==null?"":round(r.costPerTicket, 2),
+            r.medianAge==null?"":Math.round(r.medianAge),
+            r.fullyRej||0, r.partRej||0, pctValue(r.rejectionRate), r.topDealer || "",
+          ]),
+        ],
+      },
+      {
+        name:"Ticket Detail",
+        rows:[
+          ticketDetailHeader(),
+          ...selectedRows.map(ticketDetailRow),
+        ],
+      },
+      {
+        name:"Failure Timing",
+        rows:[
+          ["Selected Series", selected],
+          ["Dated Tickets", timingTotal],
+          ["PGI Matched", timingSources.pgi || 0],
+          [],
+          ["Timing Bucket","Tickets","Share"],
+          ...timingBuckets.map((count, i) => [
+            timingLabels[i], count, timingTotal ? pctValue(count / timingTotal) : "0.0%",
+          ]),
+        ],
+      },
+      {
+        name:"Failure Timing Detail",
+        rows:[
+          failureTimingDetailHeader(),
+          ...selectedRows.map(failureTimingDetailRow),
+        ],
+      },
+      {
+        name:"Top Components",
+        rows:[
+          ["Selected Series", selected],
+          [],
+          ["Component","Category","Tickets","Ticket Share","Pre-Delivery","In-Field","Other","Cost AUD"],
+          ...componentRows.map(r => {
+            const stats = computeComponentStatic(componentKey(r.component, r.category));
+            const total = Number(stats.total) || Number(r.tickets) || 0;
+            return [
+              r.component || "Other",
+              r.category || "Other",
+              total,
+              pctValue(Number(r.ticketShare)||0),
+              Number(stats.pre) || 0,
+              Number(stats.field) || 0,
+              Number(stats.other) || 0,
+              round(Number(r.cost)||0, 2),
+            ];
+          }),
+        ],
+      },
+      {
+        name:"Component Line Detail",
+        rows:[
+          ["Component","Part Category","Ticket ID","Series","Chassis","Serial ID","Registered Product","Product","Dealer","Repairer","Ticket Type","Created On","Posting Date","Date of Purchase","Material","Description","Order Qty","Sales Unit","Preferred Line Cost AUD","Amount Including Tax","3110 PO Date","First Issue Date","Item Rejection Status"],
+          ...componentDetailRows.map(part => {
+            const ticket = selectedTicketMap.get(clean(part["Ticket ID"])) || {};
+            const component = titleCaseText(part["Matched Keyword"] || part["Part Category"] || "Other");
+            return [
+              component,
+              part["Part Category"] || "Other",
+              part["Ticket ID"],
+              extractSeries(ticket),
+              normalizedChassis(ticket),
+              ticket["Serial ID"] || ticket.SerialID || "",
+              ticket["Registered Product"] || "",
+              ticket.Product || ticket["Product"] || "",
+              ticket["Dealer Name"] || part["Dealer Name"] || "",
+              ticket["Repair Shop"] || ticket["Service Technician"] || "",
+              ticket["Ticket Type"] || "",
+              ticket["Created On"] || ticket.CreatedOn || "",
+              ticket["Posting Date"] || "",
+              ticket["Date of Purchase"] || "",
+              part.Material || "",
+              part.Description || "",
+              asNumber(part["Order Qty"]),
+              part["Sales Unit"] || "",
+              asNumber(part["Preferred Line Cost (AUD)"]),
+              asNumber(part["Amount Including Tax"]),
+              part["3110 PO Date"] || "",
+              part["First Issue Date"] || "",
+              part["Item Rejection Status"] || "",
+            ];
+          }),
+        ],
+      },
+      {
+        name:"Repairer Rejection",
+        rows:[
+          ["Repairer","Tickets","Rejected","Fully Rejected","Partially Rejected","Rejection Rate","Warranty Cost AUD","Top Series"],
+          ...repairerRows.map(r => [
+            r.name, r.tickets, r.rejected, r.fullyRej || 0, r.partRej || 0,
+            pctValue(r.rejectionRate), round(r.cost, 2), r.topSeries,
+          ]),
+        ],
+      },
+      {
+        name:"Repairer Ticket Detail",
+        rows:[
+          ticketDetailHeader(),
+          ...selectedRows
+            .filter(row => repairerNames.has(clean(row["Repair Shop"] || row["Repair Shop Name"] || row["Service Technician"])))
+            .map(ticketDetailRow),
+        ],
+      },
+      {
+        name:"Model Rejection",
+        rows:[
+          ["Series","Tickets","Fully Rejected","Partially Rejected","Any Rejected","Rejection Rate"],
+          ...rejectionRows.map(r => [
+            r.series, r.tickets, r.fullyRej||0, r.partRej||0, r.anyRej||0, pctValue(r.rejectionRate),
+          ]),
+        ],
+      },
+      {
+        name:"Rejection Ticket Detail",
+        rows:[
+          [...ticketDetailHeader(), "Rejection Status"],
+          ...selectedRows
+            .filter(row => isRejectedStatus(getRejection(row)))
+            .map(row => [...ticketDetailRow(row), getRejection(row)]),
+        ],
+      },
+      {
+        name:"Vehicle Base",
+        rows:[
+          ["Series","Effective Sales","SAP Sales (Valid PGI)","SAP Delivered (Total)","SAP Shipped","SAP In-Stock","SAP In-Transit","Traced from Tickets","Manual Override"],
+          ...baseKeys.map(series => {
+            const bd = state.vehicleBaseSummary && state.vehicleBaseSummary.seriesBaseBreakdown
+              ? state.vehicleBaseSummary.seriesBaseBreakdown[series] || {}
+              : {};
+            return [
+              series,
+              effectiveBase(series),
+              Number(state.salesBaseBySeries[series]) || 0,
+              Number(state.deliveredBaseBySeries[series]) || 0,
+              Number(bd.shipped) || 0,
+              Number(bd.inStock) || 0,
+              Number(bd.inTransit) || 0,
+              Number(state.autoBaseBySeries[series]) || 0,
+              Object.prototype.hasOwnProperty.call(state.soldBySeries, series) ? Number(state.soldBySeries[series]) || 0 : "",
+            ];
+          }),
+        ],
+      },
+      {
+        name:"Vehicle Detail",
+        rows:[
+          ["Series","Chassis","Serial ID","Registered Product","Product","Ticket Count","First Created On","Last Created On","Latest Dealer","Latest Repairer","Latest Ticket ID","Latest Ticket Type"],
+          ...vehicleDetailRows(selectedRows),
+        ],
+      },
+    ];
+
+    const xml = buildExcelXml(sheets);
+    const blob = new Blob([xml], { type:"application/vnd.ms-excel;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const stamp = new Date().toISOString().slice(0,10).replace(/-/g,"");
+    a.href = url;
+    a.download = `model_series_analysis_${state.scope.toLowerCase()}_${stamp}.xls`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  }
+
+  async function loadPartsClassifiedRows(){
+    if (state.partsClassifiedRows) return state.partsClassifiedRows;
+    const scriptCsvText = typeof globalThis.ANALYSIS_PARTS_CLASSIFIED_CSV_TEXT === "string"
+      ? globalThis.ANALYSIS_PARTS_CLASSIFIED_CSV_TEXT
+      : "";
+    if (IS_FILE_CONTEXT && scriptCsvText) {
+      const rows = rowsToObjects(parseCSV(scriptCsvText));
+      state.partsClassifiedRows = rows;
+      state.partsClassifiedError = "";
+      state.partsClassifiedSource = globalThis.ANALYSIS_PARTS_CLASSIFIED_SOURCE || "script";
+      console.log(`Parts classified CSV loaded from script: ${rows.length} rows`);
+      return state.partsClassifiedRows;
+    }
+    const attempts = [];
+    // 1) Read meta.json → get the canonical csvPath (rotated daily by the extract pipeline).
+    try {
+      const metaRes = await fetch(freshJsonUrl(PARTS_CLASSIFIED_META), { cache:"no-store" });
+      if (metaRes.ok) {
+        const meta = await metaRes.json();
+        if (meta && meta.csvPath) attempts.push(meta.csvPath);
+      } else {
+        attempts.push(`(meta HTTP ${metaRes.status})`);
+      }
+    } catch (err) {
+      attempts.push(`(meta fetch failed: ${err.message || err})`);
+    }
+    // 2) Try the hardcoded dated path.
+    attempts.push(PARTS_CLASSIFIED_CSV);
+    // 3) Try a flat top-level fallback that some pipelines write.
+    attempts.push(PARTS_CLASSIFIED_CSV_FLAT);
+
+    const tried = [];
+    for (const url of attempts) {
+      if (typeof url !== "string" || url.startsWith("(")) { tried.push({ url, ok:false, reason:url }); continue; }
+      try {
+        const r = await fetch(freshJsonUrl(url), { cache:"no-store" });
+        if (!r.ok) { tried.push({ url, ok:false, reason:`HTTP ${r.status}` }); continue; }
+        const text = await r.text();
+        const rows = rowsToObjects(parseCSV(text));
+        if (rows && rows.length) {
+          state.partsClassifiedRows = rows;
+          state.partsClassifiedError = "";
+          state.partsClassifiedSource = url;
+          console.log(`Parts classified CSV loaded: ${rows.length} rows from ${url}`);
+          return state.partsClassifiedRows;
+        }
+        tried.push({ url, ok:false, reason:"empty" });
+      } catch (err) {
+        tried.push({ url, ok:false, reason:err.message || String(err) });
+      }
+    }
+    if (scriptCsvText) {
+      const rows = rowsToObjects(parseCSV(scriptCsvText));
+      state.partsClassifiedRows = rows;
+      state.partsClassifiedError = "";
+      state.partsClassifiedSource = globalThis.ANALYSIS_PARTS_CLASSIFIED_SOURCE || "script";
+      console.log(`Parts classified CSV loaded from script fallback: ${rows.length} rows`);
+      return state.partsClassifiedRows;
+    }
+    state.partsClassifiedRows = [];
+    state.partsClassifiedError = tried;
+    console.warn("Parts classified CSV load failed. Attempts:", tried);
+    return state.partsClassifiedRows;
+  }
+
+  function rowsForSelectedSeries(){
+    if (state.selected === "ALL") return state.viewRows.slice();
+    return state.viewRows.filter(row => extractSeries(row) === state.selected);
+  }
+
+  function ticketMapForRows(rows){
+    const map = new Map();
+    rows.forEach(row => {
+      const id = clean(row["Ticket ID"] || row.TicketID || row.TicketId);
+      if (id && !map.has(id)) map.set(id, row);
+    });
+    return map;
+  }
+
+  function ticketDetailHeader(){
+    return ["Ticket ID","Series","Chassis","Serial ID","Registered Product","Product","Dealer","Repairer","Ticket Type","Status","Created On","PGI Date","Posting Date","Date of Purchase","Warranty Cost AUD","Repair Rejection","Failure Days","Timing Date Source"];
+  }
+
+  function ticketDetailRow(row){
+    const timing = failureAgeDays(row);
+    const delivery = getDeliveryDate(row);
+    return [
+      row["Ticket ID"] || row.TicketID || "",
+      extractSeries(row),
+      normalizedChassis(row),
+      row["Serial ID"] || row.SerialID || "",
+      row["Registered Product"] || "",
+      row.Product || row["Product"] || "",
+      row["Dealer Name"] || "",
+      row["Repair Shop"] || row["Repair Shop Name"] || row["Service Technician"] || "",
+      row["Ticket Type"] || "",
+      row.Status || row["Status"] || "",
+      row["Created On"] || row.CreatedOn || "",
+      delivery.date ? dateKeyFromDate(delivery.date) : "",
+      row["Posting Date"] || "",
+      row["Date of Purchase"] || "",
+      round(getWarrantyCost(row), 2),
+      getRejection(row),
+      timing.age ?? "",
+      timing.source === "pgi" ? "PGI" : (timing.source || ""),
+    ];
+  }
+
+  function failureTimingDetailHeader(){
+    return [...ticketDetailHeader(), "Timing Bucket"];
+  }
+
+  function failureTimingDetailRow(row){
+    const timing = failureAgeDays(row);
+    return [...ticketDetailRow(row), timingBucketLabel(timing.age)];
+  }
+
+  function timingBucketLabel(age){
+    if (!Number.isFinite(age)) return "";
+    if (age <= 30) return "0 - 30 days";
+    if (age <= 90) return "31 - 90 days";
+    if (age <= 180) return "91 - 180 days";
+    return "180+ days";
+  }
+
+  function titleCaseText(text){
+    return clean(text).replace(/\S+/g, word => {
+      if (word.toUpperCase() === word || /^\d+$/.test(word)) return word;
+      return word.slice(0,1).toUpperCase() + word.slice(1).toLowerCase();
+    }) || "Other";
+  }
+
+  function componentKey(component, category){
+    return `${clean(component).toLowerCase()}||${clean(category || "Other").toLowerCase()}`;
+  }
+
+  function vehicleDetailRows(rows){
+    const vehicles = new Map();
+    rows.forEach(row => {
+      const chassis = normalizedChassis(row);
+      if (!chassis) return;
+      const current = vehicles.get(chassis) || { rows: [] };
+      current.rows.push(row);
+      vehicles.set(chassis, current);
+    });
+    return Array.from(vehicles.entries()).map(([chassis, item]) => {
+      const sorted = item.rows.slice().sort((a,b) => {
+        const ad = parseDmy(a["Created On"] || a.CreatedOn)?.getTime() || 0;
+        const bd = parseDmy(b["Created On"] || b.CreatedOn)?.getTime() || 0;
+        return ad - bd;
+      });
+      const first = sorted[0] || {};
+      const latest = sorted[sorted.length - 1] || {};
+      return [
+        extractSeries(latest),
+        chassis,
+        latest["Serial ID"] || latest.SerialID || "",
+        latest["Registered Product"] || "",
+        latest.Product || latest["Product"] || "",
+        sorted.length,
+        first["Created On"] || first.CreatedOn || "",
+        latest["Created On"] || latest.CreatedOn || "",
+        latest["Dealer Name"] || "",
+        latest["Repair Shop"] || latest["Repair Shop Name"] || latest["Service Technician"] || "",
+        latest["Ticket ID"] || latest.TicketID || "",
+        latest["Ticket Type"] || "",
+      ];
+    }).sort((a,b) => String(a[0]).localeCompare(String(b[0])) || String(a[1]).localeCompare(String(b[1])));
+  }
+
+  function round(value, digits=2){
+    const n = Number(value);
+    if (!Number.isFinite(n)) return "";
+    const p = 10 ** digits;
+    return Math.round(n * p) / p;
+  }
+
+  function pctValue(value){
+    return Number.isFinite(value) ? `${(value*100).toFixed(1)}%` : "";
+  }
+
+  function excelText(value){
+    return String(value == null ? "" : value)
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;");
+  }
+
+  function excelSheetName(value){
+    return excelText(String(value).replace(/[\\/?*[\]:]/g," ").slice(0,31) || "Sheet");
+  }
+
+  function excelCell(value){
+    if (value == null || value === "") return "<Cell><Data ss:Type=\"String\"></Data></Cell>";
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return `<Cell><Data ss:Type="Number">${value}</Data></Cell>`;
+    }
+    return `<Cell><Data ss:Type="String">${excelText(value)}</Data></Cell>`;
+  }
+
+  function buildExcelXml(sheets){
+    const worksheets = sheets.map(sheet => {
+      const rows = sheet.rows.map(row => `<Row>${row.map(excelCell).join("")}</Row>`).join("");
+      return `<Worksheet ss:Name="${excelSheetName(sheet.name)}"><Table>${rows}</Table></Worksheet>`;
+    }).join("");
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+${worksheets}
+</Workbook>`;
+  }
+
+  // ============ MAIN LOAD ============
+  function loadSold(){
+    try {
+      const s = JSON.parse(localStorage.getItem(SOLD_KEY) || "{}");
+      if (s && typeof s === "object") {
+        const mapped = {};
+        Object.entries(s).forEach(([k,v]) => {
+          const key = normalizeSeriesCode(k);
+          mapped[key] = (mapped[key] || 0) + Math.max(0, Number(v)||0);
+        });
+        state.soldBySeries = mapped;
+      }
+    } catch { state.soldBySeries = {}; }
+  }
+
+  async function loadTicketTimingRows(){
+    const scriptCsvText = typeof globalThis.ANALYSIS_TICKET_FAILURE_TIMING_CSV_TEXT === "string"
+      ? globalThis.ANALYSIS_TICKET_FAILURE_TIMING_CSV_TEXT
+      : "";
+    if (IS_FILE_CONTEXT && scriptCsvText) {
+      return rowsToObjects(parseCSV(scriptCsvText));
+    }
+    try {
+      const csvText = await fetch(TICKET_FAILURE_TIMING_CSV, { cache:"no-store" }).then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.text();
+      });
+      return rowsToObjects(parseCSV(csvText));
+    } catch (err) {
+      if (scriptCsvText) {
+        console.warn("Ticket failure timing CSV fetch failed, using script fallback:", err);
+        return rowsToObjects(parseCSV(scriptCsvText));
+      }
+      console.warn("Ticket failure timing CSV load failed:", err);
+      return [];
+    }
+  }
+
+  async function loadLegacyTicketRows(){
+    try {
+      const csvText = (IS_FILE_CONTEXT && typeof globalThis.ANALYSIS_TICKET_CSV_TEXT === "string")
+        ? globalThis.ANALYSIS_TICKET_CSV_TEXT
+        : await fetch(LEGACY_TICKET_CSV_URL, { cache:"no-store" }).then(r => { if (!r.ok) throw new Error(); return r.text(); });
+      return rowsToObjects(parseCSV(csvText));
+    } catch (e) {
+      if (typeof globalThis.ANALYSIS_TICKET_CSV_TEXT === "string") {
+        console.warn("Legacy CSV load failed, using script fallback:", e);
+        return rowsToObjects(parseCSV(globalThis.ANALYSIS_TICKET_CSV_TEXT));
+      }
+      console.warn("Legacy CSV load failed:", e);
+      return [];
+    }
+  }
+
+  async function loadAll(){
+    const overlay = $("loadingOverlay");
+    if (overlay) overlay.classList.add("show");
+    $("sourceCount").textContent = "…";
+    $("ticketCount").textContent = "–";
+    $("seriesCount").textContent = "–";
+    $("repairerCount").textContent = "–";
+    try {
+      loadSold();
+      await loadPartsTicketCosts();
+      await loadPartsFailureSummary();
+      await loadVehicleBaseSummary();
+
+      const processed = Array.isArray(globalThis.REPAIRERS_2026_ANALYSIS?.details) ? globalThis.REPAIRERS_2026_ANALYSIS.details : [];
+      const ticketTimingRows = await loadTicketTimingRows();
+      const legacyRows = await loadLegacyTicketRows();
+      const sourceRows = ticketTimingRows.length ? ticketTimingRows : legacyRows;
+
+      const mergedByTicket = new Map();
+      const addRows = (rows, csvWins) => {
+        for (const row of rows) {
+          const rawTicketId = rawTicketIdValue(row);
+          const ticketId = numericTicketIdValue(row);
+          const serialId = clean(row["Serial ID"] || row.SerialID || row.SerialId || row.serialId || row["Ticket Serial ID"] || row.ticketSerialId || row["Matched Serial"] || row.matchedSerial);
+          const chassis = clean(row["Chassis Number"] || row.ChassisNumber || row.ChassisID || row.chassisNumber || row["Ticket Chassis Number"] || row.ticketChassisNumber || row["Matched Chassis"] || row.matchedChassis);
+          const identity = ticketIdentity(row);
+          const key = identity || ticketId || serialId || chassis;
+          if (!key) continue;
+          const prev = mergedByTicket.get(key);
+          if (!prev) {
+            mergedByTicket.set(key, row);
+          } else {
+            mergedByTicket.set(key, csvWins ? mergeTicketRow(row, prev) : mergeTicketRow(prev, row));
+          }
+        }
+      };
+      addRows(sourceRows, true);
+      addRows(legacyRows, false);
+      addRows(processed, false);
+      addRows(Array.isArray(state.ticketCostRows) ? state.ticketCostRows : [], false);
+      const allRaw = Array.from(mergedByTicket.values());
+      const matchedRaw = pgiMatchedRows(allRaw);
+      state.sourceRowPool = sourceRows.filter(row => rowMatchesScope(row, "ALL"));
+      state.autoBaseBySeries = traceBaseBySeries(matchedRaw);
+      state.rows = matchedRaw;
+      state.sourceRows = state.sourceRowPool.length;
+
+      // Build ticket ID → ticket row lookup (used by component tooltip / totals)
+      const tById = new Map();
+      for (const r of allRaw) {
+        const numericTicketId = numericTicketIdValue(r);
+        const id = numericTicketId || ticketIdentity(r);
+        if (id && !tById.has(id)) tById.set(id, r);
+      }
+      state.ticketRowById = tById;
+
+      // pick initial series
+      const provisional = summaryBySeries(state.rows);
+      if (state.selected === "ALL") {
+        // stay on ALL by default
+      } else if (!provisional.some(r => r.series === state.selected)) {
+        state.selected = "ALL";
+      }
+
+      render();
+      if (overlay) overlay.classList.remove("show");
+
+      // Load classified rows in background for component tooltips + monthly totals
+      loadPartsClassifiedRows().then(() => {
+        buildPartsClassifiedIndex();
+        renderComponents();
+      }).catch(err => console.warn("Classified rows background load failed", err));
+    } catch (err) {
+      console.error(err);
+      $("sourceCount").textContent = "err";
+      if (overlay) overlay.classList.remove("show");
+    }
+  }
+
+  loadAll();
+  wireEvents();
+})();
+</script>
+</body>
+</html>

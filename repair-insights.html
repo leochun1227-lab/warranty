@@ -1,12 +1,12 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Repair Insights</title>
+<title>Analysis</title>
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#0f172a;--muted:#607089;--line:#dbe3ee;--blue:#3b82f6;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--shadow:0 10px 28px rgba(15,23,42,.06)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;font-size:14px}.main{padding:28px;max-width:1480px;margin:0 auto}.header,.panel,.kpi{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}.header{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;padding:20px 24px;margin-bottom:20px}.title{font-size:25px;font-weight:650;margin:0 0 6px}.sub{color:#607089;margin:0}.btn{height:40px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 14px;font-weight:700;cursor:pointer;color:#0f172a}.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}.kpi{padding:20px}.kpiLabel{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#64748b;font-weight:700;margin-bottom:12px}.kpiValue{font-size:28px;font-weight:600}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.panel{padding:22px 24px}.panelTitle{font-size:18px;font-weight:620;margin:0 0 12px}.chart{height:310px}canvas{width:100%;height:100%;display:block}.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin-bottom:16px}@media(max-width:900px){.kpis,.grid{grid-template-columns:1fr}.main{padding:18px}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;font-size:14px}.main{padding:28px;max-width:1480px;margin:0 auto}.header,.panel,.kpi{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}.header{display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap;padding:20px 24px;margin-bottom:20px}.title{font-size:25px;font-weight:650;margin:0 0 6px}.sub{color:#607089;margin:0}.btn{height:40px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 14px;font-weight:700;cursor:pointer;color:#0f172a}.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}.kpi{padding:20px}.kpiLabel{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#64748b;font-weight:700;margin-bottom:12px}.kpiValue{font-size:28px;font-weight:600}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.panel{padding:22px 24px}.panelTitle{font-size:18px;font-weight:620;margin:0 0 12px}.chart{height:310px}.pieShell{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(230px,.88fr);gap:14px;align-items:center}.pieChart{height:310px}.pieLegend{display:grid;gap:10px}.pieLegendItem{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #e4ecf6;border-radius:14px;background:linear-gradient(180deg,#fff 0%,#fbfdff 100%)}.pieLegendSwatch{width:12px;height:12px;border-radius:999px;flex:0 0 auto;box-shadow:0 0 0 3px rgba(15,23,42,.04)}.pieLegendText{min-width:0;display:grid;gap:2px}.pieLegendText strong{font-size:13px;color:#0f172a}.pieLegendText small{color:#64748b;font-size:12px}.pieLegendValue{margin-left:auto;font-size:14px;font-weight:750;color:#0f172a}.chartEmpty{display:grid;place-items:center;height:100%;border:1px dashed #d6e0eb;border-radius:16px;background:#f8fbff;color:#64748b;font-size:13px;text-align:center;padding:18px}.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin-bottom:16px}@media(max-width:900px){.kpis,.grid,.pieShell{grid-template-columns:1fr}.main{padding:18px}.pieChart{height:260px}}
 
 /* Center calculation overlay */
 .calcFloat{position:fixed;inset:0;z-index:120;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);color:#155e9f;letter-spacing:0}.calcFloat.active{display:flex}.calcFloat:before{content:"";position:absolute;inset:0;background:rgba(248,251,255,.42);pointer-events:none}.calcFloat>*{position:relative}.calcSpinner{width:64px;height:64px;border-radius:999px;border:6px solid #dbeafe;border-top-color:#2563eb;border-right-color:#60a5fa;animation:calcSpin .78s linear infinite;flex:0 0 auto;box-shadow:0 10px 28px rgba(37,99,235,.16)}.calcFloatText{margin-top:18px;display:block;white-space:nowrap;font-size:16px;font-weight:650;color:#155e9f}.calcFloat{flex-direction:column}.calcFloat.active~.app,.calcFloat.active~main{filter:blur(1px);opacity:.68;pointer-events:none;user-select:none}@keyframes calcSpin{to{transform:rotate(360deg)}}@media(max-width:760px){.calcSpinner{width:54px;height:54px;border-width:5px}.calcFloatText{font-size:14px;margin-top:14px}}
@@ -100,21 +100,453 @@
   font-size:12px!important;
   font-weight:650!important;
 }
+.repeatWrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;align-items:start}
+.repeatCard{appearance:none;border:1px solid #dbe4ef;border-radius:16px;background:#fff;padding:16px 16px 14px;cursor:pointer;text-align:left;box-shadow:0 10px 24px rgba(15,23,42,.045);transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+.repeatCard:hover{transform:translateY(-1px);box-shadow:0 14px 28px rgba(15,23,42,.065);border-color:#cfdced}
+.repeatCard.unique{border-color:#d8eadf}
+.repeatCard.repeat23{border-color:#f4dfbe}
+.repeatCard.repeat4{border-color:#f2c6c6}
+.repeatCardHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}
+.repeatCardLabel{font-size:14px;font-weight:800;color:#0f172a}
+.repeatCardSub{margin-top:4px;color:#64748b;font-size:12px;line-height:1.4}
+.repeatCardBadge{font-size:16px;font-weight:850;line-height:1;color:#0f172a}
+.repeatBar{height:10px;border-radius:999px;background:#e2e8f0;overflow:hidden;margin-bottom:12px}
+.repeatBar span{display:block;height:100%;border-radius:999px}
+.repeatCard.repeat23 .repeatBar span{background:linear-gradient(90deg,#f4b23c,#d97706)}
+.repeatCard.repeat4 .repeatBar span{background:linear-gradient(90deg,#ef7a7a,#c24141)}
+.repeatCard.unique .repeatBar span{background:linear-gradient(90deg,#4ade80,#16a34a)}
+.repeatCardFoot{display:flex;justify-content:space-between;gap:12px;align-items:baseline;color:#475569;font-size:12px}
+.repeatCardFoot b{font-size:14px;color:#0b1220}
+.repeatWrapEmpty{display:grid;place-items:center;min-height:130px;border:1px dashed #d6e0eb;border-radius:16px;background:#f8fbff;color:#64748b;font-size:13px;text-align:center;padding:18px}
+.modalBackdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.58);z-index:120;padding:20px}
+.modalBackdrop.active{display:flex}
+.modal{width:min(1080px,96vw);max-height:84vh;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 30px 90px rgba(15,23,42,.3);padding:20px}
+.modalHead{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:12px}
+.modalTableWrap{max-height:60vh}
+.repeatModal{width:min(1080px,96vw);max-height:84vh;overflow:auto}
+.repeatModal .modalTableWrap{max-height:62vh}
+.repeatModal .tableWrap{max-height:62vh}
+.repeatRowRepeat4 td{background:#fff1f2}
+.repeatRowRepeat23 td{background:#fff7ed}
+.repeatRowRepeat4:hover td,.repeatRowRepeat23:hover td{background:#f8fafc}
+.repeatRowRepeat4 td:first-child,.repeatRowRepeat23 td:first-child{font-weight:800}
+@media(max-width:760px){.repeatWrap{grid-template-columns:1fr}.repeatCardBadge{font-size:16px}.repeatModal{width:96vw}.repeatModal .tableWrap{max-height:58vh}}
 </style><link rel="stylesheet" href="flow-polish.css">
+<style>
+body.repair-insights-page{
+  background:
+    radial-gradient(circle at 8% 8%, rgba(22,119,242,.09), transparent 28%),
+    radial-gradient(circle at 92% 10%, rgba(16,185,129,.07), transparent 24%),
+    linear-gradient(180deg,#f5f8fd 0%,#eef3f9 100%);
+}
+body.repair-insights-page .main{
+  max-width:1600px;
+  padding:28px 28px 44px;
+}
+body.repair-insights-page .header{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(59,130,246,.10), transparent 24%),
+    radial-gradient(circle at 94% 10%, rgba(16,185,129,.08), transparent 22%),
+    linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+  border-color:#dbe5f1;
+  box-shadow:0 16px 34px rgba(15,23,42,.06);
+}
+body.repair-insights-page .header::before{
+  content:"";
+  position:absolute;
+  inset:0 auto auto 0;
+  width:100%;
+  height:4px;
+  background:linear-gradient(90deg,#1677f2 0%,#10b981 55%,#f59e0b 100%);
+}
+body.repair-insights-page .title{
+  font-size:28px;
+  letter-spacing:-.03em;
+  color:#09111f;
+}
+body.repair-insights-page .btn{
+  border-color:#d9e3ef;
+  background:linear-gradient(180deg,#fff 0%,#f8fbff 100%);
+  box-shadow:0 8px 18px rgba(15,23,42,.04);
+}
+body.repair-insights-page .btn:hover{
+  background:linear-gradient(180deg,#ffffff 0%,#f1f6fd 100%);
+  border-color:#cfdbea;
+}
+body.repair-insights-page .kpis{
+  gap:18px;
+}
+body.repair-insights-page .kpi{
+  position:relative;
+  overflow:hidden;
+  border-color:#dce6f1;
+  background:
+    radial-gradient(circle at 88% 10%, rgba(59,130,246,.08), transparent 24%),
+    linear-gradient(180deg,#ffffff 0%,#fbfdff 100%);
+  box-shadow:0 14px 32px rgba(15,23,42,.055);
+}
+body.repair-insights-page .kpi::before{
+  content:"";
+  position:absolute;
+  inset:0 auto auto 0;
+  width:100%;
+  height:4px;
+  background:linear-gradient(90deg,#1677f2 0%,#10b981 100%);
+}
+body.repair-insights-page .kpi:nth-child(2)::before{background:linear-gradient(90deg,#10b981 0%,#22c55e 100%);}
+body.repair-insights-page .kpi:nth-child(3)::before{background:linear-gradient(90deg,#f59e0b 0%,#f97316 100%);}
+body.repair-insights-page .kpiValue{
+  font-weight:700;
+  color:#0f172a;
+}
+body.repair-insights-page .grid{
+  display:grid;
+  grid-template-columns:repeat(12,minmax(0,1fr));
+  gap:18px;
+}
+body.repair-insights-page .grid > .panel{
+  grid-column:span 6;
+  position:relative;
+  overflow:hidden;
+  border-color:#dce6f1;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(59,130,246,.06), transparent 22%),
+    linear-gradient(180deg,#ffffff 0%,#fbfdff 100%);
+  box-shadow:0 14px 34px rgba(15,23,42,.055);
+}
+body.repair-insights-page .grid > .panel::before{
+  content:"";
+  position:absolute;
+  inset:0 auto auto 0;
+  width:100%;
+  height:4px;
+  background:linear-gradient(90deg,#1677f2 0%,#10b981 52%,#f59e0b 100%);
+  opacity:.55;
+}
+body.repair-insights-page .grid > .panel:nth-child(1){grid-column:span 5;}
+body.repair-insights-page .grid > .panel:nth-child(2){grid-column:span 7;}
+body.repair-insights-page .grid > .panel:nth-child(3),
+body.repair-insights-page .grid > .panel:nth-child(4){grid-column:span 6;}
+body.repair-insights-page .grid > .panel:nth-child(5),
+body.repair-insights-page .grid > .panel:nth-child(6){grid-column:1 / -1;}
+body.repair-insights-page .panelTitle{
+  color:#09111f;
+  font-weight:700;
+  letter-spacing:-.02em;
+}
+body.repair-insights-page .panelDesc{
+  color:#64748b;
+}
+body.repair-insights-page .chart,
+body.repair-insights-page .pieChart,
+body.repair-insights-page .rangeChartWrap{
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+  border:1px solid #e3ebf5;
+  border-radius:16px;
+  padding:8px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+}
+body.repair-insights-page .chart{height:390px;}
+body.repair-insights-page .pieChart{height:360px;}
+body.repair-insights-page .pieShell{
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  gap:12px;
+}
+body.repair-insights-page .pieShell .pieChart{width:100%;}
+body.repair-insights-page .pieLegend{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:10px;
+}
+body.repair-insights-page .pieLegendItem{
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+  border-color:#dfe7f1;
+  box-shadow:0 10px 22px rgba(15,23,42,.045);
+  min-height:72px;
+}
+body.repair-insights-page .pieLegendText strong{color:#09111f;}
+body.repair-insights-page .pieLegendValue{font-weight:700;color:#0f172a;}
+body.repair-insights-page .overviewGrid{
+  display:grid;
+  grid-template-columns:minmax(640px,1.04fr) minmax(0,.96fr);
+  gap:20px;
+  align-items:stretch;
+  margin-bottom:20px;
+}
+body.repair-insights-page .overviewLeft,
+body.repair-insights-page .overviewRight{
+  min-width:0;
+}
+body.repair-insights-page .overviewLeft{
+  display:flex;
+  align-items:stretch;
+}
+body.repair-insights-page .overviewRight{
+  display:grid;
+  gap:20px;
+  align-content:start;
+}
+body.repair-insights-page .repeatSection{
+  grid-column:1 / -1;
+  position:relative;
+  z-index:2;
+  width:100%;
+  transform:none;
+  padding-bottom:22px;
+}
+body.repair-insights-page .repeatSectionHead{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:12px;
+  margin-bottom:12px;
+}
+body.repair-insights-page .repeatSectionHead .panelTitle{
+  margin:0;
+}
+body.repair-insights-page .overviewRight .panel{
+  margin-bottom:0;
+}
+body.repair-insights-page .piePair{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+  width:100%;
+  align-items:stretch;
+}
+body.repair-insights-page .compactPiePanel{
+  padding:18px 18px 16px;
+  overflow:visible;
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+body.repair-insights-page .compactPiePanel .panelTitle{
+  font-size:16px;
+  margin-bottom:10px;
+}
+body.repair-insights-page .compactPiePanel .pieChart{
+  height:270px;
+}
+body.repair-insights-page .piePair .compactPiePanel:first-child .pieChart{
+  height:240px;
+}
+body.repair-insights-page .compactPiePanel .pieLegend{
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:8px;
+}
+body.repair-insights-page .piePair .compactPiePanel:first-child .pieLegend{
+  max-height:190px;
+  overflow:auto;
+  padding-right:6px;
+}
+body.repair-insights-page .piePair .compactPiePanel:first-child .pieLegend{
+  scrollbar-width:thin;
+  scrollbar-color:#c8d4e4 transparent;
+}
+body.repair-insights-page .piePair .compactPiePanel:first-child .pieLegend::-webkit-scrollbar{
+  width:8px;
+}
+body.repair-insights-page .piePair .compactPiePanel:first-child .pieLegend::-webkit-scrollbar-track{
+  background:transparent;
+}
+body.repair-insights-page .piePair .compactPiePanel:first-child .pieLegend::-webkit-scrollbar-thumb{
+  background:#cbd5e1;
+  border-radius:999px;
+}
+body.repair-insights-page .piePair .compactPiePanel:first-child .pieLegendItem{
+  min-height:48px;
+  padding:8px 10px;
+  border-radius:12px;
+}
+body.repair-insights-page .piePair .compactPiePanel:first-child .pieLegendText strong{
+  font-size:11px;
+}
+body.repair-insights-page .piePair .compactPiePanel:first-child .pieLegendText small{
+  font-size:10px;
+}
+body.repair-insights-page .piePair .compactPiePanel:first-child .pieLegendValue{
+  font-size:12px;
+}
+body.repair-insights-page .compactPiePanel .pieLegendItem{
+  min-height:54px;
+  padding:10px 12px;
+  border-radius:12px;
+}
+body.repair-insights-page .compactPiePanel .pieLegendText strong{
+  font-size:12px;
+}
+body.repair-insights-page .compactPiePanel .pieLegendText small{
+  font-size:11px;
+}
+body.repair-insights-page .compactPiePanel .pieLegendValue{
+  font-size:13px;
+}
+body.repair-insights-page .pieChartFrame{
+  position:relative;
+}
+body.repair-insights-page .pieHoverTip{
+  position:absolute;
+  left:0;
+  top:0;
+  z-index:6;
+  max-width:220px;
+  min-width:160px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:rgba(15,23,42,.96);
+  color:#fff;
+  box-shadow:0 16px 34px rgba(15,23,42,.24);
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .12s ease;
+  transform:none;
+}
+body.repair-insights-page .pieHoverTip.visible{opacity:1;}
+body.repair-insights-page .pieHoverTip strong{
+  display:block;
+  font-size:13px;
+  line-height:1.2;
+  margin-bottom:4px;
+}
+body.repair-insights-page .pieHoverTip small{
+  display:block;
+  font-size:12px;
+  line-height:1.35;
+  color:#dbe7f6;
+}
+body.repair-insights-page .trendPanel{margin-top:0;}
+body.repair-insights-page .repeatWrap{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+body.repair-insights-page .repeatCard{
+  position:relative;
+  overflow:hidden;
+  border-radius:18px;
+  border-color:#dce6f1;
+  background:
+    radial-gradient(circle at 88% 10%, rgba(59,130,246,.08), transparent 22%),
+    linear-gradient(180deg,#ffffff 0%,#fbfdff 100%);
+  box-shadow:0 14px 32px rgba(15,23,42,.055);
+  padding:16px 16px 14px;
+  min-height:156px;
+}
+body.repair-insights-page .repeatCard::before{
+  content:"";
+  position:absolute;
+  inset:0 auto auto 0;
+  width:100%;
+  height:4px;
+  background:linear-gradient(90deg,#1677f2 0%,#10b981 100%);
+}
+body.repair-insights-page .repeatCard.unique::before{background:linear-gradient(90deg,#10b981 0%,#22c55e 100%);}
+body.repair-insights-page .repeatCard.repeat23::before{background:linear-gradient(90deg,#f59e0b 0%,#d97706 100%);}
+body.repair-insights-page .repeatCard.repeat4::before{background:linear-gradient(90deg,#ef4444 0%,#b91c1c 100%);}
+body.repair-insights-page .repeatCardSub,
+body.repair-insights-page .repeatCardFoot{color:#64748b;}
+body.repair-insights-page .repeatCardBadge,
+body.repair-insights-page .repeatCardFoot b{color:#09111f;}
+body.repair-insights-page .repeatBar{background:#e9eff7;}
+body.repair-insights-page .chart canvas,
+body.repair-insights-page .pieChart canvas{
+  width:100%!important;
+  height:100%!important;
+  display:block;
+}
+body.repair-insights-page .modalBackdrop{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+body.repair-insights-page .modal{
+  border-color:#dbe6f1;
+  background:
+    radial-gradient(circle at 96% 8%, rgba(59,130,246,.05), transparent 18%),
+    linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+}
+body.repair-insights-page .modalHead{border-bottom-color:#e3ebf5;}
+body.repair-insights-page .modalTableWrap{
+  border:1px solid #dbe5f2;
+  border-radius:16px;
+  overflow:auto;
+}
+body.repair-insights-page .modalTableWrap table{border-collapse:separate;border-spacing:0;}
+body.repair-insights-page .modalTableWrap thead th{
+  background:linear-gradient(180deg,#f9fcff 0%,#eef5ff 100%);
+  color:#51627a;
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  position:sticky;
+  top:0;
+  z-index:1;
+}
+body.repair-insights-page .modalTableWrap th,
+body.repair-insights-page .modalTableWrap td{
+  padding:12px 14px;
+  border-bottom:1px solid #e5edf6;
+  font-size:13px;
+  color:#172033;
+  vertical-align:middle;
+}
+body.repair-insights-page .modalTableWrap tbody tr:nth-child(odd) td{background:#fff;}
+body.repair-insights-page .modalTableWrap tbody tr:nth-child(even) td{background:#fafdff;}
+body.repair-insights-page .modalTableWrap tbody tr:hover td{background:#eef5ff;}
+body.repair-insights-page .modalTableWrap tbody tr:last-child td{border-bottom:0;}
+body.repair-insights-page .calcFloat{
+  background:rgba(255,255,255,.72);
+  border:1px solid #dbe6f2;
+  box-shadow:0 18px 40px rgba(15,23,42,.08);
+}
+@media(max-width:1120px){
+  body.repair-insights-page .overviewGrid{grid-template-columns:1fr;}
+  body.repair-insights-page .piePair{grid-template-columns:1fr;}
+  body.repair-insights-page .overviewRight{gap:16px;}
+  body.repair-insights-page .pieLegend{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));}
+  body.repair-insights-page .repeatSection{grid-column:auto;width:auto;transform:none;}
+  body.repair-insights-page .repeatSectionHead{flex-direction:column;align-items:flex-start;}
+  body.repair-insights-page .repeatWrap{grid-template-columns:1fr;}
+}
+@media(max-width:760px){
+  body.repair-insights-page .main{padding:18px;}
+  body.repair-insights-page .header{padding:18px 18px 16px;}
+  body.repair-insights-page .title{font-size:24px;}
+  body.repair-insights-page .kpis{grid-template-columns:1fr;}
+  body.repair-insights-page .chart,
+  body.repair-insights-page .pieChart{height:290px;}
+  body.repair-insights-page .pieLegend{grid-template-columns:1fr;}
+  body.repair-insights-page .compactPiePanel .pieChart{height:240px;}
+  body.repair-insights-page .repeatModal{width:96vw;}
+}
+</style>
 </head>
-<body><main class="main">
-<div class="header"><div><h1 id="title" class="title">Repair Insights</h1></div><div><button class="btn" onclick="location.href='delivery_flow.html'">Parts Delivery Flow</button> <button class="btn" onclick="location.href='repairs.html'">Back to Repairs</button></div></div>
+<body class="repair-insights-page"><main class="main">
+<div class="header"><div><h1 id="title" class="title" style="display:none">Analysis</h1></div><div><button class="btn" id="exportExcelBtn" type="button">Export Excel</button> <a class="btn" href="index.html">Team Dashboard</a> <a class="btn" href="analysis.html">Model Analysis</a> <a class="btn" href="dealerworkbench.html">Dealer Workbench</a> <a class="btn" href="delivery_flow.html">Parts Delivery</a> <a class="btn" href="repairs.html">Repair</a> <a class="btn" href="infieldpredelivery.html">In Field / Pre Delivery</a></div></div>
 <div id="loadError" class="error"></div>
 <section class="kpis"><div class="kpi"><div class="kpiLabel">Tickets</div><div id="kpiTickets" class="kpiValue">0</div></div><div class="kpi"><div class="kpiLabel">Total Cost</div><div id="kpiCost" class="kpiValue">$0</div></div><div class="kpi"><div class="kpiLabel">Avg Cost</div><div id="kpiAvg" class="kpiValue">$0</div></div></section>
-<section class="grid">
-<div class="panel"><h2 class="panelTitle">Amount Including Tax Distribution</h2><div class="chart"><canvas id="amountChart"></canvas></div></div>
-<div class="panel"><h2 class="panelTitle">Chassis Number Repeat Range</h2><div class="chart"><canvas id="chassisChart"></canvas></div></div>
-<div class="panel"><h2 class="panelTitle">Status Volume</h2><div class="chart"><canvas id="statusChart"></canvas></div></div>
-<div class="panel"><h2 class="panelTitle">Ticket CreatedOn Trend</h2><div class="chart"><canvas id="createdChart"></canvas></div></div>
-<div class="panel"><h2 class="panelTitle">Cost by Ticket Type</h2><div class="chart"><canvas id="typeChart"></canvas></div></div>
+<section class="overviewGrid">
+<div class="overviewLeft">
+  <div class="piePair">
+    <div class="panel compactPiePanel"><h2 class="panelTitle">Status Volume</h2><div class="pieShell"><div class="pieChartFrame"><div class="pieChart"><canvas id="statusChart"></canvas></div><div id="statusChartTip" class="pieHoverTip" aria-hidden="true"></div></div><div id="statusChartLegend" class="pieLegend"></div></div></div>
+    <div class="panel compactPiePanel"><h2 class="panelTitle">Open vs Closed Cases</h2><div class="pieShell"><div class="pieChartFrame"><div class="pieChart"><canvas id="caseSplitChart"></canvas></div><div id="caseSplitChartTip" class="pieHoverTip" aria-hidden="true"></div></div><div id="caseSplitLegend" class="pieLegend"></div></div></div>
+  </div>
+</div>
+<div class="overviewRight">
+  <div class="panel"><h2 class="panelTitle">ERP PO / Invoice Cost Distribution</h2><div class="chart"><canvas id="amountChart"></canvas></div></div>
+</div>
+<div class="panel repeatSection">
+  <div class="repeatSectionHead">
+    <h2 class="panelTitle">Chassis Number Repeat Range</h2>
+  </div>
+  <div id="repeatWrap" class="repeatWrap"></div>
+</div>
 </section>
+<section class="panel trendPanel"><h2 class="panelTitle">Ticket CreatedOn Trend</h2><div class="chart"><canvas id="createdChart"></canvas></div></section>
 </main>
+<div id="repeatModal" class="modalBackdrop" aria-hidden="true"><div class="modal repeatModal"><div class="modalHead"><div><h2 id="repeatModalTitle" style="margin:0"></h2><p class="desc" id="repeatModalDesc">Ticket-level details</p></div><button class="btn" id="repeatModalClose" type="button">x</button></div><div class="tableWrap modalTableWrap"><table><thead><tr><th>Chassis</th><th>Ticket</th><th>Created</th><th>Cost</th><th>Status</th><th>Serial</th><th>Dealer</th></tr></thead><tbody id="repeatModalRows"></tbody></table></div></div></div>
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
+<script src="outputs/repairers_2026/repairers_2026_data.js?v=20260706a"></script>
 <script>
 
 function showCalcFloat(active,text){
@@ -129,47 +561,680 @@ function hideCalcFloat(delay=250){setTimeout(()=>showCalcFloat(false),delay)}
 
 const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
 const repairId=new URLSearchParams(location.search).get("repairId")||"no-repair";
+const REPAIR_SCOPE_START="2026-01-01";
 const $=id=>document.getElementById(id), clean=v=>v==null?"":String(v).trim();
 const esc=v=>clean(v).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
 const num=(v,d=0)=>Number(v||0).toLocaleString(undefined,{maximumFractionDigits:d,minimumFractionDigits:d});
 const money=v=>Number(v||0).toLocaleString(undefined,{style:"currency",currency:"AUD",maximumFractionDigits:0});
 function fbUrl(path){return DEFAULT_FIREBASE.replace(/\/+$/,'')+"/"+path.replace(/^\/+/,'')+".json"}
 async function readJson(path){const r=await fetch(fbUrl(path),{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
+let firebaseTicketMapPromise=null;
+async function loadFirebaseTicketMap(){
+  if(!firebaseTicketMapPromise){
+    firebaseTicketMapPromise=readJson("c4cTickets_test/tickets").then(node=>{
+      const map=new Map();
+      Object.entries(node||{}).forEach(([key,row])=>{
+        if(!row||typeof row!=="object")return;
+        const ticket=row.ticket&&typeof row.ticket==="object"?row.ticket:row;
+        const id=clean(ticket.TicketID||ticket["Ticket ID"]||ticket.Ticket||row.TicketID||row["Ticket ID"]||row.Ticket||key);
+        if(id)map.set(id,row);
+      });
+      return map;
+    }).catch(()=>new Map());
+  }
+  return firebaseTicketMapPromise;
+}
+function cleanRepairShopDisplayName(value){
+  return clean(value);
+}
+function overlayFirebaseTicketRows(rows,firebaseMap){
+  const map=firebaseMap instanceof Map?firebaseMap:new Map();
+  return (Array.isArray(rows)?rows:[]).map((row,index)=>{
+    const rawId=clean(row&&(
+      row.TicketID||row["Ticket ID"]||row.Ticket||row.id||
+      row.ticket?.TicketID||row.ticket?.["Ticket ID"]||row.ticket?.Ticket||
+      `detail-${index+1}`
+    ));
+    const fb=map.get(rawId);
+    if(!fb)return row;
+    const fbTicket=fb.ticket&&typeof fb.ticket==="object"?fb.ticket:{};
+    const rowTicket=row&&typeof row.ticket==="object"?row.ticket:{};
+    const mergedTicket={
+      ...fbTicket,
+      ...rowTicket,
+      ...(row&&typeof row==="object"?row:{})
+    };
+    if(clean(fbTicket.RepairerBusinessNameID))mergedTicket.RepairerBusinessNameID=clean(fbTicket.RepairerBusinessNameID);
+    if(clean(fbTicket["Order Rejection Status"]))mergedTicket["Order Rejection Status"]=clean(fbTicket["Order Rejection Status"]);
+    return {
+      ...(fb&&typeof fb==="object"?fb:{}),
+      ...(row&&typeof row==="object"?row:{}),
+      ticket:mergedTicket,
+      roles:{...(fb&&typeof fb.roles==="object"?fb.roles:{}),...(row&&typeof row.roles==="object"?row.roles:{}),},
+    };
+  });
+}
 function parseAmount(v){const n=Number(clean(v).replace(/,/g,''));return Number.isFinite(n)?n:0}
+function repairCostFromTicket(ticket){
+  const fields=["confirmed_cost_aud","confirmed_cost","invoice_amount_aud","invoice_amount","po_amount_aud","po_amount"];
+  for(const field of fields){
+    if(ticket&&Object.prototype.hasOwnProperty.call(ticket,field)){
+      return parseAmount(ticket[field]);
+    }
+  }
+  return 0;
+}
 function parseDate(v){if(!v)return null;const s=clean(v);let m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m){const d=new Date(+m[3],+m[2]-1,+m[1]);return isNaN(d)?null:d}const d=new Date(s);return isNaN(d)?null:d}
 function dateKey(v){const d=parseDate(v);return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`:""}
-function normalize(row,key){const raw=(row&&typeof row==="object")?row:{};const ticket=(raw.ticket&&typeof raw.ticket==="object")?raw.ticket:raw;const roles=(raw.roles&&typeof raw.roles==="object")?raw.roles:{};return {id:clean(ticket.TicketID||key),ticket,roles}}
-function repairInfo(entry){const r=entry.roles&&entry.roles["43"]&&typeof entry.roles["43"]==="object"?entry.roles["43"]:null;return {id:clean(r&&r.InvolvedPartyBusinessPartnerID)||"no-repair",name:clean(r&&r.InvolvedPartyName)||"No Repair Shop Assigned"}}
+function isRepairScopeDate(value){const created=dateKey(value);return !!created&&created>=REPAIR_SCOPE_START}
+function normalize(row,key){
+  const raw=(row&&typeof row==="object")?row:{};
+  const ticket=(raw.ticket&&typeof raw.ticket==="object")?{...raw.ticket}:{...raw};
+  const roles=(raw.roles&&typeof raw.roles==="object")?raw.roles:{};
+  const state=clean(ticket.state||ticket.State);
+  const repairerBusinessName=clean(ticket.RepairerBusinessNameID||ticket["RepairerBusinessNameID"]||ticket["Repairer Business Name ID"]||ticket["Repairer Business Name"]);
+  const repairerName=clean(repairerBusinessName||ticket.RepairerName||ticket["Service Technician"]||ticket.repairer_name||ticket.repairerName||ticket.DealerName||ticket["Dealer Name"]);
+  const repairerSplitKey=clean(ticket.repairer_split_key||ticket.repairerSplitKey||ticket.repairer_id||ticket.repairerId||(repairerName?`${repairerName}|${state||"NA"}`:""));
+  Object.assign(ticket,{
+    TicketID:clean(ticket.TicketID||ticket["Ticket ID"]||ticket.Ticket||key),
+    TicketName:clean(ticket.TicketName||ticket["Ticket Name"]||ticket.Ticket||ticket["Ticket ID"]||key),
+    CreatedOn:clean(ticket.CreatedOn||ticket["Created On"]||ticket.createdOn||ticket.PostingDate||ticket["Posting Date"]),
+    SerialID:clean(ticket.SerialID||ticket["Serial ID"]),
+    ChassisNumber:clean(ticket.ChassisNumber||ticket["Chassis Number"]),
+    TicketStatusText:clean(ticket.TicketStatusText||ticket.Status||ticket.statusText),
+    TicketStatus:clean(ticket.TicketStatus||ticket.StatusCode||ticket.statusCode),
+    TicketTypeText:clean(ticket.TicketTypeText||ticket["Ticket Type"]||ticket.TicketType),
+    RepairerBusinessNameID:repairerBusinessName,
+    RepairerName:repairerName,
+    repairer_split_key:repairerSplitKey,
+    state,
+    confirmed_cost_aud:repairCostFromTicket(ticket),
+    invoice_number:clean(ticket.invoice_number),
+    invoice_date:clean(ticket.invoice_date),
+    invoice_status:clean(ticket.invoice_status),
+    rawTicketAmount:Number(ticket.AmountIncludingTax??0)||0,
+  });
+  return {id:clean(ticket.TicketID||ticket.Ticket||key),ticket,roles};
+}
+function repairInfo(entry){
+  const r=entry.roles&&entry.roles["43"]&&typeof entry.roles["43"]==="object"?entry.roles["43"]:null;
+  if(r){
+    const t=entry.ticket||{};
+    const name=cleanRepairShopDisplayName(t.RepairerBusinessNameID||t["RepairerBusinessNameID"]||t["Repairer Business Name ID"]||r.InvolvedPartyName)||"No Repair Shop Assigned";
+    return {id:clean(r.InvolvedPartyBusinessPartnerID)||"no-repair",name};
+  }
+  const t=entry.ticket||{};
+  const repairerName=cleanRepairShopDisplayName(t.RepairerBusinessNameID||t["RepairerBusinessNameID"]||t["Repairer Business Name ID"]||t.RepairerName||t.repairer_name||t["Service Technician"]||t.DealerName||t["Dealer Name"]);
+  const repairId=clean(t.repairer_split_key||t.repairerSplitKey||t.repairer_id||t.repairerId||(repairerName?`${repairerName}|${clean(t.state||t.State||"NA")}`:"no-repair"));
+  return {id:repairId||"no-repair",name:repairerName||"No Repair Shop Assigned"};
+}
+function isClosedCase(ticket){
+  const status=clean(ticket?.invoice_status).toLowerCase();
+  const invoiceNumber=clean(ticket?.invoice_number);
+  return !!invoiceNumber || status==="invoiced" || status==="closed";
+}
 function chassis(entry){const t=entry.ticket;let v=clean(t.SerialID)||clean(t.ChassisNumber);if(!v){const parts=clean(t.TicketName).split(/\s+/);v=parts[parts.length-1]||""}return v.replace(/-/g,"")}
-function prep(c){const dpr=devicePixelRatio||1,w=c.clientWidth||600,h=c.clientHeight||300;c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);return {ctx,w,h}}
+function normalizedChassis(entry){return chassis(entry);}
+function prep(c){
+  const dpr=devicePixelRatio||1;
+  const w=c.clientWidth||600;
+  const h=c.clientHeight||300;
+  c.width=w*dpr;
+  c.height=h*dpr;
+  const ctx=c.getContext("2d");
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  return {ctx,w,h};
+}
+function roundRectPath(ctx,x,y,w,h,r){
+  const radius=Math.min(r,Math.min(w,h)/2);
+  if(ctx.roundRect){
+    ctx.beginPath();
+    ctx.roundRect(x,y,w,h,radius);
+    return;
+  }
+  ctx.beginPath();
+  ctx.moveTo(x+radius,y);
+  ctx.arcTo(x+w,y,x+w,y+h,radius);
+  ctx.arcTo(x+w,y+h,x,y+h,radius);
+  ctx.arcTo(x,y+h,x,y,radius);
+  ctx.arcTo(x,y,x+w,y,radius);
+  ctx.closePath();
+}
 function barChart(id,data,color="#3b82f6"){
-  const c=$(id),{ctx,w,h}=prep(c),left=150,right=42,top=24,rowH=Math.min(42,(h-50)/Math.max(1,data.length)),max=Math.max(1,...data.map(x=>x.value));
-  ctx.font="13px Segoe UI,Arial";data.forEach((d,i)=>{const y=top+i*rowH+rowH/2,bw=(w-left-right)*d.value/max;ctx.fillStyle="#334155";ctx.textAlign="right";ctx.textBaseline="middle";ctx.fillText(d.label.length>22?d.label.slice(0,21)+"...":d.label,left-12,y);ctx.fillStyle="#eef2f7";ctx.fillRect(left,y-10,w-left-right,20);ctx.fillStyle=d.color||color;ctx.fillRect(left,y-10,bw,20);ctx.fillStyle="#0f172a";ctx.textAlign="left";ctx.fillText(num(d.value),left+bw+8,y)});
+  const c=$(id);
+  if(!c)return;
+  const {ctx,w,h}=prep(c);
+  const left=136,right=42;
+  const barH=Math.min(32,Math.max(22,(h-60)/Math.max(1,data.length*1.65)));
+  const gap=Math.max(12,barH*0.56);
+  const totalH=data.length*barH+Math.max(0,data.length-1)*gap;
+  const top=Math.max(18,(h-totalH)/2);
+  const max=Math.max(1,...data.map(x=>Number(x.value||0)));
+  const palette=[color,"#10b981","#f59e0b","#7c3aed","#ef4444","#06b6d4","#22c55e","#f97316"];
+  ctx.font="12px Segoe UI,Arial";
+  ctx.textBaseline="middle";
+  data.forEach((d,i)=>{
+    const y=top+i*(barH+gap)+barH/2;
+    const bw=Math.max(10,(w-left-right)*(Number(d.value||0)/max));
+    const barColor=d.color||palette[i%palette.length];
+    ctx.fillStyle="#334155";
+    ctx.textAlign="right";
+    ctx.fillText(d.label.length>24?d.label.slice(0,23)+"...":d.label,left-10,y);
+    ctx.fillStyle="#e7edf6";
+    roundRectPath(ctx,left,y-barH/2,w-left-right,barH,barH/2);
+    ctx.fill();
+    const grad=ctx.createLinearGradient(left,y-barH/2,left+bw,y+barH/2);
+    grad.addColorStop(0,barColor);
+    grad.addColorStop(1,barColor);
+    ctx.fillStyle=grad;
+    roundRectPath(ctx,left,y-barH/2,bw,barH,barH/2);
+    ctx.fill();
+    ctx.fillStyle="#0f172a";
+    ctx.textAlign="left";
+    ctx.font="600 11px Segoe UI,Arial";
+    ctx.fillText(num(d.value),left+bw+6,y);
+    ctx.font="12px Segoe UI,Arial";
+  });
+}
+function pieChart(id,data){
+  const c=$(id);
+  if(!c)return;
+  const {ctx,w,h}=prep(c);
+  const total=data.reduce((s,x)=>s+Number(x.value||0),0);
+  if(!total){
+    ctx.fillStyle="#64748b";
+    ctx.font="13px Segoe UI,Arial";
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.fillText("No cases available.",w/2,h/2);
+    return;
+  }
+  const frame=c.closest(".pieChartFrame")||c.parentElement||c;
+  const tipId=c.id==="statusChart"?"statusChartTip":c.id==="caseSplitChart"?"caseSplitChartTip":"";
+  const tip=tipId?$(tipId):null;
+  const cx=w/2, cy=h/2-2, radius=Math.min(w,h)*0.42, inner=radius*0.64;
+  const segments=[];
+  let start=-Math.PI/2;
+  data.forEach(seg=>{
+    const value=Math.max(0,Number(seg.value||0));
+    const angle=(value/total)*Math.PI*2;
+    if(!angle)return;
+    const end=start+angle;
+    segments.push({label:seg.label,value,color:seg.color||"#3b82f6",start,end,startRel:start+Math.PI/2,endRel:end+Math.PI/2});
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,radius,start,end);
+    ctx.closePath();
+    ctx.fillStyle=seg.color||"#3b82f6";
+    ctx.fill();
+    start=end;
+  });
+  ctx.beginPath();
+  ctx.arc(cx,cy,inner,0,Math.PI*2);
+  ctx.fillStyle="#fff";
+  ctx.fill();
+  ctx.strokeStyle="#edf2f7";
+  ctx.lineWidth=1;
+  ctx.stroke();
+  ctx.fillStyle="#0f172a";
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+  ctx.font="700 26px Segoe UI,Arial";
+  ctx.fillText(num(total),cx,cy-10);
+  ctx.font="11px Segoe UI,Arial";
+  ctx.fillStyle="#64748b";
+  ctx.fillText("tickets",cx,cy+14);
+  pieHoverState.set(c,{segments,total,cx,cy,radius,inner,frame,tip});
+  if(!c.dataset.pieHoverBound){
+    c.dataset.pieHoverBound="1";
+    const hide=()=>hidePieTooltip(tip);
+    c.addEventListener("pointerleave",hide);
+    c.addEventListener("pointercancel",hide);
+    c.addEventListener("pointermove",ev=>{
+      const state=pieHoverState.get(c);
+      if(!state||!state.tip)return;
+      const rect=c.getBoundingClientRect();
+      const x=ev.clientX-rect.left;
+      const y=ev.clientY-rect.top;
+      const hit=hitPieSegment(state,x,y);
+      if(!hit){
+        hidePieTooltip(state.tip);
+        c.style.cursor="default";
+        return;
+      }
+      const seg=state.segments[hit.index];
+      const pct=state.total?((seg.value/state.total)*100).toFixed(1):"0.0";
+      c.style.cursor="pointer";
+      showPieTooltip(state.tip,state.frame,ev.clientX,ev.clientY,[
+        `<strong>${esc(seg.label)}</strong>`,
+        `<small>${num(seg.value)} tickets</small>`,
+        `<small>${pct}% of total</small>`,
+      ].join(""));
+    });
+  }
+}
+const pieHoverState=new WeakMap();
+function hidePieTooltip(tip){
+  if(!tip)return;
+  tip.classList.remove("visible");
+  tip.setAttribute("aria-hidden","true");
+}
+function showPieTooltip(tip,frame,clientX,clientY,html){
+  if(!tip||!frame)return;
+  tip.innerHTML=html;
+  tip.classList.add("visible");
+  tip.setAttribute("aria-hidden","false");
+  const frameRect=frame.getBoundingClientRect();
+  const tipW=tip.offsetWidth||180;
+  const tipH=tip.offsetHeight||80;
+  let left=clientX-frameRect.left+14;
+  let top=clientY-frameRect.top-tipH-12;
+  if(top<8)top=clientY-frameRect.top+14;
+  if(left+tipW>frameRect.width-8)left=frameRect.width-tipW-8;
+  if(left<8)left=8;
+  if(top+tipH>frameRect.height-8)top=frameRect.height-tipH-8;
+  if(top<8)top=8;
+  tip.style.left=`${left}px`;
+  tip.style.top=`${top}px`;
+}
+function hitPieSegment(state,x,y){
+  const dx=x-state.cx;
+  const dy=y-state.cy;
+  const dist=Math.hypot(dx,dy);
+  if(dist<state.inner||dist>state.radius)return null;
+  let ang=Math.atan2(dy,dx)+Math.PI/2;
+  while(ang<0)ang+=Math.PI*2;
+  while(ang>=Math.PI*2)ang-=Math.PI*2;
+  const index=state.segments.findIndex(seg=>ang>=seg.startRel&&ang<seg.endRel);
+  return index>=0?{index}:null;
+}
+function statusVolumeRows(status){
+  const colors=["#10b981","#3b82f6","#f59e0b","#7c3aed","#ef4444","#06b6d4","#22c55e","#f97316"];
+  return Object.entries(status||{})
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,8)
+    .map(([label,value],i)=>({label,value,color:colors[i%colors.length]}));
+}
+function renderStatusVolumeLegend(rows){
+  const box=$("statusChartLegend");
+  if(!box)return;
+  const total=rows.reduce((sum,row)=>sum+Number(row.value||0),0);
+  if(!total){
+    box.innerHTML='<div class="chartEmpty">No status volume data available.</div>';
+    return;
+  }
+  box.innerHTML=rows.map(item=>{
+    const pct=(Number(item.value||0)/total)*100;
+    return `<div class="pieLegendItem"><span class="pieLegendSwatch" style="background:${item.color}"></span><div class="pieLegendText"><strong>${esc(item.label)}</strong><small>${num(item.value)} tickets</small></div><div class="pieLegendValue">${pct.toFixed(1)}%</div></div>`;
+  }).join("");
+}
+function monthAxisLabel(label){
+  const raw=clean(label);
+  const d=new Date(raw+"-01T00:00:00Z");
+  if(!isNaN(d))return d.toLocaleDateString("en-AU",{month:"short",year:"2-digit",timeZone:"UTC"});
+  return raw;
+}
+function lineChartTickIndexes(data,w,ctx){
+  if(data.length<=1)return [0];
+  ctx.save();
+  ctx.font="12px Segoe UI,Arial";
+  const sampleWidth=Math.max(...data.slice(0,Math.min(data.length,8)).map(p=>ctx.measureText(monthAxisLabel(p.label)).width));
+  ctx.restore();
+  const approxGap=sampleWidth+18;
+  const target=Math.max(3,Math.min(6,Math.floor((w-82)/approxGap)));
+  const count=Math.min(target,data.length);
+  const ticks=[];
+  for(let i=0;i<count;i++)ticks.push(Math.round(i*(data.length-1)/(count-1)));
+  return Array.from(new Set(ticks));
+}
+function lineChartLabelIndexes(data){
+  if(data.length<=8)return data.map((_,i)=>i);
+  const indexes=new Set([0,data.length-1]);
+  for(let i=1;i<data.length-1;i++){
+    const prev=Number(data[i-1]?.value||0);
+    const curr=Number(data[i]?.value||0);
+    const next=Number(data[i+1]?.value||0);
+    if((curr>=prev&&curr>next)||(curr<=prev&&curr<next))indexes.add(i);
+  }
+  return Array.from(indexes).sort((a,b)=>a-b);
 }
 function lineChart(id,data){
-  const c=$(id),{ctx,w,h}=prep(c),left=52,right=24,top=24,bottom=48,plotW=w-left-right,plotH=h-top-bottom,max=Math.max(1,...data.map(x=>x.value));
-  ctx.strokeStyle="#d8e2ee";ctx.setLineDash([2,4]);for(let i=0;i<=4;i++){const y=top+plotH*i/4;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke()}ctx.setLineDash([]);
-  const x=i=>left+(data.length<=1?0:plotW*i/(data.length-1)), y=v=>top+plotH-plotH*v/max;ctx.strokeStyle="#10b981";ctx.lineWidth=2.4;ctx.beginPath();data.forEach((p,i)=>i?ctx.lineTo(x(i),y(p.value)):ctx.moveTo(x(i),y(p.value)));ctx.stroke();ctx.fillStyle="#52627a";ctx.textAlign="center";ctx.font="12px Segoe UI,Arial";data.forEach((p,i)=>{if(i%Math.ceil(data.length/8)===0||i===data.length-1)ctx.fillText(p.label,x(i),h-22)});
+  const c=$(id);
+  if(!c)return;
+  const {ctx,w,h}=prep(c);
+  const left=46,right=22,top=14,bottom=42,plotW=w-left-right,plotH=h-top-bottom;
+  const max=Math.max(1,...data.map(x=>Number(x.value||0)));
+  ctx.strokeStyle="#d8e2ee";
+  ctx.setLineDash([2,4]);
+  for(let i=0;i<=4;i++){
+    const y=top+plotH*i/4;
+    ctx.beginPath();
+    ctx.moveTo(left,y);
+    ctx.lineTo(w-right,y);
+    ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  if(!data.length)return;
+  const x=i=>left+(data.length<=1?plotW/2:plotW*i/(data.length-1));
+  const y=v=>top+plotH-plotH*(Number(v||0)/max);
+  const gradient=ctx.createLinearGradient(0,top,0,top+plotH);
+  gradient.addColorStop(0,"rgba(16,185,129,.34)");
+  gradient.addColorStop(1,"rgba(16,185,129,0)");
+  ctx.beginPath();
+  data.forEach((p,i)=>{const px=x(i),py=y(p.value);if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);});
+  ctx.lineTo(x(data.length-1),top+plotH);
+  ctx.lineTo(x(0),top+plotH);
+  ctx.closePath();
+  ctx.fillStyle=gradient;
+  ctx.fill();
+  ctx.strokeStyle="#10b981";
+  ctx.lineWidth=3.4;
+  ctx.beginPath();
+  data.forEach((p,i)=>{const px=x(i),py=y(p.value);if(i===0)ctx.moveTo(px,py);else ctx.lineTo(px,py);});
+  ctx.stroke();
+  data.forEach((p,i)=>{
+    const px=x(i),py=y(p.value);
+    ctx.beginPath();
+    ctx.arc(px,py,5.6,0,Math.PI*2);
+    ctx.fillStyle="#fff";
+    ctx.fill();
+    ctx.lineWidth=2;
+    ctx.strokeStyle="#10b981";
+    ctx.stroke();
+  });
+  const labelIndexes=lineChartLabelIndexes(data);
+  ctx.save();
+  ctx.font="700 10px Segoe UI,Arial";
+  ctx.textAlign="center";
+  ctx.textBaseline="middle";
+  labelIndexes.forEach(i=>{
+    const value=Number(data[i]?.value||0);
+    const px=x(i);
+    const py=y(value);
+    const label=String(value);
+    const labelW=Math.max(22,ctx.measureText(label).width+10);
+    const labelH=16;
+    const above=py>top+plotH*0.28;
+    const lx=Math.max(left+8,Math.min(px-labelW/2,w-right-labelW-2));
+    const ly=above?py-20:py+10;
+    ctx.fillStyle="rgba(255,255,255,.96)";
+    roundRectPath(ctx,lx,ly,labelW,labelH,9);
+    ctx.fill();
+    ctx.strokeStyle="rgba(15,23,42,.08)";
+    ctx.lineWidth=1;
+    ctx.stroke();
+    ctx.fillStyle="#0f172a";
+    ctx.fillText(label,lx+labelW/2,ly+labelH/2+0.5);
+  });
+  ctx.restore();
+  const ticks=lineChartTickIndexes(data,w,ctx);
+  ctx.fillStyle="#64748b";
+  ctx.font="11px Segoe UI,Arial";
+  ctx.textBaseline="top";
+  ctx.fillStyle="#64748b";
+  ticks.forEach((i,idx)=>{
+    const label=monthAxisLabel(data[i].label);
+    const px=x(i);
+    if(idx===0){
+      ctx.textAlign="left";
+      ctx.fillText(label,left,h-18);
+      return;
+    }
+    if(idx===ticks.length-1){
+      ctx.textAlign="right";
+      ctx.fillText(label,w-right,h-18);
+      return;
+    }
+    ctx.textAlign="center";
+    ctx.fillText(label,px,h-18);
+  });
+}
+function renderCaseSplitLegend(caseSplit){
+  const box=$("caseSplitLegend");
+  if(!box)return;
+  const total=Number(caseSplit?.open||0)+Number(caseSplit?.closed||0);
+  if(!total){
+    box.innerHTML='<div class="chartEmpty">No case split data available.</div>';
+    return;
+  }
+  const items=[
+    {label:"Open Cases",value:Number(caseSplit.open||0),color:"#3b82f6"},
+    {label:"Closed Cases",value:Number(caseSplit.closed||0),color:"#10b981"},
+  ];
+  box.innerHTML=items.map(item=>{
+    const pct=total?(item.value/total)*100:0;
+    return `<div class="pieLegendItem"><span class="pieLegendSwatch" style="background:${item.color}"></span><div class="pieLegendText"><strong>${esc(item.label)}</strong><small>${num(item.value)} tickets</small></div><div class="pieLegendValue">${pct.toFixed(1)}%</div></div>`;
+  }).join("");
+}
+function xmlEscape(v){return clean(v).replace(/[<>&'"]/g,s=>({"<":"&lt;",">":"&gt;","&":"&amp;","'":"&apos;","\"":"&quot;"}[s]))}
+function xlsSheetName(name){return clean(name).replace(/[:\\/?*\[\]]/g," ").slice(0,31)||"Sheet"}
+function exportWorkbook(sheets,filename){
+  const valid=(sheets||[]).filter(sheet=>sheet&&Array.isArray(sheet.rows)&&sheet.rows.length);
+  if(!valid.length){alert("No export data found for this repair.");return}
+  const xmlHeader='<?xml version="1.0"?>\n<?mso-application progid="Excel.Sheet"?>\n<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns:html="http://www.w3.org/TR/REC-html40">';
+  const xmlFooter='</Workbook>';
+  const workbook=[xmlHeader];
+  valid.forEach(sheet=>{
+    workbook.push(`<Worksheet ss:Name="${xmlEscape(xlsSheetName(sheet.name))}"><Table>`);
+    sheet.rows.forEach(row=>{
+      workbook.push("<Row>");
+      row.forEach(cell=>{
+        const value=cell==null?"":cell;
+        const num=typeof value==="number"&&Number.isFinite(value);
+        workbook.push(num?`<Cell><Data ss:Type="Number">${value}</Data></Cell>`:`<Cell><Data ss:Type="String">${xmlEscape(value)}</Data></Cell>`);
+      });
+      workbook.push("</Row>");
+    });
+    workbook.push("</Table></Worksheet>");
+  });
+  workbook.push(xmlFooter);
+  const blob=new Blob([workbook.join("")],{type:"application/vnd.ms-excel"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=`${filename}.xls`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function repeatBucketConfig(){
+  return [
+    {key:"unique",label:"Unique (1 claim)",min:1,max:2,cls:"unique",bar:"linear-gradient(90deg,#22c55e,#16a34a)",accent:"#16a34a"},
+    {key:"repeat23",label:"2 - 3 repeats",min:2,max:4,cls:"repeat23",bar:"linear-gradient(90deg,#f59e0b,#d97706)",accent:"#d97706"},
+    {key:"repeat4",label:"4+ repeats",min:4,max:Infinity,cls:"repeat4",bar:"linear-gradient(90deg,#ef4444,#b91c1c)",accent:"#b91c1c"},
+  ];
+}
+function buildRepeatState(rows){
+  const repeatBuckets=repeatBucketConfig();
+  const chassisMap=new Map();
+  rows.forEach(entry=>{
+    const chassis=normalizedChassis(entry);
+    if(!chassis)return;
+    const ticket={
+      chassis,
+      ticketId:clean(entry.id||entry.ticket.TicketID||entry.ticket.Ticket||""),
+      ticketName:clean(entry.ticket.TicketName||entry.ticket.Ticket||entry.ticket.TicketID||""),
+      created:dateKey(entry.ticket.CreatedOn),
+      cost:repairCostFromTicket(entry.ticket),
+      status:clean(entry.ticket.TicketStatusText||entry.ticket.TicketStatus||"Unknown"),
+      serialId:clean(entry.ticket.SerialID||""),
+      chassisNumber:clean(entry.ticket.ChassisNumber||""),
+      dealerName:clean(entry.ticket.DealerName||entry.ticket["Dealer Name"]||""),
+    };
+    const rec=chassisMap.get(chassis)||{chassis,count:0,tickets:[]};
+    rec.count++;
+    rec.tickets.push(ticket);
+    chassisMap.set(chassis,rec);
+  });
+  const buckets=repeatBuckets.map(cfg=>({ ...cfg, chassisCount:0, ticketCount:0, costTotal:0, tickets:[], chassisRows:[] }));
+  const chassisRows=[];
+  chassisMap.forEach(rec=>{
+    const cfg=repeatBuckets.find(r=>rec.count>=r.min&&rec.count<r.max);
+    if(!cfg)return;
+    const bucket=buckets.find(b=>b.key===cfg.key);
+    bucket.chassisCount++;
+    bucket.tickets.push(...rec.tickets.map(t=>({...t,repeatKey:cfg.key,repeatLabel:cfg.label,chassisCount:rec.count})));
+    bucket.ticketCount+=rec.tickets.length;
+    bucket.costTotal+=rec.tickets.reduce((sum,t)=>sum+Number(t.cost||0),0);
+    const totalCost=rec.tickets.reduce((sum,t)=>sum+Number(t.cost||0),0);
+    const dates=rec.tickets.map(t=>t.created).filter(Boolean).sort();
+    const repairNames=Array.from(new Set(rec.tickets.map(t=>t.dealerName).filter(Boolean))).sort((a,b)=>a.localeCompare(b));
+    const sortedTickets=rec.tickets.slice().sort((a,b)=>(b.created||"").localeCompare(a.created||"")||(b.ticketId||"").localeCompare(a.ticketId||""));
+    bucket.chassisRows.push({
+      chassis:rec.chassis,
+      repeatKey:cfg.key,
+      repeatLabel:cfg.label,
+      chassisCount:rec.count,
+      ticketCount:rec.tickets.length,
+      totalCost,
+      avgCost:rec.tickets.length?totalCost/rec.tickets.length:0,
+      repairerNames:repairNames,
+      firstCreated:dates[0]||"",
+      lastCreated:dates[dates.length-1]||"",
+      tickets:sortedTickets,
+    });
+    chassisRows.push({
+      chassis:rec.chassis,
+      repeatKey:cfg.key,
+      repeatLabel:cfg.label,
+      chassisCount:rec.count,
+      ticketCount:rec.tickets.length,
+      totalCost,
+      avgCost:rec.tickets.length?totalCost/rec.tickets.length:0,
+      tickets:sortedTickets,
+    });
+  });
+  chassisRows.sort((a,b)=>b.ticketCount-a.ticketCount||b.chassisCount-a.chassisCount||a.chassis.localeCompare(b.chassis));
+  buckets.forEach(bucket=>bucket.chassisRows.sort((a,b)=>b.ticketCount-a.ticketCount||b.chassisCount-a.chassisCount||a.chassis.localeCompare(b.chassis)));
+  return {buckets,chassisRows,totalChassis:chassisMap.size,totalTickets:rows.length};
+}
+function openRepeatModal(bucketKey){
+  if(!window.__repairInsightsState)return;
+  const bucket=window.__repairInsightsState.repeat.buckets.find(b=>b.key===bucketKey);
+  if(!bucket)return;
+  $("repeatModalTitle").textContent=bucket.label;
+  $("repeatModalDesc").textContent=`${num(bucket.chassisCount)} chassis | ${num(bucket.ticketCount)} tickets`;
+  const rows=bucket.tickets||[];
+  $("repeatModalRows").innerHTML=rows.map(ticket=>{
+    const cls=bucket.key==="repeat4"?"repeatRowRepeat4":bucket.key==="repeat23"?"repeatRowRepeat23":"";
+    return `<tr class="${cls}"><td>${esc(ticket.chassis)}</td><td><b>${esc(ticket.ticketId)}</b><div style="color:#64748b;font-size:12px;margin-top:3px">${esc(ticket.ticketName)}</div></td><td>${esc(ticket.created)}</td><td>${money(ticket.cost)}</td><td>${esc(ticket.status)}</td><td>${esc(ticket.serialId||ticket.chassisNumber||"-")}</td><td>${esc(ticket.dealerName||"-")}</td></tr>`;
+  }).join("")||'<tr><td colspan="7"><div class="empty">No tickets in this repeat bucket.</div></td></tr>';
+  $("repeatModal").classList.add("active");
+  $("repeatModal").setAttribute("aria-hidden","false");
+}
+function closeRepeatModal(){
+  $("repeatModal").classList.remove("active");
+  $("repeatModal").setAttribute("aria-hidden","true");
+}
+function renderRepeatChart(){
+  const box=$("repeatWrap");
+  if(!box)return;
+  const state=window.__repairInsightsState?.repeat;
+  if(!state||!Number(state.totalChassis||0)){box.innerHTML='<div class="repeatWrapEmpty">No chassis repeat data available in this export.</div>';return}
+  const totalChassis=Math.max(1,Number(state.totalChassis||0));
+  box.innerHTML=state.buckets.map(bucket=>{
+    const pct=(Number(bucket.chassisCount||0)/totalChassis)*100;
+    return `<button class="repeatCard ${bucket.cls}" type="button" data-bucket="${esc(bucket.key)}"><div class="repeatCardHead"><div><div class="repeatCardLabel">${esc(bucket.label)}</div><div class="repeatCardSub">${num(bucket.chassisCount)} chassis | ${num(bucket.ticketCount)} tickets</div></div><div class="repeatCardBadge">${pct.toFixed(1)}%</div></div><div class="repeatBar"><span style="width:${pct}%;background:${bucket.bar}"></span></div><div class="repeatCardFoot"><span>Total cost</span><b>${money(bucket.costTotal)}</b></div></button>`;
+  }).join("");
+  box.querySelectorAll(".repeatCard").forEach(btn=>btn.onclick=()=>openRepeatModal(btn.dataset.bucket));
+}
+function exportRepeatWorkbook(){
+  const state=window.__repairInsightsState;
+  if(!state){alert("No export data found for this repair.");return}
+  const repairName=$("title")?.textContent||"Analysis";
+  const repeat=state.repeat;
+  const caseSplit=state.caseSplit||{open:0,closed:0};
+  const summaryRows=[
+    ["Metric","Value"],
+    ["Repair shop",repairName],
+    ["Repair ID",repairId],
+    ["Tickets",Number(state.rows.length||0)],
+    ["Open Cases",Number(caseSplit.open||0)],
+    ["Closed Cases",Number(caseSplit.closed||0)],
+    ["Unique chassis",Number(repeat.totalChassis||0)],
+    ["Chassis with repeats",Number((repeat.buckets.find(b=>b.key==="repeat23")?.chassisCount||0)+(repeat.buckets.find(b=>b.key==="repeat4")?.chassisCount||0))],
+    ["2 - 3 repeats chassis",Number(repeat.buckets.find(b=>b.key==="repeat23")?.chassisCount||0)],
+    ["4+ repeats chassis",Number(repeat.buckets.find(b=>b.key==="repeat4")?.chassisCount||0)],
+  ];
+  const bucketRows=[
+    ["Repeat bucket","Chassis count","Ticket count","Total cost","Average cost"],
+    ...repeat.buckets.map(b=>[b.label,Number(b.chassisCount||0),Number(b.ticketCount||0),Number(b.costTotal||0),Number(b.ticketCount?b.costTotal/b.ticketCount:0)]),
+  ];
+  const chassisRows=[
+    ["Chassis","Repeat bucket","Repeat count","Ticket count","Total cost","Avg cost","First claim","Last claim","Tickets"],
+    ...repeat.chassisRows.map(row=>[
+      row.chassis||"",
+      row.repeatLabel||"",
+      Number(row.chassisCount||0),
+      Number(row.ticketCount||0),
+      Number(row.totalCost||0),
+      Number(row.avgCost||0),
+      row.firstCreated||"",
+      row.lastCreated||"",
+      (row.tickets||[]).map(t=>t.ticketId).join(", "),
+    ]),
+  ];
+  const ticketRows=[
+    ["Repeat bucket","Chassis","Chassis repeat count","Ticket ID","Ticket name","Created","Cost","Status","Serial ID","Chassis number","Dealer name"],
+    ...repeat.buckets.flatMap(bucket=>bucket.tickets.map(ticket=>[
+      bucket.label,
+      ticket.chassis||"",
+      Number(ticket.chassisCount||0),
+      ticket.ticketId||"",
+      ticket.ticketName||"",
+      ticket.created||"",
+      Number(ticket.cost||0),
+      ticket.status||"",
+      ticket.serialId||"",
+      ticket.chassisNumber||"",
+      ticket.dealerName||"",
+    ])),
+  ];
+  exportWorkbook([
+    {name:"Summary",rows:summaryRows},
+    {name:"Repeat Ranges",rows:bucketRows},
+    {name:"Chassis",rows:chassisRows},
+    {name:"Tickets",rows:ticketRows},
+  ],`repair-insights-${repairId}-${new Date().toISOString().slice(0,10)}`);
 }
 async function load(){
   try{showCalcFloat(true,"Calculating...");
-    const node=await readJson("c4cTickets_test/tickets"), all=Object.entries(node||{}).map(([k,r])=>normalize(r,k)).filter(x=>x.id);
-    const rows=all.filter(x=>repairInfo(x).id===repairId), first=rows[0], name=first?repairInfo(first).name:"Repair shop";
-    $("title").textContent=name;const subtitle=$("subtitle");if(subtitle)subtitle.textContent=`Repair ID ${repairId} - shareable URL`;
-    const total=rows.reduce((s,x)=>s+parseAmount(x.ticket.AmountIncludingTax),0), avg=rows.length?total/rows.length:0;
+    const firebaseMap=await loadFirebaseTicketMap();
+    const localDetails=Array.isArray(globalThis.REPAIRERS_2026_ANALYSIS?.details)&&globalThis.REPAIRERS_2026_ANALYSIS.details.length
+      ? globalThis.REPAIRERS_2026_ANALYSIS.details
+      : null;
+    const all=localDetails
+      ? overlayFirebaseTicketRows(localDetails,firebaseMap).map((r,i)=>normalize(r,clean(r["Ticket ID"]||r.TicketID||r.Ticket||`detail-${i+1}`))).filter(x=>x.id)
+      : Object.entries(await readJson("c4cTickets_test/tickets")||{}).map(([k,r])=>normalize(r,k)).filter(x=>x.id);
+    const rows=all.filter(x=>repairInfo(x).id===repairId&&isRepairScopeDate(x.ticket.CreatedOn)), first=rows[0], name=first?cleanRepairShopDisplayName(repairInfo(first).name):"Repair shop";
+    $("title").textContent=name;const subtitle=$("subtitle");if(subtitle)subtitle.textContent=`Repair ID ${repairId} - 2026+ only`;
+    const total=rows.reduce((s,x)=>s+repairCostFromTicket(x.ticket),0), avg=rows.length?total/rows.length:0;
     $("kpiTickets").textContent=num(rows.length);$("kpiCost").textContent=money(total);$("kpiAvg").textContent=money(avg);
-    const amountBins={"0 - 500":0,"500 - 2k":0,"2k - 5k":0,"5k+":0}, status={}, month={}, type={}, chassisCount={};
-    rows.forEach(x=>{const a=parseAmount(x.ticket.AmountIncludingTax), ch=chassis(x), d=dateKey(x.ticket.CreatedOn), st=clean(x.ticket.TicketStatusText)||clean(x.ticket.TicketStatus)||"Unknown", ty=clean(x.ticket.TicketTypeText)||"Unknown";if(a<500)amountBins["0 - 500"]++;else if(a<2000)amountBins["500 - 2k"]++;else if(a<5000)amountBins["2k - 5k"]++;else amountBins["5k+"]++;status[st]=(status[st]||0)+1;type[ty]=(type[ty]||0)+a;if(d){const m=d.slice(0,7);month[m]=(month[m]||0)+1}if(ch)chassisCount[ch]=(chassisCount[ch]||0)+1});
-    const repeats={Unique:0,"2 - 3 repeats":0,"4+ repeats":0};Object.values(chassisCount).forEach(c=>{if(c<=1)repeats.Unique++;else if(c<=3)repeats["2 - 3 repeats"]++;else repeats["4+ repeats"]++});
+    const amountBins={"0 - 500":0,"500 - 2k":0,"2k - 5k":0,"5k+":0}, status={}, month={}, chassisCount={}, caseSplit={open:0,closed:0};
+    rows.forEach(x=>{const a=repairCostFromTicket(x.ticket), ch=chassis(x), d=dateKey(x.ticket.CreatedOn), st=clean(x.ticket.TicketStatusText)||clean(x.ticket.TicketStatus)||"Unknown";if(a<500)amountBins["0 - 500"]++;else if(a<2000)amountBins["500 - 2k"]++;else if(a<5000)amountBins["2k - 5k"]++;else amountBins["5k+"]++;status[st]=(status[st]||0)+1;if(isClosedCase(x.ticket))caseSplit.closed++;else caseSplit.open++;if(d){const m=d.slice(0,7);month[m]=(month[m]||0)+1}if(ch)chassisCount[ch]=(chassisCount[ch]||0)+1});
+    const repeat=buildRepeatState(rows);
+    const statusRows=statusVolumeRows(status);
+    window.__repairInsightsState={name,repairId,rows,repeat,caseSplit};
     barChart("amountChart",Object.entries(amountBins).map(([label,value])=>({label,value,color:"#3b82f6"})));
-    barChart("chassisChart",Object.entries(repeats).map(([label,value])=>({label,value,color:"#f59e0b"})));
-    barChart("statusChart",Object.entries(status).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([label,value])=>({label,value,color:"#10b981"})));
+    pieChart("statusChart",statusRows);
+    renderStatusVolumeLegend(statusRows);
+    pieChart("caseSplitChart",[
+      {label:"Open Cases",value:caseSplit.open,color:"#3b82f6"},
+      {label:"Closed Cases",value:caseSplit.closed,color:"#10b981"},
+    ]);
+    renderCaseSplitLegend(caseSplit);
     lineChart("createdChart",Object.entries(month).sort().map(([label,value])=>({label,value})));
-    barChart("typeChart",Object.entries(type).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([label,value])=>({label,value,color:"#ef4444"})));
+    renderRepeatChart();
     hideCalcFloat();
   }catch(e){hideCalcFloat();$("loadError").textContent="Failed to load repair insight data: "+(e.message||e);$("loadError").style.display="block"}
 }
-window.addEventListener("resize",load);
+window.addEventListener("resize",()=>{if(window.__repairInsightsState){renderRepeatChart();const rows=window.__repairInsightsState.rows||[], caseSplit=window.__repairInsightsState.caseSplit||{open:0,closed:0};const amountBins={"0 - 500":0,"500 - 2k":0,"2k - 5k":0,"5k+":0}, status={}, month={};rows.forEach(x=>{const a=repairCostFromTicket(x.ticket), d=dateKey(x.ticket.CreatedOn), st=clean(x.ticket.TicketStatusText)||clean(x.ticket.TicketStatus)||"Unknown";if(a<500)amountBins["0 - 500"]++;else if(a<2000)amountBins["500 - 2k"]++;else if(a<5000)amountBins["2k - 5k"]++;else amountBins["5k+"]++;status[st]=(status[st]||0)+1;if(d){const m=d.slice(0,7);month[m]=(month[m]||0)+1}});const statusRows=statusVolumeRows(status);barChart("amountChart",Object.entries(amountBins).map(([label,value])=>({label,value,color:"#3b82f6"})));pieChart("statusChart",statusRows);renderStatusVolumeLegend(statusRows);pieChart("caseSplitChart",[{label:"Open Cases",value:caseSplit.open,color:"#3b82f6"},{label:"Closed Cases",value:caseSplit.closed,color:"#10b981"}]);renderCaseSplitLegend(caseSplit);lineChart("createdChart",Object.entries(month).sort().map(([label,value])=>({label,value})));}});
+$("exportExcelBtn").onclick=exportRepeatWorkbook;
+$("repeatModalClose").onclick=closeRepeatModal;
+$("repeatModal").onclick=e=>{if(e.target.id==="repeatModal")closeRepeatModal()};
+window.addEventListener("keydown",e=>{if(e.key==="Escape")closeRepeatModal()});
 load();
 </script>
 </body>
