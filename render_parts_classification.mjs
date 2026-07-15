@@ -2,7 +2,31 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { FileBlob, SpreadsheetFile } from "@oai/artifact-tool";
 
-const outputDir = path.join(process.cwd(), "outputs", "parts_classification_2026-07-06");
+async function resolveOutputDir() {
+  const root = process.cwd();
+  const stableMetaPath = path.join(root, "outputs", "parts_classified_meta.json");
+  try {
+    const meta = JSON.parse(await fs.readFile(stableMetaPath, "utf8"));
+    const csvPath = String(meta?.csvPath || "").trim();
+    if (csvPath) {
+      return path.dirname(path.resolve(root, csvPath));
+    }
+  } catch {}
+
+  const outputsDir = path.join(root, "outputs");
+  const entries = await fs.readdir(outputsDir, { withFileTypes: true }).catch(() => []);
+  const dirs = entries
+    .filter((entry) => entry.isDirectory() && entry.name.startsWith("parts_classification_"))
+    .map((entry) => entry.name)
+    .sort()
+    .reverse();
+  if (dirs.length) {
+    return path.join(outputsDir, dirs[0]);
+  }
+  return path.join(outputsDir, `parts_classification_${new Date().toISOString().slice(0, 10)}`);
+}
+
+const outputDir = await resolveOutputDir();
 const xlsxPath = path.join(outputDir, "parts_classification_categorized.xlsx");
 
 const input = await FileBlob.load(xlsxPath);

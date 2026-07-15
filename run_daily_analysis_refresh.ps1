@@ -39,13 +39,13 @@ function Find-AnalysisPython {
 
 $SelectedPython = Find-AnalysisPython
 $ScriptArgs = @(
-    "export_vehicle_failure_timing_2025_2026.py",
+    "rebuild_model_series_assets.py",
     "--log-level",
     "INFO"
 )
 
 if ($SkipFirebase) {
-    $ScriptArgs += "--skip-firebase"
+    throw "--SkipFirebase is no longer supported because model-series rebuild now depends on current Firebase tickets."
 }
 
 "[$(Get-Date -Format s)] Using Python: $SelectedPython" | Tee-Object -FilePath $LogPath

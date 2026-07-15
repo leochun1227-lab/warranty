@@ -56,6 +56,10 @@ SAP_HANA_DSN = os.getenv(
 OUTPUT_FILE = os.getenv("OUTPUT_FILE", "c4c_ticket_so_single_sheet.xlsx")  # kept only for backward compatibility; not exported in automation
 SALES_ORG = os.getenv("SALES_ORG", "3110")
 SAP_CLIENT = os.getenv("SAP_CLIENT", "800")
+APPROVED_COST_PO_PURCHASING_ORG = os.getenv("APPROVED_COST_PO_PURCHASING_ORG", os.getenv("PURCHASING_ORG", "3111"))
+APPROVED_COST_PO_PURCHASING_GROUP = os.getenv("APPROVED_COST_PO_PURCHASING_GROUP", os.getenv("PURCHASING_GROUP", "E06"))
+APPROVED_COST_PO_PLANT_FILTER = os.getenv("APPROVED_COST_PO_PLANT_FILTER", "").strip()
+APPROVED_COST_EXCLUDE_DELETED_PO = os.getenv("APPROVED_COST_EXCLUDE_DELETED_PO", "false").strip().lower() in {"1", "true", "yes", "y"}
 ROOT_DIR = Path(__file__).resolve().parent
 OUTPUTS_DIR = ROOT_DIR / "outputs"
 VEHICLE_BASE_SUMMARY_PATH = OUTPUTS_DIR / "analysis_vehicle_base_summary.json"
@@ -65,7 +69,6 @@ PARTS_TICKET_COST_MAP_JS_PATH = OUTPUTS_DIR / "analysis_parts_ticket_cost_map.js
 ANALYSIS_TICKET_CSV_PATH = ROOT_DIR / "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv"
 ANALYSIS_TICKET_CSV_JS_PATH = OUTPUTS_DIR / "analysis_ticket_csv.js"
 PARTS_CLASSIFIED_META_PATH = OUTPUTS_DIR / "parts_classified_meta.json"
-PARTS_CLASSIFIED_DEFAULT_CSV_PATH = OUTPUTS_DIR / "parts_classification_2026-07-06" / "parts_classified.csv"
 PARTS_CLASSIFIED_FLAT_CSV_PATH = OUTPUTS_DIR / "parts_classified.csv"
 PARTS_CLASSIFIED_DATA_JS_PATH = OUTPUTS_DIR / "parts_classified_data.js"
 # ====================================================
@@ -73,6 +76,20 @@ PARTS_CLASSIFIED_DATA_JS_PATH = OUTPUTS_DIR / "parts_classified_data.js"
 
 def sql_quote(s: str) -> str:
     return str(s).replace("'", "''")
+
+
+APPROVED_COST_TICKET_NO_PATTERN = re.compile(
+    r"\btickets?\s*no\.?\s*[:#\-]?\s*\[?\s*(\d+)\s*\]?\b",
+    flags=re.IGNORECASE,
+)
+APPROVED_COST_TICKET_BRACKET_PATTERN = re.compile(
+    r"\btickets?\s*\[\s*(\d+)\s*\]",
+    flags=re.IGNORECASE,
+)
+APPROVED_COST_TICKET_OUTER_BRACKET_PATTERN = re.compile(
+    r"\[\s*tickets?\s+(\d+)\s*(?:[\]\}]|$|[,，;；]|\s)?",
+    flags=re.IGNORECASE,
+)
 
 
 # ======================================================================
@@ -599,18 +616,22 @@ def write_js_global(
 
 def resolve_parts_classified_csv_path() -> Optional[Path]:
     candidates: List[Path] = []
-    if PARTS_CLASSIFIED_META_PATH.exists():
+    meta_candidates = [PARTS_CLASSIFIED_META_PATH, *sorted(OUTPUTS_DIR.glob("parts_classification_*/parts_classified_meta.json"), reverse=True)]
+    for meta_path in meta_candidates:
+        if not meta_path.exists():
+            continue
         try:
-            meta = json.loads(PARTS_CLASSIFIED_META_PATH.read_text(encoding="utf-8"))
+            meta = json.loads(meta_path.read_text(encoding="utf-8"))
             csv_path = as_clean_str((meta or {}).get("csvPath"))
             if csv_path:
-                candidates.append((ROOT_DIR / csv_path).resolve())
+                resolved = Path(csv_path)
+                if not resolved.is_absolute():
+                    resolved = (ROOT_DIR / resolved).resolve()
+                candidates.append(resolved)
         except Exception:
             pass
-    candidates.extend([
-        PARTS_CLASSIFIED_DEFAULT_CSV_PATH.resolve(),
-        PARTS_CLASSIFIED_FLAT_CSV_PATH.resolve(),
-    ])
+    candidates.append(PARTS_CLASSIFIED_FLAT_CSV_PATH.resolve())
+    candidates.extend(path.resolve() for path in sorted(OUTPUTS_DIR.glob("parts_classification_*/parts_classified.csv"), reverse=True))
     for path in candidates:
         if path.exists():
             return path
@@ -2037,7 +2058,11 @@ def build_final_output(ticket_df: pd.DataFrame, so_item_df: pd.DataFrame) -> pd.
 
     so_item_df = choose_best_match_per_ticket(so_item_df)
 
-    merged = ticket_df.merge(
+    # HANA fetch is authoritative for Sales Order.  The ticket snapshot also
+    # carries a legacy Sales Order field; dropping it before the merge avoids
+    # pandas renaming the two non-key columns to Sales Order_x/Sales Order_y.
+    ticket_base = ticket_df.drop(columns=["Sales Order"], errors="ignore")
+    merged = ticket_base.merge(
         so_item_df,
         how="left",
         on=["TicketID", "ERPFreeOrder"]
@@ -2937,6 +2962,174 @@ def write_hana_cost_sidecar(report_payload: Dict[str, Any]) -> None:
     )
 
 
+def extract_approved_cost_ticket_number(short_text: Any) -> Tuple[str, str]:
+    text = as_clean_str(short_text)
+    if not text:
+        return "", "Short Text is blank"
+
+    matches: List[str] = []
+    matches.extend(APPROVED_COST_TICKET_NO_PATTERN.findall(text))
+    matches.extend(APPROVED_COST_TICKET_BRACKET_PATTERN.findall(text))
+    matches.extend(APPROVED_COST_TICKET_OUTER_BRACKET_PATTERN.findall(text))
+
+    unique: List[str] = []
+    seen = set()
+    for match in matches:
+        ticket_id = as_clean_str(match)
+        if re.fullmatch(r"\d+\.0+", ticket_id):
+            ticket_id = ticket_id.split(".", 1)[0]
+        if ticket_id and ticket_id not in seen:
+            unique.append(ticket_id)
+            seen.add(ticket_id)
+
+    if len(unique) == 1:
+        return unique[0], ""
+    if len(unique) > 1:
+        return "", "Multiple ticket numbers found: " + ", ".join(unique)
+    if re.search(r"\btickets?\b", text, flags=re.IGNORECASE):
+        return "", "Contains Ticket word but no standard Ticket No. number or Ticket [number] pattern"
+    return "", "No standard Ticket No. number or Ticket [number] pattern"
+
+
+def build_approved_cost_sap_po_short_text_sidecar(conn) -> Dict[str, Any]:
+    """
+    Approved Cost price source of truth.
+
+    Do not calculate Approved Cost from C4C AmountIncludingTax here. The
+    business rule is: C4C decides which tickets are approved; SAP PO Short Text
+    (EKPO.TXZ01) gives the ticket number; EKPO.NETWR gives the approved cost.
+    """
+    where_parts = [
+        f'h."MANDT" = \'{sql_quote(SAP_CLIENT)}\'',
+        f'h."EKORG" = \'{sql_quote(APPROVED_COST_PO_PURCHASING_ORG)}\'',
+        f'h."EKGRP" = \'{sql_quote(APPROVED_COST_PO_PURCHASING_GROUP)}\'',
+    ]
+    if APPROVED_COST_PO_PLANT_FILTER:
+        where_parts.append(f'p."WERKS" = \'{sql_quote(APPROVED_COST_PO_PLANT_FILTER)}\'')
+    if APPROVED_COST_EXCLUDE_DELETED_PO:
+        where_parts.append("COALESCE(h.\"LOEKZ\", '') = ''")
+        where_parts.append("COALESCE(p.\"LOEKZ\", '') = ''")
+
+    sql = f"""
+SELECT
+    p."EBELN" AS "Purchasing Document",
+    p."EBELP" AS "Item",
+    h."EKORG" AS "Purchasing Organization",
+    h."EKGRP" AS "Purchasing Group",
+    p."WERKS" AS "Plant",
+    h."BEDAT" AS "Document Date",
+    h."AEDAT" AS "Changed On",
+    h."ERNAM" AS "Created By",
+    h."LIFNR" AS "Supplier",
+    p."MATNR" AS "Material",
+    p."TXZ01" AS "Short Text",
+    p."MENGE" AS "Order Quantity",
+    p."MEINS" AS "Order Unit",
+    p."NETPR" AS "Net Price",
+    p."PEINH" AS "Price Unit",
+    p."NETWR" AS "Net Order Value",
+    h."WAERS" AS "Currency",
+    h."LOEKZ" AS "Header Deletion Indicator",
+    p."LOEKZ" AS "Item Deletion Indicator"
+FROM "SAPHANADB"."EKPO" p
+INNER JOIN "SAPHANADB"."EKKO" h
+    ON h."MANDT" = p."MANDT"
+   AND h."EBELN" = p."EBELN"
+WHERE {" AND ".join(where_parts)}
+ORDER BY p."EBELN", p."EBELP"
+"""
+    logger.info(
+        "Fetching Approved Cost SAP PO Short Text rows: EKORG=%s EKGRP=%s Plant=%s ExcludeDeleted=%s",
+        APPROVED_COST_PO_PURCHASING_ORG,
+        APPROVED_COST_PO_PURCHASING_GROUP,
+        APPROVED_COST_PO_PLANT_FILTER or "(blank)",
+        APPROVED_COST_EXCLUDE_DELETED_PO,
+    )
+    po_df = pd.read_sql(sql, conn)
+    logger.info("Approved Cost SAP PO rows fetched: %s", len(po_df))
+
+    by_ticket: Dict[str, Dict[str, Any]] = {}
+    exception_count = 0
+    regular_count = 0
+    total_amount = 0.0
+
+    for _, row in po_df.iterrows():
+        ticket_id, reason = extract_approved_cost_ticket_number(row.get("Short Text"))
+        if not ticket_id:
+            exception_count += 1
+            continue
+
+        regular_count += 1
+        amount_raw = pd.to_numeric(row.get("Net Order Value"), errors="coerce")
+        net_price_raw = pd.to_numeric(row.get("Net Price"), errors="coerce")
+        amount = 0.0 if pd.isna(amount_raw) else float(amount_raw)
+        net_price = 0.0 if pd.isna(net_price_raw) else float(net_price_raw)
+        total_amount += amount
+        storage_key = f"ticket_{ticket_id}"
+        bucket = by_ticket.setdefault(
+            storage_key,
+            {
+                "ticketNumber": ticket_id,
+                "amount": 0.0,
+                "netOrderValue": 0.0,
+                "netPriceSum": 0.0,
+                "poItemCount": 0,
+                "poDocuments": [],
+                "currencies": [],
+                "shortTextSamples": [],
+            },
+        )
+        bucket["amount"] = round(float(bucket["amount"]) + amount, 2)
+        bucket["netOrderValue"] = round(float(bucket["netOrderValue"]) + amount, 2)
+        bucket["netPriceSum"] = round(float(bucket["netPriceSum"]) + net_price, 2)
+        bucket["poItemCount"] = int(bucket["poItemCount"]) + 1
+
+        po = as_clean_str(row.get("Purchasing Document"))
+        currency = as_clean_str(row.get("Currency"))
+        short_text = as_clean_str(row.get("Short Text"))
+        if po and po not in bucket["poDocuments"]:
+            bucket["poDocuments"].append(po)
+        if currency and currency not in bucket["currencies"]:
+            bucket["currencies"].append(currency)
+        if short_text and len(bucket["shortTextSamples"]) < 5 and short_text not in bucket["shortTextSamples"]:
+            bucket["shortTextSamples"].append(short_text)
+
+    return {
+        "generatedAt": iso_utc_now(),
+        "source": {
+            "name": "SAP HANA PO Short Text",
+            "rule": "Approved Cost = sum EKPO.NETWR for PO items whose EKPO.TXZ01 contains standard Ticket No. / Ticket [number]. C4C is used only to decide approved ticket membership.",
+            "amountField": "EKPO.NETWR",
+            "shortTextField": "EKPO.TXZ01",
+            "sapClient": SAP_CLIENT,
+            "purchasingOrganization": APPROVED_COST_PO_PURCHASING_ORG,
+            "purchasingGroup": APPROVED_COST_PO_PURCHASING_GROUP,
+            "plantFilter": APPROVED_COST_PO_PLANT_FILTER,
+            "excludeDeletedPo": APPROVED_COST_EXCLUDE_DELETED_PO,
+        },
+        "byTicket": by_ticket,
+        "summary": {
+            "ticketCount": len(by_ticket),
+            "poRows": int(len(po_df)),
+            "regularRows": regular_count,
+            "exceptionRows": exception_count,
+            "totalAmount": round(total_amount, 2),
+        },
+    }
+
+
+def write_approved_cost_sidecar(report_payload: Dict[str, Any]) -> None:
+    day_key = iso_utc_now()[:10]
+    base = f"{MONITOR_ROOT}/analytics/approvedCost/sapPoShortText"
+    db.reference(f"{base}/daily/{day_key}").set(report_payload)
+    db.reference(f"{base}/latest").set(report_payload)
+    logger.info(
+        "Wrote Approved Cost SAP PO Short Text sidecar (tickets=%s, total=%s)",
+        report_payload.get("summary", {}).get("ticketCount", 0),
+        report_payload.get("summary", {}).get("totalAmount", 0),
+    )
+
+
 # =================== Firebase å†™ C4C æ ¸å¿ƒ ticket å­—æ®µ ===================
 def build_changed_ticket_core_payload(changed_snapshot: Dict[str, Any]) -> Dict[str, Any]:
     """
@@ -3106,12 +3299,22 @@ def is_critical_status(code: str, text: str) -> bool:
     return any(c in CRITICAL_STATUS_VALUES for c in _status_candidates(code, text))
 
 
-def approval_closed_bucket(code: str, text: str) -> str:
+def approval_closed_bucket(code: str, text: str, claim_approved_on: str = "") -> str:
     code_norm = as_clean_str(code).upper()
     text_norm = as_clean_str(text).lower()
-    if code_norm == "Z9" and text_norm == "sales order approved":
+    if as_clean_str(claim_approved_on) and (
+        code_norm in {"Z9", "Y0", "Y1", "Y2", "Y4", "YB"}
+        or text_norm in {
+            "sales order approved",
+            "partially picked",
+            "dispatch parts",
+            "repair in progress",
+            "repairer invoiced received",
+            "repairer invoiced processed",
+        }
+    ):
         return "approved"
-    if code_norm == "Y8" and text_norm == "unapproved claims closed (closed)":
+    if code_norm == "Y8" or text_norm in {"unapproved claims closed", "unapproved claims closed (closed)"}:
         return "unapproved"
     return ""
 
@@ -3142,9 +3345,11 @@ def detect_approval_closed_events(
         curr_code = as_clean_str(curr.get("statusCode")) or ""
         curr_text = as_clean_str(curr.get("statusText")) or ""
         status_changed = (prev_code != curr_code) or (prev_text != curr_text)
-        bucket = approval_closed_bucket(curr_code, curr_text)
+        curr_claim_approved_on = as_clean_str(curr.get("claimApprovedOn")) or ""
+        prev_claim_approved_on = as_clean_str(prev.get("claimApprovedOn")) or ""
+        bucket = approval_closed_bucket(curr_code, curr_text, curr_claim_approved_on)
 
-        if bucket and status_changed and approval_closed_bucket(prev_code, prev_text) != bucket:
+        if bucket and status_changed and approval_closed_bucket(prev_code, prev_text, prev_claim_approved_on) != bucket:
             if bucket == "approved":
                 detected_at = _first_clean_string(curr.get("claimApprovedOn"), curr.get("changedOn"), detected_at_iso)
             else:
@@ -3257,6 +3462,47 @@ def export_excel_single_sheet(final_df: pd.DataFrame):
     logger.info("Excel export disabled. Firebase is the source for dashboard data.")
 
 
+def rebuild_model_series_assets_after_fetch():
+    if os.getenv("SKIP_MODEL_SERIES_ASSETS_AFTER_FETCH", "").strip().lower() in {"1", "true", "yes"}:
+        logger.info("Model-series asset rebuild skipped after fetch because SKIP_MODEL_SERIES_ASSETS_AFTER_FETCH=1.")
+        return
+
+    script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rebuild_model_series_assets.py")
+    if not os.path.exists(script_path):
+        logger.warning("Model-series asset rebuild skipped. Script not found: %s", script_path)
+        return
+
+    logger.info("Step 10/11: Rebuilding analysis assets from updated Firebase tickets ...")
+    env = os.environ.copy()
+    env["FIREBASE_DB_URL"] = FIREBASE_DB_URL
+    env["FIREBASE_SA_PATH"] = FIREBASE_SA_PATH
+    env["FIREBASE_ROOT"] = FIREBASE_ROOT
+    env["MONITOR_ROOT"] = MONITOR_ROOT
+    env["SAP_CLIENT"] = SAP_CLIENT
+    cmd = [
+        sys.executable,
+        script_path,
+        "--firebase-db-url",
+        FIREBASE_DB_URL,
+        "--firebase-sa-path",
+        FIREBASE_SA_PATH,
+        "--firebase-root",
+        FIREBASE_ROOT,
+        "--monitor-root",
+        MONITOR_ROOT,
+        "--sap-client",
+        SAP_CLIENT,
+        "--log-level",
+        "INFO",
+    ]
+    try:
+        subprocess.run(cmd, check=True, env=env)
+    except subprocess.CalledProcessError as exc:
+        logger.exception("Analysis asset rebuild FAILED after fetch. repair, analysis, or dashboard support data may be stale.")
+        raise SystemExit(exc.returncode or 1)
+    logger.info("Analysis asset rebuild completed. Failure timing, repair, parts, and approved-cost assets are refreshed.")
+
+
 def rebuild_dashboard_analytics_after_fetch():
     if os.getenv("SKIP_ANALYTICS_REBUILD_AFTER_FETCH", "").strip().lower() in {"1", "true", "yes"}:
         logger.info("Analytics rebuild skipped after fetch because SKIP_ANALYTICS_REBUILD_AFTER_FETCH=1.")
@@ -3267,7 +3513,7 @@ def rebuild_dashboard_analytics_after_fetch():
         logger.warning("Analytics rebuild skipped. Script not found: %s", script_path)
         return
 
-    logger.info("Step 10/10: Rebuilding dashboard history and analytics from updated Firebase tickets ...")
+    logger.info("Step 11/11: Rebuilding dashboard history and analytics from updated Firebase tickets ...")
     env = os.environ.copy()
     env["FIREBASE_DB_URL"] = FIREBASE_DB_URL
     env["FIREBASE_SA_PATH"] = FIREBASE_SA_PATH
@@ -3384,6 +3630,7 @@ def main():
             sorted(set(so_item_df["Sales Order"].fillna("").astype(str).str.strip().tolist())) if not so_item_df.empty and "Sales Order" in so_item_df.columns else [],
         )
         vehicle_base_summary = fetch_vehicle_base_summary(conn, cutoff_yyyymmdd="20250101")
+        approved_cost_payload = build_approved_cost_sap_po_short_text_sidecar(conn)
 
     logger.info("Matched SO item rows for current ERPFreeOrder tickets: %s", len(so_item_df))
     logger.info("Vehicle dispatch matches by ticket serial/chassis: %s", len(direct_vehicle_dispatch_df))
@@ -3423,6 +3670,9 @@ def main():
     upload_vehicle_dispatch_to_firebase(vehicle_dispatch_df)
     write_vehicle_base_summary(vehicle_base_summary)
     refresh_analysis_offline_assets(vehicle_base_summary)
+    if approved_cost_payload:
+        logger.info("Step 8A/9: Writing Approved Cost SAP PO Short Text sidecar to Firebase ...")
+        write_approved_cost_sidecar(approved_cost_payload)
     # Also push to Firebase so analysis.html can consume it there (it already
     # reads other analysis data from `analysisVehicleBaseSummary` / RTDB).
     try:
@@ -3450,6 +3700,7 @@ def main():
 
     export_excel_single_sheet(final_df)
 
+    rebuild_model_series_assets_after_fetch()
     rebuild_dashboard_analytics_after_fetch()
 
     close_thread_session()

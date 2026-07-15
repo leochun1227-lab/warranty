@@ -1,13 +1,14 @@
+import argparse
 import json
+import os
 from pathlib import Path
 from urllib.request import Request, urlopen
 
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "outputs" / "analysis_parts_ticket_cost_map.json"
-DB_URL = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app"
-FB_TICKETS = "c4cTickets_test/tickets"
-FB_TICKETS_URL = f"{DB_URL}/{FB_TICKETS}.json"
+DEFAULT_DB_URL = os.getenv("FIREBASE_DB_URL", "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app")
+DEFAULT_FIREBASE_ROOT = os.getenv("FIREBASE_ROOT", "c4cTickets_test")
 CNY_TO_AUD_RATE = 5.0
 
 
@@ -137,8 +138,21 @@ def fetch_json(url):
         return json.loads(response.read().decode("utf-8"))
 
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--firebase-db-url", default=DEFAULT_DB_URL)
+    parser.add_argument("--firebase-root", default=DEFAULT_FIREBASE_ROOT)
+    parser.add_argument("--output", default=str(OUT))
+    return parser.parse_args()
+
+
 def main():
-    data = fetch_json(FB_TICKETS_URL)
+    args = parse_args()
+    firebase_root = clean(args.firebase_root) or DEFAULT_FIREBASE_ROOT
+    firebase_tickets = f"{firebase_root}/tickets"
+    firebase_tickets_url = f"{clean(args.firebase_db_url).rstrip('/')}/{firebase_tickets}.json"
+
+    data = fetch_json(firebase_tickets_url)
     rows = []
     for idx, entry in ticket_values(data):
         if not isinstance(entry, dict):
@@ -159,17 +173,18 @@ def main():
             "amountIncludingTax": parse_amount(ticket.get("AmountIncludingTax")),
             "preferredCost": cost if cost != "" else None,
         })
-    OUT.parent.mkdir(parents=True, exist_ok=True)
+    output_path = Path(args.output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "meta": {
-            "source": FB_TICKETS,
+            "source": firebase_tickets,
             "rowCount": len(data) if hasattr(data, "__len__") else None,
             "ticketRows": len(rows),
         },
         "rows": rows,
     }
-    OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"Wrote {len(rows)} rows to {OUT}")
+    output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"Wrote {len(rows)} rows to {output_path}")
 
 
 if __name__ == "__main__":

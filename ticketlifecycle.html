@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ticket lifecycle</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#dbe5f0;--shadow:0 14px 34px rgba(15,23,42,.06)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif}
+.app{min-height:100vh;display:grid;grid-template-columns:288px 1fr}
+.sidebar{background:#0b1222;color:#e5e7eb;min-height:100vh;padding:22px 16px;position:sticky;top:0;align-self:start}
+.brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 28px}
+.brandMark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#2563eb);display:flex;align-items:center;justify-content:center}
+.brandText span{display:block;font-size:18px;font-weight:700}
+.brandText small{display:block;color:#9aa8bc;font-size:12px;margin-top:2px}
+.navSection{font-size:12px;letter-spacing:4px;color:#8ea0b8;text-transform:uppercase;margin:25px 8px 10px}
+.navLink{width:100%;display:flex;align-items:center;gap:13px;color:#d9e1ec;padding:13px 14px;border-radius:12px;font-weight:600;text-decoration:none}
+.navLink.active{background:rgba(255,255,255,.10);color:#fff}
+.navLink:hover{background:rgba(255,255,255,.07)}
+.navLink svg{width:18px;height:18px;stroke-width:1.8;color:#aebcd1}
+.navDivider{height:1px;background:rgba(255,255,255,.08);margin:16px 8px}
+.main{min-width:0;padding:30px 40px 60px}
+.pageTop{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:16px}
+.pageTitle{font-size:30px;line-height:1.1;font-weight:700;margin:0 0 8px}
+.subTitle{color:#52627a;font-size:14px;margin:0;max-width:780px}
+.topActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.jumpBtn,.claimBtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#172033;font-weight:800;font-size:12px;text-decoration:none;box-shadow:0 8px 18px rgba(15,23,42,.04);white-space:nowrap}
+.jumpBtn:hover,.claimBtn:hover{background:#f8fbff;border-color:#cfdbea}
+.claimBtn.active{background:#0f4c81;color:#fff;border-color:#0f4c81}
+.toolbar{position:sticky;top:0;z-index:30;background:rgba(244,247,251,.94);backdrop-filter:blur(8px);padding:12px 0 14px;margin-bottom:18px;border-bottom:1px solid #e6ecf4}
+.toolbarRow{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.claimRow{display:flex;gap:8px;flex-wrap:wrap}
+.asOf{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;color:#475569;font-size:12px;font-weight:700;white-space:nowrap}
+.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin:10px 0 16px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:6px 0 24px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}
+.kpiLabel{font-size:12px;color:#6b7689;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.kpiValue{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-top:8px}
+.kpiHint{font-size:12px;color:#9aa6b8;margin-top:6px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:24px}
+.panelHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
+.panelTitle{font-size:21px;font-weight:700;margin:0 0 6px}
+.panelDesc{color:#64748b;font-size:13px;margin:0;max-width:860px;line-height:1.5}
+.stageGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.stageCard{border:1px solid var(--line);border-radius:16px;padding:18px;background:linear-gradient(180deg,#fff,#fbfdff)}
+.stageTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px}
+.stageName{font-size:18px;font-weight:800;margin:0}
+.stageDesc{font-size:12px;color:var(--muted);margin:4px 0 0}
+.stagePill{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:28px;padding:0 10px;border-radius:999px;color:#fff;font-size:12px;font-weight:800}
+.stageValue{font-size:30px;font-weight:800;letter-spacing:-.03em}
+.stageMeta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.stageMetric{border:1px solid #ebf0f6;border-radius:12px;padding:10px 12px;background:#fff}
+.stageMetricLabel{font-size:11px;color:#708197;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.stageMetricValue{font-size:16px;font-weight:800;margin-top:6px}
+.stageList{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.stageList li{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:#41536b}
+.twoCol{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:20px}
+.tableWrap{border:1px solid var(--line);border-radius:14px;overflow:auto;background:#fff;max-height:560px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{text-align:left;padding:11px 14px;background:#f8fafc;color:#41536b;font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:1}
+tbody td{padding:11px 14px;border-bottom:1px solid #edf2f7;vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:#fafcff}
+.number{text-align:right;font-variant-numeric:tabular-nums}
+.stageBadge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;color:#fff;font-size:11px;font-weight:800}
+.agingRows{display:grid;gap:12px}
+.agingRow{display:grid;grid-template-columns:minmax(140px,180px) 1fr auto;gap:12px;align-items:center}
+.agingLabel{font-size:12px;font-weight:700;color:#273549}
+.agingTrack{height:14px;border-radius:999px;background:#edf2f7;overflow:hidden}
+.agingFill{height:100%;border-radius:999px}
+.agingValue{font-size:12px;color:#41536b;font-weight:700;text-align:right}
+.empty{padding:24px;color:#64748b;text-align:center}
+@media(max-width:1150px){.stageGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.twoCol{grid-template-columns:1fr}}
+@media(max-width:900px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}.pageTop{display:block}.topActions{justify-content:flex-start;margin-top:12px}.kpis{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.kpis,.stageGrid{grid-template-columns:1fr}.toolbarRow{align-items:flex-start}.claimRow{display:grid;width:100%}.claimBtn{width:100%}.agingRow{grid-template-columns:1fr}.agingValue{text-align:left}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M4 12h16M12 4v16"/></svg></div><div class="brandText"><span>Warranty KPI</span><small>After-Sales Team Dashboard</small></div></div>
+    <div class="navSection">Workspace</div>
+    <a class="navLink" href="index.html">Team Dashboard</a>
+    <a class="navLink" href="dealerworkbench.html">Dealer Workbench</a>
+    <a class="navLink" href="delivery_flow.html">Parts Delivery</a>
+    <a class="navLink" href="repairs.html">Repair</a>
+    <div class="navDivider"></div>
+    <div class="navSection">Tickets</div>
+    <a class="navLink" href="dealerworkbench.html#tickets">Critical Tickets</a>
+    <a class="navLink" href="infieldpredelivery.html#newclaim">New Claim</a>
+    <a class="navLink" href="infieldpredelivery.html#created">In Field / Pre Delivery</a>
+    <a class="navLink" href="infieldpredelivery.html#approved">Approved/ Unapproved</a>
+    <a class="navLink" href="infieldpredelivery.html#amount">Amount Claim</a>
+    <a class="navLink" href="infieldpredelivery.html#claimclosed">Claim Closed</a>
+    <div class="navDivider"></div>
+    <div class="navSection">Model Series</div>
+    <a class="navLink" href="analysis.html">Model Series</a>
+    <a class="navLink active" href="ticketlifecycle.html">Ticket lifecycle</a>
+  </aside>
+
+  <main class="main">
+    <div class="pageTop">
+      <div>
+        <h1 class="pageTitle">Ticket lifecycle</h1>
+        <p class="subTitle">Current ticket stages grouped into a practical lifecycle view so the team can see where work is stacking up, how old each stage is, and which tickets need attention first.</p>
+      </div>
+      <div class="topActions">
+        <a class="jumpBtn" href="index.html">Team Dashboard</a>
+        <a class="jumpBtn" href="dealerworkbench.html">Dealer Workbench</a>
+        <a class="jumpBtn" href="infieldpredelivery.html#created">Tickets view</a>
+        <a class="jumpBtn" href="analysis.html">Model Series</a>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="toolbarRow">
+        <div id="claimRow" class="claimRow"></div>
+        <div id="asOf" class="asOf">As of --</div>
+      </div>
+    </div>
+
+    <div id="error" class="error"></div>
+
+    <section class="kpis">
+      <div class="kpi"><div class="kpiLabel">Tickets In Scope</div><div id="kpiTotal" class="kpiValue">0</div><div id="kpiTotalHint" class="kpiHint">current tickets</div></div>
+      <div class="kpi"><div class="kpiLabel">Open Lifecycle</div><div id="kpiOpen" class="kpiValue">0</div><div id="kpiOpenHint" class="kpiHint">new, assessment, approved, repair</div></div>
+      <div class="kpi"><div class="kpiLabel">Closed Decisions</div><div id="kpiClosed" class="kpiValue">0</div><div id="kpiClosedHint" class="kpiHint">closed or unapproved</div></div>
+      <div class="kpi"><div class="kpiLabel">Claim Value</div><div id="kpiAmount" class="kpiValue">$0</div><div id="kpiAmountHint" class="kpiHint">current ticket amount</div></div>
+    </section>
+
+    <section class="panel">
+      <div class="panelHead">
+        <div>
+          <h2 class="panelTitle">Lifecycle stage overview</h2>
+          <p class="panelDesc">Stages are derived from the current ticket status and approval decision so we can see where each ticket sits right now.</p>
+        </div>
+      </div>
+      <div id="stageGrid" class="stageGrid"></div>
+    </section>
+
+    <section class="twoCol">
+      <section class="panel">
+        <div class="panelHead">
+          <div>
+            <h2 class="panelTitle">Current status map</h2>
+            <p class="panelDesc">Raw current statuses mapped into lifecycle stages.</p>
+          </div>
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead><tr><th>Lifecycle Stage</th><th>Current Status</th><th class="number">Tickets</th><th class="number">Avg Aging</th><th class="number">Amount</th></tr></thead>
+            <tbody id="statusRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panelHead">
+          <div>
+            <h2 class="panelTitle">Aging by stage</h2>
+            <p class="panelDesc">Average aging for each lifecycle stage, plus how many tickets are already older than 30 days.</p>
+          </div>
+        </div>
+        <div id="agingRows" class="agingRows"></div>
+      </section>
+    </section>
+
+    <section class="panel">
+      <div class="panelHead">
+        <div>
+          <h2 class="panelTitle">Oldest open tickets</h2>
+          <p class="panelDesc">Open tickets sorted by aging so the team can jump straight to the longest-waiting work.</p>
+        </div>
+      </div>
+      <div class="tableWrap">
+        <table>
+          <thead><tr><th>Stage</th><th>Ticket</th><th>Customer</th><th>Dealer</th><th>Employee</th><th>Claim Type</th><th>Current Status</th><th class="number">Aging</th><th class="number">Amount</th></tr></thead>
+          <tbody id="ticketRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
+const TEAM_DASHBOARD="ctmTicketStatusMonitorV44/analytics/teamDashboard";
+const TICKETS_PATH="c4cTickets_test/tickets";
+const CLAIM_OPTIONS=[{key:"all",label:"All Claims"},{key:"inField",label:"In Field"},{key:"preDelivery",label:"Pre Delivery"}];
+const STAGES=[
+  {key:"newClaim",label:"New Claim",desc:"Fresh claims waiting for first triage.",color:"#2563eb"},
+  {key:"assessment",label:"Assessment",desc:"Assessment, evidence, quote, management or supplier review.",color:"#7c3aed"},
+  {key:"approved",label:"Approved & Ordering",desc:"Approved claims being set up for ordering or parts flow.",color:"#16a34a"},
+  {key:"repair",label:"Repair & Invoicing",desc:"Repair in progress, awaiting parts, picked or invoiced received.",color:"#ea580c"},
+  {key:"closed",label:"Closed / Processed",desc:"Approved work completed and processed.",color:"#0f766e"},
+  {key:"unapproved",label:"Unapproved Closed",desc:"Claims closed as unapproved.",color:"#dc2626"},
+  {key:"other",label:"Other",desc:"Statuses not mapped cleanly yet.",color:"#64748b"}
+];
+const STAGE_MAP=Object.fromEntries(STAGES.map(stage=>[stage.key,stage]));
+const state={claim:"all",tickets:[],generatedAt:""};
+const $=id=>document.getElementById(id);
+const clean=v=>String(v==null?"":v).trim();
+const arr=v=>Array.isArray(v)?v:(v&&typeof v==="object"?Object.values(v):[]);
+const num=v=>Number(v||0).toLocaleString();
+const money=v=>"$"+Number(v||0).toLocaleString(undefined,{maximumFractionDigits:0});
+const pct=v=>`${(Number(v||0)*100).toFixed(1)}%`;
+function showError(msg){$("error").style.display="block";$("error").textContent=msg}
+function readJson(path){return fetch(`${FIREBASE}/${path}.json`,{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error(`${r.status} ${r.statusText}`);return r.json()})}
+function claimKeyFromType(type){const value=clean(type).toLowerCase();if(value.includes("pre delivery"))return"preDelivery";if(value.includes("in field"))return"inField";return"other"}
+function statusText(ticket){return clean(ticket.statusText||ticket.status||ticket.StatusText||ticket.statusCode||ticket.StatusCode||ticket.code)}
+function approvalDecision(ticket){return clean(ticket.approvalDecision||ticket.decision||ticket.approvalState).toLowerCase()}
+function ticketAmount(ticket){return Number(ticket.amount??ticket.AmountIncludingTax??ticket.amountIncludingTax??0)||0}
+function daysSince(dateText){const value=clean(dateText).slice(0,10);if(!value)return 0;const date=new Date(`${value}T00:00:00`);if(Number.isNaN(date.getTime()))return 0;const now=new Date();return Math.max(0,Math.round((now-date)/86400000))}
+function ticketAging(ticket){const direct=Number(ticket.agingDays??ticket.days??ticket.AgingDays??0);return Number.isFinite(direct)&&direct>0?direct:daysSince(ticket.created||ticket.CreatedOn||ticket.createdOn)}
+function stageForTicket(ticket){
+  const status=statusText(ticket).toLowerCase();
+  const decision=approvalDecision(ticket);
+  const code=clean(ticket.statusCode||ticket.StatusCode||ticket.code).toLowerCase();
+  if(code==="z1"||status.includes("new claim"))return"newClaim";
+  if(decision==="unapproved"||status.includes("unapproved"))return"unapproved";
+  if(status.includes("processed")||status.includes("closed"))return"closed";
+  if(status.includes("repair in progress")||status.includes("awaiting")||status.includes("picked")||status.includes("invoiced received")||status.includes("parts"))return"repair";
+  if(decision==="approved"||status.includes("sales order approved")||status==="approved")return"approved";
+  if(status.includes("assessment")||status.includes("evidence")||status.includes("quote")||status.includes("management")||status.includes("authorisation")||status.includes("authorization")||status.includes("supplier")||status.includes("queue")||status.includes("suspended"))return"assessment";
+  return"other";
+}
+function normalizeTicket(raw){
+  const ticket={
+    id:clean(raw.id||raw.ticketId||raw.TicketID),
+    customer:clean(raw.name||raw.customer||raw.CustomerName)||"-",
+    dealer:clean(raw.dealer||raw.DealerName)||"-",
+    employee:clean(raw.employee||raw.owner||raw.AssignTo)||"-",
+    claimType:clean(raw.claimType||raw.claim||raw.ClaimType)||"-",
+    status:statusText(raw)||"Unknown",
+    amount:ticketAmount(raw),
+    agingDays:ticketAging(raw),
+    approvalDecision:approvalDecision(raw),
+    created:clean(raw.created||raw.CreatedOn||raw.createdOn||raw.createdAt),
+  };
+  ticket.claimKey=claimKeyFromType(ticket.claimType);
+  ticket.stage=stageForTicket({...raw,...ticket});
+  return ticket.id||ticket.customer||ticket.status?ticket:null;
+}
+function filteredTickets(){return state.tickets.filter(ticket=>state.claim==="all"||ticket.claimKey===state.claim)}
+function renderClaimButtons(){
+  $("claimRow").innerHTML=CLAIM_OPTIONS.map(option=>`<button class="claimBtn ${state.claim===option.key?"active":""}" data-claim="${option.key}" type="button">${option.label}</button>`).join("");
+  $("claimRow").querySelectorAll(".claimBtn").forEach(button=>button.onclick=()=>{state.claim=button.dataset.claim||"all";render()});
+}
+function stageSummaryRows(rows){
+  return STAGES.map(stage=>{
+    const items=rows.filter(row=>row.stage===stage.key);
+    const amount=items.reduce((sum,row)=>sum+row.amount,0);
+    const avgAge=items.length?items.reduce((sum,row)=>sum+row.agingDays,0)/items.length:0;
+    const topStatuses=[...items.reduce((map,row)=>map.set(row.status,(map.get(row.status)||0)+1),new Map()).entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,3);
+    return {stage,count:items.length,amount,avgAge,share:rows.length?items.length/rows.length:0,topStatuses,over30:items.filter(row=>row.agingDays>30).length};
+  });
+}
+function renderKpis(rows,summary){
+  const openTotal=summary.filter(row=>!["closed","unapproved"].includes(row.stage.key)).reduce((sum,row)=>sum+row.count,0);
+  const closedTotal=summary.filter(row=>["closed","unapproved"].includes(row.stage.key)).reduce((sum,row)=>sum+row.count,0);
+  const totalAmount=rows.reduce((sum,row)=>sum+row.amount,0);
+  const avgAge=rows.length?rows.reduce((sum,row)=>sum+row.agingDays,0)/rows.length:0;
+  $("kpiTotal").textContent=num(rows.length);
+  $("kpiTotalHint").textContent=`avg aging ${avgAge.toFixed(0)} days`;
+  $("kpiOpen").textContent=num(openTotal);
+  $("kpiOpenHint").textContent=`${pct(rows.length?openTotal/rows.length:0)} of current tickets`;
+  $("kpiClosed").textContent=num(closedTotal);
+  $("kpiClosedHint").textContent=`${pct(rows.length?closedTotal/rows.length:0)} of current tickets`;
+  $("kpiAmount").textContent=money(totalAmount);
+  $("kpiAmountHint").textContent=`${rows.length?money(totalAmount/rows.length):"$0"} per ticket`;
+}
+function renderStageGrid(summary){
+  $("stageGrid").innerHTML=summary.map(row=>{
+    const stage=row.stage;
+    const statuses=row.topStatuses.length?row.topStatuses.map(([label,count])=>`<li><span>${label}</span><strong>${num(count)}</strong></li>`).join(""):`<li><span>No tickets</span><strong>0</strong></li>`;
+    return `<article class="stageCard"><div class="stageTop"><div><h3 class="stageName">${stage.label}</h3><p class="stageDesc">${stage.desc}</p></div><span class="stagePill" style="background:${stage.color}">${pct(row.share)}</span></div><div class="stageValue">${num(row.count)}</div><div class="stageMeta"><div class="stageMetric"><div class="stageMetricLabel">Amount</div><div class="stageMetricValue">${money(row.amount)}</div></div><div class="stageMetric"><div class="stageMetricLabel">Avg Aging</div><div class="stageMetricValue">${row.count?`${row.avgAge.toFixed(0)} d`:"0 d"}</div></div></div><ul class="stageList">${statuses}</ul></article>`;
+  }).join("");
+}
+function renderStatusMap(rows){
+  const grouped=[...rows.reduce((map,row)=>{const key=`${row.stage}|||${row.status}`;if(!map.has(key))map.set(key,{stage:row.stage,status:row.status,count:0,amount:0,aging:0});const item=map.get(key);item.count+=1;item.amount+=row.amount;item.aging+=row.agingDays;return map;},new Map()).values()].sort((a,b)=>b.count-a.count||a.status.localeCompare(b.status));
+  $("statusRows").innerHTML=grouped.length?grouped.map(item=>{const stage=STAGE_MAP[item.stage]||STAGE_MAP.other;return `<tr><td><span class="stageBadge" style="background:${stage.color}">${stage.label}</span></td><td>${item.status}</td><td class="number">${num(item.count)}</td><td class="number">${item.count?(item.aging/item.count).toFixed(0):0} d</td><td class="number">${money(item.amount)}</td></tr>`}).join(""):`<tr><td colspan="5"><div class="empty">No status data found.</div></td></tr>`;
+}
+function renderAging(summary){
+  const maxAge=Math.max(1,...summary.map(row=>row.avgAge||0));
+  $("agingRows").innerHTML=summary.map(row=>{const stage=row.stage,width=Math.max(6,Math.round((row.avgAge||0)/maxAge*100));return `<div class="agingRow"><div class="agingLabel">${stage.label}</div><div class="agingTrack"><div class="agingFill" style="width:${width}%;background:${stage.color}"></div></div><div class="agingValue">${row.count?`${row.avgAge.toFixed(0)} d avg, ${num(row.over30)} over 30d`:"0 d avg"}</div></div>`}).join("");
+}
+function renderOldestTickets(rows){
+  const openRows=rows.filter(row=>!["closed","unapproved"].includes(row.stage)).sort((a,b)=>b.agingDays-a.agingDays||b.amount-a.amount).slice(0,40);
+  $("ticketRows").innerHTML=openRows.length?openRows.map(row=>{const stage=STAGE_MAP[row.stage]||STAGE_MAP.other;return `<tr><td><span class="stageBadge" style="background:${stage.color}">${stage.label}</span></td><td>${row.id||"-"}</td><td>${row.customer}</td><td>${row.dealer}</td><td>${row.employee}</td><td>${row.claimType}</td><td>${row.status}</td><td class="number">${num(row.agingDays)} d</td><td class="number">${money(row.amount)}</td></tr>`}).join(""):`<tr><td colspan="9"><div class="empty">No open tickets in this view.</div></td></tr>`;
+}
+function render(){
+  renderClaimButtons();
+  const rows=filteredTickets();
+  const summary=stageSummaryRows(rows);
+  renderKpis(rows,summary);
+  renderStageGrid(summary);
+  renderStatusMap(rows);
+  renderAging(summary);
+  renderOldestTickets(rows);
+}
+Promise.all([readJson(TICKETS_PATH),readJson(TEAM_DASHBOARD).catch(()=>null)]).then(([ticketsData,dashboard])=>{
+  state.tickets=arr(ticketsData).map(normalizeTicket).filter(Boolean);
+  state.generatedAt=clean(dashboard&&dashboard.generatedAt);
+  $("asOf").textContent=`As of ${state.generatedAt.slice(0,10)||"--"}`;
+  render();
+}).catch(error=>{
+  showError(`Unable to load ticket lifecycle data. (${error.message})`);
+  render();
+});
+</script>
+</body>
+</html>

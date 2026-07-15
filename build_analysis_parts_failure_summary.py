@@ -4,17 +4,43 @@ import re
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Optional, Tuple
 
 
 ROOT = Path(__file__).resolve().parent
-PARTS_CSV = ROOT / "outputs" / "parts_classification_2026-07-06" / "parts_classified.csv"
-PARTS_META = ROOT / "outputs" / "parts_classification_2026-07-06" / "parts_classified_meta.json"
+OUTPUT_DIR = ROOT / "outputs"
+PARTS_META = OUTPUT_DIR / "parts_classified_meta.json"
+PARTS_CSV = OUTPUT_DIR / "parts_classified.csv"
 PARTS_TICKET_MAP = ROOT / "outputs" / "analysis_parts_ticket_cost_map.json"
 OUT = ROOT / "outputs" / "analysis_parts_failure_summary.json"
 OUT_JS = ROOT / "outputs" / "analysis_parts_failure_summary.js"
 
 SERIES_ORDER = ["SRC", "SRH", "SRT", "SRM", "SRP", "SRL", "SRV", "NG"]
 EXCLUDED_SERIES = {"UNKNOWN", "RO", "SR", "SCR", "VRV"}
+COMPONENT_ALIASES = {
+    "tail light": "Tail Light",
+    "tail lights": "Tail Light",
+    "taillight": "Tail Light",
+    "taillights": "Tail Light",
+    "combination taillight": "Tail Light",
+    "combination taillights": "Tail Light",
+    "marker light": "Marker Light",
+    "marker lights": "Marker Light",
+    "stop light": "Stop Light",
+    "stop lights": "Stop Light",
+    "roof hatch": "Roof Hatch",
+    "roof hatches": "Roof Hatch",
+    "window blind": "Window Blind",
+    "window blinds": "Window Blind",
+    "access door": "Access Door",
+    "access doors": "Access Door",
+    "main door": "Main Door",
+    "main doors": "Main Door",
+    "power inlet": "Power Inlet",
+    "power inlets": "Power Inlet",
+    "power outlet": "Power Outlet",
+    "power outlets": "Power Outlet",
+}
 
 
 def clean(value):
@@ -50,11 +76,65 @@ def title_case(text):
     return "".join(out)
 
 
+def normalize_component_label(component, category=""):
+    value = clean(component)
+    if not value:
+        return title_case(category or "Other")
+
+    normalized = re.sub(r"[^a-z0-9]+", " ", value.lower()).strip()
+    if normalized in COMPONENT_ALIASES:
+        return COMPONENT_ALIASES[normalized]
+    if normalized.endswith("s") and normalized[:-1] in COMPONENT_ALIASES:
+        return COMPONENT_ALIASES[normalized[:-1]]
+
+    if "Lighting / Reflectors" in clean(category):
+        if re.search(r"\b(?:combination\s+)?tail\s*lights?\b", normalized) or re.search(r"\btaillights?\b", normalized):
+            return "Tail Light"
+        if re.search(r"\bmarker\s+lights?\b", normalized):
+            return "Marker Light"
+        if re.search(r"\bstop\s+lights?\b", normalized):
+            return "Stop Light"
+
+    return title_case(value)
+
+
 def relative_path(path):
     try:
         return path.resolve().relative_to(ROOT).as_posix()
     except ValueError:
         return path.as_posix()
+
+
+def resolve_parts_sources() -> Tuple[Optional[Path], Path]:
+    candidates = [PARTS_META, *sorted(OUTPUT_DIR.glob("parts_classification_*/parts_classified_meta.json"), reverse=True)]
+    seen_csv = set()
+
+    for meta_path in candidates:
+        if not meta_path.exists():
+            continue
+        try:
+            meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        csv_path_raw = clean((meta or {}).get("csvPath"))
+        if not csv_path_raw:
+            continue
+        csv_path = Path(csv_path_raw)
+        if not csv_path.is_absolute():
+            csv_path = (ROOT / csv_path).resolve()
+        if csv_path.exists():
+            return meta_path, csv_path
+        seen_csv.add(csv_path.resolve())
+
+    csv_candidates = [PARTS_CSV, *sorted(OUTPUT_DIR.glob("parts_classification_*/parts_classified.csv"), reverse=True)]
+    for csv_path in csv_candidates:
+        resolved = csv_path.resolve()
+        if resolved in seen_csv:
+            continue
+        if csv_path.exists():
+            return None, csv_path
+
+    raise FileNotFoundError("No parts classified CSV could be resolved.")
 
 
 def normalize_series_code(code):
@@ -144,6 +224,7 @@ def finalize_bucket(bucket, total_tickets, total_cost):
 
 
 def main():
+    parts_meta_path, parts_csv_path = resolve_parts_sources()
     ticket_map_payload = json.loads(PARTS_TICKET_MAP.read_text(encoding="utf-8"))
     ticket_series = {}
     ticket_series_counts = defaultdict(Counter)
@@ -175,7 +256,7 @@ def main():
 
     parts_headers = None
     parts_index = {}
-    for headers, row in read_csv_rows(PARTS_CSV):
+    for headers, row in read_csv_rows(parts_csv_path):
         if parts_headers is None:
             parts_headers = headers
             parts_index = build_index(headers)
@@ -192,7 +273,7 @@ def main():
         keyword = clean(get_value(row, parts_index, "Matched Keyword"))
         category = clean(get_value(row, parts_index, "Part Category")) or "Other"
         component = keyword or category or "Other"
-        component_label = title_case(component)
+        component_label = normalize_component_label(component, category)
         cost = parse_amount(get_value(row, parts_index, "Preferred Line Cost (AUD)"))
         if cost == 0:
             cost = parse_amount(get_value(row, parts_index, "Amount Including Tax"))
@@ -236,9 +317,9 @@ def main():
             "seriesCount": len(series_payload),
             "unmatchedRows": unmatched_rows,
             "excludedRows": excluded_rows,
-            "partsSource": relative_path(PARTS_CSV),
+            "partsSource": relative_path(parts_csv_path),
             "ticketMapSource": relative_path(PARTS_TICKET_MAP),
-            "partsMetaSource": relative_path(PARTS_META),
+            "partsMetaSource": relative_path(parts_meta_path) if parts_meta_path else "",
         },
         "all": overall,
         "series": series_payload,

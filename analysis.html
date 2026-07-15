@@ -284,7 +284,8 @@ td strong{font-weight:700}
 .timingCount small{color:var(--muted);font-weight:600;margin-left:4px}
 
 /* Components: horizontal bars */
-.compRows{display:flex;flex-direction:column;gap:9px;max-height:430px;overflow:auto;padding-right:3px;scrollbar-width:thin;min-width:0}
+.compSplit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:stretch}
+.compRows{display:flex;flex-direction:column;gap:9px;max-height:430px;min-height:430px;overflow:auto;padding-right:3px;scrollbar-width:thin;min-width:0}
 .compRow{
   display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
   padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid var(--line2);
@@ -302,9 +303,39 @@ td strong{font-weight:700}
 .compModeRow .scopeBtn{padding:6px 12px;font-size:11.5px;border-radius:999px}
 .compRow.clickable{cursor:pointer;transition:background .12s ease,border-color .12s ease}
 .compRow.clickable:hover{background:#eef4ff;border-color:#c7d7ee}
+.compRow.active{background:#eef4ff;border-color:#93c5fd;box-shadow:inset 0 0 0 1px rgba(59,130,246,.10)}
+.compRow.active .compBarFill{background:linear-gradient(90deg,#2563eb,#06b6d4)}
 .compRow .compScopeChip{display:inline-block;margin-left:6px;font-size:9.5px;font-weight:800;letter-spacing:.04em;padding:2px 6px;border-radius:999px;background:#e0e7ff;color:#3730a3;text-transform:uppercase;vertical-align:middle}
 .compRow .compScopeChip.field{background:#dcfce7;color:#166534}
 .compRow .compSurge{font-size:10.5px;font-weight:700;color:#b45309;background:#fff7ed;border:1px solid #fed7aa;padding:2px 6px;border-radius:999px;margin-top:2px;display:inline-block}
+.compPreviewWrap{
+  min-height:430px;padding:14px 16px;border:1px solid var(--line2);border-radius:12px;
+  background:#fbfcfe;display:flex;flex-direction:column;min-width:0
+}
+.compPreviewEyebrow{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.compPreviewHead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.compPreviewTitle{font-size:16px;font-weight:900;color:var(--ink);line-height:1.15;text-transform:capitalize;margin-top:3px}
+.compPreviewSub{font-size:11.5px;color:var(--muted);font-weight:600;line-height:1.45;margin-top:4px}
+.compPreviewMode{
+  display:inline-flex;align-items:center;justify-content:center;padding:5px 10px;border-radius:999px;
+  background:#dbeafe;color:#1d4ed8;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap
+}
+.compPreviewMode.field{background:#dcfce7;color:#166534}
+.compPreviewStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0 12px}
+.compPreviewStat{padding:10px 12px;border-radius:10px;border:1px solid var(--line2);background:#fff;min-width:0}
+.compPreviewStat span{display:block;font-size:9.5px;color:var(--muted);font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.compPreviewStat strong{display:block;margin-top:5px;font-size:18px;font-weight:900;color:var(--ink);line-height:1.1}
+.compPreviewChartMeta{font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:8px}
+.compPreviewBars{
+  display:grid;grid-template-columns:repeat(var(--cols,12),minmax(0,1fr));gap:8px;align-items:end;
+  min-height:232px;padding:10px 4px 0;flex:1
+}
+.compPreviewBar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;min-width:0}
+.compPreviewBar .val{font-size:9px;color:var(--ink2);font-weight:800;line-height:1;white-space:nowrap}
+.compPreviewBar .bar{width:100%;background:linear-gradient(180deg,#60a5fa,#2563eb);border-radius:8px 8px 4px 4px;min-height:8px}
+.compPreviewBar.field .bar{background:linear-gradient(180deg,#4ade80,#16a34a)}
+.compPreviewBar .lbl{font-size:9.5px;color:var(--muted);font-weight:700;letter-spacing:.02em}
+.compPreviewHint{font-size:10.5px;color:var(--muted);font-weight:600;margin-top:10px}
 .compTooltip{
   position:fixed;z-index:60;pointer-events:none;
   background:#0f172a;color:#f8fafc;border-radius:10px;padding:10px 12px;
@@ -330,18 +361,26 @@ td strong{font-weight:700}
 .compTotalsTitle{font-size:12.5px;font-weight:800;color:var(--ink)}
 .compTotalsTitle small{color:var(--muted);font-weight:600;margin-left:6px;text-transform:none;letter-spacing:0}
 .compTotalsMeta{font-size:11px;color:var(--muted);font-weight:600}
-.compTotalsTable{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:12px}
+.compTotalsSplit{display:grid;grid-template-columns:minmax(330px,420px) minmax(0,1fr);gap:16px;align-items:stretch;margin-top:12px}
+.compTotalsTablePane,.compTotalsChartPane{
+  min-width:0;background:#fff;border:1px solid var(--line2);border-radius:12px;padding:12px 14px;
+}
+.compTotalsTablePane{overflow:auto}
+.compTotalsChartPane{display:flex;flex-direction:column}
+.compTotalsPaneTitle{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.compTotalsChartMeta{font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:2px}
+.compTotalsTable{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:0}
 .compTotalsTable th,.compTotalsTable td{padding:5px 6px;text-align:right;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums}
 .compTotalsTable th:first-child,.compTotalsTable td:first-child{text-align:left}
 .compTotalsTable thead th{color:var(--muted);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--line)}
 .compTotalsTable tr.totalRow td{font-weight:800;color:var(--ink);border-bottom:none;background:#eff6ff}
 .compTotalsBars{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(54px,1fr));gap:14px;align-items:end;
-  margin:18px 0 10px;padding:8px 4px 0;position:static;min-width:0;min-height:250px
+  display:grid;grid-template-columns:repeat(var(--cols,12), minmax(38px,44px));justify-content:center;gap:10px;align-items:end;
+  margin:12px auto 10px;padding:8px 0 0;position:static;min-width:0;min-height:250px;width:100%
 }
-.compTotalsBar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;min-width:0;position:static;height:100%}
+.compTotalsBar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;min-width:0;position:static;height:100%;width:100%}
 .compTotalsBar .barTrack{
-  width:38px;height:190px;background:linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);
+  width:100%;height:190px;background:linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);
   border-radius:16px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;
   box-shadow:inset 0 0 0 1px rgba(148,163,184,.18)
 }
@@ -361,7 +400,7 @@ td strong{font-weight:700}
   position:static;font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.01em;
   line-height:1.15;white-space:normal;text-align:center;max-width:100%
 }
-.compTotalsLegend{display:flex;gap:12px;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:8px}
+.compTotalsLegend{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:8px}
 .compTotalsLegend .swatch{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:middle;margin-right:4px}
 .compTotalsLegend .swatch.pre{background:#3b82f6}
 .compTotalsLegend .swatch.field{background:#16a34a}
@@ -468,6 +507,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   .kpiGrid{grid-template-columns:repeat(3,1fr)}
   .twoCol{grid-template-columns:1fr}
   .lbRow{grid-template-columns:64px minmax(170px,220px) repeat(8,minmax(72px,1fr))}
+  .compSplit{grid-template-columns:1fr}
+  .compTotalsSplit{grid-template-columns:1fr}
+  .compRows,.compPreviewWrap{min-height:0}
 }
 @media(max-width:900px){
   .app{grid-template-columns:1fr}
@@ -478,15 +520,17 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   .stickyControls{grid-template-columns:1fr;top:0}
   .scopeSwitch{width:100%;overflow:auto}
   .scopeBtn{flex:1}
+  .compPreviewStats{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 </style>
 <script src="outputs/repairers_2026/repairers_2026_data.js"></script>
-<script src="outputs/analysis_parts_failure_summary.js"></script>
+<script src="outputs/analysis_parts_failure_summary_20260714_canonical.js"></script>
 <script src="outputs/analysis_vehicle_base_summary.js"></script>
 <script src="outputs/analysis_parts_ticket_cost_map.js"></script>
+<script src="outputs/analysis_approved_cost_by_ticket.js"></script>
 <script src="outputs/analysis_ticket_failure_timing.js"></script>
 <script src="outputs/analysis_ticket_csv.js"></script>
-<script src="outputs/parts_classified_data.js"></script>
+<script src="outputs/parts_classified_data_20260714_canonical.js"></script>
 </head>
 <body>
 <div class="loadingOverlay show" id="loadingOverlay">
@@ -511,10 +555,18 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     <a class="navLink" href="dealerworkbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a>
     <a class="navLink" href="delivery_flow.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17h2l2-7h10l2 7h2"/><path d="M7 17a2 2 0 1 0 4 0"/><path d="M15 17a2 2 0 1 0 4 0"/><path d="M8 10V6h8v4"/></svg><span>Parts Delivery</span></a>
     <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repair</span></a>
-    <a class="navLink" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M16 17l2-2 2 2"/></svg><span>In Field / Pre Delivery</span></a>
     <div class="navDivider"></div>
-    <div class="navSection">Analysis</div>
-    <a class="navLink active" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Analysis</span></a>
+    <div class="navSection">Tickets</div>
+    <a class="navLink" href="dealerworkbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a>
+    <a class="navLink" href="infieldpredelivery.html#newclaim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span>New Claim</span></a>
+    <a class="navLink" href="infieldpredelivery.html#created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M16 17l2-2 2 2"/></svg><span>In Field / Pre Delivery</span></a>
+    <a class="navLink" href="infieldpredelivery.html#approved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l2 2 4-5"/><path d="M21 12a9 9 0 1 1-9-9"/><path d="M17 3h4v4"/></svg><span>Approved/ Unapproved</span></a>
+    <a class="navLink" href="infieldpredelivery.html#amount"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v18"/><path d="M17 7.5c0-1.9-2.2-3.5-5-3.5s-5 1.6-5 3.5 2.2 3.5 5 3.5 5 1.6 5 3.5-2.2 3.5-5 3.5-5-1.6-5-3.5"/></svg><span>Amount Claim</span></a>
+    <a class="navLink" href="infieldpredelivery.html#claimclosed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 7h12"/><path d="M6 12h8"/><path d="M6 17h6"/><path d="M18 16l-3 3-2-2"/></svg><span>Claim Closed</span></a>
+    <div class="navDivider"></div>
+    <div class="navSection">Model Series</div>
+    <a class="navLink active" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model Series</span></a>
+    <a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket lifecycle</span></a>
     <div class="navDivider"></div>
     <div class="navSection">Tools</div>
     <button class="navBtn" id="reloadBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12a9 9 0 0 0-15.5-6.2"/><path d="M3 12a9 9 0 0 0 15.5 6.2"/><path d="M18.5 2.5v3.3h-3.3"/><path d="M5.5 21.5v-3.3h3.3"/></svg><span>Reload Data</span></button>
@@ -590,8 +642,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
               <div class="miniKpi"><div class="lbl">Repair Tickets</div><div class="val" id="dTickets">–</div><div class="sub" id="dTicketsSub">repair events</div></div>
               <div class="miniKpi"><div class="lbl">Avg Tickets / Chassis</div><div class="val" id="dRate">–</div><div class="sub" id="dRateSub">repair density</div></div>
               <div class="miniKpi"><div class="lbl">Median Failure Age</div><div class="val" id="dAvg">–</div><div class="sub" id="dAvgSub">first ticket after PGI</div></div>
-              <div class="miniKpi"><div class="lbl">Warranty Cost</div><div class="val" id="dCost">–</div><div class="sub" id="dCostSub">confirmed AUD</div></div>
-              <div class="miniKpi"><div class="lbl">Cost / Ticket</div><div class="val" id="dCostVeh">–</div><div class="sub" id="dCostVehSub">average claim cost</div></div>
+              <div class="miniKpi"><div class="lbl">Warranty Cost</div><div class="val" id="dCost">–</div><div class="sub" id="dCostSub">approved AUD</div></div>
+              <div class="miniKpi"><div class="lbl">Cost / Ticket</div><div class="val" id="dCostVeh">–</div><div class="sub" id="dCostVehSub">average approved cost</div></div>
             </div>
 
             <div>
@@ -618,14 +670,17 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           <div class="panelHead">
             <div>
               <h2 class="panelTitle">Top Failure Components · <span id="compLabel">All Series</span></h2>
-              <p class="panelDesc">Hover a row for static ticket counts · click to toggle Pre-Delivery / In-Field.</p>
+              <p class="panelDesc">Hover a bar to preview its monthly trend on the right. Click the active bar to toggle Pre-Delivery / In-Field.</p>
             </div>
             <div class="compModeRow" role="tablist" aria-label="Sort mode">
               <button class="scopeBtn active" type="button" data-comp-mode="tickets">Tickets</button>
               <button class="scopeBtn" type="button" data-comp-mode="cost">Cost</button>
             </div>
           </div>
-          <div class="compRows" id="compRows"><div class="empty">Loading component data…</div></div>
+          <div class="compSplit">
+            <div class="compRows" id="compRows"><div class="empty">Loading component data...</div></div>
+            <div class="compPreviewWrap" id="compPreviewWrap"><div class="empty">Loading component preview...</div></div>
+          </div>
           <div class="compTotalsWrap" id="compTotalsWrap"></div>
         </div>
       </section>
@@ -713,20 +768,19 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 (function(){
   // ============ CONFIG ============
   const CUTOFF = new Date(2025, 0, 1); // Jan 1 2025
-  const SALES_RATE_TOTAL_VEHICLES = 4613;
+  const LEGACY_SALES_RATE_TOTAL_VEHICLES = 4613;
   const SOLD_KEY = "warranty.analysis.soldBySeries.v1";
   const FB_TICKETS = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/tickets.json";
   const FB_VEHICLE_BASE_SUMMARY = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/analysisVehicleBaseSummary.json";
+  const FB_APPROVED_COST_LATEST = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/ctmTicketStatusMonitorV44/analytics/approvedCost/sapPoShortText/latest.json";
   const PARTS_COST_CACHE = "outputs/analysis_parts_ticket_cost_map.json";
+  const APPROVED_COST_CACHE = "outputs/analysis_approved_cost_by_ticket.json";
   const VEHICLE_BASE_SUMMARY_CACHE = "outputs/analysis_vehicle_base_summary.json";
-  const PARTS_FAILURE_SUMMARY_CACHE = "outputs/analysis_parts_failure_summary.json";
-  // Meta lives at a stable path and points at the current dated CSV folder,
-  // e.g. `outputs/parts_classification_2026-07-06/parts_classified.csv`.
-  // We read meta first so the CSV path stays fresh across daily runs; the
-  // hard-coded PARTS_CLASSIFIED_CSV below is only a last-resort fallback.
-  const PARTS_CLASSIFIED_META = "outputs/parts_classified_meta.json";
-  const PARTS_CLASSIFIED_CSV = "outputs/parts_classification_2026-07-06/parts_classified.csv";
-  const PARTS_CLASSIFIED_CSV_FLAT = "outputs/parts_classified.csv";
+  const PARTS_FAILURE_SUMMARY_CACHE = "outputs/analysis_parts_failure_summary_20260714_canonical.json";
+  // Meta lives at a stable path and points at the current dated CSV folder.
+  // We read meta first so the CSV path stays fresh across fetch-driven rebuilds.
+  const PARTS_CLASSIFIED_META = "outputs/parts_classified_meta_20260714_canonical.json";
+  const PARTS_CLASSIFIED_CSV_FLAT = "outputs/parts_classified_20260714_canonical.csv";
   const TICKET_FAILURE_TIMING_CSV = "outputs/analysis_ticket_failure_timing.csv";
   const LEGACY_TICKET_CSV_URL = "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv";
   const IS_FILE_CONTEXT = location.protocol === "file:";
@@ -761,6 +815,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     chassisSeriesMap: {},         // chassis / serial / VIN aliases -> SAP-derived series
     salesOrderSeriesMap: {},      // sales order aliases -> SAP-derived series
     ticketCostRows: [],
+    approvedCostByTicketId: {},
     partsCostByTicketId: {},
     ticketCostMemo: new WeakMap(),
     rejectionByTicketId: {},
@@ -780,6 +835,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     seriesRej: [],
     compMode: "tickets",            // tickets | cost
     compTooltipScope: "PRE",        // PRE | FIELD (click toggles)
+    compPreviewKey: "",
+    compPreviewName: "",
+    compPreviewCat: "",
   };
 
   // ============ HELPERS ============
@@ -1028,15 +1086,26 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       return state.ticketCostMemo.get(row);
     }
     let cost = null;
+    let hasApprovedCost = false;
     for (const k of partsCostLookupKeys(row)) {
-      if (Object.prototype.hasOwnProperty.call(state.partsCostByTicketId,k)) {
-        cost = Number(state.partsCostByTicketId[k]) || 0;
+      if (Object.prototype.hasOwnProperty.call(state.approvedCostByTicketId,k)) {
+        cost = Number(state.approvedCostByTicketId[k]);
+        hasApprovedCost = true;
         break;
       }
     }
-    if (!Number.isFinite(cost) || cost <= 0) {
+    if (!hasApprovedCost) {
+      for (const k of partsCostLookupKeys(row)) {
+        if (Object.prototype.hasOwnProperty.call(state.partsCostByTicketId,k)) {
+          cost = Number(state.partsCostByTicketId[k]) || 0;
+          break;
+        }
+      }
+    }
+    if (!hasApprovedCost && (!Number.isFinite(cost) || cost <= 0)) {
       cost = asNumber(row.confirmed_cost_aud || row["confirmed_cost_aud"] || row.ClaimTotalAmount || row["ClaimTotalAmount"]);
     }
+    if (!Number.isFinite(cost)) cost = 0;
     if (row && typeof row === "object") state.ticketCostMemo.set(row, cost);
     return cost;
   }
@@ -1180,6 +1249,49 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (!next) return;
     const current = parseDmy(map[k]);
     if (!current || date < current) map[k] = next;
+  }
+
+  async function loadApprovedTicketCosts(){
+    const approvedMap = {};
+    state.ticketCostMemo = new WeakMap();
+    const scriptFallback = globalThis.ANALYSIS_APPROVED_COST_BY_TICKET;
+
+    function ingestPayload(payload){
+      if (!payload || typeof payload !== "object") return false;
+      const byTicket = payload && typeof payload.byTicket === "object" ? payload.byTicket : payload;
+      if (!byTicket || typeof byTicket !== "object") return false;
+      let count = 0;
+      for (const [rawKey, rawVal] of Object.entries(byTicket)) {
+        const bucket = rawVal && typeof rawVal === "object" ? rawVal : {};
+        const ticketId = clean(bucket.ticketNumber || bucket.ticketId || rawKey).replace(/^ticket_/i,"");
+        const amount = Number(bucket.amount);
+        if (!ticketId || !Number.isFinite(amount)) continue;
+        [ticketId, rawKey, `ticket_${ticketId}`].map(partsCostKey).filter(Boolean).forEach(k => {
+          if (!Object.prototype.hasOwnProperty.call(approvedMap, k)) approvedMap[k] = amount;
+        });
+        count++;
+      }
+      return count > 0;
+    }
+
+    async function ingest(source){
+      if (source === "script") return ingestPayload(scriptFallback);
+      try {
+        const url = source === "cache" ? APPROVED_COST_CACHE : FB_APPROVED_COST_LATEST;
+        const r = await fetch(freshJsonUrl(url), { cache:"no-store" });
+        if (!r.ok) return false;
+        return ingestPayload(await r.json());
+      } catch {
+        return false;
+      }
+    }
+
+    const fileOk = IS_FILE_CONTEXT ? await ingest("script") : false;
+    const cacheOk = fileOk || await ingest("cache");
+    if ((!cacheOk || Object.keys(approvedMap).length < 100) && !IS_FILE_CONTEXT) {
+      await ingest("firebase");
+    }
+    state.approvedCostByTicketId = approvedMap;
   }
 
   async function loadPartsTicketCosts(){
@@ -1430,10 +1542,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   function effectiveBase(series){
     // Precedence:
     //   1. Manual override (`state.soldBySeries`) — user-supplied truth.
-    //   2. `state.deliveredBaseBySeries` — TRUE denominator from SAP
-    //      (shipped + in-stock + in-transit chassis), the correct base for
-    //      Leaderboard / Full Metrics Table percentage columns.
-    //   3. `state.autoBaseBySeries` — legacy trace-from-tickets which only
+    //   2. `state.salesBaseBySeries` — sold vehicles with a valid PGI.
+    //   3. `state.deliveredBaseBySeries` — shipped + in-stock + in-transit
+    //      chassis from SAP when the sold-PGI base is incomplete.
+    //   4. `state.autoBaseBySeries` — legacy trace-from-tickets which only
     //      counts problematic vehicles; used only when the SAP-sourced base
     //      is unavailable (network / permission failure).
     if (Object.prototype.hasOwnProperty.call(state.soldBySeries, series)) {
@@ -1455,6 +1567,40 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     return 0;
   }
 
+  function salesRateTotalVehicles(){
+    const vehicleBaseTotal = Number(state.vehicleBaseSummary?.totalSales) || 0;
+    if (vehicleBaseTotal > 0) return vehicleBaseTotal;
+    const trackedSalesTotal = Object.keys(state.salesBaseBySeries)
+      .filter(isTrackedSeries)
+      .reduce((sum, key) => sum + (Number(state.salesBaseBySeries[key]) || 0), 0);
+    if (trackedSalesTotal > 0) return trackedSalesTotal;
+    return LEGACY_SALES_RATE_TOTAL_VEHICLES;
+  }
+
+  function trackedSummarySeriesKeys(){
+    return Array.from(new Set([
+      ...Object.keys(state.autoBaseBySeries || {}),
+      ...Object.keys(state.soldBySeries || {}),
+      ...Object.keys(state.salesBaseBySeries || {}),
+      ...Object.keys(state.deliveredBaseBySeries || {}),
+    ]
+      .map(normalizeSeriesCode)
+      .filter(isTrackedSeries)
+      .filter(series => !isExcludedSeries(series))));
+  }
+
+  function createSeriesBucket(series){
+    return {
+      series, tickets:0, cost:0, vehicles:new Set(), ages:[],
+      firstFailureByVehicle:new Map(),
+      repairedTickets:0,
+      buckets:[0,0,0,0],
+      timingSources:{ pgi:0 },
+      fullyRej:0, partRej:0, anyRej:0,
+      dealers:new Map(),
+    };
+  }
+
   function summaryBySeries(rows){
     const map = new Map();
     for (const row of pgiMatchedRows(rows)) {
@@ -1467,15 +1613,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       if (!key) continue;
 
       if (!map.has(series)) {
-        map.set(series, {
-          series, tickets:0, cost:0, vehicles:new Set(), ages:[],
-          firstFailureByVehicle:new Map(),
-          repairedTickets:0,
-          buckets:[0,0,0,0],
-          timingSources:{ pgi:0 },
-          fullyRej:0, partRej:0, anyRej:0,
-          dealers:new Map(),
-        });
+        map.set(series, createSeriesBucket(series));
       }
       const b = map.get(series);
       b.tickets++;
@@ -1492,6 +1630,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         if (!Number.isFinite(prev) || age < prev) b.firstFailureByVehicle.set(key, age);
       }
     }
+    trackedSummarySeriesKeys().forEach(series => {
+      if (!map.has(series)) map.set(series, createSeriesBucket(series));
+    });
     const summary = Array.from(map.values()).map(item => {
       const vehicles = item.vehicles.size;
       const firstFailureAges = Array.from(item.firstFailureByVehicle.values()).filter(Number.isFinite);
@@ -1519,12 +1660,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     });
     const totalTickets = summary.reduce((sum, item) => sum + (Number(item.tickets) || 0), 0);
     const totalVehicles = summary.reduce((sum, item) => sum + (Number(item.vehicles) || 0), 0);
+    const totalSoldVehicles = salesRateTotalVehicles();
     return summary.map(item => {
       const salesBase = csvBaseForSeries(item.series);
       const ticketShare = totalTickets ? item.tickets / totalTickets : null;
       const vehicleShare = totalVehicles ? item.vehicles / totalVehicles : null;
       const repairRate = salesBase ? item.vehicles / salesBase : null;
-      const salesRate = SALES_RATE_TOTAL_VEHICLES ? salesBase / SALES_RATE_TOTAL_VEHICLES : null;
+      const salesRate = totalSoldVehicles ? salesBase / totalSoldVehicles : null;
       const salesShare = salesRate;
       const mixGap = Number.isFinite(ticketShare) && Number.isFinite(salesShare) ? ticketShare - salesShare : null;
       const costPerSold = salesBase ? item.cost / salesBase : null;
@@ -1865,8 +2007,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     $("dTicketsSub").textContent = s.medianAge==null ? "repair events" : `median age ${Math.round(s.medianAge)} d`;
     $("dRateSub").textContent = s.avgRepairs && s.avgRepairs>=2 ? "repeat repairs visible" : "mostly one ticket each";
     $("dAvgSub").textContent = s.medianAge==null ? "no dated chassis yet" : "from first ticket per chassis";
-    $("dCostSub").textContent = s.tickets ? `${moneyFmt.format(s.cost/s.tickets)} / ticket` : "confirmed AUD";
-    $("dCostVehSub").textContent = s.tickets ? "average claim cost" : "no tickets yet";
+    $("dCostSub").textContent = s.tickets ? `${moneyFmt.format(s.cost/s.tickets)} / ticket` : "approved AUD";
+    $("dCostVehSub").textContent = s.tickets ? "average approved cost" : "no tickets yet";
 
     // Timing distribution
     const buckets = s.buckets || [0,0,0,0];
@@ -1899,15 +2041,18 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   function renderComponents(){
     const summary = state.partsFailureSummary;
     const target = $("compRows");
+    const previewTarget = $("compPreviewWrap");
     const totalsTarget = $("compTotalsWrap");
     if (!summary) {
       target.innerHTML = `<div class="empty">Parts classification summary not loaded.<br><small>${esc(state.partsFailureError || PARTS_FAILURE_SUMMARY_CACHE)}</small></div>`;
+      if (previewTarget) previewTarget.innerHTML = `<div class="empty">Component preview will appear here once the summary loads.</div>`;
       if (totalsTarget) totalsTarget.innerHTML = "";
       return;
     }
     let rows = componentRowsForSelection(summary, state.selected).slice();
     if (!rows.length) {
       target.innerHTML = `<div class="empty">No components matched.</div>`;
+      if (previewTarget) previewTarget.innerHTML = `<div class="empty">No component preview is available for the current filter.</div>`;
       if (totalsTarget) totalsTarget.innerHTML = "";
       return;
     }
@@ -1918,11 +2063,17 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     } else {
       rows.sort((a,b) => (Number(b.tickets)||0) - (Number(a.tickets)||0));
     }
-    rows = rows.slice(0, 10);
+    rows = rows.slice(0, 10).map(normalizeComponentPreviewRow);
 
     const modeIsCost = state.compMode === "cost";
     const primaryValues = rows.map(r => modeIsCost ? (Number(r.cost)||0) : (Number(r.tickets)||0));
     const maxPrimary = Math.max(...primaryValues, 1);
+    const activeRow = rows.find(r => r.key === state.compPreviewKey) || rows[0];
+    if (activeRow) {
+      state.compPreviewKey = activeRow.key;
+      state.compPreviewName = activeRow.component;
+      state.compPreviewCat = activeRow.category;
+    }
 
     const rowsHtml = rows.map((r, i) => {
       const tickets = Number(r.tickets)||0;
@@ -1939,8 +2090,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       const secondaryLabel = modeIsCost
         ? `${numFmt.format(tickets)} tickets`
         : (share > 0 ? `${(share*100).toFixed(1)}% of tickets` : moneyFmt.format(cost));
-      const key = componentKey(name, cat);
-      return `<div class="compRow clickable ${dominant}" data-comp-key="${esc(key)}" data-comp-name="${esc(name)}" data-comp-cat="${esc(cat)}">
+      const activeCls = r.key === state.compPreviewKey ? " active" : "";
+      return `<div class="compRow clickable ${dominant}${activeCls}" data-comp-key="${esc(r.key)}" data-comp-name="${esc(name)}" data-comp-cat="${esc(cat)}" data-comp-tickets="${tickets}" data-comp-cost="${cost}" data-comp-share="${share}">
         <div>
           <div class="compHead">
             <div class="compName">${esc(name)}</div>
@@ -1962,16 +2113,151 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       btn.classList.toggle("active", btn.getAttribute("data-comp-mode") === state.compMode);
     });
 
-    // Wire tooltip + click handlers on the component rows
+    hideCompTooltip();
+    applyActiveComponentRowState();
     wireComponentRowInteractions();
-
-    // Render the bottom static totals table
+    setComponentPreview(activeRow, { force:true });
     renderComponentTotals(rows);
   }
 
+  function normalizeComponentPreviewRow(row){
+    if (!row) return null;
+    const component = clean(row.component || row.name) || "Other";
+    const category = clean(row.category || row.cat) || "Other";
+    return {
+      key: row.key || componentKey(component, category),
+      component,
+      category,
+      tickets: Number(row.tickets) || 0,
+      cost: Number(row.cost) || 0,
+      ticketShare: Number(row.ticketShare) || 0,
+    };
+  }
+
+  function componentPreviewPayloadFromElement(el){
+    if (!el) return null;
+    return normalizeComponentPreviewRow({
+      key: el.getAttribute("data-comp-key") || "",
+      component: el.getAttribute("data-comp-name") || "Other",
+      category: el.getAttribute("data-comp-cat") || "Other",
+      tickets: el.getAttribute("data-comp-tickets"),
+      cost: el.getAttribute("data-comp-cost"),
+      ticketShare: el.getAttribute("data-comp-share"),
+    });
+  }
+
+  function applyActiveComponentRowState(){
+    const target = $("compRows");
+    if (!target) return;
+    target.querySelectorAll(".compRow.clickable").forEach(row => {
+      row.classList.toggle("active", row.getAttribute("data-comp-key") === state.compPreviewKey);
+    });
+  }
+
+  function setComponentPreview(componentRow, opts){
+    const payload = normalizeComponentPreviewRow(componentRow);
+    if (!payload) return;
+    const force = !!(opts && opts.force);
+    if (!force && payload.key === state.compPreviewKey) {
+      applyActiveComponentRowState();
+      return;
+    }
+    state.compPreviewKey = payload.key;
+    state.compPreviewName = payload.component;
+    state.compPreviewCat = payload.category;
+    applyActiveComponentRowState();
+    renderComponentPreview(payload);
+  }
+
+  function renderComponentPreview(componentRow){
+    const target = $("compPreviewWrap");
+    if (!target) return;
+    const payload = normalizeComponentPreviewRow(componentRow);
+    if (!payload) {
+      target.innerHTML = `<div class="empty">Hover a component bar to preview its monthly trend.</div>`;
+      return;
+    }
+
+    const scope = state.compTooltipScope;
+    const scopeLbl = scope === "FIELD" ? "In-Field" : "Pre-Delivery";
+    const scopeCls = scope === "FIELD" ? "field" : "";
+    const summaryLine = `${numFmt.format(payload.tickets)} tickets - ${moneyFmt.format(payload.cost)}`;
+
+    if (!state.partsClassifiedIndex) {
+      target.innerHTML = `
+        <div class="compPreviewHead">
+          <div>
+            <div class="compPreviewEyebrow">Monthly preview</div>
+            <div class="compPreviewTitle">${esc(payload.component)}</div>
+            <div class="compPreviewSub">${esc(payload.category)} - ${summaryLine}</div>
+          </div>
+          <div class="compPreviewMode ${scopeCls}">${scopeLbl}</div>
+        </div>
+        <div class="empty">Loading monthly component data...</div>
+      `;
+      return;
+    }
+
+    if (state.partsClassifiedIndex.size === 0) {
+      const err = state.partsClassifiedError;
+      const attempts = Array.isArray(err)
+        ? `<ul style="margin:10px 0 0 18px;padding:0;font-size:11px;color:var(--muted)">${err.map(a => `<li>${esc(a.url || "?")} - ${esc(a.reason || "failed")}</li>`).join("")}</ul>`
+        : "";
+      target.innerHTML = `
+        <div class="compPreviewHead">
+          <div>
+            <div class="compPreviewEyebrow">Monthly preview</div>
+            <div class="compPreviewTitle">${esc(payload.component)}</div>
+            <div class="compPreviewSub">${esc(payload.category)} - ${summaryLine}</div>
+          </div>
+          <div class="compPreviewMode ${scopeCls}">${scopeLbl}</div>
+        </div>
+        <div style="font-size:11.5px;color:var(--muted);line-height:1.55">
+          The parts classification CSV could not be loaded, so the monthly preview is unavailable.
+          ${attempts}
+        </div>
+      `;
+      return;
+    }
+
+    const stats = computeComponentStatic(payload.key);
+    const buckets = computeComponentMonthly(payload.key, scope, 12);
+    const scopedTotal = buckets.reduce((sum, bucket) => sum + bucket.count, 0);
+    const max = Math.max(...buckets.map(bucket => bucket.count), 1);
+    const barsHtml = buckets.map(bucket => {
+      const height = bucket.count ? Math.max(16, (bucket.count / max) * 178) : 8;
+      return `<div class="compPreviewBar ${scopeCls}">
+        <div class="val">${numFmt.format(bucket.count)}</div>
+        <div class="bar" style="height:${height}px" title="${bucket.label} ${bucket.y}: ${numFmt.format(bucket.count)}"></div>
+        <div class="lbl" title="${bucket.label} ${bucket.y}">${bucket.label}</div>
+      </div>`;
+    }).join("");
+
+    target.style.setProperty("--cols", buckets.length);
+    target.innerHTML = `
+      <div class="compPreviewHead">
+        <div>
+          <div class="compPreviewEyebrow">Monthly preview</div>
+          <div class="compPreviewTitle">${esc(payload.component)}</div>
+          <div class="compPreviewSub">${esc(payload.category)} - ${summaryLine}</div>
+        </div>
+        <div class="compPreviewMode ${scopeCls}">${scopeLbl}</div>
+      </div>
+      <div class="compPreviewStats">
+        <div class="compPreviewStat"><span>Total</span><strong>${numFmt.format(stats.total)}</strong></div>
+        <div class="compPreviewStat"><span>Pre-Delivery</span><strong>${numFmt.format(stats.pre)}</strong></div>
+        <div class="compPreviewStat"><span>In-Field</span><strong>${numFmt.format(stats.field)}</strong></div>
+        <div class="compPreviewStat"><span>Other</span><strong>${numFmt.format(stats.other)}</strong></div>
+      </div>
+      <div class="compPreviewChartMeta">${scopeLbl}: ${numFmt.format(scopedTotal)} tickets in the last 12 months.</div>
+      <div class="compPreviewBars">${barsHtml}</div>
+      <div class="compPreviewHint">Hover another bar to swap the preview. Click the active bar to toggle Pre-Delivery / In-Field.</div>
+    `;
+  }
+
   // ------- Component key + index (uses partsClassifiedRows) -------
-  function componentKey(name, category){
-    return `${clean(name).toLowerCase()}||${clean(category).toLowerCase()}`;
+  function componentKey(component, category){
+    return `${clean(normalizeComponentLabel(component, category)).toLowerCase()}||${clean(category || "Other").toLowerCase()}`;
   }
   function buildPartsClassifiedIndex(){
     const rows = state.partsClassifiedRows || [];
@@ -2170,27 +2456,24 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
     target.addEventListener("mouseover", (ev) => {
       const row = ev.target.closest(".compRow.clickable");
-      if (!row || !target.contains(row)) { hideCompTooltip(); return; }
-      const name = row.getAttribute("data-comp-name") || "";
-      const cat = row.getAttribute("data-comp-cat") || "";
-      const key = row.getAttribute("data-comp-key") || "";
-      renderCompTooltip(name, cat, key, row);
+      if (!row || !target.contains(row)) return;
+      setComponentPreview(componentPreviewPayloadFromElement(row));
     });
-    target.addEventListener("mousemove", (ev) => {
+    target.addEventListener("focusin", (ev) => {
       const row = ev.target.closest(".compRow.clickable");
-      if (!row) return;
-      const el = document.getElementById("compTooltip");
-      if (el && el.classList.contains("visible")) positionCompTooltip(el, row);
+      if (!row || !target.contains(row)) return;
+      setComponentPreview(componentPreviewPayloadFromElement(row));
     });
-    target.addEventListener("mouseleave", hideCompTooltip);
     target.addEventListener("click", (ev) => {
       const row = ev.target.closest(".compRow.clickable");
       if (!row || !target.contains(row)) return;
+      const payload = componentPreviewPayloadFromElement(row);
+      if (!payload) return;
+      const isActive = payload.key === state.compPreviewKey;
+      setComponentPreview(payload, { force:!isActive });
+      if (!isActive) return;
       state.compTooltipScope = state.compTooltipScope === "PRE" ? "FIELD" : "PRE";
-      const name = row.getAttribute("data-comp-name") || "";
-      const cat = row.getAttribute("data-comp-cat") || "";
-      const key = row.getAttribute("data-comp-key") || "";
-      renderCompTooltip(name, cat, key, row);
+      renderComponentPreview(payload);
     });
   }
 
@@ -2715,13 +2998,22 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         <div class="compTotalsTitle">Monthly totals - displayed top components <small>${esc(seriesLabel)} - last ${months} months</small></div>
         <div class="compTotalsMeta">Monthly ticket volume by claim scope</div>
       </div>
-      <div class="compTotalsBars">${barsHtml}</div>
-      <div class="compTotalsLegend">
-        <span><span class="swatch pre"></span>Pre-Delivery (${numFmt.format(totals.pre)})</span>
-        <span><span class="swatch field"></span>In-Field (${numFmt.format(totals.field)})</span>
-        <span><span class="swatch other"></span>Other (${numFmt.format(totals.other)})</span>
+      <div class="compTotalsSplit">
+        <div class="compTotalsTablePane">
+          <div class="compTotalsPaneTitle">Monthly detail</div>
+          ${tableHtml}
+        </div>
+        <div class="compTotalsChartPane">
+          <div class="compTotalsPaneTitle">Monthly chart</div>
+          <div class="compTotalsChartMeta">Displayed like the component preview above, but aggregated month by month for the shown top components.</div>
+          <div class="compTotalsBars" style="--cols:${buckets.length}">${barsHtml}</div>
+          <div class="compTotalsLegend">
+            <span><span class="swatch pre"></span>Pre-Delivery (${numFmt.format(totals.pre)})</span>
+            <span><span class="swatch field"></span>In-Field (${numFmt.format(totals.field)})</span>
+            <span><span class="swatch other"></span>Other (${numFmt.format(totals.other)})</span>
+          </div>
+        </div>
       </div>
-      ${tableHtml}
     `;
   }
 
@@ -3272,7 +3564,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       .filter(row => {
         if (!componentNames.size) return true;
         const component = row["Matched Keyword"] || row["Part Category"] || "Other";
-        return componentNames.has(componentKey(titleCaseText(component), row["Part Category"] || "Other"));
+        return componentNames.has(componentKey(normalizeComponentLabel(component, row["Part Category"] || "Other"), row["Part Category"] || "Other"));
       });
     const repairerRows = sortRows(state.repairers.filter(r=>r.tickets>=5), state.repairerSort);
     const repairerNames = new Set(repairerRows.map(r => r.name));
@@ -3297,7 +3589,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           ["Repairers In Scope", state.repairers.filter(r=>r.tickets>=5).length],
           ["Parts Summary Source", PARTS_FAILURE_SUMMARY_CACHE],
           ["Ticket Cost Source", PARTS_COST_CACHE],
-          ["Parts Detail Source", PARTS_CLASSIFIED_CSV],
+          ["Parts Detail Source", state.partsClassifiedSource || PARTS_CLASSIFIED_META],
         ],
       },
       {
@@ -3382,7 +3674,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           ["Component","Part Category","Ticket ID","Series","Chassis","Serial ID","Registered Product","Product","Dealer","Repairer","Ticket Type","Created On","Posting Date","Date of Purchase","Material","Description","Order Qty","Sales Unit","Preferred Line Cost AUD","Amount Including Tax","3110 PO Date","First Issue Date","Item Rejection Status"],
           ...componentDetailRows.map(part => {
             const ticket = selectedTicketMap.get(clean(part["Ticket ID"])) || {};
-            const component = titleCaseText(part["Matched Keyword"] || part["Part Category"] || "Other");
+            const component = normalizeComponentLabel(part["Matched Keyword"] || part["Part Category"] || "Other", part["Part Category"] || "Other");
             return [
               component,
               part["Part Category"] || "Other",
@@ -3516,9 +3808,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     } catch (err) {
       attempts.push(`(meta fetch failed: ${err.message || err})`);
     }
-    // 2) Try the hardcoded dated path.
-    attempts.push(PARTS_CLASSIFIED_CSV);
-    // 3) Try a flat top-level fallback that some pipelines write.
+    // 2) Try a flat top-level fallback that the rebuild pipeline also writes.
     attempts.push(PARTS_CLASSIFIED_CSV_FLAT);
 
     const tried = [];
@@ -3622,8 +3912,58 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     }) || "Other";
   }
 
-  function componentKey(component, category){
-    return `${clean(component).toLowerCase()}||${clean(category || "Other").toLowerCase()}`;
+  const COMPONENT_LABEL_ALIASES = new Map([
+    ["tail light", "Tail Light"],
+    ["tail lights", "Tail Light"],
+    ["taillight", "Tail Light"],
+    ["taillights", "Tail Light"],
+    ["combination taillight", "Tail Light"],
+    ["combination taillights", "Tail Light"],
+    ["marker light", "Marker Light"],
+    ["marker lights", "Marker Light"],
+    ["stop light", "Stop Light"],
+    ["stop lights", "Stop Light"],
+    ["roof hatch", "Roof Hatch"],
+    ["roof hatches", "Roof Hatch"],
+    ["window blind", "Window Blind"],
+    ["window blinds", "Window Blind"],
+    ["access door", "Access Door"],
+    ["access doors", "Access Door"],
+    ["main door", "Main Door"],
+    ["main doors", "Main Door"],
+    ["power inlet", "Power Inlet"],
+    ["power inlets", "Power Inlet"],
+    ["power outlet", "Power Outlet"],
+    ["power outlets", "Power Outlet"],
+  ]);
+
+  function normalizeComponentLabel(text, category){
+    const raw = clean(text);
+    if (!raw) return titleCaseText(category || "Other");
+    const normalized = raw
+      .toLowerCase()
+      .normalize("NFKD")
+      .replace(/[^a-z0-9]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const exact = COMPONENT_LABEL_ALIASES.get(normalized);
+    if (exact) return exact;
+    if (normalized.endsWith("s")) {
+      const singular = COMPONENT_LABEL_ALIASES.get(normalized.slice(0, -1));
+      if (singular) return singular;
+    }
+    if ((category || "").includes("Lighting / Reflectors")) {
+      if (/\b(?:combination\s+)?tail\s*lights?\b/.test(normalized) || /\btaillights?\b/.test(normalized)) {
+        return "Tail Light";
+      }
+      if (/\bmarker\s+lights?\b/.test(normalized)) {
+        return "Marker Light";
+      }
+      if (/\bstop\s+lights?\b/.test(normalized)) {
+        return "Stop Light";
+      }
+    }
+    return titleCaseText(raw);
   }
 
   function vehicleDetailRows(rows){
@@ -3770,6 +4110,7 @@ ${worksheets}
     $("repairerCount").textContent = "–";
     try {
       loadSold();
+      await loadApprovedTicketCosts();
       await loadPartsTicketCosts();
       await loadPartsFailureSummary();
       await loadVehicleBaseSummary();

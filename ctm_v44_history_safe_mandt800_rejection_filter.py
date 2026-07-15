@@ -312,6 +312,11 @@ APPROVED_C4C_BUSINESS_STATUSES = {
 # decide "approved" from the status the ticket already carries (logic only, no
 # CSV). Excludes Approved Claims Closed (Closed).
 APPROVED_C4C_SAP_REPORT_STATUSES = APPROVED_C4C_BUSINESS_STATUSES
+APPROVAL_RULE_DESCRIPTION = (
+    "Approved = ClaimApprovedOnDateTime is present and current status is one of "
+    "Z9/Y0/Y1/Y2/Y4/YB. Unapproved = current status Y8 / Unapproved Claims Closed. "
+    "Approved date uses Claim Approved On only."
+)
 def normalize_po_number(v: Any) -> str:
     raw = clean(v)
     if not raw:
@@ -463,24 +468,17 @@ def is_closed_approved_status(ticket_or_snapshot: Dict[str, Any]) -> bool:
 def is_unapproved_ticket(ticket_or_snapshot: Dict[str, Any]) -> bool:
     code = ticket_status_code(ticket_or_snapshot)
     text = ticket_status_text(ticket_or_snapshot)
-    return code == "Y8" or "unapproved claims closed" in text or "unapproved" in text
+    return code == "Y8" or text in {"unapproved claims closed", "unapproved claims closed (closed)"}
 
 
 def is_c4c_approved_ticket(ticket_or_snapshot: Dict[str, Any]) -> bool:
-    if is_closed_approved_status(ticket_or_snapshot):
-        return False
-    order_rejection = clean(ticket_or_snapshot.get("Order Rejection Status") or ticket_or_snapshot.get("orderRejectionStatus")).lower()
-    rejected = order_rejection in {"rejected", "partially rejected"}
-    return (has_approved_sap_signal(ticket_or_snapshot) or is_approved_status(ticket_or_snapshot)) and not rejected
+    return bool(ticket_claim_approved_on_value(ticket_or_snapshot)) and is_approved_status(ticket_or_snapshot)
 
 
 def resolved_approved_date(ticket_or_snapshot: Dict[str, Any]) -> str:
     """Resolve the best available approved date for a ticket.
 
-    Priority:
-      1) Claim Approved On from the direct interface.
-      2) Posting Date when the ticket is approved but Claim Approved On is missing.
-      3) Legacy approved fallbacks kept for backup compatibility.
+    Approved tickets only use Claim Approved On from the direct interface.
     """
     if approval_decision(ticket_or_snapshot) != "approved":
         return ""
@@ -500,24 +498,7 @@ def approval_decision_value_and_source(ticket_or_snapshot: Dict[str, Any]) -> tu
     decision = approval_decision(ticket_or_snapshot)
     if decision == "approved":
         claim_value = ticket_claim_approved_on_value(ticket_or_snapshot)
-        posting_value = ticket_posting_date_value(ticket_or_snapshot)
-        value = first_nonempty_value(
-            claim_value,
-            posting_value,
-            ticket_or_snapshot.get("decisionTime"),
-            ticket_or_snapshot.get("approvalDecisionDate"),
-            ticket_or_snapshot.get("approvalDate"),
-            ticket_or_snapshot.get("decisionDay"),
-            ticket_created_on_day(ticket_or_snapshot),
-            legacy_csv_created_on_for_ticket(ticket_or_snapshot),
-        )
-        if value:
-            if claim_value:
-                return value, "claim_approved_on"
-            if posting_value:
-                return value, "posting_date"
-            return value, "legacy_approved_backup"
-        return "", ""
+        return (claim_value, "claim_approved_on") if claim_value else ("", "")
 
     if decision == "unapproved":
         resolved_value = ticket_resolved_on_value(ticket_or_snapshot)
@@ -553,12 +534,7 @@ def approval_decision_value_and_source(ticket_or_snapshot: Dict[str, Any]) -> tu
 def approval_decision(ticket_or_snapshot: Dict[str, Any]) -> str:
     if is_closed_approved_status(ticket_or_snapshot):
         return ""
-    stored_decision = clean(ticket_or_snapshot.get("decision") or ticket_or_snapshot.get("approvalDecision")).lower()
-    if stored_decision == "approved":
-        return "approved"
-    if stored_decision == "unapproved":
-        return "unapproved"
-    if has_approved_sap_signal(ticket_or_snapshot) or is_approved_status(ticket_or_snapshot):
+    if is_c4c_approved_ticket(ticket_or_snapshot):
         return "approved"
     if is_unapproved_ticket(ticket_or_snapshot):
         return "unapproved"
@@ -2000,8 +1976,8 @@ def build_dealer_analytics(source_root: str, monitor_root: str, history_events: 
                 "approvedTickets": len(approved_rows),
                 "unapprovedTickets": len(unapproved_rows),
                 "approvedValue": round(sum(parse_amount(t.get("amount")) for t in approved_rows), 2),
-                "unapprovedValue": round(sum(parse_amount(t.get("amount")) for t in unapproved_rows), 2),
-                "approvalRule": "Approved = Claim Approved On, then Posting Date for approved tickets, then legacy approved backup. Unapproved = Resolved On, then Changed On, then legacy unapproved backup. Posting Date is never used for unapproved tickets.",
+                "unapprovedValue": 0.0,
+                "approvalRule": APPROVAL_RULE_DESCRIPTION,
                 "criticalTickets": len(critical_rows),
                 "openMaterialTypes": len(material_groups),
                 "logTotal": len(logs),
@@ -2077,6 +2053,34 @@ def load_all_history(monitor_root: str) -> list[Dict[str, Any]]:
         except Exception as e:
             print(f"[ANALYTICS WARN] Cannot read /{path}: {e}")
     return dedupe_events(events)
+
+
+def load_approved_cost_by_ticket(monitor_root: str) -> Dict[str, Dict[str, Any]]:
+    """
+    Approved Cost price source of truth.
+
+    C4C still decides whether a ticket is approved, but the Approved Cost price
+    must come from SAP PO Short Text extraction: EKPO.TXZ01 -> ticket number,
+    EKPO.NETWR -> amount. Do not switch Approved Cost back to
+    AmountIncludingTax; that field is only kept for non-Approved-Cost metrics.
+    """
+    try:
+        node = db.reference(f"{monitor_root}/analytics/approvedCost/sapPoShortText/latest/byTicket").get() or {}
+    except Exception as exc:
+        print(f"[ANALYTICS WARN] Cannot read Approved Cost SAP PO sidecar: {exc}")
+        node = {}
+
+    out: Dict[str, Dict[str, Any]] = {}
+    if not isinstance(node, dict):
+        return out
+    for raw_key, raw_val in node.items():
+        if not isinstance(raw_val, dict):
+            continue
+        tid = normalize_ticket_id(raw_val.get("ticketNumber") or raw_val.get("ticketId") or raw_key)
+        if not tid:
+            continue
+        out[tid] = raw_val
+    return out
 
 
 def build_employee_analytics(
@@ -2253,11 +2257,8 @@ def build_employee_analytics(
             emp = event_employee_from_snapshot(e, ticket_by_id)
             if not is_real_employee_name(emp):
                 continue
-            amount = parse_amount((ticket or {}).get("amount") or e.get("amount"))
             unapproved_day = unapproved_daily_by_employee.setdefault(emp, {})
             unapproved_day[dkey] = unapproved_day.get(dkey, 0) + 1
-            unapproved_amount_day = unapproved_amount_daily_by_employee.setdefault(emp, {})
-            unapproved_amount_day[dkey] = round(unapproved_amount_day.get(dkey, 0.0) + amount, 2)
 
         for tid, cnt in removed_by_ticket.items():
             if tid in ticket_detail:
@@ -2375,7 +2376,7 @@ def build_employee_analytics(
                     "approved": int(approved_cum),
                     "unapproved": int(unapproved_cum),
                     "approvedAmount": round(approved_amount_cum, 2),
-                    "unapprovedAmount": round(unapproved_amount_cum, 2),
+                    "unapprovedAmount": 0.0,
                     "avgCost": avg_cost,
                 }
             critical_trend_daily_rows = aggregate_employee_critical_trend(daily_snapshots, "daily")
@@ -2391,13 +2392,13 @@ def build_employee_analytics(
                 "approvedTotal": approved_total,
                 "unapprovedTotal": unapproved_total,
                 "approvedAmountTotal": approved_amount_total,
-                "unapprovedAmountTotal": unapproved_amount_total,
+                "unapprovedAmountTotal": 0.0,
                 "dailySnapshots": daily_snapshots,
                 "removedDaily": removed_daily_by_employee.get(name, {}),
                 "approvedDaily": approved_daily_by_employee.get(name, {}),
                 "unapprovedDaily": unapproved_daily_by_employee.get(name, {}),
                 "approvedAmountDaily": approved_amount_daily_by_employee.get(name, {}),
-                "unapprovedAmountDaily": unapproved_amount_daily_by_employee.get(name, {}),
+                "unapprovedAmountDaily": {},
                 "criticalTrendDaily": critical_trend_daily_by_employee.get(name, {}),
                 "criticalTrendDailyRows": critical_trend_daily_rows,
                 "criticalTrendWeekly": aggregate_employee_critical_trend(daily_snapshots, "weekly"),
@@ -2441,7 +2442,7 @@ def build_employee_analytics(
                 "approvedPct": round(approved_total / total_decisions * 100, 2) if total_decisions else 0,
                 "unapprovedPct": round(unapproved_total / total_decisions * 100, 2) if total_decisions else 0,
                 "approvedAmount": round(float(row.get("approvedAmountTotal") or 0), 2),
-                "unapprovedAmount": round(float(row.get("unapprovedAmountTotal") or 0), 2),
+                "unapprovedAmount": 0.0,
             })
         approval_rows.sort(key=lambda x: (-int(x.get("total") or 0), -int(x.get("approved") or 0), clean(x.get("name")).lower()))
 
@@ -2479,7 +2480,7 @@ def build_employee_analytics(
                 "approvedTickets": approved_critical,
                 "unapprovedTickets": unapproved_critical,
                 "approvalHistoryStartDate": approval_history_start,
-                "approvalRule": "Approved = Claim Approved On, then Posting Date for approved tickets, then legacy approved backup. Unapproved = Resolved On, then Changed On, then legacy unapproved backup. Posting Date is never used for unapproved tickets.",
+                "approvalRule": APPROVAL_RULE_DESCRIPTION,
                 # All exited critical events by day. This is used by Employee KPI
                 # so Critical Removed and rates match Team Dashboard Exited Critical
                 # for the same claim/date filter, including unmapped/excluded owners.
@@ -2582,6 +2583,43 @@ def _month_start_key(date_str: str) -> str:
         return ""
     day = d.date()
     return day.replace(day=1).isoformat()
+
+
+def _month_end_key(date_str: str, cap_end: str = "") -> str:
+    d = parse_date_any(date_str)
+    if not d:
+        return clean(cap_end)
+    day = d.date().replace(day=1)
+    next_month = day.replace(
+        year=day.year + (1 if day.month == 12 else 0),
+        month=1 if day.month == 12 else day.month + 1,
+        day=1,
+    )
+    out = next_month.fromordinal(next_month.toordinal() - 1).isoformat()
+    cap = clean(cap_end)
+    return cap if cap and out > cap else out
+
+
+def _calendar_month_ranges(start_date: str, end_date: str) -> Dict[str, tuple[str, str]]:
+    start = parse_date_any(start_date)
+    end = parse_date_any(end_date)
+    if not start or not end:
+        return {}
+    cur = start.date().replace(day=1)
+    last = end.date()
+    out: Dict[str, tuple[str, str]] = {}
+    while cur <= last:
+        month_start = max(cur.isoformat(), start_date)
+        month_end = _month_end_key(cur.isoformat(), end_date)
+        if month_start and month_end and month_start <= month_end:
+            out[f"{month_start}|{month_end}"] = (month_start, month_end)
+        next_month = cur.replace(
+            year=cur.year + (1 if cur.month == 12 else 0),
+            month=1 if cur.month == 12 else cur.month + 1,
+            day=1,
+        )
+        cur = next_month
+    return out
 
 
 def aggregate_status_trend(rows: list[Dict[str, Any]], granularity: str) -> list[Dict[str, Any]]:
@@ -2691,7 +2729,14 @@ def _event_is_approved_exit(e: Dict[str, Any], t: Optional[Dict[str, Any]] = Non
         return True
     code = clean(e.get("toCode") or e.get("newCode") or e.get("toStatusCode") or e.get("statusCode") or e.get("TicketStatus")).upper()
     text = clean(e.get("toStatus") or e.get("newStatus") or e.get("toStatusText") or e.get("status") or e.get("statusText") or e.get("TicketStatusText")).lower()
-    return code == "Z9" and text == "sales order approved"
+    claim_value = clean(
+        e.get("claimApprovedOn")
+        or e.get("claimApprovedOnDateTime")
+        or (t or {}).get("claimApprovedOn")
+        or (t or {}).get("claimApprovedOnDateTime")
+        or (t or {}).get("ClaimApprovedOnDateTime")
+    )
+    return bool(claim_value) and (code in APPROVED_C4C_STATUS_CODES or text in APPROVED_C4C_SAP_REPORT_STATUSES)
 
 
 def add_same_window_initial_unapproved_events(
@@ -2812,12 +2857,20 @@ def _build_team_view(
     generated_at: str,
     employee_directory: Optional[Dict[str, Dict[str, str]]] = None,
     approval_state: Optional[Dict[str, Dict[str, Any]]] = None,
+    approved_cost_by_ticket: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     claim_filter = "" if claim_label == "All Claims" else claim_label
     employee_directory = normalize_employee_directory(employee_directory or {})
     approval_state = approval_state if isinstance(approval_state, dict) else {}
+    approved_cost_by_ticket = approved_cost_by_ticket if isinstance(approved_cost_by_ticket, dict) else {}
     ticket_by_id = {clean(v.get("id")): v for v in snap.values() if clean(v.get("id"))}
     ticket_by_name = {clean(v.get("name")).lower(): v for v in snap.values() if clean(v.get("name"))}
+
+    def approved_cost_amount(t: Dict[str, Any]) -> float:
+        """Approved Cost must use SAP PO Short Text EKPO.NETWR, never C4C AmountIncludingTax."""
+        tid = normalize_ticket_id(t.get("id") or t.get("ticketId") or t.get("TicketID"))
+        rec = approved_cost_by_ticket.get(tid, {}) if tid else {}
+        return parse_amount((rec or {}).get("amount") or (rec or {}).get("netOrderValue"))
 
     def approved_history_start_date() -> str:
         dates: list[str] = []
@@ -2874,35 +2927,28 @@ def _build_team_view(
             merged = {**rec, **current}
             if is_closed_approved_status(merged):
                 continue
-            stored_decision = clean(rec.get("decision") or rec.get("approvalDecision")).lower()
-            if stored_decision != "approved" and approval_decision(merged) != "approved":
+            if approval_decision(merged) != "approved":
                 continue
-            if stored_decision == "approved":
-                decision_row = {
-                    **merged,
-                    "approvalDecision": "approved",
-                    # Keep the current snapshot authoritative. Older approvalState
-                    # rows only fill missing fields; they should not overwrite a
-                    # newer direct-interface Claim Approved On.
-                    "approvalDecisionDate": clean(current.get("approvalDecisionDate") or current.get("decisionDay") or current.get("decisionTime") or rec.get("decisionDay") or rec.get("decisionTime") or rec.get("approvalDecisionDate")),
-                    "approvalDecisionTime": clean(current.get("approvalDecisionTime") or current.get("decisionTime") or rec.get("decisionTime") or rec.get("approvalDecisionTime")),
-                    "approvalDecisionSource": clean(current.get("approvalDecisionSource") or rec.get("approvalDecisionSource") or rec.get("source")),
-                    "decisionTime": clean(current.get("decisionTime") or current.get("decisionDay") or rec.get("decisionTime") or rec.get("decisionDay")),
-                    "decisionDay": clean(current.get("decisionDay") or current.get("decisionTime") or rec.get("decisionDay") or rec.get("approvalDecisionDate")),
-                    "claimApprovedOn": clean(current.get("claimApprovedOn") or current.get("claimApprovedOnDateTime") or rec.get("claimApprovedOn") or rec.get("claimApprovedOnDateTime")),
-                    "claimApprovedOnDateTime": clean(current.get("claimApprovedOnDateTime") or current.get("claimApprovedOn") or rec.get("claimApprovedOnDateTime") or rec.get("claimApprovedOn")),
-                    "resolvedOn": clean(current.get("resolvedOn") or current.get("resolvedOnDateTime") or rec.get("resolvedOn") or rec.get("resolvedOnDateTime")),
-                    "resolvedOnDateTime": clean(current.get("resolvedOnDateTime") or current.get("resolvedOn") or rec.get("resolvedOnDateTime") or rec.get("resolvedOn")),
-                    "changeOnDateTime": clean(current.get("changeOnDateTime") or current.get("changedOn") or rec.get("changeOnDateTime")),
-                    "changedOn": clean(current.get("changedOn") or current.get("changeOnDateTime") or rec.get("changedOn") or rec.get("changeOnDateTime")),
-                    "postingDate": clean(current.get("postingDate") or rec.get("postingDate")),
-                }
-            else:
-                decision_row = {
-                    **merged,
-                    "approvalDecision": "approved",
-                }
-            decision_date = approval_decision_date(decision_row) or resolved_approved_date(rec)
+            decision_row = {
+                **merged,
+                "approvalDecision": "approved",
+                # Keep the current snapshot authoritative. Older approvalState
+                # rows only fill missing fields; they should not overwrite a
+                # newer direct-interface Claim Approved On.
+                "approvalDecisionDate": clean(current.get("approvalDecisionDate") or current.get("decisionDay") or rec.get("decisionDay") or rec.get("approvalDecisionDate")),
+                "approvalDecisionTime": clean(current.get("approvalDecisionTime") or current.get("decisionTime") or rec.get("decisionTime") or rec.get("approvalDecisionTime")),
+                "approvalDecisionSource": clean(current.get("approvalDecisionSource") or rec.get("approvalDecisionSource") or rec.get("source")),
+                "decisionTime": clean(current.get("decisionTime") or current.get("claimApprovedOnDateTime") or current.get("claimApprovedOn") or rec.get("decisionTime") or rec.get("claimApprovedOnDateTime") or rec.get("claimApprovedOn")),
+                "decisionDay": clean(current.get("decisionDay") or current.get("approvalDecisionDate") or rec.get("decisionDay") or rec.get("approvalDecisionDate")),
+                "claimApprovedOn": clean(current.get("claimApprovedOn") or current.get("claimApprovedOnDateTime") or rec.get("claimApprovedOn") or rec.get("claimApprovedOnDateTime")),
+                "claimApprovedOnDateTime": clean(current.get("claimApprovedOnDateTime") or current.get("claimApprovedOn") or rec.get("claimApprovedOnDateTime") or rec.get("claimApprovedOn")),
+                "resolvedOn": clean(current.get("resolvedOn") or current.get("resolvedOnDateTime") or rec.get("resolvedOn") or rec.get("resolvedOnDateTime")),
+                "resolvedOnDateTime": clean(current.get("resolvedOnDateTime") or current.get("resolvedOn") or rec.get("resolvedOnDateTime") or rec.get("resolvedOn")),
+                "changeOnDateTime": clean(current.get("changeOnDateTime") or current.get("changedOn") or rec.get("changeOnDateTime")),
+                "changedOn": clean(current.get("changedOn") or current.get("changeOnDateTime") or rec.get("changedOn") or rec.get("changeOnDateTime")),
+                "postingDate": clean(current.get("postingDate") or rec.get("postingDate")),
+            }
+            decision_date = approval_decision_date(decision_row)
             if not decision_date or not (start <= decision_date <= end):
                 continue
             if not clean(merged.get("claimType")):
@@ -2964,17 +3010,12 @@ def _build_team_view(
     def approval_summary_for_range(start: str, end: str) -> Dict[str, Any]:
         approved_rows = approved_rows_for_range(start, end)
         unapproved_events = unapproved_events_for_range(start, end)
-        approved_amount = round(sum(parse_amount(t.get("amount")) for t in approved_rows), 2)
-        unapproved_amount = 0.0
-        for e in unapproved_events:
-            tid = event_ticket_id(e)
-            t = ticket_by_id.get(tid, {}) if tid else {}
-            unapproved_amount += parse_amount((t or {}).get("amount") or e.get("amount"))
+        approved_amount = round(sum(approved_cost_amount(t) for t in approved_rows), 2)
         return {
             "approvedTickets": len(approved_rows),
             "unapprovedTickets": len(unapproved_events),
             "approvedAmount": approved_amount,
-            "unapprovedAmount": round(unapproved_amount, 2),
+            "unapprovedAmount": 0.0,
             "avgCostPerTicket": round(approved_amount / len(approved_rows), 2) if approved_rows else 0,
         }
 
@@ -2993,7 +3034,8 @@ def _build_team_view(
             "owner": clean(t.get("employee")),
             "agingDays": aging_days(t.get("created")),
             "days": aging_days(t.get("created")),
-            "amount": parse_amount(t.get("amount")),
+            "amount": approved_cost_amount(t),
+            "amountSource": "SAP PO Short Text EKPO.NETWR",
             "created": clean(t.get("created")),
             "sourceGroup": "Approved Tickets",
         }
@@ -3016,7 +3058,8 @@ def _build_team_view(
             "owner": event_employee_from_snapshot(e, ticket_by_id),
             "agingDays": aging_days((t or {}).get("created") or e.get("created")),
             "days": aging_days((t or {}).get("created") or e.get("created")),
-            "amount": parse_amount((t or {}).get("amount") or e.get("amount")),
+            "amount": 0.0,
+            "amountSource": "Unapproved tickets do not calculate money",
             "created": clean((t or {}).get("created") or e.get("created")),
             "sourceGroup": "Unapproved Tickets",
         }
@@ -3040,7 +3083,6 @@ def _build_team_view(
             amount = parse_amount(row.get("amount"))
             if clean(row.get("decisionKey")).lower() == "unapproved" or clean(row.get("decision")).lower() == "unapproved":
                 item["unapproved"] += 1
-                item["unapprovedAmount"] = round(float(item["unapprovedAmount"]) + amount, 2)
             else:
                 item["approved"] += 1
                 item["approvedAmount"] = round(float(item["approvedAmount"]) + amount, 2)
@@ -3059,7 +3101,7 @@ def _build_team_view(
                 "approvedPct": round((approved / total) * 100, 4) if total else 0,
                 "unapprovedPct": round((unapproved / total) * 100, 4) if total else 0,
                 "approvedAmount": round(float(item["approvedAmount"]), 2),
-                "unapprovedAmount": round(float(item["unapprovedAmount"]), 2),
+                "unapprovedAmount": 0.0,
                 "employeeStatus": employee_status_for(item["name"]),
                 "isExited": is_exited_employee_for_team(item["name"]),
             })
@@ -3130,11 +3172,12 @@ def _build_team_view(
             continue
         critical_row_map[tid] = {
             "id": tid,
-            "dealer": clean(t.get("dealer")) or "Unknown",
-            "status": clean(t.get("statusText")) or clean(t.get("statusCode")) or "Unknown",
-            "amount": t.get("amount", 0),
-            "created": clean(t.get("created")),
-        }
+                "dealer": clean(t.get("dealer")) or "Unknown",
+                "status": clean(t.get("statusText")) or clean(t.get("statusCode")) or "Unknown",
+                "amount": t.get("amount", 0),
+                "created": clean(t.get("created")),
+                "claimType": clean(t.get("claimType")) or ticket_claim_type(t),
+            }
     events_by_date: Dict[str, list[Dict[str, Any]]] = {}
     for e in matching_events:
         dkey = event_date_key(e)
@@ -3157,6 +3200,7 @@ def _build_team_view(
                     "status": clean(e.get("fromStatus") or e.get("oldStatus") or (t or {}).get("statusText") or "Unknown"),
                     "amount": (t or {}).get("amount", e.get("amount", 0)),
                     "created": clean((t or {}).get("created") or e.get("created")),
+                    "claimType": clean((t or {}).get("claimType")) or ticket_claim_type(t) or _event_claim_type(e, ticket_by_id),
                 }
             elif typ == "moved" and tid in critical_row_map:
                 prev_status = clean(e.get("fromStatus") or e.get("oldStatus"))
@@ -3172,8 +3216,8 @@ def _build_team_view(
     all_unapproved_events = unapproved_events_for_range(DASHBOARD_MIN_DATE, generated_day)
     approved_tickets = all_approved_rows
     unapproved_tickets = all_unapproved_events
-    approved_value = round(sum(parse_amount(t.get("amount")) for t in approved_tickets), 2)
-    unapproved_value = round(sum(parse_amount((ticket_by_id.get(event_ticket_id(e), {}) or {}).get("amount") or e.get("amount")) for e in unapproved_tickets), 2)
+    approved_value = round(sum(approved_cost_amount(t) for t in approved_tickets), 2)
+    unapproved_value = 0.0
     new_ticket_daily: Dict[str, int] = {}
     claim_created_monthly: Dict[str, Dict[str, int]] = {}
     for t in scoped_tickets:
@@ -3190,6 +3234,7 @@ def _build_team_view(
                 claim_bucket["inField"] += 1
     approved_unapproved_daily: Dict[str, int] = {}
     approval_closed_monthly: Dict[str, Dict[str, int]] = {}
+    approved_amount_monthly: Dict[str, Dict[str, float]] = {}
     for t in all_approved_rows:
         decision_day = approved_reporting_date(t)
         if decision_day and DASHBOARD_MIN_DATE <= decision_day <= generated_day:
@@ -3204,6 +3249,18 @@ def _build_team_view(
                 bucket["preDeliveryApproved"] += 1
             elif claim_type == "In Field Warranty Claims":
                 bucket["inFieldApproved"] += 1
+    for t in approved_rows_for_range(CLAIM_MONTHLY_MIN_DATE, generated_day):
+        decision_day = approved_reporting_date(t)
+        if not decision_day or not (CLAIM_MONTHLY_MIN_DATE <= decision_day <= generated_day):
+            continue
+        month_key = decision_day[:7]
+        amount_bucket = approved_amount_monthly.setdefault(month_key, {"inField": 0.0, "preDelivery": 0.0})
+        claim_type = ticket_claim_type(t)
+        amount = approved_cost_amount(t)
+        if claim_type == "Pre Delivery Warranty Claims":
+            amount_bucket["preDelivery"] = round(float(amount_bucket["preDelivery"]) + amount, 2)
+        elif claim_type == "In Field Warranty Claims":
+            amount_bucket["inField"] = round(float(amount_bucket["inField"]) + amount, 2)
     for e in all_unapproved_events:
         decision_day = event_date_key(e)
         if decision_day and DASHBOARD_MIN_DATE <= decision_day <= generated_day:
@@ -3239,7 +3296,7 @@ def _build_team_view(
         dkey = approved_reporting_date(t)
         if not dkey:
             continue
-        amount = parse_amount(t.get("amount"))
+        amount = approved_cost_amount(t)
         daily_bucket = approved_cost_daily.setdefault(dkey, {"approvedTickets": 0, "approvedAmount": 0.0})
         daily_bucket["approvedTickets"] += 1
         daily_bucket["approvedAmount"] = round(float(daily_bucket["approvedAmount"]) + amount, 2)
@@ -3255,7 +3312,7 @@ def _build_team_view(
         for t in rows:
             if clean(t.get("approvalDecision")) != "approved":
                 continue
-            amount = parse_amount(t.get("amount"))
+            amount = approved_cost_amount(t)
             bucket = next((b for b in buckets if amount >= b["min"] and amount < b["max"]), buckets[-1])
             bucket["count"] += 1
             bucket["total"] = round(float(bucket["total"]) + amount, 2)
@@ -3269,6 +3326,16 @@ def _build_team_view(
             for b in buckets
             if int(b["count"]) > 0
         ]
+
+    def critical_claim_split_for_rows(rows: list[Dict[str, Any]]) -> Dict[str, int]:
+        out = {"inField": 0, "preDelivery": 0}
+        for row in rows or []:
+            claim_type = clean(row.get("claimType"))
+            if claim_type == "Pre Delivery Warranty Claims":
+                out["preDelivery"] += 1
+            elif claim_type == "In Field Warranty Claims":
+                out["inField"] += 1
+        return out
 
     handling_speed = calculate_handling_speed(matching_events, critical_now, ticket_by_id, generated_at, critical_by_date)
     critical_claim_split = {
@@ -3352,11 +3419,17 @@ def _build_team_view(
                     prev_end = prev_end_dt.date().fromordinal(prev_end_dt.date().toordinal() - 1).isoformat()
                     prev_start = _range_start_from_end(prev_end, span_days, DASHBOARD_MIN_DATE)
                     period_ranges[f"{prev_start}|{prev_end}"] = (prev_start, prev_end)
+    # Team Dashboard month snapshots intentionally start at DASHBOARD_MIN_DATE.
+    # The first partial month (for example 2026-05-25..2026-05-31) is kept,
+    # but anything before DASHBOARD_MIN_DATE is excluded from this page.
+    for key, value in _calendar_month_ranges(DASHBOARD_MIN_DATE, generated_day).items():
+        period_ranges[key] = value
 
     period_snapshots: Dict[str, Dict[str, Any]] = {}
     for key, (start_day, end_day) in period_ranges.items():
         approval_start_day = approval_history_start if key == "all" else start_day
         approval_summary = approval_summary_for_range(approval_start_day, end_day)
+        end_rows = daily_critical_rows.get(end_day, [])
         summary = _preset_summary_for_range(
             start_day, end_day, trend, entered_daily, exited_daily, moved_daily, exited_value_daily, current_critical
         )
@@ -3367,6 +3440,8 @@ def _build_team_view(
             "approvedAmount": round(approval_summary["approvedAmount"], 2),
             "unapprovedAmount": round(approval_summary["unapprovedAmount"], 2),
             "avgCostPerTicket": round(approval_summary["avgCostPerTicket"], 2),
+            "criticalClaimSplit": critical_claim_split_for_rows(end_rows),
+            "approvedCostSource": "SAP PO Short Text EKPO.NETWR",
             "source": "python pre-calculated fixed dashboard range",
         })
         period_snapshots[key] = {
@@ -3374,7 +3449,7 @@ def _build_team_view(
             "repairCostDistribution": repair_cost_distribution_for_rows(approved_rows_for_range(approval_start_day, end_day)),
             "approvalTicketRows": approval_ticket_rows_for_range(approval_start_day, end_day),
             "employeeApprovalRows": employee_approval_rows_for_range(approval_start_day, end_day),
-            "handlingSpeedBuckets": calculate_handling_speed([], daily_critical_rows.get(end_day, []), ticket_by_id, end_day).get("buckets", []),
+            "handlingSpeedBuckets": calculate_handling_speed([], end_rows, ticket_by_id, end_day).get("buckets", []),
         }
 
     total_approval_summary = approval_summary_for_range(approval_history_start, generated_day)
@@ -3406,9 +3481,12 @@ def _build_team_view(
             "approvedTickets": int(total_approval_summary["approvedTickets"]),
             "unapprovedTickets": int(total_approval_summary["unapprovedTickets"]),
             "approvedValue": round(total_approval_summary["approvedAmount"], 2),
+            "approvedAmount": round(total_approval_summary["approvedAmount"], 2),
             "unapprovedValue": round(total_approval_summary["unapprovedAmount"], 2),
             "avgCostPerTicket": round(total_approval_summary["avgCostPerTicket"], 2),
-            "approvalRule": "Approved = Claim Approved On, then Posting Date for approved tickets, then legacy approved backup. Unapproved = Resolved On, then Changed On, then legacy unapproved backup. Posting Date is never used for unapproved tickets.",
+            "approvedCostSource": "SAP PO Short Text EKPO.NETWR",
+            "approvedCostFormula": "Approved tickets come from C4C; Approved Cost amount comes only from SAP PO Short Text ticket match, summed from EKPO.NETWR.",
+            "approvalRule": APPROVAL_RULE_DESCRIPTION,
             "criticalNow": current_critical,
             "criticalClaimSplit": critical_claim_split,
             "dashboardKpis": dashboard_kpis,
@@ -3461,6 +3539,16 @@ def _build_team_view(
             }
             for month, vals in sorted(approval_closed_monthly.items())
         ],
+        "approvedAmountMonthly": [
+            {
+                "month": month,
+                "year": month[:4],
+                "inField": round(float(vals.get("inField") or 0), 2),
+                "preDelivery": round(float(vals.get("preDelivery") or 0), 2),
+                "total": round(float(vals.get("inField") or 0) + float(vals.get("preDelivery") or 0), 2),
+            }
+            for month, vals in sorted(approved_amount_monthly.items())
+        ],
         "presetRanges": preset_ranges,
         "presetSummaries": preset_summaries,
         "periodSnapshots": period_snapshots,
@@ -3485,9 +3573,21 @@ def build_team_analytics(
     generated_at: str,
     employee_directory: Optional[Dict[str, Dict[str, str]]] = None,
     approval_state: Optional[Dict[str, Dict[str, Any]]] = None,
+    approved_cost_by_ticket: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     claim_labels = ["All Claims", "In Field Warranty Claims", "Pre Delivery Warranty Claims"]
-    views = { _claim_key(label): _build_team_view(label, snap, history_events, generated_at, employee_directory, approval_state) for label in claim_labels }
+    views = {
+        _claim_key(label): _build_team_view(
+            label,
+            snap,
+            history_events,
+            generated_at,
+            employee_directory,
+            approval_state,
+            approved_cost_by_ticket,
+        )
+        for label in claim_labels
+    }
     all_view = views["all"]
     return {
         "generatedAt": generated_at,
@@ -3573,6 +3673,43 @@ def build_team_dashboard_payload(team_payload: Dict[str, Any]) -> Dict[str, Any]
     return out
 
 
+def write_team_dashboard_payload(analytics_ref, team_payload: Dict[str, Any]) -> None:
+    """Write analytics/teamDashboard with explicit per-view periodSnapshots.
+
+    The Team Dashboard page reads this lightweight mirror first. Writing the
+    whole payload in one nested set() can leave month periodSnapshots hard to
+    inspect or missing in practice for the selected view, which then makes the
+    month-based Approved Cost cards fall back to 0 on the webpage even though
+    full analytics/team already contains the correct month snapshot.
+
+    To keep the mirror deterministic, write the lightweight root first, then
+    materialize each view and each periodSnapshots child explicitly.
+    """
+    payload = build_team_dashboard_payload(team_payload)
+    if not isinstance(payload, dict):
+        analytics_ref.child("teamDashboard").set(firebase_safe_json(payload))
+        return
+
+    dashboard_ref = analytics_ref.child("teamDashboard")
+    root_light = {k: v for k, v in payload.items() if k != "views"}
+    dashboard_ref.set(firebase_safe_json(root_light))
+
+    views_ref = dashboard_ref.child("views")
+    for view_key, view_payload in (payload.get("views") or {}).items():
+        safe_view_key = firebase_safe_key(view_key)
+        view_ref = views_ref.child(safe_view_key)
+        if not isinstance(view_payload, dict):
+            view_ref.set(firebase_safe_json(view_payload))
+            continue
+
+        light_view = {k: v for k, v in view_payload.items() if k != "periodSnapshots"}
+        view_ref.set(firebase_safe_json(light_view))
+
+        period_ref = view_ref.child("periodSnapshots")
+        for period_key, period_payload in (view_payload.get("periodSnapshots") or {}).items():
+            period_ref.child(firebase_safe_key(period_key)).set(firebase_safe_json(period_payload))
+
+
 def write_analytics(
     source_root: str,
     monitor_root: str,
@@ -3591,6 +3728,7 @@ def write_analytics(
         approval_state = approval_state_dict_by_ticket_id(approval_state_raw)
     except Exception:
         approval_state = {}
+    approved_cost_by_ticket = load_approved_cost_by_ticket(monitor_root)
     dealer_payload = build_dealer_analytics(source_root, monitor_root, history_events, ts) if include_dealer else None
     payload = {
         "meta": {
@@ -3604,8 +3742,10 @@ def write_analytics(
             "ticketSnapshotSize": len(snap),
             "employeeDirectorySize": len(employee_directory),
             "approvalStateSize": len(approval_state),
+            "approvedCostSource": "SAP PO Short Text EKPO.NETWR",
+            "approvedCostTicketCount": len(approved_cost_by_ticket),
         },
-        "team": build_team_analytics(snap, analytics_history_events, ts, employee_directory, approval_state),
+        "team": build_team_analytics(snap, analytics_history_events, ts, employee_directory, approval_state, approved_cost_by_ticket),
         "employee": build_employee_analytics(snap, analytics_history_events, ts, employee_directory),
     }
     if include_dealer:
@@ -3674,7 +3814,7 @@ def write_analytics(
     analytics_ref.child("meta").set(firebase_safe_json(payload["meta"]))
     analytics_ref.child("employee").set(firebase_safe_json(payload["employee"]))
     write_team_analytics_chunked(analytics_ref.child("team"), payload["team"])
-    analytics_ref.child("teamDashboard").set(firebase_safe_json(build_team_dashboard_payload(payload["team"])))
+    write_team_dashboard_payload(analytics_ref, payload["team"])
 
     if include_dealer:
         dealer_index = {k: v for k, v in payload["dealer"].items() if k != "byDealer"}
@@ -3921,17 +4061,17 @@ def update_approval_state(monitor_root: str, snap: Dict[str, Any]) -> Dict[str, 
     """Maintain <monitor_root>/approvalState by comparing this scan to the last.
 
     Goal: a self-rolling approved/unapproved date line that needs no C4C change
-    API and no repeated baseline exports. Approved tickets prefer Claim Approved
-    On from the direct interface, then Posting Date as the approved fallback,
-    then the legacy approved backup chain. Unapproved tickets prefer Resolved
-    On, then Changed On, and never use Posting Date. From then on every scan
-    detects transitions automatically:
+    API and no repeated baseline exports. Approved means Claim Approved On is
+    present and the current status is one of Z9/Y0/Y1/Y2/Y4/YB. Unapproved
+    means the current status is Y8 / Unapproved Claims Closed. Approved dates
+    use Claim Approved On only. Unapproved tickets prefer Resolved On, then
+    Changed On, and never use Posting Date. From then on every scan detects
+    transitions automatically:
 
       - Ticket approved now but NOT approved in stored state -> record decision.
-        For approved, the direct interface dates are used first, then Posting
-        Date and the legacy backup chain. For unapproved, Resolved On / Changed
-        On supply the decision day. If no decision day exists, stamp today as
-        a last-resort backup.
+        For approved, Claim Approved On supplies the decision day. For
+        unapproved, Resolved On / Changed On supply the decision day. If no
+        decision day exists, stamp today as a last-resort backup.
       - Once a ticket is recorded approved, its day is never changed unless a
         current snapshot exposes the same approved ticket with a better direct
         approved date and replaces older residual state.
@@ -3966,7 +4106,7 @@ def update_approval_state(monitor_root: str, snap: Dict[str, Any]) -> Dict[str, 
         decision_source = clean(cur.get("approvalDecisionSource"))
 
         if decision == "approved":
-            record_source = decision_source or ("approved_missing_date" if not current_day else "legacy_approved_backup")
+            record_source = decision_source or ("approved_missing_date" if not current_day else "claim_approved_on")
             record = _approval_state_record(tid, cur, "approved", current_day, record_source)
             if already_approved and existing_day == current_day and existing_source == record_source:
                 if clean(existing.get("claimType")) == clean(record.get("claimType")) and clean(existing.get("decisionTime")) == clean(record.get("decisionTime")):

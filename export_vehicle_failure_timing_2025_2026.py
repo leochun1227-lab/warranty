@@ -32,6 +32,8 @@ OUTPUT_DIR = ROOT / "outputs"
 ANALYSIS_TICKET_FAILURE_TIMING_CSV_PATH = OUTPUT_DIR / "analysis_ticket_failure_timing.csv"
 ANALYSIS_TICKET_FAILURE_TIMING_JS_PATH = OUTPUT_DIR / "analysis_ticket_failure_timing.js"
 DEFAULT_LATEST_WORKBOOK_PATH = OUTPUT_DIR / "vehicle_failure_timing_2025_2026_latest.xlsx"
+VEHICLE_FAILURE_TIMING_SUMMARY_JSON_PATH = OUTPUT_DIR / "vehicle_failure_timing_2025_2026_latest_summary.json"
+VEHICLE_FAILURE_TIMING_SUMMARY_JS_PATH = OUTPUT_DIR / "vehicle_failure_timing_2025_2026_latest_summary.js"
 
 DEFAULT_DSN = os.getenv(
     "SAP_HANA_DSN",
@@ -785,6 +787,30 @@ def write_js_global(path: Path, global_name: str, payload: Any, *, is_text: bool
     path.write_text(f"globalThis.{global_name} = {value_text};\n", encoding="utf-8")
 
 
+def build_sold_vehicle_summary_payload(sold_vehicle_df: pd.DataFrame, workbook_path: Path) -> Dict[str, Any]:
+    total_sold_vehicles = int(len(sold_vehicle_df))
+    return {
+        "generatedAt": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "sourceWorkbook": workbook_path.name,
+        "sourceSheet": "sold_vehicles",
+        "totalSoldVehicles": total_sold_vehicles,
+        "totalVehicles": total_sold_vehicles,
+    }
+
+
+def export_sold_vehicle_summary(summary_payload: Dict[str, Any]) -> None:
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    VEHICLE_FAILURE_TIMING_SUMMARY_JSON_PATH.write_text(
+        json.dumps(summary_payload, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    write_js_global(
+        VEHICLE_FAILURE_TIMING_SUMMARY_JS_PATH,
+        "ANALYSIS_VEHICLE_FAILURE_TIMING_SUMMARY",
+        summary_payload,
+    )
+
+
 def export_analysis_ticket_failure_assets(ticket_failure_df: pd.DataFrame) -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     ticket_failure_df.to_csv(ANALYSIS_TICKET_FAILURE_TIMING_CSV_PATH, index=False, encoding="utf-8-sig")
@@ -936,8 +962,15 @@ def main() -> int:
             shutil.copy2(output_path, latest_output)
         logger.info("Latest workbook updated: %s", latest_output)
 
+    sold_vehicle_summary = build_sold_vehicle_summary_payload(
+        sold_vehicle_df=sold_vehicle_df,
+        workbook_path=latest_output if latest_output else output_path,
+    )
+    export_sold_vehicle_summary(sold_vehicle_summary)
+
     logger.info("Workbook written: %s", output_path)
     logger.info("Analysis ticket timing assets written: %s, %s", ANALYSIS_TICKET_FAILURE_TIMING_CSV_PATH, ANALYSIS_TICKET_FAILURE_TIMING_JS_PATH)
+    logger.info("Sold vehicle summary written: %s", VEHICLE_FAILURE_TIMING_SUMMARY_JSON_PATH)
     print(output_path)
     return 0
 

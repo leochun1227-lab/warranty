@@ -3,67 +3,73 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>In Field / Pre Delivery - Approved vs Unapproved</title>
+<title>In Field / Pre Delivery - Approved/ Unapproved - Amount Claim</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#dbe5f0;--blue:#156082;--orange:#e97132;--soft:#bfe5f3;--shadow:0 14px 34px rgba(15,23,42,.06)}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif}
-.app{min-height:100vh;display:grid;grid-template-columns:288px 1fr}
-.sidebar{background:#0b1222;color:#e5e7eb;min-height:100vh;padding:22px 16px;position:sticky;top:0;align-self:start}
-.brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 28px}
-.brandMark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#2563eb);display:flex;align-items:center;justify-content:center}
-.brandText span{display:block;font-size:18px;font-weight:600}
-.brandText small{display:block;color:#9aa8bc;font-size:12px;margin-top:2px}
-.navSection{font-size:12px;letter-spacing:4px;color:#8ea0b8;text-transform:uppercase;margin:25px 8px 10px}
-.navLink{width:100%;display:flex;align-items:center;gap:13px;color:#d9e1ec;padding:13px 14px;border-radius:12px;font-weight:600;text-decoration:none}
+body.calculating .app{filter:blur(1.6px);opacity:.68;pointer-events:none;user-select:none}
+.app{min-height:100vh;display:grid;grid-template-columns:232px 1fr}
+.sidebar{background:#0b1222;color:#e5e7eb;min-height:100vh;padding:18px 12px;position:sticky;top:0;align-self:start}
+.brandWrap{display:flex;align-items:center;gap:10px;margin:0 0 22px}
+.brandMark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#38bdf8,#2563eb);display:flex;align-items:center;justify-content:center}
+.brandText span{display:block;font-size:16px;font-weight:600}
+.brandText small{display:block;color:#9aa8bc;font-size:11px;margin-top:2px}
+.navSection{font-size:11px;letter-spacing:3px;color:#8ea0b8;text-transform:uppercase;margin:20px 8px 8px}
+.navLink{width:100%;display:flex;align-items:center;gap:10px;color:#d9e1ec;padding:10px 11px;border-radius:10px;font-weight:600;text-decoration:none;font-size:13px}
 .navLink.active{background:rgba(255,255,255,.10);color:#fff}
 .navLink:hover{background:rgba(255,255,255,.07)}
-.navLink svg{width:18px;height:18px;stroke-width:1.8;color:#aebcd1}
-.main{min-width:0;padding:30px 40px 60px}
-.pageTop{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:14px}
-.topActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
+.navLink svg{width:16px;height:16px;stroke-width:1.8;color:#aebcd1}
+.main{min-width:0;padding:20px 26px 26px}
+.pageTop{display:flex;justify-content:flex-end;gap:14px;align-items:flex-start;margin-bottom:8px}
+.topActions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
 .jumpBtn{
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  height:34px;padding:0 12px;border:1px solid var(--line);border-radius:10px;
-  background:#fff;color:#172033;font-weight:800;font-size:12px;text-decoration:none;
+  height:31px;padding:0 11px;border:1px solid var(--line);border-radius:10px;
+  background:#fff;color:#172033;font-weight:800;font-size:11px;text-decoration:none;
   box-shadow:0 8px 18px rgba(15,23,42,.04);white-space:nowrap
 }
 .jumpBtn:hover{background:#f8fbff;border-color:#cfdbea}
 .pageTitle{font-size:28px;line-height:1.15;font-weight:650;margin:0 0 8px}
 .subTitle{color:#52627a;font-size:14px;margin:0;max-width:780px}
-.datePill{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;color:#475569;font-size:12px;font-weight:700;white-space:nowrap}
+.datePill{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 11px;color:#475569;font-size:12px;font-weight:700;white-space:nowrap}
 /* sticky tab + filter bar */
-.toolbar{position:sticky;top:0;z-index:30;background:rgba(245,247,251,.92);backdrop-filter:blur(6px);padding:12px 0 14px;margin-bottom:10px;border-bottom:1px solid #e6ecf4}
+.toolbar{position:sticky;top:0;z-index:30;background:rgba(245,247,251,.94);backdrop-filter:blur(8px);padding:8px 0 12px;margin-bottom:12px;border-bottom:1px solid #e6ecf4}
 .tabs{display:inline-flex;gap:4px;background:#eef3f9;border:1px solid var(--line);border-radius:999px;padding:4px}
-.tab{appearance:none;border:0;background:transparent;color:#475569;font-weight:750;font-size:13px;padding:8px 16px;border-radius:999px;cursor:pointer;text-decoration:none;display:inline-block}
+.tab{appearance:none;border:0;background:transparent;color:#475569;font-weight:750;font-size:12px;padding:8px 14px;border-radius:999px;cursor:pointer;text-decoration:none;display:inline-block}
 .tab.active{background:#fff;color:#0b3a52;box-shadow:0 2px 8px rgba(15,23,42,.10)}
-.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
-.controls label{display:inline-flex;align-items:center;gap:7px;color:#64748b;font-size:12px;font-weight:800}
+.modeRow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.modeSwitch{display:inline-flex;gap:4px;background:#eef3f9;border:1px solid var(--line);border-radius:999px;padding:4px}
+.modeBtn{appearance:none;border:0;background:transparent;color:#475569;font-weight:800;font-size:12px;padding:8px 14px;border-radius:999px;cursor:pointer}
+.modeBtn.active{background:#fff;color:#0b3a52;box-shadow:0 2px 8px rgba(15,23,42,.10)}
+.viewNote{color:#64748b;font-size:12px;font-weight:700}
+.controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.controlsGroup{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.controlsGroup[hidden]{display:none}
+.controls label{display:inline-flex;align-items:center;gap:6px;color:#64748b;font-size:12px;font-weight:800}
 .controls input,.controls select{height:34px;border:1px solid var(--line);border-radius:9px;padding:0 10px;color:#0f172a;font-weight:700;background:#fff;font:inherit;font-size:12px}
 .controls button{height:34px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#172033;font-weight:800;padding:0 12px;cursor:pointer;font-size:12px}
 .controls button.primary{border:0;background:linear-gradient(135deg,#4c8ee8,#2467c8);color:#fff}
-.rangeNote{margin-left:auto;color:#64748b;font-size:12px;font-weight:700}
 .error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin:10px 0 16px}
-.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:6px 0 24px}
-.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);transition:transform .15s ease,box-shadow .15s ease}
-.kpi:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(15,23,42,.10)}
-.kpiHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
-.kpiLabel{font-size:12px;color:#6b7689;font-weight:600;letter-spacing:.01em}
-.kpiValue{font-size:27px;font-weight:700;letter-spacing:-.02em;color:#0f172a;font-variant-numeric:tabular-nums}
-.kpiHint{font-size:12px;color:#9aa6b8;margin-top:6px;font-weight:500}
-.kpiIcon{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto}
-.kpiIcon svg{width:18px;height:18px;stroke-width:1.9;fill:none}
+.dashboardGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
 .ic-blue{background:#eef4ff;color:#2563eb}
 .ic-green{background:#eafaf1;color:#16a34a}
 .ic-amber{background:#fff3ea;color:#e97132}
 .ic-violet{background:#f4f0ff;color:#7c3aed}
-.panel{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:26px;scroll-margin-top:120px}
-.panelHead{margin-bottom:14px}
-.panelTitle{font-size:21px;font-weight:650;margin:0 0 6px;display:flex;align-items:center;gap:10px}
-.titleIcon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto}
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:14px 16px;margin:0;scroll-margin-top:104px;min-width:0;display:flex;flex-direction:column}
+.panelHead{margin-bottom:10px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;min-height:44px}
+.panelTitleWrap{display:flex;flex-direction:column;gap:8px;min-width:0}
+.panelTitle{font-size:17px;font-weight:650;margin:0;display:flex;align-items:center;gap:8px;line-height:1.25}
+.titleIcon{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto}
 .titleIcon svg{width:18px;height:18px;stroke-width:1.9;fill:none}
-.panelDesc{color:#64748b;font-size:13px;margin:0;max-width:880px;line-height:1.5}
+.panelDesc{display:none}
+.grandTotals{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;align-items:flex-start;min-width:220px}
+.miniSwitch{display:inline-flex;gap:4px;background:#eef3f9;border:1px solid var(--line);border-radius:999px;padding:4px;align-self:flex-start}
+.miniBtn{appearance:none;border:0;background:transparent;color:#475569;font-weight:800;font-size:11px;line-height:1;padding:7px 11px;border-radius:999px;cursor:pointer}
+.miniBtn.active{background:#fff;color:#0b3a52;box-shadow:0 2px 8px rgba(15,23,42,.10)}
+.totalChip{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;border:1px solid #d8e4f1;background:#f8fbff;color:#516074;font-size:11px;font-weight:800;white-space:nowrap}
+.totalChip strong{color:#0f172a;font-size:12px}
 .grid{display:grid;grid-template-columns:430px minmax(0,1fr);gap:22px;align-items:start}
 .pivotWrap{overflow:auto;border:1px solid #475569;border-radius:6px;background:#fff;max-height:560px}
 .pivot{width:100%;border-collapse:collapse;min-width:420px}
@@ -72,122 +78,155 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI"
 .pivot td.num{text-align:right;font-weight:780}
 .yearRow td{font-weight:850;background:#f1f5fb}
 .grandRow td{background:var(--soft);font-weight:900}
-.chartBox{border:1px solid #d1d5db;background:linear-gradient(180deg,#fff,#fbfdff);border-radius:8px;padding:12px}
-.chartWrap{height:430px}
+.chartBox{border:1px solid #d1d5db;background:linear-gradient(180deg,#fff,#fbfdff);border-radius:12px;padding:10px;display:flex;flex-direction:column;justify-content:space-between;flex:1}
+.calcFloat{position:fixed;inset:0;z-index:140;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);color:#155e9f;letter-spacing:0;flex-direction:column}
+.calcFloat.active{display:flex}
+.calcFloat:before{content:"";position:absolute;inset:0;background:rgba(248,251,255,.42);pointer-events:none}
+.calcFloat>*{position:relative}
+.calcSpinner{width:64px;height:64px;border-radius:999px;border:6px solid #dbeafe;border-top-color:#2563eb;border-right-color:#60a5fa;animation:calcSpin .78s linear infinite;flex:0 0 auto;box-shadow:0 10px 28px rgba(37,99,235,.16)}
+.calcFloatText{margin-top:18px;display:block;white-space:nowrap;font-size:16px;font-weight:650;color:#155e9f}
+@keyframes calcSpin{to{transform:rotate(360deg)}}
+.chartWrap{height:220px}
+.chartWrapTall{height:270px}
 .chartWrap canvas{width:100%;height:100%;display:block}
-.legend{display:flex;gap:18px;align-items:center;justify-content:flex-end;font-size:12px;color:#475569;margin-top:6px}
+.legend{display:flex;gap:12px;align-items:center;justify-content:flex-start;font-size:11px;color:#475569;margin-top:6px;flex-wrap:wrap}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:18px;height:3px;display:inline-block;border-radius:2px}
 .empty{padding:24px;color:#64748b;text-align:center}
-@media(max-width:1050px){.grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr}}
-@media(max-width:900px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}.pageTop{display:block}.topActions{justify-content:flex-start;margin-top:12px}}
-@media(max-width:620px){.kpis{grid-template-columns:1fr}.controls{display:grid}.controls label{display:grid}.chartWrap{height:340px}.rangeNote{margin-left:0}}
+@media(max-width:1180px){.dashboardGrid{grid-template-columns:1fr}.chartWrap{height:230px}.chartWrapTall{height:290px}}
+@media(max-width:900px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:18px}.pageTop{display:block}.topActions{justify-content:flex-start;margin-top:10px}.tabs{display:flex;flex-wrap:wrap}.modeRow{align-items:flex-start}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:end}.controlsGroup{display:contents}.controls label{display:grid}.viewNote{grid-column:1/-1}}
+@media(max-width:620px){.controls{grid-template-columns:1fr}.panelHead{display:block}.panelTitleWrap{margin-bottom:8px}.grandTotals{margin-top:10px;justify-content:flex-start;min-width:0}.chartWrap{height:200px}.chartWrapTall{height:240px}.calcSpinner{width:54px;height:54px;border-width:5px}.calcFloatText{font-size:14px;margin-top:14px}}
 </style>
 <link rel="stylesheet" href="flow-polish.css">
 </head>
-<body>
+<body class="calculating">
+<div id="calcFloat" class="calcFloat active" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Loading dashboard...</span></div>
 <div class="app">
   <aside class="sidebar">
     <div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M4 12h16M12 4v16"/></svg></div><div class="brandText"><span>Warranty KPI</span><small>After-Sales Team Dashboard</small></div></div>
     <div class="navSection">Workspace</div>
     <a class="navLink" href="index.html">Team Dashboard</a>
-    <a class="navLink" href="dealer-workbench.html">Dealer Workbench</a>
+    <a class="navLink" href="dealerworkbench.html">Dealer Workbench</a>
     <a class="navLink" href="delivery_flow.html">Parts Delivery</a>
-    <div class="navSection">Tickets</div><a class="navLink" href="dealer-workbench.html#tickets">Critical Tickets</a><a class="navLink active" href="infieldpredelivery.html#created">In Field / Pre Delivery</a><a class="navLink active" href="infieldpredelivery.html#approved">Approved vs Unapproved</a><div class="navDivider"></div>
-<div class="navSection">Analysis</div>
-<a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Analysis</span></a></aside>
+    <a class="navLink" href="repairs.html">Repair</a>
+    <div class="navSection">Tickets</div><a class="navLink" href="dealerworkbench.html#tickets">Critical Tickets</a><a class="navLink active" href="infieldpredelivery.html#newclaim">New Claim</a><a class="navLink active" href="infieldpredelivery.html#created">In Field / Pre Delivery</a><a class="navLink active" href="infieldpredelivery.html#approved">Approved/ Unapproved</a><a class="navLink active" href="infieldpredelivery.html#amount">Amount Claim</a><a class="navLink active" href="infieldpredelivery.html#claimclosed">Claim Closed</a><div class="navDivider"></div>
+<div class="navSection">Model Series</div>
+<a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model Series</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket lifecycle</span></a></aside>
   <main class="main">
-    <div class="pageTop">
-      <div>
-        <h1 class="pageTitle">In Field / Pre Delivery &amp; Approved vs Unapproved</h1>
-      </div>
-      <div class="topActions">
-        <a class="jumpBtn" href="index.html">Team Dashboard</a>
-        <a class="jumpBtn" href="dealer-workbench.html">Dealer Workbench</a>
-        <a class="jumpBtn" href="delivery_flow.html">Parts Delivery</a>
-        <a class="jumpBtn" href="analysis.html">Analysis</a>
-        <div id="asOf" class="datePill">As of --</div>
-      </div>
-    </div>
-
     <div class="toolbar">
-      <div class="tabs">
-        <a class="tab" data-target="created" href="#created">Created by Month</a>
-        <a class="tab" data-target="approved" href="#approved">Approved</a>
-        <a class="tab" data-target="unapproved" href="#unapproved">Unapproved</a>
+      <div class="modeRow">
+        <div class="modeSwitch">
+          <button id="singleModeBtn" class="modeBtn active" type="button">Single / Range</button>
+          <button id="compareModeBtn" class="modeBtn" type="button">Year Compare</button>
+        </div>
+        <div id="viewNote" class="viewNote"></div>
       </div>
       <div class="controls">
-        <label>Year <select id="yearSelect"></select></label>
-        <label>From <input id="fromMonth" type="month"></label>
-        <label>To <input id="toMonth" type="month"></label>
-        <button id="applyRange" class="primary" type="button">Apply range</button>
-        <button id="last12" type="button">Last 12 months</button>
-        <button id="clearRange" type="button">All (2025+)</button>
-        <span id="rangeNote" class="rangeNote"></span>
+        <div id="singleControls" class="controlsGroup">
+          <label>Year <select id="yearSelect"></select></label>
+          <label>From <input id="fromMonth" type="month"></label>
+          <label>To <input id="toMonth" type="month"></label>
+          <button id="applyRange" class="primary" type="button">Apply range</button>
+          <button id="last12" type="button">Last 12 months</button>
+          <button id="clearRange" type="button">All (2025+)</button>
+        </div>
+        <div id="compareControls" class="controlsGroup" hidden>
+          <label>Year A <select id="compareYearA"></select></label>
+          <label>Year B <select id="compareYearB"></select></label>
+          <button id="applyCompare" class="primary" type="button">Compare years</button>
+          <button id="swapCompare" type="button">Swap</button>
+        </div>
       </div>
     </div>
 
     <div id="error" class="error"></div>
 
-    <section class="kpis">
-      <div class="kpi"><div class="kpiHead"><div class="kpiLabel">Created (In Field + Pre)</div><span class="kpiIcon ic-blue"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14h6"/></svg></span></div><div id="kpiCreated" class="kpiValue">0</div><div class="kpiHint">Tickets created in range</div></div>
-      <div class="kpi"><div class="kpiHead"><div class="kpiLabel">Approved</div><span class="kpiIcon ic-green"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.3 12.3l2.5 2.5 4.9-5.6"/></svg></span></div><div id="kpiApproved" class="kpiValue">0</div><div class="kpiHint">In Field + Pre Delivery approved</div></div>
-      <div class="kpi"><div class="kpiHead"><div class="kpiLabel">Unapproved Closed</div><span class="kpiIcon ic-amber"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg></span></div><div id="kpiUnapproved" class="kpiValue">0</div><div class="kpiHint">In Field + Pre Delivery</div></div>
-      <div class="kpi"><div class="kpiHead"><div class="kpiLabel">Approval Rate</div><span class="kpiIcon ic-violet"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 7-7"/><path d="M17 8h4v4"/></svg></span></div><div id="kpiRate" class="kpiValue">0%</div><div class="kpiHint">Approved / (Approved + Unapproved)</div></div>
-    </section>
+    <div class="dashboardGrid">
+      <section class="panel" id="newclaim">
+        <div class="panelHead">
+          <h2 class="panelTitle"><span class="titleIcon ic-blue"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>Claims Received by Month</h2>
+          <div id="newClaimTotals" class="grandTotals"></div>
+        </div>
+        <div class="chartBox">
+          <div class="chartWrap"><canvas id="newClaimChart"></canvas></div>
+          <div id="newClaimLegend" class="legend"><span><i style="background:var(--blue)"></i>Total Claims</span></div>
+        </div>
+      </section>
 
-    <section class="panel" id="created">
-      <div class="panelHead">
-        <h2 class="panelTitle"><span class="titleIcon ic-blue"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14h6"/></svg></span>In Field &amp; Pre Delivery Warranty Tickets Created by Month</h2>
-      </div>
-      <div class="grid">
-        <div class="pivotWrap"><table class="pivot"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims</th><th>Sum of Pre Delivery Warranty Claims</th></tr></thead><tbody id="createdPivot"></tbody></table></div>
+      <section class="panel" id="created">
+        <div class="panelHead">
+          <div class="panelTitleWrap">
+            <h2 class="panelTitle"><span class="titleIcon ic-blue"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14h6"/></svg></span>Warranty Tickets Created by Month</h2>
+            <div class="miniSwitch" aria-label="Created ticket type">
+              <button id="createdInBtn" class="miniBtn active" type="button">In Field</button>
+              <button id="createdPreBtn" class="miniBtn" type="button">Pre Delivery</button>
+            </div>
+          </div>
+          <div id="createdTotals" class="grandTotals"></div>
+        </div>
         <div class="chartBox">
           <div class="chartWrap"><canvas id="createdChart"></canvas></div>
-          <div class="legend"><span><i style="background:var(--blue)"></i>In Field Warranty Claims</span><span><i style="background:var(--orange)"></i>Pre Delivery Warranty Claims</span></div>
+          <div id="createdLegend" class="legend"><span><i style="background:var(--blue)"></i>In Field</span></div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="panel" id="approved">
-      <div class="panelHead">
-        <h2 class="panelTitle"><span class="titleIcon ic-green"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.3 12.3l2.5 2.5 4.9-5.6"/></svg></span>Approved Tickets</h2>
-      </div>
-      <div class="grid">
-        <div class="pivotWrap"><table class="pivot"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims</th><th>Sum of Pre Delivery Warranty Claims</th></tr></thead><tbody id="approvedPivot"></tbody></table></div>
+      <section class="panel" id="approved">
+        <div class="panelHead">
+          <h2 class="panelTitle"><span class="titleIcon ic-green"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.3 12.3l2.5 2.5 4.9-5.6"/></svg></span>Approved Tickets</h2>
+          <div id="approvedTotals" class="grandTotals"></div>
+        </div>
         <div class="chartBox">
           <div class="chartWrap"><canvas id="approvedChart"></canvas></div>
-          <div class="legend"><span><i style="background:var(--blue)"></i>In Field Warranty Claims</span><span><i style="background:var(--orange)"></i>Pre Delivery Warranty Claims</span></div>
+          <div id="approvedLegend" class="legend"><span><i style="background:var(--blue)"></i>In Field</span><span><i style="background:var(--orange)"></i>Pre Delivery</span></div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="panel" id="unapproved">
-      <div class="panelHead">
-        <h2 class="panelTitle"><span class="titleIcon ic-amber"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg></span>Unapproved Tickets</h2>
-        <p class="panelDesc">Monthly "Unapproved Claims Closed (Closed)" counts split by In Field and Pre Delivery warranty claims. Date basis: the resolved / closed month.</p>
-      </div>
-      <div class="grid">
-        <div class="pivotWrap"><table class="pivot"><thead><tr><th>Row Labels</th><th>Sum of In Field Warranty Claims<br>Unapproved Claims Closed (Closed)</th><th>Sum of Pre Delivery Warranty Claims<br>Unapproved Claims Closed (Closed)</th></tr></thead><tbody id="unapprovedPivot"></tbody></table></div>
+      <section class="panel" id="amount">
+        <div class="panelHead">
+          <h2 class="panelTitle"><span class="titleIcon ic-violet"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M17 7.5c0-1.9-2.2-3.5-5-3.5s-5 1.6-5 3.5 2.2 3.5 5 3.5 5 1.6 5 3.5-2.2 3.5-5 3.5-5-1.6-5-3.5"/></svg></span>Amount Claim</h2>
+          <div id="amountTotals" class="grandTotals"></div>
+        </div>
+        <div class="chartBox">
+          <div class="chartWrap chartWrapTall"><canvas id="approvedAmountChart"></canvas></div>
+          <div id="amountLegend" class="legend"><span><i style="background:var(--blue)"></i>In Field</span><span><i style="background:var(--orange)"></i>Pre Delivery</span></div>
+        </div>
+      </section>
+
+      <section class="panel" id="unapproved">
+        <div class="panelHead">
+          <h2 class="panelTitle"><span class="titleIcon ic-amber"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg></span>Unapproved Tickets</h2>
+          <div id="unapprovedTotals" class="grandTotals"></div>
+        </div>
         <div class="chartBox">
           <div class="chartWrap"><canvas id="unapprovedChart"></canvas></div>
-          <div class="legend"><span><i style="background:var(--blue)"></i>In Field Warranty Claims</span><span><i style="background:var(--orange)"></i>Pre Delivery Warranty Claims</span></div>
+          <div id="unapprovedLegend" class="legend"><span><i style="background:var(--blue)"></i>In Field</span><span><i style="background:var(--orange)"></i>Pre Delivery</span></div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section class="panel" id="claimclosed">
+        <div class="panelHead">
+          <h2 class="panelTitle"><span class="titleIcon ic-amber"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>Claims Closed by Month</h2>
+          <div id="claimClosedTotals" class="grandTotals"></div>
+        </div>
+        <div class="chartBox">
+          <div class="chartWrap"><canvas id="claimClosedChart"></canvas></div>
+          <div id="claimClosedLegend" class="legend"><span><i style="background:var(--blue)"></i>Closed Claims</span></div>
+        </div>
+      </section>
+    </div>
   </main>
 </div>
 
 <script>
 const FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
 const ROOT="ctmTicketStatusMonitorV44";
+const TICKETS_PATH="c4cTickets_test/tickets";
 const HARD_MIN="2025-01";          // first hardcoded month
 const LIVE_START="2026-06";        // live dashboard values take over from this month
 
 /* Hardcoded baseline from the SAP report screenshots (Jan 2025 - May 2026).
    createdIn/createdPre  = "In Field & Pre Delivery tickets created by month"
-   approvedIn/approvedPre = "Approved Tickets" pivot (direct Claim Approved On when available,
-   otherwise Posting Date as backup)
+   approvedIn/approvedPre = "Approved Tickets" pivot (Claim Approved On + current approved status whitelist)
    unapprovedIn/unapprovedPre = "Unapproved Tickets" pivot (direct Resolved On / Changed On when available,
    otherwise legacy unapproved backup) */
 const HISTORICAL={
@@ -213,23 +252,107 @@ const HISTORICAL={
 const $=id=>document.getElementById(id);
 const clean=v=>String(v==null?"":v).trim();
 const num=v=>Number(v||0).toLocaleString();
+const moneyNum=v=>"$"+Number(v||0).toLocaleString(undefined,{maximumFractionDigits:0});
+const moneyK=v=>{const n=Number(v||0),abs=Math.abs(n);return abs>=1_000?`$${Math.round(n/1_000).toLocaleString()}k`:moneyNum(n)};
 const arr=v=>Array.isArray(v)?v:(v&&typeof v==="object"?Object.values(v):[]);
+const amountNum=v=>Number(String(v??0).replace(/[$,]/g,"").trim()||0)||0;
 function showError(msg){$("error").style.display="block";$("error").textContent=msg}
 async function readJson(path){const res=await fetch(`${FIREBASE}/${path}.json`,{cache:"no-store"});if(!res.ok)throw new Error(`${res.status} ${res.statusText}`);return await res.json()}
 function monthShort(m){const [y,mm]=clean(m).split("-").map(Number);if(!y||!mm)return m;return new Date(Date.UTC(y,mm-1,1)).toLocaleString("en-AU",{month:"short",timeZone:"UTC"})}
 function monthLong(m){const [y,mm]=clean(m).split("-").map(Number);if(!y||!mm)return m;return new Date(Date.UTC(y,mm-1,1)).toLocaleString("en-AU",{month:"long",year:"numeric",timeZone:"UTC"})}
 function addMonths(m,delta){const [y,mm]=clean(m).split("-").map(Number);const d=new Date(Date.UTC(y||2025,(mm||1)-1,1));d.setUTCMonth(d.getUTCMonth()+delta);return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}`}
 function iterMonths(start,end){const out=[];let cur=start;if(!cur||!end||cur>end)return out;while(cur<=end){out.push(cur);cur=addMonths(cur,1)}return out}
+function moneyShort(v){const n=Number(v||0),abs=Math.abs(n);if(abs>=1_000_000)return `$${(n/1_000_000).toFixed(abs>=10_000_000?0:1)}m`;if(abs>=1_000)return `$${(n/1_000).toFixed(abs>=100_000?0:1)}k`;return moneyNum(n)}
+function niceCurrencyMax(maxRaw){
+  if(!(maxRaw>0))return 1000;
+  const pow=Math.pow(10,Math.floor(Math.log10(maxRaw)));
+  const scaled=maxRaw/pow;
+  const steps=[1.2,1.5,2,2.5,3,4,5,6,8,10];
+  const nice=steps.find(step=>scaled<=step)||10;
+  return nice*pow;
+}
 
-let MONTHLY=[],MONTHS_INDEX={},activeStart=HARD_MIN,activeEnd=HARD_MIN,customRange=false;
+let MONTHLY=[],MONTHS_INDEX={},RAW_TICKETS=[],CLAIM_CLOSED_INDEX={},activeStart=HARD_MIN,activeEnd=HARD_MIN,customRange=false,viewMode="single",compareYearA="",compareYearB="",createdMetricMode="in";
+let pageLoadingTimer=null;
 
-function emptyMonth(m){return {month:m,createdIn:0,createdPre:0,approvedIn:0,approvedPre:0,unapprovedIn:0,unapprovedPre:0}}
+function emptyMonth(m){return {month:m,createdIn:0,createdPre:0,approvedIn:0,approvedPre:0,unapprovedIn:0,unapprovedPre:0,approvedAmountIn:0,approvedAmountPre:0,unapprovedAmountIn:0,unapprovedAmountPre:0}}
+
+function ticketClaimText(ticket){
+  return clean(
+    ticket?.claimType||
+    ticket?.ClaimType||
+    ticket?.claim||
+    ticket?.Claim||
+    ticket?.TicketTypeText||
+    ticket?.["Ticket Type Text"]||
+    ticket?.TicketType||
+    ticket?.["Ticket Type"]||
+    ""
+  ).toLowerCase();
+}
+
+function ticketIsPreDelivery(ticket){
+  const text=ticketClaimText(ticket);
+  return text.includes("pre delivery")||text.includes("pre-delivery")||text.includes("predelivery")||text.includes("pdi");
+}
+
+function ticketApprovedActiveNow(ticket){
+  const code=clean(ticket?.TicketStatus||ticket?.statusCode||ticket?.Status||ticket?.TicketStatusCode||ticket?.StatusCode).toUpperCase();
+  const text=clean(ticket?.TicketStatusText||ticket?.ticketStatusText||ticket?.statusText||ticket?.StatusText||ticket?.Status||ticket?.status).toLowerCase();
+  const claimApproved=clean(
+    ticket?.ClaimApprovedOnDateTime||
+    ticket?.["Claim Approved On DateTime"]||
+    ticket?.["Claim Approved On"]||
+    ticket?.ClaimApprovedOnDate||
+    ticket?.ClaimApprovedOn||
+    ""
+  );
+  if(!claimApproved)return false;
+  return ["Z9","Y0","Y1","Y2","Y4","YB"].includes(code)||["sales order approved","partially picked","dispatch parts","repair in progress","repairer invoiced received","repairer invoiced processed"].includes(text);
+}
+
+function approvedAmountMonth(ticket){
+  const value=clean(
+    ticket?.ClaimApprovedOnDateTime||
+    ticket?.["Claim Approved On DateTime"]||
+    ticket?.["Claim Approved On"]||
+    ticket?.ClaimApprovedOnDate||
+    ticket?.ClaimApprovedOn||
+    ""
+  );
+  const month=value.slice(0,7);
+  return /^\d{4}-\d{2}$/.test(month)?month:"";
+}
+
+function approvedAmountValue(ticket){
+  return amountNum(ticket?.approvedAmount??ticket?.ApprovedAmount??ticket?.["Approved Amount"]??0);
+}
 
 function buildMonthly(view){
   const out={};
   Object.entries(HISTORICAL).forEach(([m,v])=>{out[m]={month:m,...v}});
   arr(view.claimCreatedMonthly).forEach(r=>{const m=clean(r.month);if(m>=LIVE_START){if(!out[m])out[m]=emptyMonth(m);out[m].createdIn=Number(r.inField||0);out[m].createdPre=Number(r.preDelivery||0)}});
   arr(view.approvalClosedMonthly).forEach(r=>{const m=clean(r.month);if(m>=LIVE_START){if(!out[m])out[m]=emptyMonth(m);out[m].approvedIn=Number(r.inFieldApproved||0);out[m].approvedPre=Number(r.preDeliveryApproved||0);out[m].unapprovedIn=Number(r.inFieldUnapproved||0);out[m].unapprovedPre=Number(r.preDeliveryUnapproved||0)}});
+  const approvedAmountMonthly=arr(view.approvedAmountMonthly);
+  if(approvedAmountMonthly.length){
+    approvedAmountMonthly.forEach(r=>{
+      const m=clean(r.month);
+      if(!m||m<HARD_MIN)return;
+      if(!out[m])out[m]=emptyMonth(m);
+      out[m].approvedAmountIn=Number(r.inField||0);
+      out[m].approvedAmountPre=Number(r.preDelivery||0);
+    });
+  }else{
+    arr(RAW_TICKETS).forEach(node=>{
+      const ticket=ticketPayload(node)||{};
+      const month=approvedAmountMonth(ticket);
+      const amount=approvedAmountValue(ticket);
+      if(!month||month<HARD_MIN||!(amount>0)||!ticketApprovedActiveNow(ticket))return;
+      if(!out[month])out[month]=emptyMonth(month);
+      if(ticketIsPreDelivery(ticket))out[month].approvedAmountPre=Number(out[month].approvedAmountPre||0)+amount;
+      else out[month].approvedAmountIn=Number(out[month].approvedAmountIn||0)+amount;
+    });
+  }
   return Object.values(out).filter(r=>r.month>=HARD_MIN).sort((a,b)=>a.month.localeCompare(b.month));
 }
 
@@ -239,61 +362,667 @@ function rowsForRange(){
   return iterMonths(activeStart,activeEnd).map(m=>({...(MONTHS_INDEX[m]||emptyMonth(m)),month:m,year:m.slice(0,4)}));
 }
 
-function renderPivot(tbodyId,rows,inKey,preKey,emptyText){
+function preferredDefaultYear(bounds=dataBounds()){
+  const currentYear=String(new Date().getFullYear());
+  if(bounds.years.includes(currentYear))return currentYear;
+  return bounds.years[bounds.years.length-1]||HARD_MIN.slice(0,4);
+}
+
+function defaultSingleRange(bounds=dataBounds(),primaryYear=preferredDefaultYear(bounds)){
+  const previousYear=bounds.years.filter(y=>y<primaryYear).slice(-1)[0];
+  const startYear=previousYear||primaryYear;
+  const start=`${startYear}-01`<bounds.min?bounds.min:`${startYear}-01`;
+  const endCandidate=primaryYear===bounds.max.slice(0,4)?bounds.max:`${primaryYear}-12`;
+  const end=endCandidate>bounds.max?bounds.max:endCandidate;
+  return {start,end,isMultiYear:startYear!==primaryYear};
+}
+
+function defaultCompareYear(bounds=dataBounds(),primaryYear=preferredDefaultYear(bounds)){
+  const previous=bounds.years.filter(y=>y<primaryYear).slice(-1)[0];
+  return previous||bounds.years.find(y=>y!==primaryYear)||primaryYear;
+}
+
+function latestMonthForYear(year){
+  const months=MONTHLY.filter(r=>clean(r.month).startsWith(`${year}-`)).map(r=>Number(clean(r.month).slice(5,7)));
+  return months.length?Math.max(...months):0;
+}
+
+function compareMonthLimit(yearA,yearB){
+  return 12;
+}
+
+function buildMonthKey(year,month){
+  return `${year}-${String(month).padStart(2,"0")}`;
+}
+
+function totalRowsForRange(inKey,preKey){
+  return rowsForRange().map(r=>({
+    month:r.month,
+    year:r.year,
+    total:Number(r[inKey]||0)+Number(r[preKey]||0)
+  }));
+}
+
+function compareRowsForKey(key,yearA,yearB){
+  const limit=compareMonthLimit(yearA,yearB);
+  const latestA=latestMonthForYear(yearA);
+  const latestB=latestMonthForYear(yearB);
+  const rows=[];
+  for(let month=1;month<=limit;month++){
+    const firstKey=buildMonthKey(yearA,month);
+    const secondKey=buildMonthKey(yearB,month);
+    const first=MONTHS_INDEX[firstKey]||emptyMonth(firstKey);
+    const second=MONTHS_INDEX[secondKey]||emptyMonth(secondKey);
+    rows.push({
+      month:firstKey,
+      label:monthShort(firstKey),
+      firstYear:yearA,
+      secondYear:yearB,
+      firstValue:month<=latestA?Number(first[key]||0):null,
+      secondValue:month<=latestB?Number(second[key]||0):null
+    });
+  }
+  return rows;
+}
+
+function totalCompareRows(inKey,preKey,yearA,yearB){
+  const limit=compareMonthLimit(yearA,yearB);
+  const latestA=latestMonthForYear(yearA);
+  const latestB=latestMonthForYear(yearB);
+  const rows=[];
+  for(let month=1;month<=limit;month++){
+    const firstKey=buildMonthKey(yearA,month);
+    const secondKey=buildMonthKey(yearB,month);
+    const first=MONTHS_INDEX[firstKey]||emptyMonth(firstKey);
+    const second=MONTHS_INDEX[secondKey]||emptyMonth(secondKey);
+    rows.push({
+      month:firstKey,
+      label:monthShort(firstKey),
+      firstYear:yearA,
+      secondYear:yearB,
+      firstValue:month<=latestA?(Number(first[inKey]||0)+Number(first[preKey]||0)):null,
+      secondValue:month<=latestB?(Number(second[inKey]||0)+Number(second[preKey]||0)):null
+    });
+  }
+  return rows;
+}
+
+function splitCompareRows(inKey,preKey,yearA,yearB){
+  const limit=compareMonthLimit(yearA,yearB);
+  const rows=[];
+  for(let month=1;month<=limit;month++){
+    const firstKey=buildMonthKey(yearA,month);
+    const secondKey=buildMonthKey(yearB,month);
+    const first=MONTHS_INDEX[firstKey]||emptyMonth(firstKey);
+    const second=MONTHS_INDEX[secondKey]||emptyMonth(secondKey);
+    rows.push({
+      month:firstKey,
+      label:monthShort(firstKey),
+      firstYear:yearA,
+      secondYear:yearB,
+      firstIn:Number(first[inKey]||0),
+      secondIn:Number(second[inKey]||0),
+      firstPre:Number(first[preKey]||0),
+      secondPre:Number(second[preKey]||0)
+    });
+  }
+  return rows;
+}
+
+function ticketPayload(node){
+  return node&&typeof node==="object"&&node.ticket&&typeof node.ticket==="object"?node.ticket:node;
+}
+
+function resolvedMonth(ticket){
+  const row=ticketPayload(ticket)||{};
+  const value=clean(row?.ResolvedOnDateTime||row?.ResolvedOnDate||row?.resolvedOnDateTime||row?.resolvedOn||row?.ResolvedOn||row?.["Resolved On DateTime"]||row?.["Resolved On"]||row?.resolvedDateTime||row?.resolvedDate||"");
+  const month=value.slice(0,7);
+  return /^\d{4}-\d{2}$/.test(month)?month:"";
+}
+
+function claimClosedDecision(ticket){
+  const row=ticketPayload(ticket)||{};
+  const group=clean(row?.StatusGroup||row?.statusGroup).toLowerCase();
+  if(group==="approved_closed")return "approved";
+  if(group==="unapproved_closed")return "unapproved";
+  const statusCode=clean(row?.TicketStatus||row?.TicketStatusCode||row?.StatusCode||row?.statusCode).toLowerCase();
+  if(statusCode==="y7")return "approved";
+  if(statusCode==="y8")return "unapproved";
+  const status=clean(row?.TicketStatusText||row?.ticketStatusText||row?.statusText||row?.StatusText||row?.Status||row?.status||row?.TicketStatus||row?.["Ticket Status"]||"").toLowerCase();
+  if(status.includes("unapproved claims closed")||status.includes("unapproved closed"))return "unapproved";
+  if(status.includes("approved claims closed")||status.includes("claim approved closed")||status.includes("approved closed"))return "approved";
+  return "";
+}
+
+function buildClaimClosedIndex(tickets){
+  const counts={};
+  arr(tickets).forEach(ticket=>{
+    const month=resolvedMonth(ticket);
+    const decision=claimClosedDecision(ticket);
+    if(!month||!decision)return;
+    counts[month]=Number(counts[month]||0)+1;
+  });
+  return counts;
+}
+
+function claimClosedRowsForRange(){
+  return iterMonths(activeStart,activeEnd).map(month=>({
+    month,
+    year:month.slice(0,4),
+    total:Number(CLAIM_CLOSED_INDEX[month]||0)
+  }));
+}
+
+function claimClosedCompareRows(yearA,yearB){
+  const limit=compareMonthLimit(yearA,yearB);
+  const latestA=latestMonthForYear(yearA);
+  const latestB=latestMonthForYear(yearB);
+  const rows=[];
+  for(let month=1;month<=limit;month++){
+    const firstKey=buildMonthKey(yearA,month);
+    const secondKey=buildMonthKey(yearB,month);
+    rows.push({
+      month:firstKey,
+      label:monthShort(firstKey),
+      firstYear:yearA,
+      secondYear:yearB,
+      firstValue:month<=latestA?Number(CLAIM_CLOSED_INDEX[firstKey]||0):null,
+      secondValue:month<=latestB?Number(CLAIM_CLOSED_INDEX[secondKey]||0):null
+    });
+  }
+  return rows;
+}
+
+function renderPivot(tbodyId,rows,inKey,preKey,emptyText,formatter=num){
   let html="",cy="",yi=0,yp=0,gi=0,gp=0;
-  const closeYear=()=>{if(cy)html+=`<tr class="yearRow"><td>${cy}</td><td class="num">${num(yi)}</td><td class="num">${num(yp)}</td></tr>`};
-  rows.forEach(r=>{if(r.year!==cy){closeYear();cy=r.year;yi=0;yp=0}const iv=Number(r[inKey]||0),pv=Number(r[preKey]||0);yi+=iv;yp+=pv;gi+=iv;gp+=pv;html+=`<tr><td>&nbsp;&nbsp;${monthShort(r.month)}</td><td class="num">${num(iv)}</td><td class="num">${num(pv)}</td></tr>`});
+  const closeYear=()=>{if(cy)html+=`<tr class="yearRow"><td>${cy}</td><td class="num">${formatter(yi)}</td><td class="num">${formatter(yp)}</td><td class="num">${formatter(yi+yp)}</td></tr>`};
+  rows.forEach(r=>{if(r.year!==cy){closeYear();cy=r.year;yi=0;yp=0}const iv=Number(r[inKey]||0),pv=Number(r[preKey]||0),tv=iv+pv;yi+=iv;yp+=pv;gi+=iv;gp+=pv;html+=`<tr><td>&nbsp;&nbsp;${monthShort(r.month)}</td><td class="num">${formatter(iv)}</td><td class="num">${formatter(pv)}</td><td class="num">${formatter(tv)}</td></tr>`});
   closeYear();
-  html+=`<tr class="grandRow"><td>Grand Total</td><td class="num">${num(gi)}</td><td class="num">${num(gp)}</td></tr>`;
-  $(tbodyId).innerHTML=rows.length?html:`<tr><td colspan="3" class="empty">${emptyText}</td></tr>`;
+  html+=`<tr class="grandRow"><td>Grand Total</td><td class="num">${formatter(gi)}</td><td class="num">${formatter(gp)}</td><td class="num">${formatter(gi+gp)}</td></tr>`;
+  const tbody=$(tbodyId);
+  if(tbody)tbody.innerHTML=rows.length?html:`<tr><td colspan="4" class="empty">${emptyText}</td></tr>`;
   return {inField:gi,preDelivery:gp,total:gi+gp};
 }
 
-function drawChart(canvasId,rows,inKey,preKey){
+function renderAmountPivot(rows){
+  let html="",cy="",yi=0,yp=0,gi=0,gp=0;
+  const closeYear=()=>{
+    if(cy)html+=`<tr class="yearRow"><td>${cy}</td><td class="num">${moneyK(yi)}</td><td class="num">${moneyK(yp)}</td><td class="num">${moneyNum(yi+yp)}</td></tr>`;
+  };
+  rows.forEach(r=>{
+    if(r.year!==cy){closeYear();cy=r.year;yi=0;yp=0}
+    const iv=Number(r.approvedAmountIn||0),pv=Number(r.approvedAmountPre||0),tv=iv+pv;
+    yi+=iv;yp+=pv;gi+=iv;gp+=pv;
+    html+=`<tr><td>&nbsp;&nbsp;${monthShort(r.month)}</td><td class="num">${moneyK(iv)}</td><td class="num">${moneyK(pv)}</td><td class="num">${moneyNum(tv)}</td></tr>`;
+  });
+  closeYear();
+  html+=`<tr class="grandRow"><td>Grand Total</td><td class="num">${moneyK(gi)}</td><td class="num">${moneyK(gp)}</td><td class="num">${moneyNum(gi+gp)}</td></tr>`;
+  const tbody=$("approvedAmountPivot");
+  if(tbody)tbody.innerHTML=rows.length?html:`<tr><td colspan="4" class="empty">No approved amount data found.</td></tr>`;
+  return {inField:gi,preDelivery:gp,total:gi+gp};
+}
+
+function setTotals(targetId,items){
+  const el=$(targetId);
+  if(!el)return;
+  el.innerHTML=items.map(item=>`<span class="totalChip">${item.label}<strong>${item.value}</strong></span>`).join("");
+}
+
+function setLegend(targetId,items){
+  const el=$(targetId);
+  if(!el)return;
+  el.innerHTML=items.map(item=>`<span><i style="background:${item.color}"></i>${item.label}</span>`).join("");
+}
+
+function sumValueRows(rows,key="total"){
+  return rows.reduce((sum,row)=>sum+Number(row[key]||0),0);
+}
+
+function sumMetricRows(rows,key){
+  return rows.reduce((sum,row)=>sum+Number(row[key]||0),0);
+}
+
+function sumSplitCompareRows(rows){
+  return rows.reduce((totals,row)=>{
+    totals.firstIn+=Number(row.firstIn||0);
+    totals.secondIn+=Number(row.secondIn||0);
+    totals.firstPre+=Number(row.firstPre||0);
+    totals.secondPre+=Number(row.secondPre||0);
+    return totals;
+  },{firstIn:0,secondIn:0,firstPre:0,secondPre:0});
+}
+
+function toggleModeButtons(){
+  $("singleModeBtn")?.classList.toggle("active",viewMode==="single");
+  $("compareModeBtn")?.classList.toggle("active",viewMode==="compare");
+  if($("singleControls"))$("singleControls").hidden=viewMode!=="single";
+  if($("compareControls"))$("compareControls").hidden=viewMode!=="compare";
+}
+
+function createdMetricConfig(){
+  return createdMetricMode==="pre"
+    ? {key:"createdPre",label:"Pre Delivery",color:"#e97132"}
+    : {key:"createdIn",label:"In Field",color:"#156082"};
+}
+
+function syncCreatedMetricButtons(){
+  $("createdInBtn")?.classList.toggle("active",createdMetricMode==="in");
+  $("createdPreBtn")?.classList.toggle("active",createdMetricMode==="pre");
+}
+
+function updateViewNote(){
+  const note=$("viewNote");
+  if(!note)return;
+  if(viewMode==="compare"){
+    const limit=compareMonthLimit(compareYearA,compareYearB);
+    note.textContent=limit>=12?`Comparing ${compareYearA} vs ${compareYearB}.`:`Comparing ${compareYearA} vs ${compareYearB} from Jan to ${monthShort(buildMonthKey(compareYearA,limit))}.`;
+    return;
+  }
+  if(activeStart===activeEnd){
+    note.textContent=`Showing ${monthLong(activeStart)}.`;
+    return;
+  }
+  const sameYear=activeStart.slice(0,4)===activeEnd.slice(0,4);
+  const fullYear=sameYear&&activeStart.endsWith("-01")&&(activeEnd.endsWith("-12")||activeEnd===dataBounds().max);
+  note.textContent=fullYear?`Showing ${activeStart.slice(0,4)}.`:`Showing ${monthLong(activeStart)} to ${monthLong(activeEnd)}.`;
+}
+
+function showPageLoading(active,label="Loading dashboard..."){
+  const el=$("calcFloat");
+  if(!el)return;
+  const text=el.querySelector(".calcFloatText");
+  if(text)text.textContent=label;
+  el.classList.toggle("active",!!active);
+  document.body.classList.toggle("calculating",!!active);
+}
+
+function drawCompareBarChart(canvasId,rows,opts={}){
+  const c=$(canvasId);if(!c)return;
+  const rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1,w=Math.max(1,rect.width),h=Math.max(1,rect.height);
+  c.width=w*dpr;c.height=h*dpr;
+  const ctx=c.getContext("2d");
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="600 13px Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
+  const left=18,right=18,top=26,bottom=74,plotW=w-left-right,plotH=h-top-bottom;
+  const values=rows.flatMap(r=>[r.firstValue,r.secondValue]).filter(v=>v!==null&&v!==undefined);
+  const maxRaw=values.length?Math.max(10,...values.map(v=>Number(v||0))):10;
+  const yMax=typeof opts.yMax==="function"?opts.yMax(maxRaw):Math.ceil(maxRaw/100)*100;
+  const formatter=opts.pointFormatter||num;
+  const firstColor=opts.firstColor||"#156082";
+  const secondColor=opts.secondColor||"#e97132";
+  const minVisibleHeight=Number(opts.minVisibleHeight||0);
+  const dodgeLabels=opts.dodgeLabels!==false;
+  const groupW=plotW/rows.length;
+  const barW=Math.min(24,groupW*0.28);
+  const gap=Math.min(8,groupW*0.12);
+  const barY=v=>top+plotH-plotH*(Number(v||0)/yMax);
+  const showLabels=groupW>=42;
+  const fontSize=groupW>=58?11:10;
+  const monthLabelY=h-38;
+  const clampLabelY=v=>Math.max(18,Math.min(v,monthLabelY-18));
+  rows.forEach((row,i)=>{
+    const center=left+groupW*i+groupW/2;
+    const x1=center-barW-gap/2;
+    const x2=center+gap/2;
+    let y1=barY(row.firstValue),y2=barY(row.secondValue);
+    let h1=top+plotH-y1,h2=top+plotH-y2;
+    if(row.firstValue!==null&&row.firstValue!==undefined&&row.firstValue>0&&h1<minVisibleHeight){h1=minVisibleHeight;y1=top+plotH-h1;}
+    if(row.secondValue!==null&&row.secondValue!==undefined&&row.secondValue>0&&h2<minVisibleHeight){h2=minVisibleHeight;y2=top+plotH-h2;}
+    if(row.firstValue!==null&&row.firstValue!==undefined){
+      ctx.fillStyle=firstColor;
+      ctx.fillRect(x1,y1,barW,h1);
+    }
+    if(row.secondValue!==null&&row.secondValue!==undefined){
+      ctx.fillStyle=secondColor;
+      ctx.fillRect(x2,y2,barW,h2);
+    }
+    if(showLabels){
+      ctx.fillStyle="#172033";
+      ctx.font=`700 ${fontSize}px Segoe UI,Arial`;
+      const firstText=row.firstValue!==null&&row.firstValue!==undefined?formatter(row.firstValue):"";
+      const secondText=row.secondValue!==null&&row.secondValue!==undefined?formatter(row.secondValue):"";
+      let firstLabelY=clampLabelY(y1-8);
+      let secondLabelY=clampLabelY(y2-8);
+      const firstCenter=x1+barW/2;
+      const secondCenter=x2+barW/2;
+      const pairOverlap=dodgeLabels&&firstText&&secondText&&Math.abs(secondCenter-firstCenter)<((ctx.measureText(firstText).width+ctx.measureText(secondText).width)/2)+8;
+      if(pairOverlap&&Math.abs(firstLabelY-secondLabelY)<12){
+        const topLane=clampLabelY(Math.min(firstLabelY,secondLabelY)-12);
+        firstLabelY=topLane;
+        secondLabelY=clampLabelY(topLane+14);
+      }
+      if(firstText){
+        ctx.textAlign=pairOverlap?"right":"center";
+        ctx.fillText(firstText,pairOverlap?firstCenter-3:firstCenter,firstLabelY);
+      }
+      if(secondText){
+        ctx.textAlign=pairOverlap?"left":"center";
+        ctx.fillText(secondText,pairOverlap?secondCenter+3:secondCenter,secondLabelY);
+      }
+    }
+    ctx.fillStyle="#667085";
+    ctx.font="12px Segoe UI,Arial";
+    ctx.textAlign="center";
+    ctx.fillText(row.label,center,h-38);
+  });
+  ctx.fillStyle="#475569";
+  ctx.font="700 12px Segoe UI,Arial";
+  ctx.textAlign="center";
+  ctx.fillText(`${rows[0]?.firstYear||""} vs ${rows[0]?.secondYear||""}`,left+plotW/2,h-14);
+}
+
+function drawSplitCompareChart(canvasId,rows,opts={}){
+  const c=$(canvasId);if(!c)return;
+  const rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1,w=Math.max(1,rect.width),h=Math.max(1,rect.height);
+  c.width=w*dpr;c.height=h*dpr;
+  const ctx=c.getContext("2d");
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="600 13px Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
+  const left=18,right=18,top=20,bottom=78,plotW=w-left-right,plotH=h-top-bottom;
+  const maxRaw=Math.max(10,...rows.flatMap(r=>[Number(r.firstIn||0),Number(r.secondIn||0),Number(r.firstPre||0),Number(r.secondPre||0)]));
+  const yMax=typeof opts.yMax==="function"?opts.yMax(maxRaw):Math.ceil(maxRaw/100)*100;
+  const formatter=opts.pointFormatter||num;
+  const groupW=plotW/rows.length;
+  const barW=Math.min(12,groupW*0.14);
+  const innerGap=Math.min(4,groupW*0.05);
+  const pairGap=Math.min(10,groupW*0.12);
+  const barY=v=>top+plotH-plotH*(Number(v||0)/yMax);
+  const showLabels=groupW>=84;
+  rows.forEach((row,i)=>{
+    const center=left+groupW*i+groupW/2;
+    const clusterW=barW*4+innerGap*2+pairGap;
+    const startX=center-clusterW/2;
+    const bars=[
+      {x:startX,value:row.firstIn,color:"#156082"},
+      {x:startX+barW+innerGap,value:row.secondIn,color:"#8fcfe6"},
+      {x:startX+barW*2+innerGap*2+pairGap,value:row.firstPre,color:"#e97132"},
+      {x:startX+barW*3+innerGap*2+pairGap,value:row.secondPre,color:"#f6b58c"}
+    ];
+    bars.forEach(bar=>{
+      const yPos=barY(bar.value);
+      const height=top+plotH-yPos;
+      ctx.fillStyle=bar.color;
+      ctx.fillRect(bar.x,yPos,barW,height);
+      if(showLabels){
+        ctx.fillStyle="#172033";
+        ctx.font="700 10px Segoe UI,Arial";
+        ctx.textAlign="center";
+        ctx.fillText(formatter(bar.value),bar.x+barW/2,Math.max(16,yPos-8));
+      }
+    });
+    ctx.fillStyle="#667085";
+    ctx.font="12px Segoe UI,Arial";
+    ctx.textAlign="center";
+    ctx.fillText(row.label,center,h-40);
+  });
+  ctx.fillStyle="#475569";
+  ctx.font="700 12px Segoe UI,Arial";
+  ctx.textAlign="center";
+  ctx.fillText(`${rows[0]?.firstYear||""} vs ${rows[0]?.secondYear||""}`,left+plotW/2,h-14);
+}
+
+function drawSingleLineChart(canvasId,rows,key,opts={}){
+  const c=$(canvasId);if(!c)return;
+  const rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1,w=Math.max(1,rect.width),h=Math.max(1,rect.height);
+  c.width=w*dpr;c.height=h*dpr;
+  const ctx=c.getContext("2d");
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="600 13px Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
+  const left=18,right=18,top=20,bottom=84,plotW=w-left-right,plotH=h-top-bottom;
+  const maxRaw=Math.max(10,...rows.map(r=>Number(r[key]||0)));
+  const yMax=typeof opts.yMax==="function"?opts.yMax(maxRaw):Math.ceil(maxRaw/100)*100;
+  const pointFormatter=opts.pointFormatter||num;
+  const color=opts.color||"#156082";
+  const x=i=>left+(rows.length<=1?plotW/2:plotW*i/(rows.length-1));
+  const y=v=>top+plotH-plotH*(Number(v||0)/yMax);
+  ctx.strokeStyle=color;
+  ctx.lineWidth=2.6;
+  ctx.beginPath();
+  rows.forEach((r,i)=>{const px=x(i),py=y(r[key]);if(i)ctx.lineTo(px,py);else ctx.moveTo(px,py)});
+  ctx.stroke();
+  rows.forEach((r,i)=>{
+    const px=x(i),py=y(r[key]);
+    ctx.fillStyle=color;
+    ctx.beginPath();
+    ctx.arc(px,py,3.2,0,Math.PI*2);
+    ctx.fill();
+    let textY=py-10;
+    const monthLabelY=h-44;
+    if(textY>monthLabelY-10)textY=py-12;
+    textY=Math.max(16,Math.min(textY,monthLabelY-10));
+    ctx.fillStyle="#172033";
+    ctx.font="700 11px Segoe UI,Arial";
+    ctx.textAlign="center";
+    ctx.fillText(pointFormatter(r[key]),px,textY);
+  });
+  ctx.strokeStyle="#d1d5db";
+  ctx.fillStyle="#667085";
+  ctx.textAlign="center";
+  ctx.font="12px Segoe UI,Arial";
+  const step=Math.max(1,Math.ceil(rows.length/18));
+  rows.forEach((r,i)=>{
+    const px=x(i);
+    if(i%step===0||i===rows.length-1)ctx.fillText(monthShort(r.month),px,h-44);
+    if(i===0||rows[i-1].year!==r.year){ctx.beginPath();ctx.moveTo(px,h-30);ctx.lineTo(px,h-16);ctx.stroke()}
+  });
+  ctx.beginPath();ctx.moveTo(w-right,h-30);ctx.lineTo(w-right,h-16);ctx.stroke();
+  ctx.font="700 12px Segoe UI,Arial";
+  ctx.fillStyle="#475569";
+  let start=0;
+  while(start<rows.length){
+    let end=start;
+    while(end+1<rows.length&&rows[end+1].year===rows[start].year)end++;
+    ctx.fillText(rows[start].year,(x(start)+x(end))/2,h-4);
+    start=end+1;
+  }
+}
+
+function drawChart(canvasId,rows,inKey,preKey,opts={}){
   const c=$(canvasId);if(!c)return;
   const rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1,w=Math.max(1,rect.width),h=Math.max(1,rect.height);
   c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
   if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="600 13px Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
-  const left=48,right=54,top=26,bottom=74,plotW=w-left-right,plotH=h-top-bottom;
+  const left=18,right=18,top=20,bottom=84,plotW=w-left-right,plotH=h-top-bottom;
   const maxRaw=Math.max(100,...rows.flatMap(r=>[Number(r[inKey]||0),Number(r[preKey]||0)]));
-  const yMax=Math.ceil(maxRaw/100)*100;
-  ctx.strokeStyle="#edf0f5";ctx.fillStyle="#64748b";ctx.font="12px Segoe UI,Arial";
-  for(let i=0;i<=5;i++){const y=top+plotH*i/5,val=Math.round(yMax*(1-i/5));ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.textAlign="right";ctx.fillText(String(val),left-8,y+4);ctx.textAlign="left";ctx.fillText(String(val),w-right+8,y+4)}
+  const yMax=typeof opts.yMax==="function"?opts.yMax(maxRaw):Math.ceil(maxRaw/100)*100;
+  const pointFormatter=opts.pointFormatter||((v)=>String(Number(v||0)));
   const x=i=>left+(rows.length<=1?plotW/2:plotW*i/(rows.length-1));
   const y=v=>top+plotH-plotH*(Number(v||0)/yMax);
-  const line=(key,color,off)=>{ctx.strokeStyle=color;ctx.lineWidth=2.4;ctx.beginPath();rows.forEach((r,i)=>{const px=x(i),py=y(r[key]);if(i)ctx.lineTo(px,py);else ctx.moveTo(px,py)});ctx.stroke();rows.forEach((r,i)=>{const px=x(i),py=y(r[key]);ctx.fillStyle=color;ctx.beginPath();ctx.arc(px,py,3.1,0,Math.PI*2);ctx.fill();ctx.fillStyle="#172033";ctx.font="700 11px Segoe UI,Arial";ctx.textAlign="center";ctx.fillText(String(Number(r[key]||0)),px,py+off)})};
+  const line=(key,color,off)=>{
+    ctx.strokeStyle=color;ctx.lineWidth=2.4;ctx.beginPath();
+    rows.forEach((r,i)=>{const px=x(i),py=y(r[key]);if(i)ctx.lineTo(px,py);else ctx.moveTo(px,py)});
+    ctx.stroke();
+    rows.forEach((r,i)=>{
+      const px=x(i),py=y(r[key]);
+      ctx.fillStyle=color;ctx.beginPath();ctx.arc(px,py,3.1,0,Math.PI*2);ctx.fill();
+      let textY=py+off;
+      const monthLabelY=h-44;
+      if(textY>monthLabelY-10)textY=py-12;
+      textY=Math.max(16,Math.min(textY,monthLabelY-10));
+      ctx.fillStyle="#172033";ctx.font="700 11px Segoe UI,Arial";ctx.textAlign="center";ctx.fillText(pointFormatter(r[key]),px,textY);
+    })
+  };
   line(inKey,"#156082",-10);line(preKey,"#e97132",18);
   // x labels + year separators
   ctx.strokeStyle="#d1d5db";ctx.fillStyle="#667085";ctx.textAlign="center";ctx.font="12px Segoe UI,Arial";
   const step=Math.max(1,Math.ceil(rows.length/18));
-  rows.forEach((r,i)=>{const px=x(i);if(i%step===0||i===rows.length-1)ctx.fillText(monthShort(r.month),px,h-50);if(i===0||rows[i-1].year!==r.year){ctx.beginPath();ctx.moveTo(px,top+plotH+8);ctx.lineTo(px,h-14);ctx.stroke()}});
-  ctx.beginPath();ctx.moveTo(w-right,top+plotH+8);ctx.lineTo(w-right,h-14);ctx.stroke();
+  rows.forEach((r,i)=>{
+    const px=x(i);
+    if(i%step===0||i===rows.length-1)ctx.fillText(monthShort(r.month),px,h-44);
+    if(i===0||rows[i-1].year!==r.year){ctx.beginPath();ctx.moveTo(px,h-30);ctx.lineTo(px,h-16);ctx.stroke()}
+  });
+  ctx.beginPath();ctx.moveTo(w-right,h-30);ctx.lineTo(w-right,h-16);ctx.stroke();
   ctx.font="700 12px Segoe UI,Arial";ctx.fillStyle="#475569";
-  let s=0;while(s<rows.length){let e=s;while(e+1<rows.length&&rows[e+1].year===rows[s].year)e++;ctx.fillText(rows[s].year,(x(s)+x(e))/2,h-18);s=e+1}
+  let s=0;while(s<rows.length){let e=s;while(e+1<rows.length&&rows[e+1].year===rows[s].year)e++;ctx.fillText(rows[s].year,(x(s)+x(e))/2,h-4);s=e+1}
 }
 
 function render(){
-  const rows=rowsForRange();
-  const created=renderPivot("createdPivot",rows,"createdIn","createdPre","No created data found.");
-  const approved=renderPivot("approvedPivot",rows,"approvedIn","approvedPre","No approved data found.");
-  const unapproved=renderPivot("unapprovedPivot",rows,"unapprovedIn","unapprovedPre","No unapproved data found.");
-  drawChart("createdChart",rows,"createdIn","createdPre");
-  drawChart("approvedChart",rows,"approvedIn","approvedPre");
-  drawChart("unapprovedChart",rows,"unapprovedIn","unapprovedPre");
-  $("kpiCreated").textContent=num(created.total);
-  $("kpiApproved").textContent=num(approved.total);
-  $("kpiUnapproved").textContent=num(unapproved.total);
-  const denom=approved.total+unapproved.total;
-  $("kpiRate").textContent=denom?`${(approved.total/denom*100).toFixed(1)}%`:"0%";
-  $("rangeNote").textContent=`${monthLong(activeStart)} - ${monthLong(activeEnd)}`;
+  updateViewNote();
+  if(viewMode==="compare"){
+    const newClaimRows=totalCompareRows("createdIn","createdPre",compareYearA,compareYearB);
+    const createdMetric=createdMetricConfig();
+    const createdRows=compareRowsForKey(createdMetric.key,compareYearA,compareYearB);
+    const approvedRows=totalCompareRows("approvedIn","approvedPre",compareYearA,compareYearB);
+    const amountRows=totalCompareRows("approvedAmountIn","approvedAmountPre",compareYearA,compareYearB);
+    const unapprovedRows=totalCompareRows("unapprovedIn","unapprovedPre",compareYearA,compareYearB);
+    const claimClosedRows=claimClosedCompareRows(compareYearA,compareYearB);
+    drawCompareBarChart("newClaimChart",newClaimRows);
+    drawCompareBarChart("createdChart",createdRows);
+    drawCompareBarChart("approvedChart",approvedRows);
+    drawCompareBarChart("approvedAmountChart",amountRows,{yMax:niceCurrencyMax,pointFormatter:moneyK,minVisibleHeight:10,dodgeLabels:false});
+    drawCompareBarChart("unapprovedChart",unapprovedRows);
+    drawCompareBarChart("claimClosedChart",claimClosedRows);
+    setLegend("newClaimLegend",[
+      {label:compareYearA,color:"#156082"},
+      {label:compareYearB,color:"#e97132"}
+    ]);
+    setLegend("createdLegend",[
+      {label:`${compareYearA} ${createdMetric.label}`,color:"#156082"},
+      {label:`${compareYearB} ${createdMetric.label}`,color:"#e97132"}
+    ]);
+    setLegend("approvedLegend",[
+      {label:compareYearA,color:"#156082"},
+      {label:compareYearB,color:"#e97132"}
+    ]);
+    setLegend("amountLegend",[
+      {label:compareYearA,color:"#156082"},
+      {label:compareYearB,color:"#e97132"}
+    ]);
+    setLegend("unapprovedLegend",[
+      {label:compareYearA,color:"#156082"},
+      {label:compareYearB,color:"#e97132"}
+    ]);
+    setLegend("claimClosedLegend",[
+      {label:compareYearA,color:"#156082"},
+      {label:compareYearB,color:"#e97132"}
+    ]);
+    setTotals("newClaimTotals",[
+      {label:compareYearA,value:num(sumValueRows(newClaimRows,"firstValue"))},
+      {label:compareYearB,value:num(sumValueRows(newClaimRows,"secondValue"))}
+    ]);
+    setTotals("createdTotals",[
+      {label:compareYearA,value:num(sumValueRows(createdRows,"firstValue"))},
+      {label:compareYearB,value:num(sumValueRows(createdRows,"secondValue"))}
+    ]);
+    setTotals("approvedTotals",[
+      {label:compareYearA,value:num(sumValueRows(approvedRows,"firstValue"))},
+      {label:compareYearB,value:num(sumValueRows(approvedRows,"secondValue"))}
+    ]);
+    setTotals("amountTotals",[
+      {label:compareYearA,value:moneyNum(sumValueRows(amountRows,"firstValue"))},
+      {label:compareYearB,value:moneyNum(sumValueRows(amountRows,"secondValue"))}
+    ]);
+    setTotals("unapprovedTotals",[
+      {label:compareYearA,value:num(sumValueRows(unapprovedRows,"firstValue"))},
+      {label:compareYearB,value:num(sumValueRows(unapprovedRows,"secondValue"))}
+    ]);
+    setTotals("claimClosedTotals",[
+      {label:compareYearA,value:num(sumValueRows(claimClosedRows,"firstValue"))},
+      {label:compareYearB,value:num(sumValueRows(claimClosedRows,"secondValue"))}
+    ]);
+    return;
+  }
+    const rows=rowsForRange();
+    const newClaimRows=totalRowsForRange("createdIn","createdPre");
+    const claimClosedRows=claimClosedRowsForRange();
+    const createdMetric=createdMetricConfig();
+    const created=renderPivot("createdPivot",rows,"createdIn","createdPre","No created data found.");
+    const approved=renderPivot("approvedPivot",rows,"approvedIn","approvedPre","No approved data found.");
+    const unapproved=renderPivot("unapprovedPivot",rows,"unapprovedIn","unapprovedPre","No unapproved data found.");
+    const amount=renderAmountPivot(rows);
+    drawSingleLineChart("newClaimChart",newClaimRows,"total");
+    drawSingleLineChart("createdChart",rows,createdMetric.key,{color:createdMetric.color});
+    drawChart("approvedChart",rows,"approvedIn","approvedPre");
+    drawChart("unapprovedChart",rows,"unapprovedIn","unapprovedPre");
+    drawChart("approvedAmountChart",rows,"approvedAmountIn","approvedAmountPre",{yMax:niceCurrencyMax,pointFormatter:moneyK});
+    drawSingleLineChart("claimClosedChart",claimClosedRows,"total");
+  setLegend("newClaimLegend",[
+    {label:"Total Claims",color:"#156082"}
+    ]);
+    setLegend("createdLegend",[
+      {label:createdMetric.label,color:createdMetric.color}
+    ]);
+  setLegend("approvedLegend",[
+    {label:"In Field",color:"#156082"},
+    {label:"Pre Delivery",color:"#e97132"}
+  ]);
+  setLegend("amountLegend",[
+    {label:"In Field",color:"#156082"},
+    {label:"Pre Delivery",color:"#e97132"}
+  ]);
+  setLegend("unapprovedLegend",[
+    {label:"In Field",color:"#156082"},
+    {label:"Pre Delivery",color:"#e97132"}
+  ]);
+  setLegend("claimClosedLegend",[
+    {label:"Closed Claims",color:"#156082"}
+  ]);
+  setTotals("newClaimTotals",[
+    {label:"All",value:num(sumValueRows(newClaimRows))}
+    ]);
+    setTotals("createdTotals",[
+      {label:createdMetric.label,value:num(sumMetricRows(rows,createdMetric.key))}
+    ]);
+  setTotals("approvedTotals",[
+    {label:"In Field",value:num(approved.inField)},
+    {label:"Pre Delivery",value:num(approved.preDelivery)},
+    {label:"All",value:num(approved.total)}
+  ]);
+  setTotals("amountTotals",[
+    {label:"In Field",value:moneyK(amount.inField)},
+    {label:"Pre Delivery",value:moneyK(amount.preDelivery)},
+    {label:"All",value:moneyNum(amount.total)}
+  ]);
+  setTotals("unapprovedTotals",[
+    {label:"In Field",value:num(unapproved.inField)},
+    {label:"Pre Delivery",value:num(unapproved.preDelivery)},
+    {label:"All",value:num(unapproved.total)}
+  ]);
+  setTotals("claimClosedTotals",[
+    {label:"All",value:num(sumValueRows(claimClosedRows))}
+  ]);
+}
+
+function renderWithPageLoading(showLoading=false,label="Loading dashboard..."){
+  if(pageLoadingTimer){
+    clearTimeout(pageLoadingTimer);
+    pageLoadingTimer=null;
+  }
+  if(!showLoading){
+    render();
+    showPageLoading(false,label);
+    return;
+  }
+  showPageLoading(true,label);
+  requestAnimationFrame(()=>{
+    render();
+    pageLoadingTimer=setTimeout(()=>{
+      showPageLoading(false,label);
+      pageLoadingTimer=null;
+    },260);
+  });
 }
 
 function syncControls(){
   const b=dataBounds();
-  $("yearSelect").innerHTML=`<option value="">All years</option>`+b.years.map(y=>`<option value="${y}">${y}</option>`).join("");
-  if(b.years.includes(activeStart.slice(0,4))&&customRange===false&&activeStart.slice(0,4)===activeEnd.slice(0,4))$("yearSelect").value=activeStart.slice(0,4);
+  const yearOptions=b.years.map(y=>`<option value="${y}">${y}</option>`).join("");
+  $("yearSelect").innerHTML=`<option value="">All years</option>`+yearOptions;
+  $("compareYearA").innerHTML=yearOptions;
+  $("compareYearB").innerHTML=yearOptions;
+  const singleYearSelected=b.years.includes(activeStart.slice(0,4))&&customRange===false&&activeStart.slice(0,4)===activeEnd.slice(0,4);
+  $("yearSelect").value=singleYearSelected?activeStart.slice(0,4):"";
   ["fromMonth","toMonth"].forEach(id=>{$(id).min=b.min;$(id).max=b.max});
   $("fromMonth").value=activeStart;$("toMonth").value=activeEnd;
+  if(!b.years.includes(compareYearA))compareYearA=preferredDefaultYear(b);
+  if(!b.years.includes(compareYearB)||compareYearA===compareYearB)compareYearB=defaultCompareYear(b,compareYearA);
+  $("compareYearA").value=compareYearA;
+  $("compareYearB").value=compareYearB;
+  toggleModeButtons();
+  syncCreatedMetricButtons();
+  updateViewNote();
 }
 
 function applyYear(year){
@@ -308,43 +1037,80 @@ function setActiveTab(id){document.querySelectorAll(".tab").forEach(t=>t.classLi
 function init(view){
   MONTHLY=buildMonthly(view||{});
   MONTHS_INDEX=Object.fromEntries(MONTHLY.map(r=>[r.month,r]));
+  CLAIM_CLOSED_INDEX=buildClaimClosedIndex(RAW_TICKETS);
   const b=dataBounds();
-  activeStart=b.min;activeEnd=b.max;customRange=false;
+  const defaultYear=preferredDefaultYear(b);
+  const defaultRange=defaultSingleRange(b,defaultYear);
+  viewMode="single";
+  compareYearA=defaultYear;
+  compareYearB=defaultCompareYear(b,defaultYear);
+  customRange=defaultRange.isMultiYear;
+  activeStart=defaultRange.start;
+  activeEnd=defaultRange.end;
   syncControls();
-  render();
+  renderWithPageLoading(true,"Loading dashboard...");
   // controls
-  $("yearSelect").onchange=()=>{customRange=false;applyYear($("yearSelect").value);syncControls();render()};
-  $("applyRange").onclick=()=>{let a=$("fromMonth").value||b.min,c=$("toMonth").value||b.max;if(a>c)[a,c]=[c,a];const bb=dataBounds();activeStart=a<bb.min?bb.min:a;activeEnd=c>bb.max?bb.max:c;customRange=true;$("yearSelect").value="";render()};
-  $("last12").onclick=()=>{const bb=dataBounds();activeEnd=bb.max;activeStart=addMonths(bb.max,-11)<bb.min?bb.min:addMonths(bb.max,-11);customRange=true;$("yearSelect").value="";syncControls();render()};
-  $("clearRange").onclick=()=>{customRange=false;applyYear("");$("yearSelect").value="";syncControls();render()};
-  window.addEventListener("resize",render);
+  $("yearSelect").onchange=()=>{customRange=false;applyYear($("yearSelect").value);syncControls();renderWithPageLoading(true,"Loading dashboard...")};
+  $("applyRange").onclick=()=>{let a=$("fromMonth").value||b.min,c=$("toMonth").value||b.max;if(a>c)[a,c]=[c,a];const bb=dataBounds();activeStart=a<bb.min?bb.min:a;activeEnd=c>bb.max?bb.max:c;customRange=true;$("yearSelect").value="";renderWithPageLoading(true,"Loading dashboard...")};
+  $("last12").onclick=()=>{const bb=dataBounds();activeEnd=bb.max;activeStart=addMonths(bb.max,-11)<bb.min?bb.min:addMonths(bb.max,-11);customRange=true;$("yearSelect").value="";syncControls();renderWithPageLoading(true,"Loading dashboard...")};
+  $("clearRange").onclick=()=>{customRange=false;applyYear("");$("yearSelect").value="";syncControls();renderWithPageLoading(true,"Loading dashboard...")};
+  $("singleModeBtn").onclick=()=>{viewMode="single";toggleModeButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
+  $("compareModeBtn").onclick=()=>{viewMode="compare";toggleModeButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
+  $("createdInBtn").onclick=()=>{createdMetricMode="in";syncCreatedMetricButtons();renderWithPageLoading(true,"Loading dashboard...")};
+  $("createdPreBtn").onclick=()=>{createdMetricMode="pre";syncCreatedMetricButtons();renderWithPageLoading(true,"Loading dashboard...")};
+  $("applyCompare").onclick=()=>{
+    compareYearA=$("compareYearA").value||compareYearA;
+    compareYearB=$("compareYearB").value||compareYearB;
+    if(compareYearA===compareYearB)compareYearB=defaultCompareYear(dataBounds(),compareYearA);
+    syncControls();
+    renderWithPageLoading(true,"Loading dashboard...");
+  };
+  $("swapCompare").onclick=()=>{
+    [compareYearA,compareYearB]=[compareYearB,compareYearA];
+    syncControls();
+    renderWithPageLoading(true,"Loading dashboard...");
+  };
+  window.addEventListener("resize",()=>renderWithPageLoading(false));
 }
 
 /* ---- Navigation: runs on the static DOM, independent of Firebase load ---- */
-const SECTION_IDS=["created","approved","unapproved"];
+const SECTION_IDS=["newclaim","created","approved","unapproved","amount","claimclosed"];
 function toolbarOffset(){const tb=document.querySelector(".toolbar");return (tb?tb.getBoundingClientRect().height:80)+16}
 function scrollToSection(id,behavior){
-  if(id==="created"){window.scrollTo({top:0,behavior:behavior||"auto"});return;}
+  if(id==="newclaim"){window.scrollTo({top:0,behavior:behavior||"auto"});return;}
   const el=document.getElementById(id);if(!el)return;
   const y=el.getBoundingClientRect().top+window.pageYOffset-toolbarOffset();
   window.scrollTo({top:Math.max(0,y),behavior:behavior||"auto"});
 }
 function settleScroll(id){[0,80,250,600].forEach(d=>setTimeout(()=>scrollToSection(id,"auto"),d));}
+function navigateToSectionWithLoading(id){
+  if(pageLoadingTimer){
+    clearTimeout(pageLoadingTimer);
+    pageLoadingTimer=null;
+  }
+  showPageLoading(true,"Loading section...");
+  requestAnimationFrame(()=>{
+    setActiveTab(id);
+    scrollToSection(id,"smooth");
+    pageLoadingTimer=setTimeout(()=>{
+      showPageLoading(false,"Loading section...");
+      pageLoadingTimer=null;
+    },260);
+  });
+}
 function setupNav(){
   // tab buttons -> smooth offset-aware scroll
   document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",e=>{
     e.preventDefault();
     const id=t.dataset.target;
     if(history.replaceState)history.replaceState(null,"",`#${id}`);
-    setActiveTab(id);
-    scrollToSection(id,"smooth");
+    navigateToSectionWithLoading(id);
   }));
   // back/forward or same-page hash changes
   window.addEventListener("hashchange",()=>{
-    const id=(location.hash||"#created").slice(1);
+    const id=(location.hash||"#newclaim").slice(1);
     if(!SECTION_IDS.includes(id))return;
-    setActiveTab(id);
-    scrollToSection(id,"smooth");
+    navigateToSectionWithLoading(id);
   });
   // scrollspy keeps the active tab in sync while scrolling
   if("IntersectionObserver" in window){
@@ -353,29 +1119,26 @@ function setupNav(){
   }
   // initial landing from another page (e.g. ...#approved): re-scroll a few
   // times so async content/canvas layout cannot leave us at the wrong spot.
-  const initId=SECTION_IDS.includes((location.hash||"").slice(1))?location.hash.slice(1):"created";
+  const initId=SECTION_IDS.includes((location.hash||"").slice(1))?location.hash.slice(1):"newclaim";
   setActiveTab(initId);
-  if(location.hash&&initId!=="created")settleScroll(initId);
+  if(location.hash&&initId!=="newclaim")settleScroll(initId);
 }
 setupNav();
-window.addEventListener("load",()=>{const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="created")settleScroll(id);});
+window.addEventListener("load",()=>{const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);});
 
-readJson(`${ROOT}/analytics/teamDashboard`).then(data=>{
+Promise.all([readJson(`${ROOT}/analytics/teamDashboard`),readJson(TICKETS_PATH).catch(()=>[])]).then(([data,tickets])=>{
   const view=(data&&data.views&&data.views.all)||data||{};
-  $("asOf").textContent=`As of ${clean(data&&data.generatedAt).slice(0,10)||"--"}`;
+  RAW_TICKETS=arr(tickets);
   init(view);
   const id=(location.hash||"").slice(1);
-  if(SECTION_IDS.includes(id)&&id!=="created")settleScroll(id);
+  if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);
 }).catch(err=>{
   // Firebase unavailable: still render the hardcoded SAP baseline.
   showError(`Live dashboard data unavailable, showing SAP baseline only. (${err.message})`);
-  $("asOf").textContent="As of --";
   init({});
   const id=(location.hash||"").slice(1);
-  if(SECTION_IDS.includes(id)&&id!=="created")settleScroll(id);
+  if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);
 });
 </script>
 </body>
 </html>
-
-

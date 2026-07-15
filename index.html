@@ -2295,38 +2295,101 @@
 
 /* Requested: center the top date range and filter buttons, slightly left */
 .pageTop{
-  align-items:center!important;
-  position:relative!important;
+  align-items:flex-start!important;
+  gap:18px!important;
 }
 .pageTop .topActions{
   min-width:0!important;
-  flex:1 1 auto!important;
-  justify-content:center!important;
-  transform:translateX(-34px)!important;
+  flex:0 1 auto!important;
+  justify-content:flex-end!important;
+  transform:none!important;
 }
 .pageTop .globalDateRange{
   margin-left:0!important;
   margin-right:0!important;
 }
 .pageTop #claimSwitch{
-  flex:0 0 auto!important;
+  flex:0 1 auto!important;
+}
+.pageTop .sidebarFilters{
+  display:flex!important;
+  align-items:flex-end!important;
+  gap:12px!important;
+  flex-wrap:wrap!important;
+  margin:0!important;
+  padding:14px 16px!important;
+  border:1px solid #dbe4ef!important;
+  border-radius:18px!important;
+  background:linear-gradient(180deg,#ffffff,#f8fbff)!important;
+  box-shadow:0 12px 28px rgba(15,23,42,.06)!important;
+}
+.pageTop .sidebarFiltersTitle{
+  margin:0 2px 8px 0!important;
+  color:#64748b!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  letter-spacing:.12em!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+.pageTop .sidebarFilterGroup{
+  gap:6px!important;
+  margin:0!important;
+  min-width:160px!important;
+}
+.pageTop .sidebarFilterLabel{
+  color:#64748b!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  line-height:1.1!important;
+}
+.pageTop .sidebarFilterSelect{
+  height:42px!important;
+  min-width:160px!important;
+  border:1px solid #dbe4ef!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  color:#0f172a!important;
+  padding:0 34px 0 12px!important;
+  box-shadow:none!important;
+}
+.pageTop .sidebarFilterSelect:focus{
+  border-color:#93c5fd!important;
+  box-shadow:0 0 0 4px rgba(59,130,246,.12)!important;
+}
+.pageTop .sidebarExportBtn{
+  width:auto!important;
+  min-width:108px!important;
+  height:42px!important;
+  margin-top:0!important;
+  align-self:end!important;
+  border:1px solid #bfdbfe!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#eff6ff,#dbeafe)!important;
+  color:#1d4ed8!important;
+  padding:0 16px!important;
+  box-shadow:0 10px 24px rgba(59,130,246,.10)!important;
+}
+.pageTop .sidebarExportBtn:hover{
+  border-color:#60a5fa!important;
+  background:linear-gradient(180deg,#dbeafe,#bfdbfe)!important;
 }
 .pageTitleWrap{
   display:flex!important;
-  align-items:center!important;
-  gap:10px!important;
-  flex-wrap:wrap!important;
-  width:100%!important;
-  padding-right:210px!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  gap:8px!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  width:auto!important;
+  padding-right:0!important;
 }
 .pageTitleNote{
   display:inline-flex!important;
   align-items:center!important;
   justify-content:center!important;
-  position:absolute!important;
-  right:0!important;
-  top:50%!important;
-  transform:translateY(-50%)!important;
+  position:static!important;
+  transform:none!important;
   min-height:32px!important;
   padding:6px 13px!important;
   border:1px solid #dbe4ef!important;
@@ -2340,9 +2403,33 @@
   box-shadow:0 10px 24px rgba(15,23,42,.06),inset 0 1px 0 rgba(255,255,255,.75)!important;
 }
 @media(max-width:1120px){
+  .pageTop{
+    align-items:stretch!important;
+  }
   .pageTop .topActions{
     justify-content:flex-start!important;
-    transform:none!important;
+    width:100%!important;
+  }
+  .pageTop .sidebarFilters{
+    width:100%!important;
+  }
+}
+@media(max-width:760px){
+  .pageTop .sidebarFilters{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    align-items:stretch!important;
+  }
+  .pageTop .sidebarFiltersTitle{
+    margin:0!important;
+  }
+  .pageTop .sidebarFilterGroup{
+    min-width:0!important;
+  }
+  .pageTop .sidebarFilterSelect,
+  .pageTop .sidebarExportBtn{
+    width:100%!important;
+    min-width:0!important;
   }
 }
 
@@ -2717,17 +2804,16 @@
     <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repair</span></a>
     <div class="navDivider"></div>
     <div class="navSection">Tickets</div>
- <a class="navLink" href="dealerworkbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="infieldpredelivery.html#created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M16 17l2-2 2 2"/></svg><span>In Field / Pre Delivery</span></a><a class="navLink" href="infieldpredelivery.html#approved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l2 2 4-5"/><path d="M21 12a9 9 0 1 1-9-9"/><path d="M17 3h4v4"/></svg><span>Approved vs Unapproved</span></a>
+ <a class="navLink" href="dealerworkbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="infieldpredelivery.html#newclaim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span>New Claim</span></a><a class="navLink" href="infieldpredelivery.html#created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M16 17l2-2 2 2"/></svg><span>In Field / Pre Delivery</span></a><a class="navLink" href="infieldpredelivery.html#approved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l2 2 4-5"/><path d="M21 12a9 9 0 1 1-9-9"/><path d="M17 3h4v4"/></svg><span>Approved/ Unapproved</span></a><a class="navLink" href="infieldpredelivery.html#amount"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v18"/><path d="M17 7.5c0-1.9-2.2-3.5-5-3.5s-5 1.6-5 3.5 2.2 3.5 5 3.5 5 1.6 5 3.5-2.2 3.5-5 3.5-5-1.6-5-3.5"/></svg><span>Amount Claim</span></a><a class="navLink" href="infieldpredelivery.html#claimclosed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 7h12"/><path d="M6 12h8"/><path d="M6 17h6"/><path d="M18 16l-3 3-2-2"/></svg><span>Claim Closed</span></a>
     <div class="navDivider"></div>
-    <div class="navSection">Analysis</div>
-     <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Analysis</span></a>
+    <div class="navSection">Model Series</div>
+     <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model Series</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket lifecycle</span></a>
     
-    <div id="claimSwitch" class="sidebarFilters"></div>
   </aside>
   <main class="main">
     <div class="pageTop">
       <div class="pageTitleWrap"><h1 class="pageTitle">After-Sales Team Dashboard</h1><span class="pageTitleNote" id="pageTitleNote">--</span></div>
-      <div class="topActions"><input id="dateFrom" type="hidden"><input id="dateTo" type="hidden"></div>
+      <div class="topActions"><input id="dateFrom" type="hidden"><input id="dateTo" type="hidden"><div id="claimSwitch" class="sidebarFilters"></div></div>
     </div>
     <div id="loadError" class="error"></div>
     <section id="analysis" class="dashboardTop">
@@ -2794,7 +2880,7 @@ function hideCalcFloat(delay=250){if(calcFloatHideTimer)clearTimeout(calcFloatHi
 const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
 const MONITOR_ROOT="ctmTicketStatusMonitorV44";
 let team={views:{},defaultView:"all",claimOptions:[{key:"all",label:"All Claims"}]};
-let activeClaim="all", activeView=null, activePeriod="month", trendPoints=[], rawCritical={loaded:false,views:{}}, rawTicketEntries=[], rawTicketEntryMap=new Map(), approvalState={}, approvalStateLoaded=false, approvalRowsCache=new Map(), statusMapping={}, dealerKeyLookup={exact:{},loose:{}}, employeeAnalytics=null, teamAssignMetric="totalRemoved", selectedEmployeeName="", employeeModalPeriod="all", employeeStatusMapping={}, employeeStatusEdit=false, employeeStatusSaving=false, employeeStatusSaveState="";
+let activeClaim="all", activeView=null, activePeriod="month", activeMonth="", trendPoints=[], rawCritical={loaded:false,views:{}}, rawTicketEntries=[], rawTicketEntryMap=new Map(), approvalState={}, approvalStateLoaded=false, approvalRowsCache=new Map(), statusMapping={}, dealerKeyLookup={exact:{},loose:{}}, employeeAnalytics=null, teamAssignMetric="totalRemoved", selectedEmployeeName="", employeeModalPeriod="all", employeeStatusMapping={}, employeeStatusEdit=false, employeeStatusSaving=false, employeeStatusSaveState="";
 const DEFAULT_RANGE_START="2026-05-25";
 let dealerListExpanded=false;
 const $=id=>document.getElementById(id); const clean=v=>v==null?"":String(v).trim(); const num=v=>Number(v||0).toLocaleString();
@@ -3017,18 +3103,15 @@ function isApprovedStatus(ticket){
 }
 function ticketC4CApprovedDate(ticket){
   const claimApproved=ticketClaimApprovedOn(ticket);
-  if(claimApproved)return dateKey(claimApproved);
-  const postingDate=ticketPostingDate(ticket);
-  if(postingDate)return dateKey(postingDate);
-  return dateKey(getField(ticket,["Created On","CreatedOn","CreatedAt","createdOn","created","CreationDateTime","CreationDateTime","Ticket Created On","TicketCreatedOn"]))
+  return claimApproved?dateKey(claimApproved):"";
 }
-function isUnapprovedTicket(ticket){const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status).toUpperCase();const text=clean(ticket.TicketStatusText||ticket.statusText).toLowerCase();return code==="Y8"||text.includes("unapproved claims closed")||text.includes("unapproved")}
-function hasApprovedSapSignal(ticket){return !!(ticketPoNumber(ticket)||ticketSalesOrderNumber(ticket))}
-function approvalBucket(ticket){if(hasApprovedSapSignal(ticket)||isApprovedStatus(ticket))return "approved";if(isUnapprovedTicket(ticket))return "unapproved";return "other"}
+function isUnapprovedTicket(ticket){const code=clean(ticket.TicketStatus||ticket.statusCode||ticket.Status).toUpperCase();const text=clean(ticket.TicketStatusText||ticket.statusText).toLowerCase();return code==="Y8"||["unapproved claims closed","unapproved claims closed (closed)"].includes(text)}
+function isCurrentC4CApprovedTicket(ticket){return !!ticketClaimApprovedOn(ticket)&&isApprovedStatus(ticket)}
+function approvalBucket(ticket){if(isCurrentC4CApprovedTicket(ticket))return "approved";if(isUnapprovedTicket(ticket))return "unapproved";return "other"}
 function approvalDecisionTime(ticket){
   const bucket=approvalBucket(ticket);
   if(bucket==="approved"){
-    return ticketClaimApprovedOn(ticket)||ticketPostingDate(ticket)||clean(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt||ticket.createdAt)||"";
+    return ticketClaimApprovedOn(ticket)||"";
   }
   if(bucket==="unapproved"){
     return ticketResolvedOn(ticket)||ticketChangedOn(ticket)||clean(ticket.LastUpdateDateTime||ticket["Last Update Date Time"]||ticket.UpdatedOn||ticket.updatedAt||ticket.CreatedOn||ticket["Created On"]||ticket.CreatedAt||ticket.createdAt)||"";
@@ -3060,19 +3143,76 @@ function unapprovedLogRows(start,end){return latestByTicket(arrayFromMaybe(curre
 function ticketEntryById(id){id=clean(id);return (id&&rawTicketEntryMap&&rawTicketEntryMap.get(id))||rawTicketEntries.find(x=>clean(x.id)===id)||null}
 function logClaimKey(e){const direct=clean(e.claimKey||e.claim||e.claimTypeKey);if(direct)return direct;const text=clean(e.claimType||e.ticketType||e.TicketTypeText).toLowerCase();if(text.includes("pre delivery"))return "preDelivery";if(text.includes("in field"))return "inField";const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);return entry?claimKeyForTicket(entry.ticket):"all"}
 function logMatchesClaim(e){return activeClaim==="all"||logClaimKey(e)===activeClaim}
+function approvalRowAmountValue(row){
+  const candidates=[
+    row&&row.exportAmount,
+    row&&row.amount,
+    row&&row.approvedAmount,
+    row&&row.AmountIncludingTax,
+    row&&row.value
+  ];
+  for(const candidate of candidates){
+    if(candidate==null||candidate==="")continue;
+    const numeric=Number(clean(candidate).replace(/[$,]/g,""));
+    if(Number.isFinite(numeric)&&numeric>0)return numeric;
+  }
+  return 0;
+}
 function logAmount(e){const direct=Number(e.amount??e.value??e.AmountIncludingTax??e.approvedAmount??0);if(Number.isFinite(direct)&&direct>0)return direct;const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);return entry?parseAmountIncludingTax(entry.ticket.AmountIncludingTax):0}
 function logIsUnapprovedExit(e){const code=clean(e.toCode||e.statusCode||e.TicketStatus).toUpperCase();const text=clean(e.toStatus||e.status||e.statusText||e.TicketStatusText||e.type).toLowerCase();return code==="Y8"||text.includes("unapproved claims closed")||text.includes("unapproved")}
-function claimTypeCounts(){
+function normalizedClaimSplit(split){return {inField:Number(split&&split.inField||0),preDelivery:Number(split&&split.preDelivery||0)}}
+function claimSplitTotal(split){const normalized=normalizedClaimSplit(split);return normalized.inField+normalized.preDelivery}
+function expectedCurrentCriticalTotal(start,end){
+  const pyKpis=pythonDashboardKpis();
+  const hasPyTotal=pyKpis&&Object.prototype.hasOwnProperty.call(pyKpis,"totalCriticalTickets");
+  const pyTotal=Number(pyKpis.totalCriticalTickets);
+  if(isLatestPeriodEnd(end)&&hasPyTotal&&Number.isFinite(pyTotal))return pyTotal;
+  const snap=periodSnapshotForBounds(start,end);
+  const snapTotal=Number(snap&&snap.summary&&snap.summary.criticalNow);
+  if(Number.isFinite(snapTotal)&&snapTotal>=0)return snapTotal;
+  return Number(currentPeriodSummary().criticalNow||0);
+}
+function claimKeyFromRow(row){
+  const direct=canonicalClaimKey(clean(row&&(
+    row.claimKey||row.claimTypeKey||row.claimType||row.claim||row.ticketType||row.TicketTypeText
+  )));
+  if(direct==="inField"||direct==="preDelivery")return direct;
+  const entry=ticketEntryById(row&&(row.id||row.ticketId||row.TicketID));
+  return entry?claimKeyForTicket(entry.ticket):"";
+}
+function claimSplitFromRows(rows){
+  const out={inField:0,preDelivery:0};
+  arrayFromMaybe(rows).forEach(row=>{
+    const key=claimKeyFromRow(row);
+    if(key==="preDelivery")out.preDelivery++;
+    else if(key==="inField")out.inField++;
+  });
+  return out;
+}
+function claimSplitMatchesTotal(split,expected){
+  const total=claimSplitTotal(split);
+  return total>0&&Number.isFinite(expected)&&total===expected;
+}
+function currentPeriodClaimSplit(){
+  const {start,end}=periodBounds();
+  const expected=expectedCurrentCriticalTotal(start,end);
+  const rowSplit=claimSplitFromRows(criticalSnapshotRowsAt(end));
+  if(claimSplitMatchesTotal(rowSplit,expected))return normalizedClaimSplit(rowSplit);
+  const snap=periodSnapshotForBounds(start,end);
+  const split=snap&&snap.summary&&snap.summary.criticalClaimSplit;
+  if(claimSplitMatchesTotal(split,expected))return normalizedClaimSplit(split);
   const pyKpis=pythonDashboardKpis();
   const pySplit=pyKpis&&pyKpis.criticalClaimSplit;
-  if(pySplit&&typeof pySplit==="object"){
-    return {inField:Number(pySplit.inField||0),preDelivery:Number(pySplit.preDelivery||0)};
-  }
+  if(claimSplitMatchesTotal(pySplit,expected))return normalizedClaimSplit(pySplit);
   const viewSplit=currentView().summary&&currentView().summary.criticalClaimSplit;
-  if(viewSplit&&typeof viewSplit==="object"){
-    return {inField:Number(viewSplit.inField||0),preDelivery:Number(viewSplit.preDelivery||0)};
-  }
-  return {inField:0,preDelivery:0};
+  if(claimSplitMatchesTotal(viewSplit,expected))return normalizedClaimSplit(viewSplit);
+  if(split&&typeof split==="object")return normalizedClaimSplit(split);
+  if(pySplit&&typeof pySplit==="object")return normalizedClaimSplit(pySplit);
+  if(viewSplit&&typeof viewSplit==="object")return normalizedClaimSplit(viewSplit);
+  return normalizedClaimSplit(rowSplit);
+}
+function claimTypeCounts(){
+  return currentPeriodClaimSplit();
 }
 function ticketLastUpdateDate(ticket){
   const raw=getField(ticket,[
@@ -3115,7 +3255,9 @@ function bindKpiClickTip(el,html){
 }
 function rawTotalTickets(start,end){if(!rawTicketEntries.length)return null;let total=0;rawTicketEntries.forEach(({ticket})=>{const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);if(!created||created<start||created>end)return;if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;total++;});return total}
 function rawCurrentTotalTickets(){if(!rawTicketEntries.length)return null;let total=0;rawTicketEntries.forEach(({ticket})=>{if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;total++;});return total}
-function claimKeyForTicket(ticket){const raw=clean(getField(ticket,["TicketTypeText","Ticket Type Text","TicketType","Ticket Type","ClaimType","Claim Type"])).toLowerCase();return raw.includes("pre delivery")?"preDelivery":"inField"}
+function claimTypeLabelForTicket(ticket){return clean(getField(ticket,["TicketTypeText","Ticket Type Text","TicketType","Ticket Type","ClaimType","Claim Type"]))}
+function claimTypeLabelFromTicketId(id){const entry=ticketEntryById(id);return entry?claimTypeLabelForTicket(entry.ticket):""}
+function claimKeyForTicket(ticket){const raw=claimTypeLabelForTicket(ticket).toLowerCase();return raw.includes("pre delivery")?"preDelivery":"inField"}
 function rawDealerName(ticket,roles){return clean(getField(ticket,["DealerName","Dealer Name","WarrantyHandlingDealerName","Warranty Handling Dealer Name","Warranty Handling Dealer","RepairerBusinessNameID","Repairer Business Name","Repairer"])||findRoleName(roles,"1001")||ticket.DealerID||ticket.WarrantyHandlingDealerID||"Unknown Dealership")}
 function rawAssignToName(ticket,roles){return clean(getField(ticket,["C4CAssignTo","C4C Assign To","AssignTo","Assign To","Employee","EmployeeName","OwnerName"])||findRoleName(roles,"40")||"Queue Warranty")}
 function isExcludedAssignName(name){const s=clean(name).toLowerCase().replace(/\s+/g,' ').trim();if(!s)return false;if(['admin','admin a b.a.','admin a b.a'].includes(s))return true;if(/^admin\b/.test(s))return true;return s.includes('test')||s.includes('demo')||s.includes('dummy')||s.includes('sample')}
@@ -3197,10 +3339,22 @@ function approvalStateSource(rec){
 function approvalHistoryStartDate(){
   return clean((currentView()||{}).approvalHistoryStartDate||team.approvalHistoryStartDate||team.approvalHistoryStart||"");
 }
+function applyApprovalAmountPolicy(row,key){
+  row=row||{};
+  if(key==="unapproved"){
+    row.amount=0;
+    row.amountSource="Unapproved tickets do not calculate money";
+    return row;
+  }
+  const amount=Number(row.amount||0);
+  row.amount=Number.isFinite(amount)&&amount>0?amount:0;
+  if(!row.amount&&!clean(row.amountSource))row.amountSource="No SAP PO Short Text EKPO.NETWR match loaded";
+  return row;
+}
 function applyApprovalStateToRow(row,key){
   row=row||{};
   const rec=approvalStateRecordForId(row.id);
-  if(!rec||typeof rec!=="object"||clean(rec.decision).toLowerCase()!==key)return row;
+  if(!rec||typeof rec!=="object"||clean(rec.decision).toLowerCase()!==key)return applyApprovalAmountPolicy(row,key);
   const source=approvalStateSource(rec);
   const stateDate=approvalStateDecisionDate(rec);
   if(source==="sap_posting_date_baseline"&&stateDate){
@@ -3222,7 +3376,7 @@ function applyApprovalStateToRow(row,key){
     row.decisionSource=source;
     row.sourceGroup=source;
   }
-  return row;
+  return applyApprovalAmountPolicy(row,key);
 }
 function approvalStateRowsForRange(key,start,end){
   if(!approvalStateLoaded||!approvalState||typeof approvalState!=="object")return [];
@@ -3262,8 +3416,7 @@ function approvalStateRowsForRange(key,start,end){
     row.decisionSource=approvalStateSource(rec);
     row.sourceGroup=row.decisionSource;
     row.approvalDecision=key==="unapproved"?"Unapproved":"Approved";
-    row.amount=Number(row.amount||0)||parseAmountIncludingTax(entry&&entry.ticket&&entry.ticket.AmountIncludingTax);
-    return row;
+    return applyApprovalAmountPolicy(row,key);
   }).filter(Boolean);
   approvalRowsCache.set(cacheKey,rows);
   return rows;
@@ -3281,12 +3434,19 @@ function trendThroughToday(view=currentView()){
 }
 function latestDateForView(){const view=currentView();const pts=trendThroughToday(view);return (pts.length?pts[pts.length-1].date:clean(view.generatedAt).slice(0,10)||clean(team.generatedAt).slice(0,10)||todayISO());}
 function earliestDateForView(){const view=currentView();const pts=view.trend||[];const first=(pts.length?pts[0].date:(view.minDate||team.minDate||latestDateForView()));return first&&first>DEFAULT_RANGE_START?first:DEFAULT_RANGE_START;}
-function setFullRange(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;if($("dateFrom"))$("dateFrom").value=earliestDateForView();if($("dateTo"))$("dateTo").value=latestDateForView();}
-function periodEndDate(){const latest=latestDateForView();const value=($("dateTo")&&$("dateTo").value)||latest;return value&&value<latest?value:latest;}
+function monthKeyFromDate(v){return clean(v).slice(0,7)}
+function monthStartISO(month){return /^\d{4}-\d{2}$/.test(clean(month))?`${month}-01`:earliestDateForView()}
+function monthEndISO(month){if(!/^\d{4}-\d{2}$/.test(clean(month)))return latestDateForView();const [y,m]=month.split("-").map(Number);return new Date(Date.UTC(y,m,0)).toISOString().slice(0,10)}
+function currentDashboardMonth(){return monthKeyFromDate(latestDateForView())}
+function selectedDashboardMonth(){return activeMonth||currentDashboardMonth()}
+function monthDisplayLabel(month){const d=new Date(`${month}-01T00:00:00Z`);return isNaN(d)?month:d.toLocaleDateString("en-AU",{month:"long",year:"numeric",timeZone:"UTC"})}
+function availableDashboardMonths(){const view=currentView();const months=new Set();arrayFromMaybe(view.ticketVolumeTrendDaily||view.trend).forEach(p=>{const d=clean(p.date||p.periodEnd||p.periodStart);if(d)months.add(d.slice(0,7));});if(!months.size){const latest=latestDateForView();if(latest)months.add(latest.slice(0,7));}return Array.from(months).filter(Boolean).sort().reverse()}
+function setFullRange(){syncRangeInputsToActivePeriod();}
+function periodEndDate(){const latest=latestDateForView();const end=monthEndISO(selectedDashboardMonth());return end&&end<latest?end:latest;}
 function isLatestPeriodEnd(end=periodEndDate()){return clean(end)>=latestDateForView();}
-function periodDaysForActive(){if(activePeriod==="month")return 30;if(activePeriod==="quarter")return 90;if(activePeriod==="halfYear")return 182;if(activePeriod==="year")return 365;return null}
-function periodStartDate(end){const days=periodDaysForActive();if(activePeriod==="all"||!days)return earliestDateForView();const d=new Date(end+"T00:00:00Z");d.setUTCDate(d.getUTCDate()-(days-1));const out=d.toISOString().slice(0,10);return out<earliestDateForView()?earliestDateForView():out;}
-function syncRangeInputsToActivePeriod(){const end=latestDateForView(),start=periodStartDate(end);if($("dateFrom"))$("dateFrom").value=start;if($("dateTo"))$("dateTo").value=end;}
+function periodDaysForActive(){return null}
+function periodStartDate(end){const start=monthStartISO(selectedDashboardMonth());return start<earliestDateForView()?earliestDateForView():start;}
+function syncRangeInputsToActivePeriod(){if(!activeMonth)activeMonth=currentDashboardMonth();const end=periodEndDate(),start=periodStartDate(end);if($("dateFrom"))$("dateFrom").value=start;if($("dateTo"))$("dateTo").value=end;}
 function sumDaily(map,start,end){let total=0;Object.entries(map||{}).forEach(([k,v])=>{if(k>=start&&k<=end)total+=Number(v||0)});return total;}
 function criticalAtDate(view,end){
   const pts=(view&&view.trend)||[];
@@ -3296,12 +3456,8 @@ function criticalAtDate(view,end){
   if(!best) best=pts[0];
   return Number(best.critical||best.criticalNow||0);
 }
-function isFullRangeSelected(){
-  return activePeriod==="all" && periodStartDate(periodEndDate())===earliestDateForView() && periodEndDate()===latestDateForView();
-}
-function hasTicketFilter(){
-  return activeClaim!=="all" || activePeriod!=="all" || !isFullRangeSelected();
-}
+function isFullRangeSelected(){return false;}
+function hasTicketFilter(){return true;}
 function teamRowsInSelectedRange(){
   const {start,end}=periodBounds();
   const view=currentView();
@@ -3380,14 +3536,33 @@ function approvalSummaryFromRows(start,end){
   if(!hasState)return null;
   const approvedRows=approvalBucketTicketRowsForRange("approved",start,end);
   const unapprovedRows=approvalBucketTicketRowsForRange("unapproved",start,end);
-  const approvedAmount=approvedRows.reduce((sum,row)=>sum+Number(row.amount||0),0);
-  const unapprovedAmount=unapprovedRows.reduce((sum,row)=>sum+Number(row.amount||0),0);
+  const approvedAmount=approvedRows.reduce((sum,row)=>sum+approvalRowAmountValue(row),0);
+  const unapprovedAmount=0;
   return {
     approvedTickets:approvedRows.length,
     unapprovedTickets:unapprovedRows.length,
     approvedAmount,
     unapprovedAmount,
     avgCostPerTicket:approvedRows.length?approvedAmount/approvedRows.length:0
+  };
+}
+function fallbackSummaryForBounds(start,end,approval){
+  const view=currentView()||{};
+  const daily=view.daily||{};
+  const enteredCritical=sumDaily(daily.entered,start,end);
+  const exitedCritical=sumDaily(daily.exited,start,end);
+  const exitedTicketsTotalValue=sumDaily(daily.exitedValue,start,end);
+  return {
+    totalTickets:enteredCritical,
+    criticalNow:criticalAtDate(view,end),
+    enteredCritical,
+    exitedCritical,
+    exitedTicketsTotalValue,
+    approvedTickets:Number((approval&&approval.approvedTickets)||0),
+    unapprovedTickets:Number((approval&&approval.unapprovedTickets)||0),
+    approvedAmount:Number((approval&&approval.approvedAmount)||0),
+    unapprovedAmount:0,
+    avgCostPerTicket:Number((approval&&approval.avgCostPerTicket)||0)
   };
 }
 function currentPeriodSummary(){
@@ -3405,20 +3580,28 @@ function currentPeriodSummary(){
       exitedTicketsTotalValue:Number(s.exitedTicketsTotalValue||0),
       approvedTickets:Number((approval&&approval.approvedTickets)??s.approvedTickets??0),
       unapprovedTickets:Number((approval&&approval.unapprovedTickets)??s.unapprovedTickets??0),
-      approvedAmount:Number((approval&&approval.approvedAmount)??s.approvedAmount??0),
-      unapprovedAmount:Number((approval&&approval.unapprovedAmount)??s.unapprovedAmount??0),
-      avgCostPerTicket:Number((approval&&approval.avgCostPerTicket)??s.avgCostPerTicket??0)
+      approvedAmount:Number(s.approvedAmount??s.approvedValue??(approval&&approval.approvedAmount)??0),
+      unapprovedAmount:0,
+      avgCostPerTicket:Number(s.avgCostPerTicket??(approval&&approval.avgCostPerTicket)??0)
     };
   }
-  if(approval)return {totalTickets:0,criticalNow:0,enteredCritical:0,exitedCritical:0,exitedTicketsTotalValue:0,...approval};
-  return {totalTickets:0,criticalNow:0,enteredCritical:0,exitedCritical:0,exitedTicketsTotalValue:0,approvedTickets:0,unapprovedTickets:0,approvedAmount:0,unapprovedAmount:0,avgCostPerTicket:0};
+  return fallbackSummaryForBounds(start,end,approval);
 }
 function numFixed(v,d=1){return Number(v||0).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d})}
 function pctValue(part,total){return Number(total||0)?Number(part||0)/Number(total||0)*100:0}
 function pctText(v,d=2){return numFixed(v,d)+"%"}
 function addDaysISO(iso,days){const d=new Date(iso+"T00:00:00Z");if(isNaN(d))return iso;d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10)}
 function daysInBounds(start,end){const a=new Date(start+"T00:00:00Z"),b=new Date(end+"T00:00:00Z");if(isNaN(a)||isNaN(b))return 1;return Math.max(1,Math.round((b-a)/86400000)+1)}
-function previousPeriodBounds(start,end){const days=daysInBounds(start,end);const prevEnd=addDaysISO(start,-1);return {start:addDaysISO(prevEnd,-days+1),end:prevEnd}}
+function previousPeriodBounds(start,end){
+  const month=selectedDashboardMonth();
+  if(/^\d{4}-\d{2}$/.test(month)){
+    const [y,m]=month.split("-").map(Number);
+    const d=new Date(Date.UTC(y,m-2,1));
+    const prevMonth=`${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}`;
+    return {start:monthStartISO(prevMonth),end:monthEndISO(prevMonth)};
+  }
+  const days=daysInBounds(start,end);const prevEnd=addDaysISO(start,-1);return {start:addDaysISO(prevEnd,-days+1),end:prevEnd}
+}
 function summaryForBounds(start,end){
   if(!start||!end||end<earliestDateForView())return {totalTickets:0,criticalNow:0,enteredCritical:0,exitedCritical:0,exitedTicketsTotalValue:0,approvedTickets:0,unapprovedTickets:0,approvedAmount:0,unapprovedAmount:0,avgCostPerTicket:0};
   const approval=approvalSummaryFromRows(start,end);
@@ -3433,15 +3616,21 @@ function summaryForBounds(start,end){
       exitedTicketsTotalValue:Number(s.exitedTicketsTotalValue||0),
       approvedTickets:Number((approval&&approval.approvedTickets)??s.approvedTickets??0),
       unapprovedTickets:Number((approval&&approval.unapprovedTickets)??s.unapprovedTickets??0),
-      approvedAmount:Number((approval&&approval.approvedAmount)??s.approvedAmount??0),
-      unapprovedAmount:Number((approval&&approval.unapprovedAmount)??s.unapprovedAmount??0),
-      avgCostPerTicket:Number((approval&&approval.avgCostPerTicket)??s.avgCostPerTicket??0)
+      approvedAmount:Number(s.approvedAmount??s.approvedValue??(approval&&approval.approvedAmount)??0),
+      unapprovedAmount:0,
+      avgCostPerTicket:Number(s.avgCostPerTicket??(approval&&approval.avgCostPerTicket)??0)
     };
   }
-  if(approval)return {totalTickets:0,criticalNow:0,enteredCritical:0,exitedCritical:0,exitedTicketsTotalValue:0,...approval};
-  return {totalTickets:0,criticalNow:0,enteredCritical:0,exitedCritical:0,exitedTicketsTotalValue:0,approvedTickets:0,unapprovedTickets:0,approvedAmount:0,unapprovedAmount:0,avgCostPerTicket:0};
+  return fallbackSummaryForBounds(start,end,approval);
 }
-function compareLabel(){if(activePeriod==="month")return "vs previous 30d";if(activePeriod==="quarter")return "vs previous 90d";if(activePeriod==="halfYear")return "vs previous half year";if(activePeriod==="year")return "vs previous whole year";return "vs previous period"}
+function compareLabel(){return "vs previous month"}
+function approvalAnalyticsBounds(){
+  const month=selectedDashboardMonth();
+  return {start:monthStartISO(month),end:monthEndISO(month)};
+}
+function approvalAnalyticsLabel(){
+  return monthDisplayLabel(selectedDashboardMonth())||selectedRangePlainLabel();
+}
 function selectedRangeDateLabel(mode="range"){
   const end=periodEndDate();
   const start=periodStartDate(end);
@@ -3459,6 +3648,35 @@ function kpiDateMetaMarkup(mode="range"){
   const label=selectedRangeDateLabel(mode);
   return label?`<span class="kpiTrendMeta">${esc(label)}</span>`:"";
 }
+function kpiCustomMetaMarkup(label){
+  return label?`<span class="kpiTrendMeta">${esc(label)}</span>`:"";
+}
+function approvalAnalyticsSummary(){
+  const bounds=approvalAnalyticsBounds();
+  const approval=approvalSummaryFromRows(bounds.start,bounds.end);
+  const currentBounds=periodBounds();
+  const snap=periodSnapshotForBounds(bounds.start,bounds.end)||periodSnapshotForBounds(currentBounds.start,currentBounds.end);
+  if(snap&&snap.summary){
+    const s=snap.summary;
+    return {
+      approvedTickets:Number((approval&&approval.approvedTickets)??s.approvedTickets??0),
+      unapprovedTickets:Number((approval&&approval.unapprovedTickets)??s.unapprovedTickets??0),
+      approvedAmount:Number(s.approvedAmount??s.approvedValue??(approval&&approval.approvedAmount)??0),
+      unapprovedAmount:0,
+      avgCostPerTicket:Number(s.avgCostPerTicket??(approval&&approval.avgCostPerTicket)??0)
+    };
+  }
+  if(approval){
+    return {
+      approvedTickets:Number(approval.approvedTickets||0),
+      unapprovedTickets:Number(approval.unapprovedTickets||0),
+      approvedAmount:Number(approval.approvedAmount||0),
+      unapprovedAmount:0,
+      avgCostPerTicket:Number(approval.avgCostPerTicket||0)
+    };
+  }
+  return {approvedTickets:0,unapprovedTickets:0,approvedAmount:0,unapprovedAmount:0,avgCostPerTicket:0};
+}
 function sparkSvg(dir){
   if(dir==="down")return `<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 5.5L8 10.5L11 8L17 14.5" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 14.5H17V10" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   if(dir==="flat")return `<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 10H17" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/><path d="M13 6L17 10L13 14" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -3474,7 +3692,7 @@ function trendMarkup(key,current,previous,fmt="number"){
 }
 function claimFilterIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>`}
 function refreshIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>`}
-function clearDashboardFilters(){activeClaim="all";activePeriod="all";syncRangeInputsToActivePeriod();renderAllWithLoading();}
+function clearDashboardFilters(){activeClaim="all";activePeriod="month";activeMonth=currentDashboardMonth();syncRangeInputsToActivePeriod();renderAllWithLoading();}
 function canonicalClaimKey(key){
   const raw=clean(key);
   const compact=raw.toLowerCase().replace(/[^a-z0-9]+/g,"");
@@ -3492,7 +3710,18 @@ function claimFilterOptions(){
   });
   return ["all","inField","preDelivery"].map(k=>map.get(k)).filter(Boolean);
 }
-function renderClaimButtons(){const opts=claimFilterOptions();const ranges=[["all","All"],["month","Last 30 Days"],["quarter","Last 90 Days"],["halfYear","Last 6 Months"],["year","Last 12 Months"]];const box=$("claimSwitch");if(!box)return;box.className="sidebarFilters";box.innerHTML=`<div class="sidebarFiltersTitle">Filters (Global)</div><label class="sidebarFilterGroup"><span class="sidebarFilterLabel">Date</span><select id="globalDateFilter" class="sidebarFilterSelect">${ranges.map(([key,label])=>`<option value="${esc(key)}" ${key===activePeriod?'selected':''}>${esc(label)}</option>`).join("")}</select></label><label class="sidebarFilterGroup"><span class="sidebarFilterLabel">Category</span><select id="globalCategoryFilter" class="sidebarFilterSelect">${opts.map(o=>`<option value="${esc(o.key)}" ${o.key===activeClaim?'selected':''}>${esc(o.label)}</option>`).join("")}</select></label><button id="dashboardSummaryExportBtn" class="sidebarExportBtn" type="button" title="Export dashboard summary to Excel"></button>`;const dateFilter=$("globalDateFilter"),categoryFilter=$("globalCategoryFilter");if(dateFilter)dateFilter.onchange=()=>{activePeriod=dateFilter.value||"all";syncRangeInputsToActivePeriod();renderAllWithLoading()};if(categoryFilter)categoryFilter.onchange=()=>{activeClaim=canonicalClaimKey(categoryFilter.value||"all");renderAllWithLoading()};bindDashboardExportButtons();}
+function renderClaimButtons(){
+  const opts=claimFilterOptions();
+  const months=availableDashboardMonths();
+  if(!months.includes(activeMonth))activeMonth=months[0]||currentDashboardMonth();
+  const box=$("claimSwitch");if(!box)return;
+  box.className="sidebarFilters";
+  box.innerHTML=`<div class="sidebarFiltersTitle">Filters (Global)</div><label class="sidebarFilterGroup"><span class="sidebarFilterLabel">Month</span><select id="globalDateFilter" class="sidebarFilterSelect">${months.map(month=>`<option value="${esc(month)}" ${month===activeMonth?'selected':''}>${esc(monthDisplayLabel(month))}</option>`).join("")}</select></label><label class="sidebarFilterGroup"><span class="sidebarFilterLabel">Category</span><select id="globalCategoryFilter" class="sidebarFilterSelect">${opts.map(o=>`<option value="${esc(o.key)}" ${o.key===activeClaim?'selected':''}>${esc(o.label)}</option>`).join("")}</select></label><button id="dashboardSummaryExportBtn" class="sidebarExportBtn" type="button" title="Export dashboard summary to Excel"></button>`;
+  const dateFilter=$("globalDateFilter"),categoryFilter=$("globalCategoryFilter");
+  if(dateFilter)dateFilter.onchange=()=>{activeMonth=dateFilter.value||currentDashboardMonth();activePeriod="month";syncRangeInputsToActivePeriod();renderAllWithLoading()};
+  if(categoryFilter)categoryFilter.onchange=()=>{activeClaim=canonicalClaimKey(categoryFilter.value||"all");const nextMonths=availableDashboardMonths();if(!nextMonths.includes(activeMonth))activeMonth=nextMonths[0]||currentDashboardMonth();syncRangeInputsToActivePeriod();renderAllWithLoading()};
+  bindDashboardExportButtons();
+}
 function currentView(){const key=canonicalClaimKey(activeClaim);return (team.views&&team.views[key]) || (team.views&&team.views[activeClaim]) || team.views?.all || team;}
 function pythonDashboardKpis(){const view=currentView()||{};return view.dashboardKpis||(view.summary&&view.summary.dashboardKpis)||{}}
 function selectedTrend(){
@@ -3524,7 +3753,7 @@ function cumulativeTrendPoints(rows){
   let cumulativeNewTickets=0,cumulativeApprovedUnapprovedTickets=0;
   return rows.map(row=>{
     cumulativeNewTickets+=Number(row.newTickets||0);
-    cumulativeApprovedUnapprovedTickets=Number(row.approvedUnapprovedCumulative||0);
+    cumulativeApprovedUnapprovedTickets+=Number(row.approvedUnapprovedTickets||0);
     return {...row,cumulativeNewTickets,cumulativeApprovedUnapprovedTickets};
   });
 }
@@ -3605,7 +3834,7 @@ function drawTrend(){
 }
 function setKpiTrendHidden(id,hidden,mode="range"){const el=$(id);if(!el)return;el.innerHTML=kpiDateMetaMarkup(mode);el.className="kpiTrend flat kpiTrendDateOnly";}
 function setCardLabel(selector,label){const el=document.querySelector(selector+" .kpiLabel");if(el)el.textContent=label;}
-function setTrend(id,key,current,previous,fmt,show,mode="range"){const el=$(id);if(!el)return;setKpiTrendHidden(id,true,mode);}
+function setTrend(id,key,current,previous,fmt,show,mode="end"){const el=$(id);if(!el)return;setKpiTrendHidden(id,true,mode);}
 function weekStartISO(dateStr){const d=new Date(dateStr+"T00:00:00Z");if(isNaN(d))return "";const day=(d.getUTCDay()+6)%7;d.setUTCDate(d.getUTCDate()-day);return d.toISOString().slice(0,10)}
 function weekEndISO(weekStart){const d=new Date(weekStart+"T00:00:00Z");if(isNaN(d))return weekStart;d.setUTCDate(d.getUTCDate()+6);return d.toISOString().slice(0,10)}
 function avgCostGranularity(start,end){
@@ -3684,6 +3913,7 @@ function bindWeeklyAvgCostTooltip(){
 }
 function renderKpis(){
   const s=currentPeriodSummary();
+  const approvalMonthSummary=approvalAnalyticsSummary();
   const b=periodBounds(),pb=previousPeriodBounds(b.start,b.end),prev=summaryForBounds(pb.start,pb.end);
   const h=periodHandlingSummary();
   const prevH=periodHandlingSummaryForBounds(pb.start,pb.end,prev.criticalNow);
@@ -3703,7 +3933,7 @@ function renderKpis(){
   const todayMode=activePeriod==="day";
   setCardLabel(".totalCriticalCard","Total Critical Tickets");
   const claimSplitLabel=document.querySelector(".approvedTicketsCountCard .kpiLabel");
-  if(claimSplitLabel)claimSplitLabel.innerHTML='In Field / Pre Delivery<span class="kpiSubLabel">Current total tickets distribution</span>';
+  if(claimSplitLabel)claimSplitLabel.innerHTML='In Field / Pre Delivery<span class="kpiSubLabel">Distribution of selected Total Critical Tickets</span>';
   const noUpdateLabel=document.querySelector(".unapprovedTicketsCard .kpiLabel");
   if(noUpdateLabel)noUpdateLabel.innerHTML='Long Duration Tickets<span class="kpiSubLabel">(Over 60days)</span>';
   setCardLabel(".benchmarkRateCard","2-week benchmark");
@@ -3715,7 +3945,7 @@ function renderKpis(){
   if($("kpiUnapproved"))$("kpiUnapproved").textContent=num(noUpdate.count);
   if($("kpiBenchmark"))$("kpiBenchmark").textContent=todayMode?"-":`${numFixed(h.rate||0,1)}%`;
   $("kpiRate").textContent=clearToTargetText;
-  if($("kpiApproved"))$("kpiApproved").textContent=money(s.approvedAmount);
+  if($("kpiApproved"))$("kpiApproved").textContent=money(approvalMonthSummary.approvedAmount);
   if($("kpiAvgCost"))$("kpiAvgCost").textContent=money(approvedAvg);
   if($("kpiUnapprovedAmount"))$("kpiUnapprovedAmount").textContent=money(s.unapprovedAmount);
   if($("kpiUnapprovedRatio"))$("kpiUnapprovedRatio").textContent=todayMode?"-":pctText(ratio,2);
@@ -3728,7 +3958,7 @@ function renderKpis(){
   const noUpdateCard=document.querySelector(".unapprovedTicketsCard");
   clearKpiPreview(document.querySelector(".exitedValueCard"));
  if(noUpdateCard)noUpdateCard.onclick=()=>{try{localStorage.setItem("dealerWorkbenchNoUpdateTickets",JSON.stringify(noUpdate.rows||[]));}catch(e){}window.location.href="dealerworkbench.html?noUpdate=1#tickets";};
-  setTrend("kpiApprovedTrend","approvedAmount",s.approvedAmount,prev.approvedAmount,"money",filtered);
+  if($("kpiApprovedTrend")){ $("kpiApprovedTrend").innerHTML=kpiCustomMetaMarkup(approvalAnalyticsLabel()); $("kpiApprovedTrend").className="kpiTrend flat kpiTrendDateOnly"; }
   setTrend("kpiAvgCostTrend","avgCost",approvedAvg,prevApprovedAvg,"money",filtered);
   setTrend("kpiRateTrend","estimatedClearDays",h.clearDays||0,prevH.clearDays||0,"days",filtered);
   setTrend("kpiRatioTrend","unapprovedRatio",ratio,prevRatio,"percent",filtered&&!todayMode);
@@ -4285,10 +4515,19 @@ function teamRowsAtDate(date){
     dealer:standardDealerName(r.dealer||"Unknown"),
     status:clean(r.status||r.statusText||"Unknown")||"Unknown",
     amount:r.amount,
-    created:r.created
+    created:r.created,
+    claimType:clean(r.claimType)||claimTypeLabelFromTicketId(clean(r.id))
   }));
   const map=new Map();
-  (view.currentCriticalRows||[]).forEach(r=>{const id=clean(r.id)||('current-'+map.size);map.set(id,{id, dealer:standardDealerName(r.dealer||'Unknown'), status:clean(r.status||r.statusText||'Unknown')||'Unknown'});});
+  (view.currentCriticalRows||[]).forEach(r=>{
+    const id=clean(r.id)||('current-'+map.size);
+    map.set(id,{
+      id,
+      dealer:standardDealerName(r.dealer||'Unknown'),
+      status:clean(r.status||r.statusText||'Unknown')||'Unknown',
+      claimType:clean(r.claimType)||claimTypeLabelFromTicketId(id)
+    });
+  });
   // Work backwards from the latest snapshot to the selected To date.
   (view.logs||[]).slice().sort((a,b)=>clean(b.detectedAt||b.date).localeCompare(clean(a.detectedAt||a.date))).forEach(e=>{
     const d=eventDateKey(e.detectedAt||e.date);
@@ -4300,7 +4539,12 @@ function teamRowsAtDate(date){
       map.delete(id);
     }else if(cls==='exit'){
       // It exited after the selected To date, so it was still critical then.
-      if(!map.has(id)) map.set(id,{id, dealer:standardDealerName(e.dealer||'Unknown'), status:clean(e.fromStatus||e.status||'Unknown')||'Unknown'});
+      if(!map.has(id)) map.set(id,{
+        id,
+        dealer:standardDealerName(e.dealer||'Unknown'),
+        status:clean(e.fromStatus||e.status||'Unknown')||'Unknown',
+        claimType:clean(e.claimType||e.claim)||claimTypeLabelFromTicketId(id)
+      });
     }else{
       // Critical-to-critical move after selected date: use the previous status at selected date.
       if(map.has(id) && clean(e.fromStatus)) map.get(id).status=clean(e.fromStatus);
@@ -4347,6 +4591,21 @@ function repairCostBucketDefs(){
 function repairCostBucketFor(amount,buckets){
   return buckets.find(b=>amount>=b.min&&amount<b.max)||buckets[buckets.length-1];
 }
+function repairCostDistributionFromApprovedRows(start,end){
+  const buckets=repairCostBucketDefs();
+  approvalBucketTicketRowsForRange("approved",start,end).forEach(row=>{
+    const amount=approvalRowAmountValue(row);
+    const bucket=repairCostBucketFor(amount,buckets);
+    bucket.count+=1;
+    bucket.total=Number(bucket.total||0)+amount;
+  });
+  return buckets.map(bucket=>({
+    key:repairCostBucketKey(bucket),
+    label:bucket.label,
+    count:bucket.count,
+    total:Math.round(Number(bucket.total||0)*100)/100
+  }));
+}
 function repairAnalyticsEntryMatchesPeriod(ticket){
   if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return false;
   if(hasTicketFilter()){
@@ -4387,10 +4646,10 @@ function repairCostBucketByKey(key){
   return repairCostBucketDefs().find(b=>repairCostBucketKey(b)===key)||null;
 }
 function repairCostDistributionRows(){
-  const {start,end}=periodBounds();
-  const py=periodSnapshotForBounds(start,end);
-  const rows=arrayFromMaybe(py&&py.repairCostDistribution);
-  const source=rows.length?rows:arrayFromMaybe(currentView().repairCostDistribution);
+  const {start,end}=approvalAnalyticsBounds();
+  // Always derive the repair-cost donut from the same approved rows that feed
+  // the Approved Cost KPI, so partial/current months still render correctly.
+  const source=repairCostDistributionFromApprovedRows(start,end);
   return source.map(row=>{
     const total=Number(row.total||0);
     return {
@@ -4448,7 +4707,7 @@ function employeeApprovalTotalsFromRows(name,bounds){
   const approvedRows=approvalBucketTicketRowsForRange("approved",bounds.start,bounds.end).filter(row=>employeeNameMatches(row,name));
   const unapprovedRows=approvalBucketTicketRowsForRange("unapproved",bounds.start,bounds.end).filter(row=>employeeNameMatches(row,name));
   const approvedAmount=approvedRows.reduce((sum,row)=>sum+Number(row.amount||0),0);
-  const unapprovedAmount=unapprovedRows.reduce((sum,row)=>sum+Number(row.amount||0),0);
+  const unapprovedAmount=0;
   return {
     approved:approvedRows.length,
     unapproved:unapprovedRows.length,
@@ -4462,7 +4721,7 @@ function employeeAnalyticsTotals(stat){
   const approved=Number(stat.approvedTotal||stat.approved||0);
   const unapproved=Number(stat.unapprovedTotal||stat.unapproved||0);
   const approvedAmount=Number(stat.approvedAmountTotal||stat.approvedAmount||0);
-  const unapprovedAmount=Number(stat.unapprovedAmountTotal||stat.unapprovedAmount||0);
+  const unapprovedAmount=0;
   return {
     approved,
     unapproved,
@@ -4510,7 +4769,7 @@ function employeeApprovalSummary(name,bounds){
   if(stat&&stat.dailySnapshots){
     const dates=Object.keys(stat.dailySnapshots||{}).filter(d=>d&&d<=bounds.end).sort();
     const snap=(stat.dailySnapshots||{})[bounds.end]||(dates.length?stat.dailySnapshots[dates[dates.length-1]]:null);
-    if(snap)return {approved:Number(snap.approved||0),unapproved:Number(snap.unapproved||0),approvedAmount:Number(snap.approvedAmount||0),unapprovedAmount:Number(snap.unapprovedAmount||0)};
+    if(snap)return {approved:Number(snap.approved||0),unapproved:Number(snap.unapproved||0),approvedAmount:Number(snap.approvedAmount||0),unapprovedAmount:0};
   }
   return {approved:0,unapproved:0,approvedAmount:0,unapprovedAmount:0};
 }
@@ -4535,7 +4794,7 @@ function employeeSummary(name,bounds){
       const approved=Number(chosen.approved||0)||rowTotals.approved||statTotals.approved;
       const unapproved=Number(chosen.unapproved||0)||rowTotals.unapproved||statTotals.unapproved;
       const approvedAmount=Number(chosen.approvedAmount||0)||rowTotals.approvedAmount||statTotals.approvedAmount;
-      const unapprovedAmount=Number(chosen.unapprovedAmount||0)||rowTotals.unapprovedAmount||statTotals.unapprovedAmount;
+      const unapprovedAmount=0;
       const avgCost=Number(chosen.avgCost||0)||(approved?approvedAmount/approved:0)||rowTotals.avgCost||statTotals.avgCost;
       return {
         approved,
@@ -4553,7 +4812,7 @@ function employeeSummary(name,bounds){
   const approved=rowTotals.approved||statTotals.approved;
   const unapproved=rowTotals.unapproved||statTotals.unapproved;
   const approvedAmount=rowTotals.approvedAmount||statTotals.approvedAmount;
-  const unapprovedAmount=rowTotals.unapprovedAmount||statTotals.unapprovedAmount;
+  const unapprovedAmount=0;
   const avgCost=rowTotals.avgCost||statTotals.avgCost||(approved?approvedAmount/approved:0);
   return {approved,unapproved,approvedAmount,unapprovedAmount,critical:0,handled:0,handlingSpeed:0,avgCost,ratio:pctValue(unapproved,approved)};
 }
@@ -4632,7 +4891,7 @@ function employeeCriticalTrendRows(name,bounds){
       approved,
       unapproved,
       approvedAmount,
-      unapprovedAmount:Number(row.unapprovedAmount||snap.unapprovedAmount||0),
+      unapprovedAmount:0,
       avgCost,
       granularity
     };
@@ -4696,10 +4955,10 @@ function renderEmployeeModalPeriod(){const box=$("employeeModalPeriod");if(box)b
 function employeeCompareLabel(){
   if(employeeModalPeriod==="day")return "vs yesterday";
   if(employeeModalPeriod==="week")return "vs last week";
-  if(employeeModalPeriod==="month")return "vs previous 30d";
+  if(employeeModalPeriod==="month")return "vs previous month";
   if(activePeriod==="day")return "vs yesterday";
   if(activePeriod==="week")return "vs last week";
-  if(activePeriod==="month")return "vs previous 30d";
+  if(activePeriod==="month")return "vs previous month";
   return "vs selected prior range";
 }
 function modalTrendMarkup(key,current,previous,fmt="number"){
@@ -4797,7 +5056,12 @@ function openEmployeeModal(name){
 }
 function closeEmployeeModal(){const modal=$("employeeModalBackdrop");if(modal)modal.classList.remove("active");selectedEmployeeName="";}
 function openRepairCostBucketTickets(key,label){
-  openDashboardTickets([],`Approved Tickets Repair Cost - ${label}`);
+  const bucket=repairCostBucketByKey(key);
+  const rows=!bucket?[]:approvalBucketTicketRows("approved").filter(row=>{
+    const amount=approvalRowAmountValue(row);
+    return amount>=Number(bucket.min||0)&&amount<Number(bucket.max||0);
+  });
+  openDashboardTickets(rows,`Approved Tickets Repair Cost - ${label}`);
 }
 function bindRepairCostTicketLinks(box){
   box.querySelectorAll("[data-repair-cost-key]").forEach(el=>{
@@ -4814,11 +5078,11 @@ function renderRepairCostDistribution(){
   bindRepairCostTicketLinks(box);
 }
 function approvedMixRows(){
-  const s=currentPeriodSummary();
-  if(s.approvedTickets||s.unapprovedTickets||s.approvedAmount||s.unapprovedAmount){
+  const s=approvalAnalyticsSummary();
+  if(s.approvedTickets||s.unapprovedTickets||s.approvedAmount){
     return [
       {key:"approved",label:"Approved Tickets",count:Number(s.approvedTickets||0),total:Number(s.approvedAmount||0),details:[{label:"Approved Cost",count:money(s.approvedAmount)}]},
-      {key:"unapproved",label:"Unapproved Tickets",count:Number(s.unapprovedTickets||0),total:Number(s.unapprovedAmount||0),details:[{label:"Unapproved Cost",count:money(s.unapprovedAmount)}]}
+      {key:"unapproved",label:"Unapproved Tickets",count:Number(s.unapprovedTickets||0),total:0,details:[]}
     ].filter(x=>x.count>0);
   }
   const grouped={
@@ -4827,20 +5091,19 @@ function approvedMixRows(){
   };
   repairAnalyticsExportRows().forEach(item=>{
     const key=item.key==="unapproved"?"unapproved":"approved";
-    const raw=item.raw||rawTicketForExport(item.row)||{};
     grouped[key].count++;
-    grouped[key].total+=Number(item.row&&item.row.amount)||parseAmountIncludingTax(raw.AmountIncludingTax);
+    if(key==="approved")grouped[key].total+=Number(item.row&&item.row.amount)||0;
   });
   if(!grouped.approved.count&&!grouped.unapproved.count&&!rawTicketEntries.length){
-    const s=currentPeriodSummary();
+    const s=approvalAnalyticsSummary();
     grouped.approved.count=Number(s.approvedTickets||0);
     grouped.approved.total=Number(s.approvedAmount||0);
     grouped.unapproved.count=Number(s.unapprovedTickets||0);
-    grouped.unapproved.total=Number(s.unapprovedAmount||0);
+    grouped.unapproved.total=0;
   }
   return [
     {...grouped.approved,details:[{label:"Approved Cost",count:money(grouped.approved.total)}]},
-    {...grouped.unapproved,details:[{label:"Unapproved Cost",count:money(grouped.unapproved.total)}]}
+    {...grouped.unapproved,details:[]}
   ].filter(x=>x.count>0);
 }
 function approvedBarChartMarkup(rows){
@@ -4891,7 +5154,7 @@ function repairAnalyticsDashboardRowFromLog(e){
   };
 }
 function approvalBucketTicketRows(key){
-  const {start,end}=periodBounds();
+  const {start,end}=approvalAnalyticsBounds();
   return approvalBucketTicketRowsForRange(key,start,end);
 }
 function normalizeApprovalTicketRow(row,key){
@@ -4906,7 +5169,7 @@ function normalizeApprovalTicketRow(row,key){
     employee:clean(row.employee||row.owner)||"-",
     days:Number(row.days??row.agingDays??0)||0,
     agingDays:Number(row.agingDays??row.days??0)||0,
-    amount:Number(row.amount||0),
+    amount:approvalRowAmountValue(row),
     decisionDate:clean(row.decisionDate),
     decisionAt:clean(row.decisionAt||row.decisionDate),
     changedOn:clean(row.changedOn||row.changeOnDateTime||row.decisionTime||row.decisionAt||row.decisionDate),
@@ -4925,12 +5188,17 @@ function approvalBucketTicketRowsForRange(key,start,end){
   const allEnd=latestDateForView();
   const approvalStart=approvalHistoryStartDate();
   const effectiveStart=key==="approved"&&approvalStart&&start===allStart&&end===allEnd?approvalStart:start;
+  const currentBounds=periodBounds();
   const matches=(row)=>{
     const rowKey=clean(row.decisionKey).toLowerCase()||(clean(row.decision).toLowerCase()==="unapproved"?"unapproved":"approved");
     const decisionDate=clean(row.decisionDate);
     return rowKey===key&&(!decisionDate||(decisionDate>=effectiveStart&&decisionDate<=end));
   };
-  const py=periodSnapshotForBounds(start,end);
+  const py=periodSnapshotForBounds(start,end)||(
+    start===currentBounds.start&&end!==currentBounds.end
+      ? periodSnapshotForBounds(currentBounds.start,currentBounds.end)
+      : null
+  );
   const pyRows=arrayFromMaybe(py&&py.approvalTicketRows).filter(matches);
   if(pyRows.length)return pyRows.map(row=>applyApprovalStateToRow(normalizeApprovalTicketRow(row,key),key));
   const viewRows=arrayFromMaybe((currentView()||{}).approvalTicketRows).filter(matches);
@@ -4951,6 +5219,10 @@ function approvalBucketTicketRowsForRange(key,start,end){
     row.postingDate=ticketPostingDate(entry.ticket)||row.postingDate||"";
     row.approvalDecisionSource=clean(entry.ticket.approvalDecisionSource||entry.ticket.source||"");
     row.approvalDecision=key==="unapproved"?"Unapproved":"Approved";
+    if(key==="approved"){
+      row.amount=0;
+      row.amountSource="No SAP PO Short Text EKPO.NETWR match loaded";
+    }
     return applyApprovalStateToRow(row,key);
   });
 }
@@ -5041,11 +5313,22 @@ function rawTicketForAnyRow(row){
   const entry=ticketEntryById(payload.id);
   return entry?entry.ticket:(row&&row.raw&&typeof row.raw==="object"?row.raw:{});
 }
-function ticketExportRow(row){
+function approvalExportAmountSource(row){
+  const amount=Number(row&&((row.exportAmount??row.amount??row.approvedAmount)??0));
+  if(clean(row&&row.approvalDecision).toLowerCase()==="unapproved")return "Unapproved tickets do not calculate money";
+  if(clean(row&&row.amountSource))return clean(row.amountSource);
+  return amount>0?"SAP PO Short Text EKPO.NETWR":"No SAP PO Short Text EKPO.NETWR match loaded";
+}
+function approvalExportC4cPo(row){
+  const raw=rawTicketForAnyRow(row);
+  return ticketPoNumber(raw&&typeof raw==="object"&&Object.keys(raw).length?raw:(row||{}));
+}
+function approvalTicketExportRow(row){
   const payload=dashboardTicketPayload(row||{});
   const entry=ticketEntryById(payload.id);
   const raw=(entry&&entry.ticket)||{};
   const rawCols=rawTicketDetailColumns();
+  const exportAmount=Object.prototype.hasOwnProperty.call(row||{},"exportAmount")?row.exportAmount:(row.amount??row.approvedAmount??"");
   return [
     payload.id,
     payload.status,
@@ -5055,7 +5338,34 @@ function ticketExportRow(row){
     payload.dealer,
     payload.employee||payload.owner,
     payload.agingDays,
-    raw.AmountIncludingTax||raw.amount||row.amount||"",
+    exportAmount,
+    approvalExportAmountSource(row),
+    raw.CreatedOn||raw.createdOn||raw.CreatedAt||row.created||"",
+    ticketLastUpdateDate(raw)||row.lastUpdate||"",
+    raw.TicketStatus||raw.statusCode||row.statusCode||"",
+    raw.TicketStatusText||raw.statusText||row.statusText||""
+  ].concat(rawCols.map(k=>raw[k]??payload[k]??row[k]??""));
+}
+function approvalTicketExportHeaders(prefix){
+  const base=["Ticket ID","Status","Customer","Claim Type","Repair","Dealer","Employee","Aging Days","PO Price (SAP EKPO.NETWR)","Price Source","Created On","Last Update","Status Code","Status Text"];
+  return (prefix||[]).concat(base).concat(rawTicketDetailColumns().map(k=>`Raw ${k}`));
+}
+function ticketExportRow(row){
+  const payload=dashboardTicketPayload(row||{});
+  const entry=ticketEntryById(payload.id);
+  const raw=(entry&&entry.ticket)||{};
+  const rawCols=rawTicketDetailColumns();
+  const exportAmount=Object.prototype.hasOwnProperty.call(row||{},"exportAmount")?row.exportAmount:(raw.AmountIncludingTax||raw.amount||row.amount||"");
+  return [
+    payload.id,
+    payload.status,
+    payload.customer,
+    payload.claim,
+    payload.repair,
+    payload.dealer,
+    payload.employee||payload.owner,
+    payload.agingDays,
+    exportAmount,
     raw.CreatedOn||raw.createdOn||raw.CreatedAt||row.created||"",
     ticketLastUpdateDate(raw)||row.lastUpdate||"",
     raw.TicketStatus||raw.statusCode||row.statusCode||"",
@@ -5063,7 +5373,7 @@ function ticketExportRow(row){
   ].concat(rawCols.map(k=>raw[k]??payload[k]??row[k]??""));
 }
 function ticketExportHeaders(prefix){
-  const base=["Ticket ID","Status","Customer","Claim Type","Repair","Dealer","Employee","Aging Days","Amount Including Tax","Created On","Last Update","Status Code","Status Text"];
+  const base=["Ticket ID","Status","Customer","Claim Type","Repair","Dealer","Employee","Aging Days","Amount","Created On","Last Update","Status Code","Status Text"];
   return (prefix||[]).concat(base).concat(rawTicketDetailColumns().map(k=>`Raw ${k}`));
 }
 function ticketExportSheet(name,rows,prefixHeaders,prefixMapper){
@@ -5130,15 +5440,15 @@ function durationTicketDetailRows(){
   }).rows;
 }
 function kpiSummaryRows(){
-  const s=currentPeriodSummary(),h=periodHandlingSummary(),noUpdate=noUpdateAgingSummary(),claimCounts=claimTypeCounts();
+  const s=currentPeriodSummary(),approvalMonthSummary=approvalAnalyticsSummary(),h=periodHandlingSummary(),noUpdate=noUpdateAgingSummary(),claimCounts=claimTypeCounts();
   const ratio=pctValue(s.unapprovedTickets,s.approvedTickets);
-  return [["Metric","Value","Context"],["Total Critical Tickets",clean($("kpiCritical")?.textContent),selectedRangeDateLabel("end")],["Long Duration Tickets over 60 days",noUpdate.count,selectedRangeDateLabel("end")],["In Field Warranty Claims",claimCounts.inField,selectedRangeDateLabel("end")],["Pre Delivery Warranty Claims",claimCounts.preDelivery,selectedRangeDateLabel("end")],["Approved Tickets",s.approvedTickets,selectedRangeDateLabel()],["Unapproved Tickets",s.unapprovedTickets,selectedRangeDateLabel()],["Approved Cost",s.approvedAmount,selectedRangeDateLabel()],["Current Avg Cost/Ticket",s.avgCostPerTicket,selectedRangeDateLabel()],["2-week benchmark",`${numFixed(h.rate||0,1)}%`,selectedRangeDateLabel()],["Unapproved / Approved",`${numFixed(ratio,2)}%`,`${s.unapprovedTickets} / ${s.approvedTickets}`]];
+  return [["Metric","Value","Context"],["Total Critical Tickets",clean($("kpiCritical")?.textContent),selectedRangeDateLabel("end")],["Long Duration Tickets over 60 days",noUpdate.count,selectedRangeDateLabel("end")],["In Field Warranty Claims",claimCounts.inField,selectedRangeDateLabel("end")],["Pre Delivery Warranty Claims",claimCounts.preDelivery,selectedRangeDateLabel("end")],["Approved Tickets",approvalMonthSummary.approvedTickets,approvalAnalyticsLabel()],["Unapproved Tickets",approvalMonthSummary.unapprovedTickets,approvalAnalyticsLabel()],["Approved Cost",approvalMonthSummary.approvedAmount,approvalAnalyticsLabel()],["Current Avg Cost/Ticket",s.avgCostPerTicket,selectedRangeDateLabel()],["2-week benchmark",`${numFixed(h.rate||0,1)}%`,selectedRangeDateLabel()],["Unapproved / Approved",`${numFixed(ratio,2)}%`,`${s.unapprovedTickets} / ${s.approvedTickets}`]];
 }
 function trendSummaryRows(){
   return [["Date","Cumulative New Tickets","Cumulative Approved + Unapproved","Critical Total (right axis)","New Tickets","Approved + Unapproved"]].concat(cumulativeTrendPoints(selectedTrend()).map(row=>[row.date,Number(row.cumulativeNewTickets||0),Number(row.cumulativeApprovedUnapprovedTickets||0),Number(row.criticalTotal||0),Number(row.newTickets||0),Number(row.approvedUnapprovedTickets||0)]));
 }
 function repairApprovalSummaryRows(){
-  return [["Group","Decision","Decision Date","Decision Time","Decision Source","Claim Approved On","Resolved On","Changed On","Posting Date","Ticket ID","Status","Customer","Claim Type","Repair","Dealer","Employee","Aging Days","Amount"]].concat(repairAnalyticsExportRows().map(item=>{
+  return [["Group","Decision","Decision Date","Decision Time","Decision Source","Claim Approved On","Resolved On","Changed On","Posting Date","Ticket ID","C4C ERP Purchase Order","Status","Customer","Claim Type","Repair","Dealer","Employee","Aging Days","PO Price (SAP EKPO.NETWR)","Price Source"]].concat(repairAnalyticsExportRows().map(item=>{
     const row=item.row||{};
     return [
       item.group,
@@ -5150,13 +5460,13 @@ function repairApprovalSummaryRows(){
       row.resolvedOn||"",
       row.changedOn||"",
       row.postingDate||"",
-      row.id,row.status,row.customer,row.claim,row.repair,row.dealer,row.employee||row.owner,row.agingDays??row.days,row.amount??""
+      row.id,approvalExportC4cPo(row),row.status,row.customer,row.claim,row.repair,row.dealer,row.employee||row.owner,row.agingDays??row.days,row.exportAmount??row.amount??"",approvalExportAmountSource(row)
     ];
   }));
 }
 function repairApprovalTicketDetailRows(){
   const items=repairAnalyticsExportRows();
-  return [ticketExportHeaders(["Decision","Decision Date","Decision Time","Decision Source","Claim Approved On","Resolved On","Changed On","Posting Date","Export Group","Source Group"])].concat(items.map(item=>{
+  return [approvalTicketExportHeaders(["Decision","Decision Date","Decision Time","Decision Source","Claim Approved On","Resolved On","Changed On","Posting Date","C4C ERP Purchase Order","Export Group","Source Group"])].concat(items.map(item=>{
     const row=item.row||{};
     return [
       item.key==="unapproved"?"Unapproved":"Approved",
@@ -5167,9 +5477,10 @@ function repairApprovalTicketDetailRows(){
       row.resolvedOn||"",
       row.changedOn||"",
       row.postingDate||"",
+      approvalExportC4cPo(row),
       item.group||"",
       row.sourceGroup||item.group||""
-    ].concat(ticketExportRow(row));
+    ].concat(approvalTicketExportRow(row));
   }));
 }
 function employeeWorkloadSummaryRows(){
@@ -5239,7 +5550,7 @@ function employeeApprovalSummaryExportRows(){
 function employeeApprovalDetailExportRows(decisionFilter){
   const items=repairAnalyticsExportRows().filter(item=>!decisionFilter||item.key===decisionFilter);
   const rows=items.map(item=>{
-    const row=item.row||{},raw=item.raw||{};
+    const row=item.row||{};
     return [
       clean(row.employee||row.owner),
       item.key==="unapproved"?"Unapproved":"Approved",
@@ -5247,9 +5558,9 @@ function employeeApprovalDetailExportRows(decisionFilter){
       row.changedOn||row.decisionAt||"",
       row.decisionSource||row.sourceGroup||"",
       row.sourceGroup||item.group||""
-    ].concat(ticketExportRow(row));
+    ].concat(approvalTicketExportRow(row));
   }).filter(row=>validAssignName(row[0])&&!isEmployeeExited(row[0]));
-  return [ticketExportHeaders(["Employee","Decision","Decision Date","Decision Time","Decision Source","Source Group"])].concat(rows);
+  return [approvalTicketExportHeaders(["Employee","Decision","Decision Date","Decision Time","Decision Source","Source Group"])].concat(rows);
 }
 function exportEmployeeWorkload(){
   (async()=>{
@@ -5316,7 +5627,12 @@ function repairAnalyticsExportRows(){
   ];
   const rows=[];
   groups.forEach(group=>{
-    approvalBucketTicketRows(group.key).forEach(row=>{
+    approvalBucketTicketRows(group.key).forEach(sourceRow=>{
+      const row={
+        ...sourceRow,
+        exportAmount:group.key==="approved"?(sourceRow.amount??sourceRow.approvedAmount??""):"",
+        amountSource:group.key==="approved"?approvalExportAmountSource(sourceRow):"Unapproved tickets do not calculate money"
+      };
       const raw=rawTicketForExport(row)||{};
       rows.push({group:group.label,key:group.key,row,raw});
     });
@@ -5337,7 +5653,7 @@ function exportRepairAnalyticsTickets(){
   },new Set())).sort((a,b)=>a.localeCompare(b));
   const standardHeaders=[
     "Export Group","Decision","Decision Date","Decision Time","Decision Source","Approved Date","Unapproved Date","Ticket ID","Status",
-    "Customer","Claim Type","Repair","Dealer","Employee","Aging Days","Amount Including Tax","Created On"
+    "Customer","Claim Type","Repair","Dealer","Employee","Aging Days","PO Price (SAP EKPO.NETWR)","Price Source","Created On"
   ];
   const headers=standardHeaders.concat(rawKeys.filter(k=>!standardHeaders.includes(k)));
   const {end}=periodBounds();
@@ -5361,7 +5677,8 @@ function exportRepairAnalyticsTickets(){
       row.dealer,
       row.employee||row.owner,
       row.agingDays??row.days,
-      row.amount??row.approvedAmount??raw.AmountIncludingTax??raw.amount,
+      row.exportAmount??row.amount??row.approvedAmount??"",
+      approvalExportAmountSource(row),
       raw.CreatedOn||raw.createdOn||raw.CreatedAt||""
     ].concat(rawKeys.map(k=>raw[k]));
     return `<tr>${values.map(v=>`<td>${excelEscape(v)}</td>`).join("")}</tr>`;
@@ -5633,6 +5950,7 @@ function updateDateNotes(){
   const date=periodEndDate();
   const label=formatSnapshotDateLabel(date);
   const rangeLabel=selectedRangePlainLabel();
+  const approvalLabel=approvalAnalyticsLabel();
   const dashboardRangeLabel=formatDashboardDateRangeLabel();
   const pageTitleNote=$("pageTitleNote");
   if(pageTitleNote){
@@ -5641,8 +5959,8 @@ function updateDateNotes(){
   }
   document.querySelectorAll("[data-date-note]").forEach(el=>{
     if(el.closest(".repairCostPanel")){
-      el.textContent=rangeLabel;
-      el.title=`Selected period: ${rangeLabel}`;
+      el.textContent=approvalLabel;
+      el.title=`Selected month: ${approvalLabel}`;
     }else{
       el.textContent=label;
       el.title=`Snapshot date: ${date}`;
@@ -5780,10 +6098,29 @@ function scheduleStatusMixBottomAlignment(){
 }
 
 let renderAllTimer=null;
+let renderAllRequestSeq=0;
 function renderAllWithLoading(text="Calculating..."){
   showCalcFloat(true,text);
   if(renderAllTimer)clearTimeout(renderAllTimer);
-  renderAllTimer=setTimeout(()=>{renderAllTimer=null;renderAll();hideCalcFloat(120);},35);
+  const req=++renderAllRequestSeq;
+  renderAllTimer=setTimeout(async()=>{
+    renderAllTimer=null;
+    try{
+      // Month-based Team Dashboard cards must render from the selected
+      // period snapshot. If analytics/teamDashboard does not already include
+      // that month snapshot, lazily read it from the full analytics/team
+      // path before rendering so Approved Cost / Avg Cost do not fall back
+      // to 0 while the data already exists in Firebase. Also ensure the full
+      // approval rows are available so repair-cost distribution can still be
+      // calculated when a period snapshot lacks detailed approval rows.
+      await Promise.all([ensureCurrentPeriodSnapshotDetails(),ensureFullTeamViewDetails()]);
+    }catch(e){
+      console.warn("Current period snapshot preload failed",e);
+    }
+    if(req!==renderAllRequestSeq)return;
+    renderAll();
+    hideCalcFloat(120);
+  },35);
 }
 function scheduleReapplyAll(){}
 const REPAIR_ANALYTICS_HASH="#repair-analytics";
@@ -5801,7 +6138,7 @@ function renderAll(){renderPeriodButtons();renderClaimButtons();bindLayoutAdjust
 function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(prev||0);if(delta===0)return{cls:"flat",arrow:"-",text:"0"};const isGood=(metric==="exited")?delta>0:delta<0;return{cls:isGood?"up":"down",arrow:delta>0?"^":"v",text:num(Math.abs(delta))};}
 function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}
 function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const newDelta=deltaInfoMetric("entered",hit.p.cumulativeNewTickets,prev?prev.cumulativeNewTickets:hit.p.cumulativeNewTickets);const approvalDelta=deltaInfoMetric("entered",hit.p.cumulativeApprovedUnapprovedTickets,prev?prev.cumulativeApprovedUnapprovedTickets:hit.p.cumulativeApprovedUnapprovedTickets);const criticalDelta=deltaInfoMetric("critical",hit.p.criticalTotal,prev?prev.criticalTotal:hit.p.criticalTotal);tip.innerHTML=`<b>${esc(trendPointLabel(hit.p))}</b>${tipRow("Cumulative New Tickets","#3b82f6",hit.p.cumulativeNewTickets,newDelta)}${tipRow("Cumulative Approved + Unapproved","#16a34a",hit.p.cumulativeApprovedUnapprovedTickets,approvalDelta)}${tipRow("Critical total (right axis)","#fb6b1d",hit.p.criticalTotal,criticalDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
-async function load(){try{const started=performance.now();showCalcFloat(true,"Loading dashboard...");$("loadError").style.display="none";let data=await readJson(MONITOR_ROOT+"/analytics/teamDashboard").catch(()=>null);if(!data||typeof data!=="object")throw new Error("analytics/teamDashboard is empty. Please rebuild analytics.");team=data;activeClaim=canonicalClaimKey(team.defaultView||"all");await loadPageElementAdjustRemote();hideCalcFloat(Math.max(60,Math.min(350,400-performance.now()+started)));renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll();Promise.all([loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{employeeAnalytics=null}),loadEmployeeStatusMappingRemote()]).then(()=>{renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll();if($("employeeModalBackdrop")?.classList.contains("active")&&selectedEmployeeName)renderEmployeeModalWithLoading();}).catch(()=>{});}catch(err){hideCalcFloat();$("loadError").innerHTML="Cannot load team analytics from Firebase. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll()}}
+async function load(){try{const started=performance.now();showCalcFloat(true,"Loading dashboard...");$("loadError").style.display="none";let data=await readJson(MONITOR_ROOT+"/analytics/teamDashboard").catch(()=>null);if(!data||typeof data!=="object")throw new Error("analytics/teamDashboard is empty. Please rebuild analytics.");team=data;activeClaim=canonicalClaimKey(team.defaultView||"all");await loadPageElementAdjustRemote();try{await Promise.all([ensureCurrentPeriodSnapshotDetails(),ensureFullTeamViewDetails()]);}catch(e){console.warn("Initial current period snapshot preload failed",e);}hideCalcFloat(Math.max(60,Math.min(350,400-performance.now()+started)));renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll();Promise.all([loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{employeeAnalytics=null}),loadEmployeeStatusMappingRemote()]).then(async()=>{try{await Promise.all([ensureCurrentPeriodSnapshotDetails(),ensureFullTeamViewDetails()]);}catch(e){console.warn("Post-load current period snapshot preload failed",e);}renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll();if($("employeeModalBackdrop")?.classList.contains("active")&&selectedEmployeeName)renderEmployeeModalWithLoading();}).catch(()=>{});}catch(err){hideCalcFloat();$("loadError").innerHTML="Cannot load team analytics from Firebase. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll()}}
 window.addEventListener("hashchange",()=>{repairAnalyticsScrollPending=location.hash===REPAIR_ANALYTICS_HASH;settleRepairAnalyticsScroll();});
 window.addEventListener("load",()=>{settleRepairAnalyticsScroll();});
 document.querySelectorAll("[data-period]").forEach(btn=>btn.addEventListener("click",()=>{activePeriod=btn.dataset.period||"all";syncRangeInputsToActivePeriod();renderAllWithLoading();}));if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",()=>{drawTrend();applyLayoutAdjustWidth();scheduleStatusMixBottomAlignment();});bindTooltip();bindLayoutAdjustPanel();bindDashboardExportButtons();loadEmployeeStatusMapping();load();

@@ -2,7 +2,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { Workbook, SpreadsheetFile } from "@oai/artifact-tool";
 
-const DEFAULT_OUTPUT_DIR = path.join(process.cwd(), "outputs", "parts_classification_2026-07-06");
+const DEFAULT_OUTPUT_DIR = path.join(process.cwd(), "outputs", `parts_classification_${new Date().toISOString().slice(0, 10)}`);
+const DEFAULT_INPUT_PATH = path.join(process.cwd(), "outputs", "parts_classification_source.csv");
+const DEFAULT_SEED_META_PATH = path.join(process.cwd(), "outputs", "parts_classified_meta.json");
 const DETAIL_SHEET_NAME = "Classified Details";
 const SUMMARY_SHEET_NAME = "Classification Summary";
 const RULES_SHEET_NAME = "Rules";
@@ -17,6 +19,30 @@ const SAFETY_SOURCE_HEADER = "Safety Watch Match Source";
 const ENABLE_SAFETY = false;
 const OTHER_LABEL = "Other";
 const AI_MODEL_DEFAULT = "gemini-2.0-flash";
+const COMPONENT_KEYWORD_ALIASES = new Map([
+  ["tail light", "Tail Light"],
+  ["tail lights", "Tail Light"],
+  ["taillight", "Tail Light"],
+  ["taillights", "Tail Light"],
+  ["combination taillight", "Tail Light"],
+  ["combination taillights", "Tail Light"],
+  ["marker light", "Marker Light"],
+  ["marker lights", "Marker Light"],
+  ["stop light", "Stop Light"],
+  ["stop lights", "Stop Light"],
+  ["roof hatch", "Roof Hatch"],
+  ["roof hatches", "Roof Hatch"],
+  ["window blind", "Window Blind"],
+  ["window blinds", "Window Blind"],
+  ["access door", "Access Door"],
+  ["access doors", "Access Door"],
+  ["main door", "Main Door"],
+  ["main doors", "Main Door"],
+  ["power inlet", "Power Inlet"],
+  ["power inlets", "Power Inlet"],
+  ["power outlet", "Power Outlet"],
+  ["power outlets", "Power Outlet"],
+]);
 const CATEGORY_LABELS = new Map([
   ["lighting_reflectors", "Lighting / Reflectors"],
   ["windows_hatches_blinds", "Windows / Hatches / Blinds"],
@@ -135,12 +161,12 @@ const outputDir = path.resolve(args["output-dir"] || process.env.PARTS_OUTPUT_DI
 const inputPath = path.resolve(
   args.input ||
     process.env.PARTS_INPUT_FILE ||
-    path.join(outputDir, "parts_classified.csv"),
+    DEFAULT_INPUT_PATH,
 );
 const seedMetaPath = path.resolve(
   args["seed-meta"] ||
     process.env.PARTS_SEED_META ||
-    path.join(outputDir, "parts_classified_meta.json"),
+    DEFAULT_SEED_META_PATH,
 );
 const outputCsvPath = path.join(outputDir, "parts_classified.csv");
 const outputMetaPath = path.join(outputDir, "parts_classified_meta.json");
@@ -224,7 +250,9 @@ for (let i = 0; i < updatedRows.length; i += 1) {
 
   if (currentCategory) {
     row[categoryIdx] = translateCategoryLabel(currentCategory);
-    row[keywordIdx] = currentKeyword;
+    row[keywordIdx] = currentKeyword
+      ? canonicalizeMatchedKeyword(currentKeyword, row[categoryIdx], description)
+      : "";
     preservedCount += 1;
     continue;
   }
@@ -232,7 +260,7 @@ for (let i = 0; i < updatedRows.length; i += 1) {
   const historyHit = history.get(normalizeForMatch(description));
   if (historyHit) {
     row[categoryIdx] = historyHit.label;
-    row[keywordIdx] = historyHit.keyword || "";
+    row[keywordIdx] = canonicalizeMatchedKeyword(historyHit.keyword || "", historyHit.label, description);
     reusedHistoryCount += 1;
     continue;
   }
@@ -240,7 +268,7 @@ for (let i = 0; i < updatedRows.length; i += 1) {
   const keywordHit = classifyByKeywords(description, categories);
   if (keywordHit) {
     row[categoryIdx] = keywordHit.label;
-    row[keywordIdx] = keywordHit.keyword;
+    row[keywordIdx] = canonicalizeMatchedKeyword(keywordHit.keyword, keywordHit.label, description);
     keywordMatchCount += 1;
     continue;
   }
@@ -270,7 +298,7 @@ if (aiEnabled && aiKey && aiCandidates.size > 0) {
       continue;
     }
     row[categoryIdx] = aiHit.label || OTHER_LABEL;
-    row[keywordIdx] = aiHit.keyword || "ai";
+    row[keywordIdx] = canonicalizeMatchedKeyword(aiHit.keyword || "ai", row[categoryIdx], description);
     if (row[categoryIdx] === OTHER_LABEL) {
       otherCount += 1;
     } else {
@@ -354,11 +382,6 @@ const detailSheet = workbook.worksheets.getItem(DETAIL_SHEET_NAME);
 const lastCol = toColumnLetter(cleanedTable.headers.length - 1);
 const categoryCol = toColumnLetter(cleanedTable.categoryIdx);
 const keywordCol = toColumnLetter(cleanedTable.keywordIdx);
-const safetyGroupCol = toColumnLetter(cleanedTable.safetyGroupIdx);
-const safetyLevelCol = toColumnLetter(cleanedTable.safetyLevelIdx);
-const safetyReasonCol = toColumnLetter(cleanedTable.safetyReasonIdx);
-const safetyActionCol = toColumnLetter(cleanedTable.safetyActionIdx);
-const safetySourceCol = toColumnLetter(cleanedTable.safetySourceIdx);
 const costCol = toColumnLetter(cleanedCostIdx);
 
 detailSheet.freezePanes.freezeRows(1);
@@ -372,11 +395,19 @@ detailSheet.getRange(`A1:${lastCol}1`).format.rowHeightPx = 40;
 detailSheet.getRange(`${descIdxToLetter(descIdx)}1:${descIdxToLetter(descIdx)}2`).format.columnWidthPx = 320;
 detailSheet.getRange(`${categoryCol}1:${categoryCol}2`).format.columnWidthPx = 180;
 detailSheet.getRange(`${keywordCol}1:${keywordCol}2`).format.columnWidthPx = 180;
-detailSheet.getRange(`${safetyGroupCol}1:${safetyGroupCol}2`).format.columnWidthPx = 190;
-detailSheet.getRange(`${safetyLevelCol}1:${safetyLevelCol}2`).format.columnWidthPx = 110;
-detailSheet.getRange(`${safetyReasonCol}1:${safetyReasonCol}2`).format.columnWidthPx = 340;
-detailSheet.getRange(`${safetyActionCol}1:${safetyActionCol}2`).format.columnWidthPx = 340;
-detailSheet.getRange(`${safetySourceCol}1:${safetySourceCol}2`).format.columnWidthPx = 120;
+if (ENABLE_SAFETY) {
+  const safetyGroupCol = toColumnLetter(cleanedTable.safetyGroupIdx);
+  const safetyLevelCol = toColumnLetter(cleanedTable.safetyLevelIdx);
+  const safetyReasonCol = toColumnLetter(cleanedTable.safetyReasonIdx);
+  const safetyActionCol = toColumnLetter(cleanedTable.safetyActionIdx);
+  const safetySourceCol = toColumnLetter(cleanedTable.safetySourceIdx);
+
+  detailSheet.getRange(`${safetyGroupCol}1:${safetyGroupCol}2`).format.columnWidthPx = 190;
+  detailSheet.getRange(`${safetyLevelCol}1:${safetyLevelCol}2`).format.columnWidthPx = 110;
+  detailSheet.getRange(`${safetyReasonCol}1:${safetyReasonCol}2`).format.columnWidthPx = 340;
+  detailSheet.getRange(`${safetyActionCol}1:${safetyActionCol}2`).format.columnWidthPx = 340;
+  detailSheet.getRange(`${safetySourceCol}1:${safetySourceCol}2`).format.columnWidthPx = 120;
+}
 
 if (ENABLE_SAFETY) {
 const safetySummaryRows = buildSafetyWatchSummary({
@@ -593,7 +624,7 @@ summary.getRange(`A4:E${totalRow}`).format.autofitRows();
 if (ruleRows.length > 0) {
   rulesSheet.getRange(`A4:C${4 + ruleRows.length}`).format.autofitRows();
 }
-if (safetySummaryRows.length > 0) {
+if (ENABLE_SAFETY && safetySummaryRows.length > 0) {
   safetySheet.getRange(`A4:G${4 + safetySummaryRows.length}`).format.autofitRows();
 }
 
@@ -654,6 +685,53 @@ function normalizeForMatch(value) {
     .replace(/[^a-z0-9]+/g, " ")
     .replace(/\s+/g, " ")
     .trim()} `;
+}
+
+function normalizeKeywordKey(value) {
+  return cleanCell(value)
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function titleCaseKeyword(value) {
+  const text = cleanCell(value);
+  if (!text) return "";
+  return text.replace(/\S+/g, (word) => {
+    if (word.toUpperCase() === word || /^\d+$/.test(word)) return word;
+    return word.slice(0, 1).toUpperCase() + word.slice(1).toLowerCase();
+  });
+}
+
+function canonicalizeMatchedKeyword(keyword, categoryLabel = "", description = "") {
+  const rawKeyword = cleanCell(keyword);
+  const fallback = rawKeyword || cleanCell(description);
+  if (!fallback) return "";
+
+  const normalized = normalizeKeywordKey(fallback);
+  const exact = COMPONENT_KEYWORD_ALIASES.get(normalized);
+  if (exact) return exact;
+
+  if (normalized.endsWith("s")) {
+    const singular = COMPONENT_KEYWORD_ALIASES.get(normalized.slice(0, -1));
+    if (singular) return singular;
+  }
+
+  if ((categoryLabel || "").includes("Lighting / Reflectors")) {
+    if (/\b(?:combination\s+)?tail\s*lights?\b/.test(normalized) || /\btaillights?\b/.test(normalized)) {
+      return "Tail Light";
+    }
+    if (/\bmarker\s+lights?\b/.test(normalized)) {
+      return "Marker Light";
+    }
+    if (/\bstop\s+lights?\b/.test(normalized)) {
+      return "Stop Light";
+    }
+  }
+
+  return titleCaseKeyword(fallback);
 }
 
 function parseCsv(text) {
@@ -912,7 +990,9 @@ async function loadHistoryCache(seedMetaPath, inputPath, descIdx, categoryIdx, k
       }
       const normalizedDescription = normalizeForMatch(description);
       const existing = history.get(normalizedDescription);
-      const keywordValue = keyword >= 0 ? cleanCell(row[keyword]) : "";
+      const keywordValue = keyword >= 0
+        ? canonicalizeMatchedKeyword(cleanCell(row[keyword]), translatedLabel, description)
+        : "";
       if (!existing || (existing.label === OTHER_LABEL && translatedLabel !== OTHER_LABEL)) {
         history.set(normalizedDescription, { label: translatedLabel, keyword: keywordValue });
       }
@@ -938,7 +1018,7 @@ async function classifyWithGemini({ apiKey, model, categories, descriptions, bat
       const label = categoryExists(categories, item.label) ? item.label : OTHER_LABEL;
       results.set(normalizedDescription, {
         label,
-        keyword: cleanCell(item.keyword || item.matched_keyword || "ai"),
+        keyword: canonicalizeMatchedKeyword(cleanCell(item.keyword || item.matched_keyword || "ai"), label, description),
         confidence: Number(item.confidence || 0),
         reason: cleanCell(item.reason || item.explanation || ""),
       });
@@ -1198,19 +1278,19 @@ function buildFinalMeta({
     headers,
     categoryColumn: columnName(categoryIdx),
     keywordColumn: columnName(keywordIdx),
-    safetyColumns: {
+    safetyColumns: ENABLE_SAFETY && safetyIdx ? {
       group: columnName(safetyIdx.group),
       level: columnName(safetyIdx.level),
       reason: columnName(safetyIdx.reason),
       action: columnName(safetyIdx.action),
       source: columnName(safetyIdx.source),
-    },
+    } : null,
     costColumn: columnName(costIdx),
     aiEnabled,
     aiModel: aiEnabled ? aiModel : null,
     counts,
     categories: finalCategories,
-    ...(ENABLE_SAFETY ? { safetyRules } : {}),
+    safetyRules: ENABLE_SAFETY ? safetyRules : [],
     otherExamples,
   };
 }
