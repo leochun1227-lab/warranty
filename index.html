@@ -4489,6 +4489,52 @@ function durationDaysForTeamLog(e){
   if(isNaN(end)||isNaN(start)) return 999;
   return Math.max(0,(end-start)/86400000);
 }
+function benchmarkCreatedDateForEvent(e){
+  const direct=dateKey(e?.created||e?.CreatedOn||e?.createdOn||e?.CreatedAt||e?.createdAt||e?.ticketCreatedOn||e?.TicketCreatedOn||e?.ticketCreated||e?.TicketCreated);
+  if(direct)return direct;
+  const entry=ticketEntryById(criticalEventId(e));
+  return entry?criticalCreatedOnDateKey(entry.ticket):"";
+}
+function periodTwoWeekBenchmarkSummary(start,end){
+  const enterMap=new Map();
+  let total=0,within=0;
+  arrayFromMaybe(currentView().logs).slice().sort((a,b)=>{
+    const at=criticalLogSortTime(a),bt=criticalLogSortTime(b);
+    const byTime=at.localeCompare(bt);
+    return byTime||(criticalLogSortRank(a)-criticalLogSortRank(b));
+  }).forEach(e=>{
+    if(!logMatchesClaim(e))return;
+    const d=criticalEventDate(e);
+    if(!d||d>end)return;
+    const id=criticalEventId(e);
+    if(!id)return;
+    const cls=criticalLogClass(e);
+    if(cls==="enter"){
+      enterMap.set(id,d);
+      return;
+    }
+    if(cls!=="exit")return;
+    if(d>=start){
+      let days=null;
+      const entered=enterMap.get(id);
+      if(entered&&entered<=d)days=daysBetweenISO(entered,d);
+      if(days==null){
+        const created=benchmarkCreatedDateForEvent(e);
+        if(created&&created<=d)days=daysBetweenISO(created,d);
+      }
+      if(days==null){
+        const direct=durationDaysForTeamLog(e);
+        if(Number.isFinite(direct)&&direct<999)days=direct;
+      }
+      if(days!=null&&Number.isFinite(days)){
+        total++;
+        if(days<=14)within++;
+      }
+    }
+    enterMap.delete(id);
+  });
+  return {total,within,rate:total?within/total*100:0};
+}
 function dashboardDailyCriticalStockRows(){
   const view=currentView();
   return arrayFromMaybe(view.ticketVolumeTrendDaily||view.trend).map(row=>{
@@ -4536,9 +4582,12 @@ function periodHandlingSummaryForBounds(start,end,currentOverride){
   const view=currentView();
   const hs=view.handlingSpeed||{};
   const clear=periodClearToTargetSummary(start,end,currentOverride);
+  const benchmark=periodTwoWeekBenchmarkSummary(start,end);
   return {
     buckets:arrayFromMaybe(hs.buckets),
-    rate:Number(hs.twoWeekBenchmarkRate||hs.resolvedWithinTwoWeeksRate||0),
+    rate:Number(benchmark.rate||0),
+    benchmarkTotal:benchmark.total,
+    benchmarkWithinTwoWeeks:benchmark.within,
     current:Number(clear.current||hs.currentCritical||0),
     clearDays:clear.clearDays==null?null:Number(clear.clearDays),
     clearToTarget:clear
