@@ -3458,25 +3458,27 @@ function criticalAtDate(view,end){
 }
 function isFullRangeSelected(){return false;}
 function hasTicketFilter(){return true;}
-function teamRowsInSelectedRange(){
+function periodCriticalActivityRows(){
   const {start,end}=periodBounds();
   const view=currentView();
   const dates=trendThroughToday(view).map(p=>p.date).filter(d=>d&&d>=start&&d<=end);
   const map=new Map();
   (dates.length?dates:[end]).forEach(d=>{
     teamRowsAtDate(d).forEach(r=>{
-      if(!isValidDealerForTeamTotal(r.dealer))return;
       const id=clean(r.id)||(`${d}-${standardDealerName(r.dealer)}-${clean(r.status)}`);
       if(!map.has(id))map.set(id,r);
     });
   });
   return Array.from(map.values());
 }
+function teamRowsInSelectedRange(){
+  return periodCriticalActivityRows();
+}
 function teamRowsForSelectedPeriod(){
-  return teamRowsInSelectedRange();
+  return periodEndCriticalRows();
 }
 function selectedPeriodCriticalRows(){
-  return teamRowsForSelectedPeriod().filter(x=>isValidDealerForTeamTotal(x.dealer));
+  return teamRowsForSelectedPeriod();
 }
 function selectedPeriodCriticalTotal(){
   return selectedPeriodCriticalRows().length;
@@ -3927,9 +3929,7 @@ function renderKpis(){
   const hasPyTotal=pyKpis&&Object.prototype.hasOwnProperty.call(pyKpis,"totalCriticalTickets");
   const pyTotal=Number(pyKpis.totalCriticalTickets);
   const totalTicketValue=isLatestPeriodEnd()&&hasPyTotal&&Number.isFinite(pyTotal)?pyTotal:s.criticalNow;
-  const pyClearStatus=clean(pyKpis.estimatedClearToTargetStatus).toLowerCase();
-  const pyClearDays=pyKpis.estimatedClearToTargetDays;
-  const clearToTargetText=pyClearStatus==="done"?"Done":(pyClearDays==null||pyClearDays===""?"-":formatClearTime(pyClearDays));
+  const clearText=clearToTargetText(h.clearToTarget);
   const todayMode=activePeriod==="day";
   setCardLabel(".totalCriticalCard","Total Critical Tickets");
   const claimSplitLabel=document.querySelector(".approvedTicketsCountCard .kpiLabel");
@@ -3944,7 +3944,7 @@ function renderKpis(){
   if($("kpiApprovedTickets"))$("kpiApprovedTickets").textContent=`${num(claimCounts.inField)} / ${num(claimCounts.preDelivery)}`;
   if($("kpiUnapproved"))$("kpiUnapproved").textContent=num(noUpdate.count);
   if($("kpiBenchmark"))$("kpiBenchmark").textContent=todayMode?"-":`${numFixed(h.rate||0,1)}%`;
-  $("kpiRate").textContent=clearToTargetText;
+  $("kpiRate").textContent=clearText;
   if($("kpiApproved"))$("kpiApproved").textContent=money(approvalMonthSummary.approvedAmount);
   if($("kpiAvgCost"))$("kpiAvgCost").textContent=money(approvedAvg);
   if($("kpiUnapprovedAmount"))$("kpiUnapprovedAmount").textContent=money(s.unapprovedAmount);
@@ -4238,22 +4238,19 @@ function durationRowFromSnapshot(r,end,createdMap,kind,enterMap){
 }
 function criticalDurationRows(){
   const {start,end}=periodBounds();
-  const view=currentView();
   const rows=[];
   const createdMap=rawCreatedOnDateByTicketId();
   const enterMap=criticalEnterDateByTicketId(end);
-  if(rawTicketEntries.length&&end>=latestDateForView())return rawCurrentCriticalDurationRows(end,enterMap);
-  if(hasTicketFilter()){
-    teamRowsAtDate(end).filter(r=>isValidDealerForTeamTotal(r.dealer)).forEach(r=>{
-      rows.push(durationRowFromSnapshot(r,end,createdMap,"Selected critical",enterMap));
-    });
+  const snapshotRows=teamRowsAtDate(end);
+  if(snapshotRows.length){
+    snapshotRows.forEach(r=>rows.push(durationRowFromSnapshot(r,end,createdMap,"Selected critical",enterMap)));
     return rows;
   }
+  if(rawTicketEntries.length&&end>=latestDateForView())return rawCurrentCriticalDurationRows(end,enterMap);
   if(rawTicketEntries.length){
     rows.push(...rawCurrentCriticalDurationRows(end,enterMap));
   }else{
     teamRowsAtDate(end).forEach(r=>{
-      if(!isValidDealerForTeamTotal(r.dealer))return;
       rows.push(durationRowFromSnapshot(r,end,createdMap,"Current critical",enterMap));
     });
   }
@@ -4261,6 +4258,10 @@ function criticalDurationRows(){
 }
 function criticalSnapshotRowsAt(end){
   const rows=[];
+  const snapshotRows=teamRowsAtDate(end);
+  if(snapshotRows.length){
+    return snapshotRows.map(r=>({...r,status:clean(r.status)||"Unknown"}));
+  }
   if(rawTicketEntries.length&&end>=latestDateForView()){
     rawTicketEntries.forEach(({ticket,roles,id})=>{
       if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;
@@ -4276,10 +4277,12 @@ function criticalSnapshotRowsAt(end){
     return rows;
   }
   teamRowsAtDate(end).forEach(r=>{
-    if(!isValidDealerForTeamTotal(r.dealer))return;
     rows.push({...r,status:clean(r.status)||"Unknown"});
   });
   return rows;
+}
+function periodEndCriticalRows(){
+  return criticalSnapshotRowsAt(periodEndDate());
 }
 function criticalDurationBuckets(){
   const {start,end}=periodBounds();
@@ -4412,10 +4415,7 @@ function renderHandlingSpeed(){
   const rows=criticalDurationBuckets();
   renderAnalysisDateNotes();
   if($("speedRate"))$("speedRate").textContent=(h.rate||0)+"%";
-  const pyKpis=pythonDashboardKpis();
-  const pyClearStatus=clean(pyKpis.estimatedClearToTargetStatus).toLowerCase();
-  const pyClearDays=pyKpis.estimatedClearToTargetDays;
-  if($("speedAvg"))$("speedAvg").textContent=pyClearStatus==="done"?"Done":(pyClearDays==null||pyClearDays===""?(h.clearDays==null?"-":formatClearTime(h.clearDays)):formatClearTime(pyClearDays));
+  if($("speedAvg"))$("speedAvg").textContent=clearToTargetText(h.clearToTarget);
   if(rowsEl){
     const colors=["#6366f1","#3b82f6","#8b5cf6","#22c55e","#f59e0b","#fb7185"];
     const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
@@ -4489,14 +4489,59 @@ function durationDaysForTeamLog(e){
   if(isNaN(end)||isNaN(start)) return 999;
   return Math.max(0,(end-start)/86400000);
 }
+function dashboardDailyCriticalStockRows(){
+  const view=currentView();
+  return arrayFromMaybe(view.ticketVolumeTrendDaily||view.trend).map(row=>{
+    const date=clean(row.date||row.periodEnd||row.periodStart);
+    const critical=Number(row.criticalTotal??row.critical??row.criticalNow);
+    return {date,critical:Number.isFinite(critical)?critical:0};
+  }).filter(row=>row.date).sort((a,b)=>a.date.localeCompare(b.date));
+}
+function periodStockReductionPerDay(start,end){
+  const rows=dashboardDailyCriticalStockRows().filter(row=>row.date>=start&&row.date<=end);
+  if(rows.length<2)return null;
+  const first=rows[0],last=rows[rows.length-1];
+  const elapsed=Math.max(1,daysInBounds(first.date,last.date)-1);
+  const perDay=(Number(first.critical||0)-Number(last.critical||0))/elapsed;
+  return Number.isFinite(perDay)?perDay:null;
+}
+function recentStockReductionPerDay(end,days=14){
+  const start=addDaysISO(end,-days+1);
+  return periodStockReductionPerDay(start,end);
+}
+function periodClearToTargetSummary(start,end,currentOverride){
+  const pyKpis=pythonDashboardKpis();
+  const target=Number(pyKpis.estimatedClearTarget||(currentView().handlingSpeed||{}).clearTargetCritical||300);
+  const pyDays=Number(pyKpis.estimatedClearToTargetDays);
+  const pyStatus=clean(pyKpis.estimatedClearToTargetStatus).toLowerCase();
+  const canUseLatestPy=isLatestPeriodEnd(end)&&(pyKpis&&Object.prototype.hasOwnProperty.call(pyKpis,"estimatedClearToTargetDays"));
+  const fallbackCurrent=Number(currentOverride);
+  const current=Number.isFinite(fallbackCurrent)?fallbackCurrent:expectedCurrentCriticalTotal(start,end);
+  const ticketsToClear=Math.max(0,Number(current||0)-target);
+  if(canUseLatestPy&&(pyStatus==="done"||(Number.isFinite(pyDays)&&pyDays>=0))){
+    return {current,target,ticketsToClearToTarget:ticketsToClear,clearDays:pyStatus==="done"?0:pyDays,status:pyStatus||((current<=target)?"done":"pending")};
+  }
+  if(current<=target)return {current,target,ticketsToClearToTarget:0,clearDays:0,status:"done"};
+  let net=periodStockReductionPerDay(start,end);
+  if(!(net>0))net=recentStockReductionPerDay(end,14);
+  const clearDays=net>0?Math.ceil(ticketsToClear/net):null;
+  return {current,target,ticketsToClearToTarget:ticketsToClear,clearDays,status:clearDays==null?"unknown":"pending",netClearPerDay:net};
+}
+function clearToTargetText(summary){
+  if(!summary)return "-";
+  if(clean(summary.status).toLowerCase()==="done"||Number(summary.ticketsToClearToTarget||0)<=0)return "Done";
+  return summary.clearDays==null||summary.clearDays===""?"-":formatClearTime(summary.clearDays);
+}
 function periodHandlingSummaryForBounds(start,end,currentOverride){
   const view=currentView();
   const hs=view.handlingSpeed||{};
+  const clear=periodClearToTargetSummary(start,end,currentOverride);
   return {
     buckets:arrayFromMaybe(hs.buckets),
     rate:Number(hs.twoWeekBenchmarkRate||hs.resolvedWithinTwoWeeksRate||0),
-    current:Number(hs.currentCritical||0),
-    clearDays:hs.estimatedClearToTargetDays==null?null:Number(hs.estimatedClearToTargetDays)
+    current:Number(clear.current||hs.currentCritical||0),
+    clearDays:clear.clearDays==null?null:Number(clear.clearDays),
+    clearToTarget:clear
   };
 }
 function periodHandlingSummary(){
@@ -5382,16 +5427,28 @@ function ticketExportSheet(name,rows,prefixHeaders,prefixMapper){
     rows:[ticketExportHeaders(prefixHeaders)].concat((rows||[]).map(row=>(prefixMapper?prefixMapper(row):[]).concat(ticketExportRow(row))))
   };
 }
+function monthPeriodBounds(month){
+  const startBase=monthStartISO(month),endBase=monthEndISO(month),latest=latestDateForView();
+  const start=startBase<earliestDateForView()?earliestDateForView():startBase;
+  const end=endBase&&endBase<latest?endBase:latest;
+  return {start,end};
+}
+function criticalStockExportSheet(month){
+  const bounds=month?monthPeriodBounds(month):periodBounds();
+  const label=month||selectedDashboardMonth();
+  const rows=criticalSnapshotRowsAt(bounds.end);
+  return ticketExportSheet(`${label} Critical Stock`,rows,["Period Start","Period End","Snapshot Date"],()=>[bounds.start,bounds.end,bounds.end]);
+}
+function monthlyCriticalStockSheets(){
+  return availableDashboardMonths().map(month=>criticalStockExportSheet(month));
+}
 function exportTotalCriticalTickets(e){
   if(e){e.preventDefault();e.stopPropagation();}
   (async()=>{
     await ensureExportDetailsLoaded();
-    const rows=selectedPeriodCriticalRows();
-    if(!rows.length){alert("No Total Critical Tickets data found for the selected filters.");return;}
-    exportWorkbook([
-      ticketExportSheet("Total Critical Tickets",rows),
-      ticketExportSheet("Ticket Detail",rows,["Source View"],row=>[activeClaim==="all"?"All":activeClaim])
-    ],`total-critical-tickets-${exportDateSuffix()}.xls`);
+    const sheets=monthlyCriticalStockSheets();
+    if(!sheets.some(sheet=>sheet.rows&&sheet.rows.length>1)){alert("No Critical ticket data found for the selected filters.");return;}
+    exportWorkbook(sheets,`total-critical-tickets-by-month-${exportDateSuffix()}.xls`);
   })();
 }
 function longDurationTicketRows(){
@@ -5413,7 +5470,7 @@ function dealerSummaryRows(){
   const rawView=currentRawCriticalView();
   const rows=selectedPeriodCriticalRows();
   const grouped={};
-  rows.forEach(row=>{const dealer=standardDealerName(row.dealer||"Unknown");if(isValidDealerForTeamTotal(dealer))grouped[dealer]=(grouped[dealer]||0)+1;});
+  rows.forEach(row=>{const dealer=standardDealerName(row.dealer||"Unknown");grouped[dealer]=(grouped[dealer]||0)+1;});
   const dealers=(!hasTicketFilter()&&rawView)?arrayFromMaybe(rawView.dealers):Object.entries(grouped).map(([dealer,criticalTickets])=>({dealer,criticalTickets}));
   return [["Dealer","Critical Tickets"]].concat(dealers.sort((a,b)=>Number(b.criticalTickets||0)-Number(a.criticalTickets||0)||clean(a.dealer).localeCompare(clean(b.dealer))).map(row=>[row.dealer,Number(row.criticalTickets||0)]));
 }
@@ -5599,7 +5656,7 @@ function exportDashboardSummary(){
       {name:"Employee Workload",rows:employeeWorkloadSummaryRows()},
       {name:"Employee Current Detail",rows:employeeCurrentCriticalDetailRows()},
       {name:"Employee Removed Detail",rows:removedTicketDetailExportRows()},
-      ticketExportSheet("Total Critical Tickets",selectedPeriodCriticalRows()),
+      ...monthlyCriticalStockSheets(),
       ticketExportSheet("Long Duration Tickets",longDurationTicketRows())
     ],`dashboard-summary-${exportDateSuffix()}.xls`);
   })();
@@ -5925,7 +5982,7 @@ function currentCriticalStatusRows(){
 function renderLists(){const rawView=currentRawCriticalView();const rows=selectedPeriodCriticalRows();
   const dealerTitle=document.querySelector(".dealerRankPanel .panelTitle");if(dealerTitle)dealerTitle.textContent=hasTicketFilter()?"Top Critical Tickets Change by Dealer":"Top Critical Tickets by Dealer";
   const grouped={};
-  rows.forEach(x=>{const dealer=standardDealerName(x.dealer||'Unknown'); if(isValidDealerForTeamTotal(dealer)) grouped[dealer]=(grouped[dealer]||0)+1;});
+  rows.forEach(x=>{const dealer=standardDealerName(x.dealer||'Unknown'); grouped[dealer]=(grouped[dealer]||0)+1;});
   const fallbackDealers=arrayFromMaybe(currentView().topDealers).map(x=>({dealer:clean(x.dealer),criticalTickets:Number(x.criticalTickets||x.count||0)})).filter(x=>x.dealer);
   const dealers=(!hasTicketFilter()&&rawView)?rawView.dealers:(Object.keys(grouped).length?Object.entries(grouped).map(([dealer,criticalTickets])=>({dealer,criticalTickets})).sort((a,b)=>b.criticalTickets-a.criticalTickets||a.dealer.localeCompare(b.dealer)):fallbackDealers);
   const max=Math.max(1,...dealers.map(x=>Number(x.criticalTickets||0)));
