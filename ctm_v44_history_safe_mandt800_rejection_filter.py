@@ -93,8 +93,11 @@ SIGNATURE_FIELDS = [
     "TicketStatus", "TicketStatusText", "TicketSeverity",
     "Responded", "AmountIncludingTax",
     "ApprovalDate", "ApprovalNumber",
+    "ClaimApprovedOnDateTime", "ClaimApprovedOnDate", "ClaimApprovedOn", "Claim Approved On",
+    "ResolvedOnDateTime", "ResolvedOnDate", "ResolvedOn", "Resolved On",
     "ERPInvoiceNumber", "ERPPurchaseOrder", "ERPFreeOrder",
     "Sales Order", "SO Created Date",
+    "First Issue Date", "Complete Issue Date",
     "Issue Status", "Order Rejection Status",
     "TicketName", "TicketType", "TicketTypeText",
     "DealerID", "DealerName", "WarrantyHandlingDealerID",
@@ -3895,6 +3898,7 @@ def reset_baseline(
 
     write_analytics(source_root, monitor_root, snap)
     rebuild_delivery_flow_history(source_root, db_url=db_url, sa_path=sa_path)
+    rebuild_ticket_timeline_export()
 
     critical_now = sum(1 for x in snap.values() if x.get("isCritical"))
     print(f"[RESET DONE] baseline tickets={len(snap)}, criticalNow={critical_now}, events=0")
@@ -4218,6 +4222,7 @@ def compare_and_write(
         })
         write_analytics(source_root, monitor_root, snap, include_dealer=include_dealer)
         rebuild_delivery_flow_history(source_root, db_url=db_url, sa_path=sa_path)
+        rebuild_ticket_timeline_export()
         print(f"[COMPARE DONE] missing currentStatus recovered with membership events={len(history_patch)}, entered={entered}, exited={exited}")
         return
 
@@ -4386,6 +4391,7 @@ def compare_and_write(
 
     write_analytics(source_root, monitor_root, snap, include_dealer=include_dealer)
     rebuild_delivery_flow_history(source_root, db_url=db_url, sa_path=sa_path)
+    rebuild_ticket_timeline_export()
 
     critical_now = sum(1 for x in snap.values() if x.get("isCritical"))
     print(
@@ -4436,6 +4442,23 @@ def rebuild_delivery_flow_history(source_root: str, db_url: str, sa_path: str) -
     if result.returncode != 0:
         raise SystemExit(f"Delivery flow history rebuild failed with exit code {result.returncode}")
     print("[DELIVERY FLOW] History rebuild finished successfully.")
+
+
+def rebuild_ticket_timeline_export() -> None:
+    """Refresh the static Ticket Timeline workbook and JSON summary after fetch/analytics runs."""
+    script = Path(__file__).resolve().with_name("export_ticket_timeline_segments_2025_2026.py")
+    if not script.exists():
+        print(f"[TICKET TIMELINE] Skipped: missing {script.name}")
+        return
+
+    env = os.environ.copy()
+    env["PYTHONUNBUFFERED"] = "1"
+
+    print(f"[TICKET TIMELINE] Rebuilding workbook and summary via {script.name} ...")
+    result = subprocess.run([sys.executable, str(script)], env=env)
+    if result.returncode != 0:
+        raise SystemExit(f"Ticket Timeline export failed with exit code {result.returncode}")
+    print("[TICKET TIMELINE] Workbook and summary refreshed successfully.")
 
 
 def default_company_file() -> str:

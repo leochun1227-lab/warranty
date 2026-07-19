@@ -198,10 +198,10 @@
     border:1px solid #dce7f4;
     border-radius:22px;
     padding:12px 12px 34px;
-    min-height:102px;
+    min-height:116px;
     box-shadow:0 10px 24px rgba(15,23,42,.04);
     display:grid;
-    grid-template-rows:auto minmax(0,1fr);
+    grid-template-rows:auto minmax(0,1fr) auto;
     gap:8px;
     position:relative;
     overflow:hidden;
@@ -268,6 +268,16 @@
     color:var(--inkFaint);
     font-weight:400;
     margin-left:2px;
+  }
+  .kpiNote{
+    grid-row:3;
+    justify-self:center;
+    max-width:100%;
+    color:#7b8798;
+    font-size:10px;
+    line-height:1.25;
+    text-align:center;
+    white-space:normal;
   }
   .meta{
     display:none;
@@ -1049,7 +1059,7 @@
         <canvas id="leadChart" class="chartLead"></canvas>
       </div>
       <div class="legend">
-        <span><i class="dot blue"></i> Avg parts issuing time</span>
+        <span><i class="dot blue"></i> Avg complete issue time</span>
         <span><i class="dot violet"></i> 3M moving average</span>
       </div>
       <div class="foot" id="leadFoot"></div>
@@ -1405,13 +1415,13 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     const itemCount = details.length;
     const issuedCount = details.filter(item => isIssuedMaterialItem(item)).length;
     const openCount = details.filter(item => isOpenMaterialItem(item)).length;
-    const firstIssueDates = details.map(item => clean(item.firstIssueDate)).filter(Boolean).sort((a, b) => {
+    const issueDates = details.map(item => clean(item.firstIssueDate)).filter(Boolean).sort((a, b) => {
       const da = parseLooseDate(a) || parseDate(a);
       const db = parseLooseDate(b) || parseDate(b);
       if (da && db && da.getTime() !== db.getTime()) return da - db;
       return a.localeCompare(b);
     });
-    const firstIssueDate = firstIssueDates[0] || clean(ticket["First Issue Date"]);
+    const completeIssueDate = clean(ticket["Complete Issue Date"]) || issueDates[issueDates.length - 1] || clean(ticket["First Issue Date"]);
     return {
       ticketKey: clean(ticketKey),
       ticketId: clean(ticket.TicketID || ticket.TicketId || ticket.id || ticketKey),
@@ -1426,7 +1436,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       orderRejectionStatus: clean(ticket["Order Rejection Status"]),
       erpPurchaseOrder: clean(ticket.ERPPurchaseOrder),
       amountIncludingTax: n(ticket.AmountIncludingTax),
-      firstIssueDate,
+      completeIssueDate,
+      firstIssueDate: completeIssueDate,
       purchaser: clean(ticket.Purchaser),
       currency: clean(ticket.Currency),
       detailItems: itemCount,
@@ -1484,27 +1495,59 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     let openCount = 0;
     let leadSum = 0;
     let leadCount = 0;
+    let leadPeriodStart = null;
+    let leadPeriodEnd = null;
+    const soState = new Map();
     (tickets || []).forEach(ticket => {
       const soCreated = parseLooseDate(ticket.soCreatedDate);
+      const soKey = salesOrderKey(ticket.salesOrder) || ticket.ticketKey;
+      let hasIssued = false;
+      let hasOpen = false;
+      let completeIssueDate = parseLooseDate(ticket.completeIssueDate || ticket.firstIssueDate);
       (ticket.details || []).forEach(item => {
         if (isIssuedMaterialItem(item)){
           issuedCount += 1;
+          hasIssued = true;
           const d = materialIssueDate(ticket, item);
-          if (d && soCreated){
-            leadSum += Math.max(0, Math.round((d - soCreated) / 86400000));
-            leadCount += 1;
-          }
+          if (d && (!completeIssueDate || d > completeIssueDate)) completeIssueDate = d;
           return;
         }
         if (isOpenMaterialItem(item)){
           openCount += 1;
+          hasOpen = true;
         }
       });
+      if (soKey && soCreated){
+        const existing = soState.get(soKey) || {
+          soCreated,
+          completeIssueDate: null,
+          hasIssued: false,
+          hasOpen: false,
+        };
+        if (soCreated < existing.soCreated) existing.soCreated = soCreated;
+        if (completeIssueDate && (!existing.completeIssueDate || completeIssueDate > existing.completeIssueDate)){
+          existing.completeIssueDate = completeIssueDate;
+        }
+        existing.hasIssued = existing.hasIssued || hasIssued;
+        existing.hasOpen = existing.hasOpen || hasOpen;
+        soState.set(soKey, existing);
+      }
+    });
+    soState.forEach(row => {
+      if (!row.hasIssued || row.hasOpen || !row.completeIssueDate) return;
+      leadSum += Math.max(0, Math.round((row.completeIssueDate - row.soCreated) / 86400000));
+      leadCount += 1;
+      if (!leadPeriodStart || row.completeIssueDate < leadPeriodStart) leadPeriodStart = row.completeIssueDate;
+      if (!leadPeriodEnd || row.completeIssueDate > leadPeriodEnd) leadPeriodEnd = row.completeIssueDate;
     });
     return {
       issuedCount,
       openCount,
+      avgDaysToCompleteIssue: leadCount ? (leadSum / leadCount) : 0,
       avgDaysToFirstIssue: leadCount ? (leadSum / leadCount) : 0,
+      leadCount,
+      leadPeriodStart,
+      leadPeriodEnd,
     };
   }
   function materialAgingFromTickets(tickets, latestAsOf){
@@ -1542,7 +1585,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     return rows;
   }
   function ticketDetailRows(tickets){
-    return [["Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Created On","Ticket Status","Ticket Status Text","Issue Status","Order Rejection Status","ERP Purchase Order","Amount Including Tax","Preferred Parts Cost (AUD)","First Issue Date","Purchaser","Currency","Detail Items","Issued Items","Open Items"]].concat(tickets.map(row => [
+    return [["Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Created On","Ticket Status","Ticket Status Text","Issue Status","Order Rejection Status","ERP Purchase Order","Amount Including Tax","Preferred Parts Cost (AUD)","Complete Issue Date","Purchaser","Currency","Detail Items","Issued Items","Open Items"]].concat(tickets.map(row => [
       row.ticketKey,
       row.ticketId,
       row.salesOrder,
@@ -1557,7 +1600,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       row.erpPurchaseOrder,
       row.amountIncludingTax,
       ticketPreferredPartsCost(row),
-      row.firstIssueDate,
+      row.completeIssueDate || row.firstIssueDate,
       row.purchaser,
       row.currency,
       row.detailItems,
@@ -1592,7 +1635,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
           preferredPartsLineCost(item),
           ...materialPriceCols(item),
           item.deliveryCount,
-          item.firstIssueDate || ticket.firstIssueDate,
+          item.firstIssueDate,
           item.rejectionReason,
           item.itemRejectionStatus,
         ]);
@@ -1693,7 +1736,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
           preferredPartsLineCost(item),
           ...materialPriceCols(item),
           item.deliveryCount,
-          item.firstIssueDate || ticket.firstIssueDate,
+          item.firstIssueDate,
           item.rejectionReason,
           item.itemRejectionStatus,
           mix.group,
@@ -1756,7 +1799,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     ]));
   }
   function monthKeyFromTicket(ticket){
-    const candidates = [ticket?.soCreatedDate, ticket?.createdOn, ticket?.firstIssueDate];
+    const candidates = [ticket?.soCreatedDate, ticket?.createdOn, ticket?.completeIssueDate, ticket?.firstIssueDate];
     for (const candidate of candidates){
       const d = parseLooseDate(candidate);
       if (d) return dateKey(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1)));
@@ -1857,7 +1900,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     return rows;
   }
   function costMonthlyTicketRows(tickets){
-    const rows = [["Month","Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Created On","Ticket Status","Ticket Status Text","Issue Status","Order Rejection Status","ERP Purchase Order","Amount Including Tax","Preferred Parts Cost (AUD)","First Issue Date","Purchaser","Currency","Detail Items","Issued Items","Open Items"]];
+    const rows = [["Month","Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Created On","Ticket Status","Ticket Status Text","Issue Status","Order Rejection Status","ERP Purchase Order","Amount Including Tax","Preferred Parts Cost (AUD)","Complete Issue Date","Purchaser","Currency","Detail Items","Issued Items","Open Items"]];
     const ordered = [...(tickets || [])].sort((a, b) => {
       const monthCmp = monthKeyFromTicket(a).localeCompare(monthKeyFromTicket(b));
       if (monthCmp) return monthCmp;
@@ -1880,7 +1923,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         ticket.erpPurchaseOrder,
         ticket.amountIncludingTax,
         ticketPreferredPartsCost(ticket),
-        ticket.firstIssueDate,
+        ticket.completeIssueDate || ticket.firstIssueDate,
         ticket.purchaser,
         ticket.currency,
         ticket.detailItems,
@@ -1923,7 +1966,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
           preferredPartsLineCost(item),
           ...materialPriceCols(item),
           item.deliveryCount,
-          item.firstIssueDate || ticket.firstIssueDate,
+          item.firstIssueDate,
           item.rejectionReason,
           item.itemRejectionStatus,
         ]);
@@ -2074,6 +2117,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         end: monthEnd,
         tooltip: fmtDateRangeShort(monthStart, monthEnd),
         partsIssued: n(volumeByMonth[key]),
+        avgDaysToCompleteIssue: n(byMonth[key]),
         avgDaysToFirstIssue: n(byMonth[key]),
       });
     }
@@ -2369,7 +2413,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         partiallyIssuedTickets: n(kpi.partiallyIssuedTickets),
         fullyIssuedTickets: n(kpi.fullyIssuedTickets),
         notIssuedTickets: n(kpi.notIssuedTickets),
-        avgDaysToFirstIssue: n(kpi.avgDaysToFirstIssue),
+        avgDaysToCompleteIssue: n(kpi.avgDaysToCompleteIssue ?? kpi.avgDaysToFirstIssue),
+        avgDaysToFirstIssue: n(kpi.avgDaysToCompleteIssue ?? kpi.avgDaysToFirstIssue),
         oldestNotIssuedDays: n(kpi.oldestNotIssuedDays),
       },
       partsCost: {
@@ -2535,7 +2580,16 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       ? awaitingTicketRows(currentTickets).length
       : (latest.awaitingParts?.current ?? latest.statusMix.awaitingItems ?? latest.kpi.openSoItems ?? 0);
     const openNotIssuedParts = materialStats ? materialStats.openCount : (latest.kpi.openNotIssuedParts ?? latest.kpi.openSoItems ?? 0);
-    const avgDaysToFirstIssue = materialStats ? materialStats.avgDaysToFirstIssue : (latest.kpi.avgDaysToFirstIssue ?? 0);
+    const avgDaysToCompleteIssue = materialStats
+      ? (materialStats.avgDaysToCompleteIssue ?? materialStats.avgDaysToFirstIssue ?? 0)
+      : (latest.kpi.avgDaysToCompleteIssue ?? latest.kpi.avgDaysToFirstIssue ?? 0);
+    const avgIssuePeriod = materialStats?.leadPeriodStart && materialStats?.leadPeriodEnd
+      ? `Completed issue period: ${fmtDateRangeShort(materialStats.leadPeriodStart, materialStats.leadPeriodEnd)}`
+      : latestGroup?.tooltip
+        ? `Snapshot period: ${latestGroup.tooltip}`
+        : latest?.asOf
+          ? `Snapshot date: ${latest.asOf.slice(0, 10)}`
+          : "";
     const icon = {
       awaiting: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M7 15V11"/><path d="M12 15V8"/><path d="M17 15V6"/></svg>`,
       issued: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 13l4 4L19 7"/><path d="M12 4v4"/><path d="M4 12h4"/></svg>`,
@@ -2545,7 +2599,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     const cards = [
       { label:"Current Awaiting Parts", value: integer.format(awaitingNow), left:"Ticket status YA / Awaiting Parts", right:"unique SOs awaiting parts", hint:`Awaiting unique SOs ${integer.format(awaitingNow)}`, theme:"blue", icon: icon.awaiting, action:{ kind:"awaiting", label:"Export", title:"Export Current Awaiting Parts with ticket details" } },
       { label:"Open Parts (Not Issued)", value: integer.format(openNotIssuedParts), left:"Material rows", right:"still open today", hint:`Age bands use ${integer.format(openNotIssuedParts)} open parts`, theme:"orange", icon: icon.open, action:{ kind:"open-so", label:"Export", title:"Export Open Parts with ticket details" } },
-      { label:"Average Parts Issuing Time", value: `${daysFmt.format(avgDaysToFirstIssue)}<small>d</small>`, left:avgIssueSourceLabel, right:"issued material rows from creation to first issue", hint:"Weighted across issued material rows in the current snapshot", theme:"violet", icon: icon.lead },
+      { label:"Average Parts Issuing Time", value: `${daysFmt.format(avgDaysToCompleteIssue)}<small>d</small>`, note:avgIssuePeriod, left:avgIssueSourceLabel, right:"SO created to complete issues", hint:"Average across fully issued SOs; incomplete parts are excluded", theme:"violet", icon: icon.lead },
     ];
 
     els.kpis.innerHTML = cards.map(card => `
@@ -2559,6 +2613,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
           </div>
         </div>
         <div class="val">${card.value}</div>
+        ${card.note ? `<div class="kpiNote">${esc(card.note)}</div>` : ""}
         ${card.action ? `<button class="flowExportBtn kpiAction" type="button" data-export-kind="${esc(card.action.kind)}" title="${esc(card.action.title)}" aria-label="${esc(card.action.title)}">${exportIcon()}<span>${esc(card.action.label || "Export")}</span></button>` : ""}
       </article>
     `).join("");
@@ -2719,11 +2774,11 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
   function drawLeadChart(latest){
     const canvas = els.leadChart;
     const visible = buildMonthlyIssuedLeadSeries(latest);
-    const visibleWithMA = addMovingAverage(visible, 3, "avgDaysToFirstIssue");
+    const visibleWithMA = addMovingAverage(visible, 3, "avgDaysToCompleteIssue");
     const { w, h } = renderCanvas(canvas, 236, (ctx, width, height) => {
       const ml = 56, mr = 22, mt = 18, mb = 38;
       const plotW = width - ml - mr, plotH = height - mt - mb;
-      const axisMax = niceMax(Math.max(1, ...visible.map(r => r.avgDaysToFirstIssue), ...visibleWithMA.map(r => r.movingAvg || 0)));
+      const axisMax = niceMax(Math.max(1, ...visible.map(r => r.avgDaysToCompleteIssue ?? r.avgDaysToFirstIssue), ...visibleWithMA.map(r => r.movingAvg || 0)));
       const step = plotW / Math.max(1, visible.length);
       const barW = Math.max(12, Math.min(28, step * 0.56));
       const xFor = i => ml + step * i + step / 2;
@@ -2744,11 +2799,12 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       }
       visible.forEach((r, i) => {
         const x = xFor(i);
-        const y = yFor(r.avgDaysToFirstIssue || 0);
+        const avg = r.avgDaysToCompleteIssue ?? r.avgDaysToFirstIssue ?? 0;
+        const y = yFor(avg);
         const barH = mt + plotH - y;
         ctx.fillStyle = "rgba(63,111,224,.50)";
         ctx.fillRect(x - barW / 2, y, barW, barH);
-        drawChartLabel(ctx, daysFmt.format(r.avgDaysToFirstIssue || 0), x, Math.max(mt + 12, y - 6), "rgba(63,111,224,.98)");
+        drawChartLabel(ctx, daysFmt.format(avg), x, Math.max(mt + 12, y - 6), "rgba(63,111,224,.98)");
       });
       visibleWithMA.forEach((r, i) => {
         const x = xFor(i);
@@ -2789,8 +2845,9 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       }
       const r = visible[idx];
       const ma = visibleWithMA[idx] ? visibleWithMA[idx].movingAvg || 0 : 0;
+      const avg = r.avgDaysToCompleteIssue ?? r.avgDaysToFirstIssue ?? 0;
       setTip(
-        `<div class="tipTitle">${esc(r.label)}</div><div class="tipLine">Avg parts issuing time: ${daysFmt.format(r.avgDaysToFirstIssue || 0)}d</div><div class="tipLine">3M moving average: ${daysFmt.format(ma)}d</div>`,
+        `<div class="tipTitle">${esc(r.label)}</div><div class="tipLine">Avg complete issue time: ${daysFmt.format(avg)}d</div><div class="tipLine">3M moving average: ${daysFmt.format(ma)}d</div>`,
         e.clientX, e.clientY
       );
     };

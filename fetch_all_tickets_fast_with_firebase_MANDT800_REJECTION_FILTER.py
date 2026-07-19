@@ -3,6 +3,7 @@
 import os
 import re
 import sys
+import csv
 import json
 import time
 import logging
@@ -12,7 +13,7 @@ import subprocess
 from collections import Counter, defaultdict
 from datetime import datetime, timezone, date
 from pathlib import Path
-from typing import Dict, Any, List, Tuple, Optional
+from typing import Dict, Any, List, Tuple, Optional, Iterable
 from urllib.parse import quote
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -66,7 +67,8 @@ VEHICLE_BASE_SUMMARY_PATH = OUTPUTS_DIR / "analysis_vehicle_base_summary.json"
 VEHICLE_BASE_SUMMARY_JS_PATH = OUTPUTS_DIR / "analysis_vehicle_base_summary.js"
 PARTS_TICKET_COST_MAP_PATH = OUTPUTS_DIR / "analysis_parts_ticket_cost_map.json"
 PARTS_TICKET_COST_MAP_JS_PATH = OUTPUTS_DIR / "analysis_parts_ticket_cost_map.js"
-ANALYSIS_TICKET_CSV_PATH = ROOT_DIR / "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv"
+ANALYSIS_TICKET_CSV_PATH = OUTPUTS_DIR / "analysis_ticket_base.csv"
+LEGACY_ANALYSIS_TICKET_CSV_PATH = ROOT_DIR / "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv"
 ANALYSIS_TICKET_CSV_JS_PATH = OUTPUTS_DIR / "analysis_ticket_csv.js"
 PARTS_CLASSIFIED_META_PATH = OUTPUTS_DIR / "parts_classified_meta.json"
 PARTS_CLASSIFIED_FLAT_CSV_PATH = OUTPUTS_DIR / "parts_classified.csv"
@@ -308,7 +310,7 @@ FIREBASE_DB_URL = os.getenv(
 )
 FIREBASE_SA_PATH = os.getenv(
     "FIREBASE_SA_PATH",
-    r"C:\Users\yan\Desktop\snowy-hr-report-firebase-adminsdk-fbsvc-5dccd921e0.json"
+    str(ROOT_DIR / "firebase-service-account.json")
 )
 FIREBASE_ROOT = os.getenv("FIREBASE_ROOT", "c4cTickets_test")
 MONITOR_ROOT = os.getenv("MONITOR_ROOT", "ctmTicketStatusMonitorV44")
@@ -614,6 +616,267 @@ def write_js_global(
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+ANALYSIS_TICKET_CSV_HEADERS = [
+    "Ticket",
+    "",
+    "Ticket ID",
+    "",
+    "Ticket Type",
+    "Agent",
+    "",
+    "Serial ID",
+    "Chassis Number",
+    "Account",
+    "",
+    "ERP Free Order ID",
+    "ERP Purchase Order ID",
+    "ERP Service Order ID",
+    "Created On",
+    "Dealer",
+    "Dealer Name",
+    "Country/Region",
+    "Date of Purchase",
+    "Claim Approved On",
+    "Service Requester Postal Code",
+    "Registered Product",
+    "",
+    "Product",
+    "",
+    "Status",
+    "Service Technician",
+    "",
+    "ClaimTotalAmount",
+    "Factory Parts Claim Total Amount",
+    "LabourHoursTotalAmount",
+    "Repairer Parts Claim Total Amount",
+    "Changed On",
+    "Posting Date",
+]
+
+
+def compact_lookup_key(value: Any) -> str:
+    return re.sub(r"[^a-z0-9]", "", str(value or "").lower())
+
+
+def first_clean_ticket_value(ticket_data: Dict[str, Any], *candidates: str) -> str:
+    for candidate in candidates:
+        value = as_clean_str(ticket_data.get(candidate))
+        if value:
+            return value
+
+    normalized = {compact_lookup_key(key): key for key in ticket_data.keys()}
+    for candidate in candidates:
+        key = normalized.get(compact_lookup_key(candidate))
+        if key:
+            value = as_clean_str(ticket_data.get(key))
+            if value:
+                return value
+    return ""
+
+
+def role_field(new_snapshot_node: Dict[str, Any], role_code: str, *candidates: str) -> str:
+    roles = (new_snapshot_node or {}).get("roles", {})
+    role_data = roles.get(role_code) if isinstance(roles, dict) else None
+    if not isinstance(role_data, dict):
+        return ""
+    return first_clean_ticket_value(role_data, *candidates)
+
+
+def csv_value(value: Any, default: str = "#") -> str:
+    text = as_clean_str(value) or ""
+    return text if text else default
+
+
+def csv_date_value(value: Any) -> str:
+    text = as_clean_str(value) or ""
+    if not text or text == "#":
+        return "#"
+    cleaned = text.replace(" AUSACT", "").strip()
+    for fmt in (
+        "%d.%m.%Y %H:%M:%S",
+        "%d.%m.%Y",
+        "%d/%m/%Y",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%d",
+        "%Y/%m/%d",
+        "%Y%m%d",
+    ):
+        try:
+            return datetime.strptime(cleaned[:19], fmt).date().isoformat()
+        except ValueError:
+            pass
+    try:
+        parsed = pd.to_datetime(cleaned, errors="coerce", dayfirst=True)
+        if not pd.isna(parsed):
+            return parsed.date().isoformat()
+    except Exception:
+        pass
+    return text
+
+
+def first_non_empty(values: Iterable[Any]) -> str:
+    for value in values:
+        text = as_clean_str(value)
+        if text:
+            return text
+    return ""
+
+
+def summarize_final_ticket_rows(final_df: pd.DataFrame) -> Dict[str, Dict[str, str]]:
+    if final_df.empty or "TicketID" not in final_df.columns:
+        return {}
+    summary: Dict[str, Dict[str, str]] = {}
+    fields = [
+        "ERPFreeOrder",
+        "ERPPurchaseOrder",
+        "ERP Service Order ID",
+        "Sales Order",
+        "SO Created Date",
+        "AmountIncludingTax",
+    ]
+    for ticket_id_raw, grp in final_df.groupby("TicketID", dropna=False):
+        ticket_id = as_clean_str(ticket_id_raw) or ""
+        if not ticket_id:
+            continue
+        row_summary: Dict[str, str] = {}
+        for field in fields:
+            if field in grp.columns:
+                row_summary[field] = first_non_empty(grp[field].tolist())
+            else:
+                row_summary[field] = ""
+        summary[ticket_id] = row_summary
+    return summary
+
+
+def write_analysis_ticket_base_csv(
+    new_snapshot: Dict[str, Any],
+    final_df: pd.DataFrame,
+    output_path: Path = ANALYSIS_TICKET_CSV_PATH,
+) -> None:
+    """Write the current ticket base used by analysis/timeline exports.
+
+    The previous fallback copied a manually refreshed SAPAnalyticsReport CSV.
+    For scheduled deployments, this file must be generated from the same fetch
+    run so all downstream pages follow the daily refresh automatically.
+    """
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    hana_summary = summarize_final_ticket_rows(final_df)
+    rows: List[List[str]] = []
+
+    for ticket_id, node in sorted((new_snapshot or {}).items(), key=lambda item: str(item[0])):
+        if not isinstance(node, dict):
+            continue
+        ticket = node.get("ticket", {})
+        if not isinstance(ticket, dict):
+            ticket = {}
+
+        ticket_number = first_clean_ticket_value(ticket, "TicketID", "Ticket ID") or str(ticket_id)
+        summary = hana_summary.get(str(ticket_id), {})
+
+        title = (
+            first_clean_ticket_value(ticket, "TicketName", "Ticket Name", "Subject", "Name")
+            or f"{first_clean_ticket_value(ticket, 'DealerName', 'Dealer Name')} {first_clean_ticket_value(ticket, 'ChassisNumber', 'Chassis Number', 'SerialID')}".strip()
+            or ticket_number
+        )
+        agent_name = (
+            role_field(node, "40", "InvolvedPartyName")
+            or first_clean_ticket_value(ticket, "AssignedToRaw", "Assigned to", "Assigned To", "OwnerPartyName", "AssignedToName")
+        )
+        agent_id = (
+            role_field(node, "40", "InvolvedPartyBusinessPartnerID", "InvolvedPartyID")
+            or first_clean_ticket_value(ticket, "AssignedToID", "OwnerPartyID")
+        )
+
+        erp_free_order = (
+            summary.get("ERPFreeOrder")
+            or find_erp_free_order(ticket)
+            or first_clean_ticket_value(ticket, "ERPFreeOrder", "ERP Free Order ID")
+        )
+        erp_purchase_order = (
+            summary.get("ERPPurchaseOrder")
+            or first_clean_ticket_value(ticket, "ERPPurchaseOrder", "ERP Purchase Order ID")
+        )
+
+        service_technician = first_clean_ticket_value(
+            ticket,
+            "ServiceTechnician",
+            "Service Technician",
+            "RepairerBusinessNameID",
+            "Repairshop ID",
+            "Repair Shop ID",
+            "RepairerNamePointOfContact",
+        )
+
+        claim_total = first_clean_ticket_value(ticket, "ClaimTotalAmount", "Claim Total Amount", "AmountIncludingTax") or summary.get("AmountIncludingTax", "")
+        repairer_parts_total = first_clean_ticket_value(ticket, "Repairer Parts Claim Total Amount", "RepairerPartsClaimTotalAmount") or claim_total
+
+        rows.append(
+            [
+                csv_value(title),
+                csv_value(ticket_number),
+                csv_value(title),
+                csv_value(ticket_number),
+                csv_value(first_clean_ticket_value(ticket, "TicketTypeText", "Ticket Type", "TicketType")),
+                csv_value(agent_name),
+                csv_value(agent_id),
+                csv_value(first_clean_ticket_value(ticket, "SerialID", "Serial ID", "Serial")),
+                csv_value(first_clean_ticket_value(ticket, "ChassisNumber", "Chassis Number", "VIN")),
+                csv_value(first_clean_ticket_value(ticket, "AccountName", "Account", "ServiceRequesterName", "CustomerName")),
+                csv_value(first_clean_ticket_value(ticket, "AccountID", "Account ID", "ServiceRequesterID", "CustomerID")),
+                csv_value(erp_free_order),
+                csv_value(erp_purchase_order),
+                csv_value(first_clean_ticket_value(ticket, "ERPServiceOrder", "ERP Service Order ID", "ERPServiceOrderID")),
+                csv_date_value(first_clean_ticket_value(ticket, "CreatedOn", "Created On")),
+                csv_value(first_clean_ticket_value(ticket, "DealerID", "Dealer")),
+                csv_value(first_clean_ticket_value(ticket, "DealerName", "Dealer Name")),
+                csv_value(first_clean_ticket_value(ticket, "CountryRegion", "Country/Region", "Country", "Region")),
+                csv_date_value(first_clean_ticket_value(ticket, "DateOfPurchase", "Date of Purchase", "PurchaseDate")),
+                csv_date_value(
+                    first_clean_ticket_value(
+                        ticket,
+                        "ClaimApprovedOnDateTime",
+                        "ClaimApprovedOnDate",
+                        "ClaimApprovedOn",
+                        "Claim Approved On",
+                    )
+                ),
+                csv_value(first_clean_ticket_value(ticket, "ServiceRequesterPostalCode", "Service Requester Postal Code", "PostalCode")),
+                csv_value(first_clean_ticket_value(ticket, "RegisteredProduct", "Registered Product")),
+                csv_value(first_clean_ticket_value(ticket, "RegisteredProductCode", "Registered Product Code")),
+                csv_value(first_clean_ticket_value(ticket, "Product", "ProductName")),
+                csv_value(first_clean_ticket_value(ticket, "ProductCode", "Product ID")),
+                csv_value(first_clean_ticket_value(ticket, "TicketStatusText", "Status")),
+                csv_value(service_technician),
+                csv_value(first_clean_ticket_value(ticket, "ServiceTechnicianID", "Service Technician ID", "RepairerBusinessNameID")),
+                csv_value(claim_total, "0"),
+                csv_value(first_clean_ticket_value(ticket, "Factory Parts Claim Total Amount", "FactoryPartsClaimTotalAmount"), "0"),
+                csv_value(first_clean_ticket_value(ticket, "LabourHoursTotalAmount", "Labour Hours Total Amount"), "0"),
+                csv_value(repairer_parts_total, "0"),
+                csv_date_value(
+                    first_clean_ticket_value(
+                        ticket,
+                        "ChangeOnDateTime",
+                        "ChangeOnDate",
+                        "ChangeOn",
+                        "ChangedOn",
+                        "Changed On",
+                    )
+                ),
+                csv_date_value(first_clean_ticket_value(ticket, "PostingDate", "Posting Date", "CreatedOn", "Created On")),
+            ]
+        )
+
+    with output_path.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(ANALYSIS_TICKET_CSV_HEADERS)
+        writer.writerows(rows)
+
+    if output_path.resolve() == ANALYSIS_TICKET_CSV_PATH.resolve():
+        csv_text = output_path.read_text(encoding="utf-8-sig")
+        write_js_global(ANALYSIS_TICKET_CSV_JS_PATH, "ANALYSIS_TICKET_CSV_TEXT", csv_text, is_text=True)
+    logger.info("Wrote refreshed analysis ticket base: %s rows -> %s", len(rows), output_path)
+
+
 def resolve_parts_classified_csv_path() -> Optional[Path]:
     candidates: List[Path] = []
     meta_candidates = [PARTS_CLASSIFIED_META_PATH, *sorted(OUTPUTS_DIR.glob("parts_classification_*/parts_classified_meta.json"), reverse=True)]
@@ -656,8 +919,9 @@ def refresh_analysis_offline_assets(vehicle_base_summary: Optional[Dict[str, Any
         logger.warning("Failed to write parts ticket cost JS fallback: %s", exc)
 
     try:
-        if ANALYSIS_TICKET_CSV_PATH.exists():
-            csv_text = ANALYSIS_TICKET_CSV_PATH.read_text(encoding="utf-8-sig")
+        ticket_csv_path = ANALYSIS_TICKET_CSV_PATH if ANALYSIS_TICKET_CSV_PATH.exists() else LEGACY_ANALYSIS_TICKET_CSV_PATH
+        if ticket_csv_path.exists():
+            csv_text = ticket_csv_path.read_text(encoding="utf-8-sig")
             write_js_global(ANALYSIS_TICKET_CSV_JS_PATH, "ANALYSIS_TICKET_CSV_TEXT", csv_text, is_text=True)
     except Exception as exc:
         logger.warning("Failed to write main ticket CSV JS fallback: %s", exc)
@@ -2277,6 +2541,7 @@ def build_clear_so_payload(ticket_ids: List[str], reason: str = "Not Found") -> 
         payload[f"{base}/Sales Order"] = ""
         payload[f"{base}/SO Created Date"] = ""
         payload[f"{base}/First Issue Date"] = ""
+        payload[f"{base}/Complete Issue Date"] = ""
         payload[f"{base}/Issue Status"] = reason
         payload[f"{base}/Order Rejection Status"] = reason
         payload[f"{base}/Sales Order Details"] = []
@@ -2448,6 +2713,7 @@ def build_ticket_fields_payload(
         payload[f"{base}/AmountIncludingTax"] = amount_including_tax if sales_order else ""
         payload[f"{base}/Net Value"] = net_value if sales_order else ""
         payload[f"{base}/First Issue Date"] = ""
+        payload[f"{base}/Complete Issue Date"] = ""
         payload[f"{base}/Issue Status"] = "Not Found" if not sales_order else issue_status
         payload[f"{base}/Order Rejection Status"] = (
             "Not Found" if not sales_order else order_rejection_status
@@ -2537,6 +2803,7 @@ def build_ticket_fields_payload(
             if as_clean_str(v.get("First Issue Date"))
         ]
         payload[f"{base}/First Issue Date"] = min(first_issue_dates) if first_issue_dates else ""
+        payload[f"{base}/Complete Issue Date"] = max(first_issue_dates) if first_issue_dates else ""
         payload[f"{base}/soLastSyncAt"] = SERVER_TIMESTAMP
 
     return payload
@@ -3669,6 +3936,7 @@ def main():
     upload_ticket_fields_to_firebase(final_df, material_price_map=material_price_map)
     upload_vehicle_dispatch_to_firebase(vehicle_dispatch_df)
     write_vehicle_base_summary(vehicle_base_summary)
+    write_analysis_ticket_base_csv(new_snapshot, final_df)
     refresh_analysis_offline_assets(vehicle_base_summary)
     if approved_cost_payload:
         logger.info("Step 8A/9: Writing Approved Cost SAP PO Short Text sidecar to Firebase ...")

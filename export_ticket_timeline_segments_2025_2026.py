@@ -21,6 +21,8 @@ DEFAULT_FAILURE_TIMING_CSV = ROOT / "outputs" / "analysis_ticket_failure_timing.
 DEFAULT_PARTS_CLASSIFIED_CSV = ROOT / "outputs" / "parts_classified.csv"
 DEFAULT_REPAIRERS_JSON = ROOT / "outputs" / "repairers_2026" / "repairers_2026_data.json"
 DEFAULT_OUTPUT = ROOT / "generated_exports" / "ticket_timeline_segments_2025_2026.xlsx"
+DEFAULT_SUMMARY_JSON = ROOT / "generated_exports" / "ticket_timeline_summary.json"
+DEFAULT_START_DATE = date(date.today().year, 1, 1)
 
 APPROVED_STATUS_TEXTS = {
     "sales order approved",
@@ -45,6 +47,7 @@ class Paths:
     parts_classified_csv: Path
     repairers_json: Path
     output: Path
+    summary_json: Path
 
 
 def clean(value: Any) -> str:
@@ -313,7 +316,7 @@ def load_parts_ticket_summary(csv_path: Path) -> tuple[pd.DataFrame, pd.DataFram
                 "parts_po",
                 "parts_sales_order",
                 "so_created_date",
-                "first_issue_date",
+                "complete_issue_date",
                 "parts_item_rows",
                 "issued_item_rows",
             ]
@@ -325,8 +328,8 @@ def load_parts_ticket_summary(csv_path: Path) -> tuple[pd.DataFrame, pd.DataFram
     work["parts_po"] = work["ERP Purchase Order"].map(normalize_po)
     work["parts_sales_order"] = work["Sales Order"].map(clean)
     work["so_created_date"] = work["SO Created Date"].map(parse_date)
-    work["first_issue_date"] = work["First Issue Date"].map(parse_date)
-    work["is_issued_item"] = work["first_issue_date"].notna()
+    work["item_issue_date"] = work["First Issue Date"].map(parse_date)
+    work["is_issued_item"] = work["item_issue_date"].notna()
 
     by_ticket = (
         work.groupby("ticket_number", dropna=False)
@@ -334,7 +337,7 @@ def load_parts_ticket_summary(csv_path: Path) -> tuple[pd.DataFrame, pd.DataFram
             parts_po=("parts_po", lambda values: next((value for value in values if clean(value)), "")),
             parts_sales_order=("parts_sales_order", lambda values: next((value for value in values if clean(value)), "")),
             so_created_date=("so_created_date", "min"),
-            first_issue_date=("first_issue_date", "min"),
+            complete_issue_date=("item_issue_date", "max"),
             parts_item_rows=("ticket_number", "size"),
             issued_item_rows=("is_issued_item", "sum"),
         )
@@ -347,7 +350,7 @@ def load_parts_ticket_summary(csv_path: Path) -> tuple[pd.DataFrame, pd.DataFram
         .agg(
             parts_sales_order=("parts_sales_order", lambda values: next((value for value in values if clean(value)), "")),
             so_created_date=("so_created_date", "min"),
-            first_issue_date=("first_issue_date", "min"),
+            complete_issue_date=("item_issue_date", "max"),
             parts_item_rows=("parts_po", "size"),
             issued_item_rows=("is_issued_item", "sum"),
         )
@@ -400,10 +403,10 @@ def load_repairer_invoice_rows(json_path: Path) -> pd.DataFrame:
     return df.drop_duplicates(subset=["po"], keep="last").reset_index(drop=True)
 
 
-def build_qualifying_universe(base_df: pd.DataFrame, start_year: int, end_year: int) -> pd.DataFrame:
+def build_qualifying_universe(base_df: pd.DataFrame, start_date: date, end_date: date | None) -> pd.DataFrame:
     work = base_df.copy()
-    year_mask = work["created_year"].between(start_year, end_year, inclusive="both")
-    qualify_mask = year_mask & work["po"].ne("") & work["approved_date"].notna() & ~work["is_unapproved"]
+    date_mask = work["created_date"].map(lambda value: value is not None and value >= start_date and (end_date is None or value <= end_date))
+    qualify_mask = date_mask & work["po"].ne("") & work["approved_date"].notna() & ~work["is_unapproved"]
     out = work[qualify_mask].copy()
     out["approval_days"] = out.apply(lambda row: day_diff(row["approved_date"], row["created_date"]), axis=1)
     out["approval_days_valid"] = out["approval_days"].map(lambda value: value is not None and value >= 0)
@@ -414,6 +417,8 @@ def build_failure_segment(
     qualifying_df: pd.DataFrame,
     failure_df: pd.DataFrame,
     anomalies: list[dict[str, Any]],
+    start_year: int,
+    end_year: int,
 ) -> pd.DataFrame:
     merged = qualifying_df.merge(failure_df, on="ticket_number", how="left")
     merged["failure_vehicle_key"] = merged.apply(
@@ -440,6 +445,8 @@ def build_failure_segment(
     merged["failure_days_valid"] = merged["failure_days"].notna() & merged["failure_days"].map(lambda value: value >= 0)
     merged["has_failure_timing_source"] = merged["failure_timing_source"].map(clean).ne("")
     merged["has_failure_delivery_basis"] = merged["has_failure_timing_source"] & merged["failure_timing_source"].ne("missing")
+    merged["failure_delivery_year"] = merged["failure_delivery_date"].map(lambda value: value.year if value else None)
+    merged["failure_delivery_year_in_scope"] = merged["failure_delivery_year"].between(start_year, end_year, inclusive="both")
 
     for _, row in merged[merged["failure_timing_source"].eq("")].iterrows():
         anomalies.append(
@@ -477,8 +484,21 @@ def build_failure_segment(
             )
         )
 
+    for _, row in merged[merged["has_failure_delivery_basis"] & ~merged["failure_delivery_year_in_scope"]].iterrows():
+        anomalies.append(
+            anomaly_row(
+                stage="Failure Timing",
+                reason="vehicle delivery year out of scope for failure timing",
+                row=row,
+                detail=f"delivery_year={clean(row.get('failure_delivery_year'))}",
+            )
+        )
+
     valid = merged[
-        merged["has_failure_delivery_basis"] & merged["failure_days_valid"] & merged["failure_vehicle_key"].map(clean).ne("")
+        merged["has_failure_delivery_basis"]
+        & merged["failure_days_valid"]
+        & merged["failure_vehicle_key"].map(clean).ne("")
+        & merged["failure_delivery_year_in_scope"]
     ].copy()
     if valid.empty:
         return valid
@@ -520,12 +540,12 @@ def merge_parts_data(
     result["parts_po_joined"] = ""
     result["parts_sales_order_joined"] = ""
     result["so_created_date_joined"] = pd.NaT
-    result["first_issue_date_joined"] = pd.NaT
+    result["complete_issue_date_joined"] = pd.NaT
     result["parts_item_rows_joined"] = pd.NA
     result["issued_item_rows_joined"] = pd.NA
 
     ticket_has_match = result["parts_po"].fillna("").astype(str).str.strip().ne("")
-    po_has_match = result["parts_sales_order_by_po"].fillna("").astype(str).str.strip().ne("") | result["so_created_date_by_po"].notna() | result["first_issue_date_by_po"].notna()
+    po_has_match = result["parts_sales_order_by_po"].fillna("").astype(str).str.strip().ne("") | result["so_created_date_by_po"].notna() | result["complete_issue_date_by_po"].notna()
 
     result.loc[ticket_has_match, "parts_join_source"] = "ticket_number"
     result.loc[~ticket_has_match & po_has_match, "parts_join_source"] = "po_fallback"
@@ -542,8 +562,8 @@ def merge_parts_data(
         lambda row: row["so_created_date"] if clean(row["parts_join_source"]) == "ticket_number" else row.get("so_created_date_by_po"),
         axis=1,
     )
-    result["first_issue_date_joined"] = result.apply(
-        lambda row: row["first_issue_date"] if clean(row["parts_join_source"]) == "ticket_number" else row.get("first_issue_date_by_po"),
+    result["complete_issue_date_joined"] = result.apply(
+        lambda row: row["complete_issue_date"] if clean(row["parts_join_source"]) == "ticket_number" else row.get("complete_issue_date_by_po"),
         axis=1,
     )
     result["parts_item_rows_joined"] = result.apply(
@@ -559,7 +579,7 @@ def merge_parts_data(
     mismatch_mask = both_match_mask & (
         (result["parts_po"].fillna("").astype(str).str.strip() != result["po"].fillna("").astype(str).str.strip())
         | (result["so_created_date"].fillna(pd.Timestamp.min) != result["so_created_date_by_po"].fillna(pd.Timestamp.min))
-        | (result["first_issue_date"].fillna(pd.Timestamp.min) != result["first_issue_date_by_po"].fillna(pd.Timestamp.min))
+        | (result["complete_issue_date"].fillna(pd.Timestamp.min) != result["complete_issue_date_by_po"].fillna(pd.Timestamp.min))
     )
     for _, row in result[mismatch_mask].iterrows():
         anomalies.append(
@@ -586,7 +606,7 @@ def merge_parts_data(
 def build_parts_segment(parts_joined_df: pd.DataFrame, anomalies: list[dict[str, Any]]) -> pd.DataFrame:
     work = parts_joined_df.copy()
     work["parts_issuing_days"] = work.apply(
-        lambda row: day_diff(row["first_issue_date_joined"], row["so_created_date_joined"]),
+        lambda row: day_diff(row["complete_issue_date_joined"], row["so_created_date_joined"]),
         axis=1,
     )
     work["parts_issuing_days_valid"] = work["parts_issuing_days"].map(lambda value: value is not None and value >= 0)
@@ -600,11 +620,11 @@ def build_parts_segment(parts_joined_df: pd.DataFrame, anomalies: list[dict[str,
             )
         )
 
-    for _, row in work[work["parts_join_source"].ne("") & work["first_issue_date_joined"].isna()].iterrows():
+    for _, row in work[work["parts_join_source"].ne("") & work["complete_issue_date_joined"].isna()].iterrows():
         anomalies.append(
             anomaly_row(
                 stage="Parts Issuing",
-                reason="missing first issue date",
+                reason="missing complete issue date",
                 row=row,
             )
         )
@@ -647,12 +667,12 @@ def build_repairer_segment(
         lambda row: day_diff(row["chassis_last_invoice_date"], row["created_date"]),
         axis=1,
     )
-    merged["invoice_minus_first_issue_days"] = merged.apply(
-        lambda row: day_diff(row["invoice_date"], row["first_issue_date_joined"]),
+    merged["invoice_minus_complete_issue_days"] = merged.apply(
+        lambda row: day_diff(row["invoice_date"], row["complete_issue_date_joined"]),
         axis=1,
     )
-    merged["chassis_invoice_minus_first_issue_days"] = merged.apply(
-        lambda row: day_diff(row["chassis_last_invoice_date"], row["first_issue_date_joined"]),
+    merged["chassis_invoice_minus_complete_issue_days"] = merged.apply(
+        lambda row: day_diff(row["chassis_last_invoice_date"], row["complete_issue_date_joined"]),
         axis=1,
     )
     merged["repairer_repair_days"] = merged.apply(
@@ -729,7 +749,7 @@ def anomaly_row(stage: str, reason: str, row: pd.Series, detail: str = "") -> di
         "claim_approved_on": clean(row.get("claim_approved_on")),
         "failure_pgi_date": clean(row.get("failure_pgi_date")),
         "so_created_date": iso_or_blank(row.get("so_created_date_joined")),
-        "first_issue_date": iso_or_blank(row.get("first_issue_date_joined")),
+        "complete_issue_date": iso_or_blank(row.get("complete_issue_date_joined")),
         "invoice_date": iso_or_blank(row.get("invoice_date")),
         "approval_days": row.get("approval_days"),
         "parts_issuing_days": row.get("parts_issuing_days"),
@@ -742,26 +762,23 @@ def anomaly_row(stage: str, reason: str, row: pd.Series, detail: str = "") -> di
 
 def build_summary_sheet(
     qualifying_df: pd.DataFrame,
-    failure_segment_df: pd.DataFrame,
     approval_segment_df: pd.DataFrame,
     parts_segment_df: pd.DataFrame,
     repairer_segment_df: pd.DataFrame,
     anomalies_df: pd.DataFrame,
-    start_year: int,
-    end_year: int,
+    start_date: date,
+    end_date: date | None,
 ) -> pd.DataFrame:
+    created_filter = f">= {start_date.isoformat()}" if end_date is None else f"{start_date.isoformat()} to {end_date.isoformat()}"
     rows = [
         {"Metric": "Run At", "Value": datetime.now().strftime("%Y-%m-%d %H:%M:%S")},
-        {"Metric": "Created On Filter", "Value": f"{start_year}-{end_year}"},
+        {"Metric": "Created On Filter", "Value": created_filter},
         {"Metric": "Qualification Filter", "Value": "Created On in scope + matched PO + Claim Approved On present + not unapproved"},
-        {"Metric": "Failure Timing Basis", "Value": "First qualifying ticket per vehicle, using Model Series delivery-date hierarchy, Failure Days = Created On - Delivery Date"},
         {"Metric": "Warranty Approval Basis", "Value": "Claim Approved On - Created On"},
-        {"Metric": "Parts Issuing Basis", "Value": "First Issue Date - SO Created Date"},
+        {"Metric": "Parts Issuing Basis", "Value": "Complete Issue Date - SO Created Date"},
         {"Metric": "Repairer Basis", "Value": "Invoice Date - Created On - Approval Days - Parts Issuing Days"},
+        {"Metric": "Denominator Rule", "Value": "Each segment uses its own valid rows only; missing dates for a segment are excluded from that segment denominator."},
         {"Metric": "Qualifying Tickets", "Value": int(len(qualifying_df))},
-        {"Metric": "Failure Timing Rows", "Value": int(len(failure_segment_df))},
-        {"Metric": "Failure Timing Avg Days", "Value": mean_or_blank(failure_segment_df.get("failure_days", []))},
-        {"Metric": "Failure Timing Median Days", "Value": median_or_blank(failure_segment_df.get("failure_days", []))},
         {"Metric": "Warranty Approval Rows", "Value": int(len(approval_segment_df))},
         {"Metric": "Warranty Approval Avg Days", "Value": mean_or_blank(approval_segment_df.get("approval_days", []))},
         {"Metric": "Warranty Approval Median Days", "Value": median_or_blank(approval_segment_df.get("approval_days", []))},
@@ -778,22 +795,18 @@ def build_summary_sheet(
 
 def build_qualifying_sheet(
     qualifying_df: pd.DataFrame,
-    failure_segment_df: pd.DataFrame,
     approval_segment_df: pd.DataFrame,
     parts_segment_df: pd.DataFrame,
     repairer_segment_df: pd.DataFrame,
 ) -> pd.DataFrame:
     out = qualifying_df.copy()
-    out["used_in_failure_timing"] = out["ticket_number"].isin(set(failure_segment_df["ticket_number"]))
     out["used_in_warranty_approval"] = out["ticket_number"].isin(set(approval_segment_df["ticket_number"]))
     out["used_in_parts_issuing"] = out["ticket_number"].isin(set(parts_segment_df["ticket_number"]))
     out["used_in_repairer_time"] = out["ticket_number"].isin(set(repairer_segment_df["ticket_number"]))
 
-    failure_days_map = failure_segment_df.set_index("ticket_number")["failure_days"].to_dict() if not failure_segment_df.empty else {}
     parts_days_map = parts_segment_df.set_index("ticket_number")["parts_issuing_days"].to_dict() if not parts_segment_df.empty else {}
     repairer_days_map = repairer_segment_df.set_index("ticket_number")["repairer_repair_days"].to_dict() if not repairer_segment_df.empty else {}
 
-    out["failure_days"] = out["ticket_number"].map(failure_days_map)
     out["parts_issuing_days"] = out["ticket_number"].map(parts_days_map)
     out["repairer_repair_days"] = out["ticket_number"].map(repairer_days_map)
 
@@ -833,8 +846,6 @@ def build_qualifying_sheet(
             "labour_hours_total_amount",
             "repairer_parts_claim_total_amount",
             "approval_days",
-            "used_in_failure_timing",
-            "failure_days",
             "used_in_warranty_approval",
             "used_in_parts_issuing",
             "parts_issuing_days",
@@ -934,7 +945,7 @@ def prepare_approval_sheet(df: pd.DataFrame) -> pd.DataFrame:
 def prepare_parts_sheet(df: pd.DataFrame) -> pd.DataFrame:
     out = df.copy()
     out["so_created_date"] = out["so_created_date_joined"].map(iso_or_blank)
-    out["first_issue_date"] = out["first_issue_date_joined"].map(iso_or_blank)
+    out["complete_issue_date"] = out["complete_issue_date_joined"].map(iso_or_blank)
     return out[
         [
             "ticket_number",
@@ -955,7 +966,7 @@ def prepare_parts_sheet(df: pd.DataFrame) -> pd.DataFrame:
             "parts_join_source",
             "parts_sales_order_joined",
             "so_created_date",
-            "first_issue_date",
+            "complete_issue_date",
             "parts_issuing_days",
             "parts_item_rows_joined",
             "issued_item_rows_joined",
@@ -981,7 +992,7 @@ def prepare_parts_sheet(df: pd.DataFrame) -> pd.DataFrame:
 def prepare_repairer_sheet(df: pd.DataFrame) -> pd.DataFrame:
     out = df.copy()
     out["so_created_date"] = out["so_created_date_joined"].map(iso_or_blank)
-    out["first_issue_date"] = out["first_issue_date_joined"].map(iso_or_blank)
+    out["complete_issue_date"] = out["complete_issue_date_joined"].map(iso_or_blank)
     out["po_last_invoice_date"] = out["po_last_invoice_date"].map(iso_or_blank)
     out["chassis_last_invoice_date"] = out["chassis_last_invoice_date"].map(iso_or_blank)
     out["repairer_formula_text_po_invoice"] = out.apply(
@@ -1039,7 +1050,7 @@ def prepare_repairer_sheet(df: pd.DataFrame) -> pd.DataFrame:
             "posting_date",
             "date_of_purchase",
             "so_created_date",
-            "first_issue_date",
+            "complete_issue_date",
             "po_last_invoice_date",
             "chassis_last_invoice_date",
             "approval_days",
@@ -1048,8 +1059,8 @@ def prepare_repairer_sheet(df: pd.DataFrame) -> pd.DataFrame:
             "created_to_chassis_invoice_days",
             "repairer_repair_days",
             "repairer_repair_days_by_chassis_invoice",
-            "invoice_minus_first_issue_days",
-            "chassis_invoice_minus_first_issue_days",
+            "invoice_minus_complete_issue_days",
+            "chassis_invoice_minus_complete_issue_days",
             "po_vs_chassis_invoice_gap_days",
             "repairer_formula_text_po_invoice",
             "repairer_formula_text_chassis_invoice",
@@ -1074,15 +1085,15 @@ def prepare_repairer_sheet(df: pd.DataFrame) -> pd.DataFrame:
             "changed_on": "ticket_changed_on",
             "posting_date": "ticket_posting_date",
             "so_created_date": "parts_so_created_date",
-            "first_issue_date": "parts_first_issue_date",
+            "complete_issue_date": "parts_complete_issue_date",
             "approval_days": "warranty_approval_days",
             "parts_issuing_days": "parts_preparation_days",
             "created_to_invoice_days": "total_cycle_days_created_to_po_invoice",
             "created_to_chassis_invoice_days": "total_cycle_days_created_to_chassis_invoice",
             "repairer_repair_days": "repairer_net_days_po_invoice",
             "repairer_repair_days_by_chassis_invoice": "repairer_net_days_chassis_invoice",
-            "invoice_minus_first_issue_days": "po_invoice_minus_first_issue_days_audit",
-            "chassis_invoice_minus_first_issue_days": "chassis_invoice_minus_first_issue_days_audit",
+            "invoice_minus_complete_issue_days": "po_invoice_minus_complete_issue_days_audit",
+            "chassis_invoice_minus_complete_issue_days": "chassis_invoice_minus_complete_issue_days_audit",
         }
     )
 
@@ -1092,7 +1103,7 @@ def prepare_formula_breakdown_sheet(df: pd.DataFrame) -> pd.DataFrame:
     out["ticket_created_on"] = out["created_on"]
     out["claim_approved_on_ticket"] = out["claim_approved_on"]
     out["parts_so_created_date"] = out["so_created_date_joined"].map(iso_or_blank)
-    out["parts_first_issue_date"] = out["first_issue_date_joined"].map(iso_or_blank)
+    out["parts_complete_issue_date"] = out["complete_issue_date_joined"].map(iso_or_blank)
     out["po_last_invoice_date"] = out["po_last_invoice_date"].map(iso_or_blank)
     out["chassis_last_invoice_date"] = out["chassis_last_invoice_date"].map(iso_or_blank)
     out["warranty_approval_days"] = out["approval_days"]
@@ -1101,8 +1112,8 @@ def prepare_formula_breakdown_sheet(df: pd.DataFrame) -> pd.DataFrame:
     out["total_cycle_days_created_to_chassis_invoice"] = out["created_to_chassis_invoice_days"]
     out["repairer_net_days_po_invoice"] = out["repairer_repair_days"]
     out["repairer_net_days_chassis_invoice"] = out["repairer_repair_days_by_chassis_invoice"]
-    out["po_invoice_minus_first_issue_days_audit"] = out["invoice_minus_first_issue_days"]
-    out["chassis_invoice_minus_first_issue_days_audit"] = out["chassis_invoice_minus_first_issue_days"]
+    out["po_invoice_minus_complete_issue_days_audit"] = out["invoice_minus_complete_issue_days"]
+    out["chassis_invoice_minus_complete_issue_days_audit"] = out["chassis_invoice_minus_complete_issue_days"]
     out["approved_to_so_created_days_audit"] = out.apply(
         lambda row: day_diff(row.get("so_created_date_joined"), row.get("approved_date")),
         axis=1,
@@ -1176,7 +1187,7 @@ def prepare_formula_breakdown_sheet(df: pd.DataFrame) -> pd.DataFrame:
             "ticket_created_on",
             "claim_approved_on_ticket",
             "parts_so_created_date",
-            "parts_first_issue_date",
+            "parts_complete_issue_date",
             "po_last_invoice_date",
             "chassis_last_invoice_date",
             "total_cycle_days_created_to_po_invoice",
@@ -1185,8 +1196,8 @@ def prepare_formula_breakdown_sheet(df: pd.DataFrame) -> pd.DataFrame:
             "parts_preparation_days",
             "repairer_net_days_po_invoice",
             "repairer_net_days_chassis_invoice",
-            "po_invoice_minus_first_issue_days_audit",
-            "chassis_invoice_minus_first_issue_days_audit",
+            "po_invoice_minus_complete_issue_days_audit",
+            "chassis_invoice_minus_complete_issue_days_audit",
             "approved_to_so_created_days_audit",
             "po_vs_chassis_invoice_gap_days",
             "formula_balance_check_po_invoice",
@@ -1257,22 +1268,104 @@ def export_workbook(output_path: Path, sheets: list[tuple[str, pd.DataFrame]]) -
         return fallback_path
 
 
+def relative_path_text(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(ROOT.resolve()).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def build_timeline_summary_payload(
+    paths: Paths,
+    qualifying_df: pd.DataFrame,
+    approval_segment_df: pd.DataFrame,
+    parts_segment_df: pd.DataFrame,
+    repairer_segment_df: pd.DataFrame,
+    anomalies_df: pd.DataFrame,
+    start_date: date,
+    end_date: date | None,
+    workbook_path: Path,
+) -> dict[str, Any]:
+    created_filter = f">= {start_date.isoformat()}" if end_date is None else f"{start_date.isoformat()} to {end_date.isoformat()}"
+    approval_avg = mean_or_blank(approval_segment_df.get("approval_days", []))
+    parts_avg = mean_or_blank(parts_segment_df.get("parts_issuing_days", []))
+    repair_avg = mean_or_blank(repairer_segment_df.get("repairer_repair_days", []))
+    process_values = [value for value in [approval_avg, parts_avg, repair_avg] if value is not None]
+    return {
+        "generatedAt": datetime.now().isoformat(timespec="seconds"),
+        "year": start_date.year,
+        "scope": {
+            "createdOnFilter": created_filter,
+            "qualificationFilter": "Created On in scope + matched PO + Claim Approved On present + not unapproved",
+            "denominatorRule": "Each segment uses its own valid rows only; missing dates for a segment are excluded from that segment denominator.",
+        },
+        "source": {
+            "workbookPath": relative_path_text(workbook_path),
+            "analysisTicketJs": relative_path_text(paths.analysis_ticket_js),
+            "partsClassifiedCsv": relative_path_text(paths.parts_classified_csv),
+            "repairersJson": relative_path_text(paths.repairers_json),
+        },
+        "totals": {
+            "qualifyingTickets": int(len(qualifying_df)),
+            "averageProcessDays": round(sum(process_values), 2) if process_values else None,
+            "anomalyRows": int(len(anomalies_df)),
+        },
+        "stages": [
+            {
+                "key": "approval",
+                "avg": approval_avg,
+                "median": median_or_blank(approval_segment_df.get("approval_days", [])),
+                "count": int(len(approval_segment_df)),
+            },
+            {
+                "key": "parts",
+                "avg": parts_avg,
+                "median": median_or_blank(parts_segment_df.get("parts_issuing_days", [])),
+                "count": int(len(parts_segment_df)),
+            },
+            {
+                "key": "repair",
+                "avg": repair_avg,
+                "median": median_or_blank(repairer_segment_df.get("repairer_repair_days", [])),
+                "count": int(len(repairer_segment_df)),
+            },
+            {
+                "key": "closed",
+                "avg": None,
+                "median": None,
+                "count": int(len(repairer_segment_df)),
+            },
+        ],
+    }
+
+
+def write_timeline_summary_json(path: Path, payload: dict[str, Any]) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return path
+
+
+def yearly_summary_json_path(path: Path, year: int) -> Path:
+    return path.with_name(f"{path.stem}_{year}{path.suffix}")
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Export Ticket Timeline segment ticket sheets for 2025/2026 approved PO-backed tickets."
+        description="Export Ticket Timeline segment ticket sheets for approved PO-backed tickets created in the selected year."
     )
     parser.add_argument("--analysis-ticket-js", default=str(DEFAULT_ANALYSIS_TICKET_JS))
     parser.add_argument("--failure-timing-csv", default=str(DEFAULT_FAILURE_TIMING_CSV))
     parser.add_argument("--parts-classified-csv", default=str(DEFAULT_PARTS_CLASSIFIED_CSV))
     parser.add_argument("--repairers-json", default=str(DEFAULT_REPAIRERS_JSON))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
-    parser.add_argument("--start-year", type=int, default=2025)
-    parser.add_argument("--end-year", type=int, default=2026)
+    parser.add_argument("--summary-json", default=str(DEFAULT_SUMMARY_JSON))
+    parser.add_argument("--start-date", default=DEFAULT_START_DATE.isoformat())
+    parser.add_argument("--end-date", default="")
     return parser.parse_args()
 
 
 def validate_paths(paths: Paths) -> None:
-    missing = [path for path in [paths.analysis_ticket_js, paths.failure_timing_csv, paths.parts_classified_csv, paths.repairers_json] if not path.exists()]
+    missing = [path for path in [paths.analysis_ticket_js, paths.parts_classified_csv, paths.repairers_json] if not path.exists()]
     if missing:
         raise FileNotFoundError("Missing required source files:\n" + "\n".join(str(path) for path in missing))
 
@@ -1285,19 +1378,22 @@ def main() -> int:
         parts_classified_csv=Path(args.parts_classified_csv),
         repairers_json=Path(args.repairers_json),
         output=Path(args.output),
+        summary_json=Path(args.summary_json),
     )
     validate_paths(paths)
+    start_date = parse_date(args.start_date)
+    end_date = parse_date(args.end_date) if clean(args.end_date) else None
+    if start_date is None:
+        raise ValueError(f"Invalid --start-date: {args.start_date}")
 
     base_df = load_analysis_ticket_base(paths.analysis_ticket_js)
-    qualifying_df = build_qualifying_universe(base_df, start_year=args.start_year, end_year=args.end_year)
+    qualifying_df = build_qualifying_universe(base_df, start_date=start_date, end_date=end_date)
 
-    failure_df = load_failure_timing_rows(paths.failure_timing_csv)
     parts_by_ticket_df, parts_by_po_df = load_parts_ticket_summary(paths.parts_classified_csv)
     invoice_df = load_repairer_invoice_rows(paths.repairers_json)
 
     anomalies: list[dict[str, Any]] = []
 
-    failure_segment_df = build_failure_segment(qualifying_df, failure_df, anomalies)
     approval_segment_df = qualifying_df[qualifying_df["approval_days_valid"]].copy()
 
     for _, row in qualifying_df[~qualifying_df["approval_days_valid"]].iterrows():
@@ -1316,17 +1412,15 @@ def main() -> int:
 
     summary_df = build_summary_sheet(
         qualifying_df=qualifying_df,
-        failure_segment_df=failure_segment_df,
         approval_segment_df=approval_segment_df,
         parts_segment_df=parts_segment_df,
         repairer_segment_df=repairer_segment_df,
         anomalies_df=anomalies_df,
-        start_year=args.start_year,
-        end_year=args.end_year,
+        start_date=start_date,
+        end_date=end_date,
     )
     qualifying_sheet_df = build_qualifying_sheet(
         qualifying_df=qualifying_df,
-        failure_segment_df=failure_segment_df,
         approval_segment_df=approval_segment_df,
         parts_segment_df=parts_segment_df,
         repairer_segment_df=repairer_segment_df,
@@ -1335,7 +1429,6 @@ def main() -> int:
     sheets = [
         ("summary", summary_df),
         ("qualifying_tickets", qualifying_sheet_df),
-        ("failure_timing", prepare_failure_sheet(failure_segment_df)),
         ("warranty_approval", prepare_approval_sheet(approval_segment_df)),
         ("parts_issuing", prepare_parts_sheet(parts_segment_df)),
         ("repairer_time", prepare_repairer_sheet(repairer_segment_df)),
@@ -1343,10 +1436,27 @@ def main() -> int:
         ("anomalies", anomalies_df),
     ]
     written_path = export_workbook(paths.output, sheets)
+    summary_payload = build_timeline_summary_payload(
+        paths=paths,
+        qualifying_df=qualifying_df,
+        approval_segment_df=approval_segment_df,
+        parts_segment_df=parts_segment_df,
+        repairer_segment_df=repairer_segment_df,
+        anomalies_df=anomalies_df,
+        start_date=start_date,
+        end_date=end_date,
+        workbook_path=written_path,
+    )
+    written_summary_path = write_timeline_summary_json(paths.summary_json, summary_payload)
+    written_yearly_summary_path = write_timeline_summary_json(
+        yearly_summary_json_path(paths.summary_json, start_date.year),
+        summary_payload,
+    )
 
     print(f"Workbook written: {written_path}")
+    print(f"Summary JSON written: {written_summary_path}")
+    print(f"Year summary JSON written: {written_yearly_summary_path}")
     print(f"Qualifying tickets: {len(qualifying_df)}")
-    print(f"Failure timing rows: {len(failure_segment_df)}")
     print(f"Warranty approval rows: {len(approval_segment_df)}")
     print(f"Parts issuing rows: {len(parts_segment_df)}")
     print(f"Repairer rows: {len(repairer_segment_df)}")

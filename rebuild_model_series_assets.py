@@ -20,6 +20,7 @@ PARTS_COST_JS = OUTPUT_DIR / "analysis_parts_ticket_cost_map.js"
 APPROVED_COST_JSON = OUTPUT_DIR / "analysis_approved_cost_by_ticket.json"
 APPROVED_COST_JS = OUTPUT_DIR / "analysis_approved_cost_by_ticket.js"
 REPAIR_SOURCE_CSV = ROOT / "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv"
+REFRESHED_REPAIR_SOURCE_CSV = OUTPUT_DIR / "analysis_ticket_base.csv"
 REPAIR_OUTPUT_DIR = OUTPUT_DIR / "repairers_2026"
 PARTS_SOURCE_CSV = OUTPUT_DIR / "parts_classification_source.csv"
 PARTS_CLASSIFIED_FLAT_CSV = OUTPUT_DIR / "parts_classified.csv"
@@ -130,6 +131,12 @@ def with_node_heap(env: Dict[str, str], heap_mb: int) -> Dict[str, str]:
 
 def dated_parts_output_dir(as_of: date) -> Path:
     return OUTPUT_DIR / f"parts_classification_{as_of.isoformat()}"
+
+
+def resolve_repair_source_csv() -> Path:
+    if REFRESHED_REPAIR_SOURCE_CSV.exists():
+        return REFRESHED_REPAIR_SOURCE_CSV
+    return REPAIR_SOURCE_CSV
 
 
 def sync_parts_outputs(parts_output_dir: Path) -> None:
@@ -259,12 +266,14 @@ def main() -> int:
         env=env,
     )
 
+    repair_source_csv = resolve_repair_source_csv()
+    logger.info("Repair source CSV: %s", repair_source_csv)
     run_command(
         [
             sys.executable,
             "extract_repairs_2026.py",
             "--source",
-            str(REPAIR_SOURCE_CSV),
+            str(repair_source_csv),
             "--output-dir",
             str(REPAIR_OUTPUT_DIR),
             "--mandt",
@@ -312,6 +321,7 @@ def main() -> int:
 
     sync_parts_outputs(parts_output_dir)
     run_command([sys.executable, "build_analysis_parts_failure_summary.py"], "Parts failure summary build", env=env)
+    run_command([sys.executable, "export_ticket_timeline_segments_2025_2026.py"], "Ticket timeline export", env=env)
 
     write_parts_cost_js_fallback()
     write_approved_cost_js_fallback()

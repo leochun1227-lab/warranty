@@ -546,7 +546,7 @@ body.repair-insights-page .calcFloat{
 </main>
 <div id="repeatModal" class="modalBackdrop" aria-hidden="true"><div class="modal repeatModal"><div class="modalHead"><div><h2 id="repeatModalTitle" style="margin:0"></h2><p class="desc" id="repeatModalDesc">Ticket-level details</p></div><button class="btn" id="repeatModalClose" type="button">x</button></div><div class="tableWrap modalTableWrap"><table><thead><tr><th>Chassis</th><th>Ticket</th><th>Created</th><th>Cost</th><th>Status</th><th>Serial</th><th>Dealer</th></tr></thead><tbody id="repeatModalRows"></tbody></table></div></div></div>
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
-<script src="outputs/repairers_2026/repairers_2026_data.js?v=20260706a"></script>
+<script src="outputs/repairers_2026/repairers_2026_data.js"></script>
 <script>
 
 function showCalcFloat(active,text){
@@ -560,14 +560,24 @@ function hideCalcFloat(delay=250){setTimeout(()=>showCalcFloat(false),delay)}
 
 
 const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
-const repairId=new URLSearchParams(location.search).get("repairId")||"no-repair";
-const REPAIR_SCOPE_START="2026-01-01";
+const ANALYSIS_JSON="outputs/repairers_2026/repairers_2026_data.json";
+const urlParams=new URLSearchParams(location.search);
+const repairId=urlParams.get("repairId")||"no-repair";
+const BASE_REPAIR_YEAR=2026;
+const CURRENT_REPAIR_YEAR=new Date().getFullYear();
+const requestedRepairYear=Number(urlParams.get("year"));
+const selectedRepairYear=CURRENT_REPAIR_YEAR>BASE_REPAIR_YEAR&&requestedRepairYear===BASE_REPAIR_YEAR
+  ? BASE_REPAIR_YEAR
+  : CURRENT_REPAIR_YEAR;
+const REPAIR_SCOPE_START=`${selectedRepairYear}-01-01`;
+const REPAIR_SCOPE_END=`${selectedRepairYear}-12-31`;
 const $=id=>document.getElementById(id), clean=v=>v==null?"":String(v).trim();
 const esc=v=>clean(v).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
 const num=(v,d=0)=>Number(v||0).toLocaleString(undefined,{maximumFractionDigits:d,minimumFractionDigits:d});
 const money=v=>Number(v||0).toLocaleString(undefined,{style:"currency",currency:"AUD",maximumFractionDigits:0});
 function fbUrl(path){return DEFAULT_FIREBASE.replace(/\/+$/,'')+"/"+path.replace(/^\/+/,'')+".json"}
 async function readJson(path){const r=await fetch(fbUrl(path),{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
+async function readStaticJson(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
 let firebaseTicketMapPromise=null;
 async function loadFirebaseTicketMap(){
   if(!firebaseTicketMapPromise){
@@ -626,7 +636,7 @@ function repairCostFromTicket(ticket){
 }
 function parseDate(v){if(!v)return null;const s=clean(v);let m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m){const d=new Date(+m[3],+m[2]-1,+m[1]);return isNaN(d)?null:d}const d=new Date(s);return isNaN(d)?null:d}
 function dateKey(v){const d=parseDate(v);return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`:""}
-function isRepairScopeDate(value){const created=dateKey(value);return !!created&&created>=REPAIR_SCOPE_START}
+function isRepairScopeDate(value){const created=dateKey(value);return !!created&&created>=REPAIR_SCOPE_START&&created<=REPAIR_SCOPE_END}
 function normalize(row,key){
   const raw=(row&&typeof row==="object")?row:{};
   const ticket=(raw.ticket&&typeof raw.ticket==="object")?{...raw.ticket}:{...raw};
@@ -1202,14 +1212,15 @@ function exportRepeatWorkbook(){
 async function load(){
   try{showCalcFloat(true,"Calculating...");
     const firebaseMap=await loadFirebaseTicketMap();
-    const localDetails=Array.isArray(globalThis.REPAIRERS_2026_ANALYSIS?.details)&&globalThis.REPAIRERS_2026_ANALYSIS.details.length
-      ? globalThis.REPAIRERS_2026_ANALYSIS.details
+    const analysis=await readStaticJson(ANALYSIS_JSON).catch(()=>globalThis.REPAIRERS_2026_ANALYSIS||{});
+    const localDetails=Array.isArray(analysis?.details)&&analysis.details.length
+      ? analysis.details
       : null;
     const all=localDetails
       ? overlayFirebaseTicketRows(localDetails,firebaseMap).map((r,i)=>normalize(r,clean(r["Ticket ID"]||r.TicketID||r.Ticket||`detail-${i+1}`))).filter(x=>x.id)
       : Object.entries(await readJson("c4cTickets_test/tickets")||{}).map(([k,r])=>normalize(r,k)).filter(x=>x.id);
     const rows=all.filter(x=>repairInfo(x).id===repairId&&isRepairScopeDate(x.ticket.CreatedOn)), first=rows[0], name=first?cleanRepairShopDisplayName(repairInfo(first).name):"Repair shop";
-    $("title").textContent=name;const subtitle=$("subtitle");if(subtitle)subtitle.textContent=`Repair ID ${repairId} - 2026+ only`;
+    $("title").textContent=name;const subtitle=$("subtitle");if(subtitle)subtitle.textContent=`Repair ID ${repairId} - ${selectedRepairYear} only`;
     const total=rows.reduce((s,x)=>s+repairCostFromTicket(x.ticket),0), avg=rows.length?total/rows.length:0;
     $("kpiTickets").textContent=num(rows.length);$("kpiCost").textContent=money(total);$("kpiAvg").textContent=money(avg);
     const amountBins={"0 - 500":0,"500 - 2k":0,"2k - 5k":0,"5k+":0}, status={}, month={}, chassisCount={}, caseSplit={open:0,closed:0};
@@ -1235,10 +1246,8 @@ $("exportExcelBtn").onclick=exportRepeatWorkbook;
 $("repeatModalClose").onclick=closeRepeatModal;
 $("repeatModal").onclick=e=>{if(e.target.id==="repeatModal")closeRepeatModal()};
 window.addEventListener("keydown",e=>{if(e.key==="Escape")closeRepeatModal()});
+document.querySelectorAll('a[href="repairs.html"]').forEach(link=>{link.href=selectedRepairYear===CURRENT_REPAIR_YEAR?"repairs.html":`repairs.html?year=${selectedRepairYear}`});
 load();
 </script>
 </body>
 </html>
-
-
-

@@ -53,6 +53,15 @@ if ($SkipFirebase) {
 
 Push-Location $Root
 try {
+    $ReadinessScript = Join-Path $Root "check_deployment_readiness.py"
+    if (Test-Path $ReadinessScript) {
+        "[$(Get-Date -Format s)] Running deployment readiness check" | Tee-Object -FilePath $LogPath -Append
+        & $SelectedPython $ReadinessScript 2>&1 | Tee-Object -FilePath $LogPath -Append
+        if ($LASTEXITCODE -ne 0) {
+            throw "Deployment readiness check failed."
+        }
+    }
+
     $ProcessInfo = New-Object System.Diagnostics.ProcessStartInfo
     $ProcessInfo.FileName = $SelectedPython
     $ProcessInfo.WorkingDirectory = $Root

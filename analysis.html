@@ -368,7 +368,6 @@ td strong{font-weight:700}
 .compTotalsTablePane{overflow:auto}
 .compTotalsChartPane{display:flex;flex-direction:column}
 .compTotalsPaneTitle{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
-.compTotalsChartMeta{font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:2px}
 .compTotalsTable{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:0}
 .compTotalsTable th,.compTotalsTable td{padding:5px 6px;text-align:right;border-bottom:1px solid var(--line2);font-variant-numeric:tabular-nums}
 .compTotalsTable th:first-child,.compTotalsTable td:first-child{text-align:left}
@@ -524,13 +523,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 }
 </style>
 <script src="outputs/repairers_2026/repairers_2026_data.js"></script>
-<script src="outputs/analysis_parts_failure_summary_20260714_canonical.js"></script>
+<script src="outputs/analysis_parts_failure_summary.js"></script>
 <script src="outputs/analysis_vehicle_base_summary.js"></script>
 <script src="outputs/analysis_parts_ticket_cost_map.js"></script>
 <script src="outputs/analysis_approved_cost_by_ticket.js"></script>
 <script src="outputs/analysis_ticket_failure_timing.js"></script>
 <script src="outputs/analysis_ticket_csv.js"></script>
-<script src="outputs/parts_classified_data_20260714_canonical.js"></script>
+<script src="outputs/parts_classified_data.js"></script>
 </head>
 <body>
 <div class="loadingOverlay show" id="loadingOverlay">
@@ -619,7 +618,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         <div class="panelHead">
           <div>
             <h2 class="panelTitle">Model Series Leaderboard</h2>
-            <p class="panelDesc">Only chassis with a valid 2025+ PGI and at least one ticket are counted. Ranked by repaired chassis count. Click a row to drill into the panels below.</p>
           </div>
           <div class="chipRow" id="seriesChips"></div>
         </div>
@@ -632,7 +630,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           <div class="panelHead">
             <div>
               <h2 class="panelTitle">Series Detail · <span id="selectedLabel">All Series</span></h2>
-              <p class="panelDesc">Only chassis with a valid 2025+ PGI and at least one ticket are counted once. Failure timing is calculated from each chassis's first ticket after PGI.</p>
             </div>
           </div>
 
@@ -670,7 +667,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           <div class="panelHead">
             <div>
               <h2 class="panelTitle">Top Failure Components · <span id="compLabel">All Series</span></h2>
-              <p class="panelDesc">Hover a bar to preview its monthly trend on the right. Click the active bar to toggle Pre-Delivery / In-Field.</p>
             </div>
             <div class="compModeRow" role="tablist" aria-label="Sort mode">
               <button class="scopeBtn active" type="button" data-comp-mode="tickets">Tickets</button>
@@ -773,15 +769,17 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const FB_TICKETS = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/tickets.json";
   const FB_VEHICLE_BASE_SUMMARY = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/analysisVehicleBaseSummary.json";
   const FB_APPROVED_COST_LATEST = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/ctmTicketStatusMonitorV44/analytics/approvedCost/sapPoShortText/latest.json";
+  const REPAIRERS_ANALYSIS_JSON = "outputs/repairers_2026/repairers_2026_data.json";
   const PARTS_COST_CACHE = "outputs/analysis_parts_ticket_cost_map.json";
   const APPROVED_COST_CACHE = "outputs/analysis_approved_cost_by_ticket.json";
   const VEHICLE_BASE_SUMMARY_CACHE = "outputs/analysis_vehicle_base_summary.json";
-  const PARTS_FAILURE_SUMMARY_CACHE = "outputs/analysis_parts_failure_summary_20260714_canonical.json";
+  const PARTS_FAILURE_SUMMARY_CACHE = "outputs/analysis_parts_failure_summary.json";
   // Meta lives at a stable path and points at the current dated CSV folder.
   // We read meta first so the CSV path stays fresh across fetch-driven rebuilds.
-  const PARTS_CLASSIFIED_META = "outputs/parts_classified_meta_20260714_canonical.json";
-  const PARTS_CLASSIFIED_CSV_FLAT = "outputs/parts_classified_20260714_canonical.csv";
+  const PARTS_CLASSIFIED_META = "outputs/parts_classified_meta.json";
+  const PARTS_CLASSIFIED_CSV_FLAT = "outputs/parts_classified.csv";
   const TICKET_FAILURE_TIMING_CSV = "outputs/analysis_ticket_failure_timing.csv";
+  const TICKET_BASE_CSV = "outputs/analysis_ticket_base.csv";
   const LEGACY_TICKET_CSV_URL = "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv";
   const IS_FILE_CONTEXT = location.protocol === "file:";
   const SERIES_ORDER = ["SRC","SRH","SRT","SRM","SRP","SRL","SRV","SRS","NG"];
@@ -1227,6 +1225,23 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   // ============ DATA LOADERS ============
   const freshJsonUrl = (u) => `${u}${u.includes("?")?"&":"?"}t=${Date.now()}`;
+
+  async function loadRepairerAnalysisDetails(){
+    if (!IS_FILE_CONTEXT) {
+      try {
+        const r = await fetch(freshJsonUrl(REPAIRERS_ANALYSIS_JSON), { cache:"no-store" });
+        if (r.ok) {
+          const payload = await r.json();
+          if (Array.isArray(payload?.details)) return payload.details;
+        }
+      } catch (err) {
+        console.warn("Repairers JSON load failed, using script fallback:", err);
+      }
+    }
+    return Array.isArray(globalThis.REPAIRERS_2026_ANALYSIS?.details)
+      ? globalThis.REPAIRERS_2026_ANALYSIS.details
+      : [];
+  }
 
   function ticketValues(node){
     if (!node || typeof node!=="object") return [];
@@ -1989,8 +2004,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     $("compLabel").textContent = label;
     const compTitle = $("compLabel")?.closest("h2");
     if (compTitle && compTitle.firstChild) compTitle.firstChild.nodeValue = "Top Failure Components - ";
-    const compDesc = $("compLabel")?.closest(".panelHead")?.querySelector(".panelDesc");
-    if (compDesc) compDesc.textContent = "Top components below. Monthly bars show ticket volume over time, split by Pre-Delivery, In-Field, and Other.";
     if (!s) {
       ["dVehicles","dTickets","dRate","dAvg","dCost","dCostVeh"].forEach(id => $(id).textContent = "–");
       $("timingWrap").innerHTML = "";
@@ -3005,7 +3018,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         </div>
         <div class="compTotalsChartPane">
           <div class="compTotalsPaneTitle">Monthly chart</div>
-          <div class="compTotalsChartMeta">Displayed like the component preview above, but aggregated month by month for the shown top components.</div>
           <div class="compTotalsBars" style="--cols:${buckets.length}">${barsHtml}</div>
           <div class="compTotalsLegend">
             <span><span class="swatch pre"></span>Pre-Delivery (${numFmt.format(totals.pre)})</span>
@@ -4086,10 +4098,21 @@ ${worksheets}
   }
 
   async function loadLegacyTicketRows(){
+    const candidates = [TICKET_BASE_CSV, LEGACY_TICKET_CSV_URL];
     try {
-      const csvText = (IS_FILE_CONTEXT && typeof globalThis.ANALYSIS_TICKET_CSV_TEXT === "string")
-        ? globalThis.ANALYSIS_TICKET_CSV_TEXT
-        : await fetch(LEGACY_TICKET_CSV_URL, { cache:"no-store" }).then(r => { if (!r.ok) throw new Error(); return r.text(); });
+      if (IS_FILE_CONTEXT && typeof globalThis.ANALYSIS_TICKET_CSV_TEXT === "string") {
+        return rowsToObjects(parseCSV(globalThis.ANALYSIS_TICKET_CSV_TEXT));
+      }
+      let csvText = "";
+      for (const url of candidates) {
+        try {
+          csvText = await fetch(freshJsonUrl(url), { cache:"no-store" }).then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.text(); });
+          if (csvText) break;
+        } catch (err) {
+          console.warn(`Ticket base CSV fetch failed: ${url}`, err);
+        }
+      }
+      if (!csvText) throw new Error("No ticket base CSV available");
       return rowsToObjects(parseCSV(csvText));
     } catch (e) {
       if (typeof globalThis.ANALYSIS_TICKET_CSV_TEXT === "string") {
@@ -4115,7 +4138,7 @@ ${worksheets}
       await loadPartsFailureSummary();
       await loadVehicleBaseSummary();
 
-      const processed = Array.isArray(globalThis.REPAIRERS_2026_ANALYSIS?.details) ? globalThis.REPAIRERS_2026_ANALYSIS.details : [];
+      const processed = await loadRepairerAnalysisDetails();
       const ticketTimingRows = await loadTicketTimingRows();
       const legacyRows = await loadLegacyTicketRows();
       const sourceRows = ticketTimingRows.length ? ticketTimingRows : legacyRows;

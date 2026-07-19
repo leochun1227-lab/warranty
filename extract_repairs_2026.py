@@ -14,7 +14,8 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 
 ROOT = Path(__file__).resolve().parent
-DEFAULT_SOURCE = ROOT / "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv"
+DEFAULT_SOURCE = ROOT / "outputs" / "analysis_ticket_base.csv"
+LEGACY_DEFAULT_SOURCE = ROOT / "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv"
 DEFAULT_OUTPUT_DIR = ROOT / "outputs" / "repairers_2026"
 
 DEFAULT_DSN = os.getenv(
@@ -1057,6 +1058,8 @@ def main() -> None:
     )
 
     source = Path(args.source)
+    if not source.exists() and source == DEFAULT_SOURCE and LEGACY_DEFAULT_SOURCE.exists():
+        source = LEGACY_DEFAULT_SOURCE
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 

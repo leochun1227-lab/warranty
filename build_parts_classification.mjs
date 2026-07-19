@@ -1,6 +1,5 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { Workbook, SpreadsheetFile } from "@oai/artifact-tool";
 
 const DEFAULT_OUTPUT_DIR = path.join(process.cwd(), "outputs", `parts_classification_${new Date().toISOString().slice(0, 10)}`);
 const DEFAULT_INPUT_PATH = path.join(process.cwd(), "outputs", "parts_classification_source.csv");
@@ -155,6 +154,17 @@ const DEFAULT_SAFETY_RULES = [
     immediateAction: "Inspect mounting, weld, and supplier consistency on repeated failures before release.",
   },
 ];
+
+async function loadArtifactWorkbookTools() {
+  try {
+    return await import("@oai/artifact-tool");
+  } catch (error) {
+    console.warn(
+      "Optional @oai/artifact-tool package is not available; skipping formatted XLSX output. CSV and meta outputs will still be written.",
+    );
+    return null;
+  }
+}
 
 const args = parseArgs(process.argv.slice(2));
 const outputDir = path.resolve(args["output-dir"] || process.env.PARTS_OUTPUT_DIR || DEFAULT_OUTPUT_DIR);
@@ -377,6 +387,9 @@ const finalMeta = buildFinalMeta({
 
 await fs.writeFile(outputMetaPath, `${JSON.stringify(finalMeta, null, 2)}\n`, "utf8");
 
+const workbookTools = await loadArtifactWorkbookTools();
+if (workbookTools) {
+const { Workbook, SpreadsheetFile } = workbookTools;
 const workbook = await Workbook.fromCSV(csvText, { sheetName: DETAIL_SHEET_NAME });
 const detailSheet = workbook.worksheets.getItem(DETAIL_SHEET_NAME);
 const lastCol = toColumnLetter(cleanedTable.headers.length - 1);
@@ -632,6 +645,10 @@ const xlsx = await SpreadsheetFile.exportXlsx(workbook);
 await xlsx.save(outputXlsxPath);
 
 console.log(`Saved to ${outputXlsxPath}`);
+} else {
+  console.log(`Saved to ${outputCsvPath}`);
+  console.log(`Saved to ${outputMetaPath}`);
+}
 
 function parseArgs(argv) {
   const out = {};

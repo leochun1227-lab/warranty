@@ -3,83 +3,196 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Ticket lifecycle</title>
+<title>Ticket Timeline</title>
 <style>
-:root{--bg:#f4f7fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#dbe5f0;--shadow:0 14px 34px rgba(15,23,42,.06)}
+:root{
+  --bg:#f4f1e8;
+  --paper:#fffdfa;
+  --ink:#243247;
+  --heading:#1d2a3d;
+  --muted:#6f7c8e;
+  --line:#d9e0df;
+  --road:#2d3748;
+  --teal:#0f8f8c;
+  --blue:#2474a6;
+  --amber:#d88a18;
+  --green:#4f8f42;
+  --red:#c9513f;
+  --shadow:0 24px 60px rgba(35,48,60,.11);
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif}
+body{margin:0;background:
+  radial-gradient(circle at 18% 8%,rgba(216,138,24,.18),transparent 32%),
+  radial-gradient(circle at 85% 12%,rgba(15,143,140,.16),transparent 30%),
+  linear-gradient(135deg,#f7f3e9 0%,#eef5f3 52%,#f8f5ed 100%);
+  color:var(--ink);
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif;
+}
 .app{min-height:100vh;display:grid;grid-template-columns:288px 1fr}
-.sidebar{background:#0b1222;color:#e5e7eb;min-height:100vh;padding:22px 16px;position:sticky;top:0;align-self:start}
+.sidebar{background:#13202c;color:#e9eef1;min-height:100vh;padding:22px 16px;position:sticky;top:0;align-self:start}
 .brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 28px}
-.brandMark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#2563eb);display:flex;align-items:center;justify-content:center}
-.brandText span{display:block;font-size:18px;font-weight:700}
-.brandText small{display:block;color:#9aa8bc;font-size:12px;margin-top:2px}
-.navSection{font-size:12px;letter-spacing:4px;color:#8ea0b8;text-transform:uppercase;margin:25px 8px 10px}
-.navLink{width:100%;display:flex;align-items:center;gap:13px;color:#d9e1ec;padding:13px 14px;border-radius:12px;font-weight:600;text-decoration:none}
-.navLink.active{background:rgba(255,255,255,.10);color:#fff}
-.navLink:hover{background:rgba(255,255,255,.07)}
-.navLink svg{width:18px;height:18px;stroke-width:1.8;color:#aebcd1}
-.navDivider{height:1px;background:rgba(255,255,255,.08);margin:16px 8px}
-.main{min-width:0;padding:30px 40px 60px}
-.pageTop{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:16px}
-.pageTitle{font-size:30px;line-height:1.1;font-weight:700;margin:0 0 8px}
-.subTitle{color:#52627a;font-size:14px;margin:0;max-width:780px}
-.topActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;align-items:center}
-.jumpBtn,.claimBtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:36px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#172033;font-weight:800;font-size:12px;text-decoration:none;box-shadow:0 8px 18px rgba(15,23,42,.04);white-space:nowrap}
-.jumpBtn:hover,.claimBtn:hover{background:#f8fbff;border-color:#cfdbea}
-.claimBtn.active{background:#0f4c81;color:#fff;border-color:#0f4c81}
-.toolbar{position:sticky;top:0;z-index:30;background:rgba(244,247,251,.94);backdrop-filter:blur(8px);padding:12px 0 14px;margin-bottom:18px;border-bottom:1px solid #e6ecf4}
-.toolbarRow{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
-.claimRow{display:flex;gap:8px;flex-wrap:wrap}
-.asOf{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;color:#475569;font-size:12px;font-weight:700;white-space:nowrap}
-.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin:10px 0 16px}
-.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:6px 0 24px}
-.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}
-.kpiLabel{font-size:12px;color:#6b7689;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-.kpiValue{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-top:8px}
-.kpiHint{font-size:12px;color:#9aa6b8;margin-top:6px}
-.panel{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:24px}
-.panelHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:14px}
-.panelTitle{font-size:21px;font-weight:700;margin:0 0 6px}
-.panelDesc{color:#64748b;font-size:13px;margin:0;max-width:860px;line-height:1.5}
-.stageGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.stageCard{border:1px solid var(--line);border-radius:16px;padding:18px;background:linear-gradient(180deg,#fff,#fbfdff)}
-.stageTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px}
-.stageName{font-size:18px;font-weight:800;margin:0}
-.stageDesc{font-size:12px;color:var(--muted);margin:4px 0 0}
-.stagePill{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:28px;padding:0 10px;border-radius:999px;color:#fff;font-size:12px;font-weight:800}
-.stageValue{font-size:30px;font-weight:800;letter-spacing:-.03em}
-.stageMeta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
-.stageMetric{border:1px solid #ebf0f6;border-radius:12px;padding:10px 12px;background:#fff}
-.stageMetricLabel{font-size:11px;color:#708197;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
-.stageMetricValue{font-size:16px;font-weight:800;margin-top:6px}
-.stageList{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:8px}
-.stageList li{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:#41536b}
-.twoCol{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:20px}
-.tableWrap{border:1px solid var(--line);border-radius:14px;overflow:auto;background:#fff;max-height:560px}
-table{width:100%;border-collapse:collapse;font-size:13px}
-thead th{text-align:left;padding:11px 14px;background:#f8fafc;color:#41536b;font-weight:800;text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:1}
-tbody td{padding:11px 14px;border-bottom:1px solid #edf2f7;vertical-align:top}
-tbody tr:last-child td{border-bottom:0}
-tbody tr:hover td{background:#fafcff}
-.number{text-align:right;font-variant-numeric:tabular-nums}
-.stageBadge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;color:#fff;font-size:11px;font-weight:800}
-.agingRows{display:grid;gap:12px}
-.agingRow{display:grid;grid-template-columns:minmax(140px,180px) 1fr auto;gap:12px;align-items:center}
-.agingLabel{font-size:12px;font-weight:700;color:#273549}
-.agingTrack{height:14px;border-radius:999px;background:#edf2f7;overflow:hidden}
-.agingFill{height:100%;border-radius:999px}
-.agingValue{font-size:12px;color:#41536b;font-weight:700;text-align:right}
-.empty{padding:24px;color:#64748b;text-align:center}
-@media(max-width:1150px){.stageGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.twoCol{grid-template-columns:1fr}}
-@media(max-width:900px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}.pageTop{display:block}.topActions{justify-content:flex-start;margin-top:12px}.kpis{grid-template-columns:1fr 1fr}}
-@media(max-width:620px){.kpis,.stageGrid{grid-template-columns:1fr}.toolbarRow{align-items:flex-start}.claimRow{display:grid;width:100%}.claimBtn{width:100%}.agingRow{grid-template-columns:1fr}.agingValue{text-align:left}}
+.brandMark{width:40px;height:40px;border-radius:14px;background:linear-gradient(135deg,#0f8f8c,#d88a18);display:grid;place-items:center;color:#fff;font-weight:900;letter-spacing:-.05em}
+.brandText span{display:block;font-size:18px;font-weight:800}
+.brandText small{display:block;color:#aebac5;font-size:12px;margin-top:2px}
+.navSection{font-size:11px;letter-spacing:3px;color:#91a2b0;text-transform:uppercase;margin:25px 8px 10px}
+.navLink{width:100%;display:flex;align-items:center;gap:13px;color:#dbe4ea;padding:13px 14px;border-radius:12px;font-weight:700;text-decoration:none}
+.navLink.active{background:rgba(255,255,255,.12);color:#fff}
+.navLink:hover{background:rgba(255,255,255,.08)}
+.navDivider{height:1px;background:rgba(255,255,255,.09);margin:16px 8px}
+.main{min-width:0;padding:30px 40px 58px}
+.pageTop{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:20px}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.18em;font-weight:760;color:var(--teal);margin-bottom:9px}
+.titleRow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pageTitle{font-size:40px;line-height:1;letter-spacing:-.025em;font-weight:660;margin:0 0 10px;color:var(--heading)}
+.scopeBadge{margin-bottom:10px;display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;background:rgba(15,143,140,.12);border:1px solid rgba(15,143,140,.24);color:#0d6d6b;font-size:12px;font-weight:760;letter-spacing:.04em}
+.yearSwitch{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 12px}
+.yearBtn{display:inline-flex;align-items:center;justify-content:center;height:34px;padding:0 13px;border:1px solid rgba(23,33,47,.14);border-radius:12px;background:#fffdf8;color:#253247;text-decoration:none;font-size:12px;font-weight:760;box-shadow:0 9px 18px rgba(35,48,60,.06);cursor:pointer}
+.yearBtn:hover,.yearBtn.active{border-color:var(--teal);background:rgba(15,143,140,.1);color:#0d6d6b}
+.yearNotice{max-width:760px;margin:0 0 16px;padding:12px 14px;border-radius:14px;border:1px solid rgba(216,138,24,.28);background:rgba(255,247,232,.9);color:#6f4714;font-size:13px;line-height:1.45;font-weight:650}
+.yearNotice[hidden]{display:none}
+.hero{position:relative;overflow:hidden;border:1px solid rgba(45,55,72,.12);border-radius:30px;background:
+  linear-gradient(130deg,rgba(255,255,255,.92),rgba(240,250,247,.82)),
+  repeating-linear-gradient(135deg,rgba(15,143,140,.045) 0 2px,transparent 2px 18px);
+  box-shadow:var(--shadow);
+  padding:28px;
+}
+.hero:before{content:"";position:absolute;inset:auto -8% -28% 58%;height:280px;border-radius:999px;background:rgba(216,138,24,.13);transform:rotate(-8deg)}
+.heroGrid{position:relative;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(360px,.75fr);gap:24px;align-items:stretch}
+.timelinePanel,.detailPanel{border:1px solid rgba(23,33,47,.1);border-radius:24px;background:rgba(255,253,250,.82);box-shadow:0 16px 38px rgba(35,48,60,.08)}
+.timelinePanel{padding:22px;min-height:520px;display:grid;grid-template-rows:auto auto auto;gap:18px;align-content:start}
+.panelKicker{font-size:11px;text-transform:uppercase;letter-spacing:.14em;font-weight:760;color:#778392}
+.panelTitle{font-size:22px;line-height:1.14;font-weight:660;margin:6px 0 7px;letter-spacing:-.012em;color:var(--heading)}
+.timelinePanelHead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.timelineAvg{margin-top:3px;text-align:right;white-space:nowrap}
+.timelineAvg span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:760;color:#778392}
+.timelineAvg strong{display:block;margin-top:4px;font-size:22px;line-height:1;font-weight:780;letter-spacing:-.025em;color:var(--heading)}
+.roadStage{position:relative;height:390px;border-radius:23px;background:
+  linear-gradient(180deg,#eef6f1 0 56%,#d9e5d9 56% 100%);
+  overflow:hidden;
+  border:1px solid rgba(23,33,47,.08);
+  cursor:crosshair;
+}
+.skyDot{position:absolute;border-radius:999px;background:rgba(255,255,255,.72);box-shadow:0 12px 30px rgba(23,33,47,.08)}
+.skyDot.one{width:76px;height:22px;left:7%;top:33px}
+.skyDot.two{width:116px;height:27px;right:12%;top:50px}
+.road{position:absolute;left:7%;right:7%;top:calc(58% + 60px);height:13px;background:var(--road);border-radius:999px;box-shadow:inset 0 3px 0 rgba(255,255,255,.12)}
+.road:after{content:"";position:absolute;left:3%;right:3%;top:5px;height:2px;background:repeating-linear-gradient(90deg,#f4f1e8 0 18px,transparent 18px 36px);opacity:.78}
+.milestones{position:absolute;left:11%;right:11%;top:calc(58% - 28px);height:90px}
+.milestone{position:absolute;left:var(--x);top:0;transform:translateX(-50%);display:grid;justify-items:center;gap:8px;width:98px;text-align:center;color:#334155}
+.pin{width:18px;height:18px;border-radius:999px;border:4px solid var(--paper);background:var(--color);box-shadow:0 8px 18px rgba(23,33,47,.2)}
+.milestone span{font-size:11px;line-height:1.12;font-weight:760;text-transform:uppercase;letter-spacing:.04em;color:#33445a}
+.segmentDurations{position:absolute;left:11%;right:11%;top:calc(58% + 102px);height:42px;pointer-events:none}
+.avgTag{position:absolute;left:-35px;top:4px;height:24px;padding:0 9px;border-radius:999px;background:#17212f;color:#fff;display:grid;place-items:center;font-size:10px;font-weight:950;letter-spacing:.12em}
+.segmentDuration{position:absolute;left:var(--x);top:0;transform:translateX(-50%);display:grid;place-items:center;min-width:84px;height:30px;padding:0 12px;border-radius:999px;background:#fffdf8;border:2px solid var(--color);color:#17212f;font-size:12px;font-weight:950;white-space:nowrap;box-shadow:0 12px 24px rgba(23,33,47,.11);transition:transform .18s ease,background .18s ease,color .18s ease}
+.segmentDuration.active{transform:translateX(-50%) translateY(-3px);background:var(--color);color:#fff}
+.caravan{--x:0%;position:absolute;left:calc(11% + (78% * var(--progress)));top:calc(58% + 16px);width:126px;height:64px;transform:translateX(-50%);transition:left .58s cubic-bezier(.2,.85,.24,1);animation:caravanBob 1.3s ease-in-out infinite;z-index:5}
+.carBody{position:absolute;left:12px;top:8px;width:94px;height:42px;border-radius:18px 24px 10px 10px;background:linear-gradient(180deg,#f7f9f4 0 66%,#202b35 66% 100%);border:3px solid #17212f;box-shadow:inset 0 -8px 0 rgba(0,0,0,.1)}
+.carBody:before{content:"";position:absolute;left:15px;top:8px;width:24px;height:14px;border-radius:8px 4px 4px 4px;background:#bfe5ec;border:2px solid #17212f;box-shadow:39px 0 0 #bfe5ec,39px 0 0 2px #17212f}
+.carBody:after{content:"";position:absolute;left:5px;right:7px;bottom:11px;height:23px;background:linear-gradient(135deg,transparent 0 12%,#2bc45f 12% 45%,#0f8f8c 45% 62%,transparent 62% 100%);clip-path:polygon(0 100%,30% 6%,47% 34%,75% 0,100% 46%,100% 100%);opacity:.98}
+.frontPlate{position:absolute;left:4px;top:17px;width:16px;height:35px;background:#28323b;border:3px solid #17212f;border-radius:12px 5px 5px 8px;transform:skewX(-12deg)}
+.checker{position:absolute;left:18px;right:23px;bottom:11px;height:7px;background:repeating-linear-gradient(90deg,#111b24 0 6px,#31404b 6px 12px);border-top:2px solid rgba(255,255,255,.28)}
+.snowyLogo{position:absolute;left:51px;top:25px;width:23px;height:12px;border-radius:20px 20px 4px 4px;background:#25a85a;border:2px solid #17212f}
+.snowyLogo:after{content:"";position:absolute;left:6px;top:3px;width:10px;height:6px;border-radius:10px 10px 2px 2px;background:#f7f9f4}
+.tow{position:absolute;left:101px;top:38px;width:23px;height:3px;background:#17212f;transform:rotate(10deg);transform-origin:left}
+.tow:after{content:"";position:absolute;right:-9px;top:-3px;width:9px;height:9px;border-radius:50%;border:3px solid #17212f;background:#f4f1e8}
+.wheel{position:absolute;top:45px;width:20px;height:20px;border-radius:50%;background:#17212f;border:4px solid #f4f1e8;box-shadow:0 0 0 2px #17212f,inset 0 0 0 3px #53616c;animation:wheelSpin .8s linear infinite}
+.wheel.one{left:28px}.wheel.two{left:73px}
+.patch{position:absolute;right:8px;top:0;width:28px;height:22px;border-radius:9px;background:#ffd166;border:3px solid #17212f;transform:rotate(-8deg);display:none}
+.patch:before,.patch:after{content:"";position:absolute;background:#17212f;border-radius:2px}
+.patch:before{width:14px;height:3px;left:4px;top:7px}.patch:after{width:3px;height:14px;left:9px;top:2px}
+.caravan.needsPatch .patch{display:block}
+.scene{position:absolute;left:50%;top:54px;transform:translateX(-50%);width:min(360px,62%);height:125px;transition:opacity .28s ease,transform .28s ease}
+.sceneShape{position:absolute;inset:0}
+.sceneLabel{position:absolute;left:50%;top:-4px;transform:translateX(-50%);height:28px;padding:0 12px;border-radius:999px;background:#17212f;color:#fff;display:grid;place-items:center;font-size:11px;font-weight:950;letter-spacing:.05em;white-space:nowrap;box-shadow:0 10px 22px rgba(23,33,47,.16)}
+.person{position:absolute;left:42%;top:34px;width:44px;height:64px}
+.person:before{content:"";position:absolute;left:11px;top:0;width:24px;height:24px;border-radius:50%;background:#ffd8ad;border:3px solid #17212f}
+.person:after{content:"";position:absolute;left:5px;top:26px;width:36px;height:34px;border-radius:14px 14px 9px 9px;background:#2474a6;border:3px solid #17212f}
+.headset{position:absolute;left:50%;top:27px;width:56px;height:34px;border:4px solid #17212f;border-bottom:0;border-radius:34px 34px 0 0;transform:translateX(-50%)}
+.headset:after{content:"";position:absolute;right:-10px;top:22px;width:20px;height:4px;background:#17212f;border-radius:4px;transform:rotate(20deg)}
+.desk{position:absolute;left:26%;right:24%;bottom:17px;height:14px;border-radius:8px;background:#17212f}
+.bubble{position:absolute;border-radius:999px;background:#fff;border:2px solid #17212f;color:#17212f;font-size:10px;font-weight:900;padding:5px 8px}
+.bubble.one{left:10%;top:16px}.bubble.two{right:8%;top:30px}
+.soldHandshake{position:absolute;left:7%;top:19px;width:90px;height:74px;border-radius:20px;background:#fffdf8;border:3px solid #17212f;box-shadow:0 14px 26px rgba(23,33,47,.1)}
+.soldHandshake:before{content:"SOLD";position:absolute;left:50%;bottom:7px;transform:translateX(-50%);font-size:10px;font-weight:950;letter-spacing:.06em;color:#17212f}
+.hand{position:absolute;top:26px;width:44px;height:18px;background:#ffd8ad;border:3px solid #17212f;border-radius:999px}
+.hand.left{left:7px;transform:rotate(18deg)}
+.hand.right{right:7px;transform:rotate(-18deg)}
+.hand.left:before,.hand.right:before{content:"";position:absolute;top:-12px;width:20px;height:16px;border-radius:6px;background:#2474a6;border:3px solid #17212f}
+.hand.left:before{left:-11px}.hand.right:before{right:-11px;background:#0f8f8c}
+.shakeLine{position:absolute;left:34px;top:34px;width:22px;height:9px;border-radius:999px;background:#ffd8ad;border:3px solid #17212f}
+.sceneArrow{position:absolute;left:36%;right:35%;top:51px;height:4px;background:#17212f;border-radius:999px}
+.sceneArrow:after{content:"";position:absolute;right:-3px;top:-6px;width:16px;height:16px;border-top:4px solid #17212f;border-right:4px solid #17212f;transform:rotate(45deg)}
+.ticketNotice{position:absolute;right:7%;top:19px;width:90px;height:74px;border-radius:20px;background:#fffdf8;border:3px solid #17212f;box-shadow:0 14px 26px rgba(23,33,47,.1)}
+.ticketNotice:before{content:"FIRST TICKET";position:absolute;left:50%;bottom:6px;transform:translateX(-50%);font-size:9px;font-weight:950;letter-spacing:.025em;color:#17212f;white-space:nowrap;z-index:3}
+.mailIcon{position:absolute;left:13px;top:15px;width:38px;height:25px;border-radius:7px;background:#f7f9f4;border:3px solid #17212f}
+.mailIcon:before,.mailIcon:after{content:"";position:absolute;top:8px;width:25px;height:3px;background:#17212f;border-radius:3px}
+.mailIcon:before{left:1px;transform:rotate(31deg)}
+.mailIcon:after{right:1px;transform:rotate(-31deg)}
+.phoneIcon{position:absolute;right:13px;top:14px;width:25px;height:34px;border-radius:9px;background:#0f8f8c;border:3px solid #17212f;transform:rotate(7deg)}
+.phoneIcon:before{content:"";position:absolute;left:6px;right:6px;top:5px;height:16px;border-radius:4px;background:#bfe5ec;border:2px solid #17212f}
+.phoneIcon:after{content:"";position:absolute;left:10px;bottom:4px;width:5px;height:5px;border-radius:50%;background:#fffdf8;border:2px solid #17212f}
+.noticeDot{position:absolute;right:6px;top:6px;width:18px;height:18px;border-radius:50%;background:#ffd166;border:3px solid #17212f}
+.noticeDot:after{content:"!";position:absolute;left:5px;top:0;font-size:12px;font-weight:950;color:#17212f}
+.factory{position:absolute;left:15%;right:12%;bottom:16px;height:62px;background:#efb24a;border:3px solid #17212f;border-radius:8px}
+.factory:before{content:"";position:absolute;left:18px;top:-28px;width:38px;height:28px;background:linear-gradient(145deg,transparent 49%,#efb24a 50%);border-left:3px solid #17212f;border-top:3px solid #17212f;transform:skewX(-20deg)}
+.chimney{position:absolute;right:22px;top:-35px;width:20px;height:35px;background:#7e8b8d;border:3px solid #17212f;border-bottom:0;border-radius:6px 6px 0 0}
+.box{position:absolute;width:28px;height:24px;background:#c7873b;border:3px solid #17212f;border-radius:5px;animation:boxLift 1.4s ease-in-out infinite}
+.box.one{left:22%;bottom:23px}.box.two{left:38%;bottom:23px;animation-delay:.25s}.box.three{left:54%;bottom:23px;animation-delay:.5s}
+.repairBay{position:absolute;left:18%;right:18%;bottom:20px;height:80px;border:4px solid #17212f;border-bottom-width:8px;border-radius:15px 15px 7px 7px;background:#dcebee}
+.lift{position:absolute;left:26%;right:26%;bottom:17px;height:8px;background:#17212f;border-radius:9px}
+.tool{position:absolute;right:24%;top:20px;width:42px;height:8px;background:#c9513f;border:3px solid #17212f;border-radius:999px;transform:rotate(-28deg);animation:wrench .95s ease-in-out infinite}
+.spark{position:absolute;left:30%;top:33px;width:9px;height:9px;border-radius:50%;background:#ffd166;box-shadow:14px 4px 0 #ffd166,6px 15px 0 #ffd166;animation:spark .8s ease-in-out infinite}
+.checkMark{position:absolute;left:50%;top:26px;width:92px;height:92px;border-radius:50%;background:#4f8f42;border:4px solid #17212f;transform:translateX(-50%);box-shadow:0 18px 30px rgba(79,143,66,.25)}
+.checkMark:after{content:"";position:absolute;left:25px;top:28px;width:38px;height:20px;border-left:8px solid #fff;border-bottom:8px solid #fff;transform:rotate(-45deg)}
+.stageButtons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.stageBtn{border:1px solid rgba(23,33,47,.12);background:#fffdf8;border-radius:16px;padding:12px 10px;text-align:left;color:var(--ink);cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.stageBtn:hover,.stageBtn.active{transform:translateY(-2px);border-color:var(--color);box-shadow:0 14px 28px rgba(23,33,47,.08)}
+.stageBtn strong{display:block;font-size:13px;line-height:1.15;font-weight:680;color:#253247}
+.stageBtn span{display:none}
+.detailPanel{padding:22px;display:grid;grid-template-rows:auto auto 1fr auto;gap:16px}
+.detailTop{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.stageBadge{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;background:rgba(15,143,140,.12);color:#0d6d6b;font-size:11px;font-weight:760;text-transform:uppercase;letter-spacing:.08em}
+.badgeDot{width:8px;height:8px;border-radius:50%;background:var(--active-color)}
+.metricBig{font-size:54px;line-height:.9;font-weight:700;letter-spacing:-.035em;margin:0;color:var(--heading)}
+.metricBig small{font-size:18px;letter-spacing:0;color:#607085}
+.metricLabel{font-size:12px;color:#657284;font-weight:760;text-transform:uppercase;letter-spacing:.12em;margin-top:8px}
+.formulaBox{border:1px dashed rgba(23,33,47,.22);border-radius:18px;background:rgba(255,255,255,.72);padding:15px}
+.formulaTitle{font-size:12px;font-weight:760;color:#46566b;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.formula{font-family:"Cascadia Mono","Consolas",monospace;font-size:13px;line-height:1.55;color:#1f2f3f}
+.kpiGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.kpi{border:1px solid rgba(23,33,47,.1);border-radius:17px;background:rgba(255,255,255,.74);padding:14px}
+.kpiLabel{font-size:11px;font-weight:760;color:#7a8796;text-transform:uppercase;letter-spacing:.1em}
+.kpiValue{font-size:23px;font-weight:660;margin-top:6px;letter-spacing:-.015em;color:var(--heading)}
+.note{font-size:12px;line-height:1.55;color:#647287;background:#f6f2e9;border-radius:16px;padding:13px 14px}
+.exportCard{display:flex;justify-content:space-between;gap:12px;align-items:center;border-radius:18px;background:#17212f;color:#fff;padding:15px}
+.exportCard strong{display:block;color:#fff;font-size:14px;font-weight:760;margin-bottom:0}
+.exportBtn{display:inline-flex;align-items:center;justify-content:center;min-width:142px;height:40px;padding:0 14px;border-radius:12px;background:#f6c453;color:#17212f;text-decoration:none;font-weight:760;font-size:12px}
+.belowGrid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;margin-top:22px}
+.panel{background:rgba(255,253,250,.86);border:1px solid rgba(23,33,47,.1);border-radius:24px;box-shadow:0 16px 38px rgba(35,48,60,.07);padding:22px}
+.summaryGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.summaryCard{border-radius:18px;border:1px solid rgba(23,33,47,.1);background:#fff;padding:16px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.summaryCard:hover,.summaryCard.active{transform:translateY(-2px);border-color:var(--color);box-shadow:0 14px 28px rgba(23,33,47,.08)}
+.summaryCard .label{font-size:11px;font-weight:760;color:#7a8796;text-transform:uppercase;letter-spacing:.1em}
+.summaryCard .value{font-size:28px;font-weight:680;margin-top:7px;letter-spacing:-.015em;color:var(--heading)}
+.summaryCard .hint{font-size:12px;color:#667284;margin-top:5px;line-height:1.35}
+.definitionList{display:grid;gap:11px;margin-top:14px}
+.definition{display:grid;grid-template-columns:128px 1fr;gap:12px;padding:12px;border-radius:16px;background:#fff;border:1px solid rgba(23,33,47,.08)}
+.definition strong{font-size:12px}
+.definition span{font-size:12px;color:#667284;line-height:1.45}
+@keyframes caravanBob{0%,100%{margin-top:0}50%{margin-top:-4px}}
+@keyframes wheelSpin{to{transform:rotate(360deg)}}
+@keyframes boxLift{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes wrench{0%,100%{transform:rotate(-28deg)}50%{transform:rotate(-8deg)}}
+@keyframes spark{0%,100%{opacity:.35;transform:scale(.85)}50%{opacity:1;transform:scale(1.1)}}
+@media(max-width:1180px){.heroGrid,.belowGrid{grid-template-columns:1fr}.detailPanel{grid-template-rows:auto}.summaryGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}.pageTop{display:block}.hero{padding:18px}.stageButtons{grid-template-columns:1fr 1fr}.roadStage{height:340px}}
+@media(max-width:620px){.pageTitle{font-size:34px}.heroGrid{display:block}.timelinePanel{margin-bottom:16px}.timelinePanelHead{align-items:flex-start}.timelineAvg strong{font-size:20px}.detailTop{display:block}.metricBig{font-size:44px;margin-top:12px}.kpiGrid,.summaryGrid,.stageButtons{grid-template-columns:1fr}.definition{grid-template-columns:1fr}.exportCard{display:block}.exportBtn{margin-top:12px;width:100%}.milestone span{display:none}.avgTag{font-size:9px;padding:0 7px}.segmentDuration{min-width:56px;height:26px;padding:0 8px;font-size:10px}.caravan{width:86px}.scene{width:80%}}
 </style>
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
-    <div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M4 12h16M12 4v16"/></svg></div><div class="brandText"><span>Warranty KPI</span><small>After-Sales Team Dashboard</small></div></div>
+    <div class="brandWrap"><div class="brandMark">W</div><div class="brandText"><span>Warranty KPI</span><small>After-Sales Team Dashboard</small></div></div>
     <div class="navSection">Workspace</div>
     <a class="navLink" href="index.html">Team Dashboard</a>
     <a class="navLink" href="dealerworkbench.html">Dealer Workbench</a>
@@ -90,224 +203,463 @@ tbody tr:hover td{background:#fafcff}
     <a class="navLink" href="dealerworkbench.html#tickets">Critical Tickets</a>
     <a class="navLink" href="infieldpredelivery.html#newclaim">New Claim</a>
     <a class="navLink" href="infieldpredelivery.html#created">In Field / Pre Delivery</a>
-    <a class="navLink" href="infieldpredelivery.html#approved">Approved/ Unapproved</a>
+    <a class="navLink" href="infieldpredelivery.html#approved">Approved / Unapproved</a>
     <a class="navLink" href="infieldpredelivery.html#amount">Amount Claim</a>
     <a class="navLink" href="infieldpredelivery.html#claimclosed">Claim Closed</a>
     <div class="navDivider"></div>
-    <div class="navSection">Model Series</div>
+    <div class="navSection">Analysis</div>
     <a class="navLink" href="analysis.html">Model Series</a>
-    <a class="navLink active" href="ticketlifecycle.html">Ticket lifecycle</a>
+    <a class="navLink active" href="ticketlifecycle.html">Ticket Timeline</a>
   </aside>
 
   <main class="main">
     <div class="pageTop">
       <div>
-        <h1 class="pageTitle">Ticket lifecycle</h1>
-        <p class="subTitle">Current ticket stages grouped into a practical lifecycle view so the team can see where work is stacking up, how old each stage is, and which tickets need attention first.</p>
-      </div>
-      <div class="topActions">
-        <a class="jumpBtn" href="index.html">Team Dashboard</a>
-        <a class="jumpBtn" href="dealerworkbench.html">Dealer Workbench</a>
-        <a class="jumpBtn" href="infieldpredelivery.html#created">Tickets view</a>
-        <a class="jumpBtn" href="analysis.html">Model Series</a>
+        <div class="eyebrow">Repair process view</div>
+        <div class="titleRow">
+          <h1 id="pageTitle" class="pageTitle">2026 Ticket Timeline</h1>
+          <span id="scopeBadge" class="scopeBadge">Created in 2026</span>
+        </div>
+        <div id="yearSwitch" class="yearSwitch" aria-label="Timeline year"></div>
+        <div id="yearNotice" class="yearNotice" hidden></div>
       </div>
     </div>
 
-    <div class="toolbar">
-      <div class="toolbarRow">
-        <div id="claimRow" class="claimRow"></div>
-        <div id="asOf" class="asOf">As of --</div>
-      </div>
-    </div>
-
-    <div id="error" class="error"></div>
-
-    <section class="kpis">
-      <div class="kpi"><div class="kpiLabel">Tickets In Scope</div><div id="kpiTotal" class="kpiValue">0</div><div id="kpiTotalHint" class="kpiHint">current tickets</div></div>
-      <div class="kpi"><div class="kpiLabel">Open Lifecycle</div><div id="kpiOpen" class="kpiValue">0</div><div id="kpiOpenHint" class="kpiHint">new, assessment, approved, repair</div></div>
-      <div class="kpi"><div class="kpiLabel">Closed Decisions</div><div id="kpiClosed" class="kpiValue">0</div><div id="kpiClosedHint" class="kpiHint">closed or unapproved</div></div>
-      <div class="kpi"><div class="kpiLabel">Claim Value</div><div id="kpiAmount" class="kpiValue">$0</div><div id="kpiAmountHint" class="kpiHint">current ticket amount</div></div>
-    </section>
-
-    <section class="panel">
-      <div class="panelHead">
-        <div>
-          <h2 class="panelTitle">Lifecycle stage overview</h2>
-          <p class="panelDesc">Stages are derived from the current ticket status and approval decision so we can see where each ticket sits right now.</p>
-        </div>
-      </div>
-      <div id="stageGrid" class="stageGrid"></div>
-    </section>
-
-    <section class="twoCol">
-      <section class="panel">
-        <div class="panelHead">
-          <div>
-            <h2 class="panelTitle">Current status map</h2>
-            <p class="panelDesc">Raw current statuses mapped into lifecycle stages.</p>
+    <section class="hero" aria-label="Interactive ticket timeline">
+      <div class="heroGrid">
+        <section class="timelinePanel">
+          <div class="timelinePanelHead">
+            <div>
+              <div class="panelKicker">Hover the road or cards</div>
+              <h2 id="panelTitle" class="panelTitle">2026 Ticket Timeline</h2>
+            </div>
+            <div class="timelineAvg" aria-label="Average duration excluding car sold to ticket open">
+              <span>Avg Duration:</span>
+              <strong id="timelineAvgDuration">-- days</strong>
+            </div>
           </div>
-        </div>
-        <div class="tableWrap">
-          <table>
-            <thead><tr><th>Lifecycle Stage</th><th>Current Status</th><th class="number">Tickets</th><th class="number">Avg Aging</th><th class="number">Amount</th></tr></thead>
-            <tbody id="statusRows"></tbody>
-          </table>
+
+          <div id="roadStage" class="roadStage">
+            <div class="skyDot one"></div>
+            <div class="skyDot two"></div>
+            <div id="scene" class="scene" aria-hidden="true"></div>
+            <div class="road"></div>
+            <div id="milestones" class="milestones"></div>
+            <div id="segmentDurations" class="segmentDurations"></div>
+            <div id="caravan" class="caravan" style="--progress:0">
+              <div class="patch"></div>
+              <div class="frontPlate"></div>
+              <div class="carBody"></div>
+              <div class="checker"></div>
+              <div class="snowyLogo"></div>
+              <div class="tow"></div>
+              <div class="wheel one"></div>
+              <div class="wheel two"></div>
+            </div>
+          </div>
+
+          <div id="stageButtons" class="stageButtons" aria-label="Timeline stages"></div>
+        </section>
+
+        <aside class="detailPanel" aria-live="polite">
+          <div class="detailTop">
+            <div>
+              <div id="stageBadge" class="stageBadge"><span class="badgeDot"></span><span>Warranty approval</span></div>
+              <h2 id="detailTitle" class="panelTitle">Ticket Open to Approved / SO Created</h2>
+            </div>
+            <div>
+              <p id="metricBig" class="metricBig">27 <small>days</small></p>
+              <div id="metricLabel" class="metricLabel">Average duration</div>
+            </div>
+          </div>
+
+          <div class="formulaBox">
+            <div class="formulaTitle">How we calculate</div>
+            <div id="formula" class="formula">Claim Approved On - Ticket Created On</div>
+          </div>
+
+          <div class="kpiGrid">
+            <div class="kpi"><div class="kpiLabel">Tickets</div><div id="ticketCount" class="kpiValue">3,986</div></div>
+            <div class="kpi"><div class="kpiLabel">Median</div><div id="medianDays" class="kpiValue">14 days</div></div>
+            <div class="kpi"><div class="kpiLabel">Owner</div><div id="ownerName" class="kpiValue">Aftersales</div></div>
+            <div class="kpi"><div class="kpiLabel">Source</div><div id="sourceName" class="kpiValue">Original ticket fields</div></div>
+          </div>
+
+          <div id="stageNote" class="note">Scope is Created On >= 2026-01-01, PO-backed, approved, and not unapproved. Each segment uses its own valid denominator.</div>
+
+          <div class="exportCard">
+            <div>
+              <strong>Need the ticket-level detail?</strong>
+            </div>
+            <a class="exportBtn" href="generated_exports/ticket_timeline_segments_2025_2026.xlsx">Export Excel</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="belowGrid">
+      <section class="panel">
+        <div id="summaryKicker" class="panelKicker">2026 workbook summary</div>
+        <h2 class="panelTitle">Average process timing</h2>
+        <div id="summaryGrid" class="summaryGrid"></div>
+      </section>
+      <section class="panel">
+        <div class="panelKicker">Business rules</div>
+        <h2 class="panelTitle">What the line means</h2>
+        <div class="definitionList">
+          <div class="definition"><strong>Scope</strong><span>Only tickets created on or after 2026-01-01 with PO, approved claim, and not unapproved are included.</span></div>
+          <div class="definition"><strong>Denominator</strong><span>Each process segment uses its own valid rows. If parts has not completed, that ticket is excluded from the parts average denominator.</span></div>
+          <div class="definition"><strong>Approved/SO</strong><span>Approved and SO Created are treated as the same process node in this page.</span></div>
+          <div class="definition"><strong>Repair close</strong><span>PO last invoice posting date is the main repair close proxy. Chassis last invoice stays as audit/comparison in Excel.</span></div>
         </div>
       </section>
-
-      <section class="panel">
-        <div class="panelHead">
-          <div>
-            <h2 class="panelTitle">Aging by stage</h2>
-            <p class="panelDesc">Average aging for each lifecycle stage, plus how many tickets are already older than 30 days.</p>
-          </div>
-        </div>
-        <div id="agingRows" class="agingRows"></div>
-      </section>
-    </section>
-
-    <section class="panel">
-      <div class="panelHead">
-        <div>
-          <h2 class="panelTitle">Oldest open tickets</h2>
-          <p class="panelDesc">Open tickets sorted by aging so the team can jump straight to the longest-waiting work.</p>
-        </div>
-      </div>
-      <div class="tableWrap">
-        <table>
-          <thead><tr><th>Stage</th><th>Ticket</th><th>Customer</th><th>Dealer</th><th>Employee</th><th>Claim Type</th><th>Current Status</th><th class="number">Aging</th><th class="number">Amount</th></tr></thead>
-          <tbody id="ticketRows"></tbody>
-        </table>
-      </div>
     </section>
   </main>
 </div>
 
 <script>
-const FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
-const TEAM_DASHBOARD="ctmTicketStatusMonitorV44/analytics/teamDashboard";
-const TICKETS_PATH="c4cTickets_test/tickets";
-const CLAIM_OPTIONS=[{key:"all",label:"All Claims"},{key:"inField",label:"In Field"},{key:"preDelivery",label:"Pre Delivery"}];
-const STAGES=[
-  {key:"newClaim",label:"New Claim",desc:"Fresh claims waiting for first triage.",color:"#2563eb"},
-  {key:"assessment",label:"Assessment",desc:"Assessment, evidence, quote, management or supplier review.",color:"#7c3aed"},
-  {key:"approved",label:"Approved & Ordering",desc:"Approved claims being set up for ordering or parts flow.",color:"#16a34a"},
-  {key:"repair",label:"Repair & Invoicing",desc:"Repair in progress, awaiting parts, picked or invoiced received.",color:"#ea580c"},
-  {key:"closed",label:"Closed / Processed",desc:"Approved work completed and processed.",color:"#0f766e"},
-  {key:"unapproved",label:"Unapproved Closed",desc:"Claims closed as unapproved.",color:"#dc2626"},
-  {key:"other",label:"Other",desc:"Statuses not mapped cleanly yet.",color:"#64748b"}
+const TIMELINE_SUMMARY_URL="generated_exports/ticket_timeline_summary.json";
+const BASE_TIMELINE_YEAR=2026;
+const CURRENT_TIMELINE_YEAR=new Date().getFullYear();
+const FIRST_YEAR_REVIEW_MONTHS=3;
+const MIN_STABLE_YEAR_TICKETS=500;
+const urlParams=new URLSearchParams(window.location.search);
+const requestedYear=Number(urlParams.get("year"));
+const selectedYear=CURRENT_TIMELINE_YEAR>BASE_TIMELINE_YEAR&&requestedYear===BASE_TIMELINE_YEAR
+  ? BASE_TIMELINE_YEAR
+  : CURRENT_TIMELINE_YEAR;
+const fallbackStages=[
+  {
+    key:"approval",
+    label:"Ticket Open",
+    short:"Warranty approval",
+    title:"Ticket Open to Approved / SO Created",
+    avg:26.72,
+    median:14,
+    count:3986,
+    owner:"Aftersales",
+    source:"Original ticket fields",
+    color:"#0f8f8c",
+    formula:"Claim Approved On - Ticket Created On",
+    note:"Scope is Created On >= 2026-01-01, PO-backed, approved, and not unapproved. This segment uses original ticket Claim Approved On.",
+    scene:"aftersales",
+    patch:true
+  },
+  {
+    key:"parts",
+    label:"Approved / SO Created",
+    short:"Parts preparation",
+    title:"Approved / SO Created to Complete Issues",
+    avg:21.42,
+    median:14,
+    count:2811,
+    owner:"Parts",
+    source:"Parts Delivery",
+    color:"#d88a18",
+    formula:"Complete Issue Date - SO Created Date",
+    note:"Complete Issue Date is the last issue date across the ticket or PO parts rows. Only tickets with valid SO Created Date and Complete Issue Date are included in the parts denominator.",
+    scene:"parts",
+    patch:true
+  },
+  {
+    key:"repair",
+    label:"Complete Issues",
+    short:"Repairer time",
+    title:"Complete Issues to PO Last Invoice",
+    avg:32.91,
+    median:25,
+    count:904,
+    owner:"Repairer",
+    source:"SAP EKBE VGABE=2",
+    color:"#c9513f",
+    formula:"(PO Last Invoice - Ticket Created On) - Approval Days - Parts Issuing Days",
+    note:"Only tickets with valid invoice, approval, and parts preparation dates are included in the repairer average denominator.",
+    scene:"repair",
+    patch:true
+  },
+  {
+    key:"closed",
+    label:"Repairer Invoice received",
+    short:"Close proxy",
+    title:"Repair closed by invoice proxy",
+    avg:null,
+    median:null,
+    count:904,
+    owner:"Repair ops",
+    source:"PO last invoice",
+    color:"#4f8f42",
+    formula:"MAX(EKBE.BUDAT) where VGABE = '2' for the repair PO",
+    note:"This final node is a date marker rather than a duration segment. Ticket-level close and comparison dates are available in the Excel export.",
+    scene:"closed"
+  }
 ];
-const STAGE_MAP=Object.fromEntries(STAGES.map(stage=>[stage.key,stage]));
-const state={claim:"all",tickets:[],generatedAt:""};
-const $=id=>document.getElementById(id);
-const clean=v=>String(v==null?"":v).trim();
-const arr=v=>Array.isArray(v)?v:(v&&typeof v==="object"?Object.values(v):[]);
-const num=v=>Number(v||0).toLocaleString();
-const money=v=>"$"+Number(v||0).toLocaleString(undefined,{maximumFractionDigits:0});
-const pct=v=>`${(Number(v||0)*100).toFixed(1)}%`;
-function showError(msg){$("error").style.display="block";$("error").textContent=msg}
-function readJson(path){return fetch(`${FIREBASE}/${path}.json`,{cache:"no-store"}).then(r=>{if(!r.ok)throw new Error(`${r.status} ${r.statusText}`);return r.json()})}
-function claimKeyFromType(type){const value=clean(type).toLowerCase();if(value.includes("pre delivery"))return"preDelivery";if(value.includes("in field"))return"inField";return"other"}
-function statusText(ticket){return clean(ticket.statusText||ticket.status||ticket.StatusText||ticket.statusCode||ticket.StatusCode||ticket.code)}
-function approvalDecision(ticket){return clean(ticket.approvalDecision||ticket.decision||ticket.approvalState).toLowerCase()}
-function ticketAmount(ticket){return Number(ticket.amount??ticket.AmountIncludingTax??ticket.amountIncludingTax??0)||0}
-function daysSince(dateText){const value=clean(dateText).slice(0,10);if(!value)return 0;const date=new Date(`${value}T00:00:00`);if(Number.isNaN(date.getTime()))return 0;const now=new Date();return Math.max(0,Math.round((now-date)/86400000))}
-function ticketAging(ticket){const direct=Number(ticket.agingDays??ticket.days??ticket.AgingDays??0);return Number.isFinite(direct)&&direct>0?direct:daysSince(ticket.created||ticket.CreatedOn||ticket.createdOn)}
-function stageForTicket(ticket){
-  const status=statusText(ticket).toLowerCase();
-  const decision=approvalDecision(ticket);
-  const code=clean(ticket.statusCode||ticket.StatusCode||ticket.code).toLowerCase();
-  if(code==="z1"||status.includes("new claim"))return"newClaim";
-  if(decision==="unapproved"||status.includes("unapproved"))return"unapproved";
-  if(status.includes("processed")||status.includes("closed"))return"closed";
-  if(status.includes("repair in progress")||status.includes("awaiting")||status.includes("picked")||status.includes("invoiced received")||status.includes("parts"))return"repair";
-  if(decision==="approved"||status.includes("sales order approved")||status==="approved")return"approved";
-  if(status.includes("assessment")||status.includes("evidence")||status.includes("quote")||status.includes("management")||status.includes("authorisation")||status.includes("authorization")||status.includes("supplier")||status.includes("queue")||status.includes("suspended"))return"assessment";
-  return"other";
+
+let stages=fallbackStages.map(stage=>({...stage}));
+let activeIndex=0;
+let pinned=false;
+let activeTimelineSummary=null;
+const root=document.documentElement;
+const pageTitle=document.getElementById("pageTitle");
+const panelTitle=document.getElementById("panelTitle");
+const scopeBadge=document.getElementById("scopeBadge");
+const yearSwitch=document.getElementById("yearSwitch");
+const yearNotice=document.getElementById("yearNotice");
+const summaryKicker=document.getElementById("summaryKicker");
+const roadStage=document.getElementById("roadStage");
+const caravan=document.getElementById("caravan");
+const scene=document.getElementById("scene");
+const stageButtons=document.getElementById("stageButtons");
+const milestones=document.getElementById("milestones");
+const segmentDurations=document.getElementById("segmentDurations");
+const fmt=n=>{
+  const num=Number(n);
+  return Number.isFinite(num)?num.toLocaleString(undefined,{maximumFractionDigits:0}):"-";
+};
+const processDurationKeys=new Set(["approval","parts","repair"]);
+
+function formatDays(value){
+  const num=Number(value);
+  return Number.isFinite(num)?`${Math.round(num)} days`:"--";
 }
-function normalizeTicket(raw){
-  const ticket={
-    id:clean(raw.id||raw.ticketId||raw.TicketID),
-    customer:clean(raw.name||raw.customer||raw.CustomerName)||"-",
-    dealer:clean(raw.dealer||raw.DealerName)||"-",
-    employee:clean(raw.employee||raw.owner||raw.AssignTo)||"-",
-    claimType:clean(raw.claimType||raw.claim||raw.ClaimType)||"-",
-    status:statusText(raw)||"Unknown",
-    amount:ticketAmount(raw),
-    agingDays:ticketAging(raw),
-    approvalDecision:approvalDecision(raw),
-    created:clean(raw.created||raw.CreatedOn||raw.createdOn||raw.createdAt),
-  };
-  ticket.claimKey=claimKeyFromType(ticket.claimType);
-  ticket.stage=stageForTicket({...raw,...ticket});
-  return ticket.id||ticket.customer||ticket.status?ticket:null;
+
+function timelineHref(year){
+  return year===CURRENT_TIMELINE_YEAR?"ticketlifecycle.html":`ticketlifecycle.html?year=${year}`;
 }
-function filteredTickets(){return state.tickets.filter(ticket=>state.claim==="all"||ticket.claimKey===state.claim)}
-function renderClaimButtons(){
-  $("claimRow").innerHTML=CLAIM_OPTIONS.map(option=>`<button class="claimBtn ${state.claim===option.key?"active":""}" data-claim="${option.key}" type="button">${option.label}</button>`).join("");
-  $("claimRow").querySelectorAll(".claimBtn").forEach(button=>button.onclick=()=>{state.claim=button.dataset.claim||"all";render()});
+
+function summaryUrlForYear(year){
+  return `generated_exports/ticket_timeline_summary_${year}.json`;
 }
-function stageSummaryRows(rows){
-  return STAGES.map(stage=>{
-    const items=rows.filter(row=>row.stage===stage.key);
-    const amount=items.reduce((sum,row)=>sum+row.amount,0);
-    const avgAge=items.length?items.reduce((sum,row)=>sum+row.agingDays,0)/items.length:0;
-    const topStatuses=[...items.reduce((map,row)=>map.set(row.status,(map.get(row.status)||0)+1),new Map()).entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,3);
-    return {stage,count:items.length,amount,avgAge,share:rows.length?items.length/rows.length:0,topStatuses,over30:items.filter(row=>row.agingDays>30).length};
+
+function renderYearContext(){
+  const titleText=`${selectedYear} Ticket Timeline`;
+  document.title=titleText;
+  pageTitle.textContent=titleText;
+  panelTitle.textContent=titleText;
+  scopeBadge.textContent=`Created in ${selectedYear}`;
+  summaryKicker.textContent=`${selectedYear} workbook summary`;
+  if(CURRENT_TIMELINE_YEAR<=BASE_TIMELINE_YEAR){
+    yearSwitch.innerHTML="";
+    return;
+  }
+  yearSwitch.innerHTML=[
+    `<a class="yearBtn ${selectedYear===CURRENT_TIMELINE_YEAR?"active":""}" href="${timelineHref(CURRENT_TIMELINE_YEAR)}">${CURRENT_TIMELINE_YEAR}</a>`,
+    `<a class="yearBtn ${selectedYear===BASE_TIMELINE_YEAR?"active":""}" href="${timelineHref(BASE_TIMELINE_YEAR)}">View ${BASE_TIMELINE_YEAR}</a>`
+  ].join("");
+}
+
+function createdOnStartYear(summary){
+  const filter=summary&&summary.scope?String(summary.scope.createdOnFilter||""):"";
+  const match=filter.match(/(\d{4})-\d{2}-\d{2}/);
+  return match?Number(match[1]):null;
+}
+
+function timelineSummaryForYear(summary,year){
+  if(!summary)return null;
+  const yearly=summary.yearSummaries;
+  if(yearly&&typeof yearly==="object"){
+    if(yearly[year])return yearly[year];
+    if(Array.isArray(yearly)){
+      return yearly.find(item=>Number(item.year)===year)||null;
+    }
+  }
+  if(Number(summary.year)===year||createdOnStartYear(summary)===year)return summary;
+  return null;
+}
+
+function emptyYearStages(){
+  return fallbackStages.map(stage=>({
+    ...stage,
+    avg:null,
+    median:null,
+    count:0,
+    note:`Not enough ${selectedYear} data has been generated for this segment yet. View ${BASE_TIMELINE_YEAR} Ticket Timeline for a fuller baseline.`
+  }));
+}
+
+function showYearNotice(summary){
+  const total=summary&&summary.totals?Number(summary.totals.qualifyingTickets):0;
+  const isCurrentFutureYear=selectedYear===CURRENT_TIMELINE_YEAR&&CURRENT_TIMELINE_YEAR>BASE_TIMELINE_YEAR;
+  const isEarlyYear=new Date().getMonth()+1<=FIRST_YEAR_REVIEW_MONTHS;
+  if(isCurrentFutureYear&&!summary){
+    yearNotice.hidden=false;
+    yearNotice.textContent=`${selectedYear} data is not available yet. Please view ${BASE_TIMELINE_YEAR} Ticket Timeline for a complete baseline while this year's data is building.`;
+    return;
+  }
+  if(isCurrentFutureYear&&isEarlyYear&&total<MIN_STABLE_YEAR_TICKETS){
+    yearNotice.hidden=false;
+    yearNotice.textContent=`${selectedYear} data is still building up and may not be enough for a stable baseline. We recommend viewing ${BASE_TIMELINE_YEAR} Ticket Timeline as the reference.`;
+    return;
+  }
+  yearNotice.hidden=true;
+  yearNotice.textContent="";
+}
+
+function updateTimelineAvgDuration(summary){
+  const rawGeneratedAverage=summary&&summary.totals?summary.totals.averageProcessDays:null;
+  const generatedAverage=rawGeneratedAverage===null||rawGeneratedAverage===undefined?NaN:Number(rawGeneratedAverage);
+  const avgProcessDuration=Number.isFinite(generatedAverage)
+    ? generatedAverage
+    : stages
+      .filter(stage=>processDurationKeys.has(stage.key))
+      .reduce((sum,stage)=>sum+(Number(stage.avg)||0),0);
+  document.getElementById("timelineAvgDuration").textContent=avgProcessDuration>0?`${Math.round(avgProcessDuration)} days`:"--";
+}
+
+function metricValue(value){
+  if(value===null||value===undefined||value==="")return null;
+  const num=Number(value);
+  return Number.isFinite(num)?num:null;
+}
+
+function applyTimelineSummary(summary){
+  const yearSummary=timelineSummaryForYear(summary,selectedYear);
+  activeTimelineSummary=yearSummary;
+  showYearNotice(yearSummary);
+  if(!yearSummary||!Array.isArray(yearSummary.stages)){
+    stages=emptyYearStages();
+    updateTimelineAvgDuration();
+    renderControls();
+    renderSummary();
+    setActive(activeIndex);
+    return;
+  }
+  const generatedByKey=new Map(yearSummary.stages.map(stage=>[stage.key,stage]));
+  stages=fallbackStages.map(stage=>{
+    const generated=generatedByKey.get(stage.key);
+    if(!generated)return {...stage};
+    return {
+      ...stage,
+      avg:Object.prototype.hasOwnProperty.call(generated,"avg")?metricValue(generated.avg):stage.avg,
+      median:Object.prototype.hasOwnProperty.call(generated,"median")?metricValue(generated.median):stage.median,
+      count:Object.prototype.hasOwnProperty.call(generated,"count")?Number(generated.count)||0:stage.count
+    };
+  });
+  updateTimelineAvgDuration(yearSummary);
+  renderControls();
+  renderSummary();
+  setActive(activeIndex);
+}
+
+async function loadTimelineSummary(){
+  const urls=[summaryUrlForYear(selectedYear),TIMELINE_SUMMARY_URL];
+  for(const url of urls){
+    try{
+      const response=await fetch(`${url}?v=${Date.now()}`,{cache:"no-store"});
+      if(!response.ok)continue;
+      applyTimelineSummary(await response.json());
+      return;
+    }catch(error){
+      // Try the next summary source, then keep the current fallback/empty state.
+    }
+  }
+}
+
+function sceneMarkup(type){
+  if(type==="aftersales"){
+    return '<div class="bubble one">CLAIM</div><div class="bubble two">APPROVE</div><div class="headset"></div><div class="person"></div><div class="desk"></div>';
+  }
+  if(type==="parts"){
+    return '<div class="sceneLabel">Preparing parts</div><div class="factory"><div class="chimney"></div></div><div class="box one"></div><div class="box two"></div><div class="box three"></div>';
+  }
+  if(type==="repair"){
+    return '<div class="sceneLabel">Repairer repairing</div><div class="repairBay"><div class="tool"></div><div class="spark"></div><div class="lift"></div></div>';
+  }
+  if(type==="closed"){
+    return '<div class="checkMark"></div>';
+  }
+  return '<div class="soldHandshake"><div class="hand left"></div><div class="hand right"></div><div class="shakeLine"></div></div><div class="sceneArrow"></div><div class="ticketNotice"><div class="mailIcon"></div><div class="phoneIcon"></div><div class="noticeDot"></div></div>';
+}
+
+function setActive(index,shouldPin=false){
+  activeIndex=Math.max(0,Math.min(stages.length-1,index));
+  if(shouldPin)pinned=true;
+  const stage=stages[activeIndex];
+  const progress=activeIndex/(stages.length-1);
+  caravan.style.setProperty("--progress",progress);
+  caravan.classList.toggle("needsPatch",Boolean(stage.patch));
+  root.style.setProperty("--active-color",stage.color);
+  scene.innerHTML=sceneMarkup(stage.scene);
+  document.getElementById("stageBadge").lastElementChild.textContent=stage.short;
+  document.getElementById("detailTitle").textContent=stage.title;
+  document.getElementById("metricBig").innerHTML=stage.avg==null
+    ? (stage.key==="closed"&&stage.count>0?'Close <small>date</small>':'-- <small>days</small>')
+    : `${Math.round(stage.avg)} <small>days</small>`;
+  document.getElementById("metricLabel").textContent=stage.avg==null?(stage.key==="closed"&&stage.count>0?"Timeline endpoint":"Not enough data"):"Average duration";
+  document.getElementById("formula").textContent=stage.formula;
+  document.getElementById("ticketCount").textContent=fmt(stage.count);
+  document.getElementById("medianDays").textContent=stage.median==null?"-":`${fmt(stage.median)} days`;
+  document.getElementById("ownerName").textContent=stage.owner;
+  document.getElementById("sourceName").textContent=stage.source;
+  document.getElementById("stageNote").textContent=stage.note;
+  document.querySelectorAll(".stageBtn").forEach((btn,i)=>btn.classList.toggle("active",i===activeIndex));
+  document.querySelectorAll(".segmentDuration").forEach((pill,i)=>pill.classList.toggle("active",i===Math.min(activeIndex,stages.length-2)));
+  document.querySelectorAll(".summaryCard").forEach(card=>card.classList.toggle("active",Number(card.dataset.index)===activeIndex));
+}
+
+function renderControls(){
+  milestones.innerHTML=stages.map((stage,index)=>{
+    const x=index/(stages.length-1)*100;
+    return `<div class="milestone" style="--x:${x}%;--color:${stage.color}"><div class="pin"></div><span>${stage.label}</span></div>`;
+  }).join("");
+  segmentDurations.innerHTML='<div class="avgTag">AVG</div>'+stages.slice(0,-1).map((stage,index)=>{
+    const x=(index+.5)/(stages.length-1)*100;
+    return `<div class="segmentDuration" style="--x:${x}%;--color:${stage.color}">${formatDays(stage.avg)}</div>`;
+  }).join("");
+  stageButtons.innerHTML=stages.map((stage,index)=>`
+    <button class="stageBtn" type="button" style="--color:${stage.color}" data-index="${index}" aria-label="${stage.title}">
+      <strong>${stage.label}</strong>
+    </button>
+  `).join("");
+  stageButtons.querySelectorAll(".stageBtn").forEach(button=>{
+    button.addEventListener("mouseenter",()=>setActive(Number(button.dataset.index)));
+    button.addEventListener("click",()=>setActive(Number(button.dataset.index),true));
   });
 }
-function renderKpis(rows,summary){
-  const openTotal=summary.filter(row=>!["closed","unapproved"].includes(row.stage.key)).reduce((sum,row)=>sum+row.count,0);
-  const closedTotal=summary.filter(row=>["closed","unapproved"].includes(row.stage.key)).reduce((sum,row)=>sum+row.count,0);
-  const totalAmount=rows.reduce((sum,row)=>sum+row.amount,0);
-  const avgAge=rows.length?rows.reduce((sum,row)=>sum+row.agingDays,0)/rows.length:0;
-  $("kpiTotal").textContent=num(rows.length);
-  $("kpiTotalHint").textContent=`avg aging ${avgAge.toFixed(0)} days`;
-  $("kpiOpen").textContent=num(openTotal);
-  $("kpiOpenHint").textContent=`${pct(rows.length?openTotal/rows.length:0)} of current tickets`;
-  $("kpiClosed").textContent=num(closedTotal);
-  $("kpiClosedHint").textContent=`${pct(rows.length?closedTotal/rows.length:0)} of current tickets`;
-  $("kpiAmount").textContent=money(totalAmount);
-  $("kpiAmountHint").textContent=`${rows.length?money(totalAmount/rows.length):"$0"} per ticket`;
+
+function renderSummary(){
+  document.getElementById("summaryGrid").innerHTML=stages.map((stage,index)=>({stage,index})).filter(item=>processDurationKeys.has(item.stage.key)).map(({stage,index})=>`
+    <div class="summaryCard" style="--color:${stage.color}" data-index="${index}" role="button" tabindex="0" aria-label="${stage.title}">
+      <div class="label">${stage.short}</div>
+      <div class="value">${formatDays(stage.avg)}</div>
+      <div class="hint">${stage.count?`${fmt(stage.count)} rows, median ${fmt(stage.median)} days`:`Not enough ${selectedYear} data yet`}</div>
+    </div>
+  `).join("");
+  document.querySelectorAll(".summaryCard").forEach(card=>{
+    card.addEventListener("mouseenter",()=>setActive(Number(card.dataset.index)));
+    card.addEventListener("click",()=>setActive(Number(card.dataset.index),true));
+    card.addEventListener("keydown",event=>{
+      if(event.key==="Enter"||event.key===" "){
+        event.preventDefault();
+        setActive(Number(card.dataset.index),true);
+      }
+    });
+  });
 }
-function renderStageGrid(summary){
-  $("stageGrid").innerHTML=summary.map(row=>{
-    const stage=row.stage;
-    const statuses=row.topStatuses.length?row.topStatuses.map(([label,count])=>`<li><span>${label}</span><strong>${num(count)}</strong></li>`).join(""):`<li><span>No tickets</span><strong>0</strong></li>`;
-    return `<article class="stageCard"><div class="stageTop"><div><h3 class="stageName">${stage.label}</h3><p class="stageDesc">${stage.desc}</p></div><span class="stagePill" style="background:${stage.color}">${pct(row.share)}</span></div><div class="stageValue">${num(row.count)}</div><div class="stageMeta"><div class="stageMetric"><div class="stageMetricLabel">Amount</div><div class="stageMetricValue">${money(row.amount)}</div></div><div class="stageMetric"><div class="stageMetricLabel">Avg Aging</div><div class="stageMetricValue">${row.count?`${row.avgAge.toFixed(0)} d`:"0 d"}</div></div></div><ul class="stageList">${statuses}</ul></article>`;
-  }).join("");
-}
-function renderStatusMap(rows){
-  const grouped=[...rows.reduce((map,row)=>{const key=`${row.stage}|||${row.status}`;if(!map.has(key))map.set(key,{stage:row.stage,status:row.status,count:0,amount:0,aging:0});const item=map.get(key);item.count+=1;item.amount+=row.amount;item.aging+=row.agingDays;return map;},new Map()).values()].sort((a,b)=>b.count-a.count||a.status.localeCompare(b.status));
-  $("statusRows").innerHTML=grouped.length?grouped.map(item=>{const stage=STAGE_MAP[item.stage]||STAGE_MAP.other;return `<tr><td><span class="stageBadge" style="background:${stage.color}">${stage.label}</span></td><td>${item.status}</td><td class="number">${num(item.count)}</td><td class="number">${item.count?(item.aging/item.count).toFixed(0):0} d</td><td class="number">${money(item.amount)}</td></tr>`}).join(""):`<tr><td colspan="5"><div class="empty">No status data found.</div></td></tr>`;
-}
-function renderAging(summary){
-  const maxAge=Math.max(1,...summary.map(row=>row.avgAge||0));
-  $("agingRows").innerHTML=summary.map(row=>{const stage=row.stage,width=Math.max(6,Math.round((row.avgAge||0)/maxAge*100));return `<div class="agingRow"><div class="agingLabel">${stage.label}</div><div class="agingTrack"><div class="agingFill" style="width:${width}%;background:${stage.color}"></div></div><div class="agingValue">${row.count?`${row.avgAge.toFixed(0)} d avg, ${num(row.over30)} over 30d`:"0 d avg"}</div></div>`}).join("");
-}
-function renderOldestTickets(rows){
-  const openRows=rows.filter(row=>!["closed","unapproved"].includes(row.stage)).sort((a,b)=>b.agingDays-a.agingDays||b.amount-a.amount).slice(0,40);
-  $("ticketRows").innerHTML=openRows.length?openRows.map(row=>{const stage=STAGE_MAP[row.stage]||STAGE_MAP.other;return `<tr><td><span class="stageBadge" style="background:${stage.color}">${stage.label}</span></td><td>${row.id||"-"}</td><td>${row.customer}</td><td>${row.dealer}</td><td>${row.employee}</td><td>${row.claimType}</td><td>${row.status}</td><td class="number">${num(row.agingDays)} d</td><td class="number">${money(row.amount)}</td></tr>`}).join(""):`<tr><td colspan="9"><div class="empty">No open tickets in this view.</div></td></tr>`;
-}
-function render(){
-  renderClaimButtons();
-  const rows=filteredTickets();
-  const summary=stageSummaryRows(rows);
-  renderKpis(rows,summary);
-  renderStageGrid(summary);
-  renderStatusMap(rows);
-  renderAging(summary);
-  renderOldestTickets(rows);
-}
-Promise.all([readJson(TICKETS_PATH),readJson(TEAM_DASHBOARD).catch(()=>null)]).then(([ticketsData,dashboard])=>{
-  state.tickets=arr(ticketsData).map(normalizeTicket).filter(Boolean);
-  state.generatedAt=clean(dashboard&&dashboard.generatedAt);
-  $("asOf").textContent=`As of ${state.generatedAt.slice(0,10)||"--"}`;
-  render();
-}).catch(error=>{
-  showError(`Unable to load ticket lifecycle data. (${error.message})`);
-  render();
+
+roadStage.addEventListener("mousemove",event=>{
+  if(pinned)return;
+  const rect=roadStage.getBoundingClientRect();
+  const ratio=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width));
+  setActive(Math.round(ratio*(stages.length-1)));
 });
+roadStage.addEventListener("mouseleave",()=>{if(!pinned)setActive(activeIndex)});
+roadStage.addEventListener("click",()=>{pinned=!pinned});
+document.addEventListener("keydown",event=>{
+  if(event.key==="Escape"){pinned=false;setActive(activeIndex)}
+  if(event.key==="ArrowRight"){pinned=true;setActive(activeIndex+1)}
+  if(event.key==="ArrowLeft"){pinned=true;setActive(activeIndex-1)}
+});
+
+const startStage=Number(urlParams.get("stage"));
+activeIndex=Number.isFinite(startStage)?startStage:0;
+renderYearContext();
+showYearNotice(null);
+if(selectedYear!==BASE_TIMELINE_YEAR)stages=emptyYearStages();
+updateTimelineAvgDuration();
+renderControls();
+renderSummary();
+setActive(activeIndex);
+loadTimelineSummary();
 </script>
 </body>
 </html>

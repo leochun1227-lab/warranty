@@ -256,6 +256,13 @@ body.repair-analysis-page .pageTitle{
   background: transparent !important;
   padding: 0 !important;
 }
+.yearTitleRow{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.repairYearBadge{display:inline-flex;align-items:center;height:30px;padding:0 12px;border:1px solid #cfe0f5;border-radius:999px;background:#eef6ff;color:#155e9f;font-size:12px;font-weight:800;letter-spacing:.04em}
+.repairYearSwitch{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.repairYearBtn{display:inline-flex;align-items:center;justify-content:center;height:34px;padding:0 13px;border:1px solid #dbe4ef;border-radius:12px;background:#fff;color:#25364f;text-decoration:none;font-size:12px;font-weight:750;box-shadow:0 8px 18px rgba(15,23,42,.045)}
+.repairYearBtn:hover,.repairYearBtn.active{border-color:#1677f2;background:#eef6ff;color:#155e9f}
+.repairYearNotice{max-width:820px;margin:12px 0 0;padding:12px 14px;border:1px solid #fed7aa;border-radius:14px;background:#fff7ed;color:#9a3412;font-size:13px;line-height:1.45;font-weight:650}
+.repairYearNotice[hidden]{display:none}
 body.repair-analysis-page :is(.panel,.card,.kpi,.dealerSwitcher,.globalDateRange,.repairFilterPanel,.filters,.modal,.employeeModal,.topList){
   box-shadow: 0 8px 22px rgba(15,23,42,.045) !important;
 }
@@ -1487,7 +1494,7 @@ body.repair-analysis-page .stateRankTable tbody tr.is-active td{
 <div class="navSection">Model Series</div>
 <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model Series</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket lifecycle</span></a></aside>
 <main class="main">
-<div class="pageTop"><div><h1 class="pageTitle">Repair</h1></div></div>
+<div class="pageTop"><div><div class="yearTitleRow"><h1 class="pageTitle">Repair</h1><span id="repairYearBadge" class="repairYearBadge">2026</span></div><div id="repairYearSwitch" class="repairYearSwitch" aria-label="Repair year"></div><div id="repairYearNotice" class="repairYearNotice" hidden></div></div></div>
 <section class="kpis"><div class="kpi"><span class="kpiIcon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 8c0 1.7 2.7 3 6 3s6-1.3 6-3-2.7-3-6-3-6 1.3-6 3Z"/><path d="M6 8v4c0 1.7 2.7 3 6 3s6-1.3 6-3V8"/><path d="M6 12v4c0 1.7 2.7 3 6 3s6-1.3 6-3v-4"/></svg></span><div class="kpiLabel">Total Cost</div><div class="kpiValue" id="kpiCost">$0</div></div><div class="kpi"><span class="kpiIcon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 0 0 4 2 2 0 0 0 0 4 2 2 0 0 1-2 2H6a2 2 0 0 1-2-2 2 2 0 0 0 0-4 2 2 0 0 0 0-4Z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg></span><div class="kpiLabel">Total Tickets</div><div class="kpiValue" id="kpiTickets">0</div></div><div class="kpi"><span class="kpiIcon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v5l3 2"/><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 12l-4 4"/></svg></span><div class="kpiLabel">Avg Cost/Ticket</div><div class="kpiValue" id="kpiAvg">$0</div></div><div class="kpi"><span class="kpiIcon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 10h16"/><path d="M5 10l1-4h12l1 4"/><path d="M6 10v10h12V10"/><path d="M9 20v-6h6v6"/></svg></span><div class="kpiLabel">Total Repair Shops</div><div class="kpiValue" id="kpiShops">0</div></div></section>
 <div class="repairsOverviewGrid">
 <section class="panel weekPanel weekOverview">
@@ -1603,7 +1610,7 @@ body.repair-analysis-page .stateRankTable tbody tr.is-active td{
 <section id="repair-details" class="panel"><div class="panelHead"><div><h2 class="panelTitle">Shop Summary</h2><p class="panelDesc">Open cases are tickets without a PO invoice; closed cases have one, so Open + Closed always matches Tickets.</p></div><div class="panelActions repairDetailsActions"><div class="repairHeaderSearch"><span class="repairHeaderSearchLabel">Search</span><div class="repairHeaderSearchField"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="searchBox" class="repairHeaderSearchInput" placeholder="Search repair name or shop ID"></div></div><button id="clearRepairFiltersBtn" class="btn" type="button">Clear filters</button><button id="repairExportBtn" class="btn" type="button">Export</button></div></div><div class="tableWrap"><table><thead><tr id="tableHead"></tr></thead><tbody id="repairRows"></tbody></table></div><div class="pager"><button id="prevPage" class="btn" type="button">Previous</button><span id="pageInfo"></span><button id="nextPage" class="btn" type="button">Next</button></div></section>
 </main></div>
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
-<script src="outputs/repairers_2026/repairers_2026_data.js?v=20260706a"></script>
+<script src="outputs/repairers_2026/repairers_2026_data.js"></script>
 <script src="assets/geo/australia-states.js?v=20260706a"></script>
 <script src="assets/geo/new-zealand.js?v=20260706a"></script>
 <script>
@@ -1623,7 +1630,17 @@ const ANALYSIS_JSON="outputs/repairers_2026/repairers_2026_data.json";
 const AUS_GEOJSON="assets/geo/australia-states.geojson";
 const NZ_GEOJSON="assets/geo/new-zealand.geojson";
 const PAGE_SIZE=50;
-const REPAIR_SCOPE_START="2026-01-01";
+const BASE_REPAIR_YEAR=2026;
+const CURRENT_REPAIR_YEAR=new Date().getFullYear();
+const FIRST_YEAR_REVIEW_MONTHS=3;
+const MIN_STABLE_REPAIR_TICKETS=100;
+const urlParams=new URLSearchParams(window.location.search);
+const requestedRepairYear=Number(urlParams.get("year"));
+const selectedRepairYear=CURRENT_REPAIR_YEAR>BASE_REPAIR_YEAR&&requestedRepairYear===BASE_REPAIR_YEAR
+  ? BASE_REPAIR_YEAR
+  : CURRENT_REPAIR_YEAR;
+const REPAIR_SCOPE_START=`${selectedRepairYear}-01-01`;
+const REPAIR_SCOPE_END=`${selectedRepairYear}-12-31`;
 let tickets=[], repairs=[], filtered=[], selectedRepairId="all", search="", page=1, sortKey="ticketCount", sortDir="desc";
 let weeklyAnalysis=null, weeklyWeeks=[], weeklyIndex=0, weeklyMetric="confirmed_cost", selectedRegionCode="QLD", overviewHoverStateCode="";
 let ausGeo=null, nzGeo=null;
@@ -1635,6 +1652,37 @@ const clean=v=>v==null?"":String(v).trim();
 const esc=v=>clean(v).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
 const num=(v,d=0)=>Number(v||0).toLocaleString(undefined,{maximumFractionDigits:d,minimumFractionDigits:d});
 const money=v=>Number(v||0).toLocaleString(undefined,{style:"currency",currency:"AUD",maximumFractionDigits:0});
+function repairYearHref(year){return year===CURRENT_REPAIR_YEAR?"repairs.html":`repairs.html?year=${year}`}
+function renderRepairYearContext(){
+  const badge=$("repairYearBadge");
+  const switcher=$("repairYearSwitch");
+  if(badge)badge.textContent=String(selectedRepairYear);
+  document.title=`Repair ${selectedRepairYear}`;
+  if(!switcher)return;
+  if(CURRENT_REPAIR_YEAR<=BASE_REPAIR_YEAR){switcher.innerHTML="";return}
+  switcher.innerHTML=[
+    `<a class="repairYearBtn ${selectedRepairYear===CURRENT_REPAIR_YEAR?"active":""}" href="${repairYearHref(CURRENT_REPAIR_YEAR)}">${CURRENT_REPAIR_YEAR}</a>`,
+    `<a class="repairYearBtn ${selectedRepairYear===BASE_REPAIR_YEAR?"active":""}" href="${repairYearHref(BASE_REPAIR_YEAR)}">View ${BASE_REPAIR_YEAR}</a>`
+  ].join("");
+}
+function showRepairYearNotice(ticketCount){
+  const notice=$("repairYearNotice");
+  if(!notice)return;
+  const isFutureCurrentYear=selectedRepairYear===CURRENT_REPAIR_YEAR&&CURRENT_REPAIR_YEAR>BASE_REPAIR_YEAR;
+  const isEarlyYear=new Date().getMonth()+1<=FIRST_YEAR_REVIEW_MONTHS;
+  if(isFutureCurrentYear&&Number(ticketCount||0)===0){
+    notice.hidden=false;
+    notice.textContent=`${selectedRepairYear} repair data is not available yet. Please view ${BASE_REPAIR_YEAR} Repair for a complete baseline while this year's data is building.`;
+    return;
+  }
+  if(isFutureCurrentYear&&isEarlyYear&&Number(ticketCount||0)<MIN_STABLE_REPAIR_TICKETS){
+    notice.hidden=false;
+    notice.textContent=`${selectedRepairYear} repair data is still building up and may not be enough for a stable baseline. We recommend viewing ${BASE_REPAIR_YEAR} Repair as the reference.`;
+    return;
+  }
+  notice.hidden=true;
+  notice.textContent="";
+}
 function xmlEscape(v){return clean(v).replace(/[<>&'"]/g,s=>({"<":"&lt;",">":"&gt;","&":"&amp;","'":"&apos;","\"":"&quot;"}[s]))}
 function xlsSheetName(name){return clean(name).replace(/[:\\/?*\[\]]/g," ").slice(0,31)||"Sheet"}
 function exportWorkbook(sheets,filename){
@@ -1714,6 +1762,21 @@ function isNumericish(value){
 function isSnowyRiverServiceTech(value){
   const text=clean(value).toUpperCase();
   return text.includes(SNOWY_RIVER_RV_TOKEN) && !text.includes("WANGARATTA");
+}
+function isSnowyRiverName(value){
+  const text=clean(value).toUpperCase();
+  return (text.includes(SNOWY_RIVER_RV_TOKEN)||/\bSNOWY\s+RIVER\b/.test(text)) && !text.includes("WANGARATTA");
+}
+function isSnowyRiverTicket(ticket){
+  if(ticket?.is_snowy_river===true||String(ticket?.is_snowy_river).toLowerCase()==="true")return true;
+  return [
+    ticket?.["Service Technician"],
+    ticket?.ServiceTechnician,
+    ticket?.raw_repairer_name,
+    ticket?.rawRepairerName,
+    ticket?.RepairerName,
+    ticket?.repairer_name,
+  ].some(isSnowyRiverName);
 }
 function isValidRepairhopName(value){
   const text=clean(value);
@@ -1827,7 +1890,7 @@ function overviewDateRangeLabel(){
   source.forEach(entry=>{
     const raw=overviewRowDate(entry);
     const key=dateKey(raw);
-    if(!key)return;
+    if(!key||!isRepairScopeDate(key))return;
     if(!start||key<start)start=key;
     if(!end||key>end)end=key;
   });
@@ -1906,7 +1969,7 @@ function repairInfo(entry){
 }
 function isRepairScopeDate(value){
   const created=dateKey(value);
-  return !!created && created>=REPAIR_SCOPE_START;
+  return !!created && created>=REPAIR_SCOPE_START && created<=REPAIR_SCOPE_END;
 }
 function repairTicketRowsForExport(repairId){
   return tickets.filter(entry=>{
@@ -2194,6 +2257,47 @@ function analyzeRepair(rows){
     delete r._chassisCounts;
     return r;
   }).sort((a,b)=>b.totalCost-a.totalCost);
+}
+function analyzeStateRows(rows){
+  const map=new Map();
+  (Array.isArray(rows)?rows:[]).forEach(entry=>{
+    const ticket=entry?.ticket&&typeof entry.ticket==="object"?entry.ticket:{};
+    const state=stateAbbr(ticket.state||ticket.State);
+    if(!state)return;
+    const info=repairInfo(entry);
+    if(info.repairId==="no-repair"||info.repairName==="No Repair Shop Assigned")return;
+    const row=map.get(state)||{
+      state,
+      ticket_count:0,
+      confirmed_cost:0,
+      invoiced_tickets:0,
+      open_tickets:0,
+      snowy_ticket_count:0,
+      snowy_confirmed_cost:0,
+      _repairers:new Set(),
+      _snowyRepairers:new Set(),
+    };
+    const cost=repairCostFromTicket(ticket);
+    row.ticket_count++;
+    row.confirmed_cost+=cost;
+    if(isClosedCase(ticket))row.invoiced_tickets++;else row.open_tickets++;
+    row._repairers.add(info.repairId);
+    if(isSnowyRiverTicket(ticket)){
+      row.snowy_ticket_count++;
+      row.snowy_confirmed_cost+=cost;
+      row._snowyRepairers.add(info.repairId);
+    }
+    map.set(state,row);
+  });
+  return Array.from(map.values()).map(row=>{
+    row.unique_repairers=row._repairers.size;
+    row.avg_confirmed_cost=row.ticket_count?row.confirmed_cost/row.ticket_count:0;
+    row.snowy_unique_repairers=row._snowyRepairers.size;
+    row.snowy_avg_confirmed_cost=row.snowy_ticket_count?row.snowy_confirmed_cost/row.snowy_ticket_count:0;
+    delete row._repairers;
+    delete row._snowyRepairers;
+    return row;
+  });
 }
 function applyFilters(){
   const q=search.toLowerCase();
@@ -2533,8 +2637,7 @@ function snowyRepairerSummary(stateCode){
   const rows=(Array.isArray(tickets)?tickets:[]).filter(entry=>{
     const ticket=entry?.ticket&&typeof entry.ticket==="object"?entry.ticket:{};
     const state=clean(ticket.state||ticket.State);
-    const serviceTech=clean(ticket["Service Technician"]||ticket.ServiceTechnician||ticket.repairer_name||ticket.RepairerName);
-    return state===code && isSnowyRiverServiceTech(serviceTech);
+    return state===code && isSnowyRiverTicket(ticket);
   });
   const summary=rows.reduce((acc,entry)=>{
     const ticket=entry?.ticket&&typeof entry.ticket==="object"?entry.ticket:{};
@@ -2685,6 +2788,7 @@ function renderWeekPanel(){
   const overviewStates=sortAustraliaStates(orderedAustraliaStates(allStates));
   if(!overviewStates.length){
     if(rankBodyEl)rankBodyEl.innerHTML='<tr><td colspan="6"><div class="empty">No overview rows available.</div></td></tr>';
+    if(rangeEl)rangeEl.innerHTML=`<span>${selectedRepairYear}</span><small>0 tickets</small>`;
     return;
   }
   const overviewTickets=overviewStates.reduce((sum,s)=>sum+Number(s.ticket_count||0),0);
@@ -2733,7 +2837,7 @@ function renderTable(){
   $("repairRows").innerHTML=rows.map(r=>{const ratio=Number(r.repeatChassisOver2Ratio||0);const ratioClass=ratio>0?"uniqueRatioBad":"uniqueRatioGood";const activeClass=r.repairId===selectedRepairId?"repairRowActive":"";return `<tr class="${activeClass}" data-id="${esc(r.repairId)}"><td><b>${esc(r.repairName)}</b></td><td class="num uniqueRatioCell ${ratioClass}">${num(ratio,1)}%</td><td class="num">${money(r.totalCost)}</td><td class="num">${money(r.avgCost)}</td><td class="num">${num(r.ticketCount)}</td><td class="num">${num(r.openCases)}</td><td class="num">${num(r.closedCases)}</td><td class="num">${num(r.chassisTicketCount)}</td><td class="num">${num(r.repeatChassisOver2Count)}</td><td><button class="linkBtn exportRepairBtn" data-id="${esc(r.repairId)}" type="button">Export</button></td><td><button class="linkBtn" data-id="${esc(r.repairId)}" type="button">Advanced view</button></td></tr>`}).join("")||`<tr><td colspan="${columns.length}"><div class="empty">No repair shops match the selected filters.</div></td></tr>`;
   $("repairRows").querySelectorAll("tr[data-id]").forEach(tr=>tr.onclick=ev=>{if(ev.target.closest("button"))return;selectedRepairId=tr.dataset.id||"all";page=1;const select=$("repairSelect");if(select)select.value=selectedRepairId;renderAll()});
   $("repairRows").querySelectorAll(".exportRepairBtn").forEach(b=>b.onclick=ev=>{ev.stopPropagation();exportRepairerExcel(b.dataset.id)});
-  $("repairRows").querySelectorAll(".linkBtn:not(.exportRepairBtn)").forEach(b=>b.onclick=ev=>{ev.stopPropagation();window.open(`repair-insights.html?repairId=${encodeURIComponent(b.dataset.id)}`,"_blank","noopener,noreferrer,width=1400,height=900")});
+  $("repairRows").querySelectorAll(".linkBtn:not(.exportRepairBtn)").forEach(b=>b.onclick=ev=>{ev.stopPropagation();window.open(`repair-insights.html?repairId=${encodeURIComponent(b.dataset.id)}&year=${selectedRepairYear}`,"_blank","noopener,noreferrer,width=1400,height=900")});
   const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));$("pageInfo").textContent=`Page ${page} of ${pages} - ${num(filtered.length)} repair shops`;$("prevPage").disabled=page<=1;$("nextPage").disabled=page>=pages;
 }
 function syncRepairExportButton(){
@@ -3256,7 +3360,7 @@ function renderAll_v2(){
 }
 async function loadWeeklyAnalysis(){
   try{
-    const analysis=globalThis.REPAIRERS_2026_ANALYSIS||await readStaticJson(ANALYSIS_JSON);
+    const analysis=await readStaticJson(ANALYSIS_JSON).catch(()=>globalThis.REPAIRERS_2026_ANALYSIS||{});
     const aus=globalThis.REPAIRERS_AUS_GEOJSON||await readStaticJson(AUS_GEOJSON);
     const nz=globalThis.REPAIRERS_NZ_GEOJSON||await readStaticJson(NZ_GEOJSON);
     weeklyAnalysis=analysis;
@@ -3287,7 +3391,9 @@ async function load(){
     showCalcFloat(true,"Calculating...");
     $("loadError").style.display="none";
     const firebaseMap=await loadFirebaseTicketMap();
-    const localDetails=Array.isArray(globalThis.REPAIRERS_2026_ANALYSIS?.details)&&globalThis.REPAIRERS_2026_ANALYSIS.details.length?globalThis.REPAIRERS_2026_ANALYSIS.details:null;
+    const localDetails=Array.isArray(weeklyAnalysis?.details)&&weeklyAnalysis.details.length
+      ? weeklyAnalysis.details
+      : (Array.isArray(globalThis.REPAIRERS_2026_ANALYSIS?.details)&&globalThis.REPAIRERS_2026_ANALYSIS.details.length?globalThis.REPAIRERS_2026_ANALYSIS.details:null);
     if(localDetails){
       tickets=overlayFirebaseTicketRows(localDetails,firebaseMap).map((r,i)=>normalizeTicket(r,clean(r["Ticket ID"]||r.TicketID||r.Ticket||`detail-${i+1}`))).filter(x=>x.id&&x.ticket);
     }else{
@@ -3299,6 +3405,7 @@ async function load(){
       return info.repairId!=="no-repair" && info.repairName!=="No Repair Shop Assigned" && isRepairScopeDate(entry.ticket.CreatedOn);
     });
     repairs=analyzeRepair(tickets);
+    showRepairYearNotice(tickets.length);
     // Replace workingRepairers with rebuilt rows driven off `repairs`.
     // The overlay-by-name approach couldn't join Python's split_key
     // ("snowy river perth|WA") to Firebase's InvolvedPartyBusinessPartnerID
@@ -3327,6 +3434,7 @@ async function load(){
       split_key: r.repairId,
       repairer_split_key: r.repairId,
     }));
+    workingStates=analyzeStateRows(tickets);
     renderSelect();
     renderAll();
     renderAll_v2();
@@ -3362,10 +3470,11 @@ if($("chassisRepeatExport")){
 if($("costRangeExport")){
   $("costRangeExport").onclick=exportCostRangeExcel;
 }
+renderRepairYearContext();
+showRepairYearNotice(0);
 window.addEventListener("resize",()=>{drawRange();renderWeekPanel()});
 load();
 
 </script>
 </body>
 </html>
-

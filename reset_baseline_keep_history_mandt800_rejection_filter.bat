@@ -32,7 +32,23 @@ if not exist "%~dp0firebase-service-account.json" (
 
 set "FIREBASE_SA_PATH=%~dp0firebase-service-account.json"
 
-python "%~dp0ctm_v44_history_safe_mandt800_rejection_filter.py" --reset-baseline --confirm-reset-baseline
+set "PYTHON_CMD=python"
+python --version >nul 2>&1
+if errorlevel 1 (
+  py -3 --version >nul 2>&1
+  if errorlevel 1 (
+    echo ERROR: Python was not found. Install Python 3.11+ and tick "Add python.exe to PATH".
+    pause
+    exit /b 1
+  )
+  set "PYTHON_CMD=py -3"
+)
+
+if "%PYTHON_CMD%"=="py -3" (
+  py -3 "%~dp0ctm_v44_history_safe_mandt800_rejection_filter.py" --reset-baseline --confirm-reset-baseline
+) else (
+  "%PYTHON_CMD%" "%~dp0ctm_v44_history_safe_mandt800_rejection_filter.py" --reset-baseline --confirm-reset-baseline
+)
 
 echo.
 echo Baseline reset finished. History was preserved.

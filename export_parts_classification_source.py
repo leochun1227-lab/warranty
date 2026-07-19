@@ -288,11 +288,15 @@ def normalize_ticket_export_row(ticket_key: str, raw_ticket: Any) -> Dict[str, A
         ticket = {}
 
     details = parse_sales_order_details(ticket.get("Sales Order Details"))
-    first_issue_dates = sorted(
+    issue_dates = sorted(
         (clean(item.get("firstIssueDate")) for item in details if clean(item.get("firstIssueDate"))),
         key=lambda value: (parse_any_date(value) or date.min, value),
     )
-    first_issue_date = first_issue_dates[0] if first_issue_dates else clean(ticket.get("First Issue Date"))
+    complete_issue_date = (
+        clean(ticket.get("Complete Issue Date"))
+        or (issue_dates[-1] if issue_dates else "")
+        or clean(ticket.get("First Issue Date"))
+    )
 
     return {
         "ticketKey": clean(ticket_key),
@@ -306,7 +310,7 @@ def normalize_ticket_export_row(ticket_key: str, raw_ticket: Any) -> Dict[str, A
         "ticketStatusText": clean(ticket.get("TicketStatusText")),
         "erpPurchaseOrder": clean(ticket.get("ERPPurchaseOrder")),
         "amountIncludingTax": parse_number(ticket.get("AmountIncludingTax")),
-        "firstIssueDate": first_issue_date,
+        "firstIssueDate": complete_issue_date,
         "purchaser": clean(ticket.get("Purchaser")),
         "currency": clean(ticket.get("Currency")),
         "details": details,

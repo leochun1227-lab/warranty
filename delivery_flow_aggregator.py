@@ -22,7 +22,10 @@ This script:
      Re-running on the same day overwrites only that day's node (idempotent),
      never previous days.
 
-It depends on the new "First Issue Date" field added to the fetch SQL
+It depends on the "First Issue Date" field added to the fetch SQL.
+For process timing, the page treats the final issued material row as
+"Complete Issues", so issuing lead time is SO Created Date -> latest issue date
+for fully issued SOs only.
 (LIKP.WADAT_IST). If that field is empty (old data not yet refreshed), the
 ticket is still counted in backlog/status mix; only the leadtime average needs
 the date and will simply use the rows that have it.
@@ -203,10 +206,10 @@ def bucket_for_delivery_count(delivery_count: int) -> str:
     return "3+"
 
 
-def earliest_issue_date(ticket: Dict[str, Any], details: List[Dict[str, Any]]) -> Optional[date]:
-    """Use ticket-level first issue when present; otherwise fall back to item rows."""
+def complete_issue_date(ticket: Dict[str, Any], details: List[Dict[str, Any]]) -> Optional[date]:
+    """Use the latest available issue date as the SO/ticket complete issue date."""
     found: List[date] = []
-    top_level = parse_date(ticket.get("First Issue Date"))
+    top_level = parse_date(ticket.get("Complete Issue Date")) or parse_date(ticket.get("First Issue Date"))
     if top_level:
         found.append(top_level)
     for item in details:
@@ -214,7 +217,7 @@ def earliest_issue_date(ticket: Dict[str, Any], details: List[Dict[str, Any]]) -
             item_date = parse_date(item.get("First Issue Date"))
             if item_date:
                 found.append(item_date)
-    return min(found) if found else None
+    return max(found) if found else None
 
 
 def parse_loose_date(text: Any) -> Optional[date]:
@@ -274,7 +277,7 @@ def aggregate(tickets_node: Dict[str, Any], as_of: date) -> Dict[str, Any]:
     # while export detail rows still preserve the underlying source granularity.
     so_state: Dict[str, Dict[str, Any]] = {}
 
-    part_leadtimes: List[int] = []     # days SO Created -> First Issue (per issued material row)
+    part_leadtimes: List[int] = []     # days SO Created -> Complete Issues (fully issued SOs)
     new_so_items_today = 0             # unique SOs whose SO Created Date == as_of
     items_issued_today = 0             # issued material rows whose First Issue Date == as_of
     oldest_not_issued = 0
@@ -348,7 +351,7 @@ def aggregate(tickets_node: Dict[str, Any], as_of: date) -> Dict[str, Any]:
                 "hasOpen": False,
                 "hasIssued": False,
                 "hasRejected": False,
-                "firstIssueDate": None,
+                "completeIssueDate": None,
                 "maxDeliveryCount": 0,
                 "costSeen": False,
             }
@@ -409,20 +412,14 @@ def aggregate(tickets_node: Dict[str, Any], as_of: date) -> Dict[str, Any]:
 
             if material_issued and it_issue_date:
                 state["hasIssued"] = True
-                if it_issue_date and (state["firstIssueDate"] is None or it_issue_date < state["firstIssueDate"]):
-                    state["firstIssueDate"] = it_issue_date
+                if it_issue_date and (state["completeIssueDate"] is None or it_issue_date > state["completeIssueDate"]):
+                    state["completeIssueDate"] = it_issue_date
                 issue_month = it_issue_date.strftime("%Y-%m")
                 issued_monthly[issue_month] += 1
                 if it_issue_date.month == as_of.month and it_issue_date.year == as_of.year:
                     issued_mtd += 1
                 if it_issue_date == as_of:
                     items_issued_today += 1
-                lt = max(0, (it_issue_date - so_created).days)
-                part_leadtimes.append(lt)
-                issue_leadtime_sum_by_month[issue_month] += lt
-                issue_leadtime_count_by_month[issue_month] += 1
-                db_dealer = dealer_bucket(did, dname)
-                db_dealer["leadtimes"].append(lt)
             elif material_open:
                 state["hasOpen"] = True
                 open_notissued_parts += 1
@@ -471,6 +468,14 @@ def aggregate(tickets_node: Dict[str, Any], as_of: date) -> Dict[str, Any]:
             partially_tickets += 1
         elif state["hasIssued"] and not state["hasOpen"]:
             fully_tickets += 1
+            if state["completeIssueDate"]:
+                lt = max(0, (state["completeIssueDate"] - so_created).days)
+                part_leadtimes.append(lt)
+                issue_month = state["completeIssueDate"].strftime("%Y-%m")
+                issue_leadtime_sum_by_month[issue_month] += lt
+                issue_leadtime_count_by_month[issue_month] += 1
+                db_dealer = dealer_bucket(state["dealerId"], state["dealerName"])
+                db_dealer["leadtimes"].append(lt)
         elif state["hasOpen"] and not state["hasIssued"]:
             notissued_tickets += 1
 
@@ -491,14 +496,14 @@ def aggregate(tickets_node: Dict[str, Any], as_of: date) -> Dict[str, Any]:
             band["rejectedItems"] += 1
         elif state["hasIssued"]:
             band["issuedItems"] += 1
-            if state["firstIssueDate"]:
-                lt = max(0, (state["firstIssueDate"] - so_created).days)
+            if not state["hasOpen"] and state["completeIssueDate"]:
+                lt = max(0, (state["completeIssueDate"] - so_created).days)
                 band["_leadtimes"].append(lt)
         else:
             band["openItems"] += 1
 
     backlog_total = open_notissued_parts
-    avg_days_first_issue = round(sum(part_leadtimes) / len(part_leadtimes), 1) if part_leadtimes else 0.0
+    avg_days_complete_issue = round(sum(part_leadtimes) / len(part_leadtimes), 1) if part_leadtimes else 0.0
     net_backlog_change = new_so_items_today - items_issued_today
 
     # finalize dealers
@@ -511,7 +516,8 @@ def aggregate(tickets_node: Dict[str, Any], as_of: date) -> Dict[str, Any]:
     delivery_count_out: Dict[str, Any] = {}
     for bucket, payload in delivery_count_counts.items():
         lts = payload.pop("_leadtimes", [])
-        payload["avgDaysToFirstIssue"] = round(sum(lts) / len(lts), 1) if lts else 0.0
+        payload["avgDaysToCompleteIssue"] = round(sum(lts) / len(lts), 1) if lts else 0.0
+        payload["avgDaysToFirstIssue"] = payload["avgDaysToCompleteIssue"]
         delivery_count_out[bucket] = payload
 
     selected_last12_weeks: List[Dict[str, Any]] = []
@@ -564,7 +570,8 @@ def aggregate(tickets_node: Dict[str, Any], as_of: date) -> Dict[str, Any]:
             "partiallyIssuedTickets": partially_tickets,
             "fullyIssuedTickets": fully_tickets,
             "notIssuedTickets": notissued_tickets,
-            "avgDaysToFirstIssue": avg_days_first_issue,
+            "avgDaysToCompleteIssue": avg_days_complete_issue,
+            "avgDaysToFirstIssue": avg_days_complete_issue,
             "oldestNotIssuedDays": oldest_not_issued,
         },
         # ----- main chart 1: delivery flow -----
@@ -701,11 +708,11 @@ def run_once(as_of: Optional[str]) -> None:
         logger.warning("No HANA cost sidecar found; leaving ticket-derived cost values in place.")
 
     logger.info(
-        "KPI: openSoItems=%s partially=%s fully=%s avgDaysFirstIssue=%s oldestNotIssued=%s",
+        "KPI: openSoItems=%s partially=%s fully=%s avgDaysCompleteIssue=%s oldestNotIssued=%s",
         snapshot["kpi"]["openSoItems"],
         snapshot["kpi"]["partiallyIssuedTickets"],
         snapshot["kpi"]["fullyIssuedTickets"],
-        snapshot["kpi"]["avgDaysToFirstIssue"],
+        snapshot["kpi"]["avgDaysToCompleteIssue"],
         snapshot["kpi"]["oldestNotIssuedDays"],
     )
     if snapshot.get("costReport"):
