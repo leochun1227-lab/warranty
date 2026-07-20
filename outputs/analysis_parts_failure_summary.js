@@ -1,74 +1,74 @@
 globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
   "meta": {
-    "generatedAt": "2026-07-19T20:05:16+00:00",
-    "partsRows": 34693,
-    "includedPartsRows": 31596,
-    "mappedTickets": 29861,
+    "generatedAt": "2026-07-20T20:11:33+00:00",
+    "partsRows": 34749,
+    "includedPartsRows": 31652,
+    "mappedTickets": 29900,
     "seriesCount": 10,
     "unmatchedRows": 3097,
     "excludedRows": 3097,
-    "partsSource": "outputs/parts_classification_2026-07-20/parts_classified.csv",
+    "partsSource": "outputs/parts_classification_2026-07-21/parts_classified.csv",
     "ticketMapSource": "outputs/analysis_parts_ticket_cost_map.json",
     "partsMetaSource": "outputs/parts_classified_meta.json"
   },
   "all": {
-    "lineItems": 31596,
-    "tickets": 29861,
-    "cost": 5323344.29,
+    "lineItems": 31652,
+    "tickets": 29900,
+    "cost": 5023283.246,
     "topComponents": [
       {
         "component": "Marker Light",
         "category": "Lighting / Reflectors",
-        "tickets": 3485,
-        "lineItems": 5346,
-        "cost": 73497.97,
-        "ticketShare": 0.116707,
-        "costShare": 0.013807
+        "tickets": 3493,
+        "lineItems": 5357,
+        "cost": 73679.41,
+        "ticketShare": 0.116823,
+        "costShare": 0.014668
       },
       {
         "component": "Tail Light",
         "category": "Lighting / Reflectors",
-        "tickets": 2489,
-        "lineItems": 2866,
-        "cost": 329881.93,
-        "ticketShare": 0.083353,
-        "costShare": 0.061969
+        "tickets": 2493,
+        "lineItems": 2870,
+        "cost": 329995.63,
+        "ticketShare": 0.083378,
+        "costShare": 0.065693
       },
       {
         "component": "Window Blade",
         "category": "Windows / Hatches / Blinds",
-        "tickets": 1522,
-        "lineItems": 2507,
-        "cost": 1663242.68,
-        "ticketShare": 0.050969,
-        "costShare": 0.312443
+        "tickets": 1524,
+        "lineItems": 2510,
+        "cost": 1664040.84,
+        "ticketShare": 0.05097,
+        "costShare": 0.331266
       },
       {
         "component": "Stop Light",
         "category": "Lighting / Reflectors",
-        "tickets": 1064,
-        "lineItems": 1072,
-        "cost": 18491.46,
-        "ticketShare": 0.035632,
-        "costShare": 0.003474
+        "tickets": 1066,
+        "lineItems": 1074,
+        "cost": 18521.25,
+        "ticketShare": 0.035652,
+        "costShare": 0.003687
       },
       {
         "component": "Window",
         "category": "Windows / Hatches / Blinds",
-        "tickets": 744,
-        "lineItems": 1162,
-        "cost": 366617.66,
-        "ticketShare": 0.024915,
-        "costShare": 0.06887
+        "tickets": 745,
+        "lineItems": 1163,
+        "cost": 366628.16,
+        "ticketShare": 0.024916,
+        "costShare": 0.072986
       },
       {
         "component": "Door",
         "category": "Doors / Hatches",
-        "tickets": 708,
-        "lineItems": 807,
-        "cost": 125069.95,
-        "ticketShare": 0.02371,
-        "costShare": 0.023495
+        "tickets": 712,
+        "lineItems": 812,
+        "cost": 125922.37,
+        "ticketShare": 0.023813,
+        "costShare": 0.025068
       },
       {
         "component": "Power Inlet",
@@ -76,8 +76,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
         "tickets": 703,
         "lineItems": 704,
         "cost": 11090.6,
-        "ticketShare": 0.023542,
-        "costShare": 0.002083
+        "ticketShare": 0.023512,
+        "costShare": 0.002208
       },
       {
         "component": "Flange",
@@ -85,52 +85,52 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
         "tickets": 650,
         "lineItems": 769,
         "cost": 2435.0,
-        "ticketShare": 0.021768,
-        "costShare": 0.000457
+        "ticketShare": 0.021739,
+        "costShare": 0.000485
       },
       {
         "component": "Reflector",
         "category": "Lighting / Reflectors",
-        "tickets": 622,
-        "lineItems": 671,
-        "cost": 31137.11,
-        "ticketShare": 0.02083,
-        "costShare": 0.005849
+        "tickets": 624,
+        "lineItems": 673,
+        "cost": 31317.11,
+        "ticketShare": 0.02087,
+        "costShare": 0.006234
       },
       {
         "component": "Access Door",
         "category": "Doors / Hatches",
-        "tickets": 616,
-        "lineItems": 842,
-        "cost": 176295.8,
-        "ticketShare": 0.020629,
-        "costShare": 0.033117
+        "tickets": 617,
+        "lineItems": 843,
+        "cost": 176296.76,
+        "ticketShare": 0.020635,
+        "costShare": 0.035096
       }
     ]
   },
   "series": {
     "SRC": {
-      "lineItems": 20805,
-      "tickets": 20399,
-      "cost": 3100412.731,
+      "lineItems": 20833,
+      "tickets": 20418,
+      "cost": 2806981.527,
       "topComponents": [
         {
           "component": "Marker Light",
           "category": "Lighting / Reflectors",
-          "tickets": 2330,
-          "lineItems": 3548,
-          "cost": 48869.85,
-          "ticketShare": 0.114221,
-          "costShare": 0.015762
+          "tickets": 2333,
+          "lineItems": 3553,
+          "cost": 48953.01,
+          "ticketShare": 0.114262,
+          "costShare": 0.01744
         },
         {
           "component": "Tail Light",
           "category": "Lighting / Reflectors",
-          "tickets": 1804,
-          "lineItems": 2091,
-          "cost": 263077.33,
-          "ticketShare": 0.088436,
-          "costShare": 0.084852
+          "tickets": 1807,
+          "lineItems": 2094,
+          "cost": 263153.13,
+          "ticketShare": 0.0885,
+          "costShare": 0.09375
         },
         {
           "component": "Window Blade",
@@ -138,8 +138,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 796,
           "lineItems": 1196,
           "cost": 824063.39,
-          "ticketShare": 0.039022,
-          "costShare": 0.265792
+          "ticketShare": 0.038985,
+          "costShare": 0.293576
         },
         {
           "component": "Flange",
@@ -147,8 +147,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 539,
           "lineItems": 650,
           "cost": 2085.6,
-          "ticketShare": 0.026423,
-          "costShare": 0.000673
+          "ticketShare": 0.026398,
+          "costShare": 0.000743
         },
         {
           "component": "Power Inlet",
@@ -156,8 +156,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 519,
           "lineItems": 520,
           "cost": 7945.0,
-          "ticketShare": 0.025442,
-          "costShare": 0.002563
+          "ticketShare": 0.025419,
+          "costShare": 0.00283
         },
         {
           "component": "Access Door",
@@ -165,8 +165,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 499,
           "lineItems": 684,
           "cost": 68289.26,
-          "ticketShare": 0.024462,
-          "costShare": 0.022026
+          "ticketShare": 0.024439,
+          "costShare": 0.024328
         },
         {
           "component": "Window",
@@ -174,26 +174,26 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 491,
           "lineItems": 769,
           "cost": 160692.65,
-          "ticketShare": 0.02407,
-          "costShare": 0.051829
+          "ticketShare": 0.024047,
+          "costShare": 0.057247
         },
         {
           "component": "Door",
           "category": "Doors / Hatches",
-          "tickets": 485,
-          "lineItems": 547,
-          "cost": 83512.67,
-          "ticketShare": 0.023776,
-          "costShare": 0.026936
+          "tickets": 488,
+          "lineItems": 550,
+          "cost": 84298.74,
+          "ticketShare": 0.0239,
+          "costShare": 0.030032
         },
         {
           "component": "Stop Light",
           "category": "Lighting / Reflectors",
-          "tickets": 479,
-          "lineItems": 481,
-          "cost": 8060.9,
-          "ticketShare": 0.023482,
-          "costShare": 0.0026
+          "tickets": 480,
+          "lineItems": 482,
+          "cost": 8080.76,
+          "ticketShare": 0.023509,
+          "costShare": 0.002879
         },
         {
           "component": "Window Protector",
@@ -201,15 +201,15 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 469,
           "lineItems": 519,
           "cost": 21063.57,
-          "ticketShare": 0.022991,
-          "costShare": 0.006794
+          "ticketShare": 0.02297,
+          "costShare": 0.007504
         }
       ]
     },
     "SRH": {
-      "lineItems": 1387,
-      "tickets": 986,
-      "cost": 149120.03,
+      "lineItems": 1393,
+      "tickets": 988,
+      "cost": 149331.37,
       "topComponents": [
         {
           "component": "Stop Light",
@@ -217,26 +217,26 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 207,
           "lineItems": 207,
           "cost": 3639.57,
-          "ticketShare": 0.209939,
-          "costShare": 0.024407
+          "ticketShare": 0.209514,
+          "costShare": 0.024372
         },
         {
           "component": "Marker Light",
           "category": "Lighting / Reflectors",
-          "tickets": 171,
-          "lineItems": 272,
-          "cost": 4133.15,
-          "ticketShare": 0.173428,
-          "costShare": 0.027717
+          "tickets": 173,
+          "lineItems": 275,
+          "cost": 4186.07,
+          "ticketShare": 0.175101,
+          "costShare": 0.028032
         },
         {
           "component": "Tail Light",
           "category": "Lighting / Reflectors",
-          "tickets": 166,
-          "lineItems": 179,
-          "cost": 4271.28,
-          "ticketShare": 0.168357,
-          "costShare": 0.028643
+          "tickets": 167,
+          "lineItems": 180,
+          "cost": 4309.18,
+          "ticketShare": 0.169028,
+          "costShare": 0.028856
         },
         {
           "component": "Roof Hatch",
@@ -244,8 +244,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 108,
           "lineItems": 129,
           "cost": 19623.39,
-          "ticketShare": 0.109533,
-          "costShare": 0.131595
+          "ticketShare": 0.109312,
+          "costShare": 0.131408
         },
         {
           "component": "Main Door",
@@ -253,8 +253,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 74,
           "lineItems": 74,
           "cost": 5080.05,
-          "ticketShare": 0.075051,
-          "costShare": 0.034067
+          "ticketShare": 0.074899,
+          "costShare": 0.034019
         },
         {
           "component": "Switch",
@@ -262,8 +262,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 44,
           "lineItems": 46,
           "cost": 1514.57,
-          "ticketShare": 0.044625,
-          "costShare": 0.010157
+          "ticketShare": 0.044534,
+          "costShare": 0.010142
         },
         {
           "component": "Reflector",
@@ -271,8 +271,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 33,
           "lineItems": 33,
           "cost": 2256.9,
-          "ticketShare": 0.033469,
-          "costShare": 0.015135
+          "ticketShare": 0.033401,
+          "costShare": 0.015113
         },
         {
           "component": "Gas",
@@ -280,8 +280,17 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 30,
           "lineItems": 30,
           "cost": 3250.08,
-          "ticketShare": 0.030426,
-          "costShare": 0.021795
+          "ticketShare": 0.030364,
+          "costShare": 0.021764
+        },
+        {
+          "component": "Access Door",
+          "category": "Doors / Hatches",
+          "tickets": 26,
+          "lineItems": 37,
+          "cost": 10981.39,
+          "ticketShare": 0.026316,
+          "costShare": 0.073537
         },
         {
           "component": "Wheel",
@@ -289,42 +298,33 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 26,
           "lineItems": 29,
           "cost": 1054.91,
-          "ticketShare": 0.026369,
-          "costShare": 0.007074
-        },
-        {
-          "component": "Access Door",
-          "category": "Doors / Hatches",
-          "tickets": 25,
-          "lineItems": 36,
-          "cost": 10980.43,
-          "ticketShare": 0.025355,
-          "costShare": 0.073635
+          "ticketShare": 0.026316,
+          "costShare": 0.007064
         }
       ]
     },
     "SRT": {
-      "lineItems": 5598,
-      "tickets": 4617,
-      "cost": 1189305.36,
+      "lineItems": 5616,
+      "tickets": 4629,
+      "cost": 1191372.83,
       "topComponents": [
         {
           "component": "Marker Light",
           "category": "Lighting / Reflectors",
-          "tickets": 700,
-          "lineItems": 1039,
-          "cost": 14222.05,
-          "ticketShare": 0.151614,
-          "costShare": 0.011958
+          "tickets": 703,
+          "lineItems": 1042,
+          "cost": 14267.41,
+          "ticketShare": 0.151869,
+          "costShare": 0.011976
         },
         {
           "component": "Window Blade",
           "category": "Windows / Hatches / Blinds",
-          "tickets": 605,
-          "lineItems": 1137,
-          "cost": 709226.67,
-          "ticketShare": 0.131037,
-          "costShare": 0.596337
+          "tickets": 606,
+          "lineItems": 1139,
+          "cost": 709916.81,
+          "ticketShare": 0.130914,
+          "costShare": 0.595881
         },
         {
           "component": "Tail Light",
@@ -332,17 +332,17 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 260,
           "lineItems": 287,
           "cost": 30177.61,
-          "ticketShare": 0.056314,
-          "costShare": 0.025374
+          "ticketShare": 0.056168,
+          "costShare": 0.02533
         },
         {
           "component": "Stop Light",
           "category": "Lighting / Reflectors",
-          "tickets": 228,
-          "lineItems": 230,
-          "cost": 4140.81,
-          "ticketShare": 0.049383,
-          "costShare": 0.003482
+          "tickets": 229,
+          "lineItems": 231,
+          "cost": 4150.74,
+          "ticketShare": 0.049471,
+          "costShare": 0.003484
         },
         {
           "component": "Switch",
@@ -350,44 +350,44 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 186,
           "lineItems": 186,
           "cost": 6803.44,
-          "ticketShare": 0.040286,
-          "costShare": 0.005721
+          "ticketShare": 0.040181,
+          "costShare": 0.005711
         },
         {
           "component": "Solar",
           "category": "Electrical / Power / Electronics",
-          "tickets": 139,
-          "lineItems": 142,
-          "cost": 41626.37,
-          "ticketShare": 0.030106,
-          "costShare": 0.035001
+          "tickets": 140,
+          "lineItems": 143,
+          "cost": 41848.1,
+          "ticketShare": 0.030244,
+          "costShare": 0.035126
         },
         {
           "component": "Window",
           "category": "Windows / Hatches / Blinds",
-          "tickets": 135,
-          "lineItems": 192,
-          "cost": 16433.1,
-          "ticketShare": 0.02924,
-          "costShare": 0.013817
+          "tickets": 136,
+          "lineItems": 193,
+          "cost": 16443.6,
+          "ticketShare": 0.02938,
+          "costShare": 0.013802
         },
         {
           "component": "Door",
           "category": "Doors / Hatches",
-          "tickets": 133,
-          "lineItems": 157,
-          "cost": 20774.39,
-          "ticketShare": 0.028807,
-          "costShare": 0.017468
+          "tickets": 134,
+          "lineItems": 159,
+          "cost": 20840.74,
+          "ticketShare": 0.028948,
+          "costShare": 0.017493
         },
         {
           "component": "Main Door",
           "category": "Doors / Hatches",
-          "tickets": 131,
-          "lineItems": 132,
-          "cost": 27517.03,
-          "ticketShare": 0.028373,
-          "costShare": 0.023137
+          "tickets": 132,
+          "lineItems": 133,
+          "cost": 27581.81,
+          "ticketShare": 0.028516,
+          "costShare": 0.023151
         },
         {
           "component": "Power Inlet",
@@ -395,15 +395,15 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 97,
           "lineItems": 97,
           "cost": 1557.3,
-          "ticketShare": 0.021009,
-          "costShare": 0.001309
+          "ticketShare": 0.020955,
+          "costShare": 0.001307
         }
       ]
     },
     "SRP": {
-      "lineItems": 2028,
-      "tickets": 1178,
-      "cost": 156232.358,
+      "lineItems": 2029,
+      "tickets": 1180,
+      "cost": 155116.278,
       "topComponents": [
         {
           "component": "Marker Light",
@@ -411,8 +411,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 268,
           "lineItems": 469,
           "cost": 6098.7,
-          "ticketShare": 0.227504,
-          "costShare": 0.039036
+          "ticketShare": 0.227119,
+          "costShare": 0.039317
         },
         {
           "component": "Tail Light",
@@ -420,8 +420,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 244,
           "lineItems": 293,
           "cost": 5943.24,
-          "ticketShare": 0.207131,
-          "costShare": 0.038041
+          "ticketShare": 0.20678,
+          "costShare": 0.038315
         },
         {
           "component": "Stop Light",
@@ -429,17 +429,17 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 147,
           "lineItems": 151,
           "cost": 2590.6,
-          "ticketShare": 0.124788,
-          "costShare": 0.016582
+          "ticketShare": 0.124576,
+          "costShare": 0.016701
         },
         {
           "component": "Roof Hatch",
           "category": "Windows / Hatches / Blinds",
-          "tickets": 131,
-          "lineItems": 159,
-          "cost": 31770.35,
-          "ticketShare": 0.111205,
-          "costShare": 0.203353
+          "tickets": 132,
+          "lineItems": 160,
+          "cost": 32063.73,
+          "ticketShare": 0.111864,
+          "costShare": 0.206708
         },
         {
           "component": "Reflector",
@@ -447,8 +447,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 109,
           "lineItems": 118,
           "cost": 6228.14,
-          "ticketShare": 0.09253,
-          "costShare": 0.039865
+          "ticketShare": 0.092373,
+          "costShare": 0.040151
         },
         {
           "component": "Main Door",
@@ -456,8 +456,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 68,
           "lineItems": 68,
           "cost": 4405.04,
-          "ticketShare": 0.057725,
-          "costShare": 0.028195
+          "ticketShare": 0.057627,
+          "costShare": 0.028398
         },
         {
           "component": "Decal",
@@ -465,8 +465,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 61,
           "lineItems": 74,
           "cost": 1626.47,
-          "ticketShare": 0.051783,
-          "costShare": 0.010411
+          "ticketShare": 0.051695,
+          "costShare": 0.010485
         },
         {
           "component": "Clip",
@@ -474,8 +474,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 52,
           "lineItems": 64,
           "cost": 1300.7,
-          "ticketShare": 0.044143,
-          "costShare": 0.008325
+          "ticketShare": 0.044068,
+          "costShare": 0.008385
         },
         {
           "component": "Power Inlet",
@@ -483,8 +483,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 48,
           "lineItems": 48,
           "cost": 948.2,
-          "ticketShare": 0.040747,
-          "costShare": 0.006069
+          "ticketShare": 0.040678,
+          "costShare": 0.006113
         },
         {
           "component": "Switch",
@@ -492,15 +492,15 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 40,
           "lineItems": 41,
           "cost": 1423.85,
-          "ticketShare": 0.033956,
-          "costShare": 0.009114
+          "ticketShare": 0.033898,
+          "costShare": 0.009179
         }
       ]
     },
     "SRL": {
-      "lineItems": 1747,
-      "tickets": 2637,
-      "cost": 714735.061,
+      "lineItems": 1750,
+      "tickets": 2641,
+      "cost": 706942.491,
       "topComponents": [
         {
           "component": "Window",
@@ -508,17 +508,17 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 105,
           "lineItems": 181,
           "cost": 188802.95,
-          "ticketShare": 0.039818,
-          "costShare": 0.264158
+          "ticketShare": 0.039758,
+          "costShare": 0.26707
         },
         {
           "component": "Window Blade",
           "category": "Windows / Hatches / Blinds",
-          "tickets": 84,
-          "lineItems": 126,
-          "cost": 85082.57,
-          "ticketShare": 0.031854,
-          "costShare": 0.119041
+          "tickets": 85,
+          "lineItems": 127,
+          "cost": 85190.59,
+          "ticketShare": 0.032185,
+          "costShare": 0.120506
         },
         {
           "component": "Camera",
@@ -526,8 +526,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 75,
           "lineItems": 75,
           "cost": 35058.56,
-          "ticketShare": 0.028441,
-          "costShare": 0.049051
+          "ticketShare": 0.028398,
+          "costShare": 0.049592
         },
         {
           "component": "Cupboard",
@@ -535,8 +535,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 74,
           "lineItems": 83,
           "cost": 13664.54,
-          "ticketShare": 0.028062,
-          "costShare": 0.019118
+          "ticketShare": 0.02802,
+          "costShare": 0.019329
         },
         {
           "component": "Door",
@@ -544,8 +544,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 72,
           "lineItems": 84,
           "cost": 17711.93,
-          "ticketShare": 0.027304,
-          "costShare": 0.024781
+          "ticketShare": 0.027262,
+          "costShare": 0.025054
         },
         {
           "component": "Window Protector",
@@ -553,17 +553,17 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 66,
           "lineItems": 92,
           "cost": 22052.44,
-          "ticketShare": 0.025028,
-          "costShare": 0.030854
+          "ticketShare": 0.024991,
+          "costShare": 0.031194
         },
         {
           "component": "Washer",
           "category": "Hardware / Installation",
-          "tickets": 61,
-          "lineItems": 61,
-          "cost": 36295.0,
-          "ticketShare": 0.023132,
-          "costShare": 0.050781
+          "tickets": 62,
+          "lineItems": 62,
+          "cost": 36890.0,
+          "ticketShare": 0.023476,
+          "costShare": 0.052182
         },
         {
           "component": "Access Door",
@@ -571,8 +571,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 46,
           "lineItems": 62,
           "cost": 84136.88,
-          "ticketShare": 0.017444,
-          "costShare": 0.117718
+          "ticketShare": 0.017418,
+          "costShare": 0.119015
         },
         {
           "component": "Tv",
@@ -580,8 +580,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 40,
           "lineItems": 44,
           "cost": 13403.18,
-          "ticketShare": 0.015169,
-          "costShare": 0.018753
+          "ticketShare": 0.015146,
+          "costShare": 0.018959
         },
         {
           "component": "Boot Door",
@@ -589,8 +589,8 @@ globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = {
           "tickets": 37,
           "lineItems": 41,
           "cost": 3998.58,
-          "ticketShare": 0.014031,
-          "costShare": 0.005594
+          "ticketShare": 0.01401,
+          "costShare": 0.005656
         }
       ]
     },

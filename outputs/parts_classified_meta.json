@@ -1,7 +1,7 @@
 {
   "sourcePath": "outputs/parts_classification_source.csv",
-  "csvPath": "outputs/parts_classification_2026-07-20/parts_classified.csv",
-  "rowCount": 34693,
+  "csvPath": "outputs/parts_classification_2026-07-21/parts_classified.csv",
+  "rowCount": 34749,
   "headers": [
     "Month",
     "Ticket Key",
@@ -68,8 +68,8 @@
         "light pod",
         "light"
       ],
-      "count": 11085,
-      "cost": 193831.17
+      "count": 11105,
+      "cost": 194375.62
     },
     {
       "key": "windows_hatches_blinds",
@@ -85,8 +85,8 @@
         "hatch",
         "blind"
       ],
-      "count": 6737,
-      "cost": 332465.97
+      "count": 6743,
+      "cost": 332880.87
     },
     {
       "key": "electrical_power_electronics",
@@ -128,8 +128,8 @@
         "wiring",
         "duct"
       ],
-      "count": 4964,
-      "cost": 491190.732
+      "count": 4969,
+      "cost": 492062.962
     },
     {
       "key": "doors_access_hatches",
@@ -141,8 +141,8 @@
         "door set",
         "door"
       ],
-      "count": 2662,
-      "cost": 196571.09
+      "count": 2672,
+      "cost": 197619.81
     },
     {
       "key": "chassis_wheels_towing",
@@ -175,8 +175,8 @@
         "rack",
         "bike rack"
       ],
-      "count": 2058,
-      "cost": 696329.28
+      "count": 2062,
+      "cost": 391972.92
     },
     {
       "key": "hardware_installation",
@@ -213,8 +213,8 @@
         "clip",
         "support"
       ],
-      "count": 1849,
-      "cost": 67774.428
+      "count": 1852,
+      "cost": 68406.388
     },
     {
       "key": "furniture_interior",
@@ -293,8 +293,8 @@
         "flap",
         "awning slider catch"
       ],
-      "count": 1113,
-      "cost": 67337.23
+      "count": 1119,
+      "cost": 68172.706
     },
     {
       "key": "water_plumbing_kitchen_bath",
@@ -341,8 +341,8 @@
       "key": "other",
       "label": "Other",
       "keywords": [],
-      "count": 521,
-      "cost": 95324.325
+      "count": 523,
+      "cost": 96599.445
     }
   ],
   "otherExamples": [
@@ -377,15 +377,15 @@
     "Brush Strip",
     "Pedders Shocker"
   ],
-  "generatedAt": "2026-07-19T20:04:08.657Z",
+  "generatedAt": "2026-07-20T20:10:22.373Z",
   "aiEnabled": true,
   "aiModel": "gemini-2.0-flash",
   "counts": {
     "preservedCount": 0,
-    "reusedHistoryCount": 34693,
-    "keywordMatchCount": 0,
+    "reusedHistoryCount": 34745,
+    "keywordMatchCount": 3,
     "aiMatchCount": 0,
-    "otherCount": 0,
+    "otherCount": 1,
     "reusedSafetyHistoryCount": 0,
     "safetyRuleMatchCount": 0,
     "safetyMonitoredCount": 0
