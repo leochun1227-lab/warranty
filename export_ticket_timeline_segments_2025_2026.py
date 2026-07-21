@@ -22,6 +22,7 @@ DEFAULT_PARTS_CLASSIFIED_CSV = ROOT / "outputs" / "parts_classified.csv"
 DEFAULT_REPAIRERS_JSON = ROOT / "outputs" / "repairers_2026" / "repairers_2026_data.json"
 DEFAULT_OUTPUT = ROOT / "generated_exports" / "ticket_timeline_segments_2025_2026.xlsx"
 DEFAULT_SUMMARY_JSON = ROOT / "generated_exports" / "ticket_timeline_summary.json"
+DEFAULT_COMPLETION_ANALYTICS_JSON = ROOT / "generated_exports" / "ticket_timeline_completion_analytics_2026.json"
 DEFAULT_START_DATE = date(date.today().year, 1, 1)
 
 APPROVED_STATUS_TEXTS = {
@@ -48,6 +49,7 @@ class Paths:
     repairers_json: Path
     output: Path
     summary_json: Path
+    completion_analytics_json: Path
 
 
 def clean(value: Any) -> str:
@@ -855,6 +857,388 @@ def build_qualifying_sheet(
     ].copy()
 
 
+COMPLETION_BUCKETS = [
+    ("0-7", "#0f8f8c"),
+    ("8-14", "#4f8f42"),
+    ("15-21", "#2474a6"),
+    ("22-30", "#d88a18"),
+    ("31-60", "#ef9f42"),
+    ("60+", "#c9513f"),
+]
+TOTAL_COMPLETION_BUCKETS = [
+    ("0-30", "#0f8f8c"),
+    ("31-60", "#4f8f42"),
+    ("61-90", "#2474a6"),
+    ("91-120", "#d88a18"),
+    ("121-180", "#ef9f42"),
+    ("180+", "#c9513f"),
+]
+MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+
+def completed_in_year(value: Any, year: int, as_of: date) -> bool:
+    completed_date = to_date(value)
+    return completed_date is not None and completed_date.year == year and completed_date <= as_of
+
+
+def duration_bucket_name(value: float | int, buckets: list[tuple[str, str]] | None = None) -> str:
+    labels = [label for label, _ in (buckets or COMPLETION_BUCKETS)]
+    if labels and labels[-1] == "180+":
+        if value <= 30:
+            return "0-30"
+        if value <= 60:
+            return "31-60"
+        if value <= 90:
+            return "61-90"
+        if value <= 120:
+            return "91-120"
+        if value <= 180:
+            return "121-180"
+        return "180+"
+    if value <= 7:
+        return "0-7"
+    if value <= 14:
+        return "8-14"
+    if value <= 21:
+        return "15-21"
+    if value <= 30:
+        return "22-30"
+    if value <= 60:
+        return "31-60"
+    return "60+"
+
+
+def valid_duration_values(values: Iterable[Any]) -> list[float]:
+    out: list[float] = []
+    for value in values:
+        try:
+            if pd.notna(value) and float(value) >= 0:
+                out.append(float(value))
+        except (TypeError, ValueError):
+            continue
+    return out
+
+
+def build_completion_buckets(values: Iterable[Any], buckets: list[tuple[str, str]] | None = None) -> list[list[Any]]:
+    bucket_defs = buckets or COMPLETION_BUCKETS
+    valid_values = valid_duration_values(values)
+    total = len(valid_values)
+    rows: list[list[Any]] = []
+    for label, color in bucket_defs:
+        count = sum(1 for value in valid_values if duration_bucket_name(value, bucket_defs) == label)
+        pct = round(count / total * 100, 1) if total else 0
+        rows.append([label, pct, color, count])
+    return rows
+
+
+def build_completion_month_trend(
+    df: pd.DataFrame,
+    completed_col: str,
+    duration_col: str,
+    threshold_days: int,
+    year: int,
+    as_of: date,
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    monthly_avgs: list[float | None] = []
+    for month_index, month_label in enumerate(MONTH_LABELS, start=1):
+        if date(year, month_index, 1) > as_of:
+            break
+        month_df = df[
+            df[completed_col].map(
+                lambda value, month_index=month_index: (
+                    (completed_date := to_date(value)) is not None
+                    and completed_date.year == year
+                    and completed_date.month == month_index
+                    and completed_date <= as_of
+                )
+            )
+        ].copy()
+        values = valid_duration_values(month_df.get(duration_col, []))
+        avg = round(sum(values) / len(values), 2) if values else None
+        monthly_avgs.append(avg)
+        rolling_values = [value for value in monthly_avgs[-3:] if value is not None]
+        over_count = sum(1 for value in values if value > threshold_days)
+        prior_created = 0
+        if not month_df.empty and "created_date" in month_df.columns:
+            prior_created = sum(
+                1
+                for value in month_df["created_date"].tolist()
+                if (created_date := to_date(value)) is not None and created_date.year < year
+            )
+        rows.append(
+            {
+                "label": month_label,
+                "avg": avg,
+                "completed": len(values),
+                "over": over_count,
+                "overPct": round(over_count / len(values) * 100, 1) if values else 0,
+                "priorCreated": prior_created,
+                "roll3": round(sum(rolling_values) / len(rolling_values), 2) if rolling_values else None,
+            }
+        )
+    return rows
+
+
+def build_completion_month_buckets(
+    df: pd.DataFrame,
+    completed_col: str,
+    duration_col: str,
+    year: int,
+    as_of: date,
+    bucket_defs: list[tuple[str, str]] | None = None,
+) -> dict[str, list[list[Any]]]:
+    month_buckets: dict[str, list[list[Any]]] = {}
+    for month_index, month_label in enumerate(MONTH_LABELS, start=1):
+        if date(year, month_index, 1) > as_of:
+            break
+        month_df = df[
+            df[completed_col].map(
+                lambda value, month_index=month_index: (
+                    (completed_date := to_date(value)) is not None
+                    and completed_date.year == year
+                    and completed_date.month == month_index
+                    and completed_date <= as_of
+                )
+            )
+        ]
+        month_buckets[month_label] = build_completion_buckets(month_df.get(duration_col, []), bucket_defs)
+    return month_buckets
+
+
+def latest_overtime_ticket_rows(
+    df: pd.DataFrame,
+    completed_col: str,
+    duration_col: str,
+    threshold_days: int,
+    owner_col: str,
+) -> list[list[str]]:
+    if df.empty:
+        return []
+    work = df[df[duration_col].map(lambda value: pd.notna(value) and float(value) > threshold_days)].copy()
+    if work.empty:
+        return []
+    work["_completed_sort_date"] = work[completed_col].map(to_date)
+    work = work.sort_values(["_completed_sort_date", "ticket_number"], ascending=[False, False]).head(3)
+    rows: list[list[str]] = []
+    for _, row in work.iterrows():
+        rows.append(
+            [
+                f"#{clean(row.get('ticket_number'))}",
+                clean(row.get(owner_col)),
+                f"{int(round(float(row.get(duration_col))))} days",
+            ]
+        )
+    return rows
+
+
+def completion_stage_payload(
+    df: pd.DataFrame,
+    completed_col: str,
+    duration_col: str,
+    threshold_days: int,
+    year: int,
+    as_of: date,
+    responsibility: str,
+    export_label: str,
+    owner_col: str,
+    bucket_defs: list[tuple[str, str]] | None = None,
+    title: str = "Handling Duration Distribution",
+) -> dict[str, Any]:
+    values = valid_duration_values(df.get(duration_col, []))
+    over_count = sum(1 for value in values if value > threshold_days)
+    return {
+        "responsibility": responsibility,
+        "exportLabel": export_label,
+        "title": title,
+        "overLabel": f"{round(over_count / len(values) * 100, 1) if values else 0}% over",
+        "buckets": build_completion_buckets(values, bucket_defs),
+        "monthBuckets": build_completion_month_buckets(df, completed_col, duration_col, year, as_of, bucket_defs),
+        "trend": build_completion_month_trend(df, completed_col, duration_col, threshold_days, year, as_of),
+        "tickets": latest_overtime_ticket_rows(df, completed_col, duration_col, threshold_days, owner_col),
+    }
+
+
+def build_total_handling_df(parts_joined_df: pd.DataFrame, invoice_df: pd.DataFrame) -> pd.DataFrame:
+    total = parts_joined_df.merge(invoice_df, on="po", how="left")
+    total["created_to_invoice_days"] = total.apply(
+        lambda row: day_diff(row.get("invoice_date"), row.get("created_date")),
+        axis=1,
+    )
+    total["created_to_invoice_days_completed"] = total["created_to_invoice_days"]
+    return total
+
+
+def completion_detail_records(
+    df: pd.DataFrame,
+    stage: str,
+    completed_col: str,
+    duration_col: str,
+    threshold_days: int,
+    year: int,
+    as_of: date,
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for _, row in df.iterrows():
+        completed_date = to_date(row.get(completed_col))
+        if completed_date is None or completed_date.year != year or completed_date > as_of:
+            continue
+        duration = row.get(duration_col)
+        try:
+            if pd.isna(duration) or float(duration) < 0:
+                continue
+        except (TypeError, ValueError):
+            continue
+        created_date = to_date(row.get("created_date"))
+        rows.append(
+            {
+                "stage": stage,
+                "completed_month": completed_date.strftime("%Y-%m"),
+                "completed_date": completed_date.isoformat(),
+                "duration_days": round(float(duration), 2),
+                "standard_days": threshold_days,
+                "over_standard": float(duration) > threshold_days,
+                "created_year": created_date.year if created_date else "",
+                "ticket_number": clean(row.get("ticket_number")),
+                "ticket_key": clean(row.get("ticket_key")),
+                "ticket_type": clean(row.get("ticket_type")),
+                "status_text": clean(row.get("status_text")),
+                "agent_name": clean(row.get("agent_name")),
+                "dealer_name": clean(row.get("dealer_name")),
+                "service_technician": clean(row.get("service_technician")),
+                "po": clean(row.get("po")),
+                "erp_service_order_id": clean(row.get("erp_service_order_id")),
+                "created_on": clean(row.get("created_on")),
+                "claim_approved_on": clean(row.get("claim_approved_on")),
+                "parts_so_created_date": iso_or_blank(row.get("so_created_date_joined")),
+                "parts_complete_issue_date": iso_or_blank(row.get("complete_issue_date_joined")),
+                "invoice_date": iso_or_blank(row.get("invoice_date")),
+                "serial_id": clean(row.get("serial_id")),
+                "chassis_number": clean(row.get("chassis_number")),
+                "registered_product": clean(row.get("registered_product")),
+                "product": clean(row.get("product")),
+                "claim_total_amount": row.get("claim_total_amount"),
+                "factory_parts_claim_total_amount": row.get("factory_parts_claim_total_amount"),
+                "labour_hours_total_amount": row.get("labour_hours_total_amount"),
+                "repairer_parts_claim_total_amount": row.get("repairer_parts_claim_total_amount"),
+            }
+        )
+    return rows
+
+
+def build_completion_analytics_payload(
+    base_df: pd.DataFrame,
+    parts_by_ticket_df: pd.DataFrame,
+    parts_by_po_df: pd.DataFrame,
+    invoice_df: pd.DataFrame,
+    year: int,
+    as_of: date,
+) -> tuple[dict[str, Any], pd.DataFrame, pd.DataFrame]:
+    base_all_df = base_df[base_df["po"].ne("") & ~base_df["is_unapproved"]].copy()
+    base_all_df["approval_days"] = base_all_df.apply(lambda row: day_diff(row["approved_date"], row["created_date"]), axis=1)
+    base_all_df["approval_days_completed"] = base_all_df["approval_days"]
+
+    approval_completed_df = base_all_df[
+        base_all_df["approved_date"].map(lambda value: completed_in_year(value, year, as_of))
+        & base_all_df["approval_days_completed"].map(lambda value: value is not None and value >= 0)
+    ].copy()
+
+    scratch_anomalies: list[dict[str, Any]] = []
+    all_parts_joined_df = merge_parts_data(base_all_df, parts_by_ticket_df, parts_by_po_df, scratch_anomalies)
+    all_parts_joined_df["parts_issuing_days"] = all_parts_joined_df.apply(
+        lambda row: day_diff(row["complete_issue_date_joined"], row["so_created_date_joined"]),
+        axis=1,
+    )
+    all_parts_joined_df["parts_issuing_days_completed"] = all_parts_joined_df["parts_issuing_days"]
+    parts_completed_df = all_parts_joined_df[
+        all_parts_joined_df["complete_issue_date_joined"].map(lambda value: completed_in_year(value, year, as_of))
+        & all_parts_joined_df["parts_issuing_days_completed"].map(lambda value: value is not None and value >= 0)
+    ].copy()
+
+    valid_parts_for_repair_df = all_parts_joined_df[
+        all_parts_joined_df["parts_issuing_days"].map(lambda value: value is not None and value >= 0)
+    ].copy()
+    repairer_all_df = build_repairer_segment(valid_parts_for_repair_df, invoice_df, scratch_anomalies)
+    repairer_completed_df = repairer_all_df[
+        repairer_all_df["invoice_date"].map(lambda value: completed_in_year(value, year, as_of))
+    ].copy()
+    total_handling_all_df = build_total_handling_df(all_parts_joined_df, invoice_df)
+    total_handling_completed_df = total_handling_all_df[
+        total_handling_all_df["invoice_date"].map(lambda value: completed_in_year(value, year, as_of))
+        & total_handling_all_df["created_to_invoice_days_completed"].map(lambda value: value is not None and value >= 0)
+    ].copy()
+
+    payload = {
+        "generatedAt": datetime.now().isoformat(timespec="seconds"),
+        "year": year,
+        "basis": "completed month in selected year; ticket Created On can be earlier than the selected year",
+        "stages": {
+            "approval": completion_stage_payload(
+                approval_completed_df,
+                completed_col="approved_date",
+                duration_col="approval_days_completed",
+                threshold_days=27,
+                year=year,
+                as_of=as_of,
+                responsibility="Warranty employee",
+                export_label="Warranty Approval",
+                owner_col="agent_name",
+            ),
+            "parts": completion_stage_payload(
+                parts_completed_df,
+                completed_col="complete_issue_date_joined",
+                duration_col="parts_issuing_days_completed",
+                threshold_days=21,
+                year=year,
+                as_of=as_of,
+                responsibility="Parts tickets + days",
+                export_label="Parts Preparation",
+                owner_col="",
+            ),
+            "repair": completion_stage_payload(
+                repairer_completed_df,
+                completed_col="invoice_date",
+                duration_col="repairer_repair_days",
+                threshold_days=33,
+                year=year,
+                as_of=as_of,
+                responsibility="Repairer information",
+                export_label="Repairer Time",
+                owner_col="service_technician",
+            ),
+            "closed": completion_stage_payload(
+                total_handling_completed_df,
+                completed_col="invoice_date",
+                duration_col="created_to_invoice_days_completed",
+                threshold_days=81,
+                year=year,
+                as_of=as_of,
+                responsibility="Total handling",
+                export_label="Total Handling",
+                owner_col="service_technician",
+                bucket_defs=TOTAL_COMPLETION_BUCKETS,
+                title="Total Handling Duration Distribution",
+            ),
+        },
+    }
+
+    detail_rows = (
+        completion_detail_records(approval_completed_df, "Warranty Approval", "approved_date", "approval_days_completed", 27, year, as_of)
+        + completion_detail_records(parts_completed_df, "Parts Preparation", "complete_issue_date_joined", "parts_issuing_days_completed", 21, year, as_of)
+        + completion_detail_records(repairer_completed_df, "Repairer Time", "invoice_date", "repairer_repair_days", 33, year, as_of)
+        + completion_detail_records(total_handling_completed_df, "Total Handling", "invoice_date", "created_to_invoice_days_completed", 81, year, as_of)
+    )
+    detail_df = pd.DataFrame(detail_rows)
+    if not detail_df.empty:
+        detail_df = detail_df.sort_values(["stage", "completed_date", "ticket_number"], na_position="last").reset_index(drop=True)
+    total_detail_df = pd.DataFrame(
+        completion_detail_records(total_handling_completed_df, "Total Handling", "invoice_date", "created_to_invoice_days_completed", 81, year, as_of)
+    )
+    if not total_detail_df.empty:
+        total_detail_df = total_detail_df.sort_values(["completed_date", "ticket_number"], na_position="last").reset_index(drop=True)
+    return payload, detail_df, total_detail_df
+
+
 def prepare_failure_sheet(df: pd.DataFrame) -> pd.DataFrame:
     return df[
         [
@@ -1359,6 +1743,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--repairers-json", default=str(DEFAULT_REPAIRERS_JSON))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     parser.add_argument("--summary-json", default=str(DEFAULT_SUMMARY_JSON))
+    parser.add_argument("--completion-analytics-json", default=str(DEFAULT_COMPLETION_ANALYTICS_JSON))
     parser.add_argument("--start-date", default=DEFAULT_START_DATE.isoformat())
     parser.add_argument("--end-date", default="")
     return parser.parse_args()
@@ -1379,6 +1764,7 @@ def main() -> int:
         repairers_json=Path(args.repairers_json),
         output=Path(args.output),
         summary_json=Path(args.summary_json),
+        completion_analytics_json=Path(args.completion_analytics_json),
     )
     validate_paths(paths)
     start_date = parse_date(args.start_date)
@@ -1425,10 +1811,20 @@ def main() -> int:
         parts_segment_df=parts_segment_df,
         repairer_segment_df=repairer_segment_df,
     )
+    completion_analytics_payload, completion_detail_df, total_handling_detail_df = build_completion_analytics_payload(
+        base_df=base_df,
+        parts_by_ticket_df=parts_by_ticket_df,
+        parts_by_po_df=parts_by_po_df,
+        invoice_df=invoice_df,
+        year=start_date.year,
+        as_of=date.today(),
+    )
 
     sheets = [
         ("summary", summary_df),
-        ("All Page Tickets Detail", qualifying_sheet_df),
+        ("Timeline Tickets Detail", qualifying_sheet_df),
+        ("All Page Tickets Detail", completion_detail_df),
+        ("total_handling", total_handling_detail_df),
         ("qualifying_tickets", qualifying_sheet_df),
         ("warranty_approval", prepare_approval_sheet(approval_segment_df)),
         ("parts_issuing", prepare_parts_sheet(parts_segment_df)),
@@ -1453,10 +1849,12 @@ def main() -> int:
         yearly_summary_json_path(paths.summary_json, start_date.year),
         summary_payload,
     )
+    written_completion_analytics_path = write_timeline_summary_json(paths.completion_analytics_json, completion_analytics_payload)
 
     print(f"Workbook written: {written_path}")
     print(f"Summary JSON written: {written_summary_path}")
     print(f"Year summary JSON written: {written_yearly_summary_path}")
+    print(f"Completion analytics JSON written: {written_completion_analytics_path}")
     print(f"Qualifying tickets: {len(qualifying_df)}")
     print(f"Warranty approval rows: {len(approval_segment_df)}")
     print(f"Parts issuing rows: {len(parts_segment_df)}")

@@ -85,6 +85,8 @@ body{margin:0;background:
 .avgTag{position:absolute;left:-35px;top:4px;height:24px;padding:0 9px;border-radius:999px;background:#17212f;color:#fff;display:grid;place-items:center;font-size:10px;font-weight:950;letter-spacing:.12em}
 .segmentDuration{position:absolute;left:var(--x);top:0;transform:translateX(-50%);display:grid;place-items:center;min-width:84px;height:30px;padding:0 12px;border-radius:999px;background:#fffdf8;border:2px solid var(--color);color:#17212f;font-size:12px;font-weight:950;white-space:nowrap;box-shadow:0 12px 24px rgba(23,33,47,.11);transition:transform .18s ease,background .18s ease,color .18s ease}
 .segmentDuration.active{transform:translateX(-50%) translateY(-3px);background:var(--color);color:#fff}
+.timelineExportBtn{position:absolute;right:18px;bottom:16px;z-index:9;display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 13px;border-radius:12px;background:#fffdf8;border:1px solid rgba(15,143,140,.26);color:#0d6d6b;text-decoration:none;font-size:12px;font-weight:760;box-shadow:0 12px 26px rgba(35,48,60,.1)}
+.timelineExportBtn:hover{background:rgba(15,143,140,.1);border-color:rgba(15,143,140,.4)}
 .caravan{--x:0%;position:absolute;left:calc(11% + (78% * var(--progress)));top:calc(58% + 16px);width:126px;height:64px;transform:translateX(-50%);transition:left .58s cubic-bezier(.2,.85,.24,1);animation:caravanBob 1.3s ease-in-out infinite;z-index:5}
 .carBody{position:absolute;left:12px;top:8px;width:94px;height:42px;border-radius:18px 24px 10px 10px;background:linear-gradient(180deg,#f7f9f4 0 66%,#202b35 66% 100%);border:3px solid #17212f;box-shadow:inset 0 -8px 0 rgba(0,0,0,.1)}
 .carBody:before{content:"";position:absolute;left:15px;top:8px;width:24px;height:14px;border-radius:8px 4px 4px 4px;background:#bfe5ec;border:2px solid #17212f;box-shadow:39px 0 0 #bfe5ec,39px 0 0 2px #17212f}
@@ -328,6 +330,7 @@ body{margin:0;background:
             <div class="road"></div>
             <div id="milestones" class="milestones"></div>
             <div id="segmentDurations" class="segmentDurations"></div>
+            <a class="timelineExportBtn" href="generated_exports/ticket_timeline_segments_2025_2026.xlsx">Export timeline tickets</a>
             <div id="caravan" class="caravan" style="--progress:0">
               <div class="patch"></div>
               <div class="frontPlate"></div>
@@ -382,8 +385,8 @@ body{margin:0;background:
     <section class="panel analyticsPanel">
       <div class="trendToolbar">
         <div>
-          <div id="summaryKicker" class="panelKicker">2026 workbook summary</div>
-          <h2 class="panelTitle">Handling Duration Distribution</h2>
+          <div id="summaryKicker" class="panelKicker">Completed in 2026 workbook summary</div>
+          <h2 id="analyticsTitle" class="panelTitle">Handling Duration Distribution</h2>
         </div>
         <a id="filteredExport" class="softExport" href="generated_exports/ticket_timeline_segments_2025_2026.xlsx">Export stage + All Page Tickets Detail</a>
       </div>
@@ -400,9 +403,9 @@ body{margin:0;background:
           </div>
         </div>
         <div class="trendBlock">
-          <div class="panelKicker trendChartTitle">2-week speed trend</div>
-          <div id="trendChart" aria-label="2026 two-week average duration chart"></div>
-          <div class="chartLegend"><span class="legendMark">completed avg days</span><span class="legendMark line">6-week rolling avg</span><span class="legendMark maturing">recent cohort</span></div>
+          <div class="panelKicker trendChartTitle">Monthly completion speed</div>
+          <div id="trendChart" aria-label="2026 monthly average duration chart"></div>
+          <div class="chartLegend"><span class="legendMark">monthly avg days</span><span class="legendMark line">3-month rolling avg</span></div>
           <div id="filteredList" class="filteredList"></div>
         </div>
       </div>
@@ -412,6 +415,7 @@ body{margin:0;background:
 
 <script>
 const TIMELINE_SUMMARY_URL="generated_exports/ticket_timeline_summary.json";
+const COMPLETION_ANALYTICS_URL="generated_exports/ticket_timeline_completion_analytics_2026.json";
 const BASE_TIMELINE_YEAR=2026;
 const CURRENT_TIMELINE_YEAR=new Date().getFullYear();
 const FIRST_YEAR_REVIEW_MONTHS=3;
@@ -510,7 +514,7 @@ const fmt=n=>{
 };
 const processDurationKeys=new Set(["approval","parts","repair"]);
 const previewDisplayAvgByKey={approval:27,parts:21,repair:33};
-const previewStageAnalysis={
+let previewStageAnalysis={
   approval:{
     responsibility:"Warranty employee",
     exportLabel:"Warranty Approval",
@@ -539,11 +543,12 @@ const previewStageAnalysis={
     tickets:[["#30125","Snowy River Toowoomba","82 days"],["#34960","Green RV - Forest Glen","61 days"],["#32928","Green RV","54 days"]]
   },
   closed:{
-    responsibility:"Repairer invoice detail",
-    exportLabel:"Repairer Invoice Detail",
-    overLabel:"Invoice detail",
+    responsibility:"Total handling",
+    exportLabel:"Total Handling",
+    title:"Total Handling Duration Distribution",
+    overLabel:"Total over standard",
     sortLabel:"Latest repairer invoice tickets",
-    buckets:[["0-7",17.8,"#0f8f8c",161],["8-14",16.4,"#4f8f42",148],["15-21",12.7,"#2474a6",115],["22-30",10.5,"#d88a18",95],["31-60",26.4,"#ef9f42",239],["60+",16.2,"#c9513f",147]],
+    buckets:[["0-30",17.8,"#0f8f8c",161],["31-60",16.4,"#4f8f42",148],["61-90",12.7,"#2474a6",115],["91-120",10.5,"#d88a18",95],["121-180",26.4,"#ef9f42",239],["180+",16.2,"#c9513f",147]],
     trend:[{"label":"Jan 1","avg":null,"completed":0,"entered":1,"open":1,"openAgeAvg":193,"openAgeMax":193,"roll6":null,"over":0,"maturing":false},{"label":"Jan 12","avg":1.5,"completed":2,"entered":2,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":1.5,"over":0,"maturing":false},{"label":"Jan 26","avg":45,"completed":2,"entered":10,"open":8,"openAgeAvg":165.8,"openAgeMax":167,"roll6":23.25,"over":1,"maturing":false},{"label":"Feb 9","avg":43.56,"completed":54,"entered":89,"open":35,"openAgeAvg":155.3,"openAgeMax":162,"roll6":30.02,"over":27,"maturing":false},{"label":"Feb 23","avg":30.23,"completed":66,"entered":118,"open":52,"openAgeAvg":143.9,"openAgeMax":148,"roll6":39.6,"over":21,"maturing":false},{"label":"Mar 9","avg":42.84,"completed":81,"entered":152,"open":71,"openAgeAvg":126.4,"openAgeMax":132,"roll6":38.88,"over":43,"maturing":false},{"label":"Mar 23","avg":32.32,"completed":163,"entered":275,"open":112,"openAgeAvg":115.3,"openAgeMax":120,"roll6":35.13,"over":66,"maturing":false},{"label":"Apr 6","avg":35.49,"completed":78,"entered":180,"open":102,"openAgeAvg":100.2,"openAgeMax":104,"roll6":36.88,"over":40,"maturing":false},{"label":"Apr 20","avg":24.98,"completed":97,"entered":197,"open":100,"openAgeAvg":85,"openAgeMax":92,"roll6":30.93,"over":29,"maturing":false},{"label":"May 4","avg":25.23,"completed":201,"entered":412,"open":211,"openAgeAvg":71.5,"openAgeMax":78,"roll6":28.57,"over":80,"maturing":false},{"label":"May 18","avg":22.33,"completed":117,"entered":274,"open":157,"openAgeAvg":57.1,"openAgeMax":64,"roll6":24.18,"over":38,"maturing":false},{"label":"Jun 1","avg":13.51,"completed":150,"entered":375,"open":225,"openAgeAvg":44.8,"openAgeMax":50,"roll6":20.36,"over":16,"maturing":true},{"label":"Jun 15","avg":7.89,"completed":111,"entered":307,"open":196,"openAgeAvg":31.1,"openAgeMax":36,"roll6":14.58,"over":0,"maturing":true},{"label":"Jun 29","avg":2.9,"completed":115,"entered":369,"open":254,"openAgeAvg":16.9,"openAgeMax":22,"roll6":8.1,"over":0,"maturing":true},{"label":"Jul 13","avg":0.36,"completed":64,"entered":318,"open":254,"openAgeAvg":6.2,"openAgeMax":7,"roll6":3.72,"over":0,"maturing":true}],
     tickets:[["#30125","Snowy River Toowoomba","82 days"],["#34960","Green RV - Forest Glen","61 days"],["#32928","Green RV","54 days"]]
   }
@@ -567,7 +572,7 @@ function renderYearContext(){
   pageTitle.textContent="Ticket Timeline";
   panelTitle.textContent=`${selectedYear} Ticket Timeline`;
   scopeBadge.textContent=`Created in ${selectedYear}`;
-  summaryKicker.textContent=`${selectedYear} workbook summary`;
+  summaryKicker.textContent=`Completed in ${selectedYear} workbook summary`;
   if(CURRENT_TIMELINE_YEAR<=BASE_TIMELINE_YEAR){
     yearSwitch.innerHTML="";
     return;
@@ -683,6 +688,20 @@ async function loadTimelineSummary(){
   }
 }
 
+async function loadCompletionAnalytics(){
+  try{
+    const response=await fetch(`${COMPLETION_ANALYTICS_URL}?v=${Date.now()}`,{cache:"no-store"});
+    if(!response.ok)return;
+    const payload=await response.json();
+    if(payload&&payload.stages&&typeof payload.stages==="object"){
+      previewStageAnalysis=payload.stages;
+      renderDrilldown(stages[activeIndex]);
+    }
+  }catch(error){
+    // Keep the embedded fallback analytics if the generated completion analytics is not available.
+  }
+}
+
 function sceneMarkup(type){
   if(type==="aftersales"){
     return '<div class="bubble one">CLAIM</div><div class="bubble two">APPROVE</div><div class="headset"></div><div class="person"></div><div class="desk"></div>';
@@ -748,9 +767,10 @@ function trendLinePath(rows,maxValue){
   const width=714;
   const height=236;
   const points=rows.map((row,index)=>{
-    if(rowNumber(row,"roll6")===null)return null;
+    const rolling=rowNumber(row,"roll3") ?? rowNumber(row,"roll6");
+    if(rolling===null)return null;
     const x=left+(index*(width/(rows.length-1)));
-    const y=scaledY(row.roll6,maxValue,top,height);
+    const y=scaledY(rolling,maxValue,top,height);
     return {x,y};
   }).filter(Boolean);
   if(points.length<2)return "";
@@ -776,9 +796,8 @@ function daysText(value){
 }
 
 function trendTooltip(row){
-  const openAge=row.open?`<span>Still open: ${fmt(row.open)} tickets, ${daysText(row.openAgeAvg)} avg age</span><span>Oldest open: ${fmt(row.openAgeMax)} days</span>`:"";
-  const maturing=row.maturing?`<span>Recent cohort, still maturing</span>`:"";
-  return `<strong>${row.label} entry cohort</strong><span>Completed avg: ${daysText(row.avg)}</span><span>6-week avg: ${daysText(row.roll6)}</span><span>Completed / entered: ${fmt(row.completed)} / ${fmt(row.entered)}</span>${openAge}${maturing}`;
+  const rolling=rowNumber(row,"roll3") ?? rowNumber(row,"roll6");
+  return `<strong>${row.label}</strong><span>monthly avg days: ${daysText(row.avg)}</span><span>3-month rolling avg: ${daysText(rolling)}</span>`;
 }
 
 function showPreviewTooltip(html,event){
@@ -809,8 +828,10 @@ function hidePreviewTooltip(){
 
 function trendSvg(analysis){
   const rows=analysis.trend;
-  const chartValues=rows.flatMap(row=>[rowNumber(row,"avg"),rowNumber(row,"roll6")]).filter(value=>value!==null);
-  const maxValue=Math.max(60,Math.ceil((Math.max(...chartValues,0)*1.08)/10)*10);
+  const chartValues=rows.flatMap(row=>[rowNumber(row,"avg"),rowNumber(row,"roll3") ?? rowNumber(row,"roll6")]).filter(value=>value!==null);
+  const rawMax=Math.max(...chartValues,0);
+  const tickStep=rawMax>120?50:20;
+  const maxValue=Math.max(60,Math.ceil((rawMax*1.08)/tickStep)*tickStep);
   const left=52;
   const top=22;
   const width=714;
@@ -818,7 +839,7 @@ function trendSvg(analysis){
   const bottom=top+height;
   const barSlot=width/rows.length;
   const barWidth=Math.max(14,Math.min(27,barSlot*.52));
-  const ticks=[0,20,40,60,80,100].filter(tick=>tick<=maxValue);
+  const ticks=Array.from({length:Math.floor(maxValue/tickStep)+1},(_,index)=>index*tickStep);
   const monthLabels=new Set();
   const xLabels=rows.map(row=>{
     const month=row.label.split(" ")[0];
@@ -828,9 +849,9 @@ function trendSvg(analysis){
   });
   const pointX=index=>left+(index*(width/(rows.length-1)));
   return `
-    <svg class="yearTrend" viewBox="0 0 800 310" role="img" aria-label="2026 2-week entry cohort handling speed with 6-week rolling average">
+    <svg class="yearTrend" viewBox="0 0 800 310" role="img" aria-label="2026 monthly completed ticket speed with 3-month rolling average">
       <text class="axisTitle" x="16" y="142" transform="rotate(-90 16 142)">Handling days</text>
-      <text class="axisTitle" x="305" y="292">2-week entry cohort, 2026</text>
+      <text class="axisTitle" x="318" y="292">Completion month, 2026</text>
       ${ticks.map(tick=>{
         const y=bottom-(tick/maxValue*height);
         return `<line class="gridLine" x1="${left}" y1="${y.toFixed(1)}" x2="${left+width}" y2="${y.toFixed(1)}"></line><text class="axisText" x="${left-12}" y="${(y+4).toFixed(1)}" text-anchor="end">${tick}</text>`;
@@ -843,7 +864,8 @@ function trendSvg(analysis){
         const h=value===null?0:value/maxValue*height;
         const y=bottom-h;
         const label=xLabels[index];
-        const rollingY=scaledY(row.roll6,maxValue,top,height);
+        const rolling=rowNumber(row,"roll3") ?? rowNumber(row,"roll6");
+        const rollingY=scaledY(rolling,maxValue,top,height);
         const tip=trendTooltip(row).replace(/"/g,"&quot;");
         return `
           ${value===null?`<text class="axisText" x="${(x+barWidth/2).toFixed(1)}" y="${bottom-6}" text-anchor="middle">--</text>`:`<rect class="avgBar ${row.maturing?"maturing":""}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(1,h).toFixed(1)}" rx="5" data-tip="${tip}"></rect><text class="axisText" x="${(x+barWidth/2).toFixed(1)}" y="${(Math.max(top+10,y-5)).toFixed(1)}" text-anchor="middle">${Math.round(value)}</text>`}
@@ -869,15 +891,14 @@ function renderFilteredTickets(analysis,bucketLabel,kind="duration"){
   document.getElementById("filteredList").innerHTML="";
 }
 
-function renderDrilldown(stage){
-  const analysis=previewStageAnalysis[activeAnalysisKey(stage)];
-  if(!analysis)return;
-  document.getElementById("responsibilityBadge").textContent=analysis.responsibility;
+function renderDurationDistribution(analysis,buckets,labelText="YTD completed"){
   const donut=document.getElementById("durationDonut");
-  donut.style.background=donutGradient(analysis.buckets);
-  donut.dataset.label=analysis.overLabel;
-  donut.dataset.tip=`<strong>Overtime share</strong><span>${analysis.overLabel} across completed 2026 tickets</span><span>Hover a bucket for the time range.</span>`;
-  document.getElementById("bucketList").innerHTML=analysis.buckets.map((bucket,index)=>`
+  const bucketRows=Array.isArray(buckets)&&buckets.length?buckets:analysis.buckets;
+  const bucketTotal=bucketRows.reduce((sum,bucket)=>sum+(Number(bucket[3])||0),0);
+  donut.style.background=donutGradient(bucketRows);
+  donut.dataset.label=`${fmt(bucketTotal)} completed`;
+  donut.dataset.tip=`<strong>${labelText}</strong><span>${analysis.overLabel} over standard</span><span>Duration bucket share for completed tickets.</span>`;
+  document.getElementById("bucketList").innerHTML=bucketRows.map(bucket=>`
     <button class="bucketBtn" type="button" data-bucket="${bucket[0]}" data-tip="<strong>${bucket[0]} days</strong><span>${fmt(bucket[3])} tickets</span><span>${Number(bucket[1]).toFixed(1)}% of completed tickets</span>" style="--swatch:${bucket[2]}" aria-label="${bucket[0]} days bucket">
       <span class="swatch"></span>
       <span class="bucketName">${bucket[0]} days</span>
@@ -889,21 +910,34 @@ function renderDrilldown(stage){
       document.querySelectorAll(".bucketBtn").forEach(peer=>peer.classList.toggle("active",peer===button));
       renderFilteredTickets(analysis,button.dataset.bucket,"duration");
     });
-    if(button.dataset.bucket==="31-60"&&activeAnalysisKey(stage)==="repair"){
-      button.classList.add("active");
-    }
   });
+}
+
+function renderDrilldown(stage){
+  const analysis=previewStageAnalysis[activeAnalysisKey(stage)];
+  if(!analysis)return;
+  document.getElementById("analyticsTitle").textContent=analysis.title||"Handling Duration Distribution";
+  document.getElementById("responsibilityBadge").textContent=analysis.responsibility;
+  renderDurationDistribution(analysis,analysis.buckets,"2026 YTD completed");
   document.getElementById("trendChart").innerHTML=trendSvg(analysis);
   document.querySelectorAll(".chartHit").forEach(hit=>{
-    hit.addEventListener("click",()=>renderFilteredTickets(analysis,hit.dataset.bucket,"cohort"));
+    hit.addEventListener("click",()=>{
+      const month=hit.dataset.bucket;
+      renderDurationDistribution(analysis,analysis.monthBuckets?analysis.monthBuckets[month]:analysis.buckets,`${month} completed`);
+      renderFilteredTickets(analysis,month,"month");
+      document.querySelectorAll("[data-tip]").forEach(element=>{
+        element.addEventListener("mouseenter",event=>showPreviewTooltip(element.dataset.tip,event));
+        element.addEventListener("mousemove",movePreviewTooltip);
+        element.addEventListener("mouseleave",hidePreviewTooltip);
+      });
+    });
   });
   document.querySelectorAll("[data-tip]").forEach(element=>{
     element.addEventListener("mouseenter",event=>showPreviewTooltip(element.dataset.tip,event));
     element.addEventListener("mousemove",movePreviewTooltip);
     element.addEventListener("mouseleave",hidePreviewTooltip);
   });
-  const activeBucket=document.querySelector(".bucketBtn.active");
-  renderFilteredTickets(analysis,activeBucket?activeBucket.dataset.bucket:"All","duration");
+  renderFilteredTickets(analysis,"All","duration");
 }
 
 function setActive(index,shouldPin=false){
@@ -1001,6 +1035,7 @@ renderControls();
 renderSummary();
 setActive(activeIndex);
 loadTimelineSummary();
+loadCompletionAnalytics();
 </script>
 </body>
 </html>
