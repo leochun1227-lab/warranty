@@ -1428,6 +1428,7 @@ def main() -> int:
 
     sheets = [
         ("summary", summary_df),
+        ("All Page Tickets Detail", qualifying_sheet_df),
         ("qualifying_tickets", qualifying_sheet_df),
         ("warranty_approval", prepare_approval_sheet(approval_segment_df)),
         ("parts_issuing", prepare_parts_sheet(parts_segment_df)),
