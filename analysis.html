@@ -321,7 +321,7 @@ td strong{font-weight:700}
   background:#dbeafe;color:#1d4ed8;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap
 }
 .compPreviewMode.field{background:#dcfce7;color:#166534}
-.compPreviewStats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0 12px}
+.compPreviewStats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:14px 0 12px}
 .compPreviewStat{padding:10px 12px;border-radius:10px;border:1px solid var(--line2);background:#fff;min-width:0}
 .compPreviewStat span{display:block;font-size:9.5px;color:var(--muted);font-weight:800;letter-spacing:.06em;text-transform:uppercase}
 .compPreviewStat strong{display:block;margin-top:5px;font-size:18px;font-weight:900;color:var(--ink);line-height:1.1}
@@ -339,7 +339,7 @@ td strong{font-weight:700}
 .compTooltip{
   position:fixed;z-index:60;pointer-events:none;
   background:#0f172a;color:#f8fafc;border-radius:10px;padding:10px 12px;
-  box-shadow:0 12px 32px rgba(15,23,42,.28);font-size:11.5px;min-width:220px;max-width:280px;
+  box-shadow:0 12px 32px rgba(15,23,42,.28);font-size:11.5px;min-width:360px;max-width:520px;
   opacity:0;transition:opacity .12s ease;
 }
 .compTooltip.visible{opacity:1}
@@ -348,7 +348,7 @@ td strong{font-weight:700}
 .compTooltipMode{font-size:9.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 6px;border-radius:999px;background:#1e293b;color:#a5b4fc}
 .compTooltipMode.field{color:#86efac}
 .compTooltipTotal{font-size:10.5px;color:#94a3b8;font-weight:600;margin-bottom:6px}
-.compTooltipBars{display:grid;grid-template-columns:repeat(var(--cols,12),1fr);gap:6px;align-items:end;height:140px;margin-top:10px}
+.compTooltipBars{display:grid;grid-template-columns:repeat(var(--cols,12),1fr);gap:4px;align-items:end;height:140px;margin-top:10px}
 .compTooltipBar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;min-width:0}
 .compTooltipBar .val{font-size:9px;color:#e2e8f0;font-weight:800;line-height:1;white-space:nowrap}
 .compTooltipBar .bar{width:100%;background:linear-gradient(180deg,#60a5fa,#3b82f6);border-radius:5px;min-height:4px}
@@ -374,36 +374,46 @@ td strong{font-weight:700}
 .compTotalsTable thead th{color:var(--muted);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--line)}
 .compTotalsTable tr.totalRow td{font-weight:800;color:var(--ink);border-bottom:none;background:#eff6ff}
 .compTotalsBars{
-  display:grid;grid-template-columns:repeat(var(--cols,12), minmax(38px,44px));justify-content:center;gap:10px;align-items:end;
-  margin:12px auto 10px;padding:8px 0 0;position:static;min-width:0;min-height:250px;width:100%
+  display:grid;grid-template-columns:repeat(var(--cols,12), minmax(24px,1fr));justify-content:center;gap:8px;align-items:end;
+  margin:12px auto 10px;padding:14px 0 0;position:static;min-width:0;min-height:250px;width:100%
 }
-.compTotalsBar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;min-width:0;position:static;height:100%;width:100%}
+.compTotalsBar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;min-width:0;position:static;height:100%;width:100%}
 .compTotalsBar .barTrack{
-  width:100%;height:190px;background:linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);
-  border-radius:16px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;
-  box-shadow:inset 0 0 0 1px rgba(148,163,184,.18)
+  width:74%;height:190px;background:transparent;border-radius:0;overflow:visible;
+  display:flex;align-items:flex-end;justify-content:center;box-shadow:none
 }
 .compTotalsBar .barStack{
-  width:100%;display:flex;flex-direction:column-reverse;border-radius:14px 14px 10px 10px;
-  overflow:hidden;box-shadow:0 6px 16px rgba(15,23,42,.10)
+  width:100%;display:flex;flex-direction:column-reverse;border-radius:0;
+  overflow:hidden;box-shadow:none
 }
 .compTotalsBar .barSeg{width:100%;flex:0 0 auto}
-.compTotalsBar .barSeg.pre{background:linear-gradient(180deg,#93c5fd,#3b82f6)}
-.compTotalsBar .barSeg.field{background:linear-gradient(180deg,#86efac,#16a34a)}
-.compTotalsBar .barSeg.other{background:linear-gradient(180deg,#d1d5db,#6b7280)}
+.compTotalsBar .barSeg.pre{background:linear-gradient(180deg,#8fb7ff 0%,#6572df 100%)}
+.compTotalsBar .barSeg.field{background:linear-gradient(180deg,#b7f2a4 0%,#63d37c 100%)}
+.compTotalsBar .barSeg.other{background:linear-gradient(180deg,#9fd3f2 0%,#7f96e7 100%)}
 .compTotalsBar .barVal{
-  position:static;font-size:13px;font-weight:900;color:var(--ink);line-height:1;
+  position:static;font-size:14px;font-weight:900;color:var(--ink);line-height:1;
   text-align:center;white-space:nowrap;min-height:13px
 }
 .compTotalsBar .barLbl{
   position:static;font-size:11.5px;color:var(--muted);font-weight:700;letter-spacing:.01em;
   line-height:1.15;white-space:normal;text-align:center;max-width:100%
 }
+.compTotalsBar .barLbl.monthLbl{
+  min-height:14px;white-space:nowrap;line-height:1
+}
+.compTotalsYearAxis{
+  display:grid;grid-template-columns:repeat(var(--cols,12), minmax(24px,1fr));
+  gap:8px;margin:-2px auto 12px;width:100%;min-width:0
+}
+.compTotalsYearLabel{
+  grid-column:var(--start) / span var(--span);text-align:center;
+  font-size:11px;color:#64748b;font-weight:800;line-height:1
+}
 .compTotalsLegend{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:8px}
 .compTotalsLegend .swatch{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:middle;margin-right:4px}
-.compTotalsLegend .swatch.pre{background:#3b82f6}
-.compTotalsLegend .swatch.field{background:#16a34a}
-.compTotalsLegend .swatch.other{background:#6b7280}
+.compTotalsLegend .swatch.pre{background:#6572df}
+.compTotalsLegend .swatch.field{background:#63d37c}
+.compTotalsLegend .swatch.other{background:#7f96e7}
 
 /* Base panel (compact) */
 .baseCard{background:#fbfcfe;border:1px dashed var(--line);border-radius:14px;padding:14px 18px}
@@ -2235,7 +2245,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     }
 
     const stats = computeComponentStatic(payload.key);
-    const buckets = computeComponentMonthly(payload.key, scope, 12);
+    const buckets = computeComponentMonthly(payload.key, scope);
+    const monthWindow = componentMonthWindowLabel();
     const scopedTotal = buckets.reduce((sum, bucket) => sum + bucket.count, 0);
     const max = Math.max(...buckets.map(bucket => bucket.count), 1);
     const barsHtml = buckets.map(bucket => {
@@ -2258,12 +2269,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         <div class="compPreviewMode ${scopeCls}">${scopeLbl}</div>
       </div>
       <div class="compPreviewStats">
-        <div class="compPreviewStat"><span>Total</span><strong>${numFmt.format(stats.total)}</strong></div>
+        <div class="compPreviewStat"><span>Total Tickets</span><strong>${numFmt.format(payload.tickets)}</strong></div>
+        <div class="compPreviewStat"><span>Total Material Qty</span><strong>${numFmt.format(stats.materialQty)}</strong></div>
         <div class="compPreviewStat"><span>Pre-Delivery</span><strong>${numFmt.format(stats.pre)}</strong></div>
         <div class="compPreviewStat"><span>In-Field</span><strong>${numFmt.format(stats.field)}</strong></div>
         <div class="compPreviewStat"><span>Other</span><strong>${numFmt.format(stats.other)}</strong></div>
       </div>
-      <div class="compPreviewChartMeta">${scopeLbl}: ${numFmt.format(scopedTotal)} tickets in the last 12 months.</div>
+      <div class="compPreviewChartMeta">${scopeLbl}: ${numFmt.format(scopedTotal)} tickets from ${esc(monthWindow)}.</div>
       <div class="compPreviewBars">${barsHtml}</div>
       <div class="compPreviewHint">Hover another bar to swap the preview. Click the active bar to toggle Pre-Delivery / In-Field.</div>
     `;
@@ -2354,16 +2366,38 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     return out;
   }
 
-  // Monthly bucket over last N months (default 12) — dedupe by TicketID, filter by scope
-  function computeComponentMonthly(compKey, scope, months){
-    const nMonths = months || 12;
-    const list = state.partsClassifiedIndex && state.partsClassifiedIndex.get(compKey);
+  // Monthly buckets cover the previous full year plus elapsed months this year.
+  function componentMonthWindowBuckets(){
     const now = new Date();
+    const startYear = now.getFullYear() - 1;
+    const endYear = now.getFullYear();
     const buckets = [];
-    for (let i = nMonths - 1; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      buckets.push({ y: d.getFullYear(), m: d.getMonth(), count: 0, label: d.toLocaleString("en-AU", { month:"short" }) });
+    for (let y = startYear; y <= endYear; y++) {
+      const lastMonth = y === endYear ? now.getMonth() : 11;
+      for (let m = 0; m <= lastMonth; m++) {
+        const d = new Date(y, m, 1);
+        buckets.push({
+          y,
+          m,
+          label: d.toLocaleString("en-AU", { month:"short" }),
+          yearLabel: String(y).slice(-2),
+        });
+      }
     }
+    return buckets;
+  }
+
+  function componentMonthWindowLabel(){
+    const buckets = componentMonthWindowBuckets();
+    if (!buckets.length) return "";
+    const first = buckets[0];
+    const last = buckets[buckets.length - 1];
+    return `${first.label} ${first.y} - ${last.label} ${last.y}`;
+  }
+
+  function computeComponentMonthly(compKey, scope){
+    const list = state.partsClassifiedIndex && state.partsClassifiedIndex.get(compKey);
+    const buckets = componentMonthWindowBuckets().map(bucket => ({ ...bucket, count: 0 }));
     if (!list || !list.length) return buckets;
     const idx = new Map();
     buckets.forEach((b, i) => idx.set(`${b.y}-${b.m}`, i));
@@ -2417,7 +2451,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       el.innerHTML = `<div class="compTooltipName">${esc(compName)}</div><div class="compTooltipHint">Loading monthly data…</div>`;
     } else {
       const scope = state.compTooltipScope;
-      const buckets = computeComponentMonthly(compKey, scope, 12);
+      const buckets = computeComponentMonthly(compKey, scope);
+      const monthWindow = componentMonthWindowLabel();
       const total = buckets.reduce((s,b)=>s+b.count, 0);
       const max = Math.max(...buckets.map(b=>b.count), 1);
       const scopeLbl = scope === "FIELD" ? "In-Field" : "Pre-Delivery";
@@ -2435,7 +2470,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           <div class="compTooltipName">${esc(compName)}</div>
           <div class="compTooltipMode ${scopeCls}">${scopeLbl}</div>
         </div>
-        <div class="compTooltipTotal">${numFmt.format(total)} tickets · last 12 months · ${esc(compCat)}</div>
+        <div class="compTooltipTotal">${numFmt.format(total)} tickets - ${esc(monthWindow)} - ${esc(compCat)}</div>
         <div class="compTooltipBars">${barsHtml}</div>
         <div class="compTooltipHint">Click row to toggle Pre-Delivery ↔ In-Field</div>
       `;
@@ -2660,8 +2695,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const preSet = new Set();
     const fieldSet = new Set();
     const otherSet = new Set();
+    let materialQty = 0;
     if (!list || !list.length) {
-      return { total:0, pre:0, field:0, other:0 };
+      return { total:0, materialQty:0, pre:0, field:0, other:0 };
     }
     for (const line of list) {
       if (selectedSeries !== "ALL") {
@@ -2670,6 +2706,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       }
       const tid = clean(line["Ticket ID"]);
       if (!tid) continue;
+      materialQty += asNumber(line["Order Qty"]);
       totalSet.add(tid);
       const scope = classifiedRowScope(line);
       if (scope === "PRE") preSet.add(tid);
@@ -2678,6 +2715,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     }
     return {
       total: totalSet.size,
+      materialQty,
       pre: preSet.size,
       field: fieldSet.size,
       other: otherSet.size,
@@ -2690,6 +2728,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       el.innerHTML = `<div class="compTooltipName">${esc(compName)}</div><div class="compTooltipHint">Loading static counts…</div>`;
     } else {
       const stats = computeComponentStatic(compKey);
+      const displayTickets = Number(anchorEl?.getAttribute("data-comp-tickets")) || stats.total;
       const scope = state.compTooltipScope;
       const scopeLbl = scope === "FIELD" ? "In-Field" : "Pre-Delivery";
       const scopeCls = scope === "FIELD" ? "field" : "";
@@ -2699,9 +2738,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           <div class="compTooltipName">${esc(compName)}</div>
           <div class="compTooltipMode ${scopeCls}">${scopeLbl}</div>
         </div>
-        <div class="compTooltipTotal">${numFmt.format(stats.total)} static tickets · ${esc(compCat)}</div>
+        <div class="compTooltipTotal">${numFmt.format(displayTickets)} tickets · ${esc(compCat)}</div>
         <div style="display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:10.5px;color:#cbd5e1;font-weight:600">
-          <div>Total</div><div>${numFmt.format(stats.total)}</div>
+          <div>Total</div><div>${numFmt.format(displayTickets)}</div>
           <div>Pre-Delivery</div><div>${numFmt.format(stats.pre)}</div>
           <div>In-Field</div><div>${numFmt.format(stats.field)}</div>
           <div>Other</div><div>${numFmt.format(stats.other)}</div>
@@ -2833,8 +2872,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       el.innerHTML = `<div class="compTooltipName">${esc(compName)}</div><div class="compTooltipHint">Loading monthly counts...</div>`;
     } else {
       const stats = computeComponentStatic(compKey);
+      const displayTickets = Number(anchorEl?.getAttribute("data-comp-tickets")) || stats.total;
       const scope = state.compTooltipScope;
-      const buckets = computeComponentMonthly(compKey, scope, 12);
+      const buckets = computeComponentMonthly(compKey, scope);
+      const monthWindow = componentMonthWindowLabel();
       const total = buckets.reduce((sum, bucket) => sum + bucket.count, 0);
       const max = Math.max(...buckets.map(bucket => bucket.count), 1);
       const scopeLbl = scope === "FIELD" ? "In-Field" : "Pre-Delivery";
@@ -2854,10 +2895,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           <div class="compTooltipName">${esc(compName)}</div>
           <div class="compTooltipMode ${scopeCls}">${scopeLbl}</div>
         </div>
-        <div class="compTooltipTotal">${numFmt.format(total)} tickets - last 12 months - ${esc(compCat)}</div>
+        <div class="compTooltipTotal">${numFmt.format(total)} tickets - ${esc(monthWindow)} - ${esc(compCat)}</div>
         <div class="compTooltipBars">${barsHtml}</div>
         <div style="display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:10.5px;color:#cbd5e1;font-weight:600;margin-top:10px">
-          <div>Total</div><div>${numFmt.format(stats.total)}</div>
+          <div>Total</div><div>${numFmt.format(displayTickets)}</div>
           <div>Pre-Delivery</div><div>${numFmt.format(stats.pre)}</div>
           <div>In-Field</div><div>${numFmt.format(stats.field)}</div>
           <div>Other</div><div>${numFmt.format(stats.other)}</div>
@@ -2894,24 +2935,16 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     }
 
     const seriesLabel = state.selected === "ALL" ? "All series" : state.selected;
-    const months = 12;
-    const now = new Date();
-    const buckets = [];
-    for (let i = months - 1; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      buckets.push({
-        y: d.getFullYear(),
-        m: d.getMonth(),
-        label: d.toLocaleString("en-AU", { month:"short" }),
-        yearLabel: String(d.getFullYear()).slice(-2),
-        pre: 0,
-        field: 0,
-        other: 0,
-        preSet: new Set(),
-        fieldSet: new Set(),
-        otherSet: new Set(),
-      });
-    }
+    const monthWindow = componentMonthWindowLabel();
+    const buckets = componentMonthWindowBuckets().map(bucket => ({
+      ...bucket,
+      pre: 0,
+      field: 0,
+      other: 0,
+      preSet: new Set(),
+      fieldSet: new Set(),
+      otherSet: new Set(),
+    }));
 
     const bucketIndex = new Map();
     buckets.forEach((bucket, index) => bucketIndex.set(`${bucket.y}-${bucket.m}`, index));
@@ -2973,9 +3006,21 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
             ${bucket.other ? `<div class="barSeg other" style="height:${otherH}px" title="Other: ${numFmt.format(bucket.other)}"></div>` : ""}
           </div>
         </div>
-        <div class="barLbl" title="${bucket.label} ${bucket.y}">${bucket.label} '${bucket.yearLabel}</div>
+        <div class="barLbl monthLbl" title="${bucket.label} ${bucket.y}">${bucket.label}</div>
       </div>`;
     }).join("");
+    const yearGroups = [];
+    buckets.forEach((bucket, index) => {
+      const last = yearGroups[yearGroups.length - 1];
+      if (last && last.year === bucket.y) {
+        last.span++;
+      } else {
+        yearGroups.push({ year: bucket.y, start: index + 1, span: 1 });
+      }
+    });
+    const yearAxisHtml = yearGroups.map(group =>
+      `<div class="compTotalsYearLabel" style="--start:${group.start};--span:${group.span}">${group.year}</div>`
+    ).join("");
 
     const tableHtml = `
       <table class="compTotalsTable">
@@ -3009,7 +3054,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
     target.innerHTML = `
       <div class="compTotalsHead">
-        <div class="compTotalsTitle">Monthly totals - displayed top components <small>${esc(seriesLabel)} - last ${months} months</small></div>
+        <div class="compTotalsTitle">Monthly Tickets <small>${esc(seriesLabel)} - ${esc(monthWindow)}</small></div>
         <div class="compTotalsMeta">Monthly ticket volume by claim scope</div>
       </div>
       <div class="compTotalsSplit">
@@ -3020,6 +3065,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         <div class="compTotalsChartPane">
           <div class="compTotalsPaneTitle">Monthly chart</div>
           <div class="compTotalsBars" style="--cols:${buckets.length}">${barsHtml}</div>
+          <div class="compTotalsYearAxis" style="--cols:${buckets.length}">${yearAxisHtml}</div>
           <div class="compTotalsLegend">
             <span><span class="swatch pre"></span>Pre-Delivery (${numFmt.format(totals.pre)})</span>
             <span><span class="swatch field"></span>In-Field (${numFmt.format(totals.field)})</span>
@@ -3667,7 +3713,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           ["Component","Category","Tickets","Ticket Share","Pre-Delivery","In-Field","Other","Cost AUD"],
           ...componentRows.map(r => {
             const stats = computeComponentStatic(componentKey(r.component, r.category));
-            const total = Number(stats.total) || Number(r.tickets) || 0;
+            const total = Number(r.tickets) || Number(stats.total) || 0;
             return [
               r.component || "Other",
               r.category || "Other",

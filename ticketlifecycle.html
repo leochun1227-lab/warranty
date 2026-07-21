@@ -179,6 +179,81 @@ body{margin:0;background:
 .definition{display:grid;grid-template-columns:128px 1fr;gap:12px;padding:12px;border-radius:16px;background:#fff;border:1px solid rgba(23,33,47,.08)}
 .definition strong{font-size:12px}
 .definition span{font-size:12px;color:#667284;line-height:1.45}
+.previewPage .heroGrid{grid-template-columns:1fr}
+.previewPage .detailPanel{display:none}
+.previewPage .timelinePanel{min-height:456px}
+.previewPage .stageButtons{display:none}
+.previewPage .roadStage{height:430px;background:linear-gradient(180deg,#eef7f2 0 58%,#d9e6d9 58% 100%)}
+.previewPage .milestones{left:10%;right:10%;top:138px;height:124px;z-index:7}
+.previewPage .milestones:before{content:"";position:absolute;left:0;right:0;top:36px;height:3px;background:linear-gradient(90deg,rgba(87,211,176,.28),rgba(15,143,140,.62));border-radius:999px}
+.previewPage .milestone{width:154px;gap:8px;z-index:2}
+.previewPage button.milestone{border:0;background:transparent;padding:0;font-family:inherit;cursor:pointer}
+.previewPage button.milestone:hover .pin{transform:translateY(-2px);box-shadow:0 20px 40px rgba(15,143,140,.2),inset 0 0 0 2px rgba(15,143,140,.16)}
+.previewPage .pin{width:72px;height:72px;border-radius:999px;border:8px solid rgba(186,248,229,.78);background:#f8fffb;display:grid;place-items:center;color:var(--color);box-shadow:0 16px 36px rgba(15,143,140,.16),inset 0 0 0 2px rgba(15,143,140,.1)}
+.previewPage .pin svg{width:27px;height:27px;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.previewPage .milestone span{font-size:11px;line-height:1.15;color:#25364c;max-width:132px}
+.previewPage .scene{top:34px;height:92px;width:min(280px,48%)}
+.previewPage .sceneLabel{height:24px;font-size:10px}
+.previewPage .road{top:calc(58% + 86px)}
+.previewPage .caravan{top:calc(58% + 42px)}
+.previewPage .segmentDurations{top:calc(58% + 132px)}
+.previewPage .skyDot.one{top:92px}
+.previewPage .skyDot.two{top:104px}
+.previewPage .belowGrid{grid-template-columns:.78fr 1.22fr;align-items:start}
+.previewPage .analyticsPanel{margin-top:22px}
+.previewPage .analyticsGrid{display:grid;grid-template-columns:minmax(250px,.28fr) minmax(560px,.72fr);gap:22px;align-items:start}
+.previewPage .panelTitleRow{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.previewPage .responsibilityBadge{display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:999px;background:rgba(15,143,140,.11);border:1px solid rgba(15,143,140,.2);color:#0d6d6b;font-size:11px;font-weight:760;letter-spacing:.04em;text-transform:uppercase}
+.previewPage .distributionWrap{display:grid;grid-template-columns:170px 1fr;gap:18px;align-items:center;margin-top:16px}
+.previewPage .donut{width:170px;aspect-ratio:1;border-radius:999px;background:conic-gradient(#0f8f8c 0deg 146deg,#4f8f42 146deg 194deg,#2474a6 194deg 224deg,#d88a18 224deg 252deg,#ef9f42 252deg 310deg,#c9513f 310deg 360deg);display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(23,33,47,.08)}
+.previewPage .donut:after{content:attr(data-label);width:92px;aspect-ratio:1;border-radius:999px;background:#fffdf8;border:1px solid rgba(23,33,47,.1);display:grid;place-items:center;text-align:center;font-size:13px;line-height:1.18;font-weight:800;color:var(--heading)}
+.previewPage .bucketList{display:grid;gap:8px}
+.previewPage .bucketBtn{border:1px solid rgba(23,33,47,.1);border-radius:14px;background:#fff;padding:9px 10px;display:grid;grid-template-columns:14px 1fr auto;gap:8px;align-items:center;text-align:left;cursor:pointer;color:var(--ink);font-family:inherit}
+.previewPage .bucketBtn.active{border-color:var(--active-color);box-shadow:0 10px 22px rgba(35,48,60,.08);transform:translateY(-1px)}
+.previewPage .swatch{width:10px;height:10px;border-radius:999px;background:var(--swatch)}
+.previewPage .bucketPct{font-weight:760;color:var(--heading);font-variant-numeric:tabular-nums}
+.previewPage .bucketName{font-size:12px;font-weight:760;color:#3d4d61}
+.previewPage .trendToolbar{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-top:4px}
+.previewPage .softExport{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:0 13px;border-radius:12px;background:rgba(15,143,140,.1);border:1px solid rgba(15,143,140,.22);color:#0d6d6b;text-decoration:none;font-size:12px;font-weight:760}
+.previewPage .trendChart{position:relative;display:grid;grid-template-columns:repeat(8,minmax(34px,1fr));gap:10px;align-items:end;min-height:250px;margin-top:18px;padding:18px 0 4px;border-bottom:1px solid rgba(23,33,47,.13)}
+.previewPage .trendChart:before{content:"";position:absolute;left:0;right:0;top:38%;height:1px;background:rgba(23,33,47,.1)}
+.previewPage .trendLine{position:absolute;inset:0 0 32px 0;width:100%;height:206px;pointer-events:none;color:#17212f}
+.previewPage .barCell{position:relative;display:grid;gap:7px;align-items:end;min-width:0;z-index:2}
+.previewPage .barValue{text-align:center;font-size:11px;font-weight:760;color:#26354a;font-variant-numeric:tabular-nums}
+.previewPage .bar{height:var(--h);min-height:10px;border-radius:11px 11px 4px 4px;background:linear-gradient(180deg,rgba(15,143,140,.76),rgba(15,143,140,.34));border:1px solid rgba(15,143,140,.18)}
+.previewPage .barCell:nth-child(odd) .bar{background:linear-gradient(180deg,rgba(216,138,24,.72),rgba(216,138,24,.32));border-color:rgba(216,138,24,.18)}
+.previewPage .barLabel{text-align:center;font-size:10px;color:#68778a;font-weight:760;line-height:1.2}
+.previewPage .filteredList{display:grid;gap:8px;margin-top:16px}
+.previewPage .filteredRow{display:grid;grid-template-columns:82px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid rgba(23,33,47,.08)}
+.previewPage .filteredRow strong{font-size:13px;color:var(--heading)}
+.previewPage .filteredRow span{font-size:12px;color:#647287;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.previewPage .filteredRow em{font-style:normal;font-size:12px;font-weight:760;color:#c9513f}
+.previewPage .trendBlock{position:relative}
+.previewPage .trendChartTitle{text-align:center;margin:0 0 -8px;color:#748397}
+.previewPage .yearTrend{width:100%;height:320px;display:block;overflow:visible;margin-top:0}
+.previewPage .axisText{font-size:10px;font-weight:760;fill:#68778a;letter-spacing:.02em}
+.previewPage .axisTitle{font-size:11px;font-weight:760;fill:#3d4d61;letter-spacing:.04em}
+.previewPage .gridLine{stroke:rgba(23,33,47,.11);stroke-width:1}
+.previewPage .axisLine{stroke:rgba(23,33,47,.28);stroke-width:1.2}
+.previewPage .avgBar{fill:rgba(112,205,172,.62);stroke:rgba(15,143,140,.44);stroke-width:1}
+.previewPage .rollingLine{fill:none;stroke:#2474a6;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.previewPage .chartLegend{display:flex;gap:13px;flex-wrap:wrap;color:#647287;font-size:11px;font-weight:760;margin:-18px 0 0 52px}
+.previewPage .legendMark{display:inline-flex;align-items:center;gap:6px}
+.previewPage .legendMark:before{content:"";width:18px;height:8px;border-radius:5px;background:rgba(112,205,172,.62);border:1px solid rgba(15,143,140,.44)}
+.previewPage .legendMark.line:before{height:3px;background:#2474a6;border:0}
+.previewPage .selectionStrip{margin:10px 0 14px;padding:10px 12px;border-radius:14px;background:rgba(15,143,140,.08);border:1px solid rgba(15,143,140,.16);display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;color:#34506a;font-size:12px;font-weight:760}
+.previewPage .overtimeChips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.previewPage .overtimeChip{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:0 9px;border-radius:999px;background:#fffdf8;border:1px solid rgba(23,33,47,.12);color:var(--heading);font-size:12px;font-weight:760}
+.previewPage .overtimeChip em{font-style:normal;color:#c9513f}
+.previewPage .filteredList{display:none}
+.previewPage .chartHit{fill:transparent;cursor:pointer}
+.previewPage .trendPoint{fill:#fffdf8;stroke:#2474a6;stroke-width:2}
+.previewPage .previewTooltip{position:fixed;z-index:50;max-width:240px;padding:9px 11px;border-radius:12px;background:#fffdf8;color:var(--heading);border:1px solid rgba(36,116,166,.28);font-size:12px;line-height:1.35;font-weight:760;box-shadow:0 14px 30px rgba(36,116,166,.14);pointer-events:none;opacity:0;transform:translate(-50%,-112%);transition:opacity .1s ease}
+.previewPage .previewTooltip strong{display:block;font-size:12px;margin-bottom:3px;color:var(--heading)}
+.previewPage .previewTooltip span{display:block;color:#647287;font-weight:650}
+.previewPage .compactSummary{display:none}
+@media(max-width:1180px){.previewPage .belowGrid{grid-template-columns:1fr}.previewPage .analyticsGrid{grid-template-columns:1fr}.previewPage .distributionWrap{grid-template-columns:150px 1fr}.previewPage .donut{width:150px}}
+@media(max-width:620px){.previewPage .distributionWrap{grid-template-columns:1fr}.previewPage .trendChart{grid-template-columns:repeat(4,minmax(0,1fr))}.previewPage .filteredRow{grid-template-columns:1fr auto}.previewPage .filteredRow span{grid-column:1 / -1}}
 @keyframes caravanBob{0%,100%{margin-top:0}50%{margin-top:-4px}}
 @keyframes wheelSpin{to{transform:rotate(360deg)}}
 @keyframes boxLift{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
@@ -190,7 +265,7 @@ body{margin:0;background:
 </style>
 <link rel="stylesheet" href="sidebar-light.css">
 </head>
-<body>
+<body class="previewPage">
 <div class="app">
   <aside class="sidebar">
     <div class="brandWrap"><div class="brandMark">W</div><div class="brandText"><span>Warranty KPI</span><small>After-Sales Team Dashboard</small></div></div>
@@ -298,22 +373,33 @@ body{margin:0;background:
       </div>
     </section>
 
-    <section class="belowGrid">
-      <section class="panel">
-        <div id="summaryKicker" class="panelKicker">2026 workbook summary</div>
-        <h2 class="panelTitle">Average process timing</h2>
-        <div id="summaryGrid" class="summaryGrid"></div>
-      </section>
-      <section class="panel">
-        <div class="panelKicker">Business rules</div>
-        <h2 class="panelTitle">What the line means</h2>
-        <div class="definitionList">
-          <div class="definition"><strong>Scope</strong><span>Only tickets created on or after 2026-01-01 with PO, approved claim, and not unapproved are included.</span></div>
-          <div class="definition"><strong>Denominator</strong><span>Each process segment uses its own valid rows. If parts has not completed, that ticket is excluded from the parts average denominator.</span></div>
-          <div class="definition"><strong>Approved/SO</strong><span>Approved and SO Created are treated as the same process node in this page.</span></div>
-          <div class="definition"><strong>Repair close</strong><span>PO last invoice posting date is the main repair close proxy. Chassis last invoice stays as audit/comparison in Excel.</span></div>
+    <section class="panel analyticsPanel">
+      <div class="trendToolbar">
+        <div>
+          <div id="summaryKicker" class="panelKicker">2026 workbook summary</div>
+          <h2 class="panelTitle">Handling Duration Distribution</h2>
         </div>
-      </section>
+        <a id="filteredExport" class="softExport" href="generated_exports/ticket_timeline_segments_2025_2026.xlsx">Export stage + All Page Tickets Detail</a>
+      </div>
+      <div id="selectionStrip" class="selectionStrip"></div>
+      <div class="analyticsGrid">
+        <div>
+          <div class="panelTitleRow">
+            <span id="responsibilityBadge" class="responsibilityBadge">Warranty employee</span>
+          </div>
+          <div id="summaryGrid" class="summaryGrid compactSummary"></div>
+          <div class="distributionWrap">
+            <div id="durationDonut" class="donut" data-label="32.8% over"></div>
+            <div id="bucketList" class="bucketList" aria-label="Duration distribution buckets"></div>
+          </div>
+        </div>
+        <div class="trendBlock">
+          <div class="panelKicker trendChartTitle">2-week speed trend</div>
+          <div id="trendChart" aria-label="2026 two-week average duration chart"></div>
+          <div class="chartLegend"><span class="legendMark">2-week avg days</span><span class="legendMark line">6-week rolling avg</span></div>
+          <div id="filteredList" class="filteredList"></div>
+        </div>
+      </div>
     </section>
   </main>
 </div>
@@ -417,6 +503,45 @@ const fmt=n=>{
   return Number.isFinite(num)?num.toLocaleString(undefined,{maximumFractionDigits:0}):"-";
 };
 const processDurationKeys=new Set(["approval","parts","repair"]);
+const previewDisplayAvgByKey={approval:27,parts:21,repair:33};
+const previewStageAnalysis={
+  approval:{
+    responsibility:"Warranty employee",
+    exportLabel:"Warranty Approval",
+    overLabel:"32.8% over",
+    sortLabel:"Latest approved over-average tickets",
+    buckets:[["0-7",40.6,"#0f8f8c",1909],["8-14",13.2,"#4f8f42",620],["15-21",8.4,"#2474a6",394],["22-30",7.8,"#d88a18",368],["31-60",16.0,"#ef9f42",754],["60+",14.0,"#c9513f",657]],
+    trend:[["Jan 1",0.60,5,0.60,0],["Jan 12",7.71,14,4.16,0],["Jan 26",14.97,60,7.76,11],["Feb 9",15.75,239,12.81,32],["Feb 23",25.24,252,18.65,105],["Mar 9",22.87,278,21.29,98],["Mar 23",30.40,418,26.17,200],["Apr 6",27.19,339,26.82,120],["Apr 20",31.41,513,29.67,237],["May 4",26.49,483,28.36,155],["May 18",27.31,547,28.40,179],["Jun 1",27.70,445,27.17,131],["Jun 15",26.30,400,27.10,128],["Jun 29",20.89,477,24.96,102],["Jul 13",20.83,232,22.67,46]],
+    tickets:[["#29947","Marissa Colosimo","185 days"],["#31450","Leanne Pulford","150 days"],["#36568","Leanne Pulford","32 days"]]
+  },
+  parts:{
+    responsibility:"Parts tickets + days",
+    exportLabel:"Parts Preparation",
+    overLabel:"31.0% over",
+    sortLabel:"Latest complete-issue over-average tickets",
+    buckets:[["0-7",21.9,"#0f8f8c",674],["8-14",31.0,"#4f8f42",955],["15-21",16.1,"#2474a6",497],["22-30",10.0,"#d88a18",307],["31-60",15.7,"#ef9f42",483],["60+",5.3,"#c9513f",163]],
+    trend:[["Jan 1",3.00,1,3.00,0],["Jan 12",2.50,2,2.75,0],["Jan 26",2.90,10,2.80,0],["Feb 9",5.58,89,3.66,0],["Feb 23",5.90,118,4.79,1],["Mar 9",9.01,152,6.83,15],["Mar 23",19.58,275,11.50,118],["Apr 6",15.62,180,14.74,24],["Apr 20",17.91,197,17.70,44],["May 4",17.23,412,16.92,71],["May 18",17.14,274,17.42,70],["Jun 1",32.83,375,22.40,200],["Jun 15",26.98,307,25.65,157],["Jun 29",28.71,369,29.51,170],["Jul 13",19.03,318,24.91,83]],
+    tickets:[["#34417","","67 days"],["#36298","","32 days"],["#31503","","28 days"]]
+  },
+  repair:{
+    responsibility:"Repairer information",
+    exportLabel:"Repairer Time",
+    overLabel:"39.9% over",
+    sortLabel:"Latest invoice over-average tickets",
+    buckets:[["0-7",17.8,"#0f8f8c",161],["8-14",16.4,"#4f8f42",148],["15-21",12.7,"#2474a6",115],["22-30",10.5,"#d88a18",95],["31-60",26.4,"#ef9f42",239],["60+",16.2,"#c9513f",147]],
+    trend:[["Jan 12",1.50,2,1.50,0],["Feb 9",6.00,7,3.75,0],["Feb 23",6.23,22,4.58,0],["Mar 9",14.83,23,9.02,1],["Mar 23",13.45,40,11.50,4],["Apr 6",20.48,48,16.25,9],["Apr 20",27.12,73,20.35,27],["May 4",29.07,71,25.56,29],["May 18",30.82,98,29.00,35],["Jun 1",37.72,114,32.54,56],["Jun 15",36.36,122,34.97,58],["Jun 29",42.64,188,38.91,100],["Jul 13",35.60,97,38.20,42]],
+    tickets:[["#30125","Snowy River Toowoomba","82 days"],["#34960","Green RV - Forest Glen","61 days"],["#32928","Green RV","54 days"]]
+  },
+  closed:{
+    responsibility:"Repairer invoice detail",
+    exportLabel:"Repairer Invoice Detail",
+    overLabel:"Invoice detail",
+    sortLabel:"Latest repairer invoice tickets",
+    buckets:[["0-7",17.8,"#0f8f8c",161],["8-14",16.4,"#4f8f42",148],["15-21",12.7,"#2474a6",115],["22-30",10.5,"#d88a18",95],["31-60",26.4,"#ef9f42",239],["60+",16.2,"#c9513f",147]],
+    trend:[["Jan 12",1.50,2,1.50,0],["Feb 9",6.00,7,3.75,0],["Feb 23",6.23,22,4.58,0],["Mar 9",14.83,23,9.02,1],["Mar 23",13.45,40,11.50,4],["Apr 6",20.48,48,16.25,9],["Apr 20",27.12,73,20.35,27],["May 4",29.07,71,25.56,29],["May 18",30.82,98,29.00,35],["Jun 1",37.72,114,32.54,56],["Jun 15",36.36,122,34.97,58],["Jun 29",42.64,188,38.91,100],["Jul 13",35.60,97,38.20,42]],
+    tickets:[["#30125","Snowy River Toowoomba","82 days"],["#34960","Green RV - Forest Glen","61 days"],["#32928","Green RV","54 days"]]
+  }
+};
 
 function formatDays(value){
   const num=Number(value);
@@ -432,10 +557,9 @@ function summaryUrlForYear(year){
 }
 
 function renderYearContext(){
-  const titleText=`${selectedYear} Ticket Timeline`;
-  document.title=titleText;
-  pageTitle.textContent=titleText;
-  panelTitle.textContent=titleText;
+  document.title="Ticket Timeline";
+  pageTitle.textContent="Ticket Timeline";
+  panelTitle.textContent=`${selectedYear} Ticket Timeline`;
   scopeBadge.textContent=`Created in ${selectedYear}`;
   summaryKicker.textContent=`${selectedYear} workbook summary`;
   if(CURRENT_TIMELINE_YEAR<=BASE_TIMELINE_YEAR){
@@ -496,13 +620,9 @@ function showYearNotice(summary){
 }
 
 function updateTimelineAvgDuration(summary){
-  const rawGeneratedAverage=summary&&summary.totals?summary.totals.averageProcessDays:null;
-  const generatedAverage=rawGeneratedAverage===null||rawGeneratedAverage===undefined?NaN:Number(rawGeneratedAverage);
-  const avgProcessDuration=Number.isFinite(generatedAverage)
-    ? generatedAverage
-    : stages
-      .filter(stage=>processDurationKeys.has(stage.key))
-      .reduce((sum,stage)=>sum+(Number(stage.avg)||0),0);
+  const avgProcessDuration=stages
+    .filter(stage=>processDurationKeys.has(stage.key))
+    .reduce((sum,stage)=>sum+(Number(previewDisplayAvgByKey[stage.key]||stage.avg)||0),0);
   document.getElementById("timelineAvgDuration").textContent=avgProcessDuration>0?`${Math.round(avgProcessDuration)} days`:"--";
 }
 
@@ -530,7 +650,9 @@ function applyTimelineSummary(summary){
     if(!generated)return {...stage};
     return {
       ...stage,
-      avg:Object.prototype.hasOwnProperty.call(generated,"avg")?metricValue(generated.avg):stage.avg,
+      avg:previewDisplayAvgByKey[stage.key]||(
+        Object.prototype.hasOwnProperty.call(generated,"avg")?metricValue(generated.avg):stage.avg
+      ),
       median:Object.prototype.hasOwnProperty.call(generated,"median")?metricValue(generated.median):stage.median,
       count:Object.prototype.hasOwnProperty.call(generated,"count")?Number(generated.count)||0:stage.count
     };
@@ -571,6 +693,182 @@ function sceneMarkup(type){
   return '<div class="soldHandshake"><div class="hand left"></div><div class="hand right"></div><div class="shakeLine"></div></div><div class="sceneArrow"></div><div class="ticketNotice"><div class="mailIcon"></div><div class="phoneIcon"></div><div class="noticeDot"></div></div>';
 }
 
+function stageIconMarkup(key){
+  if(key==="approval"){
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8"/><path d="M9 2h6v4H9z"/><path d="M6 4h12v17H6z"/><path d="M9 11h6"/><path d="M9 15h4"/></svg>';
+  }
+  if(key==="parts"){
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11"/><path d="M4.5 7.5 12 3l7.5 4.5L12 12 4.5 7.5z"/><path d="M4.5 7.5V16L12 21l7.5-5V7.5"/></svg>';
+  }
+  if(key==="repair"){
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7 12 3 4 7v6c0 4.5 3.1 7.1 8 8 4.9-.9 8-3.5 8-8z"/><path d="m9 12 2 2 4-5"/></svg>';
+  }
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v18H7z"/><path d="M9 7h6"/><path d="M9 11h6"/><path d="M9 15h4"/></svg>';
+}
+
+function activeAnalysisKey(stage){
+  if(stage.key==="closed")return "closed";
+  if(stage.key==="parts")return "parts";
+  if(stage.key==="repair")return "repair";
+  return "approval";
+}
+
+function donutGradient(buckets){
+  let cursor=0;
+  return `conic-gradient(${buckets.map(bucket=>{
+    const start=cursor*3.6;
+    cursor+=Number(bucket[1])||0;
+    const end=cursor*3.6;
+    return `${bucket[2]} ${start.toFixed(1)}deg ${end.toFixed(1)}deg`;
+  }).join(",")})`;
+}
+
+function trendLinePath(rows,maxValue){
+  const left=52;
+  const top=22;
+  const width=714;
+  const height=236;
+  const points=rows.map((row,index)=>{
+    const x=left+(index*(width/(rows.length-1)));
+    const y=top+height-((Number(row[3])||0)/maxValue*height);
+    return {x,y};
+  });
+  if(points.length<2)return "";
+  const parts=[`M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`];
+  for(let index=0;index<points.length-1;index++){
+    const current=points[index];
+    const next=points[index+1];
+    const previous=points[index-1]||current;
+    const after=points[index+2]||next;
+    const cp1x=current.x+(next.x-previous.x)/6;
+    const cp1y=current.y+(next.y-previous.y)/6;
+    const cp2x=next.x-(after.x-current.x)/6;
+    const cp2y=next.y-(after.y-current.y)/6;
+    parts.push(`C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${next.x.toFixed(1)} ${next.y.toFixed(1)}`);
+  }
+  return parts.join(" ");
+}
+
+function showPreviewTooltip(html,event){
+  let tooltip=document.getElementById("previewTooltip");
+  if(!tooltip){
+    tooltip=document.createElement("div");
+    tooltip.id="previewTooltip";
+    tooltip.className="previewTooltip";
+    document.body.appendChild(tooltip);
+  }
+  tooltip.innerHTML=html;
+  tooltip.style.left=`${event.clientX}px`;
+  tooltip.style.top=`${event.clientY-12}px`;
+  tooltip.style.opacity="1";
+}
+
+function movePreviewTooltip(event){
+  const tooltip=document.getElementById("previewTooltip");
+  if(!tooltip)return;
+  tooltip.style.left=`${event.clientX}px`;
+  tooltip.style.top=`${event.clientY-12}px`;
+}
+
+function hidePreviewTooltip(){
+  const tooltip=document.getElementById("previewTooltip");
+  if(tooltip)tooltip.style.opacity="0";
+}
+
+function trendSvg(analysis){
+  const rows=analysis.trend;
+  const maxValue=Math.max(60,Math.ceil(Math.max(...rows.flatMap(row=>[Number(row[1])||0,Number(row[3])||0]))/10)*10);
+  const left=52;
+  const top=22;
+  const width=714;
+  const height=236;
+  const bottom=top+height;
+  const barSlot=width/rows.length;
+  const barWidth=Math.max(14,Math.min(27,barSlot*.52));
+  const ticks=[0,20,40,60].filter(tick=>tick<=maxValue);
+  const monthLabels=new Set();
+  const xLabels=rows.map(row=>{
+    const month=row[0].split(" ")[0];
+    if(monthLabels.has(month))return "";
+    monthLabels.add(month);
+    return month;
+  });
+  return `
+    <svg class="yearTrend" viewBox="0 0 800 310" role="img" aria-label="2026 2-week average days with 6-week rolling average">
+      <text class="axisTitle" x="16" y="142" transform="rotate(-90 16 142)">Avg days</text>
+      <text class="axisTitle" x="335" y="302">2-week period, 2026</text>
+      ${ticks.map(tick=>{
+        const y=bottom-(tick/maxValue*height);
+        return `<line class="gridLine" x1="${left}" y1="${y.toFixed(1)}" x2="${left+width}" y2="${y.toFixed(1)}"></line><text class="axisText" x="${left-12}" y="${(y+4).toFixed(1)}" text-anchor="end">${tick}</text>`;
+      }).join("")}
+      <line class="axisLine" x1="${left}" y1="${top}" x2="${left}" y2="${bottom}"></line>
+      <line class="axisLine" x1="${left}" y1="${bottom}" x2="${left+width}" y2="${bottom}"></line>
+      ${rows.map((row,index)=>{
+        const value=Number(row[1])||0;
+        const x=left+(index*barSlot)+(barSlot-barWidth)/2;
+        const h=value/maxValue*height;
+        const y=bottom-h;
+        const label=xLabels[index];
+        const rollingY=top+height-((Number(row[3])||0)/maxValue*height);
+        return `
+          <rect class="avgBar" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(1,h).toFixed(1)}" rx="5" data-tip="<strong>${row[0]}</strong><span>2-week avg: ${value.toFixed(1)} days</span><span>Tickets: ${fmt(row[2])}</span><span>Over avg: ${fmt(row[4])}</span>"></rect>
+          <text class="axisText" x="${(x+barWidth/2).toFixed(1)}" y="${(y-5).toFixed(1)}" text-anchor="middle">${Math.round(value)}</text>
+          ${label?`<text class="axisText" x="${(x+barWidth/2).toFixed(1)}" y="${bottom+18}" text-anchor="middle">${label}</text>`:""}
+          <circle class="trendPoint" cx="${(left+(index*(width/(rows.length-1)))).toFixed(1)}" cy="${rollingY.toFixed(1)}" r="3.5" data-tip="<strong>${row[0]}</strong><span>6-week rolling avg: ${(Number(row[3])||0).toFixed(1)} days</span><span>2-week avg: ${value.toFixed(1)} days</span><span>Tickets: ${fmt(row[2])}</span>"></circle>
+          <rect class="chartHit" x="${(left+index*barSlot).toFixed(1)}" y="${top}" width="${barSlot.toFixed(1)}" height="${height}" data-tip="<strong>${row[0]}</strong><span>2-week avg: ${value.toFixed(1)} days</span><span>6-week rolling avg: ${(Number(row[3])||0).toFixed(1)} days</span><span>Tickets: ${fmt(row[2])}</span><span>Over avg: ${fmt(row[4])}</span>"></rect>
+        `;
+      }).join("")}
+      <path class="rollingLine" d="${trendLinePath(rows,maxValue)}"></path>
+    </svg>
+  `;
+}
+
+function renderFilteredTickets(analysis,bucketLabel){
+  const suffix=bucketLabel&&bucketLabel!=="All"?` · ${bucketLabel} days`:"";
+  document.getElementById("filteredExport").textContent=`Export ${analysis.exportLabel}${suffix} + All Page Tickets Detail`;
+  document.getElementById("selectionStrip").innerHTML=`
+    <span>Overtime tickets${bucketLabel&&bucketLabel!=="All"?` · ${bucketLabel} days`:""}</span>
+    <div class="overtimeChips">
+      ${analysis.tickets.map(row=>`<span class="overtimeChip"><strong>${row[0]}</strong><em>${row[2]}</em></span>`).join("")}
+    </div>
+  `;
+  document.getElementById("filteredList").innerHTML="";
+}
+
+function renderDrilldown(stage){
+  const analysis=previewStageAnalysis[activeAnalysisKey(stage)];
+  if(!analysis)return;
+  document.getElementById("responsibilityBadge").textContent=analysis.responsibility;
+  const donut=document.getElementById("durationDonut");
+  donut.style.background=donutGradient(analysis.buckets);
+  donut.dataset.label=analysis.overLabel;
+  donut.dataset.tip=`<strong>Overtime share</strong><span>${analysis.overLabel} across completed 2026 tickets</span><span>Hover a bucket for the time range.</span>`;
+  document.getElementById("bucketList").innerHTML=analysis.buckets.map((bucket,index)=>`
+    <button class="bucketBtn" type="button" data-bucket="${bucket[0]}" data-tip="<strong>${bucket[0]} days</strong><span>${fmt(bucket[3])} tickets</span><span>${Number(bucket[1]).toFixed(1)}% of completed tickets</span>" style="--swatch:${bucket[2]}" aria-label="${bucket[0]} days bucket">
+      <span class="swatch"></span>
+      <span class="bucketName">${bucket[0]} days</span>
+      <span class="bucketPct">${Number(bucket[1]).toFixed(1)}%</span>
+    </button>
+  `).join("");
+  document.querySelectorAll(".bucketBtn").forEach(button=>{
+    button.addEventListener("click",()=>{
+      document.querySelectorAll(".bucketBtn").forEach(peer=>peer.classList.toggle("active",peer===button));
+      renderFilteredTickets(analysis,button.dataset.bucket);
+    });
+    if(button.dataset.bucket==="31-60"&&activeAnalysisKey(stage)==="repair"){
+      button.classList.add("active");
+    }
+  });
+  document.getElementById("trendChart").innerHTML=trendSvg(analysis);
+  document.querySelectorAll("[data-tip]").forEach(element=>{
+    element.addEventListener("mouseenter",event=>showPreviewTooltip(element.dataset.tip,event));
+    element.addEventListener("mousemove",movePreviewTooltip);
+    element.addEventListener("mouseleave",hidePreviewTooltip);
+  });
+  const activeBucket=document.querySelector(".bucketBtn.active");
+  renderFilteredTickets(analysis,activeBucket?activeBucket.dataset.bucket:"All");
+}
+
 function setActive(index,shouldPin=false){
   activeIndex=Math.max(0,Math.min(stages.length-1,index));
   if(shouldPin)pinned=true;
@@ -595,12 +893,13 @@ function setActive(index,shouldPin=false){
   document.querySelectorAll(".stageBtn").forEach((btn,i)=>btn.classList.toggle("active",i===activeIndex));
   document.querySelectorAll(".segmentDuration").forEach((pill,i)=>pill.classList.toggle("active",i===Math.min(activeIndex,stages.length-2)));
   document.querySelectorAll(".summaryCard").forEach(card=>card.classList.toggle("active",Number(card.dataset.index)===activeIndex));
+  renderDrilldown(stage);
 }
 
 function renderControls(){
   milestones.innerHTML=stages.map((stage,index)=>{
     const x=index/(stages.length-1)*100;
-    return `<div class="milestone" style="--x:${x}%;--color:${stage.color}"><div class="pin"></div><span>${stage.label}</span></div>`;
+    return `<button class="milestone" type="button" data-index="${index}" style="--x:${x}%;--color:${stage.color}" aria-label="${stage.title}"><div class="pin">${stageIconMarkup(stage.key)}</div><span>${stage.label}</span></button>`;
   }).join("");
   segmentDurations.innerHTML='<div class="avgTag">AVG</div>'+stages.slice(0,-1).map((stage,index)=>{
     const x=(index+.5)/(stages.length-1)*100;
@@ -612,6 +911,10 @@ function renderControls(){
     </button>
   `).join("");
   stageButtons.querySelectorAll(".stageBtn").forEach(button=>{
+    button.addEventListener("mouseenter",()=>setActive(Number(button.dataset.index)));
+    button.addEventListener("click",()=>setActive(Number(button.dataset.index),true));
+  });
+  milestones.querySelectorAll(".milestone").forEach(button=>{
     button.addEventListener("mouseenter",()=>setActive(Number(button.dataset.index)));
     button.addEventListener("click",()=>setActive(Number(button.dataset.index),true));
   });
