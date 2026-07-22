@@ -4413,6 +4413,7 @@ def run_company_fetch(company_file: str, db_url: str, sa_path: str, source_root:
     env["MONITOR_ROOT"] = monitor_root
     env["PYTHONUNBUFFERED"] = "1"
     env["SKIP_ANALYTICS_REBUILD_AFTER_FETCH"] = "1"
+    env["SKIP_TICKET_TIMELINE_EXPORT_AFTER_FETCH"] = "1"
 
     print(f"[FETCH] Running company file:\n{p}")
     result = subprocess.run([sys.executable, str(p)], env=env)

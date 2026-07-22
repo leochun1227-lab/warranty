@@ -3062,6 +3062,326 @@
 </style>
 <link rel="stylesheet" href="flow-polish.css">
 <link rel="stylesheet" href="sidebar-light.css">
+<style>
+/* Right rail height rebalance: give useful space to Avg Cost and Status Mix, keep Duration compact. */
+@media(min-width:980px){
+  .featureSideStack .dashboardAnalysisGrid{
+    grid-template-rows:minmax(250px,1.18fr) minmax(270px,1.26fr) minmax(158px,.58fr)!important;
+    gap:12px!important;
+    align-content:stretch!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .avgCostTrendPanel{
+    min-height:250px!important;
+    padding:16px 18px 14px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel{
+    min-height:270px!important;
+    padding:16px 18px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .speedPanel{
+    min-height:158px!important;
+    padding:12px 18px 14px!important;
+    overflow:hidden!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .panelHead{
+    margin-bottom:6px!important;
+    min-height:20px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .panelTitle{
+    line-height:1.15!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .agingRows{
+    flex:0 0 auto!important;
+    align-content:start!important;
+    justify-content:stretch!important;
+    gap:8px!important;
+    margin:6px 0 0!important;
+    transform:none!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .agingRow{
+    min-height:20px!important;
+    grid-template-columns:76px minmax(0,1fr) 62px!important;
+    gap:9px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .agingTrack{
+    height:10px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .agingLabel,
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .agingValue{
+    font-size:10.5px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .weeklyAvgCostChart{
+    grid-template-rows:minmax(190px,1fr) auto!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .weeklyAvgCostSvg{
+    min-height:190px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .weeklyAvgCostLabels{
+    transform:none!important;
+    margin-top:-8px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel #statusMix,
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLayout{
+    grid-template-columns:minmax(168px,210px) minmax(0,1fr)!important;
+    gap:12px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieWrap,
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieSvg{
+    width:210px!important;
+    height:210px!important;
+  }
+}
+
+/* Match the cleaner Ticket Timeline typography on the dashboard page. */
+body{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  text-rendering:geometricPrecision;
+  font-variant-numeric:tabular-nums;
+}
+.pageTitle,
+.panelTitle,
+.panelTitleRow .panelTitle,
+.repairComboTitle,
+.employeeApprovalTitle,
+.employeeModalTitle,
+.employeeMiniPanel .panelTitle,
+.layoutAdjustTitle{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  font-weight:560!important;
+  letter-spacing:0!important;
+  color:#1d2a3d!important;
+}
+.pageTitle{
+  font-size:32px!important;
+  line-height:1.05!important;
+}
+.pageTitleNote,
+.dateNote,
+.kpiLabel,
+.kpiSubLabel,
+.panelDesc,
+.trendAxisLegend,
+.teamAssignLegend,
+.employeeApprovalMeta,
+.sidebarFilterLabel,
+.sidebarFiltersTitle,
+.teamAssignBtn,
+.summaryExportBtn,
+.sidebarExportBtn,
+.kpiExportBtn,
+.repairExportBtn,
+.layoutAdjustLabel{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  font-weight:600!important;
+  letter-spacing:0!important;
+}
+.teamKpiGrid .kpiValue,
+.dashboardMain .teamKpiGrid .kpiValue,
+.kpiValue,
+.speedMetric b,
+.speedDonutCenter b,
+.criticalSideValue,
+.barValue,
+.mixRow b,
+.teamAssignValue,
+.teamAssignInline,
+.employeeBarValue,
+.employeeApprovalValue,
+.ratioBase,
+.tipValue,
+.weeklyAvgCostLabels,
+.employeeTrendMeta,
+.statusPiePct,
+.durationValueGuide,
+.agingValue,
+.speedLegendRow b{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  font-weight:560!important;
+  letter-spacing:0!important;
+  font-variant-numeric:tabular-nums!important;
+}
+.kpiIcon,
+.brandText span,
+.navBtn,
+.navLink,
+.navSection{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+}
+.weeklyAvgCostSvg text,
+.employeeTrendSvg text,
+.statusPieSvg text{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  font-weight:560!important;
+  letter-spacing:0!important;
+}
+
+/* Equal right rail: dealer, avg cost, status mix, and duration share the same height. */
+@media(min-width:1281px){
+  .dashboardTop{
+    align-items:stretch!important;
+  }
+  .featureSideStack{
+    display:grid!important;
+    grid-template-rows:minmax(0,1fr) minmax(0,3fr)!important;
+    gap:12px!important;
+    align-self:stretch!important;
+    height:100%!important;
+    min-height:0!important;
+  }
+  .featureSideStack .dealerRankPanel,
+  .featureSideStack .dashboardAnalysisGrid .avgCostTrendPanel,
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel,
+  .featureSideStack .dashboardAnalysisGrid .speedPanel{
+    min-height:0!important;
+    height:auto!important;
+    margin:0!important;
+    padding:14px 16px!important;
+    display:flex!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    grid-template-rows:repeat(3,minmax(0,1fr))!important;
+    gap:12px!important;
+    height:100%!important;
+    min-height:0!important;
+    margin:0!important;
+    align-content:stretch!important;
+  }
+  .featureSideStack .dealerRankPanel .panelTitleRow,
+  .featureSideStack .dashboardAnalysisGrid .panelTitleRow,
+  .featureSideStack .dashboardAnalysisGrid .panelHead{
+    min-height:22px!important;
+    margin-bottom:8px!important;
+    align-items:flex-start!important;
+  }
+  .featureSideStack .dealerRankPanel .panelTitle,
+  .featureSideStack .dashboardAnalysisGrid .panelTitle{
+    font-size:14px!important;
+    line-height:1.2!important;
+    min-width:0!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  .featureSideStack .dateNote{
+    flex:0 0 auto!important;
+    font-size:10px!important;
+    padding:3px 7px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .panelTitle,
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .panelTitle{
+    text-align:left!important;
+    width:auto!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    padding-right:82px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .panelHead{
+    justify-content:flex-start!important;
+    text-align:left!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .analysisDateNote,
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .analysisDateNote{
+    top:12px!important;
+    right:14px!important;
+    font-size:10px!important;
+    padding:3px 7px!important;
+  }
+  .featureSideStack .dealerCriticalList{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    overflow:hidden!important;
+    display:grid!important;
+    align-content:space-evenly!important;
+    gap:5px!important;
+  }
+  .featureSideStack .dealerCriticalRow{
+    min-height:19px!important;
+    padding:2px 0!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .weeklyAvgCostTrend{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    margin:0!important;
+    display:flex!important;
+    align-items:stretch!important;
+    justify-content:stretch!important;
+    overflow:visible!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .weeklyAvgCostChart{
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    display:grid!important;
+    grid-template-rows:minmax(0,1fr) auto!important;
+    gap:4px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .weeklyAvgCostSvg{
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    overflow:visible!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .weeklyAvgCostLabels{
+    transform:none!important;
+    margin:0!important;
+    padding:0 4px!important;
+    font-size:10px!important;
+    line-height:1.2!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel #statusMix,
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLayout{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    display:grid!important;
+    grid-template-columns:150px minmax(0,1fr)!important;
+    gap:10px!important;
+    align-items:center!important;
+    justify-content:center!important;
+    margin:0!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieWrap,
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieSvg{
+    width:150px!important;
+    height:150px!important;
+    transform:none!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLegend{
+    gap:5px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPieLegendRow{
+    min-height:16px!important;
+    font-size:10.5px!important;
+    gap:6px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .statusMixPanel .statusPiePct{
+    font-size:10px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .durationDatePicker{
+    display:none!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .agingRows{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    margin:0!important;
+    transform:none!important;
+    display:grid!important;
+    align-content:center!important;
+    gap:9px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .agingRow{
+    grid-template-columns:78px minmax(0,1fr) 64px!important;
+    min-height:21px!important;
+    gap:9px!important;
+  }
+  .featureSideStack .dashboardAnalysisGrid .speedPanel .agingTrack{
+    height:11px!important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -3709,7 +4029,7 @@ function monthEndISO(month){if(!/^\d{4}-\d{2}$/.test(clean(month)))return latest
 function currentDashboardMonth(){return monthKeyFromDate(latestDateForView())}
 function selectedDashboardMonth(){return activeMonth||currentDashboardMonth()}
 function monthDisplayLabel(month){const d=new Date(`${month}-01T00:00:00Z`);return isNaN(d)?month:d.toLocaleDateString("en-AU",{month:"long",year:"numeric",timeZone:"UTC"})}
-function availableDashboardMonths(){const view=currentView();const months=new Set();arrayFromMaybe(view.ticketVolumeTrendDaily||view.trend).forEach(p=>{const d=clean(p.date||p.periodEnd||p.periodStart);if(d)months.add(d.slice(0,7));});if(!months.size){const latest=latestDateForView();if(latest)months.add(latest.slice(0,7));}return Array.from(months).filter(Boolean).sort().reverse()}
+function availableDashboardMonths(){const view=currentView();const months=new Set(),minMonth=monthKeyFromDate(earliestDateForView()||DEFAULT_RANGE_START);arrayFromMaybe(view.ticketVolumeTrendDaily||view.trend).forEach(p=>{const d=clean(p.date||p.periodEnd||p.periodStart);if(d)months.add(d.slice(0,7));});if(!months.size){const latest=latestDateForView();if(latest)months.add(latest.slice(0,7));}return Array.from(months).filter(month=>month&&(!minMonth||month>=minMonth)).sort().reverse()}
 function setFullRange(){syncRangeInputsToActivePeriod();}
 function periodEndDate(){const latest=latestDateForView();const end=monthEndISO(selectedDashboardMonth());return end&&end<latest?end:latest;}
 function isLatestPeriodEnd(end=periodEndDate()){return clean(end)>=latestDateForView();}
@@ -6346,9 +6666,16 @@ function alignStatusMixBottomToRepairAnalytics(){
   statusPanel.style.removeProperty("height");
   statusPanel.style.removeProperty("min-height");
 }
-const layoutAdjustDefaults={rightWidth:300,topOffset:0,gap:12,avgHeight:260,employeeHeight:0,statusHeight:210,durationHeight:220};
-function layoutAdjustRead(){try{return {...layoutAdjustDefaults,...JSON.parse(localStorage.getItem("teamDashboardLayoutAdjust")||"{}")};}catch(e){return {...layoutAdjustDefaults};}}
-function layoutAdjustSave(next){try{localStorage.setItem("teamDashboardLayoutAdjust",JSON.stringify(next));}catch(e){}}
+const layoutAdjustVersion=2;
+const layoutAdjustDefaults={layoutVersion:layoutAdjustVersion,rightWidth:300,topOffset:0,gap:12,avgHeight:300,employeeHeight:0,statusHeight:286,durationHeight:145};
+function layoutAdjustRead(){
+  try{
+    const saved=JSON.parse(localStorage.getItem("teamDashboardLayoutAdjust")||"{}");
+    if(saved.layoutVersion!==layoutAdjustVersion)return {...layoutAdjustDefaults};
+    return {...layoutAdjustDefaults,...saved};
+  }catch(e){return {...layoutAdjustDefaults};}
+}
+function layoutAdjustSave(next){try{localStorage.setItem("teamDashboardLayoutAdjust",JSON.stringify({...next,layoutVersion:layoutAdjustVersion}));}catch(e){}}
 function applyLayoutAdjustWidth(){
   const root=document.querySelector(".dashboardTop");
   if(!root)return;
@@ -6388,57 +6715,47 @@ function bindLayoutAdjustPanel(){
   applyLayoutAdjustWidth();
 }
 function alignEmployeeWorkloadBottomToDuration(){
-  const trendRow=document.querySelector(".trendLogGrid");
   const employeePanel=document.querySelector(".teamAssignPanel");
+  const rail=document.querySelector(".featureSideStack");
+  const dealerPanel=document.querySelector(".featureSideStack .dealerRankPanel");
   const analysisGrid=document.querySelector(".featureSideStack .dashboardAnalysisGrid");
   const avgPanel=document.querySelector(".featureSideStack .dashboardAnalysisGrid .avgCostTrendPanel");
   const statusPanel=document.querySelector(".featureSideStack .dashboardAnalysisGrid .statusMixPanel");
   const durationPanel=document.querySelector(".featureSideStack .dashboardAnalysisGrid .speedPanel");
-  if(!trendRow||!employeePanel||!analysisGrid||!avgPanel||!statusPanel||!durationPanel)return;
+  if(!employeePanel||!rail||!dealerPanel||!analysisGrid||!avgPanel||!statusPanel||!durationPanel)return;
   employeePanel.style.removeProperty("min-height");
   employeePanel.style.removeProperty("height");
+  [rail,analysisGrid,dealerPanel,avgPanel,statusPanel,durationPanel].forEach(panel=>{
+    panel.style.removeProperty("height");
+    panel.style.removeProperty("min-height");
+  });
   analysisGrid.style.removeProperty("margin-top");
-  analysisGrid.style.removeProperty("gap");
-  analysisGrid.style.removeProperty("row-gap");
   analysisGrid.style.removeProperty("grid-template-rows");
-  analysisGrid.style.removeProperty("height");
-  analysisGrid.style.removeProperty("min-height");
-  avgPanel.style.removeProperty("height");
-  avgPanel.style.removeProperty("min-height");
-  statusPanel.style.removeProperty("height");
-  statusPanel.style.removeProperty("min-height");
-  durationPanel.style.removeProperty("height");
-  durationPanel.style.removeProperty("min-height");
+  rail.style.removeProperty("grid-template-rows");
   if(window.innerWidth<1281)return;
-  const cfg=layoutAdjustRead();
   applyLayoutAdjustWidth();
-  const gridInitialRect=analysisGrid.getBoundingClientRect();
-  const trendRect=trendRow.getBoundingClientRect();
-  const trendHeight=Math.max(200,Number(cfg.avgHeight)||Math.round(trendRect.height));
-  const topOffset=Math.round(trendRect.top-gridInitialRect.top)+Number(cfg.topOffset||0);
-  const employeeTopBefore=employeePanel.getBoundingClientRect().top;
-  const gap=Math.max(8,Number(cfg.gap)||Math.round(employeeTopBefore-trendRect.bottom)||12);
-  const statusHeight=Math.max(170,Number(cfg.statusHeight)||210);
-  const naturalEmployeeHeight=Math.max(420,Math.ceil(employeePanel.scrollHeight+2));
-  const durationTop=gridInitialRect.top+topOffset+trendHeight+gap+statusHeight+gap;
-  let durationHeight=Math.max(170,Math.ceil(employeeTopBefore+naturalEmployeeHeight-durationTop));
-  const gridHeight=trendHeight+gap+statusHeight+gap+durationHeight;
+  const railRect=rail.getBoundingClientRect();
+  const employeeRect=employeePanel.getBoundingClientRect();
+  const gapValue=parseFloat(getComputedStyle(rail).gap||"12")||12;
+  const targetHeight=Math.max(760,Math.ceil(employeeRect.bottom-railRect.top));
+  const cardHeight=Math.max(188,Math.floor((targetHeight-(gapValue*3))/4));
+  const railHeight=(cardHeight*4)+(gapValue*3);
+  const analysisHeight=(cardHeight*3)+(gapValue*2);
   const setPanelHeight=(panel,height)=>{
     const px=Math.ceil(height)+"px";
     panel.style.setProperty("height",px,"important");
     panel.style.setProperty("min-height",px,"important");
   };
-  const gridPx=Math.ceil(gridHeight)+"px";
-  analysisGrid.style.setProperty("margin-top",`${topOffset}px`,"important");
-  analysisGrid.style.setProperty("gap",`${gap}px`,"important");
-  analysisGrid.style.setProperty("row-gap",`${gap}px`,"important");
-  analysisGrid.style.setProperty("height",gridPx,"important");
-  analysisGrid.style.setProperty("min-height",gridPx,"important");
-  analysisGrid.style.setProperty("grid-template-rows",`${trendHeight}px ${Math.ceil(statusHeight)}px ${Math.ceil(durationHeight)}px`,"important");
-  setPanelHeight(avgPanel,trendHeight);
-  setPanelHeight(statusPanel,statusHeight);
-  setPanelHeight(durationPanel,durationHeight);
-  setPanelHeight(employeePanel,naturalEmployeeHeight);
+  rail.style.setProperty("height",`${Math.ceil(railHeight)}px`,"important");
+  rail.style.setProperty("min-height",`${Math.ceil(railHeight)}px`,"important");
+  rail.style.setProperty("grid-template-rows",`${cardHeight}px ${Math.ceil(analysisHeight)}px`,"important");
+  rail.style.setProperty("gap",`${gapValue}px`,"important");
+  analysisGrid.style.setProperty("height",`${Math.ceil(analysisHeight)}px`,"important");
+  analysisGrid.style.setProperty("min-height",`${Math.ceil(analysisHeight)}px`,"important");
+  analysisGrid.style.setProperty("grid-template-rows",`repeat(3, ${cardHeight}px)`,"important");
+  analysisGrid.style.setProperty("gap",`${gapValue}px`,"important");
+  analysisGrid.style.setProperty("row-gap",`${gapValue}px`,"important");
+  [dealerPanel,avgPanel,statusPanel,durationPanel].forEach(panel=>setPanelHeight(panel,cardHeight));
 }
 let employeeDurationResizeObserver=null;
 let employeeDurationAlignmentScheduled=false;

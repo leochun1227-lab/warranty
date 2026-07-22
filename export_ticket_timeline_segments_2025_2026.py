@@ -4,7 +4,10 @@ import argparse
 import csv
 import io
 import json
+import math
 import re
+import shutil
+import subprocess
 from dataclasses import dataclass
 from datetime import date, datetime
 from pathlib import Path
@@ -23,6 +26,7 @@ DEFAULT_REPAIRERS_JSON = ROOT / "outputs" / "repairers_2026" / "repairers_2026_d
 DEFAULT_OUTPUT = ROOT / "generated_exports" / "ticket_timeline_segments_2025_2026.xlsx"
 DEFAULT_SUMMARY_JSON = ROOT / "generated_exports" / "ticket_timeline_summary.json"
 DEFAULT_COMPLETION_ANALYTICS_JSON = ROOT / "generated_exports" / "ticket_timeline_completion_analytics_2026.json"
+DEFAULT_PRICE_MIX_PPT_SCRIPT = ROOT / "generate_ticket_timeline_price_mix_ppt.mjs"
 DEFAULT_START_DATE = date(date.today().year, 1, 1)
 
 APPROVED_STATUS_TEXTS = {
@@ -182,6 +186,24 @@ def is_unapproved_status(status_text: str) -> bool:
 def is_approved_like_status(status_text: str) -> bool:
     text = normalize_spaces(status_text).lower()
     return text in APPROVED_STATUS_TEXTS or "approved" in text or "repairer invoiced" in text or "repair in progress" in text
+
+
+def is_van_recalled_status(status_text: str) -> bool:
+    return normalize_spaces(status_text).lower() == "van recalled"
+
+
+def is_approved_closed_status(status_text: str) -> bool:
+    return "approved claims closed" in normalize_spaces(status_text).lower()
+
+
+def should_include_approval_evidence_universe(row: pd.Series) -> bool:
+    if is_unapproved_status(clean(row.get("status_text"))):
+        return False
+    if is_van_recalled_status(clean(row.get("status_text"))):
+        return False
+    if is_approved_closed_status(clean(row.get("status_text"))) and to_date(row.get("approved_date")) is None:
+        return False
+    return True
 
 
 def load_analysis_ticket_base(js_path: Path) -> pd.DataFrame:
@@ -408,7 +430,13 @@ def load_repairer_invoice_rows(json_path: Path) -> pd.DataFrame:
 def build_qualifying_universe(base_df: pd.DataFrame, start_date: date, end_date: date | None) -> pd.DataFrame:
     work = base_df.copy()
     date_mask = work["created_date"].map(lambda value: value is not None and value >= start_date and (end_date is None or value <= end_date))
-    qualify_mask = date_mask & work["po"].ne("") & work["approved_date"].notna() & ~work["is_unapproved"]
+    qualify_mask = (
+        date_mask
+        & work["po"].ne("")
+        & work["approved_date"].notna()
+        & ~work["is_unapproved"]
+        & ~work["status_text"].map(is_van_recalled_status)
+    )
     out = work[qualify_mask].copy()
     out["approval_days"] = out.apply(lambda row: day_diff(row["approved_date"], row["created_date"]), axis=1)
     out["approval_days_valid"] = out["approval_days"].map(lambda value: value is not None and value >= 0)
@@ -865,6 +893,12 @@ COMPLETION_BUCKETS = [
     ("31-60", "#ef9f42"),
     ("60+", "#c9513f"),
 ]
+AMOUNT_BUCKETS = [
+    ("$0-500", "#5bb8b0", 0, 500),
+    ("$500-2k", "#4f87c7", 500, 2000),
+    ("$2k-5k", "#f0a33a", 2000, 5000),
+    ("$5k+", "#c9513f", 5000, None),
+]
 TOTAL_COMPLETION_BUCKETS = [
     ("0-30", "#0f8f8c"),
     ("31-60", "#4f8f42"),
@@ -908,15 +942,68 @@ def duration_bucket_name(value: float | int, buckets: list[tuple[str, str]] | No
     return "60+"
 
 
+def is_valid_duration_value(value: Any) -> bool:
+    try:
+        return bool(pd.notna(value) and float(value) >= 0)
+    except (TypeError, ValueError):
+        return False
+
+
 def valid_duration_values(values: Iterable[Any]) -> list[float]:
-    out: list[float] = []
-    for value in values:
-        try:
-            if pd.notna(value) and float(value) >= 0:
-                out.append(float(value))
-        except (TypeError, ValueError):
-            continue
-    return out
+    return [float(value) for value in values if is_valid_duration_value(value)]
+
+
+def valid_amount_value(value: Any) -> float | None:
+    amount = parse_amount(value)
+    if amount is None:
+        return None
+    try:
+        amount = float(amount)
+    except (TypeError, ValueError):
+        return None
+    if not math.isfinite(amount) or amount <= 0:
+        return None
+    return amount
+
+
+def amount_bucket_name(value: float) -> str:
+    for label, _color, low, high in AMOUNT_BUCKETS:
+        if value >= low and (high is None or value < high):
+            return label
+    return AMOUNT_BUCKETS[-1][0]
+
+
+def build_amount_distribution(df: pd.DataFrame, amount_col: str = "claim_total_amount") -> dict[str, Any]:
+    if df is None or df.empty or amount_col not in df.columns:
+        return {"totalAmount": 0, "pricedTickets": 0, "missingTickets": int(len(df)) if df is not None else 0, "buckets": []}
+    amounts: list[float] = []
+    missing = 0
+    for value in df[amount_col].tolist():
+        amount = valid_amount_value(value)
+        if amount is None:
+            missing += 1
+        else:
+            amounts.append(amount)
+    total_amount = sum(amounts)
+    rows: list[dict[str, Any]] = []
+    for label, color, _low, _high in AMOUNT_BUCKETS:
+        bucket_values = [amount for amount in amounts if amount_bucket_name(amount) == label]
+        bucket_total = sum(bucket_values)
+        rows.append(
+            {
+                "label": label,
+                "color": color,
+                "amount": round(bucket_total, 2),
+                "pct": round(bucket_total / total_amount * 100, 1) if total_amount else 0,
+                "count": len(bucket_values),
+            }
+        )
+    return {
+        "totalAmount": round(total_amount, 2),
+        "pricedTickets": len(amounts),
+        "missingTickets": missing,
+        "buckets": rows,
+    }
 
 
 def build_completion_buckets(values: Iterable[Any], buckets: list[tuple[str, str]] | None = None) -> list[list[Any]]:
@@ -929,6 +1016,87 @@ def build_completion_buckets(values: Iterable[Any], buckets: list[tuple[str, str
         pct = round(count / total * 100, 1) if total else 0
         rows.append([label, pct, color, count])
     return rows
+
+
+def build_duration_amount_distributions(
+    df: pd.DataFrame,
+    duration_col: str,
+    bucket_defs: list[tuple[str, str]] | None = None,
+) -> dict[str, Any]:
+    defs = bucket_defs or COMPLETION_BUCKETS
+    out: dict[str, Any] = {}
+    if df is None or df.empty or duration_col not in df.columns:
+        return {label: build_amount_distribution(pd.DataFrame()) for label, _color in defs}
+    valid_df = df[df[duration_col].map(is_valid_duration_value)].copy()
+    for label, _color in defs:
+        bucket_df = valid_df[valid_df[duration_col].map(lambda value, label=label: duration_bucket_name(float(value), defs) == label)]
+        out[label] = build_amount_distribution(bucket_df)
+    return out
+
+
+def build_price_duration_mix(
+    df: pd.DataFrame,
+    duration_col: str,
+    amount_col: str = "claim_total_amount",
+    bucket_defs: list[tuple[str, str]] | None = None,
+) -> dict[str, Any]:
+    duration_buckets = bucket_defs or COMPLETION_BUCKETS
+    empty_price_buckets = [
+        {
+            "label": label,
+            "color": color,
+            "count": 0,
+            "average": None,
+            "distribution": [[duration_label, 0, duration_color, 0] for duration_label, duration_color in duration_buckets],
+        }
+        for label, color, _low, _high in AMOUNT_BUCKETS
+    ]
+    if df is None or df.empty or duration_col not in df.columns or amount_col not in df.columns:
+        return {"pricedTickets": 0, "missingAmount": int(len(df)) if df is not None else 0, "buckets": empty_price_buckets}
+
+    priced_rows: list[dict[str, Any]] = []
+    missing_amount = 0
+    for _, row in df.iterrows():
+        duration_value = row.get(duration_col)
+        if not is_valid_duration_value(duration_value):
+            continue
+        amount = valid_amount_value(row.get(amount_col))
+        if amount is None:
+            missing_amount += 1
+            continue
+        priced_rows.append(
+            {
+                "amount": amount,
+                "duration": float(duration_value),
+                "amountBucket": amount_bucket_name(amount),
+            }
+        )
+
+    buckets: list[dict[str, Any]] = []
+    for label, color, _low, _high in AMOUNT_BUCKETS:
+        bucket_rows = [row for row in priced_rows if row["amountBucket"] == label]
+        duration_values = [row["duration"] for row in bucket_rows]
+        total = len(duration_values)
+        distribution: list[list[Any]] = []
+        for duration_label, duration_color in duration_buckets:
+            count = sum(1 for value in duration_values if duration_bucket_name(value, duration_buckets) == duration_label)
+            pct = round(count / total * 100, 1) if total else 0
+            distribution.append([duration_label, pct, duration_color, count])
+        buckets.append(
+            {
+                "label": label,
+                "color": color,
+                "count": total,
+                "average": round(sum(duration_values) / total, 2) if total else None,
+                "distribution": distribution,
+            }
+        )
+
+    return {
+        "pricedTickets": len(priced_rows),
+        "missingAmount": missing_amount,
+        "buckets": buckets,
+    }
 
 
 def build_completion_month_trend(
@@ -1067,6 +1235,84 @@ def build_total_handling_df(parts_joined_df: pd.DataFrame, invoice_df: pd.DataFr
     )
     total["created_to_invoice_days_completed"] = total["created_to_invoice_days"]
     return total
+
+
+def build_created_month_trend(
+    completed_df: pd.DataFrame,
+    universe_df: pd.DataFrame,
+    duration_col: str,
+    threshold_days: int,
+    year: int,
+    as_of: date,
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    monthly_avgs: list[float | None] = []
+    for month_index, month_label in enumerate(MONTH_LABELS, start=1):
+        if date(year, month_index, 1) > as_of:
+            break
+        universe_month_df = universe_df[
+            universe_df["created_date"].map(
+                lambda value, month_index=month_index: (
+                    (created_date := to_date(value)) is not None
+                    and created_date.year == year
+                    and created_date.month == month_index
+                )
+            )
+        ]
+        month_df = completed_df[
+            completed_df["created_date"].map(
+                lambda value, month_index=month_index: (
+                    (created_date := to_date(value)) is not None
+                    and created_date.year == year
+                    and created_date.month == month_index
+                )
+            )
+        ]
+        completed_month_df = month_df[month_df[duration_col].map(is_valid_duration_value)].copy() if duration_col in month_df.columns else month_df.iloc[0:0].copy()
+        values = valid_duration_values(completed_month_df.get(duration_col, []))
+        avg = round(sum(values) / len(values), 2) if values else None
+        monthly_avgs.append(avg)
+        rolling_values = [value for value in monthly_avgs[-3:] if value is not None]
+        over_count = sum(1 for value in values if value > threshold_days)
+        created_count = int(len(universe_month_df))
+        completed_count = int(len(values))
+        rows.append(
+            {
+                "label": month_label,
+                "avg": avg,
+                "count": completed_count,
+                "created": created_count,
+                "completed": completed_count,
+                "unfinished": max(created_count - completed_count, 0),
+                "over": over_count,
+                "roll3": round(sum(rolling_values) / len(rolling_values), 2) if rolling_values else None,
+                "amountDistribution": build_amount_distribution(completed_month_df),
+            }
+        )
+    return rows
+
+
+def build_timeline_evidence(
+    completed_df: pd.DataFrame,
+    universe_df: pd.DataFrame,
+    duration_col: str,
+    threshold_days: int,
+    year: int,
+    as_of: date,
+) -> dict[str, Any]:
+    values = valid_duration_values(completed_df.get(duration_col, []))
+    return {
+        "standard": threshold_days,
+        "count": len(values),
+        "createdCount": int(len(universe_df)),
+        "unfinishedCount": max(int(len(universe_df)) - len(values), 0),
+        "average": round(sum(values) / len(values), 2) if values else None,
+        "trend": build_created_month_trend(completed_df, universe_df, duration_col, threshold_days, year, as_of),
+        "distribution": build_completion_buckets(values),
+        "amountDistribution": build_amount_distribution(completed_df),
+        "distributionAmount": build_duration_amount_distributions(completed_df, duration_col),
+        "priceDurationMix": build_price_duration_mix(completed_df, duration_col),
+    }
 
 
 def completion_detail_records(
@@ -1662,6 +1908,10 @@ def relative_path_text(path: Path) -> str:
 def build_timeline_summary_payload(
     paths: Paths,
     qualifying_df: pd.DataFrame,
+    approval_evidence_universe_df: pd.DataFrame,
+    approval_evidence_completed_df: pd.DataFrame,
+    parts_evidence_universe_df: pd.DataFrame,
+    repair_evidence_universe_df: pd.DataFrame,
     approval_segment_df: pd.DataFrame,
     parts_segment_df: pd.DataFrame,
     repairer_segment_df: pd.DataFrame,
@@ -1671,7 +1921,9 @@ def build_timeline_summary_payload(
     workbook_path: Path,
 ) -> dict[str, Any]:
     created_filter = f">= {start_date.isoformat()}" if end_date is None else f"{start_date.isoformat()} to {end_date.isoformat()}"
-    approval_avg = mean_or_blank(approval_segment_df.get("approval_days", []))
+    approval_values = valid_duration_values(approval_evidence_completed_df.get("approval_days", []))
+    approval_avg = round(sum(approval_values) / len(approval_values), 2) if approval_values else None
+    approval_threshold = int(round(approval_avg)) if approval_avg is not None else 27
     parts_avg = mean_or_blank(parts_segment_df.get("parts_issuing_days", []))
     repair_avg = mean_or_blank(repairer_segment_df.get("repairer_repair_days", []))
     process_values = [value for value in [approval_avg, parts_avg, repair_avg] if value is not None]
@@ -1698,20 +1950,23 @@ def build_timeline_summary_payload(
             {
                 "key": "approval",
                 "avg": approval_avg,
-                "median": median_or_blank(approval_segment_df.get("approval_days", [])),
-                "count": int(len(approval_segment_df)),
+                "median": median_or_blank(approval_values),
+                "count": int(len(approval_values)),
+                "evidence": build_timeline_evidence(approval_evidence_completed_df, approval_evidence_universe_df, "approval_days", approval_threshold, start_date.year, date.today()),
             },
             {
                 "key": "parts",
                 "avg": parts_avg,
                 "median": median_or_blank(parts_segment_df.get("parts_issuing_days", [])),
                 "count": int(len(parts_segment_df)),
+                "evidence": build_timeline_evidence(parts_segment_df, parts_evidence_universe_df, "parts_issuing_days", 21, start_date.year, date.today()),
             },
             {
                 "key": "repair",
                 "avg": repair_avg,
                 "median": median_or_blank(repairer_segment_df.get("repairer_repair_days", [])),
                 "count": int(len(repairer_segment_df)),
+                "evidence": build_timeline_evidence(repairer_segment_df, repair_evidence_universe_df, "repairer_repair_days", 33, start_date.year, date.today()),
             },
             {
                 "key": "closed",
@@ -1731,6 +1986,36 @@ def write_timeline_summary_json(path: Path, payload: dict[str, Any]) -> Path:
 
 def yearly_summary_json_path(path: Path, year: int) -> Path:
     return path.with_name(f"{path.stem}_{year}{path.suffix}")
+
+
+def try_generate_price_mix_ppt(script_path: Path = DEFAULT_PRICE_MIX_PPT_SCRIPT) -> Path | None:
+    if not script_path.exists():
+        print(f"Price mix PPT skipped: generator not found at {script_path}")
+        return None
+    node_path = shutil.which("node")
+    if not node_path:
+        print("Price mix PPT skipped: node executable was not found.")
+        return None
+    try:
+        result = subprocess.run(
+            [node_path, str(script_path)],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+    except Exception as exc:
+        print(f"Price mix PPT skipped: {exc}")
+        return None
+    if result.stdout:
+        print(result.stdout.strip())
+    if result.returncode != 0:
+        print(f"Price mix PPT skipped: generator exited with {result.returncode}")
+        if result.stderr:
+            print(result.stderr.strip())
+        return None
+    return ROOT / "generated_exports" / "ticket_timeline_price_mix_2026.pptx"
 
 
 def parse_args() -> argparse.Namespace:
@@ -1774,6 +2059,15 @@ def main() -> int:
 
     base_df = load_analysis_ticket_base(paths.analysis_ticket_js)
     qualifying_df = build_qualifying_universe(base_df, start_date=start_date, end_date=end_date)
+    evidence_date_mask = base_df["created_date"].map(lambda value: value is not None and value >= start_date and (end_date is None or value <= end_date))
+    approval_evidence_universe_df = base_df[
+        evidence_date_mask
+        & base_df.apply(should_include_approval_evidence_universe, axis=1)
+    ].copy()
+    approval_evidence_universe_df["approval_days"] = approval_evidence_universe_df.apply(lambda row: day_diff(row["approved_date"], row["created_date"]), axis=1)
+    approval_evidence_completed_df = approval_evidence_universe_df[
+        approval_evidence_universe_df["approval_days"].map(is_valid_duration_value)
+    ].copy()
 
     parts_by_ticket_df, parts_by_po_df = load_parts_ticket_summary(paths.parts_classified_csv)
     invoice_df = load_repairer_invoice_rows(paths.repairers_json)
@@ -1792,7 +2086,9 @@ def main() -> int:
         )
 
     parts_joined_df = merge_parts_data(qualifying_df, parts_by_ticket_df, parts_by_po_df, anomalies)
+    parts_evidence_universe_df = parts_joined_df.copy()
     parts_segment_df = build_parts_segment(parts_joined_df, anomalies)
+    repair_evidence_universe_df = parts_segment_df.copy()
     repairer_segment_df = build_repairer_segment(parts_segment_df, invoice_df, anomalies)
     anomalies_df = pd.DataFrame(anomalies).sort_values(["stage", "reason", "ticket_number", "ticket_key"], na_position="last").reset_index(drop=True)
 
@@ -1836,6 +2132,10 @@ def main() -> int:
     summary_payload = build_timeline_summary_payload(
         paths=paths,
         qualifying_df=qualifying_df,
+        approval_evidence_universe_df=approval_evidence_universe_df,
+        approval_evidence_completed_df=approval_evidence_completed_df,
+        parts_evidence_universe_df=parts_evidence_universe_df,
+        repair_evidence_universe_df=repair_evidence_universe_df,
         approval_segment_df=approval_segment_df,
         parts_segment_df=parts_segment_df,
         repairer_segment_df=repairer_segment_df,
@@ -1850,11 +2150,14 @@ def main() -> int:
         summary_payload,
     )
     written_completion_analytics_path = write_timeline_summary_json(paths.completion_analytics_json, completion_analytics_payload)
+    written_price_mix_ppt_path = try_generate_price_mix_ppt()
 
     print(f"Workbook written: {written_path}")
     print(f"Summary JSON written: {written_summary_path}")
     print(f"Year summary JSON written: {written_yearly_summary_path}")
     print(f"Completion analytics JSON written: {written_completion_analytics_path}")
+    if written_price_mix_ppt_path:
+        print(f"Price mix PPT written: {written_price_mix_ppt_path}")
     print(f"Qualifying tickets: {len(qualifying_df)}")
     print(f"Warranty approval rows: {len(approval_segment_df)}")
     print(f"Parts issuing rows: {len(parts_segment_df)}")

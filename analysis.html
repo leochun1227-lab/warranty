@@ -98,6 +98,7 @@ a{color:inherit}
 
 /* ---------- Header ---------- */
 .topbar{margin-bottom:24px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px}
+.topbar{display:none}
 .eyebrow{color:var(--muted);text-transform:uppercase;letter-spacing:.16em;font-size:11px;font-weight:700;margin-bottom:6px}
 .title{font-size:30px;font-weight:800;letter-spacing:-.025em;margin:0}
 .subtitle{color:var(--muted);margin:8px 0 0;max-width:680px;font-size:14px}
@@ -152,6 +153,17 @@ a{color:inherit}
 .twoCol > .panel{min-width:0;width:100%}
 .oneCol{display:grid;grid-template-columns:1fr;gap:22px}
 .oneCol > .panel{min-width:0;width:100%}
+.seriesLayout{display:grid;grid-template-columns:minmax(430px,.92fr) minmax(500px,1.08fr);gap:18px;align-items:stretch;margin-bottom:22px}
+.seriesLayout > .panel{min-width:0;width:100%;height:100%}
+.seriesLayout .leaderboardPanel .panelHead{display:block}
+.seriesLayout .leaderboardPanel #seriesChips{display:none}
+.seriesLayout .lbRows{max-height:560px}
+.seriesLayout .lbRow{grid-template-columns:52px minmax(130px,1fr) repeat(3,minmax(68px,auto));gap:8px;padding:11px 10px}
+.seriesLayout .lbMetric{min-width:0}
+.seriesLayout .lbMetric.extraMetric{display:none}
+.seriesLayout .lbBadge{width:42px;height:42px}
+.seriesDetailPanel .detailKpiGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+#analystNoteWrap{display:none}
 
 /* ---------- Sticky analysis controls ---------- */
 .stickyControls{
@@ -205,7 +217,7 @@ a{color:inherit}
 .lbBarFill.risk-hi{background:linear-gradient(90deg,#ef4444,#f87171)}
 .lbMetric{text-align:right;min-width:74px}
 .lbMetricLabel{color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:9.5px;font-weight:700;margin-bottom:2px}
-.lbMetricValue{font-weight:700;font-size:13px;letter-spacing:-.01em;color:var(--ink)}
+.lbMetricValue{font-weight:600;font-size:13px;letter-spacing:0;color:var(--ink);font-variant-numeric:tabular-nums}
 .lbMetricValue.na{color:var(--muted2);font-weight:600}
 
 /* ---------- Table ---------- */
@@ -227,7 +239,7 @@ tbody tr:last-child td{border-bottom:0}
 tbody tr.active td{background:var(--blueSoft)}
 tbody tr:hover td{background:#fafcff}
 tbody tr.active:hover td{background:#dcebff}
-td.number{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+td.number{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
 td.mono{font-variant-numeric:tabular-nums;font-family:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace}
 td strong{font-weight:700}
 .metricsTable{table-layout:fixed;min-width:980px}
@@ -264,10 +276,12 @@ td strong{font-weight:700}
 /* ---------- Selected series detail ---------- */
 .detailStack{display:flex;flex-direction:column;gap:16px;min-width:0}
 .detailKpiGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.miniKpi{padding:14px 16px;background:#f8fafc;border-radius:12px;border:1px solid var(--line2)}
-.miniKpi .lbl{color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:.12em;font-weight:700;margin-bottom:4px}
-.miniKpi .val{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.02em;line-height:1.15}
-.miniKpi .sub{color:var(--muted);font-size:11.5px;margin-top:2px}
+.miniKpi{padding:14px 16px;background:linear-gradient(180deg,rgba(45,145,163,.06),#f8fafc 42%);border-radius:10px;border:1px solid #e2e8ee;border-top:3px solid rgba(45,145,163,.45)}
+.miniKpi:nth-child(2n){background:linear-gradient(180deg,rgba(216,131,53,.06),#f8fafc 42%);border-top-color:rgba(216,131,53,.48)}
+.miniKpi:nth-child(3n){background:linear-gradient(180deg,rgba(88,125,154,.06),#f8fafc 42%);border-top-color:rgba(88,125,154,.42)}
+.miniKpi .lbl{color:#59687b;text-transform:uppercase;font-size:10px;letter-spacing:.1em;font-weight:600;margin-bottom:5px}
+.miniKpi .val{font-size:22px;font-weight:600;color:#172033;letter-spacing:0;line-height:1.15;font-variant-numeric:tabular-nums}
+.miniKpi .sub{color:#6b7788;font-size:11.5px;margin-top:3px}
 
 /* Timing distribution */
 .timingWrap{display:flex;flex-direction:column;gap:10px;max-height:210px;overflow:auto;padding-right:3px;scrollbar-width:thin}
@@ -280,7 +294,7 @@ td strong{font-weight:700}
 .timingBarFill.b1{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
 .timingBarFill.b2{background:linear-gradient(90deg,#0ea5e9,#38bdf8)}
 .timingBarFill.b3{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}
-.timingCount{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;font-size:13px;color:var(--ink);white-space:nowrap}
+.timingCount{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;font-size:13px;color:#172033;white-space:nowrap}
 .timingCount small{color:var(--muted);font-weight:600;margin-left:4px}
 
 /* Components: horizontal bars */
@@ -288,23 +302,23 @@ td strong{font-weight:700}
 .compRows{display:flex;flex-direction:column;gap:9px;max-height:430px;min-height:430px;overflow:auto;padding-right:3px;scrollbar-width:thin;min-width:0}
 .compRow{
   display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
-  padding:10px 12px;border-radius:10px;background:#f8fafc;border:1px solid var(--line2);
+  padding:10px 12px;border-radius:8px;background:#fbfcfd;border:1px solid #e5ebf2;
 }
 .compHead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
 .compName{font-weight:700;font-size:13px;color:var(--ink);text-transform:capitalize}
 .compCat{color:var(--muted);font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.08em}
-.compBar{height:6px;background:#eef2f7;border-radius:99px;overflow:hidden}
-.compBarFill{height:100%;background:linear-gradient(90deg,#1677f2,#22aeea);border-radius:99px;transition:width .3s ease}
+.compBar{height:7px;background:#eef3f5;border-radius:2px;overflow:hidden}
+.compBarFill{height:100%;background:linear-gradient(90deg,#2d91a3,#6fc1bd);border-radius:2px;transition:width .3s ease}
 .compRight{display:flex;flex-direction:column;align-items:flex-end;gap:1px;min-width:100px}
-.compTickets{font-weight:800;font-size:15px;color:var(--ink);letter-spacing:-.01em}
-.compCost{font-size:11.5px;color:var(--muted);font-weight:600}
+.compTickets{font-weight:600;font-size:15px;color:#172033;letter-spacing:0;font-variant-numeric:tabular-nums}
+.compCost{font-size:11.5px;color:#6b7788;font-weight:500;font-variant-numeric:tabular-nums}
 /* Components: mode row + tooltip + totals */
 .compModeRow{display:inline-flex;gap:0;background:#f1f5f9;border-radius:999px;padding:3px;border:1px solid var(--line2)}
 .compModeRow .scopeBtn{padding:6px 12px;font-size:11.5px;border-radius:999px}
 .compRow.clickable{cursor:pointer;transition:background .12s ease,border-color .12s ease}
-.compRow.clickable:hover{background:#eef4ff;border-color:#c7d7ee}
-.compRow.active{background:#eef4ff;border-color:#93c5fd;box-shadow:inset 0 0 0 1px rgba(59,130,246,.10)}
-.compRow.active .compBarFill{background:linear-gradient(90deg,#2563eb,#06b6d4)}
+.compRow.clickable:hover{background:#f4f8f9;border-color:#c7d7dc}
+.compRow.active{background:#f5f7f9;border-color:#91c9d1;box-shadow:inset 0 0 0 1px rgba(45,145,163,.12)}
+.compRow.active .compBarFill{background:linear-gradient(90deg,#d48335,#f0a45f)}
 .compRow .compScopeChip{display:inline-block;margin-left:6px;font-size:9.5px;font-weight:800;letter-spacing:.04em;padding:2px 6px;border-radius:999px;background:#e0e7ff;color:#3730a3;text-transform:uppercase;vertical-align:middle}
 .compRow .compScopeChip.field{background:#dcfce7;color:#166534}
 .compRow .compSurge{font-size:10.5px;font-weight:700;color:#b45309;background:#fff7ed;border:1px solid #fed7aa;padding:2px 6px;border-radius:999px;margin-top:2px;display:inline-block}
@@ -314,7 +328,7 @@ td strong{font-weight:700}
 }
 .compPreviewEyebrow{font-size:10px;color:var(--muted);font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .compPreviewHead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.compPreviewTitle{font-size:16px;font-weight:900;color:var(--ink);line-height:1.15;text-transform:capitalize;margin-top:3px}
+.compPreviewTitle{font-size:16px;font-weight:600;color:var(--ink);line-height:1.15;text-transform:capitalize;margin-top:3px}
 .compPreviewSub{font-size:11.5px;color:var(--muted);font-weight:600;line-height:1.45;margin-top:4px}
 .compPreviewMode{
   display:inline-flex;align-items:center;justify-content:center;padding:5px 10px;border-radius:999px;
@@ -324,7 +338,7 @@ td strong{font-weight:700}
 .compPreviewStats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:14px 0 12px}
 .compPreviewStat{padding:10px 12px;border-radius:10px;border:1px solid var(--line2);background:#fff;min-width:0}
 .compPreviewStat span{display:block;font-size:9.5px;color:var(--muted);font-weight:800;letter-spacing:.06em;text-transform:uppercase}
-.compPreviewStat strong{display:block;margin-top:5px;font-size:18px;font-weight:900;color:var(--ink);line-height:1.1}
+.compPreviewStat strong{display:block;margin-top:5px;font-size:18px;font-weight:600;color:var(--ink);line-height:1.1;font-variant-numeric:tabular-nums}
 .compPreviewChartMeta{font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:8px}
 .compPreviewBars{
   display:grid;grid-template-columns:repeat(var(--cols,12),minmax(0,1fr));gap:8px;align-items:end;
@@ -332,8 +346,11 @@ td strong{font-weight:700}
 }
 .compPreviewBar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;min-width:0}
 .compPreviewBar .val{font-size:9px;color:var(--ink2);font-weight:800;line-height:1;white-space:nowrap}
-.compPreviewBar .bar{width:100%;background:linear-gradient(180deg,#60a5fa,#2563eb);border-radius:8px 8px 4px 4px;min-height:8px}
-.compPreviewBar.field .bar{background:linear-gradient(180deg,#4ade80,#16a34a)}
+.compPreviewBar .bar{
+  width:72%;background:rgba(59,130,246,.36);border:1px solid rgba(37,99,235,.34);
+  border-radius:8px 8px 5px 5px;min-height:8px;box-shadow:inset 0 -1px 0 rgba(37,99,235,.16)
+}
+.compPreviewBar.field .bar{background:rgba(96,165,250,.42);border-color:rgba(37,99,235,.28)}
 .compPreviewBar .lbl{font-size:9.5px;color:var(--muted);font-weight:700;letter-spacing:.02em}
 .compPreviewHint{font-size:10.5px;color:var(--muted);font-weight:600;margin-top:10px}
 .compTooltip{
@@ -351,8 +368,11 @@ td strong{font-weight:700}
 .compTooltipBars{display:grid;grid-template-columns:repeat(var(--cols,12),1fr);gap:4px;align-items:end;height:140px;margin-top:10px}
 .compTooltipBar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;min-width:0}
 .compTooltipBar .val{font-size:9px;color:#e2e8f0;font-weight:800;line-height:1;white-space:nowrap}
-.compTooltipBar .bar{width:100%;background:linear-gradient(180deg,#60a5fa,#3b82f6);border-radius:5px;min-height:4px}
-.compTooltipBar.field .bar{background:linear-gradient(180deg,#4ade80,#16a34a)}
+.compTooltipBar .bar{
+  width:72%;background:rgba(147,197,253,.72);border:1px solid rgba(191,219,254,.4);
+  border-radius:7px 7px 4px 4px;min-height:4px
+}
+.compTooltipBar.field .bar{background:rgba(96,165,250,.62);border-color:rgba(191,219,254,.34)}
 .compTooltipBar .lbl{font-size:9.5px;color:#94a3b8;font-weight:700;letter-spacing:.02em}
 .compTooltipHint{font-size:9.5px;color:#94a3b8;margin-top:6px;font-weight:600}
 
@@ -383,15 +403,16 @@ td strong{font-weight:700}
   display:flex;align-items:flex-end;justify-content:center;box-shadow:none
 }
 .compTotalsBar .barStack{
-  width:100%;display:flex;flex-direction:column-reverse;border-radius:0;
-  overflow:hidden;box-shadow:none
+  width:100%;display:flex;flex-direction:column-reverse;border-radius:9px 9px 5px 5px;
+  overflow:hidden;box-shadow:inset 0 -1px 0 rgba(37,99,235,.16);
+  border:1px solid rgba(37,99,235,.26);background:rgba(59,130,246,.08)
 }
 .compTotalsBar .barSeg{width:100%;flex:0 0 auto}
-.compTotalsBar .barSeg.pre{background:linear-gradient(180deg,#8fb7ff 0%,#6572df 100%)}
-.compTotalsBar .barSeg.field{background:linear-gradient(180deg,#b7f2a4 0%,#63d37c 100%)}
-.compTotalsBar .barSeg.other{background:linear-gradient(180deg,#9fd3f2 0%,#7f96e7 100%)}
+.compTotalsBar .barSeg.pre{background:rgba(147,197,253,.82)}
+.compTotalsBar .barSeg.field{background:rgba(96,165,250,.66)}
+.compTotalsBar .barSeg.other{background:rgba(37,99,235,.5)}
 .compTotalsBar .barVal{
-  position:static;font-size:14px;font-weight:900;color:var(--ink);line-height:1;
+  position:static;font-size:14px;font-weight:600;color:var(--ink);line-height:1;
   text-align:center;white-space:nowrap;min-height:13px
 }
 .compTotalsBar .barLbl{
@@ -409,11 +430,80 @@ td strong{font-weight:700}
   grid-column:var(--start) / span var(--span);text-align:center;
   font-size:11px;color:#64748b;font-weight:800;line-height:1
 }
+.compTotalsSplit.ytdLayout{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+.compTotalsSplit.ytdLayout .compTotalsTablePane,.compTotalsSplit.ytdLayout .compTotalsChartPane{display:flex;flex-direction:column;min-height:360px}
+.compTotalsPaneHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.compTotalsPaneHead .compTotalsPaneTitle{margin-bottom:0}
+.monthlyScopeSwitch{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.monthlyScopeSwitch .scopeBtn{padding:5px 9px;font-size:10px}
+.ytdCompareBars{
+  display:grid;grid-template-columns:repeat(var(--months,7),minmax(0,1fr));gap:10px;align-items:end;
+  flex:1;min-height:260px;padding:10px 4px 0
+}
+.ytdMonthGroup{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:7px;min-width:0;height:100%}
+.ytdBarPair{display:flex;align-items:flex-end;justify-content:center;gap:5px;height:190px;width:100%}
+.ytdBar{width:32%;min-width:8px;border-radius:7px 7px 4px 4px;border:1px solid rgba(38,103,125,.22);box-shadow:inset 0 -1px 0 rgba(38,103,125,.16)}
+.ytdBar.prev{background:rgba(45,145,163,.48)}
+.ytdBar.curr{background:rgba(216,131,53,.7);border-color:rgba(183,104,39,.28)}
+.ytdMonthLabel{font-size:10.5px;color:var(--muted);font-weight:800;line-height:1}
+.ytdValueRow{display:grid;grid-template-columns:1fr 1fr;gap:5px;width:100%;font-size:9.5px;color:#172033;font-weight:600;text-align:center;min-height:11px;font-variant-numeric:tabular-nums}
+.lineChartStack{display:grid;grid-template-rows:1fr 1fr;gap:12px;flex:1}
+.miniLinePanel{min-height:0;border:1px solid var(--line2);border-radius:10px;background:#fbfcfe;padding:10px 10px 8px;display:flex;flex-direction:column}
+.miniLineHead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:4px}
+.miniLineTitle{font-size:11px;font-weight:600;color:var(--ink);letter-spacing:.02em}
+.miniLineMeta{font-size:10px;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.miniLineSvg{width:100%;height:118px;display:block;overflow:visible}
+.miniLineGrid{stroke:rgba(15,23,42,.1);stroke-width:1}
+.miniLineAxis{stroke:rgba(15,23,42,.18);stroke-width:1}
+.miniLinePath{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.miniLinePath.prev{stroke:#2d91a3}
+.miniLinePath.curr{stroke:#d48335}
+.miniLinePoint{fill:#fff;stroke-width:2}
+.miniLinePoint.prev{stroke:#2d91a3}
+.miniLinePoint.curr{stroke:#d48335}
+.miniLineText{font-size:9.5px;font-weight:600;fill:#64748b}
+.monthlyTrendPanel{flex:1;min-height:0;border:1px solid var(--line2);border-radius:10px;background:#fbfcfe;padding:12px 14px 9px;display:flex;flex-direction:column}
+.monthlyTrendSvg{width:100%;height:286px;display:block;overflow:visible;flex:1}
+.monthlyTrendGrid{stroke:rgba(15,23,42,.1);stroke-width:1}
+.monthlyTrendAxis{stroke:rgba(15,23,42,.2);stroke-width:1}
+.monthlyTrendPath{fill:none;stroke:#2d91a3;stroke-width:2.7;stroke-linecap:round;stroke-linejoin:round}
+.monthlyTrendPoint{fill:#fff;stroke:#2d91a3;stroke-width:2}
+.monthlyTrendPoint.turn{stroke:#d48335;stroke-width:2.4}
+.monthlyTrendHit{fill:transparent;stroke:transparent;pointer-events:all;cursor:crosshair}
+.monthlyTrendText{font-size:9.8px;font-weight:600;fill:#64748b}
+.monthlyTrendValue{font-size:10.5px;font-weight:600;fill:#172033}
+.monthlyTrendValue.turn{fill:#b45309}
+.monthlyTrendTip{
+  position:fixed;
+  z-index:80;
+  width:min(300px,calc(100vw - 28px));
+  padding:12px 14px;
+  border-radius:14px;
+  border:1px solid rgba(45,145,163,.32);
+  background:#fff;
+  color:#1d2a3d;
+  box-shadow:0 18px 42px rgba(45,145,163,.16);
+  font-size:12px;
+  line-height:1.35;
+  opacity:0;
+  pointer-events:none;
+  transform:translate(-50%,-112%);
+  transition:opacity .08s ease;
+}
+.monthlyTrendTip.visible{opacity:1}
+.monthlyTrendTipTitle{font-size:13px;font-weight:600;color:#1d2a3d;margin-bottom:8px}
+.monthlyTrendTipRow{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:5px;color:#607085}
+.monthlyTrendTipRow b{font-weight:560;color:#172033;font-variant-numeric:tabular-nums}
+.monthlyTrendTipFoot{margin-top:9px;padding-top:8px;border-top:1px solid rgba(45,145,163,.14);color:#6b7788;font-size:11px}
+.compTotalsLegend.ytdLegend{margin-top:10px}
+.compTotalsLegend .swatch.prev{background:#2d91a3}
+.compTotalsLegend .swatch.curr{background:#d48335}
+.compTotalsLegend .swatch.trend{background:#2d91a3}
 .compTotalsLegend{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:8px}
 .compTotalsLegend .swatch{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:middle;margin-right:4px}
-.compTotalsLegend .swatch.pre{background:#6572df}
-.compTotalsLegend .swatch.field{background:#63d37c}
-.compTotalsLegend .swatch.other{background:#7f96e7}
+.compTotalsLegend .swatch.pre{background:#93c5fd}
+.compTotalsLegend .swatch.field{background:#60a5fa}
+.compTotalsLegend .swatch.other{background:#2563eb}
 
 /* Base panel (compact) */
 .baseCard{background:#fbfcfe;border:1px dashed var(--line);border-radius:14px;padding:14px 18px}
@@ -511,10 +601,83 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   letter-spacing:.08em;vertical-align:middle;
 }
 
+/* Business typography tune */
+.panelTitle{
+  font-weight:600;
+  letter-spacing:0;
+}
+.compTotalsTitle,
+.compTotalsPaneTitle,
+.miniLineTitle{
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:0;
+  text-transform:none;
+  color:var(--ink);
+}
+.compTotalsTitle small{
+  color:var(--muted);
+  font-size:11.5px;
+  font-weight:500;
+  letter-spacing:0;
+  text-transform:none;
+}
+.compTotalsPaneHead .compTotalsPaneTitle{
+  margin-bottom:0;
+}
+.seriesLayout .panelTitle,
+#compLabel,
+#selectedLabel{
+  font-weight:600;
+}
+.lbSeriesName{
+  font-weight:600;
+  letter-spacing:0;
+}
+.lbMetricLabel{
+  font-weight:600;
+  letter-spacing:.07em;
+  color:#59687b;
+}
+.lbMetricValue,
+.lbMetricValue.na{
+  font-weight:550;
+}
+.miniKpi .lbl{
+  font-weight:550;
+  letter-spacing:.09em;
+}
+.miniKpi .val{
+  font-weight:520;
+}
+.compName{
+  font-weight:520;
+  letter-spacing:0;
+  color:#1f2d40;
+}
+.compCat{
+  font-weight:500;
+  letter-spacing:.06em;
+}
+.compTickets{
+  font-weight:520;
+}
+.compCost{
+  font-weight:500;
+}
+.compPreviewEyebrow,
+.compTooltipName{
+  font-weight:600;
+}
+
 /* ---------- Responsive ---------- */
 @media(max-width:1280px){
   .kpiGrid{grid-template-columns:repeat(3,1fr)}
   .twoCol{grid-template-columns:1fr}
+  .seriesLayout{grid-template-columns:1fr}
+  .seriesLayout .lbRows{max-height:430px}
+  .seriesLayout .lbRow{grid-template-columns:64px minmax(170px,220px) repeat(8,minmax(72px,1fr));gap:10px;padding:12px 14px}
+  .seriesLayout .lbMetric.extraMetric{display:block}
   .lbRow{grid-template-columns:64px minmax(170px,220px) repeat(8,minmax(72px,1fr))}
   .compSplit{grid-template-columns:1fr}
   .compTotalsSplit{grid-template-columns:1fr}
@@ -624,20 +787,20 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         <div id="insightGrid"></div>
       </section>
 
-      <!-- ============ MODEL SERIES LEADERBOARD ============ -->
-      <section class="section panel">
+      <section class="seriesLayout" aria-label="Model series overview">
+        <!-- ============ MODEL SERIES LEADERBOARD ============ -->
+        <div class="panel leaderboardPanel">
         <div class="panelHead">
           <div>
             <h2 class="panelTitle">Model Series Leaderboard</h2>
           </div>
           <div class="chipRow" id="seriesChips"></div>
         </div>
-        <div class="lbRows" id="lbRows"></div>
-      </section>
+          <div class="lbRows" id="lbRows"></div>
+        </div>
 
-      <!-- ============ SERIES DRILL-DOWN ============ -->
-      <section class="section oneCol">
-        <div class="panel">
+        <!-- ============ SERIES DRILL-DOWN ============ -->
+        <div class="panel seriesDetailPanel">
           <div class="panelHead">
             <div>
               <h2 class="panelTitle">Series Detail · <span id="selectedLabel">All Series</span></h2>
@@ -673,7 +836,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
             <div id="analystNoteWrap"></div>
           </div>
         </div>
+      </section>
 
+      <section class="section oneCol">
         <div class="panel">
           <div class="panelHead">
             <div>
@@ -843,6 +1008,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     repairers: [],
     seriesRej: [],
     compMode: "tickets",            // tickets | cost
+    monthlyTicketsScope: "all",      // all | pre | field
     compTooltipScope: "PRE",        // PRE | FIELD (click toggles)
     compPreviewKey: "",
     compPreviewName: "",
@@ -1923,13 +2089,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           <div class="lbBar"><div class="lbBarFill ${risk}" style="width:${barWidth}%"></div></div>
         </div>
         <div class="lbMetric"><div class="lbMetricLabel">Sales Rate</div><div class="lbMetricValue ${row.salesRate==null?"na":""}">${row.salesRate==null?"N/A":pctValue(row.salesRate)}</div></div>
-        <div class="lbMetric"><div class="lbMetricLabel">Repaired</div><div class="lbMetricValue">${numFmt.format(row.vehicles)}</div></div>
-        <div class="lbMetric"><div class="lbMetricLabel">Tickets</div><div class="lbMetricValue">${numFmt.format(row.tickets)}</div></div>
         <div class="lbMetric"><div class="lbMetricLabel">Tickets Rate</div><div class="lbMetricValue ${row.ticketShare==null?"na":""}">${row.ticketShare==null?"N/A":pctValue(row.ticketShare)}</div></div>
-        <div class="lbMetric"><div class="lbMetricLabel">Avg / Chassis</div><div class="lbMetricValue ${row.avgRepairs==null?"na":""}">${row.avgRepairs==null?"N/A":row.avgRepairs.toFixed(2)}</div></div>
-        <div class="lbMetric"><div class="lbMetricLabel">Median Age</div><div class="lbMetricValue ${row.medianAge==null?"na":""}">${fmtDays(row.medianAge)}</div></div>
-        <div class="lbMetric"><div class="lbMetricLabel">Cost / Ticket</div><div class="lbMetricValue ${row.costPerTicket==null?"na":""}">${row.costPerTicket==null?"N/A":moneyFmt.format(row.costPerTicket)}</div></div>
-        <div class="lbMetric"><div class="lbMetricLabel">Warranty Cost</div><div class="lbMetricValue">${moneyFmt.format(row.cost || 0)}</div></div>
+        <div class="lbMetric"><div class="lbMetricLabel">Tickets</div><div class="lbMetricValue">${numFmt.format(row.tickets)}</div></div>
+        <div class="lbMetric extraMetric"><div class="lbMetricLabel">Repaired</div><div class="lbMetricValue">${numFmt.format(row.vehicles)}</div></div>
+        <div class="lbMetric extraMetric"><div class="lbMetricLabel">Avg / Chassis</div><div class="lbMetricValue ${row.avgRepairs==null?"na":""}">${row.avgRepairs==null?"N/A":row.avgRepairs.toFixed(2)}</div></div>
+        <div class="lbMetric extraMetric"><div class="lbMetricLabel">Median Age</div><div class="lbMetricValue ${row.medianAge==null?"na":""}">${fmtDays(row.medianAge)}</div></div>
+        <div class="lbMetric extraMetric"><div class="lbMetricLabel">Cost / Ticket</div><div class="lbMetricValue ${row.costPerTicket==null?"na":""}">${row.costPerTicket==null?"N/A":moneyFmt.format(row.costPerTicket)}</div></div>
+        <div class="lbMetric extraMetric"><div class="lbMetricLabel">Warranty Cost</div><div class="lbMetricValue">${moneyFmt.format(row.cost || 0)}</div></div>
       </div>`;
     }).join("");
   }
@@ -2443,6 +2609,54 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
   function hideCompTooltip(){
     const el = document.getElementById("compTooltip");
+    if (el) el.classList.remove("visible");
+  }
+  function ensureMonthlyTrendTipEl(){
+    let el = document.getElementById("monthlyTrendTip");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "monthlyTrendTip";
+      el.className = "monthlyTrendTip";
+      document.body.appendChild(el);
+    }
+    return el;
+  }
+  function monthlyTrendTipHtml(row, scopeLabel, total){
+    const share = total ? (Number(row.value || 0) / total) * 100 : 0;
+    return `
+      <div class="monthlyTrendTipTitle">${esc(row.label)} ${esc(row.year)} · ${esc(scopeLabel)}</div>
+      <div class="monthlyTrendTipRow"><span>Tickets</span><b>${numFmt.format(row.value || 0)}</b></div>
+      <div class="monthlyTrendTipRow"><span>Share of trend</span><b>${share.toFixed(1)}%</b></div>
+      <div class="monthlyTrendTipFoot">Monthly ticket volume by selected claim scope</div>
+    `;
+  }
+  function positionMonthlyTrendTip(el, ev){
+    const margin = 14;
+    const w = el.offsetWidth || 300;
+    const h = el.offsetHeight || 140;
+    const left = Math.min(window.innerWidth - margin - w / 2, Math.max(margin + w / 2, ev.clientX));
+    let top = ev.clientY - 14;
+    let transform = "translate(-50%,-100%)";
+    if (top - h < margin) {
+      top = ev.clientY + 18;
+      transform = "translate(-50%,0)";
+    }
+    el.style.left = `${left}px`;
+    el.style.top = `${top}px`;
+    el.style.transform = transform;
+  }
+  function showMonthlyTrendTip(html, ev){
+    const el = ensureMonthlyTrendTipEl();
+    el.innerHTML = html;
+    el.classList.add("visible");
+    positionMonthlyTrendTip(el, ev);
+  }
+  function moveMonthlyTrendTip(ev){
+    const el = document.getElementById("monthlyTrendTip");
+    if (el && el.classList.contains("visible")) positionMonthlyTrendTip(el, ev);
+  }
+  function hideMonthlyTrendTip(){
+    const el = document.getElementById("monthlyTrendTip");
     if (el) el.classList.remove("visible");
   }
   function renderCompTooltip(compName, compCat, compKey, anchorEl){
@@ -2990,6 +3204,121 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       acc.other += bucket.other;
       return acc;
     }, { pre:0, field:0, other:0 });
+    const currentYear = Math.max(...buckets.map(bucket => bucket.y));
+    const previousYear = currentYear - 1;
+    const ytdMonthLimit = Math.max(...buckets.filter(bucket => bucket.y === currentYear).map(bucket => bucket.m), -1);
+    const monthlyScope = ["all","pre","field"].includes(state.monthlyTicketsScope) ? state.monthlyTicketsScope : "all";
+    const monthlyScopeLabels = {
+      all: "All Fields",
+      pre: "Pre-Delivery",
+      field: "In-Field",
+    };
+    const ytdMonths = Array.from({ length: 12 }, (_, monthIndex) => {
+      const d = new Date(currentYear, monthIndex, 1);
+      return { m: monthIndex, label: d.toLocaleString("en-AU", { month:"short" }) };
+    });
+    const monthMap = new Map(buckets.map(bucket => [`${bucket.y}-${bucket.m}`, bucket]));
+    const bucketTotal = (bucket, scope = monthlyScope) => {
+      if (!bucket) return 0;
+      if (scope === "pre") return bucket.pre;
+      if (scope === "field") return bucket.field;
+      return bucket.pre + bucket.field + bucket.other;
+    };
+    const compareMax = Math.max(...ytdMonths.flatMap(month => [
+      bucketTotal(monthMap.get(`${previousYear}-${month.m}`)),
+      month.m <= ytdMonthLimit ? bucketTotal(monthMap.get(`${currentYear}-${month.m}`)) : 0,
+    ]), 1);
+    const ytdCompareHtml = ytdMonths.map(month => {
+      const prevTotal = bucketTotal(monthMap.get(`${previousYear}-${month.m}`));
+      const currIsFuture = month.m > ytdMonthLimit;
+      const currTotal = currIsFuture ? null : bucketTotal(monthMap.get(`${currentYear}-${month.m}`));
+      const prevH = prevTotal ? Math.max(6, (prevTotal / compareMax) * 176) : 0;
+      const currH = currTotal ? Math.max(6, (currTotal / compareMax) * 176) : 0;
+      const currTitle = currIsFuture
+        ? `${month.label} ${currentYear}: not available yet`
+        : `${month.label} ${currentYear}: ${numFmt.format(currTotal)} tickets`;
+      return `<div class="ytdMonthGroup">
+        <div class="ytdValueRow"><span>${prevTotal ? numFmt.format(prevTotal) : ""}</span><span>${currTotal ? numFmt.format(currTotal) : ""}</span></div>
+        <div class="ytdBarPair">
+          <div class="ytdBar prev" style="height:${prevH}px" title="${month.label} ${previousYear}: ${numFmt.format(prevTotal)} tickets"></div>
+          <div class="ytdBar curr ${currIsFuture ? "future" : ""}" style="height:${currH}px" title="${currTitle}"></div>
+        </div>
+        <div class="ytdMonthLabel">${month.label}</div>
+      </div>`;
+    }).join("");
+    const monthlyScopeButtons = `
+      <div class="monthlyScopeSwitch" aria-label="Monthly ticket scope">
+        <button class="scopeBtn ${monthlyScope === "all" ? "active" : ""}" type="button" data-monthly-scope="all">All Fields</button>
+        <button class="scopeBtn ${monthlyScope === "pre" ? "active" : ""}" type="button" data-monthly-scope="pre">Pre-Delivery</button>
+        <button class="scopeBtn ${monthlyScope === "field" ? "active" : ""}" type="button" data-monthly-scope="field">In-Field</button>
+      </div>`;
+    const continuousTrendChart = () => {
+      const trendRows = buckets.map(bucket => ({
+        label: bucket.label,
+        year: bucket.y,
+        value: bucketTotal(bucket),
+      }));
+      const maxValue = Math.max(...trendRows.map(row => row.value), 1);
+      const left = 42;
+      const top = 22;
+      const width = 480;
+      const height = 192;
+      const bottom = top + height;
+      const xFor = index => left + (index * (width / Math.max(1, trendRows.length - 1)));
+      const yFor = value => bottom - (value / maxValue) * height;
+      const path = trendRows.map((row, index) => `${index ? "L" : "M"} ${xFor(index).toFixed(1)} ${yFor(row.value).toFixed(1)}`).join(" ");
+      const isTurn = index => {
+        if (index <= 0 || index >= trendRows.length - 1) return true;
+        const prevDelta = trendRows[index].value - trendRows[index - 1].value;
+        const nextDelta = trendRows[index + 1].value - trendRows[index].value;
+        return (prevDelta > 0 && nextDelta < 0) || (prevDelta < 0 && nextDelta > 0);
+      };
+      const points = trendRows.map((row, index) => {
+        const turn = isTurn(index);
+        const tip = esc(monthlyTrendTipHtml(row, monthlyScopeLabels[monthlyScope], trendRows.reduce((sum, item) => sum + item.value, 0)));
+        return `<circle class="monthlyTrendPoint ${turn ? "turn" : ""}" cx="${xFor(index).toFixed(1)}" cy="${yFor(row.value).toFixed(1)}" r="${turn ? "4.4" : "3.8"}" data-monthly-trend-tip="${tip}"></circle>`;
+      }).join("");
+      const labels = trendRows.map((row, index) => {
+        if (!isTurn(index)) return "";
+        const pointY = yFor(row.value);
+        if (pointY < top + 18) return "";
+        const y = pointY - 8;
+        return `<text class="monthlyTrendValue turn" x="${xFor(index).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle">${numFmt.format(row.value)}</text>`;
+      }).join("");
+      const xLabels = trendRows.map((row, index) => {
+        const show = index === 0 || index === trendRows.length - 1 || row.label === "Apr" || row.label === "Jul" || row.label === "Oct" || row.label === "Jan";
+        if (!show) return "";
+        const label = row.label === "Jan" ? `${row.label} ${row.year}` : row.label;
+        return `<text class="monthlyTrendText" x="${xFor(index).toFixed(1)}" y="${bottom + 20}" text-anchor="middle">${esc(label)}</text>`;
+      }).join("");
+      const total = trendRows.reduce((sum, row) => sum + row.value, 0);
+      const half = Math.round(maxValue / 2);
+      const hits = trendRows.map((row, index) => {
+        const slot = width / Math.max(1, trendRows.length - 1);
+        const x = xFor(index) - slot / 2;
+        const hitWidth = index === 0 || index === trendRows.length - 1 ? slot : slot;
+        return `<rect class="monthlyTrendHit" x="${Math.max(left, x).toFixed(1)}" y="${top}" width="${Math.min(hitWidth, left + width - Math.max(left, x)).toFixed(1)}" height="${height}" data-monthly-trend-tip="${esc(monthlyTrendTipHtml(row, monthlyScopeLabels[monthlyScope], total))}"></rect>`;
+      }).join("");
+      return `<div class="monthlyTrendPanel">
+        <svg class="monthlyTrendSvg" viewBox="0 0 548 250" aria-label="Monthly trend ${monthlyScopeLabels[monthlyScope]} ${previousYear} to ${currentYear}">
+          <line class="monthlyTrendGrid" x1="${left}" y1="${bottom}" x2="${left + width}" y2="${bottom}"></line>
+          <line class="monthlyTrendGrid" x1="${left}" y1="${top + height / 2}" x2="${left + width}" y2="${top + height / 2}"></line>
+          <line class="monthlyTrendGrid" x1="${left}" y1="${top}" x2="${left + width}" y2="${top}"></line>
+          <line class="monthlyTrendAxis" x1="${left}" y1="${top}" x2="${left}" y2="${bottom}"></line>
+          <line class="monthlyTrendAxis" x1="${left}" y1="${bottom}" x2="${left + width}" y2="${bottom}"></line>
+          <text class="monthlyTrendText" x="${left - 7}" y="${top + 3}" text-anchor="end">${numFmt.format(maxValue)}</text>
+          <text class="monthlyTrendText" x="${left - 7}" y="${top + height / 2 + 3}" text-anchor="end">${numFmt.format(half)}</text>
+          <text class="monthlyTrendText" x="${left - 7}" y="${bottom + 3}" text-anchor="end">0</text>
+          <path class="monthlyTrendPath" d="${path}"></path>
+          ${hits}
+          ${points}
+          ${labels}
+          ${xLabels}
+        </svg>
+        <div class="miniLineMeta">${monthlyScopeLabels[monthlyScope]} total: ${numFmt.format(total)} tickets</div>
+      </div>`;
+    };
+    const lineChartsHtml = continuousTrendChart();
     const maxTotal = Math.max(...buckets.map(bucket => bucket.pre + bucket.field + bucket.other), 1);
     const barsHtml = buckets.map(bucket => {
       const total = bucket.pre + bucket.field + bucket.other;
@@ -3057,19 +3386,23 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         <div class="compTotalsTitle">Monthly Tickets <small>${esc(seriesLabel)} - ${esc(monthWindow)}</small></div>
         <div class="compTotalsMeta">Monthly ticket volume by claim scope</div>
       </div>
-      <div class="compTotalsSplit">
+      <div class="compTotalsSplit ytdLayout">
         <div class="compTotalsTablePane">
-          <div class="compTotalsPaneTitle">Monthly detail</div>
-          ${tableHtml}
+          <div class="compTotalsPaneHead">
+            <div class="compTotalsPaneTitle">2025 vs 2026 YTD comparison</div>
+            ${monthlyScopeButtons}
+          </div>
+          <div class="ytdCompareBars" style="--months:${ytdMonths.length}">${ytdCompareHtml}</div>
+          <div class="compTotalsLegend ytdLegend">
+            <span><span class="swatch prev"></span>${previousYear}</span>
+            <span><span class="swatch curr"></span>${currentYear} YTD</span>
+          </div>
         </div>
         <div class="compTotalsChartPane">
-          <div class="compTotalsPaneTitle">Monthly chart</div>
-          <div class="compTotalsBars" style="--cols:${buckets.length}">${barsHtml}</div>
-          <div class="compTotalsYearAxis" style="--cols:${buckets.length}">${yearAxisHtml}</div>
+          <div class="compTotalsPaneTitle">Monthly trend</div>
+          ${lineChartsHtml}
           <div class="compTotalsLegend">
-            <span><span class="swatch pre"></span>Pre-Delivery (${numFmt.format(totals.pre)})</span>
-            <span><span class="swatch field"></span>In-Field (${numFmt.format(totals.field)})</span>
-            <span><span class="swatch other"></span>Other (${numFmt.format(totals.other)})</span>
+            <span><span class="swatch trend"></span>${monthlyScopeLabels[monthlyScope]} monthly tickets · ${previousYear}-${currentYear}</span>
           </div>
         </div>
       </div>
@@ -3522,6 +3855,16 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         }
         return;
       }
+      const monthlyScopeEl = ev.target.closest("[data-monthly-scope]");
+      if (monthlyScopeEl) {
+        const scope = monthlyScopeEl.getAttribute("data-monthly-scope");
+        if (scope && scope !== state.monthlyTicketsScope) {
+          state.monthlyTicketsScope = scope;
+          hideMonthlyTrendTip();
+          renderComponents();
+        }
+        return;
+      }
       const scopeEl = ev.target.closest("[data-scope]");
       if (scopeEl) {
         selectScope(scopeEl.getAttribute("data-scope"));
@@ -3532,6 +3875,22 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         const s = el.getAttribute("data-series");
         if (s) selectSeries(s);
       }
+    });
+
+    document.addEventListener("mouseover", (ev) => {
+      const el = ev.target.closest("[data-monthly-trend-tip]");
+      if (!el) return;
+      showMonthlyTrendTip(el.getAttribute("data-monthly-trend-tip") || "", ev);
+    });
+    document.addEventListener("mousemove", (ev) => {
+      if (ev.target.closest("[data-monthly-trend-tip]")) moveMonthlyTrendTip(ev);
+    });
+    document.addEventListener("mouseout", (ev) => {
+      const el = ev.target.closest("[data-monthly-trend-tip]");
+      if (!el) return;
+      const related = ev.relatedTarget;
+      if (related && related.closest && related.closest("[data-monthly-trend-tip]")) return;
+      hideMonthlyTrendTip();
     });
 
     // series table sort

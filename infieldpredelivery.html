@@ -48,7 +48,7 @@ body.calculating .app{filter:blur(1.6px);opacity:.68;pointer-events:none;user-se
 .controlsGroup{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .controlsGroup[hidden]{display:none}
 .controls label{display:inline-flex;align-items:center;gap:6px;color:#64748b;font-size:12px;font-weight:800}
-.controls input,.controls select{height:34px;border:1px solid var(--line);border-radius:9px;padding:0 10px;color:#0f172a;font-weight:700;background:#fff;font:inherit;font-size:12px}
+.controls input,.controls select{height:34px;border:1px solid var(--line);border-radius:9px;padding:0 10px;color:#0f172a;font-weight:500;background:#fff;font:inherit;font-size:12px;font-variant-numeric:tabular-nums}
 .controls button{height:34px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#172033;font-weight:800;padding:0 12px;cursor:pointer;font-size:12px}
 .controls button.primary{border:0;background:linear-gradient(135deg,#4c8ee8,#2467c8);color:#fff}
 .error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin:10px 0 16px}
@@ -68,16 +68,16 @@ body.calculating .app{filter:blur(1.6px);opacity:.68;pointer-events:none;user-se
 .miniSwitch{display:inline-flex;gap:4px;background:#eef3f9;border:1px solid var(--line);border-radius:999px;padding:4px;align-self:flex-start}
 .miniBtn{appearance:none;border:0;background:transparent;color:#475569;font-weight:800;font-size:11px;line-height:1;padding:7px 11px;border-radius:999px;cursor:pointer}
 .miniBtn.active{background:#fff;color:#0b3a52;box-shadow:0 2px 8px rgba(15,23,42,.10)}
-.totalChip{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;border:1px solid #d8e4f1;background:#f8fbff;color:#516074;font-size:11px;font-weight:800;white-space:nowrap}
-.totalChip strong{color:#0f172a;font-size:12px}
+.totalChip{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;border:1px solid #d8e4f1;background:#f8fbff;color:#516074;font-size:11px;font-weight:600;white-space:nowrap}
+.totalChip strong{color:#0f172a;font-size:12px;font-weight:500;letter-spacing:0;font-variant-numeric:tabular-nums}
 .grid{display:grid;grid-template-columns:430px minmax(0,1fr);gap:22px;align-items:start}
 .pivotWrap{overflow:auto;border:1px solid #475569;border-radius:6px;background:#fff;max-height:560px}
 .pivot{width:100%;border-collapse:collapse;min-width:420px}
 .pivot th,.pivot td{border:1px solid #475569;padding:6px 8px;font-size:12px}
 .pivot th{background:var(--soft);text-align:left;font-weight:850;position:sticky;top:0}
-.pivot td.num{text-align:right;font-weight:780}
-.yearRow td{font-weight:850;background:#f1f5fb}
-.grandRow td{background:var(--soft);font-weight:900}
+.pivot td.num{text-align:right;font-weight:500;letter-spacing:0;font-variant-numeric:tabular-nums}
+.yearRow td{font-weight:550;background:#f1f5fb}
+.grandRow td{background:var(--soft);font-weight:600}
 .chartBox{border:1px solid #d1d5db;background:linear-gradient(180deg,#fff,#fbfdff);border-radius:12px;padding:10px;display:flex;flex-direction:column;justify-content:space-between;flex:1}
 .calcFloat{position:fixed;inset:0;z-index:140;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.68);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);color:#155e9f;letter-spacing:0;flex-direction:column}
 .calcFloat.active{display:flex}
@@ -99,6 +99,179 @@ body.calculating .app{filter:blur(1.6px);opacity:.68;pointer-events:none;user-se
 </style>
 <link rel="stylesheet" href="flow-polish.css">
 <link rel="stylesheet" href="sidebar-light.css">
+<style>
+/* Match the cleaner Ticket Lifecycle typography across ticket analytics pages. */
+body,
+button,
+input,
+select,
+table{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  text-rendering:geometricPrecision;
+  font-variant-numeric:tabular-nums;
+}
+.pageTitle,
+.panelTitle{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  font-weight:560!important;
+  letter-spacing:0!important;
+  color:#1d2a3d!important;
+}
+.pageTitle{
+  font-size:30px!important;
+  line-height:1.08!important;
+}
+.subTitle,
+.viewNote,
+.legend,
+.datePill,
+.totalChip,
+.controls label,
+.navLink,
+.navSection{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  font-weight:500!important;
+  letter-spacing:0!important;
+}
+.jumpBtn,
+.tab,
+.modeBtn,
+.miniBtn,
+.controls button{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  font-weight:560!important;
+  letter-spacing:0!important;
+}
+.tab.active,
+.modeBtn.active,
+.miniBtn.active{
+  font-weight:560!important;
+}
+.totalChip strong,
+.pivot td.num,
+.yearRow td,
+.grandRow td{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  font-weight:540!important;
+  letter-spacing:0!important;
+  font-variant-numeric:tabular-nums!important;
+}
+.pivot th{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  font-weight:560!important;
+  letter-spacing:.04em!important;
+  color:#526176!important;
+}
+.pivot td{
+  font-weight:500!important;
+  color:#172033!important;
+}
+.grandRow td{
+  font-weight:560!important;
+}
+.calcFloatText{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  font-weight:560!important;
+  letter-spacing:0!important;
+}
+/* Final typography pass: keep this page visually aligned with Ticket Lifecycle. */
+body{
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+.toolbar,
+.panel,
+.panel *,
+.controls,
+.controls *,
+.modeSwitch,
+.modeSwitch *,
+.miniSwitch,
+.miniSwitch *,
+.totalChip,
+.jumpBtn,
+.datePill{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  letter-spacing:0!important;
+}
+.modeBtn,
+.tab,
+.miniBtn{
+  font-size:12px!important;
+  font-weight:520!important;
+  line-height:1!important;
+  color:#42536a!important;
+}
+.modeBtn.active,
+.tab.active,
+.miniBtn.active{
+  font-weight:560!important;
+  color:#17324a!important;
+  background:#fff!important;
+}
+.modeSwitch,
+.tabs,
+.miniSwitch{
+  background:#eef4fb!important;
+  border-color:#d8e4f1!important;
+}
+.controls label{
+  font-size:12px!important;
+  font-weight:520!important;
+  color:#5e6f84!important;
+}
+.controls input,
+.controls select,
+.controls button{
+  font-size:12px!important;
+  font-weight:520!important;
+  color:#1d2a3d!important;
+  border-color:#d8e4f1!important;
+  border-radius:11px!important;
+}
+.controls button.primary{
+  color:#fff!important;
+  font-weight:560!important;
+  background:linear-gradient(135deg,#4a8deb,#2771dc)!important;
+}
+.panelTitle{
+  font-size:16px!important;
+  font-weight:560!important;
+  line-height:1.22!important;
+  color:#172033!important;
+}
+.panelTitle svg{
+  stroke-width:1.7!important;
+}
+.totalChip{
+  font-size:11px!important;
+  font-weight:500!important;
+  color:#5c6d82!important;
+  background:#f8fbff!important;
+}
+.totalChip strong{
+  font-size:12px!important;
+  font-weight:520!important;
+  color:#1d2a3d!important;
+}
+.pivot th,
+.legend,
+.viewNote,
+.panelDesc{
+  font-weight:500!important;
+  color:#5e6f84!important;
+}
+.pivot td,
+.pivot td.num,
+.yearRow td,
+.grandRow td{
+  font-weight:500!important;
+  color:#1d2a3d!important;
+}
+.grandRow td{
+  font-weight:540!important;
+}
+</style>
 </head>
 <body class="calculating">
 <div id="calcFloat" class="calcFloat active" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Loading dashboard...</span></div>
@@ -106,11 +279,19 @@ body.calculating .app{filter:blur(1.6px);opacity:.68;pointer-events:none;user-se
   <aside class="sidebar">
     <div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M4 12h16M12 4v16"/></svg></div><div class="brandText"><span>Warranty KPI</span><small>After-Sales Team Dashboard</small></div></div>
     <div class="navSection">Workspace</div>
-    <a class="navLink" href="index.html">Team Dashboard</a>
-    <a class="navLink" href="dealerworkbench.html">Dealer Workbench</a>
-    <a class="navLink" href="delivery_flow.html">Parts Delivery</a>
-    <a class="navLink" href="repairs.html">Repair</a>
-    <div class="navSection">Tickets</div><a class="navLink" href="dealerworkbench.html#tickets">Critical Tickets</a><a class="navLink active" href="infieldpredelivery.html#newclaim">New Claim</a><a class="navLink active" href="infieldpredelivery.html#created">In Field / Pre Delivery</a><a class="navLink active" href="infieldpredelivery.html#approved">Approved/ Unapproved</a><a class="navLink active" href="infieldpredelivery.html#amount">Amount Claim</a><a class="navLink active" href="infieldpredelivery.html#claimclosed">Claim Closed</a><div class="navDivider"></div>
+    <a class="navLink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></a>
+    <a class="navLink" href="dealerworkbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a>
+    <a class="navLink" href="delivery_flow.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17h2l2-7h10l2 7h2"/><path d="M7 17a2 2 0 1 0 4 0"/><path d="M15 17a2 2 0 1 0 4 0"/><path d="M8 10V6h8v4"/></svg><span>Parts Delivery</span></a>
+    <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repair</span></a>
+    <div class="navDivider"></div>
+    <div class="navSection">Tickets</div>
+    <a class="navLink" href="dealerworkbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a>
+    <a class="navLink active" href="infieldpredelivery.html#newclaim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span>New Claim</span></a>
+    <a class="navLink active" href="infieldpredelivery.html#created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M16 17l2-2 2 2"/></svg><span>In Field / Pre Delivery</span></a>
+    <a class="navLink active" href="infieldpredelivery.html#approved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l2 2 4-5"/><path d="M21 12a9 9 0 1 1-9-9"/><path d="M17 3h4v4"/></svg><span>Approved/ Unapproved</span></a>
+    <a class="navLink active" href="infieldpredelivery.html#amount"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v18"/><path d="M17 7.5c0-1.9-2.2-3.5-5-3.5s-5 1.6-5 3.5 2.2 3.5 5 3.5 5 1.6 5 3.5-2.2 3.5-5 3.5-5-1.6-5-3.5"/></svg><span>Amount Claim</span></a>
+    <a class="navLink active" href="infieldpredelivery.html#claimclosed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 7h12"/><path d="M6 12h8"/><path d="M6 17h6"/><path d="M18 16l-3 3-2-2"/></svg><span>Claim Closed</span></a>
+    <div class="navDivider"></div>
 <div class="navSection">Model Series</div>
 <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model Series</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket lifecycle</span></a></aside>
   <main class="main">
@@ -644,7 +825,7 @@ function drawCompareBarChart(canvasId,rows,opts={}){
   const ctx=c.getContext("2d");
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,w,h);
-  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="600 13px Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
+  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
   const left=18,right=18,top=26,bottom=74,plotW=w-left-right,plotH=h-top-bottom;
   const values=rows.flatMap(r=>[r.firstValue,r.secondValue]).filter(v=>v!==null&&v!==undefined);
   const maxRaw=values.length?Math.max(10,...values.map(v=>Number(v||0))):10;
@@ -680,7 +861,7 @@ function drawCompareBarChart(canvasId,rows,opts={}){
     }
     if(showLabels){
       ctx.fillStyle="#172033";
-      ctx.font=`700 ${fontSize}px Segoe UI,Arial`;
+      ctx.font=`500 ${fontSize}px Segoe UI Variable,Aptos,Segoe UI,Arial`;
       const firstText=row.firstValue!==null&&row.firstValue!==undefined?formatter(row.firstValue):"";
       const secondText=row.secondValue!==null&&row.secondValue!==undefined?formatter(row.secondValue):"";
       let firstLabelY=clampLabelY(y1-8);
@@ -703,12 +884,12 @@ function drawCompareBarChart(canvasId,rows,opts={}){
       }
     }
     ctx.fillStyle="#667085";
-    ctx.font="12px Segoe UI,Arial";
+    ctx.font="12px Segoe UI Variable,Aptos,Segoe UI,Arial";
     ctx.textAlign="center";
     ctx.fillText(row.label,center,h-38);
   });
   ctx.fillStyle="#475569";
-  ctx.font="700 12px Segoe UI,Arial";
+  ctx.font="500 12px Segoe UI Variable,Aptos,Segoe UI,Arial";
   ctx.textAlign="center";
   ctx.fillText(`${rows[0]?.firstYear||""} vs ${rows[0]?.secondYear||""}`,left+plotW/2,h-14);
 }
@@ -720,7 +901,7 @@ function drawSplitCompareChart(canvasId,rows,opts={}){
   const ctx=c.getContext("2d");
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,w,h);
-  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="600 13px Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
+  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
   const left=18,right=18,top=20,bottom=78,plotW=w-left-right,plotH=h-top-bottom;
   const maxRaw=Math.max(10,...rows.flatMap(r=>[Number(r.firstIn||0),Number(r.secondIn||0),Number(r.firstPre||0),Number(r.secondPre||0)]));
   const yMax=typeof opts.yMax==="function"?opts.yMax(maxRaw):Math.ceil(maxRaw/100)*100;
@@ -748,18 +929,18 @@ function drawSplitCompareChart(canvasId,rows,opts={}){
       ctx.fillRect(bar.x,yPos,barW,height);
       if(showLabels){
         ctx.fillStyle="#172033";
-        ctx.font="700 10px Segoe UI,Arial";
+        ctx.font="500 10px Segoe UI Variable,Aptos,Segoe UI,Arial";
         ctx.textAlign="center";
         ctx.fillText(formatter(bar.value),bar.x+barW/2,Math.max(16,yPos-8));
       }
     });
     ctx.fillStyle="#667085";
-    ctx.font="12px Segoe UI,Arial";
+    ctx.font="12px Segoe UI Variable,Aptos,Segoe UI,Arial";
     ctx.textAlign="center";
     ctx.fillText(row.label,center,h-40);
   });
   ctx.fillStyle="#475569";
-  ctx.font="700 12px Segoe UI,Arial";
+  ctx.font="500 12px Segoe UI Variable,Aptos,Segoe UI,Arial";
   ctx.textAlign="center";
   ctx.fillText(`${rows[0]?.firstYear||""} vs ${rows[0]?.secondYear||""}`,left+plotW/2,h-14);
 }
@@ -771,7 +952,7 @@ function drawSingleLineChart(canvasId,rows,key,opts={}){
   const ctx=c.getContext("2d");
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,w,h);
-  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="600 13px Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
+  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
   const left=18,right=18,top=20,bottom=84,plotW=w-left-right,plotH=h-top-bottom;
   const maxRaw=Math.max(10,...rows.map(r=>Number(r[key]||0)));
   const yMax=typeof opts.yMax==="function"?opts.yMax(maxRaw):Math.ceil(maxRaw/100)*100;
@@ -795,14 +976,14 @@ function drawSingleLineChart(canvasId,rows,key,opts={}){
     if(textY>monthLabelY-10)textY=py-12;
     textY=Math.max(16,Math.min(textY,monthLabelY-10));
     ctx.fillStyle="#172033";
-    ctx.font="700 11px Segoe UI,Arial";
+    ctx.font="500 11px Segoe UI Variable,Aptos,Segoe UI,Arial";
     ctx.textAlign="center";
     ctx.fillText(pointFormatter(r[key]),px,textY);
   });
   ctx.strokeStyle="#d1d5db";
   ctx.fillStyle="#667085";
   ctx.textAlign="center";
-  ctx.font="12px Segoe UI,Arial";
+  ctx.font="12px Segoe UI Variable,Aptos,Segoe UI,Arial";
   const step=Math.max(1,Math.ceil(rows.length/18));
   rows.forEach((r,i)=>{
     const px=x(i);
@@ -810,7 +991,7 @@ function drawSingleLineChart(canvasId,rows,key,opts={}){
     if(i===0||rows[i-1].year!==r.year){ctx.beginPath();ctx.moveTo(px,h-30);ctx.lineTo(px,h-16);ctx.stroke()}
   });
   ctx.beginPath();ctx.moveTo(w-right,h-30);ctx.lineTo(w-right,h-16);ctx.stroke();
-  ctx.font="700 12px Segoe UI,Arial";
+  ctx.font="500 12px Segoe UI Variable,Aptos,Segoe UI,Arial";
   ctx.fillStyle="#475569";
   let start=0;
   while(start<rows.length){
@@ -825,7 +1006,7 @@ function drawChart(canvasId,rows,inKey,preKey,opts={}){
   const c=$(canvasId);if(!c)return;
   const rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1,w=Math.max(1,rect.width),h=Math.max(1,rect.height);
   c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
-  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="600 13px Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
+  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
   const left=18,right=18,top=20,bottom=84,plotW=w-left-right,plotH=h-top-bottom;
   const maxRaw=Math.max(100,...rows.flatMap(r=>[Number(r[inKey]||0),Number(r[preKey]||0)]));
   const yMax=typeof opts.yMax==="function"?opts.yMax(maxRaw):Math.ceil(maxRaw/100)*100;
@@ -843,12 +1024,12 @@ function drawChart(canvasId,rows,inKey,preKey,opts={}){
       const monthLabelY=h-44;
       if(textY>monthLabelY-10)textY=py-12;
       textY=Math.max(16,Math.min(textY,monthLabelY-10));
-      ctx.fillStyle="#172033";ctx.font="700 11px Segoe UI,Arial";ctx.textAlign="center";ctx.fillText(pointFormatter(r[key]),px,textY);
+      ctx.fillStyle="#172033";ctx.font="500 11px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.textAlign="center";ctx.fillText(pointFormatter(r[key]),px,textY);
     })
   };
   line(inKey,"#156082",-10);line(preKey,"#e97132",18);
   // x labels + year separators
-  ctx.strokeStyle="#d1d5db";ctx.fillStyle="#667085";ctx.textAlign="center";ctx.font="12px Segoe UI,Arial";
+  ctx.strokeStyle="#d1d5db";ctx.fillStyle="#667085";ctx.textAlign="center";ctx.font="12px Segoe UI Variable,Aptos,Segoe UI,Arial";
   const step=Math.max(1,Math.ceil(rows.length/18));
   rows.forEach((r,i)=>{
     const px=x(i);
@@ -856,7 +1037,7 @@ function drawChart(canvasId,rows,inKey,preKey,opts={}){
     if(i===0||rows[i-1].year!==r.year){ctx.beginPath();ctx.moveTo(px,h-30);ctx.lineTo(px,h-16);ctx.stroke()}
   });
   ctx.beginPath();ctx.moveTo(w-right,h-30);ctx.lineTo(w-right,h-16);ctx.stroke();
-  ctx.font="700 12px Segoe UI,Arial";ctx.fillStyle="#475569";
+  ctx.font="500 12px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillStyle="#475569";
   let s=0;while(s<rows.length){let e=s;while(e+1<rows.length&&rows[e+1].year===rows[s].year)e++;ctx.fillText(rows[s].year,(x(s)+x(e))/2,h-4);s=e+1}
 }
 
@@ -1143,3 +1324,4 @@ Promise.all([readJson(`${ROOT}/analytics/teamDashboard`),readJson(TICKETS_PATH).
 </script>
 </body>
 </html>
+

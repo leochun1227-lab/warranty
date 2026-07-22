@@ -3770,15 +3770,15 @@ def rebuild_model_series_assets_after_fetch():
     logger.info("Analysis asset rebuild completed. Failure timing, repair, parts, and approved-cost assets are refreshed.")
 
 
-def rebuild_dashboard_analytics_after_fetch():
+def rebuild_dashboard_analytics_after_fetch() -> bool:
     if os.getenv("SKIP_ANALYTICS_REBUILD_AFTER_FETCH", "").strip().lower() in {"1", "true", "yes"}:
         logger.info("Analytics rebuild skipped after fetch because SKIP_ANALYTICS_REBUILD_AFTER_FETCH=1.")
-        return
+        return False
 
     script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ctm_v44_history_safe_mandt800_rejection_filter.py")
     if not os.path.exists(script_path):
         logger.warning("Analytics rebuild skipped. Script not found: %s", script_path)
-        return
+        return False
 
     logger.info("Step 11/11: Rebuilding dashboard history and analytics from updated Firebase tickets ...")
     env = os.environ.copy()
@@ -3807,6 +3807,28 @@ def rebuild_dashboard_analytics_after_fetch():
         logger.exception("Analytics rebuild FAILED after fetch. Dashboard trend data may still be stale.")
         raise SystemExit(exc.returncode or 1)
     logger.info("Analytics rebuild completed. Dashboard trend data is refreshed.")
+    return True
+
+
+def rebuild_ticket_timeline_export_after_fetch() -> None:
+    if os.getenv("SKIP_TICKET_TIMELINE_EXPORT_AFTER_FETCH", "").strip().lower() in {"1", "true", "yes"}:
+        logger.info("Ticket Timeline export skipped after fetch because SKIP_TICKET_TIMELINE_EXPORT_AFTER_FETCH=1.")
+        return
+
+    script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "export_ticket_timeline_segments_2025_2026.py")
+    if not os.path.exists(script_path):
+        logger.warning("Ticket Timeline export skipped. Script not found: %s", script_path)
+        return
+
+    logger.info("Refreshing Ticket Timeline workbook, JSON, and price-mix PPT after fetch ...")
+    env = os.environ.copy()
+    env["PYTHONUNBUFFERED"] = "1"
+    try:
+        subprocess.run([sys.executable, script_path], check=True, env=env)
+    except subprocess.CalledProcessError as exc:
+        logger.exception("Ticket Timeline export FAILED after fetch. Ticket Timeline page may be stale.")
+        raise SystemExit(exc.returncode or 1)
+    logger.info("Ticket Timeline workbook, JSON, and price-mix PPT refreshed.")
 
 
 # =================== Main ===================
@@ -3969,7 +3991,9 @@ def main():
     export_excel_single_sheet(final_df)
 
     rebuild_model_series_assets_after_fetch()
-    rebuild_dashboard_analytics_after_fetch()
+    analytics_rebuilt = rebuild_dashboard_analytics_after_fetch()
+    if not analytics_rebuilt:
+        rebuild_ticket_timeline_export_after_fetch()
 
     close_thread_session()
 

@@ -1481,8 +1481,364 @@ body.repair-analysis-page .stateRankTable tbody tr:hover td{
 body.repair-analysis-page .stateRankTable tbody tr.is-active td{
   background:#eff6ff !important;
 }
+
+/* Softer business-report typography for repair analytics numbers. */
+body.repair-analysis-page{
+  text-rendering:geometricPrecision;
+  -webkit-font-smoothing:antialiased;
+}
+body.repair-analysis-page .pageTitle{
+  font-weight:600 !important;
+  letter-spacing:-.01em !important;
+}
+body.repair-analysis-page .panelTitle,
+body.repair-analysis-page .cardTitle,
+body.repair-analysis-page .weekOverviewTitle{
+  font-weight:560 !important;
+  letter-spacing:0 !important;
+}
+body.repair-analysis-page :is(
+  .kpiValue,
+  .rateStatValue,
+  .weekMetric b,
+  .stateValue,
+  .stateRankValue,
+  .stateRankAvgTop,
+  .topRepairValue,
+  .rangeLegendItem b,
+  .rangeLegendText span,
+  .rangeLegendText small,
+  .chassisRepeatSummary b,
+  .chassisRepeatMetaStat b,
+  .chassisRepeatVizTotals b,
+  .chassisRepeatLegendItem b,
+  .chassisRepeatChip b,
+  .repairRows td.num,
+  td.num,
+  .uniqueRatioCell,
+  .pager,
+  .topRepairRank
+){
+  font-weight:560 !important;
+  letter-spacing:0 !important;
+  font-variant-numeric:tabular-nums !important;
+  color:#172033 !important;
+}
+body.repair-analysis-page :is(
+  .stateRankMetric,
+  .stateRankSnowyMeta,
+  .stateRankSnowyEmpty,
+  .chassisRepeatVizMeta,
+  .rangeLegendText small,
+  .weekStateNums,
+  .panelDesc,
+  .subTitle
+){
+  font-weight:500 !important;
+  letter-spacing:0 !important;
+}
+body.repair-analysis-page :is(.stateRankTable th, th, .rateBarLabel, .topRepairSortLabel, .repairHeaderSearchLabel){
+  font-weight:600 !important;
+  letter-spacing:.06em !important;
+}
+body.repair-analysis-page .uniqueRatioCell.uniqueRatioGood,
+body.repair-analysis-page .uniqueRatioCell.uniqueRatioBad{
+  color:#172033 !important;
+}
+body.repair-analysis-page .kpis .kpi .kpiValue{
+  color:#172033 !important;
+}
+body.repair-analysis-page .kpis .kpi:nth-child(1) .kpiValue,
+body.repair-analysis-page .kpis .kpi:nth-child(2) .kpiValue,
+body.repair-analysis-page .kpis .kpi:nth-child(3) .kpiValue,
+body.repair-analysis-page .kpis .kpi:nth-child(4) .kpiValue{
+  color:#172033 !important;
+}
+body.repair-analysis-page :is(.topRepairName, #repairRows td b, .stateRankState .stateName, .rangeLegendText span){
+  font-weight:550 !important;
+  letter-spacing:0 !important;
+}
+body.repair-analysis-page .overviewSideStack .rangeChartLegend{
+  grid-template-columns:1fr !important;
+}
+body.repair-analysis-page .overviewSideStack .rangeLegendItem{
+  min-width:0 !important;
+}
+body.repair-analysis-page .topRepairValue{
+  background:#f4f7fb !important;
+  box-shadow:none !important;
+}
+body.repair-analysis-page .stateRankSnowyMeta,
+body.repair-analysis-page .stateRankSnowyEmpty{
+  color:#52627a !important;
+}
+
+/* Ticket Lifecycle typography parity for the repair tables. */
+body.repair-analysis-page,
+body.repair-analysis-page table,
+body.repair-analysis-page input,
+body.repair-analysis-page select,
+body.repair-analysis-page button{
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif !important;
+  font-synthesis-weight:none;
+}
+body.repair-analysis-page :is(.stateListTitle,#repair-details .panelTitle){
+  font-size:18px !important;
+  font-weight:560 !important;
+  letter-spacing:0 !important;
+  color:#1d2a3d !important;
+}
+body.repair-analysis-page :is(.stateRankMetric,#repair-details .panelDesc){
+  font-size:12px !important;
+  font-weight:500 !important;
+  letter-spacing:0 !important;
+  color:#5f6f86 !important;
+}
+body.repair-analysis-page .stateRankTable thead th,
+body.repair-analysis-page #repair-details thead th,
+body.repair-analysis-page #tableHead th{
+  font-size:11px !important;
+  font-weight:560 !important;
+  letter-spacing:.055em !important;
+  color:#526176 !important;
+}
+body.repair-analysis-page .stateRankTable tbody td,
+body.repair-analysis-page #repairRows td{
+  font-size:12.5px !important;
+  font-weight:500 !important;
+  letter-spacing:0 !important;
+  color:#172033 !important;
+  font-variant-numeric:tabular-nums !important;
+}
+body.repair-analysis-page .stateRankTable tbody td.stateRankValue,
+body.repair-analysis-page .stateRankTable .stateRankAvgTop,
+body.repair-analysis-page #repairRows td.num,
+body.repair-analysis-page #repairRows td.uniqueRatioCell{
+  font-weight:540 !important;
+}
+body.repair-analysis-page .stateCodeBadge,
+body.repair-analysis-page .stateRankState .stateName,
+body.repair-analysis-page #repairRows td:first-child b{
+  font-weight:540 !important;
+  letter-spacing:0 !important;
+}
+body.repair-analysis-page .stateRankSnowyMeta,
+body.repair-analysis-page .stateRankSnowyEmpty{
+  font-size:10.5px !important;
+  font-weight:500 !important;
+  letter-spacing:0 !important;
+}
+body.repair-analysis-page #repairRows td.uniqueRatioCell{
+  font-size:12.5px !important;
+}
+
+/* Compact repair page spacing: tighter cards without changing data layout. */
+body.repair-analysis-page .main{
+  padding:22px 30px 34px !important;
+}
+body.repair-analysis-page .pageTop{
+  margin-bottom:12px !important;
+}
+body.repair-analysis-page .pageTitle{
+  margin-bottom:5px !important;
+}
+body.repair-analysis-page :is(.panel,.kpi,.stateListCard,.weekLegendCard,.repairFilterPanel,.weekMetric,.weekMapCard,.chassisRepeatPanel,.chassisRepeatVizCard,.rangeLegendItem){
+  border-radius:14px !important;
+}
+body.repair-analysis-page .kpis{
+  gap:10px !important;
+  margin-bottom:12px !important;
+}
+body.repair-analysis-page .kpis .kpi,
+body.repair-analysis-page .dealerHandlingKpis .kpi{
+  min-height:92px !important;
+  padding:14px 16px !important;
+}
+body.repair-analysis-page .kpiLabel{
+  margin-bottom:7px !important;
+}
+body.repair-analysis-page .kpiValue{
+  font-size:24px !important;
+  line-height:1.05 !important;
+}
+body.repair-analysis-page .kpiIcon{
+  width:34px !important;
+  height:34px !important;
+}
+body.repair-analysis-page .weekPanel{
+  margin-bottom:12px !important;
+}
+body.repair-analysis-page .weekPanel.weekOverview{
+  padding:16px 18px 14px !important;
+}
+body.repair-analysis-page .weekLayout{
+  gap:12px !important;
+}
+body.repair-analysis-page .weekStack{
+  gap:10px !important;
+}
+body.repair-analysis-page .weekMeta{
+  gap:8px !important;
+  margin-bottom:10px !important;
+}
+body.repair-analysis-page .weekMetric{
+  padding:10px 12px !important;
+  min-height:74px !important;
+}
+body.repair-analysis-page .weekMetric span{
+  margin-bottom:5px !important;
+}
+body.repair-analysis-page .mapGrid{
+  gap:10px !important;
+}
+body.repair-analysis-page .mapPane{
+  padding:12px 14px 10px !important;
+  border-radius:16px !important;
+}
+body.repair-analysis-page .mapPane h3{
+  margin-bottom:7px !important;
+}
+body.repair-analysis-page .overviewSideStack{
+  gap:10px !important;
+}
+body.repair-analysis-page .overviewSideStack .topRepairPanel,
+body.repair-analysis-page .topRepairPanel{
+  padding:14px 16px 12px !important;
+}
+body.repair-analysis-page .topRepairPanel .panelHead,
+body.repair-analysis-page .overviewSideStack .topRepairPanel .panelHead{
+  margin-bottom:7px !important;
+}
+body.repair-analysis-page .topRepairList{
+  gap:3px !important;
+}
+body.repair-analysis-page .topRepairRow{
+  min-height:38px !important;
+  padding:7px 10px !important;
+  border-radius:10px !important;
+}
+body.repair-analysis-page .stateListCard{
+  padding:8px 0 6px !important;
+}
+body.repair-analysis-page .stateRow{
+  padding:8px 10px !important;
+  min-height:40px !important;
+}
+body.repair-analysis-page .chassisRepeatPanel{
+  padding:16px 18px 14px !important;
+}
+body.repair-analysis-page .chassisRepeatSummary{
+  gap:8px !important;
+}
+body.repair-analysis-page .chassisRepeatViz{
+  gap:8px !important;
+  margin-top:8px !important;
+}
+body.repair-analysis-page .chassisRepeatVizCard{
+  padding:10px 12px !important;
+  border-radius:12px !important;
+}
+body.repair-analysis-page .repairFilterPanel{
+  padding:10px 12px !important;
+  margin-bottom:10px !important;
+}
+body.repair-analysis-page #repair-details{
+  padding:16px 18px 14px !important;
+  margin-bottom:14px !important;
+}
+body.repair-analysis-page #repair-details .panelHead{
+  margin-bottom:10px !important;
+}
+body.repair-analysis-page .tableWrap{
+  border-radius:12px !important;
+  max-height:560px !important;
+}
+body.repair-analysis-page th,
+body.repair-analysis-page td{
+  padding:9px 12px !important;
+}
+body.repair-analysis-page .pager{
+  margin-top:10px !important;
+}
 </style>
 <link rel="stylesheet" href="sidebar-light.css">
+<style>
+/* Repair final typography pass: keep titles and table numbers closer to Ticket Lifecycle. */
+body.repair-analysis-page,
+body.repair-analysis-page :is(button,input,select,table){
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:geometricPrecision;
+}
+body.repair-analysis-page :is(.pageTitle,.panelTitle,.cardTitle,.weekOverviewTitle,.chassisRepeatVizTitle,.stateListTitle){
+  font-weight:540!important;
+  letter-spacing:0!important;
+  color:#1d2a3d!important;
+}
+body.repair-analysis-page .pageTitle{
+  font-size:30px!important;
+}
+body.repair-analysis-page :is(.panelTitle,#repair-details .panelTitle){
+  font-size:18px!important;
+  line-height:1.2!important;
+}
+body.repair-analysis-page :is(.panelDesc,.subTitle,.weekOverviewSub,.cardDesc,.desc,#repair-details .panelDesc){
+  font-weight:400!important;
+  color:#5f6f86!important;
+}
+body.repair-analysis-page :is(th,#tableHead th,.stateRankTable thead th){
+  font-weight:520!important;
+  letter-spacing:.045em!important;
+  color:#526176!important;
+}
+body.repair-analysis-page :is(td,#repairRows td,.stateRankTable tbody td){
+  font-weight:400!important;
+  color:#1d2a3d!important;
+  letter-spacing:0!important;
+}
+body.repair-analysis-page :is(td.num,#repairRows td.num,.stateRankValue,.stateRankAvgTop,.weekStateNums,.topRepairValue,.rangeLegendItem b,.chassisRepeatSummary b){
+  font-weight:500!important;
+  font-variant-numeric:tabular-nums!important;
+  color:#1d2a3d!important;
+}
+body.repair-analysis-page :is(#repairRows td:first-child b,.topRepairName,.weekStateName,.stateRankState .stateName){
+  font-weight:500!important;
+  color:#1d2a3d!important;
+}
+body.repair-analysis-page :is(.uniqueRatioCell,.uniqueRatioCell.uniqueRatioGood,.uniqueRatioCell.uniqueRatioBad,#repairRows td.uniqueRatioCell){
+  font-weight:500!important;
+  color:#b42318!important;
+  font-variant-numeric:tabular-nums!important;
+}
+body.repair-analysis-page :is(.btn,.linkBtn,.repairYearBtn,.changeBtn,.claimBtn){
+  font-weight:500!important;
+}
+body.repair-analysis-page :is(.brandText span,.navBtn,.navLink,.navSection){
+  font-family:"Segoe UI Variable","Aptos","Segoe UI",Verdana,sans-serif!important;
+  letter-spacing:0!important;
+}
+body.repair-analysis-page .brandText span{
+  font-weight:560!important;
+}
+body.repair-analysis-page .navSection{
+  font-weight:560!important;
+  letter-spacing:3.2px!important;
+}
+body.repair-analysis-page :is(.navBtn,.navLink){
+  font-weight:500!important;
+}
+body.repair-analysis-page :is(.navBtn.active,.navLink.active){
+  font-weight:540!important;
+}
+body.repair-analysis-page :is(.kpiLabel,.rateBarLabel,.rateStatLabel,.topRepairSortLabel,.repairHeaderSearchLabel,.field label){
+  font-weight:500!important;
+  letter-spacing:.045em!important;
+}
+body.repair-analysis-page :is(.kpiValue,.rateStatValue,.weekMetric b){
+  font-weight:520!important;
+  color:#1d2a3d!important;
+}
+</style>
 </head>
 <body class="repair-analysis-page">
 <div class="app">
@@ -2380,9 +2736,9 @@ function drawRange(){
   ctx.stroke();
   ctx.fillStyle="#0f172a";
   ctx.textAlign="center";
-  ctx.font="700 20px Segoe UI,Arial";
+  ctx.font="600 20px Segoe UI,Arial";
   ctx.fillText(num(total),cx,cy-6);
-  ctx.font="600 12px Segoe UI,Arial";
+  ctx.font="500 12px Segoe UI,Arial";
   ctx.fillStyle="#64748b";
   ctx.fillText("claims",cx,cy+13);
 }
@@ -2572,7 +2928,7 @@ function renderGeoSvg(svg, geojson, valueByCode, labelByCode, metaByCode){
     const accent=entry.stateCode==="WA"?"#2563eb":entry.stateCode==="NZ"?"#8b5cf6":"#3b82f6";
     const topY=detailText?12:11;
     const detailY=23;
-    labelLayer.push(`<g class="stateLabelBubble" transform="translate(${x.toFixed(1)},${y.toFixed(1)})" filter="url(#bubbleShadow)"><rect rx="${pillH/2}" ry="${pillH/2}" width="${pillW.toFixed(1)}" height="${pillH.toFixed(1)}" fill="url(#bubbleFill)"></rect><rect x="0.6" y="0.6" rx="${pillH/2-0.6}" ry="${pillH/2-0.6}" width="${(pillW-1.2).toFixed(1)}" height="${(pillH-1.2).toFixed(1)}" fill="none" stroke="rgba(148,163,184,.55)" stroke-width="1"></rect><text x="${(pillW/2).toFixed(1)}" y="${topY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" dominant-baseline="middle">${esc(entry.label)}</text>${detailText?`<text x="${(pillW/2).toFixed(1)}" y="${detailY.toFixed(1)}" text-anchor="middle" font-size="9" font-weight="800" dominant-baseline="middle" fill="${accent}">${esc(detailText)}</text>`:""}</g>`);
+    labelLayer.push(`<g class="stateLabelBubble" transform="translate(${x.toFixed(1)},${y.toFixed(1)})" filter="url(#bubbleShadow)"><rect rx="${pillH/2}" ry="${pillH/2}" width="${pillW.toFixed(1)}" height="${pillH.toFixed(1)}" fill="url(#bubbleFill)"></rect><rect x="0.6" y="0.6" rx="${pillH/2-0.6}" ry="${pillH/2-0.6}" width="${(pillW-1.2).toFixed(1)}" height="${(pillH-1.2).toFixed(1)}" fill="none" stroke="rgba(148,163,184,.55)" stroke-width="1"></rect><text x="${(pillW/2).toFixed(1)}" y="${topY.toFixed(1)}" text-anchor="middle" font-size="${fontSize}" font-weight="600" dominant-baseline="middle">${esc(entry.label)}</text>${detailText?`<text x="${(pillW/2).toFixed(1)}" y="${detailY.toFixed(1)}" text-anchor="middle" font-size="9" font-weight="500" dominant-baseline="middle" fill="#334155">${esc(detailText)}</text>`:""}</g>`);
   });
   svg.innerHTML=defs + baseHtml + (labelLayer.length?labelLayer.join(""):"");
 }

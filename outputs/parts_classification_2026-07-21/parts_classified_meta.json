@@ -1,7 +1,7 @@
 {
   "sourcePath": "outputs/parts_classification_source.csv",
   "csvPath": "outputs/parts_classification_2026-07-21/parts_classified.csv",
-  "rowCount": 34749,
+  "rowCount": 34843,
   "headers": [
     "Month",
     "Ticket Key",
@@ -68,8 +68,8 @@
         "light pod",
         "light"
       ],
-      "count": 11105,
-      "cost": 194375.62
+      "count": 11141,
+      "cost": 195295.39
     },
     {
       "key": "windows_hatches_blinds",
@@ -85,8 +85,8 @@
         "hatch",
         "blind"
       ],
-      "count": 6743,
-      "cost": 332880.87
+      "count": 6757,
+      "cost": 333938.26
     },
     {
       "key": "electrical_power_electronics",
@@ -128,8 +128,8 @@
         "wiring",
         "duct"
       ],
-      "count": 4969,
-      "cost": 492062.962
+      "count": 4979,
+      "cost": 492765.792
     },
     {
       "key": "doors_access_hatches",
@@ -141,8 +141,8 @@
         "door set",
         "door"
       ],
-      "count": 2672,
-      "cost": 197619.81
+      "count": 2680,
+      "cost": 197993.11
     },
     {
       "key": "chassis_wheels_towing",
@@ -175,8 +175,8 @@
         "rack",
         "bike rack"
       ],
-      "count": 2062,
-      "cost": 391972.92
+      "count": 2073,
+      "cost": 698266.18
     },
     {
       "key": "hardware_installation",
@@ -213,8 +213,8 @@
         "clip",
         "support"
       ],
-      "count": 1852,
-      "cost": 68406.388
+      "count": 1860,
+      "cost": 68468.898
     },
     {
       "key": "furniture_interior",
@@ -238,8 +238,8 @@
         "vinyl",
         "floor"
       ],
-      "count": 1481,
-      "cost": 58524.73
+      "count": 1485,
+      "cost": 58878.35
     },
     {
       "key": "appliances_hvac_gas",
@@ -264,8 +264,8 @@
         "vent kit",
         "ventilation"
       ],
-      "count": 1241,
-      "cost": 218415.37
+      "count": 1243,
+      "cost": 218534.65
     },
     {
       "key": "body_exterior_trim",
@@ -293,8 +293,8 @@
         "flap",
         "awning slider catch"
       ],
-      "count": 1119,
-      "cost": 68172.706
+      "count": 1120,
+      "cost": 68173.686
     },
     {
       "key": "water_plumbing_kitchen_bath",
@@ -325,8 +325,8 @@
         "awning",
         "annex"
       ],
-      "count": 164,
-      "cost": 77452.79
+      "count": 165,
+      "cost": 77939.79
     },
     {
       "key": "storage_toolbox",
@@ -341,8 +341,8 @@
       "key": "other",
       "label": "Other",
       "keywords": [],
-      "count": 523,
-      "cost": 96599.445
+      "count": 522,
+      "cost": 96598.445
     }
   ],
   "otherExamples": [
@@ -377,15 +377,15 @@
     "Brush Strip",
     "Pedders Shocker"
   ],
-  "generatedAt": "2026-07-20T20:10:22.373Z",
+  "generatedAt": "2026-07-21T11:10:13.851Z",
   "aiEnabled": true,
   "aiModel": "gemini-2.0-flash",
   "counts": {
     "preservedCount": 0,
-    "reusedHistoryCount": 34745,
-    "keywordMatchCount": 3,
+    "reusedHistoryCount": 34842,
+    "keywordMatchCount": 1,
     "aiMatchCount": 0,
-    "otherCount": 1,
+    "otherCount": 0,
     "reusedSafetyHistoryCount": 0,
     "safetyRuleMatchCount": 0,
     "safetyMonitoredCount": 0

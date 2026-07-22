@@ -47,7 +47,8 @@
 .brandText span{
   color:#17233a!important;
   font-size:15px!important;
-  font-weight:750!important;
+  font-weight:560!important;
+  letter-spacing:0!important;
 }
 
 .brandText small{
@@ -58,9 +59,9 @@
 .navSection{
   color:#7fa0bd!important;
   font-size:10px!important;
-  letter-spacing:4px!important;
+  letter-spacing:3.2px!important;
   margin:24px 8px 10px!important;
-  font-weight:800!important;
+  font-weight:560!important;
 }
 
 .navBtn,
@@ -75,7 +76,8 @@
   border-radius:12px!important;
   padding:0 12px!important;
   font-size:13px!important;
-  font-weight:700!important;
+  font-weight:500!important;
+  letter-spacing:0!important;
   box-shadow:none!important;
   transform:none!important;
 }
@@ -105,8 +107,9 @@
 .navLink.active{
   background:linear-gradient(180deg,#f4f9ff 0%,var(--sidebar-blue-soft) 100%)!important;
   border-color:#c7e0ff!important;
-  color:var(--sidebar-blue-strong)!important;
-  box-shadow:0 10px 22px rgba(47,128,237,.14), inset 3px 0 0 #60a5fa!important;
+  color:#2257c5!important;
+  font-weight:540!important;
+  box-shadow:0 8px 18px rgba(47,128,237,.10), inset 3px 0 0 #7ab5ff!important;
 }
 
 .navBtn.active svg,

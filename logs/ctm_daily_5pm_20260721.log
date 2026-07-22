@@ -947,3 +947,961 @@ Repairer rows: 905
 Anomaly rows: 3797
 [TICKET TIMELINE] Workbook and summary refreshed successfully.
 [COMPARE DONE] tickets=32737, criticalNow=319, entered=54, moved=41, exited=68, events=163
+==================================================
+CTM V44 daily 5:00 PM run started at Tue 21/07/2026 20:40:07.13
+==================================================
+Using Python command: python
+Deployment readiness check
+Root: C:\Users\Leo.Li\Documents\GitHub\warranty
+Python: C:\Users\Leo.Li\AppData\Local\Python\pythoncore-3.14-64\python.exe
+PASS file: ctm_v44_history_safe_mandt800_rejection_filter.py
+PASS file: fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py
+PASS file: rebuild_model_series_assets.py
+PASS file: delivery_flow_aggregator.py
+PASS file: export_ticket_timeline_segments_2025_2026.py
+PASS file: build_parts_classification.mjs
+PASS file: firebase-service-account.json
+PASS file: outputs/parts_classified_meta.json
+PASS python module: requests
+PASS python module: urllib3
+PASS python module: pandas
+PASS python module: pyodbc
+PASS python module: firebase_admin
+PASS python module: openpyxl
+PASS node: C:\Program Files\nodejs\node.EXE
+PASS ODBC: SAP HANA driver found
+PASS writable: logs
+PASS writable: outputs
+PASS writable: generated_exports
+
+Readiness check passed.
+[FETCH] Running company file:
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py
+2026-07-21 20:40:08,983 - INFO - Script version: MANDT800_FULLJOIN_REJECTION_FILTER
+2026-07-21 20:40:08,984 - INFO - SAP HANA rule: MANDT=800 full join + exclude VBAP.ABGRU rejected items from Sales Order Details
+2026-07-21 20:40:08,984 - INFO - Step 1/9: Fetching latest C4C snapshot ...
+2026-07-21 20:40:08,984 - INFO - ===== START ROLE 1001 =====
+2026-07-21 20:40:08,986 - INFO - ===== START ROLE 40 =====
+2026-07-21 20:40:08,987 - INFO - ===== START ROLE 43 =====
+2026-07-21 20:40:33,812 - INFO - [FETCH] role=43 page=1 skip=0 rows=1000
+2026-07-21 20:40:39,928 - INFO - [FETCH] role=40 page=1 skip=0 rows=1000
+2026-07-21 20:40:40,174 - INFO - [FETCH] role=1001 page=1 skip=0 rows=1000
+2026-07-21 20:40:59,544 - INFO - [FETCH] role=43 page~=2 skip=11000 rows=1000
+2026-07-21 20:40:59,716 - INFO - [FETCH] role=43 page~=3 skip=6000 rows=1000
+2026-07-21 20:40:59,790 - INFO - [FETCH] role=43 page~=4 skip=4000 rows=1000
+2026-07-21 20:40:59,886 - INFO - [FETCH] role=43 page~=5 skip=10000 rows=1000
+2026-07-21 20:40:59,892 - INFO - [FETCH] role=43 page~=6 skip=8000 rows=1000
+2026-07-21 20:41:00,206 - INFO - [FETCH] role=43 page~=7 skip=1000 rows=1000
+2026-07-21 20:41:00,360 - INFO - [FETCH] role=43 page~=8 skip=7000 rows=1000
+2026-07-21 20:41:00,639 - INFO - [FETCH] role=43 page~=9 skip=5000 rows=1000
+2026-07-21 20:41:00,746 - INFO - [FETCH] role=43 page~=10 skip=9000 rows=1000
+2026-07-21 20:41:01,715 - INFO - [FETCH] role=43 page~=11 skip=3000 rows=1000
+2026-07-21 20:41:02,284 - INFO - [FETCH] role=43 page~=12 skip=12000 rows=1000
+2026-07-21 20:41:09,532 - INFO - [FETCH] role=40 page~=2 skip=2000 rows=1000
+2026-07-21 20:41:09,756 - INFO - [FETCH] role=40 page~=3 skip=6000 rows=1000
+2026-07-21 20:41:09,961 - INFO - [FETCH] role=43 page~=13 skip=2000 rows=1000
+2026-07-21 20:41:10,005 - INFO - [FETCH] role=40 page~=4 skip=4000 rows=1000
+2026-07-21 20:41:10,087 - INFO - [FETCH] role=40 page~=5 skip=9000 rows=1000
+2026-07-21 20:41:10,213 - INFO - [FETCH] role=40 page~=6 skip=11000 rows=1000
+2026-07-21 20:41:10,317 - INFO - [FETCH] role=40 page~=7 skip=3000 rows=1000
+2026-07-21 20:41:10,417 - INFO - [FETCH] role=40 page~=8 skip=8000 rows=1000
+2026-07-21 20:41:10,916 - INFO - [FETCH] role=40 page~=9 skip=7000 rows=1000
+2026-07-21 20:41:10,999 - INFO - [FETCH] role=40 page~=10 skip=1000 rows=1000
+2026-07-21 20:41:11,114 - INFO - [FETCH] role=40 page~=11 skip=12000 rows=1000
+2026-07-21 20:41:11,986 - INFO - [FETCH] role=1001 page~=2 skip=9000 rows=1000
+2026-07-21 20:41:12,164 - INFO - [FETCH] role=1001 page~=3 skip=5000 rows=1000
+2026-07-21 20:41:12,252 - INFO - [FETCH] role=1001 page~=4 skip=2000 rows=1000
+2026-07-21 20:41:12,404 - INFO - [FETCH] role=1001 page~=5 skip=10000 rows=1000
+2026-07-21 20:41:12,686 - INFO - [FETCH] role=1001 page~=6 skip=12000 rows=1000
+2026-07-21 20:41:12,772 - INFO - [FETCH] role=1001 page~=7 skip=7000 rows=1000
+2026-07-21 20:41:12,797 - INFO - [FETCH] role=1001 page~=8 skip=1000 rows=1000
+2026-07-21 20:41:12,918 - INFO - [FETCH] role=1001 page~=9 skip=4000 rows=1000
+2026-07-21 20:41:13,337 - INFO - [FETCH] role=1001 page~=10 skip=6000 rows=1000
+2026-07-21 20:41:14,588 - INFO - [FETCH] role=40 page~=12 skip=10000 rows=1000
+2026-07-21 20:41:15,221 - INFO - [FETCH] role=40 page~=13 skip=5000 rows=1000
+2026-07-21 20:41:15,474 - INFO - [FETCH] role=1001 page~=11 skip=3000 rows=1000
+2026-07-21 20:41:15,757 - INFO - [FETCH] role=1001 page~=12 skip=11000 rows=1000
+2026-07-21 20:41:18,301 - INFO - [FETCH] role=1001 page~=13 skip=8000 rows=1000
+2026-07-21 20:41:22,503 - INFO - [FETCH] role=43 page~=14 skip=15000 rows=1000
+2026-07-21 20:41:23,231 - INFO - [FETCH] role=43 page~=15 skip=14000 rows=1000
+2026-07-21 20:41:23,479 - INFO - [FETCH] role=43 page~=16 skip=18000 rows=1000
+2026-07-21 20:41:23,585 - INFO - [FETCH] role=43 page~=17 skip=16000 rows=1000
+2026-07-21 20:41:23,726 - INFO - [FETCH] role=43 page~=18 skip=17000 rows=1000
+2026-07-21 20:41:23,765 - INFO - [FETCH] role=43 page~=19 skip=13000 rows=1000
+2026-07-21 20:41:24,017 - INFO - [FETCH] role=43 page~=20 skip=21000 rows=1000
+2026-07-21 20:41:24,235 - INFO - [FETCH] role=43 page~=21 skip=19000 rows=1000
+2026-07-21 20:41:24,641 - INFO - [FETCH] role=43 page~=22 skip=20000 rows=1000
+2026-07-21 20:41:25,914 - INFO - [FETCH] role=43 page~=23 skip=22000 rows=1000
+2026-07-21 20:41:26,648 - INFO - [FETCH] role=43 page~=24 skip=23000 rows=1000
+2026-07-21 20:41:36,355 - INFO - [FETCH] role=40 page~=14 skip=15000 rows=1000
+2026-07-21 20:41:36,566 - INFO - [FETCH] role=40 page~=15 skip=13000 rows=1000
+2026-07-21 20:41:36,595 - INFO - [FETCH] role=40 page~=16 skip=16000 rows=1000
+2026-07-21 20:41:36,683 - INFO - [FETCH] role=40 page~=17 skip=14000 rows=1000
+2026-07-21 20:41:36,915 - INFO - [FETCH] role=40 page~=18 skip=17000 rows=1000
+2026-07-21 20:41:36,933 - INFO - [FETCH] role=40 page~=19 skip=18000 rows=1000
+2026-07-21 20:41:37,038 - INFO - [FETCH] role=43 page~=25 skip=24000 rows=1000
+2026-07-21 20:41:37,086 - INFO - [FETCH] role=40 page~=20 skip=19000 rows=1000
+2026-07-21 20:41:37,946 - INFO - [FETCH] role=40 page~=21 skip=20000 rows=1000
+2026-07-21 20:41:38,197 - INFO - [FETCH] role=40 page~=22 skip=21000 rows=1000
+2026-07-21 20:41:38,418 - INFO - [FETCH] role=40 page~=23 skip=22000 rows=1000
+2026-07-21 20:41:40,877 - INFO - [FETCH] role=1001 page~=14 skip=14000 rows=1000
+2026-07-21 20:41:41,240 - INFO - [FETCH] role=1001 page~=15 skip=15000 rows=1000
+2026-07-21 20:41:41,532 - INFO - [FETCH] role=1001 page~=16 skip=13000 rows=1000
+2026-07-21 20:41:41,661 - INFO - [FETCH] role=1001 page~=17 skip=19000 rows=1000
+2026-07-21 20:41:41,926 - INFO - [FETCH] role=1001 page~=18 skip=16000 rows=1000
+2026-07-21 20:41:42,003 - INFO - [FETCH] role=1001 page~=19 skip=18000 rows=1000
+2026-07-21 20:41:42,038 - INFO - [FETCH] role=1001 page~=20 skip=21000 rows=1000
+2026-07-21 20:41:42,231 - INFO - [FETCH] role=40 page~=24 skip=23000 rows=1000
+2026-07-21 20:41:42,410 - INFO - [FETCH] role=1001 page~=21 skip=17000 rows=1000
+2026-07-21 20:41:42,454 - INFO - [FETCH] role=40 page~=25 skip=24000 rows=1000
+2026-07-21 20:41:43,097 - INFO - [FETCH] role=1001 page~=22 skip=20000 rows=1000
+2026-07-21 20:41:44,618 - INFO - [FETCH] role=43 page~=26 skip=25000 rows=801
+2026-07-21 20:41:44,950 - INFO - [FETCH] role=1001 page~=23 skip=23000 rows=1000
+2026-07-21 20:41:44,983 - INFO - [FETCH] role=1001 page~=24 skip=22000 rows=1000
+2026-07-21 20:41:47,420 - INFO - [FETCH] role=1001 page~=25 skip=24000 rows=1000
+2026-07-21 20:42:01,198 - INFO - [FETCH] role=40 page~=26 skip=25000 rows=1000
+2026-07-21 20:42:01,515 - INFO - [FETCH] role=40 page~=27 skip=28000 rows=1000
+2026-07-21 20:42:01,570 - INFO - [FETCH] role=40 page~=28 skip=30000 rows=1000
+2026-07-21 20:42:01,881 - INFO - [FETCH] role=40 page~=29 skip=29000 rows=1000
+2026-07-21 20:42:01,947 - INFO - [FETCH] role=40 page~=30 skip=26000 rows=1000
+2026-07-21 20:42:02,271 - INFO - [FETCH] role=40 page~=31 skip=27000 rows=1000
+2026-07-21 20:42:02,539 - INFO - [FETCH] role=40 page~=32 skip=32000 rows=780
+2026-07-21 20:42:02,907 - INFO - [FETCH] role=40 page~=33 skip=31000 rows=1000
+2026-07-21 20:42:06,354 - INFO - [FETCH] role=43 tail_probe=1 skip=26000 rows=0
+2026-07-21 20:42:06,354 - INFO - ===== END ROLE 43 rows=25801 elapsed=117.4s =====
+2026-07-21 20:42:06,745 - INFO - [ROLE MERGED] role=43 rows=25801 total_rows=25801 unique_tickets=25800
+2026-07-21 20:42:07,780 - INFO - [FETCH] role=1001 page~=26 skip=25000 rows=1000
+2026-07-21 20:42:08,033 - INFO - [FETCH] role=1001 page~=27 skip=26000 rows=1000
+2026-07-21 20:42:08,818 - INFO - [FETCH] role=1001 page~=28 skip=28000 rows=1000
+2026-07-21 20:42:09,167 - INFO - [FETCH] role=1001 page~=29 skip=27000 rows=1000
+2026-07-21 20:42:09,644 - INFO - [FETCH] role=1001 page~=30 skip=29000 rows=1000
+2026-07-21 20:42:09,730 - INFO - [FETCH] role=1001 page~=31 skip=30000 rows=1000
+2026-07-21 20:42:09,880 - INFO - [FETCH] role=1001 page~=32 skip=31000 rows=966
+2026-07-21 20:42:26,990 - INFO - [FETCH] role=40 tail_probe=1 skip=33000 rows=0
+2026-07-21 20:42:26,990 - INFO - ===== END ROLE 40 rows=32780 elapsed=138.0s =====
+2026-07-21 20:42:27,343 - INFO - [ROLE MERGED] role=40 rows=32780 total_rows=58581 unique_tickets=32780
+2026-07-21 20:42:36,468 - INFO - [FETCH] role=1001 tail_probe=1 skip=32000 rows=0
+2026-07-21 20:42:36,468 - INFO - ===== END ROLE 1001 rows=31966 elapsed=147.5s =====
+2026-07-21 20:42:36,831 - INFO - [ROLE MERGED] role=1001 rows=31966 total_rows=90547 unique_tickets=32781
+2026-07-21 20:42:36,898 - INFO - C4C total API rows processed: 90547
+2026-07-21 20:42:36,898 - INFO - C4C total unique TicketIDs: 32781
+2026-07-21 20:42:36,898 - INFO - Step 2/9: Initializing Firebase and loading previous sync snapshot ...
+2026-07-21 20:42:38,753 - INFO - Previous synced TicketIDs in hash snapshot: 32737
+2026-07-21 20:42:38,753 - INFO - Step 3/9: Detecting changed/deleted tickets ...
+2026-07-21 20:42:39,774 - INFO - Changed tickets: 1336
+2026-07-21 20:42:39,774 - INFO - Deleted tickets: 0
+2026-07-21 20:42:39,774 - INFO - Step 3A/9: Uploading changed C4C core ticket fields to Firebase ...
+2026-07-21 20:42:44,194 - INFO - [FB CORE TICKET UPLOAD] batch=1 paths=8000 bytes~=436141
+2026-07-21 20:42:44,889 - INFO - [FB CORE TICKET UPLOAD] batch=1 done
+2026-07-21 20:42:50,346 - INFO - [FB CORE TICKET UPLOAD] batch=2 paths=8000 bytes~=430028
+2026-07-21 20:42:50,882 - INFO - [FB CORE TICKET UPLOAD] batch=2 done
+2026-07-21 20:42:55,298 - INFO - [FB CORE TICKET UPLOAD] batch=3 paths=8000 bytes~=430790
+2026-07-21 20:42:55,794 - INFO - [FB CORE TICKET UPLOAD] batch=3 done
+2026-07-21 20:43:00,200 - INFO - [FB CORE TICKET UPLOAD] batch=4 paths=8000 bytes~=433893
+2026-07-21 20:43:00,820 - INFO - [FB CORE TICKET UPLOAD] batch=4 done
+2026-07-21 20:43:05,214 - INFO - [FB CORE TICKET UPLOAD] batch=5 paths=8000 bytes~=426068
+2026-07-21 20:43:05,716 - INFO - [FB CORE TICKET UPLOAD] batch=5 done
+2026-07-21 20:43:05,716 - INFO - [FB CORE TICKET UPLOAD] batch=6 paths=80 bytes~=4234
+2026-07-21 20:43:05,915 - INFO - [FB CORE TICKET UPLOAD] batch=6 done
+2026-07-21 20:43:06,048 - INFO - Step 3B/9: Uploading C4C involved-party roles to Firebase, including role 40 Assign To ...
+2026-07-21 20:43:40,687 - INFO - [FB C4C ROLES UPLOAD] batch=1 paths=8000 bytes~=1632307
+2026-07-21 20:43:41,573 - INFO - [FB C4C ROLES UPLOAD] batch=1 done
+2026-07-21 20:44:12,347 - INFO - [FB C4C ROLES UPLOAD] batch=2 paths=8000 bytes~=1628427
+2026-07-21 20:44:13,152 - INFO - [FB C4C ROLES UPLOAD] batch=2 done
+2026-07-21 20:44:40,679 - INFO - [FB C4C ROLES UPLOAD] batch=3 paths=8000 bytes~=1661879
+2026-07-21 20:44:41,406 - INFO - [FB C4C ROLES UPLOAD] batch=3 done
+2026-07-21 20:45:07,933 - INFO - [FB C4C ROLES UPLOAD] batch=4 paths=8000 bytes~=1658645
+2026-07-21 20:45:08,592 - INFO - [FB C4C ROLES UPLOAD] batch=4 done
+2026-07-21 20:45:36,162 - INFO - [FB C4C ROLES UPLOAD] batch=5 paths=8000 bytes~=1655117
+2026-07-21 20:45:36,839 - INFO - [FB C4C ROLES UPLOAD] batch=5 done
+2026-07-21 20:46:12,274 - INFO - [FB C4C ROLES UPLOAD] batch=6 paths=8000 bytes~=1675836
+2026-07-21 20:46:12,872 - INFO - [FB C4C ROLES UPLOAD] batch=6 done
+2026-07-21 20:46:42,200 - INFO - [FB C4C ROLES UPLOAD] batch=7 paths=8000 bytes~=1654950
+2026-07-21 20:46:42,801 - INFO - [FB C4C ROLES UPLOAD] batch=7 done
+2026-07-21 20:47:10,786 - INFO - [FB C4C ROLES UPLOAD] batch=8 paths=8000 bytes~=1659582
+2026-07-21 20:47:11,395 - INFO - [FB C4C ROLES UPLOAD] batch=8 done
+2026-07-21 20:47:42,042 - INFO - [FB C4C ROLES UPLOAD] batch=9 paths=8000 bytes~=1645819
+2026-07-21 20:47:42,650 - INFO - [FB C4C ROLES UPLOAD] batch=9 done
+2026-07-21 20:48:13,610 - INFO - [FB C4C ROLES UPLOAD] batch=10 paths=8000 bytes~=1642869
+2026-07-21 20:48:14,296 - INFO - [FB C4C ROLES UPLOAD] batch=10 done
+2026-07-21 20:48:40,718 - INFO - [FB C4C ROLES UPLOAD] batch=11 paths=8000 bytes~=1600237
+2026-07-21 20:48:41,435 - INFO - [FB C4C ROLES UPLOAD] batch=11 done
+2026-07-21 20:48:43,804 - INFO - [FB C4C ROLES UPLOAD] batch=12 paths=2545 bytes~=512337
+2026-07-21 20:48:44,090 - INFO - [FB C4C ROLES UPLOAD] batch=12 done
+2026-07-21 20:48:44,237 - INFO - Step 4/9: Uploading critical-removed metrics ...
+2026-07-21 20:48:47,085 - INFO - Step 5/9: Extracting ERPFreeOrder and vehicle identifiers from ALL current tickets for SAP HANA refresh ...
+2026-07-21 20:48:47,563 - INFO - Changed tickets without ERPFreeOrder. Clearing old SO fields: 593
+2026-07-21 20:48:49,199 - INFO - [FB CLEAR NO ERPFreeOrder] batch=1 paths=4744 bytes~=232930
+2026-07-21 20:48:49,864 - INFO - [FB CLEAR NO ERPFreeOrder] batch=1 done
+2026-07-21 20:48:49,864 - INFO - Current tickets with ERPFreeOrder for HANA refresh: 15921
+2026-07-21 20:48:49,864 - INFO - Step 6/9: Connecting SAP HANA and fetching SO/item plus vehicle dispatch data ...
+2026-07-21 20:48:52,460 - INFO - Total input lookup rows: 23765
+2026-07-21 20:48:52,460 - INFO - Total SQL batches: 80
+2026-07-21 20:48:52,460 - INFO - Running batch 1/80 with 300 lookup rows...
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2168: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:48:53,190 - INFO - Batch 1 returned 304 rows
+2026-07-21 20:48:53,190 - INFO - Running batch 2/80 with 300 lookup rows...
+2026-07-21 20:48:53,796 - INFO - Batch 2 returned 429 rows
+2026-07-21 20:48:53,796 - INFO - Running batch 3/80 with 300 lookup rows...
+2026-07-21 20:48:54,402 - INFO - Batch 3 returned 441 rows
+2026-07-21 20:48:54,402 - INFO - Running batch 4/80 with 300 lookup rows...
+2026-07-21 20:48:55,011 - INFO - Batch 4 returned 452 rows
+2026-07-21 20:48:55,011 - INFO - Running batch 5/80 with 300 lookup rows...
+2026-07-21 20:48:56,671 - INFO - Batch 5 returned 561 rows
+2026-07-21 20:48:56,671 - INFO - Running batch 6/80 with 300 lookup rows...
+2026-07-21 20:48:58,363 - INFO - Batch 6 returned 728 rows
+2026-07-21 20:48:58,363 - INFO - Running batch 7/80 with 300 lookup rows...
+2026-07-21 20:49:00,008 - INFO - Batch 7 returned 549 rows
+2026-07-21 20:49:00,009 - INFO - Running batch 8/80 with 300 lookup rows...
+2026-07-21 20:49:01,617 - INFO - Batch 8 returned 377 rows
+2026-07-21 20:49:01,617 - INFO - Running batch 9/80 with 300 lookup rows...
+2026-07-21 20:49:03,072 - INFO - Batch 9 returned 294 rows
+2026-07-21 20:49:03,072 - INFO - Running batch 10/80 with 300 lookup rows...
+2026-07-21 20:49:04,452 - INFO - Batch 10 returned 271 rows
+2026-07-21 20:49:04,453 - INFO - Running batch 11/80 with 300 lookup rows...
+2026-07-21 20:49:05,832 - INFO - Batch 11 returned 330 rows
+2026-07-21 20:49:05,832 - INFO - Running batch 12/80 with 300 lookup rows...
+2026-07-21 20:49:07,196 - INFO - Batch 12 returned 335 rows
+2026-07-21 20:49:07,196 - INFO - Running batch 13/80 with 300 lookup rows...
+2026-07-21 20:49:08,561 - INFO - Batch 13 returned 342 rows
+2026-07-21 20:49:08,561 - INFO - Running batch 14/80 with 300 lookup rows...
+2026-07-21 20:49:09,890 - INFO - Batch 14 returned 342 rows
+2026-07-21 20:49:09,890 - INFO - Running batch 15/80 with 300 lookup rows...
+2026-07-21 20:49:10,398 - INFO - Batch 15 returned 293 rows
+2026-07-21 20:49:10,399 - INFO - Running batch 16/80 with 300 lookup rows...
+2026-07-21 20:49:11,785 - INFO - Batch 16 returned 476 rows
+2026-07-21 20:49:11,785 - INFO - Running batch 17/80 with 300 lookup rows...
+2026-07-21 20:49:13,218 - INFO - Batch 17 returned 610 rows
+2026-07-21 20:49:13,218 - INFO - Running batch 18/80 with 300 lookup rows...
+2026-07-21 20:49:14,647 - INFO - Batch 18 returned 660 rows
+2026-07-21 20:49:14,648 - INFO - Running batch 19/80 with 300 lookup rows...
+2026-07-21 20:49:16,090 - INFO - Batch 19 returned 754 rows
+2026-07-21 20:49:16,090 - INFO - Running batch 20/80 with 300 lookup rows...
+2026-07-21 20:49:17,519 - INFO - Batch 20 returned 686 rows
+2026-07-21 20:49:17,519 - INFO - Running batch 21/80 with 300 lookup rows...
+2026-07-21 20:49:18,875 - INFO - Batch 21 returned 247 rows
+2026-07-21 20:49:18,875 - INFO - Running batch 22/80 with 300 lookup rows...
+2026-07-21 20:49:20,223 - INFO - Batch 22 returned 344 rows
+2026-07-21 20:49:20,224 - INFO - Running batch 23/80 with 300 lookup rows...
+2026-07-21 20:49:21,573 - INFO - Batch 23 returned 343 rows
+2026-07-21 20:49:21,573 - INFO - Running batch 24/80 with 300 lookup rows...
+2026-07-21 20:49:22,958 - INFO - Batch 24 returned 455 rows
+2026-07-21 20:49:22,958 - INFO - Running batch 25/80 with 300 lookup rows...
+2026-07-21 20:49:24,369 - INFO - Batch 25 returned 776 rows
+2026-07-21 20:49:24,369 - INFO - Running batch 26/80 with 300 lookup rows...
+2026-07-21 20:49:25,717 - INFO - Batch 26 returned 381 rows
+2026-07-21 20:49:25,717 - INFO - Running batch 27/80 with 300 lookup rows...
+2026-07-21 20:49:27,071 - INFO - Batch 27 returned 298 rows
+2026-07-21 20:49:27,071 - INFO - Running batch 28/80 with 300 lookup rows...
+2026-07-21 20:49:28,422 - INFO - Batch 28 returned 327 rows
+2026-07-21 20:49:28,422 - INFO - Running batch 29/80 with 300 lookup rows...
+2026-07-21 20:49:29,758 - INFO - Batch 29 returned 279 rows
+2026-07-21 20:49:29,758 - INFO - Running batch 30/80 with 300 lookup rows...
+2026-07-21 20:49:31,115 - INFO - Batch 30 returned 382 rows
+2026-07-21 20:49:31,115 - INFO - Running batch 31/80 with 300 lookup rows...
+2026-07-21 20:49:32,495 - INFO - Batch 31 returned 600 rows
+2026-07-21 20:49:32,495 - INFO - Running batch 32/80 with 300 lookup rows...
+2026-07-21 20:49:33,848 - INFO - Batch 32 returned 355 rows
+2026-07-21 20:49:33,848 - INFO - Running batch 33/80 with 300 lookup rows...
+2026-07-21 20:49:35,306 - INFO - Batch 33 returned 377 rows
+2026-07-21 20:49:35,306 - INFO - Running batch 34/80 with 300 lookup rows...
+2026-07-21 20:49:36,874 - INFO - Batch 34 returned 286 rows
+2026-07-21 20:49:36,874 - INFO - Running batch 35/80 with 300 lookup rows...
+2026-07-21 20:49:38,435 - INFO - Batch 35 returned 346 rows
+2026-07-21 20:49:38,435 - INFO - Running batch 36/80 with 300 lookup rows...
+2026-07-21 20:49:39,978 - INFO - Batch 36 returned 261 rows
+2026-07-21 20:49:39,978 - INFO - Running batch 37/80 with 300 lookup rows...
+2026-07-21 20:49:41,538 - INFO - Batch 37 returned 378 rows
+2026-07-21 20:49:41,538 - INFO - Running batch 38/80 with 300 lookup rows...
+2026-07-21 20:49:43,168 - INFO - Batch 38 returned 329 rows
+2026-07-21 20:49:43,168 - INFO - Running batch 39/80 with 300 lookup rows...
+2026-07-21 20:49:44,712 - INFO - Batch 39 returned 489 rows
+2026-07-21 20:49:44,712 - INFO - Running batch 40/80 with 300 lookup rows...
+2026-07-21 20:49:46,281 - INFO - Batch 40 returned 610 rows
+2026-07-21 20:49:46,281 - INFO - Running batch 41/80 with 300 lookup rows...
+2026-07-21 20:49:47,772 - INFO - Batch 41 returned 339 rows
+2026-07-21 20:49:47,772 - INFO - Running batch 42/80 with 300 lookup rows...
+2026-07-21 20:49:49,345 - INFO - Batch 42 returned 216 rows
+2026-07-21 20:49:49,345 - INFO - Running batch 43/80 with 300 lookup rows...
+2026-07-21 20:49:50,845 - INFO - Batch 43 returned 255 rows
+2026-07-21 20:49:50,845 - INFO - Running batch 44/80 with 300 lookup rows...
+2026-07-21 20:49:52,362 - INFO - Batch 44 returned 262 rows
+2026-07-21 20:49:52,362 - INFO - Running batch 45/80 with 300 lookup rows...
+2026-07-21 20:49:53,877 - INFO - Batch 45 returned 269 rows
+2026-07-21 20:49:53,877 - INFO - Running batch 46/80 with 300 lookup rows...
+2026-07-21 20:49:55,386 - INFO - Batch 46 returned 359 rows
+2026-07-21 20:49:55,386 - INFO - Running batch 47/80 with 300 lookup rows...
+2026-07-21 20:49:56,886 - INFO - Batch 47 returned 335 rows
+2026-07-21 20:49:56,886 - INFO - Running batch 48/80 with 300 lookup rows...
+2026-07-21 20:49:58,398 - INFO - Batch 48 returned 263 rows
+2026-07-21 20:49:58,398 - INFO - Running batch 49/80 with 300 lookup rows...
+2026-07-21 20:49:59,910 - INFO - Batch 49 returned 465 rows
+2026-07-21 20:49:59,910 - INFO - Running batch 50/80 with 300 lookup rows...
+2026-07-21 20:50:01,421 - INFO - Batch 50 returned 364 rows
+2026-07-21 20:50:01,421 - INFO - Running batch 51/80 with 300 lookup rows...
+2026-07-21 20:50:02,958 - INFO - Batch 51 returned 396 rows
+2026-07-21 20:50:02,958 - INFO - Running batch 52/80 with 300 lookup rows...
+2026-07-21 20:50:04,466 - INFO - Batch 52 returned 526 rows
+2026-07-21 20:50:04,466 - INFO - Running batch 53/80 with 300 lookup rows...
+2026-07-21 20:50:05,955 - INFO - Batch 53 returned 427 rows
+2026-07-21 20:50:05,955 - INFO - Running batch 54/80 with 300 lookup rows...
+2026-07-21 20:50:07,492 - INFO - Batch 54 returned 524 rows
+2026-07-21 20:50:07,492 - INFO - Running batch 55/80 with 300 lookup rows...
+2026-07-21 20:50:09,008 - INFO - Batch 55 returned 614 rows
+2026-07-21 20:50:09,009 - INFO - Running batch 56/80 with 300 lookup rows...
+2026-07-21 20:50:10,498 - INFO - Batch 56 returned 737 rows
+2026-07-21 20:50:10,498 - INFO - Running batch 57/80 with 300 lookup rows...
+2026-07-21 20:50:11,915 - INFO - Batch 57 returned 741 rows
+2026-07-21 20:50:11,915 - INFO - Running batch 58/80 with 300 lookup rows...
+2026-07-21 20:50:13,257 - INFO - Batch 58 returned 473 rows
+2026-07-21 20:50:13,257 - INFO - Running batch 59/80 with 300 lookup rows...
+2026-07-21 20:50:14,636 - INFO - Batch 59 returned 507 rows
+2026-07-21 20:50:14,636 - INFO - Running batch 60/80 with 300 lookup rows...
+2026-07-21 20:50:15,993 - INFO - Batch 60 returned 502 rows
+2026-07-21 20:50:15,993 - INFO - Running batch 61/80 with 300 lookup rows...
+2026-07-21 20:50:17,379 - INFO - Batch 61 returned 429 rows
+2026-07-21 20:50:17,379 - INFO - Running batch 62/80 with 300 lookup rows...
+2026-07-21 20:50:18,759 - INFO - Batch 62 returned 723 rows
+2026-07-21 20:50:18,760 - INFO - Running batch 63/80 with 300 lookup rows...
+2026-07-21 20:50:20,145 - INFO - Batch 63 returned 751 rows
+2026-07-21 20:50:20,145 - INFO - Running batch 64/80 with 300 lookup rows...
+2026-07-21 20:50:21,593 - INFO - Batch 64 returned 897 rows
+2026-07-21 20:50:21,593 - INFO - Running batch 65/80 with 300 lookup rows...
+2026-07-21 20:50:22,944 - INFO - Batch 65 returned 440 rows
+2026-07-21 20:50:22,945 - INFO - Running batch 66/80 with 300 lookup rows...
+2026-07-21 20:50:24,305 - INFO - Batch 66 returned 492 rows
+2026-07-21 20:50:24,305 - INFO - Running batch 67/80 with 300 lookup rows...
+2026-07-21 20:50:25,623 - INFO - Batch 67 returned 295 rows
+2026-07-21 20:50:25,623 - INFO - Running batch 68/80 with 300 lookup rows...
+2026-07-21 20:50:27,002 - INFO - Batch 68 returned 584 rows
+2026-07-21 20:50:27,002 - INFO - Running batch 69/80 with 300 lookup rows...
+2026-07-21 20:50:28,348 - INFO - Batch 69 returned 412 rows
+2026-07-21 20:50:28,348 - INFO - Running batch 70/80 with 300 lookup rows...
+2026-07-21 20:50:29,677 - INFO - Batch 70 returned 340 rows
+2026-07-21 20:50:29,677 - INFO - Running batch 71/80 with 300 lookup rows...
+2026-07-21 20:50:30,999 - INFO - Batch 71 returned 374 rows
+2026-07-21 20:50:30,999 - INFO - Running batch 72/80 with 300 lookup rows...
+2026-07-21 20:50:32,338 - INFO - Batch 72 returned 375 rows
+2026-07-21 20:50:32,338 - INFO - Running batch 73/80 with 300 lookup rows...
+2026-07-21 20:50:33,662 - INFO - Batch 73 returned 461 rows
+2026-07-21 20:50:33,662 - INFO - Running batch 74/80 with 300 lookup rows...
+2026-07-21 20:50:35,019 - INFO - Batch 74 returned 366 rows
+2026-07-21 20:50:35,019 - INFO - Running batch 75/80 with 300 lookup rows...
+2026-07-21 20:50:36,352 - INFO - Batch 75 returned 299 rows
+2026-07-21 20:50:36,352 - INFO - Running batch 76/80 with 300 lookup rows...
+2026-07-21 20:50:37,715 - INFO - Batch 76 returned 408 rows
+2026-07-21 20:50:37,715 - INFO - Running batch 77/80 with 300 lookup rows...
+2026-07-21 20:50:39,093 - INFO - Batch 77 returned 575 rows
+2026-07-21 20:50:39,093 - INFO - Running batch 78/80 with 300 lookup rows...
+2026-07-21 20:50:40,511 - INFO - Batch 78 returned 659 rows
+2026-07-21 20:50:40,511 - INFO - Running batch 79/80 with 300 lookup rows...
+2026-07-21 20:50:41,848 - INFO - Batch 79 returned 281 rows
+2026-07-21 20:50:41,848 - INFO - Running batch 80/80 with 65 lookup rows...
+2026-07-21 20:50:42,415 - INFO - Batch 80 returned 90 rows
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1419: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1419: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1559: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1605: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  shipped_df = pd.read_sql(_q(PGI_MSEG_SQL_TEMPLATE), conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1612: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  instock_df = pd.read_sql(_q(INSTOCK_MSKA_SQL_TEMPLATE), conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1619: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  intransit_df = pd.read_sql(_q(INTRANSIT_OPEN_PO_SQL_TEMPLATE), conn)
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:1665: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  likp_df = pd.read_sql(likp_sql, conn)
+2026-07-21 20:51:29,670 - INFO - Vehicle base summary: total=4982 (shipped=4761, in-stock=83, in-transit=138); PGI dates for 9382 chassis
+2026-07-21 20:51:29,673 - INFO - Fetching Approved Cost SAP PO Short Text rows: EKORG=3111 EKGRP=E06 Plant=(blank) ExcludeDeleted=False
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:3315: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  po_df = pd.read_sql(sql, conn)
+2026-07-21 20:51:33,219 - INFO - Approved Cost SAP PO rows fetched: 22046
+2026-07-21 20:51:33,710 - INFO - Matched SO item rows for current ERPFreeOrder tickets: 34922
+2026-07-21 20:51:33,710 - INFO - Vehicle dispatch matches by ticket serial/chassis: 13797
+2026-07-21 20:51:33,710 - INFO - Vehicle dispatch matches by sales order fallback: 0
+2026-07-21 20:51:33,710 - INFO - Vehicle base summary rows: 0, total vehicles since 2025-01-01: 4982
+2026-07-21 20:51:33,710 - INFO - Step 7/9: Building final output for refreshed HANA tickets ...
+2026-07-21 20:51:38,151 - INFO - Fetching RKPF reservation metadata batch 1/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:38,353 - INFO - Fetching RKPF reservation metadata batch 2/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:38,552 - INFO - Fetching RKPF reservation metadata batch 3/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:38,751 - INFO - Fetching RKPF reservation metadata batch 4/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:38,950 - INFO - Fetching RKPF reservation metadata batch 5/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:39,149 - INFO - Fetching RKPF reservation metadata batch 6/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:39,347 - INFO - Fetching RKPF reservation metadata batch 7/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:39,544 - INFO - Fetching RKPF reservation metadata batch 8/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:39,740 - INFO - Fetching RKPF reservation metadata batch 9/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:39,939 - INFO - Fetching RKPF reservation metadata batch 10/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:40,136 - INFO - Fetching RKPF reservation metadata batch 11/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:40,336 - INFO - Fetching RKPF reservation metadata batch 12/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:40,532 - INFO - Fetching RKPF reservation metadata batch 13/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:40,728 - INFO - Fetching RKPF reservation metadata batch 14/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:40,925 - INFO - Fetching RKPF reservation metadata batch 15/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:41,123 - INFO - Fetching RKPF reservation metadata batch 16/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:41,320 - INFO - Fetching RKPF reservation metadata batch 17/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:41,518 - INFO - Fetching RKPF reservation metadata batch 18/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:41,716 - INFO - Fetching RKPF reservation metadata batch 19/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:41,916 - INFO - Fetching RKPF reservation metadata batch 20/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:42,116 - INFO - Fetching RKPF reservation metadata batch 21/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:42,314 - INFO - Fetching RKPF reservation metadata batch 22/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:42,512 - INFO - Fetching RKPF reservation metadata batch 23/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:42,710 - INFO - Fetching RKPF reservation metadata batch 24/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:42,907 - INFO - Fetching RKPF reservation metadata batch 25/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:43,105 - INFO - Fetching RKPF reservation metadata batch 26/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:43,302 - INFO - Fetching RKPF reservation metadata batch 27/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:43,500 - INFO - Fetching RKPF reservation metadata batch 28/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:43,697 - INFO - Fetching RKPF reservation metadata batch 29/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:43,894 - INFO - Fetching RKPF reservation metadata batch 30/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:44,092 - INFO - Fetching RKPF reservation metadata batch 31/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:44,290 - INFO - Fetching RKPF reservation metadata batch 32/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:44,488 - INFO - Fetching RKPF reservation metadata batch 33/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:44,685 - INFO - Fetching RKPF reservation metadata batch 34/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:44,883 - INFO - Fetching RKPF reservation metadata batch 35/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:45,081 - INFO - Fetching RKPF reservation metadata batch 36/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:45,279 - INFO - Fetching RKPF reservation metadata batch 37/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:45,476 - INFO - Fetching RKPF reservation metadata batch 38/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:45,673 - INFO - Fetching RKPF reservation metadata batch 39/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:45,870 - INFO - Fetching RKPF reservation metadata batch 40/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:46,068 - INFO - Fetching RKPF reservation metadata batch 41/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:46,266 - INFO - Fetching RKPF reservation metadata batch 42/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:46,464 - INFO - Fetching RKPF reservation metadata batch 43/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:46,661 - INFO - Fetching RKPF reservation metadata batch 44/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:46,858 - INFO - Fetching RKPF reservation metadata batch 45/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:47,056 - INFO - Fetching RKPF reservation metadata batch 46/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:47,254 - INFO - Fetching RKPF reservation metadata batch 47/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:47,450 - INFO - Fetching RKPF reservation metadata batch 48/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:47,648 - INFO - Fetching RKPF reservation metadata batch 49/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:47,845 - INFO - Fetching RKPF reservation metadata batch 50/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:48,042 - INFO - Fetching RKPF reservation metadata batch 51/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:48,240 - INFO - Fetching RKPF reservation metadata batch 52/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:48,435 - INFO - Fetching RKPF reservation metadata batch 53/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:48,633 - INFO - Fetching RKPF reservation metadata batch 54/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:48,831 - INFO - Fetching RKPF reservation metadata batch 55/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:49,027 - INFO - Fetching RKPF reservation metadata batch 56/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:49,223 - INFO - Fetching RKPF reservation metadata batch 57/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:49,422 - INFO - Fetching RKPF reservation metadata batch 58/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:49,620 - INFO - Fetching RKPF reservation metadata batch 59/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:49,817 - INFO - Fetching RKPF reservation metadata batch 60/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:50,017 - INFO - Fetching RKPF reservation metadata batch 61/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:50,214 - INFO - Fetching RKPF reservation metadata batch 62/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:50,413 - INFO - Fetching RKPF reservation metadata batch 63/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:50,613 - INFO - Fetching RKPF reservation metadata batch 64/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:50,813 - INFO - Fetching RKPF reservation metadata batch 65/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:51,011 - INFO - Fetching RKPF reservation metadata batch 66/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:51,210 - INFO - Fetching RKPF reservation metadata batch 67/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:51,410 - INFO - Fetching RKPF reservation metadata batch 68/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:51,609 - INFO - Fetching RKPF reservation metadata batch 69/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:51,808 - INFO - Fetching RKPF reservation metadata batch 70/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:52,009 - INFO - Fetching RKPF reservation metadata batch 71/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:52,208 - INFO - Fetching RKPF reservation metadata batch 72/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:52,409 - INFO - Fetching RKPF reservation metadata batch 73/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:52,609 - INFO - Fetching RKPF reservation metadata batch 74/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:52,808 - INFO - Fetching RKPF reservation metadata batch 75/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:53,007 - INFO - Fetching RKPF reservation metadata batch 76/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:53,207 - INFO - Fetching RKPF reservation metadata batch 77/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:53,406 - INFO - Fetching RKPF reservation metadata batch 78/79 with 200 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:53,606 - INFO - Fetching RKPF reservation metadata batch 79/79 with 41 SOs
+C:\Users\Leo.Li\Documents\GitHub\warranty\fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py:2905: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  part = pd.read_sql(sql, conn)
+2026-07-21 20:51:55,122 - INFO - SAP unmatched changed tickets. Clearing old SO fields: 271
+2026-07-21 20:51:55,435 - INFO - [FB CLEAR UNMATCHED SO] batch=1 paths=2168 bytes~=104990
+2026-07-21 20:51:56,098 - INFO - [FB CLEAR UNMATCHED SO] batch=1 done
+2026-07-21 20:51:56,119 - INFO - Fetching SAP material prices for 1330 unique materials
+2026-07-21 20:51:56,896 - INFO - [3090 SO] batch 1 (500 materials)
+C:\Users\Leo.Li\Documents\GitHub\warranty\sap_material_prices.py:281: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  df = pd.read_sql(sql, conn)
+2026-07-21 20:51:57,300 - INFO - [3090 SO] batch 2 (500 materials)
+C:\Users\Leo.Li\Documents\GitHub\warranty\sap_material_prices.py:281: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  df = pd.read_sql(sql, conn)
+2026-07-21 20:51:57,858 - INFO - [3090 SO] batch 3 (330 materials)
+C:\Users\Leo.Li\Documents\GitHub\warranty\sap_material_prices.py:281: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  df = pd.read_sql(sql, conn)
+2026-07-21 20:51:58,373 - INFO - [3090 SO] found for 594 / 1330 materials
+2026-07-21 20:51:58,373 - INFO - [3110 PO] batch 1 (500 materials)
+C:\Users\Leo.Li\Documents\GitHub\warranty\sap_material_prices.py:281: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  df = pd.read_sql(sql, conn)
+2026-07-21 20:51:58,804 - INFO - [3110 PO] batch 2 (500 materials)
+C:\Users\Leo.Li\Documents\GitHub\warranty\sap_material_prices.py:281: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  df = pd.read_sql(sql, conn)
+2026-07-21 20:51:59,366 - INFO - [3110 PO] batch 3 (330 materials)
+C:\Users\Leo.Li\Documents\GitHub\warranty\sap_material_prices.py:281: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  df = pd.read_sql(sql, conn)
+2026-07-21 20:51:59,870 - INFO - [3110 PO] found for 1153 / 1330 materials
+2026-07-21 20:51:59,870 - INFO - [3091 PO] batch 1 (500 materials)
+C:\Users\Leo.Li\Documents\GitHub\warranty\sap_material_prices.py:281: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  df = pd.read_sql(sql, conn)
+2026-07-21 20:52:00,273 - INFO - [3091 PO] batch 2 (500 materials)
+C:\Users\Leo.Li\Documents\GitHub\warranty\sap_material_prices.py:281: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  df = pd.read_sql(sql, conn)
+2026-07-21 20:52:00,808 - INFO - [3091 PO] batch 3 (330 materials)
+C:\Users\Leo.Li\Documents\GitHub\warranty\sap_material_prices.py:281: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  df = pd.read_sql(sql, conn)
+2026-07-21 20:52:01,300 - INFO - [3091 PO] found for 648 / 1330 materials
+2026-07-21 20:52:01,300 - INFO - Step 8/9: Uploading refreshed SO fields to Firebase ...
+2026-07-21 20:53:01,089 - INFO - [FB SO UPLOAD] batch=1 paths=8000 bytes~=1227955
+2026-07-21 20:53:01,822 - INFO - [FB SO UPLOAD] batch=1 done
+2026-07-21 20:53:30,723 - INFO - [FB SO UPLOAD] batch=2 paths=8000 bytes~=1230323
+2026-07-21 20:53:31,200 - INFO - [FB SO UPLOAD] batch=2 done
+2026-07-21 20:54:06,613 - INFO - [FB SO UPLOAD] batch=3 paths=8000 bytes~=1265492
+2026-07-21 20:54:07,076 - INFO - [FB SO UPLOAD] batch=3 done
+2026-07-21 20:54:40,550 - INFO - [FB SO UPLOAD] batch=4 paths=8000 bytes~=1292623
+2026-07-21 20:54:41,010 - INFO - [FB SO UPLOAD] batch=4 done
+2026-07-21 20:55:15,139 - INFO - [FB SO UPLOAD] batch=5 paths=8000 bytes~=1391930
+2026-07-21 20:55:15,604 - INFO - [FB SO UPLOAD] batch=5 done
+2026-07-21 20:55:46,146 - INFO - [FB SO UPLOAD] batch=6 paths=8000 bytes~=1371277
+2026-07-21 20:55:46,673 - INFO - [FB SO UPLOAD] batch=6 done
+2026-07-21 20:56:25,421 - INFO - [FB SO UPLOAD] batch=7 paths=8000 bytes~=1521929
+2026-07-21 20:56:25,920 - INFO - [FB SO UPLOAD] batch=7 done
+2026-07-21 20:56:53,676 - INFO - [FB SO UPLOAD] batch=8 paths=8000 bytes~=1413013
+2026-07-21 20:56:54,145 - INFO - [FB SO UPLOAD] batch=8 done
+2026-07-21 20:57:22,246 - INFO - [FB SO UPLOAD] batch=9 paths=8000 bytes~=1401171
+2026-07-21 20:57:22,748 - INFO - [FB SO UPLOAD] batch=9 done
+2026-07-21 20:57:52,514 - INFO - [FB SO UPLOAD] batch=10 paths=8000 bytes~=1356545
+2026-07-21 20:57:52,990 - INFO - [FB SO UPLOAD] batch=10 done
+2026-07-21 20:58:24,019 - INFO - [FB SO UPLOAD] batch=11 paths=8000 bytes~=1379128
+2026-07-21 20:58:24,471 - INFO - [FB SO UPLOAD] batch=11 done
+2026-07-21 20:58:48,197 - INFO - [FB SO UPLOAD] batch=12 paths=8000 bytes~=1293035
+2026-07-21 20:58:48,663 - INFO - [FB SO UPLOAD] batch=12 done
+2026-07-21 20:59:19,726 - INFO - [FB SO UPLOAD] batch=13 paths=8000 bytes~=1344795
+2026-07-21 20:59:20,212 - INFO - [FB SO UPLOAD] batch=13 done
+2026-07-21 20:59:41,522 - INFO - [FB SO UPLOAD] batch=14 paths=8000 bytes~=1224142
+2026-07-21 20:59:41,964 - INFO - [FB SO UPLOAD] batch=14 done
+2026-07-21 21:00:05,689 - INFO - [FB SO UPLOAD] batch=15 paths=8000 bytes~=1319638
+2026-07-21 21:00:06,184 - INFO - [FB SO UPLOAD] batch=15 done
+2026-07-21 21:00:29,501 - INFO - [FB SO UPLOAD] batch=16 paths=8000 bytes~=1298739
+2026-07-21 21:00:30,043 - INFO - [FB SO UPLOAD] batch=16 done
+2026-07-21 21:00:56,230 - INFO - [FB SO UPLOAD] batch=17 paths=8000 bytes~=1413047
+2026-07-21 21:00:56,782 - INFO - [FB SO UPLOAD] batch=17 done
+2026-07-21 21:01:23,855 - INFO - [FB SO UPLOAD] batch=18 paths=8000 bytes~=1386619
+2026-07-21 21:01:24,369 - INFO - [FB SO UPLOAD] batch=18 done
+2026-07-21 21:01:52,905 - INFO - [FB SO UPLOAD] batch=19 paths=8000 bytes~=1500073
+2026-07-21 21:01:53,424 - INFO - [FB SO UPLOAD] batch=19 done
+2026-07-21 21:02:24,235 - INFO - [FB SO UPLOAD] batch=20 paths=8000 bytes~=1446875
+2026-07-21 21:02:25,488 - INFO - [FB SO UPLOAD] batch=20 done
+2026-07-21 21:02:53,307 - INFO - [FB SO UPLOAD] batch=21 paths=8000 bytes~=1487163
+2026-07-21 21:02:53,883 - INFO - [FB SO UPLOAD] batch=21 done
+2026-07-21 21:03:26,075 - INFO - [FB SO UPLOAD] batch=22 paths=8000 bytes~=1391151
+2026-07-21 21:03:26,560 - INFO - [FB SO UPLOAD] batch=22 done
+2026-07-21 21:03:54,258 - INFO - [FB SO UPLOAD] batch=23 paths=8000 bytes~=1360449
+2026-07-21 21:03:54,767 - INFO - [FB SO UPLOAD] batch=23 done
+2026-07-21 21:04:19,800 - INFO - [FB SO UPLOAD] batch=24 paths=8000 bytes~=1330406
+2026-07-21 21:04:20,421 - INFO - [FB SO UPLOAD] batch=24 done
+2026-07-21 21:04:50,687 - INFO - [FB SO UPLOAD] batch=25 paths=8000 bytes~=1378668
+2026-07-21 21:04:51,312 - INFO - [FB SO UPLOAD] batch=25 done
+2026-07-21 21:05:11,062 - INFO - [FB SO UPLOAD] batch=26 paths=8000 bytes~=1020668
+2026-07-21 21:05:11,512 - INFO - [FB SO UPLOAD] batch=26 done
+2026-07-21 21:05:38,621 - INFO - [FB SO UPLOAD] batch=27 paths=8000 bytes~=1169158
+2026-07-21 21:05:39,078 - INFO - [FB SO UPLOAD] batch=27 done
+2026-07-21 21:06:05,640 - INFO - [FB SO UPLOAD] batch=28 paths=8000 bytes~=1192844
+2026-07-21 21:06:06,124 - INFO - [FB SO UPLOAD] batch=28 done
+2026-07-21 21:06:29,950 - INFO - [FB SO UPLOAD] batch=29 paths=8000 bytes~=1186646
+2026-07-21 21:06:30,405 - INFO - [FB SO UPLOAD] batch=29 done
+2026-07-21 21:06:48,833 - INFO - [FB SO UPLOAD] batch=30 paths=6815 bytes~=1014159
+2026-07-21 21:06:49,218 - INFO - [FB SO UPLOAD] batch=30 done
+2026-07-21 21:06:55,250 - INFO - [FB VEHICLE DISPATCH] batch=1 paths=8000 bytes~=512542
+2026-07-21 21:06:55,714 - INFO - [FB VEHICLE DISPATCH] batch=1 done
+2026-07-21 21:07:01,048 - INFO - [FB VEHICLE DISPATCH] batch=2 paths=8000 bytes~=501870
+2026-07-21 21:07:01,564 - INFO - [FB VEHICLE DISPATCH] batch=2 done
+2026-07-21 21:07:06,982 - INFO - [FB VEHICLE DISPATCH] batch=3 paths=8000 bytes~=514463
+2026-07-21 21:07:07,477 - INFO - [FB VEHICLE DISPATCH] batch=3 done
+2026-07-21 21:07:12,734 - INFO - [FB VEHICLE DISPATCH] batch=4 paths=8000 bytes~=495894
+2026-07-21 21:07:13,261 - INFO - [FB VEHICLE DISPATCH] batch=4 done
+2026-07-21 21:07:18,638 - INFO - [FB VEHICLE DISPATCH] batch=5 paths=8000 bytes~=499012
+2026-07-21 21:07:19,148 - INFO - [FB VEHICLE DISPATCH] batch=5 done
+2026-07-21 21:07:24,432 - INFO - [FB VEHICLE DISPATCH] batch=6 paths=8000 bytes~=505078
+2026-07-21 21:07:24,961 - INFO - [FB VEHICLE DISPATCH] batch=6 done
+2026-07-21 21:07:30,266 - INFO - [FB VEHICLE DISPATCH] batch=7 paths=8000 bytes~=499909
+2026-07-21 21:07:30,787 - INFO - [FB VEHICLE DISPATCH] batch=7 done
+2026-07-21 21:07:36,259 - INFO - [FB VEHICLE DISPATCH] batch=8 paths=8000 bytes~=513317
+2026-07-21 21:07:36,725 - INFO - [FB VEHICLE DISPATCH] batch=8 done
+2026-07-21 21:07:42,163 - INFO - [FB VEHICLE DISPATCH] batch=9 paths=8000 bytes~=514518
+2026-07-21 21:07:42,736 - INFO - [FB VEHICLE DISPATCH] batch=9 done
+2026-07-21 21:07:48,151 - INFO - [FB VEHICLE DISPATCH] batch=10 paths=8000 bytes~=512673
+2026-07-21 21:07:48,680 - INFO - [FB VEHICLE DISPATCH] batch=10 done
+2026-07-21 21:07:54,039 - INFO - [FB VEHICLE DISPATCH] batch=11 paths=8000 bytes~=505466
+2026-07-21 21:07:54,627 - INFO - [FB VEHICLE DISPATCH] batch=11 done
+2026-07-21 21:07:59,396 - INFO - [FB VEHICLE DISPATCH] batch=12 paths=7526 bytes~=478869
+2026-07-21 21:07:59,916 - INFO - [FB VEHICLE DISPATCH] batch=12 done
+2026-07-21 21:08:15,725 - INFO - Wrote refreshed analysis ticket base: 32781 rows -> C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\analysis_ticket_base.csv
+2026-07-21 21:08:16,074 - INFO - Step 8A/9: Writing Approved Cost SAP PO Short Text sidecar to Firebase ...
+2026-07-21 21:08:18,501 - INFO - Wrote Approved Cost SAP PO Short Text sidecar (tickets=21145, total=16096278.17)
+2026-07-21 21:08:19,385 - INFO - Pushed vehicle base summary to Firebase: 4982 vehicles across 9 series
+2026-07-21 21:08:30,909 - INFO - Step 8B/9: Writing HANA-derived delivery-flow cost sidecar to Firebase ...
+2026-07-21 21:08:31,422 - INFO - Wrote HANA cost sidecar for 2026-07-21 (totalCost=1708864.59, poTotal=1705251.02, fallbackTotal=3613.58)
+2026-07-21 21:08:31,422 - INFO - Step 9/9: Updating changed ticket hash snapshot ...
+2026-07-21 21:08:31,810 - INFO - [FB HASH SNAPSHOT] batch=1 paths=1336 bytes~=145463
+2026-07-21 21:08:32,047 - INFO - [FB HASH SNAPSHOT] batch=1 done
+2026-07-21 21:08:32,047 - INFO - Excel export disabled. Firebase is the source for dashboard data.
+2026-07-21 21:08:32,048 - INFO - Step 10/11: Rebuilding analysis assets from updated Firebase tickets ...
+2026-07-21 21:08:32,126 - INFO - Rebuilding model-series assets with parts output dir: C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\parts_classification_2026-07-21
+2026-07-21 21:08:32,126 - INFO - Parts seed meta: C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\parts_classified_meta.json
+2026-07-21 21:08:32,126 - INFO - Failure timing export: C:\Users\Leo.Li\AppData\Local\Python\pythoncore-3.14-64\python.exe export_vehicle_failure_timing_2025_2026.py --firebase-db-url https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app --firebase-sa-path C:\Users\Leo.Li\Documents\GitHub\warranty\firebase-service-account.json --firebase-root c4cTickets_test --log-level INFO
+2026-07-21 21:08:32,741 INFO Export start: start=20250101 end=20261231 sales_org=3110 sap_client=800
+C:\Users\Leo.Li\Documents\GitHub\warranty\export_vehicle_failure_timing_2025_2026.py:451: UserWarning: pandas only supports SQLAlchemy connectable (engine/connection) or database string URI or sqlite3 DBAPI2 connection. Other DBAPI2 objects are not tested. Please consider using SQLAlchemy.
+  df = pd.read_sql(sql, conn)
+2026-07-21 21:08:36,200 INFO PGI audit rows: 5105
+2026-07-21 21:08:37,745 INFO Sold vehicles: 4761
+2026-07-21 21:08:45,769 INFO Tickets loaded from Firebase: 32781
+2026-07-21 21:08:46,285 INFO Tickets loaded from local CSV: 31992
+2026-07-21 21:08:48,169 INFO Tickets enriched from local CSV: 32781 -> 32781
+2026-07-21 21:09:16,493 INFO Latest workbook updated: C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\vehicle_failure_timing_2025_2026_latest.xlsx
+2026-07-21 21:09:16,495 INFO Workbook written: C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\vehicle_failure_timing_2025_2026_20260721_210856.xlsx
+2026-07-21 21:09:16,495 INFO Analysis ticket timing assets written: C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\analysis_ticket_failure_timing.csv, C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\analysis_ticket_failure_timing.js
+2026-07-21 21:09:16,495 INFO Sold vehicle summary written: C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\vehicle_failure_timing_2025_2026_latest_summary.json
+C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\vehicle_failure_timing_2025_2026_20260721_210856.xlsx
+2026-07-21 21:09:17,345 - INFO - Parts ticket cost map: C:\Users\Leo.Li\AppData\Local\Python\pythoncore-3.14-64\python.exe build_analysis_parts_ticket_cost_map.py --firebase-db-url https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app --firebase-root c4cTickets_test
+Wrote 32781 rows to C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\analysis_parts_ticket_cost_map.json
+2026-07-21 21:09:24,934 - INFO - Approved cost map: C:\Users\Leo.Li\AppData\Local\Python\pythoncore-3.14-64\python.exe build_analysis_approved_cost_map.py --firebase-db-url https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app --monitor-root ctmTicketStatusMonitorV44 --output C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\analysis_approved_cost_by_ticket.json --js-output C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\analysis_approved_cost_by_ticket.js
+Wrote approved cost map for 21145 tickets to C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\analysis_approved_cost_by_ticket.json (total=16096278.17)
+2026-07-21 21:09:26,827 - INFO - Repair source CSV: C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\analysis_ticket_base.csv
+2026-07-21 21:09:26,828 - INFO - Repair analysis export: C:\Users\Leo.Li\AppData\Local\Python\pythoncore-3.14-64\python.exe extract_repairs_2026.py --source C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\analysis_ticket_base.csv --output-dir C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\repairers_2026 --mandt 800 --firebase-root c4cTickets_test
+2026-07-21 21:09:26,934 INFO Reading CSV: C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\analysis_ticket_base.csv
+2026-07-21 21:09:27,861 INFO Rows kept: 14340 (skipped: unassigned=3183, customer_like=0, before_year=15258, no_date=0)
+2026-07-21 21:09:27,871 INFO Unique POs to check for cost and invoice status: 11766
+2026-07-21 21:09:40,429 INFO Found PO cost rows for 11765 / 11766 unique POs
+2026-07-21 21:09:50,757 INFO Found invoices for 7418 / 11766 unique POs
+2026-07-21 21:09:56,123 INFO Firebase RepairerBusinessNameID overlay loaded for 21501 tickets
+2026-07-21 21:09:57,311 INFO Firebase RepairerBusinessNameID overlay available for 21501 tickets
+{
+  "source": "C:\\Users\\Leo.Li\\Documents\\GitHub\\warranty\\outputs\\analysis_ticket_base.csv",
+  "year": 2025,
+  "cny_to_aud_rate": 5.0,
+  "tickets_kept": 14340,
+  "invoiced_tickets": 7418,
+  "open_tickets": 6922,
+  "unique_pos": 11766,
+  "unique_cost_pos": 11765,
+  "unique_invoiced_pos": 7418,
+  "unique_repairers": 1200,
+  "unique_states": 9,
+  "unique_weeks": 82,
+  "confirmed_cost_aud": 8950244.15,
+  "pending_amount_aud": 0.0,
+  "state_breakdown": {
+    "QLD": 6657,
+    "WA": 1287,
+    "NSW": 3370,
+    "VIC": 1596,
+    "NZ": 688,
+    "TAS": 403,
+    "SA": 337,
+    "NT": 1,
+    "Unknown": 1
+  },
+  "firebase_overlay_count": 21501,
+  "firebase_overlay_used": 0,
+  "output_json": "C:\\Users\\Leo.Li\\Documents\\GitHub\\warranty\\outputs\\repairers_2026\\repairers_2026_data.json",
+  "output_js": "C:\\Users\\Leo.Li\\Documents\\GitHub\\warranty\\outputs\\repairers_2026\\repairers_2026_data.js"
+}
+2026-07-21 21:09:59,715 - INFO - Parts classification source export: C:\Users\Leo.Li\AppData\Local\Python\pythoncore-3.14-64\python.exe export_parts_classification_source.py --firebase-db-url https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app --firebase-sa-path C:\Users\Leo.Li\Documents\GitHub\warranty\firebase-service-account.json --firebase-root c4cTickets_test --output C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\parts_classification_source.csv --log-level INFO
+2026-07-21 21:10:12,501 - INFO - Parts classification source rows written: 34843
+2026-07-21 21:10:12,501 - INFO - Output CSV: C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\parts_classification_source.csv
+C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\parts_classification_source.csv
+2026-07-21 21:10:12,649 - INFO - Parts classification build: C:\Program Files\nodejs\node.EXE build_parts_classification.mjs --input C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\parts_classification_source.csv --seed-meta C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\parts_classified_meta.json --output-dir C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\parts_classification_2026-07-21
+Inspect result written to file: C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\parts_classification_2026-07-21\parts_classification_categorized.xlsx.inspect.ndjson
+Saved to C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\parts_classification_2026-07-21\parts_classification_categorized.xlsx
+2026-07-21 21:11:39,421 - INFO - Parts failure summary build: C:\Users\Leo.Li\AppData\Local\Python\pythoncore-3.14-64\python.exe build_analysis_parts_failure_summary.py
+Wrote C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\analysis_parts_failure_summary.json
+Wrote C:\Users\Leo.Li\Documents\GitHub\warranty\outputs\analysis_parts_failure_summary.js
+2026-07-21 21:11:40,227 - INFO - Ticket timeline export: C:\Users\Leo.Li\AppData\Local\Python\pythoncore-3.14-64\python.exe export_ticket_timeline_segments_2025_2026.py
+Workbook written: C:\Users\Leo.Li\Documents\GitHub\warranty\generated_exports\ticket_timeline_segments_2025_2026.xlsx
+Summary JSON written: C:\Users\Leo.Li\Documents\GitHub\warranty\generated_exports\ticket_timeline_summary.json
+Year summary JSON written: C:\Users\Leo.Li\Documents\GitHub\warranty\generated_exports\ticket_timeline_summary_2026.json
+Completion analytics JSON written: C:\Users\Leo.Li\Documents\GitHub\warranty\generated_exports\ticket_timeline_completion_analytics_2026.json
+Qualifying tickets: 4759
+Warranty approval rows: 4759
+Parts issuing rows: 3108
+Repairer rows: 914
+Anomaly rows: 3845
+2026-07-21 21:12:42,906 - INFO - Model-series assets rebuild completed successfully, including repair, parts, and approved-cost outputs.
+2026-07-21 21:12:42,935 - INFO - Analysis asset rebuild completed. Failure timing, repair, parts, and approved-cost assets are refreshed.
+2026-07-21 21:12:42,943 - INFO - Analytics rebuild skipped after fetch because SKIP_ANALYTICS_REBUILD_AFTER_FETCH=1.
+2026-07-21 21:12:42,944 - INFO - Done. Firebase updated. Excel export is disabled by default for automation.
+2026-07-21 21:12:42,945 - INFO - Total elapsed: 1954.0s
+[FETCH DONE] Company fetch finished successfully.
+[COMPARE] Loading current Firebase tickets ...
+[C4C SAP] Using posting date index CSV: C:\Users\Leo.Li\Documents\GitHub\warranty\SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv
+[COMPARE] approvalState: newlyApproved=61, newlyUnapproved=0, correctedDetected=5
+[ANALYTICS] Building pre-calculated dashboard nodes ...
+[ANALYTICS DONE] employees=27, employeeCriticalTickets=291, removed=1584, dealerAnalytics=updated
+[DELIVERY FLOW] Rebuilding history via delivery_flow_aggregator.py ...
+2026-07-21 21:18:31,904 - INFO - Aggregating delivery flow as of 2026-07-21
+2026-07-21 21:18:37,588 - INFO - Loaded HANA cost sidecar from ctmTicketStatusMonitorV44/analytics/deliveryFlow/hanaCostYtd/daily/2026-07-21
+2026-07-21 21:18:37,588 - INFO - KPI: openSoItems=612 partially=202 fully=15016 avgDaysCompleteIssue=26.2 oldestNotIssued=154
+2026-07-21 21:18:37,588 - INFO - Cost report: year=2025 totalCost=1708864.59 purchaserTotalCost=1705251.02 totalSo=10307
+2026-07-21 21:18:37,943 - INFO - Wrote delivery-flow snapshot for 2026-07-21
+2026-07-21 21:18:38,173 - INFO - Wrote Nishi E03 detail payload for 2026-07-21 with 0 rows
+[DELIVERY FLOW] History rebuild finished successfully.
+[TICKET TIMELINE] Rebuilding workbook and summary via export_ticket_timeline_segments_2025_2026.py ...
+Workbook written: C:\Users\Leo.Li\Documents\GitHub\warranty\generated_exports\ticket_timeline_segments_2025_2026.xlsx
+Summary JSON written: C:\Users\Leo.Li\Documents\GitHub\warranty\generated_exports\ticket_timeline_summary.json
+Year summary JSON written: C:\Users\Leo.Li\Documents\GitHub\warranty\generated_exports\ticket_timeline_summary_2026.json
+Completion analytics JSON written: C:\Users\Leo.Li\Documents\GitHub\warranty\generated_exports\ticket_timeline_completion_analytics_2026.json
+Qualifying tickets: 4759
+Warranty approval rows: 4759
+Parts issuing rows: 3108
+Repairer rows: 914
+Anomaly rows: 3845
+[TICKET TIMELINE] Workbook and summary refreshed successfully.
+[COMPARE DONE] tickets=32781, criticalNow=291, entered=56, moved=51, exited=112, events=219

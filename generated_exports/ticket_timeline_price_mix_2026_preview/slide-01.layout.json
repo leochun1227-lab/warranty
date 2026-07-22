@@ -1,0 +1,1143 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/yx2k0o",
+    "id": "yx2k0o",
+    "slide": 1,
+    "layoutId": "dba2808e-fb2f-4276-85fc-e7b882f5da3a",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "3acee927-2b81-4f40-b3bf-f54745cef8ee",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#F5F8FB",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "+mn-lt"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "dba2808e-fb2f-4276-85fc-e7b882f5da3a",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "3acee927-2b81-4f40-b3bf-f54745cef8ee",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "3acee927-2b81-4f40-b3bf-f54745cef8ee",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/nid0jqpk",
+      "id": "1",
+      "bbox": [
+        64,
+        38,
+        280,
+        22
+      ],
+      "geometry": "rect",
+      "text": "2026 TICKET TIMELINE",
+      "textPreview": "2026 TICKET TIMELINE",
+      "resolvedFontSize": 12,
+      "resolvedTextStyle": {
+        "fontSize": 12,
+        "typeface": "+mn-lt",
+        "color": "#0F8F8C",
+        "bold": true,
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "2026 TICKET TIMELINE"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "2026 TICKET TIMELINE",
+          "resolvedTextStyle": {
+            "fontSize": 12,
+            "color": "#0F8F8C",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "2026 TICKET TIMELINE",
+              "fontSize": 12,
+              "color": "#0F8F8C",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/8jmhcb6p",
+      "id": "2",
+      "bbox": [
+        64,
+        68,
+        860,
+        54
+      ],
+      "geometry": "rect",
+      "text": "Price mix shows how ticket value relates to handling duration",
+      "textPreview": "Price mix shows how ticket value relates to handling duration",
+      "resolvedFontSize": 36,
+      "resolvedTextStyle": {
+        "fontSize": 36,
+        "typeface": "+mn-lt",
+        "color": "#172033",
+        "bold": true,
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Price mix shows how ticket value relates to handling"
+          },
+          {
+            "index": 2,
+            "text": "duration"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Price mix shows how ticket value relates to handling duration",
+          "resolvedTextStyle": {
+            "fontSize": 36,
+            "color": "#172033",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Price mix shows how ticket value relates to handling duration",
+              "fontSize": 36,
+              "color": "#172033",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/9kfilg7a",
+      "id": "3",
+      "bbox": [
+        66,
+        120,
+        760,
+        30
+      ],
+      "geometry": "rect",
+      "text": "Each stage groups completed tickets by claim value, then shows the percentage of those tickets completed in each duration bucket.",
+      "textPreview": "Each stage groups completed tickets by claim value, then shows the percentage of those tickets completed in each duration bucket.",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "fontSize": 16,
+        "typeface": "+mn-lt",
+        "color": "#647287",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Each stage groups completed tickets by claim value, then shows the percentage of those tickets completed in each"
+          },
+          {
+            "index": 2,
+            "text": "duration bucket."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Each stage groups completed tickets by claim value, then shows the percentage of those tickets completed in each duration bucket.",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#647287"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Each stage groups completed tickets by claim value, then shows the percentage of those tickets completed in each duration bucket.",
+              "fontSize": 16,
+              "color": "#647287"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/alozelov",
+      "id": "4",
+      "bbox": [
+        64,
+        232,
+        360,
+        210
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#D8E4F1",
+      "lineWidth": 1
+    },
+    {
+      "order": 5,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/vmx0nqpg",
+      "id": "5",
+      "bbox": [
+        86,
+        254,
+        316,
+        28
+      ],
+      "geometry": "rect",
+      "text": "Warranty Approval",
+      "textPreview": "Warranty Approval",
+      "resolvedFontSize": 23,
+      "resolvedTextStyle": {
+        "fontSize": 23,
+        "typeface": "+mn-lt",
+        "color": "#172033",
+        "bold": true,
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Warranty Approval"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Warranty Approval",
+          "resolvedTextStyle": {
+            "fontSize": 23,
+            "color": "#172033",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Warranty Approval",
+              "fontSize": 23,
+              "color": "#172033",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wn61gv61",
+      "id": "6",
+      "bbox": [
+        86,
+        300,
+        316,
+        28
+      ],
+      "geometry": "rect",
+      "text": "5,173 priced tickets",
+      "textPreview": "5,173 priced tickets",
+      "resolvedFontSize": 26,
+      "resolvedTextStyle": {
+        "fontSize": 26,
+        "typeface": "+mn-lt",
+        "color": "#2474A6",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "5,173 priced tickets"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "5,173 priced tickets",
+          "resolvedTextStyle": {
+            "fontSize": 26,
+            "color": "#2474A6"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "5,173 priced tickets",
+              "fontSize": 26,
+              "color": "#2474A6"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/x8fip07m",
+      "id": "7",
+      "bbox": [
+        86,
+        344,
+        316,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Stage average: 24.8 days",
+      "textPreview": "Stage average: 24.8 days",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "fontSize": 16,
+        "typeface": "+mn-lt",
+        "color": "#526176",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Stage average: 24.8 days"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Stage average: 24.8 days",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#526176"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Stage average: 24.8 days",
+              "fontSize": 16,
+              "color": "#526176"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/qpkz21or",
+      "id": "8",
+      "bbox": [
+        86,
+        374,
+        316,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Current standard: 25 days",
+      "textPreview": "Current standard: 25 days",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "fontSize": 16,
+        "typeface": "+mn-lt",
+        "color": "#526176",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Current standard: 25 days"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Current standard: 25 days",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#526176"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Current standard: 25 days",
+              "fontSize": 16,
+              "color": "#526176"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/bqt0b6pc",
+      "id": "9",
+      "bbox": [
+        450,
+        232,
+        360,
+        210
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#D8E4F1",
+      "lineWidth": 1
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/b6hkvmxs",
+      "id": "10",
+      "bbox": [
+        472,
+        254,
+        316,
+        28
+      ],
+      "geometry": "rect",
+      "text": "Parts Preparation",
+      "textPreview": "Parts Preparation",
+      "resolvedFontSize": 23,
+      "resolvedTextStyle": {
+        "fontSize": 23,
+        "typeface": "+mn-lt",
+        "color": "#172033",
+        "bold": true,
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Parts Preparation"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Parts Preparation",
+          "resolvedTextStyle": {
+            "fontSize": 23,
+            "color": "#172033",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Parts Preparation",
+              "fontSize": 23,
+              "color": "#172033",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/a58jmhg7",
+      "id": "11",
+      "bbox": [
+        472,
+        300,
+        316,
+        28
+      ],
+      "geometry": "rect",
+      "text": "3,108 priced tickets",
+      "textPreview": "3,108 priced tickets",
+      "resolvedFontSize": 26,
+      "resolvedTextStyle": {
+        "fontSize": 26,
+        "typeface": "+mn-lt",
+        "color": "#2474A6",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "3,108 priced tickets"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "3,108 priced tickets",
+          "resolvedTextStyle": {
+            "fontSize": 26,
+            "color": "#2474A6"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "3,108 priced tickets",
+              "fontSize": 26,
+              "color": "#2474A6"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/x8z2xwfy",
+      "id": "12",
+      "bbox": [
+        472,
+        344,
+        316,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Stage average: 20.6 days",
+      "textPreview": "Stage average: 20.6 days",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "fontSize": 16,
+        "typeface": "+mn-lt",
+        "color": "#526176",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Stage average: 20.6 days"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Stage average: 20.6 days",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#526176"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Stage average: 20.6 days",
+              "fontSize": 16,
+              "color": "#526176"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 13,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/c7q1oryd",
+      "id": "13",
+      "bbox": [
+        472,
+        374,
+        316,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Current standard: 21 days",
+      "textPreview": "Current standard: 21 days",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "fontSize": 16,
+        "typeface": "+mn-lt",
+        "color": "#526176",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Current standard: 21 days"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Current standard: 21 days",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#526176"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Current standard: 21 days",
+              "fontSize": 16,
+              "color": "#526176"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 14,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/nix0rmxw",
+      "id": "14",
+      "bbox": [
+        836,
+        232,
+        360,
+        210
+      ],
+      "geometry": "roundRect",
+      "fillColor": "#FFFFFF",
+      "lineColor": "#D8E4F1",
+      "lineWidth": 1
+    },
+    {
+      "order": 15,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/2hojihgb",
+      "id": "15",
+      "bbox": [
+        858,
+        254,
+        316,
+        28
+      ],
+      "geometry": "rect",
+      "text": "Repairer Time",
+      "textPreview": "Repairer Time",
+      "resolvedFontSize": 23,
+      "resolvedTextStyle": {
+        "fontSize": 23,
+        "typeface": "+mn-lt",
+        "color": "#172033",
+        "bold": true,
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Repairer Time"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Repairer Time",
+          "resolvedTextStyle": {
+            "fontSize": 23,
+            "color": "#172033",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Repairer Time",
+              "fontSize": 23,
+              "color": "#172033",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 16,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/pkfitcf2",
+      "id": "16",
+      "bbox": [
+        858,
+        300,
+        316,
+        28
+      ],
+      "geometry": "rect",
+      "text": "914 priced tickets",
+      "textPreview": "914 priced tickets",
+      "resolvedFontSize": 26,
+      "resolvedTextStyle": {
+        "fontSize": 26,
+        "typeface": "+mn-lt",
+        "color": "#2474A6",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "914 priced tickets"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "914 priced tickets",
+          "resolvedTextStyle": {
+            "fontSize": 26,
+            "color": "#2474A6"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "914 priced tickets",
+              "fontSize": 26,
+              "color": "#2474A6"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 17,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/oj61kryh",
+      "id": "17",
+      "bbox": [
+        858,
+        344,
+        316,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Stage average: 32.6 days",
+      "textPreview": "Stage average: 32.6 days",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "fontSize": 16,
+        "typeface": "+mn-lt",
+        "color": "#526176",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Stage average: 32.6 days"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Stage average: 32.6 days",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#526176"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Stage average: 32.6 days",
+              "fontSize": 16,
+              "color": "#526176"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 18,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/fex0n2xk",
+      "id": "18",
+      "bbox": [
+        858,
+        374,
+        316,
+        24
+      ],
+      "geometry": "rect",
+      "text": "Current standard: 33 days",
+      "textPreview": "Current standard: 33 days",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "fontSize": 16,
+        "typeface": "+mn-lt",
+        "color": "#526176",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Current standard: 33 days"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Current standard: 33 days",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#526176"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Current standard: 33 days",
+              "fontSize": 16,
+              "color": "#526176"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 19,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ed4jexgz",
+      "id": "19",
+      "bbox": [
+        64,
+        664,
+        1152,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "#D8E4F1",
+      "lineWidth": 0
+    },
+    {
+      "order": 20,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/i94jqx07",
+      "id": "20",
+      "bbox": [
+        64,
+        676,
+        420,
+        20
+      ],
+      "geometry": "rect",
+      "text": "Generated from ticket_timeline_summary.json",
+      "textPreview": "Generated from ticket_timeline_summary.json",
+      "resolvedFontSize": 11,
+      "resolvedTextStyle": {
+        "fontSize": 11,
+        "typeface": "+mn-lt",
+        "color": "#7A8796",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Generated from ticket_timeline_summary.json"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Generated from ticket_timeline_summary.json",
+          "resolvedTextStyle": {
+            "fontSize": 11,
+            "color": "#7A8796"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Generated from ticket_timeline_summary.json",
+              "fontSize": 11,
+              "color": "#7A8796"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 21,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/jadkz2hs",
+      "id": "21",
+      "bbox": [
+        1168,
+        676,
+        48,
+        20
+      ],
+      "geometry": "rect",
+      "text": "1",
+      "textPreview": "1",
+      "resolvedFontSize": 11,
+      "resolvedTextStyle": {
+        "fontSize": 11,
+        "typeface": "+mn-lt",
+        "color": "#7A8796",
+        "alignment": "right",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "1"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "1",
+          "resolvedTextStyle": {
+            "fontSize": 11,
+            "color": "#7A8796",
+            "alignment": "right"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "1",
+              "fontSize": 11,
+              "color": "#7A8796",
+              "alignment": "right"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}
