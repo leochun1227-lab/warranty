@@ -818,8 +818,8 @@ function summaryUrlForYear(year){
 }
 
 function renderYearContext(){
-  document.title="Ticket Timeline";
-  pageTitle.textContent="Ticket Timeline";
+  document.title=`${selectedYear} Ticket Timeline`;
+  pageTitle.textContent=`${selectedYear} Ticket Timeline`;
   panelTitle.textContent=`${selectedYear} Ticket Timeline`;
   scopeBadge.textContent=`Created in ${selectedYear}`;
   summaryKicker.textContent=`Completed in ${selectedYear} workbook summary`;
