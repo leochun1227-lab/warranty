@@ -1181,6 +1181,19 @@
   function addMonthsUTC(d, months){
     return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + months, 1));
   }
+  function addMonthsClampedUTC(d, months){
+    const targetYear = d.getUTCFullYear();
+    const targetMonth = d.getUTCMonth() + months;
+    const lastDay = new Date(Date.UTC(targetYear, targetMonth + 1, 0)).getUTCDate();
+    return new Date(Date.UTC(targetYear, targetMonth, Math.min(d.getUTCDate(), lastDay)));
+  }
+  function rollingMonthWindow(endDate, months){
+    const end = copyUTC(endDate || new Date());
+    return {
+      start: addDaysUTC(addMonthsClampedUTC(end, -months), 1),
+      end,
+    };
+  }
   function weekStartUTC(d){
     const x = copyUTC(d);
     const off = (x.getUTCDay() + 6) % 7;
@@ -1491,7 +1504,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
   function openSoTicketRows(tickets){
     return uniqueTicketsBySalesOrder(tickets, ticket => Number(ticket.openItems || 0) > 0 && Number(ticket.issuedItems || 0) === 0);
   }
-  function materialMetricsFromTickets(tickets){
+  function materialMetricsFromTickets(tickets, leadWindowStart=null, leadWindowEnd=null){
     let issuedCount = 0;
     let openCount = 0;
     let leadSum = 0;
@@ -1536,6 +1549,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     });
     soState.forEach(row => {
       if (!row.hasIssued || row.hasOpen || !row.completeIssueDate) return;
+      if (leadWindowStart && row.completeIssueDate < leadWindowStart) return;
+      if (leadWindowEnd && row.completeIssueDate > leadWindowEnd) return;
       leadSum += Math.max(0, Math.round((row.completeIssueDate - row.soCreated) / 86400000));
       leadCount += 1;
       if (!leadPeriodStart || row.completeIssueDate < leadPeriodStart) leadPeriodStart = row.completeIssueDate;
@@ -1549,6 +1564,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       leadCount,
       leadPeriodStart,
       leadPeriodEnd,
+      leadWindowStart,
+      leadWindowEnd,
     };
   }
   function materialAgingFromTickets(tickets, latestAsOf){
@@ -2124,6 +2141,35 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     }
     return out;
   }
+  function rollingLeadStatsFromMonthly(latest, windowStart, windowEnd){
+    const rows = buildMonthlyIssuedLeadSeries(latest).filter(row => {
+      if (!row.start || !row.end) return false;
+      return row.end >= windowStart && row.start <= windowEnd;
+    });
+    let weightedSum = 0;
+    let weight = 0;
+    let periodStart = null;
+    let periodEnd = null;
+    rows.forEach(row => {
+      const count = n(row.partsIssued);
+      const avg = n(row.avgDaysToCompleteIssue ?? row.avgDaysToFirstIssue);
+      if (!count || !avg) return;
+      weightedSum += avg * count;
+      weight += count;
+      if (!periodStart || row.start < periodStart) periodStart = row.start;
+      if (!periodEnd || row.end > periodEnd) periodEnd = row.end;
+    });
+    if (!weight) return null;
+    return {
+      avgDaysToCompleteIssue: weightedSum / weight,
+      avgDaysToFirstIssue: weightedSum / weight,
+      leadCount: weight,
+      leadPeriodStart: periodStart,
+      leadPeriodEnd: periodEnd,
+      leadWindowStart: windowStart,
+      leadWindowEnd: windowEnd,
+    };
+  }
   function partsSelectedSummaryRows(series, latest){
     const visible = state.granularity === "year" ? series : series.slice(-12);
     const latestRow = visible[visible.length - 1] || null;
@@ -2575,17 +2621,22 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
   }
 
   function renderCards(latest, latestGroup, issuedSeries, report, currentTickets){
-    const materialStats = Array.isArray(currentTickets) && currentTickets.length ? materialMetricsFromTickets(currentTickets) : null;
-    const avgIssueSourceLabel = materialStats ? "current tickets" : "latest snapshot";
+    const latestDate = parseLooseDate(latest?.asOf) || parseDate(latest?.asOf) || new Date();
+    const leadWindow = rollingMonthWindow(latestDate, 12);
+    const hasCurrentTickets = Array.isArray(currentTickets) && currentTickets.length;
+    const materialStats = hasCurrentTickets ? materialMetricsFromTickets(currentTickets, leadWindow.start, leadWindow.end) : null;
+    const fallbackLeadStats = materialStats ? null : rollingLeadStatsFromMonthly(latest, leadWindow.start, leadWindow.end);
+    const avgIssueStats = materialStats || fallbackLeadStats;
+    const avgIssueSourceLabel = avgIssueStats ? "last 12 months" : "latest snapshot";
     const awaitingNow = Array.isArray(currentTickets) && currentTickets.length
       ? awaitingTicketRows(currentTickets).length
       : (latest.awaitingParts?.current ?? latest.statusMix.awaitingItems ?? latest.kpi.openSoItems ?? 0);
     const openNotIssuedParts = materialStats ? materialStats.openCount : (latest.kpi.openNotIssuedParts ?? latest.kpi.openSoItems ?? 0);
-    const avgDaysToCompleteIssue = materialStats
-      ? (materialStats.avgDaysToCompleteIssue ?? materialStats.avgDaysToFirstIssue ?? 0)
+    const avgDaysToCompleteIssue = avgIssueStats
+      ? (avgIssueStats.avgDaysToCompleteIssue ?? avgIssueStats.avgDaysToFirstIssue ?? 0)
       : (latest.kpi.avgDaysToCompleteIssue ?? latest.kpi.avgDaysToFirstIssue ?? 0);
-    const avgIssuePeriod = materialStats?.leadPeriodStart && materialStats?.leadPeriodEnd
-      ? `Completed issue period: ${fmtDateRangeShort(materialStats.leadPeriodStart, materialStats.leadPeriodEnd)}`
+    const avgIssuePeriod = avgIssueStats?.leadWindowStart && avgIssueStats?.leadWindowEnd
+      ? `Completed issue period: ${fmtDateRangeShort(avgIssueStats.leadWindowStart, avgIssueStats.leadWindowEnd)}`
       : latestGroup?.tooltip
         ? `Snapshot period: ${latestGroup.tooltip}`
         : latest?.asOf
