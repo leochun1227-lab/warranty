@@ -25,7 +25,9 @@ DEFAULT_PARTS_CLASSIFIED_CSV = ROOT / "outputs" / "parts_classified.csv"
 DEFAULT_REPAIRERS_JSON = ROOT / "outputs" / "repairers_2026" / "repairers_2026_data.json"
 DEFAULT_OUTPUT = ROOT / "generated_exports" / "ticket_timeline_segments_2025_2026.xlsx"
 DEFAULT_SUMMARY_JSON = ROOT / "generated_exports" / "ticket_timeline_summary.json"
+DEFAULT_SUMMARY_JS = ROOT / "generated_exports" / "ticket_timeline_summary.js"
 DEFAULT_COMPLETION_ANALYTICS_JSON = ROOT / "generated_exports" / "ticket_timeline_completion_analytics_2026.json"
+DEFAULT_COMPLETION_ANALYTICS_JS = ROOT / "generated_exports" / "ticket_timeline_completion_analytics_2026.js"
 DEFAULT_PRICE_MIX_PPT_SCRIPT = ROOT / "generate_ticket_timeline_price_mix_ppt.mjs"
 DEFAULT_START_DATE = date(date.today().year, 1, 1)
 
@@ -53,7 +55,9 @@ class Paths:
     repairers_json: Path
     output: Path
     summary_json: Path
+    summary_js: Path
     completion_analytics_json: Path
+    completion_analytics_js: Path
 
 
 def clean(value: Any) -> str:
@@ -1018,6 +1022,29 @@ def build_completion_buckets(values: Iterable[Any], buckets: list[tuple[str, str
     return rows
 
 
+def build_prior_created_buckets(
+    df: pd.DataFrame,
+    duration_col: str,
+    year: int,
+    bucket_defs: list[tuple[str, str]] | None = None,
+) -> dict[str, dict[str, Any]]:
+    defs = bucket_defs or COMPLETION_BUCKETS
+    out: dict[str, dict[str, Any]] = {label: {"count": 0, "pct": 0} for label, _color in defs}
+    if df is None or df.empty or duration_col not in df.columns or "created_date" not in df.columns:
+        return out
+    valid_df = df[df[duration_col].map(is_valid_duration_value)].copy()
+    for label, _color in defs:
+        bucket_df = valid_df[valid_df[duration_col].map(lambda value, label=label: duration_bucket_name(float(value), defs) == label)]
+        total = len(bucket_df)
+        prior_count = sum(
+            1
+            for value in bucket_df["created_date"].tolist()
+            if (created_date := to_date(value)) is not None and created_date.year < year
+        )
+        out[label] = {"count": int(prior_count), "pct": round(prior_count / total * 100, 1) if total else 0}
+    return out
+
+
 def build_duration_amount_distributions(
     df: pd.DataFrame,
     duration_col: str,
@@ -1221,6 +1248,7 @@ def completion_stage_payload(
         "title": title,
         "overLabel": f"{round(over_count / len(values) * 100, 1) if values else 0}% over",
         "buckets": build_completion_buckets(values, bucket_defs),
+        "priorBuckets": build_prior_created_buckets(df, duration_col, year, bucket_defs),
         "monthBuckets": build_completion_month_buckets(df, completed_col, duration_col, year, as_of, bucket_defs),
         "trend": build_completion_month_trend(df, completed_col, duration_col, threshold_days, year, as_of),
         "tickets": latest_overtime_ticket_rows(df, completed_col, duration_col, threshold_days, owner_col),
@@ -1408,10 +1436,17 @@ def build_completion_analytics_payload(
     repairer_completed_df = repairer_all_df[
         repairer_all_df["invoice_date"].map(lambda value: completed_in_year(value, year, as_of))
     ].copy()
-    total_handling_all_df = build_total_handling_df(all_parts_joined_df, invoice_df)
+    total_handling_all_df = repairer_all_df.copy()
+    total_handling_all_df["created_to_invoice_days_completed"] = total_handling_all_df["created_to_invoice_days"]
     total_handling_completed_df = total_handling_all_df[
         total_handling_all_df["invoice_date"].map(lambda value: completed_in_year(value, year, as_of))
         & total_handling_all_df["created_to_invoice_days_completed"].map(lambda value: value is not None and value >= 0)
+        & total_handling_all_df["approval_days"].map(lambda value: value is not None and value >= 0)
+        & total_handling_all_df["parts_issuing_days"].map(lambda value: value is not None and value >= 0)
+        & total_handling_all_df["repairer_repair_days"].map(lambda value: value is not None and value >= 0)
+        & total_handling_all_df["approved_date"].notna()
+        & total_handling_all_df["so_created_date_joined"].notna()
+        & total_handling_all_df["complete_issue_date_joined"].notna()
     ].copy()
 
     payload = {
@@ -1984,6 +2019,13 @@ def write_timeline_summary_json(path: Path, payload: dict[str, Any]) -> Path:
     return path
 
 
+def write_timeline_data_js(path: Path, global_name: str, payload: dict[str, Any]) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    data = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+    path.write_text(f"window.{global_name}={data};\n", encoding="utf-8")
+    return path
+
+
 def yearly_summary_json_path(path: Path, year: int) -> Path:
     return path.with_name(f"{path.stem}_{year}{path.suffix}")
 
@@ -2028,7 +2070,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--repairers-json", default=str(DEFAULT_REPAIRERS_JSON))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     parser.add_argument("--summary-json", default=str(DEFAULT_SUMMARY_JSON))
+    parser.add_argument("--summary-js", default=str(DEFAULT_SUMMARY_JS))
     parser.add_argument("--completion-analytics-json", default=str(DEFAULT_COMPLETION_ANALYTICS_JSON))
+    parser.add_argument("--completion-analytics-js", default=str(DEFAULT_COMPLETION_ANALYTICS_JS))
     parser.add_argument("--start-date", default=DEFAULT_START_DATE.isoformat())
     parser.add_argument("--end-date", default="")
     return parser.parse_args()
@@ -2049,7 +2093,9 @@ def main() -> int:
         repairers_json=Path(args.repairers_json),
         output=Path(args.output),
         summary_json=Path(args.summary_json),
+        summary_js=Path(args.summary_js),
         completion_analytics_json=Path(args.completion_analytics_json),
+        completion_analytics_js=Path(args.completion_analytics_js),
     )
     validate_paths(paths)
     start_date = parse_date(args.start_date)
@@ -2145,17 +2191,35 @@ def main() -> int:
         workbook_path=written_path,
     )
     written_summary_path = write_timeline_summary_json(paths.summary_json, summary_payload)
+    written_summary_js_path = write_timeline_data_js(
+        paths.summary_js,
+        "TICKET_TIMELINE_SUMMARY",
+        summary_payload,
+    )
     written_yearly_summary_path = write_timeline_summary_json(
         yearly_summary_json_path(paths.summary_json, start_date.year),
         summary_payload,
     )
+    written_yearly_summary_js_path = write_timeline_data_js(
+        yearly_summary_json_path(paths.summary_js, start_date.year),
+        f"TICKET_TIMELINE_SUMMARY_{start_date.year}",
+        summary_payload,
+    )
     written_completion_analytics_path = write_timeline_summary_json(paths.completion_analytics_json, completion_analytics_payload)
+    written_completion_analytics_js_path = write_timeline_data_js(
+        paths.completion_analytics_js,
+        "TICKET_TIMELINE_COMPLETION_ANALYTICS_2026",
+        completion_analytics_payload,
+    )
     written_price_mix_ppt_path = try_generate_price_mix_ppt()
 
     print(f"Workbook written: {written_path}")
     print(f"Summary JSON written: {written_summary_path}")
+    print(f"Summary JS written: {written_summary_js_path}")
     print(f"Year summary JSON written: {written_yearly_summary_path}")
+    print(f"Year summary JS written: {written_yearly_summary_js_path}")
     print(f"Completion analytics JSON written: {written_completion_analytics_path}")
+    print(f"Completion analytics JS written: {written_completion_analytics_js_path}")
     if written_price_mix_ppt_path:
         print(f"Price mix PPT written: {written_price_mix_ppt_path}")
     print(f"Qualifying tickets: {len(qualifying_df)}")

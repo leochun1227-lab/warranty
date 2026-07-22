@@ -63,7 +63,7 @@ body{margin:0;background:
 .panelKicker{font-size:11px;text-transform:uppercase;letter-spacing:.14em;font-weight:760;color:#778392}
 .panelTitle{font-size:22px;line-height:1.14;font-weight:660;margin:6px 0 7px;letter-spacing:-.012em;color:var(--heading)}
 .timelinePanelHead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
-.timelineAvg{margin-top:3px;text-align:right;white-space:nowrap}
+.timelineAvg{margin-top:3px;text-align:center;white-space:nowrap}
 .timelineAvg span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:760;color:#778392}
 .timelineAvg strong{display:block;margin-top:4px;font-size:22px;line-height:1;font-weight:780;letter-spacing:-.025em;color:var(--heading)}
 .roadStage{position:relative;height:390px;border-radius:23px;background:
@@ -183,8 +183,9 @@ body{margin:0;background:
 .definition span{font-size:12px;color:#667284;line-height:1.45}
 .previewPage .heroGrid{grid-template-columns:1fr}
 .previewPage .pageTop{display:none}
-.previewPage .main{padding-top:18px}
-.previewPage .hero{padding-bottom:10px}
+.previewPage .main{padding:14px 14px 42px}
+.previewPage .hero{padding:16px 16px 8px;border-radius:24px}
+.previewPage .panel{padding:16px;border-radius:20px}
 .previewPage .detailPanel{display:none}
 .previewPage .timelinePanel{min-height:582px;padding-bottom:8px}
 .previewPage .timelinePanel.evidenceCollapsed{min-height:292px}
@@ -253,6 +254,34 @@ body{margin:0;background:
 .previewPage .belowGrid{grid-template-columns:.78fr 1.22fr;align-items:start}
 .previewPage .analyticsPanel{margin-top:8px}
 .previewPage .analyticsGrid{display:grid;grid-template-columns:minmax(250px,.28fr) minmax(560px,.72fr);gap:22px;align-items:start}
+.previewPage .analyticsSections{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px;align-items:stretch}
+.previewPage .analyticsSection{min-width:0;border:1px solid rgba(36,116,166,.16);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(248,252,251,.8));box-shadow:0 12px 28px rgba(35,48,60,.05);padding:14px 13px 13px}
+.previewPage .analyticsSectionHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px}
+.previewPage .analyticsSectionTitle{margin:0;color:var(--heading);font-size:16px;font-weight:560;letter-spacing:0}
+.previewPage .analyticsSectionMeta{margin-top:3px;display:flex;gap:7px;align-items:center;flex-wrap:wrap;color:#647287;font-size:10.5px;font-weight:500}
+.previewPage .analyticsSectionGrid{display:grid;grid-template-columns:1fr;gap:13px;align-items:start}
+.previewPage .analyticsMiniLabel{margin:0 0 8px;color:#526176;font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.previewPage .miniDistribution{display:grid;grid-template-columns:118px minmax(0,1fr);gap:12px;align-items:center}
+.previewPage .miniDistribution .donut{width:118px}
+.previewPage .miniDistribution .donut:after{width:66px;font-size:10.8px;font-weight:560;color:#1d2a3d}
+.previewPage .miniBucketList{display:grid;gap:6px}
+.previewPage .miniBucketRow{display:grid;grid-template-columns:38px minmax(0,1fr) 82px;gap:7px;align-items:center;color:#3d4d61;font-size:10.5px;font-weight:520}
+.previewPage .miniBucketTrack{position:relative;height:13px;border-radius:999px;background:rgba(36,116,166,.08);overflow:hidden}
+.previewPage .miniBucketFill{position:absolute;left:0;top:0;height:100%;width:var(--w);min-width:7px;border-radius:999px;background:linear-gradient(90deg,var(--c),rgba(137,217,188,.82));box-shadow:inset 0 -1px 0 rgba(23,33,47,.1)}
+.previewPage .miniBucketPrior{position:absolute;left:0;top:0;height:100%;width:var(--prior-w);min-width:0;border-radius:999px;background:repeating-linear-gradient(135deg,rgba(29,42,61,.32) 0 3px,rgba(255,255,255,.18) 3px 6px);opacity:0;pointer-events:none}
+.previewPage .showPriorOverlay .miniBucketPrior{opacity:1}
+.previewPage .miniBucketValue{text-align:right;color:#26354a;font-variant-numeric:tabular-nums;white-space:nowrap}
+.previewPage .analyticsMiniTrend .yearTrend{height:278px}
+.previewPage .analyticsMiniTrend .trendChartTitle{text-align:left;margin:0 0 2px}
+.previewPage .analyticsMiniTrend .chartLegend{margin:5px 0 0 48px;font-size:10.5px;font-weight:520;gap:10px;color:#3d4d61}
+.previewPage .analyticsMiniTrend .axisText{font-size:12px;font-weight:620;fill:#26354a}
+.previewPage .analyticsMiniTrend .axisTitle{font-size:12.4px;font-weight:620;fill:#17212f}
+.previewPage .analyticsLoading{grid-column:1/-1;padding:28px 16px;border:1px dashed rgba(36,116,166,.22);border-radius:16px;background:rgba(255,255,255,.72);color:#526176;font-size:13px;font-weight:520;text-align:center}
+.previewPage .priorOverlayToggle{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 13px;border-radius:12px;background:#fffdf8;border:1px solid rgba(36,116,166,.22);color:#34506a;font-family:inherit;font-size:12px;font-weight:560;cursor:pointer;box-shadow:0 8px 18px rgba(35,48,60,.05)}
+.previewPage .priorOverlayToggle.active{background:rgba(36,116,166,.1);border-color:rgba(36,116,166,.34);color:#155f85}
+.previewPage .priorBarShadow{fill:url(#priorYearStripe);opacity:0}
+.previewPage .showPriorOverlay .priorBarShadow{opacity:.78}
+.previewPage .donut.priorActive{box-shadow:inset 0 0 0 1px rgba(23,33,47,.08),0 0 0 7px rgba(36,116,166,.08),0 0 0 11px rgba(29,42,61,.05)}
 .previewPage .panelTitleRow{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap}
 .previewPage .responsibilityBadge{display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:999px;background:rgba(15,143,140,.11);border:1px solid rgba(15,143,140,.2);color:#0d6d6b;font-size:11px;font-weight:760;letter-spacing:.04em;text-transform:uppercase}
 .previewPage .distributionWrap{display:grid;grid-template-columns:170px 1fr;gap:18px;align-items:center;margin-top:16px}
@@ -265,6 +294,7 @@ body{margin:0;background:
 .previewPage .bucketPct{font-weight:760;color:var(--heading);font-variant-numeric:tabular-nums}
 .previewPage .bucketName{font-size:12px;font-weight:760;color:#3d4d61}
 .previewPage .trendToolbar{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-top:4px}
+.previewPage .trendActions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .previewPage .softExport{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:0 13px;border-radius:12px;background:rgba(15,143,140,.1);border:1px solid rgba(15,143,140,.22);color:#0d6d6b;text-decoration:none;font-size:12px;font-weight:760}
 .previewPage .trendChart{position:relative;display:grid;grid-template-columns:repeat(8,minmax(34px,1fr));gap:10px;align-items:end;min-height:250px;margin-top:18px;padding:18px 0 4px;border-bottom:1px solid rgba(23,33,47,.13)}
 .previewPage .trendChart:before{content:"";position:absolute;left:0;right:0;top:38%;height:1px;background:rgba(23,33,47,.1)}
@@ -282,10 +312,10 @@ body{margin:0;background:
 .previewPage .trendBlock{position:relative}
 .previewPage .trendChartTitle{text-align:center;margin:0 0 6px;color:#748397}
 .previewPage .yearTrend{width:100%;height:306px;display:block;overflow:visible;margin-top:0}
-.previewPage .axisText{font-size:10px;font-weight:760;fill:#68778a;letter-spacing:.02em}
-.previewPage .axisTitle{font-size:11px;font-weight:760;fill:#3d4d61;letter-spacing:.04em}
-.previewPage .gridLine{stroke:rgba(23,33,47,.11);stroke-width:1}
-.previewPage .axisLine{stroke:rgba(23,33,47,.28);stroke-width:1.2}
+.previewPage .axisText{font-size:10.8px;font-weight:600;fill:#4c5e73;letter-spacing:0}
+.previewPage .axisTitle{font-size:11.4px;font-weight:600;fill:#243247;letter-spacing:.02em}
+.previewPage .gridLine{stroke:rgba(23,33,47,.15);stroke-width:1}
+.previewPage .axisLine{stroke:rgba(23,33,47,.34);stroke-width:1.2}
 .previewPage .avgBar{fill:rgba(137,217,188,.72);stroke:rgba(15,143,140,.42);stroke-width:1}
 .previewPage .avgBar.maturing{fill:rgba(137,217,188,.34);stroke-dasharray:4 3}
 .previewPage .rollingLine{fill:none;stroke:#2474a6;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
@@ -390,8 +420,9 @@ body{
 .previewPage .tipAmountName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .previewPage .tipAmountValue{font-variant-numeric:tabular-nums;color:#1d2a3d;font-weight:520;text-align:right;white-space:nowrap;font-feature-settings:"tnum" 1}
 .previewPage .tipAmountFoot{margin-top:8px;color:#647287;font-size:11px;font-weight:500}
-@media(max-width:1180px){.previewPage .belowGrid{grid-template-columns:1fr}.previewPage .analyticsGrid{grid-template-columns:1fr}.previewPage .distributionWrap{grid-template-columns:150px 1fr}.previewPage .donut{width:150px}}
-@media(max-width:620px){.previewPage .distributionWrap{grid-template-columns:1fr}.previewPage .trendChart{grid-template-columns:repeat(4,minmax(0,1fr))}.previewPage .filteredRow{grid-template-columns:1fr auto}.previewPage .filteredRow span{grid-column:1 / -1}}
+@media(max-width:1380px){.previewPage .analyticsSections{grid-template-columns:repeat(2,minmax(0,1fr))}.previewPage .miniDistribution .donut{width:128px}.previewPage .miniDistribution .donut:after{width:72px}.previewPage .miniBucketRow{grid-template-columns:42px minmax(0,1fr) 90px}.previewPage .analyticsMiniTrend .yearTrend{height:286px}}
+@media(max-width:1180px){.previewPage .belowGrid{grid-template-columns:1fr}.previewPage .analyticsGrid{grid-template-columns:1fr}.previewPage .distributionWrap{grid-template-columns:150px 1fr}.previewPage .donut{width:150px}.previewPage .miniDistribution .donut{width:128px}}
+@media(max-width:620px){.previewPage .analyticsSections{grid-template-columns:1fr}.previewPage .distributionWrap,.previewPage .miniDistribution{grid-template-columns:1fr}.previewPage .trendChart{grid-template-columns:repeat(4,minmax(0,1fr))}.previewPage .filteredRow{grid-template-columns:1fr auto}.previewPage .filteredRow span{grid-column:1 / -1}.previewPage .main{padding:10px 8px 34px}.previewPage .hero{padding:10px 8px 8px}.previewPage .analyticsSection{padding:12px 10px}.previewPage .miniBucketRow{grid-template-columns:42px minmax(0,1fr) 86px}.previewPage .analyticsMiniTrend .yearTrend{height:200px}}
 @keyframes caravanBob{0%,100%{margin-top:0}50%{margin-top:-4px}}
 @keyframes wheelSpin{to{transform:rotate(360deg)}}
 @keyframes personNod{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(-1.5deg)}}
@@ -451,8 +482,8 @@ body{
               <div class="panelKicker">Hover the road or cards</div>
               <h2 id="panelTitle" class="panelTitle">2026 Ticket Timeline</h2>
             </div>
-            <div class="timelineAvg" aria-label="Average duration excluding car sold to ticket open">
-              <span>Avg Duration:</span>
+            <div class="timelineAvg" aria-label="Target average process duration">
+              <span>Target Avg Duration:</span>
               <strong id="timelineAvgDuration">-- days</strong>
             </div>
           </div>
@@ -523,31 +554,19 @@ body{
           <div id="summaryKicker" class="panelKicker">Completed in 2026 workbook summary</div>
           <h2 id="analyticsTitle" class="panelTitle">Handling Duration Distribution</h2>
         </div>
-        <a id="filteredExport" class="softExport" href="generated_exports/ticket_timeline_segments_2025_2026.xlsx">Export stage + All Page Tickets Detail</a>
-      </div>
-      <div class="analyticsGrid">
-        <div>
-          <div class="panelTitleRow">
-            <span id="responsibilityBadge" class="responsibilityBadge">Warranty employee</span>
-          </div>
-          <div id="summaryGrid" class="summaryGrid compactSummary"></div>
-          <div class="distributionWrap">
-            <div id="durationDonut" class="donut" data-label="32.8% over"></div>
-            <div id="bucketList" class="bucketList" aria-label="Duration distribution buckets"></div>
-          </div>
-        </div>
-        <div class="trendBlock">
-          <div class="panelKicker trendChartTitle">Monthly completion speed</div>
-          <div id="trendChart" aria-label="2026 monthly average duration chart"></div>
-          <div class="chartLegend"><span class="legendMark">monthly avg days</span><span class="legendMark line">3-month rolling avg</span></div>
-          <div id="filteredList" class="filteredList"></div>
+        <div class="trendActions">
+          <button id="priorOverlayToggle" class="priorOverlayToggle" type="button" aria-pressed="false">Before this year</button>
+          <a id="filteredExport" class="softExport" href="generated_exports/ticket_timeline_segments_2025_2026.xlsx">Export All Page Tickets Detail</a>
         </div>
       </div>
-      <div id="selectionStrip" class="selectionStrip"></div>
+      <div id="analyticsSections" class="analyticsSections" aria-label="All handling duration analytics"></div>
     </section>
   </main>
 </div>
 
+<script src="generated_exports/ticket_timeline_summary_2026.js"></script>
+<script src="generated_exports/ticket_timeline_summary.js"></script>
+<script src="generated_exports/ticket_timeline_completion_analytics_2026.js"></script>
 <script>
 const TIMELINE_SUMMARY_URL="generated_exports/ticket_timeline_summary.json";
 const COMPLETION_ANALYTICS_URL="generated_exports/ticket_timeline_completion_analytics_2026.json";
@@ -631,6 +650,7 @@ let activeIndex=0;
 let pinned=false;
 let activeTimelineSummary=null;
 let evidenceVisible=false;
+let showPriorOverlay=false;
 const evidenceViewModeByKey={};
 const root=document.documentElement;
 const pageTitle=document.getElementById("pageTitle");
@@ -764,45 +784,7 @@ const fallbackEvidenceByKey={
     distribution:[["0-7",17.8,"#0f8f8c",161],["8-14",16.4,"#4f8f42",148],["15-21",12.7,"#2474a6",115],["22-30",10.5,"#d88a18",95],["31-60",26.4,"#ef9f42",239],["60+",16.2,"#c9513f",147]]
   }
 };
-let previewStageAnalysis={
-  approval:{
-    responsibility:"Warranty employee",
-    exportLabel:"Warranty Approval",
-    overLabel:"32.8% over",
-    sortLabel:"Latest approved over-average tickets",
-    buckets:[["0-7",40.6,"#0f8f8c",1909],["8-14",13.2,"#4f8f42",620],["15-21",8.4,"#2474a6",394],["22-30",7.8,"#d88a18",368],["31-60",16.0,"#ef9f42",754],["60+",14.0,"#c9513f",657]],
-    trend:[{"label":"Jan 1","avg":66.12,"completed":130,"entered":130,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":66.12,"over":111,"maturing":false},{"label":"Jan 12","avg":62.66,"completed":284,"entered":284,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":64.39,"over":229,"maturing":false},{"label":"Jan 26","avg":48.97,"completed":406,"entered":406,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":59.25,"over":221,"maturing":false},{"label":"Feb 9","avg":44.42,"completed":389,"entered":389,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":52.02,"over":247,"maturing":false},{"label":"Feb 23","avg":37.29,"completed":297,"entered":297,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":43.56,"over":147,"maturing":false},{"label":"Mar 9","avg":28.53,"completed":347,"entered":347,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":36.75,"over":132,"maturing":false},{"label":"Mar 23","avg":25.44,"completed":327,"entered":327,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":30.42,"over":123,"maturing":false},{"label":"Apr 6","avg":23.97,"completed":372,"entered":372,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":25.98,"over":124,"maturing":false},{"label":"Apr 20","avg":18.54,"completed":332,"entered":332,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":22.65,"over":87,"maturing":false},{"label":"May 4","avg":11.56,"completed":436,"entered":436,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":18.02,"over":57,"maturing":false},{"label":"May 18","avg":10.22,"completed":327,"entered":327,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":13.44,"over":46,"maturing":false},{"label":"Jun 1","avg":5.66,"completed":298,"entered":298,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":9.15,"over":14,"maturing":true},{"label":"Jun 15","avg":5.76,"completed":346,"entered":346,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":7.21,"over":6,"maturing":true},{"label":"Jun 29","avg":2.72,"completed":295,"entered":295,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":4.71,"over":0,"maturing":true},{"label":"Jul 13","avg":1.12,"completed":116,"entered":116,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":3.2,"over":0,"maturing":true}],
-    tickets:[["#29947","Marissa Colosimo","185 days"],["#31450","Leanne Pulford","150 days"],["#36568","Leanne Pulford","32 days"]]
-  },
-  parts:{
-    responsibility:"Parts tickets + days",
-    exportLabel:"Parts Preparation",
-    overLabel:"31.0% over",
-    sortLabel:"Latest complete-issue over-average tickets",
-    buckets:[["0-7",21.9,"#0f8f8c",674],["8-14",31.0,"#4f8f42",955],["15-21",16.1,"#2474a6",497],["22-30",10.0,"#d88a18",307],["31-60",15.7,"#ef9f42",483],["60+",5.3,"#c9513f",163]],
-    trend:[{"label":"Jan 1","avg":3,"completed":1,"entered":1,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":3,"over":0,"maturing":false},{"label":"Jan 12","avg":26,"completed":6,"entered":6,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":14.5,"over":1,"maturing":false},{"label":"Jan 26","avg":14.91,"completed":35,"entered":35,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":14.64,"over":3,"maturing":false},{"label":"Feb 9","avg":23.29,"completed":214,"entered":215,"open":1,"openAgeAvg":154,"openAgeMax":154,"roll6":21.4,"over":95,"maturing":false},{"label":"Feb 23","avg":19.59,"completed":202,"entered":202,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":19.26,"over":79,"maturing":false},{"label":"Mar 9","avg":19.71,"completed":224,"entered":224,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":20.86,"over":54,"maturing":false},{"label":"Mar 23","avg":29.73,"completed":310,"entered":314,"open":4,"openAgeAvg":114,"openAgeMax":117,"roll6":23.01,"over":126,"maturing":false},{"label":"Apr 6","avg":26.45,"completed":244,"entered":249,"open":5,"openAgeAvg":99,"openAgeMax":105,"roll6":25.3,"over":91,"maturing":false},{"label":"Apr 20","avg":22.41,"completed":394,"entered":404,"open":10,"openAgeAvg":84.6,"openAgeMax":89,"roll6":26.2,"over":127,"maturing":false},{"label":"May 4","avg":21.19,"completed":324,"entered":339,"open":15,"openAgeAvg":71.3,"openAgeMax":77,"roll6":23.35,"over":129,"maturing":false},{"label":"May 18","avg":16.19,"completed":377,"entered":391,"open":14,"openAgeAvg":58,"openAgeMax":64,"roll6":19.93,"over":105,"maturing":false},{"label":"Jun 1","avg":18.43,"completed":279,"entered":294,"open":15,"openAgeAvg":43.3,"openAgeMax":50,"roll6":18.6,"over":82,"maturing":true},{"label":"Jun 15","avg":17.76,"completed":242,"entered":271,"open":29,"openAgeAvg":31.6,"openAgeMax":36,"roll6":17.46,"over":61,"maturing":true},{"label":"Jun 29","avg":10.93,"completed":217,"entered":308,"open":91,"openAgeAvg":13.9,"openAgeMax":22,"roll6":15.71,"over":0,"maturing":true},{"label":"Jul 13","avg":3.4,"completed":10,"entered":170,"open":160,"openAgeAvg":5.3,"openAgeMax":8,"roll6":10.7,"over":0,"maturing":true}],
-    tickets:[["#34417","","67 days"],["#36298","","32 days"],["#31503","","28 days"]]
-  },
-  repair:{
-    responsibility:"Repairer information",
-    exportLabel:"Repairer Time",
-    overLabel:"39.9% over",
-    sortLabel:"Latest invoice over-average tickets",
-    buckets:[["0-7",17.8,"#0f8f8c",161],["8-14",16.4,"#4f8f42",148],["15-21",12.7,"#2474a6",115],["22-30",10.5,"#d88a18",95],["31-60",26.4,"#ef9f42",239],["60+",16.2,"#c9513f",147]],
-    trend:[{"label":"Jan 1","avg":null,"completed":0,"entered":1,"open":1,"openAgeAvg":193,"openAgeMax":193,"roll6":null,"over":0,"maturing":false},{"label":"Jan 12","avg":1.5,"completed":2,"entered":2,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":1.5,"over":0,"maturing":false},{"label":"Jan 26","avg":45,"completed":2,"entered":10,"open":8,"openAgeAvg":165.8,"openAgeMax":167,"roll6":23.25,"over":1,"maturing":false},{"label":"Feb 9","avg":43.56,"completed":54,"entered":89,"open":35,"openAgeAvg":155.3,"openAgeMax":162,"roll6":30.02,"over":27,"maturing":false},{"label":"Feb 23","avg":30.23,"completed":66,"entered":118,"open":52,"openAgeAvg":143.9,"openAgeMax":148,"roll6":39.6,"over":21,"maturing":false},{"label":"Mar 9","avg":42.84,"completed":81,"entered":152,"open":71,"openAgeAvg":126.4,"openAgeMax":132,"roll6":38.88,"over":43,"maturing":false},{"label":"Mar 23","avg":32.32,"completed":163,"entered":275,"open":112,"openAgeAvg":115.3,"openAgeMax":120,"roll6":35.13,"over":66,"maturing":false},{"label":"Apr 6","avg":35.49,"completed":78,"entered":180,"open":102,"openAgeAvg":100.2,"openAgeMax":104,"roll6":36.88,"over":40,"maturing":false},{"label":"Apr 20","avg":24.98,"completed":97,"entered":197,"open":100,"openAgeAvg":85,"openAgeMax":92,"roll6":30.93,"over":29,"maturing":false},{"label":"May 4","avg":25.23,"completed":201,"entered":412,"open":211,"openAgeAvg":71.5,"openAgeMax":78,"roll6":28.57,"over":80,"maturing":false},{"label":"May 18","avg":22.33,"completed":117,"entered":274,"open":157,"openAgeAvg":57.1,"openAgeMax":64,"roll6":24.18,"over":38,"maturing":false},{"label":"Jun 1","avg":13.51,"completed":150,"entered":375,"open":225,"openAgeAvg":44.8,"openAgeMax":50,"roll6":20.36,"over":16,"maturing":true},{"label":"Jun 15","avg":7.89,"completed":111,"entered":307,"open":196,"openAgeAvg":31.1,"openAgeMax":36,"roll6":14.58,"over":0,"maturing":true},{"label":"Jun 29","avg":2.9,"completed":115,"entered":369,"open":254,"openAgeAvg":16.9,"openAgeMax":22,"roll6":8.1,"over":0,"maturing":true},{"label":"Jul 13","avg":0.36,"completed":64,"entered":318,"open":254,"openAgeAvg":6.2,"openAgeMax":7,"roll6":3.72,"over":0,"maturing":true}],
-    tickets:[["#30125","Snowy River Toowoomba","82 days"],["#34960","Green RV - Forest Glen","61 days"],["#32928","Green RV","54 days"]]
-  },
-  closed:{
-    responsibility:"Total handling",
-    exportLabel:"Total Handling",
-    title:"Total Handling Duration Distribution",
-    overLabel:"Total over standard",
-    sortLabel:"Latest repairer invoice tickets",
-    buckets:[["0-30",17.8,"#0f8f8c",161],["31-60",16.4,"#4f8f42",148],["61-90",12.7,"#2474a6",115],["91-120",10.5,"#d88a18",95],["121-180",26.4,"#ef9f42",239],["180+",16.2,"#c9513f",147]],
-    trend:[{"label":"Jan 1","avg":null,"completed":0,"entered":1,"open":1,"openAgeAvg":193,"openAgeMax":193,"roll6":null,"over":0,"maturing":false},{"label":"Jan 12","avg":1.5,"completed":2,"entered":2,"open":0,"openAgeAvg":null,"openAgeMax":null,"roll6":1.5,"over":0,"maturing":false},{"label":"Jan 26","avg":45,"completed":2,"entered":10,"open":8,"openAgeAvg":165.8,"openAgeMax":167,"roll6":23.25,"over":1,"maturing":false},{"label":"Feb 9","avg":43.56,"completed":54,"entered":89,"open":35,"openAgeAvg":155.3,"openAgeMax":162,"roll6":30.02,"over":27,"maturing":false},{"label":"Feb 23","avg":30.23,"completed":66,"entered":118,"open":52,"openAgeAvg":143.9,"openAgeMax":148,"roll6":39.6,"over":21,"maturing":false},{"label":"Mar 9","avg":42.84,"completed":81,"entered":152,"open":71,"openAgeAvg":126.4,"openAgeMax":132,"roll6":38.88,"over":43,"maturing":false},{"label":"Mar 23","avg":32.32,"completed":163,"entered":275,"open":112,"openAgeAvg":115.3,"openAgeMax":120,"roll6":35.13,"over":66,"maturing":false},{"label":"Apr 6","avg":35.49,"completed":78,"entered":180,"open":102,"openAgeAvg":100.2,"openAgeMax":104,"roll6":36.88,"over":40,"maturing":false},{"label":"Apr 20","avg":24.98,"completed":97,"entered":197,"open":100,"openAgeAvg":85,"openAgeMax":92,"roll6":30.93,"over":29,"maturing":false},{"label":"May 4","avg":25.23,"completed":201,"entered":412,"open":211,"openAgeAvg":71.5,"openAgeMax":78,"roll6":28.57,"over":80,"maturing":false},{"label":"May 18","avg":22.33,"completed":117,"entered":274,"open":157,"openAgeAvg":57.1,"openAgeMax":64,"roll6":24.18,"over":38,"maturing":false},{"label":"Jun 1","avg":13.51,"completed":150,"entered":375,"open":225,"openAgeAvg":44.8,"openAgeMax":50,"roll6":20.36,"over":16,"maturing":true},{"label":"Jun 15","avg":7.89,"completed":111,"entered":307,"open":196,"openAgeAvg":31.1,"openAgeMax":36,"roll6":14.58,"over":0,"maturing":true},{"label":"Jun 29","avg":2.9,"completed":115,"entered":369,"open":254,"openAgeAvg":16.9,"openAgeMax":22,"roll6":8.1,"over":0,"maturing":true},{"label":"Jul 13","avg":0.36,"completed":64,"entered":318,"open":254,"openAgeAvg":6.2,"openAgeMax":7,"roll6":3.72,"over":0,"maturing":true}],
-    tickets:[["#30125","Snowy River Toowoomba","82 days"],["#34960","Green RV - Forest Glen","61 days"],["#32928","Green RV","54 days"]]
-  }
-};
+let previewStageAnalysis={};
 
 function formatDays(value){
   const num=Number(value);
@@ -926,6 +908,12 @@ function applyTimelineSummary(summary){
 }
 
 async function loadTimelineSummary(){
+  const globalYearSummary=window[`TICKET_TIMELINE_SUMMARY_${selectedYear}`];
+  if(globalYearSummary&&Array.isArray(globalYearSummary.stages)){
+    applyTimelineSummary(globalYearSummary);
+  }else if(window.TICKET_TIMELINE_SUMMARY&&Array.isArray(window.TICKET_TIMELINE_SUMMARY.stages)){
+    applyTimelineSummary(window.TICKET_TIMELINE_SUMMARY);
+  }
   const urls=[summaryUrlForYear(selectedYear),TIMELINE_SUMMARY_URL];
   for(const url of urls){
     try{
@@ -940,6 +928,10 @@ async function loadTimelineSummary(){
 }
 
 async function loadCompletionAnalytics(){
+  if(window.TICKET_TIMELINE_COMPLETION_ANALYTICS_2026&&window.TICKET_TIMELINE_COMPLETION_ANALYTICS_2026.stages){
+    previewStageAnalysis=window.TICKET_TIMELINE_COMPLETION_ANALYTICS_2026.stages;
+    renderAllAnalytics();
+  }
   try{
     const response=await fetch(`${COMPLETION_ANALYTICS_URL}?v=${Date.now()}`,{cache:"no-store"});
     if(!response.ok)return;
@@ -1012,11 +1004,7 @@ function scaledY(value,maxValue,top,height){
   return top+height-(Math.min(number,maxValue)/maxValue*height);
 }
 
-function trendLinePath(rows,maxValue){
-  const left=52;
-  const top=22;
-  const width=714;
-  const height=236;
+function trendLinePath(rows,maxValue,left=52,top=22,width=714,height=236){
   const points=rows.map((row,index)=>{
     const rolling=rowNumber(row,"roll3") ?? rowNumber(row,"roll6");
     if(rolling===null)return null;
@@ -1181,7 +1169,11 @@ function tipAttr(html){
 
 function trendTooltip(row){
   const rolling=rowNumber(row,"roll3") ?? rowNumber(row,"roll6");
-  return `<strong>${row.label}</strong><span>monthly avg days: ${daysText(row.avg)}</span><span>3-month rolling avg: ${daysText(rolling)}</span>`;
+  const completed=Number(row.completed)||0;
+  const prior=Number(row.priorCreated)||0;
+  const priorPct=completed?`${(prior/completed*100).toFixed(1)}%`:"0.0%";
+  const priorLine=showPriorOverlay?`<span>before ${selectedYear} created: ${fmt(prior)} / ${fmt(completed)} (${priorPct})</span>`:"";
+  return `<strong>${row.label}</strong><span>monthly avg days: ${daysText(row.avg)}</span><span>3-month rolling avg: ${daysText(rolling)}</span>${priorLine}`;
 }
 
 function showPreviewTooltip(html,event){
@@ -1230,13 +1222,13 @@ function trendSvg(analysis){
   const rawMax=Math.max(...chartValues,0);
   const tickStep=rawMax>120?50:20;
   const maxValue=Math.max(60,Math.ceil((rawMax*1.08)/tickStep)*tickStep);
-  const left=52;
-  const top=22;
-  const width=714;
-  const height=236;
+  const left=42;
+  const top=20;
+  const width=398;
+  const height=226;
   const bottom=top+height;
   const barSlot=width/rows.length;
-  const barWidth=Math.max(14,Math.min(27,barSlot*.52));
+  const barWidth=Math.max(18,Math.min(34,barSlot*.55));
   const ticks=Array.from({length:Math.floor(maxValue/tickStep)+1},(_,index)=>index*tickStep);
   const monthLabels=new Set();
   const xLabels=rows.map(row=>{
@@ -1247,9 +1239,15 @@ function trendSvg(analysis){
   });
   const pointX=index=>left+(index*(width/(rows.length-1)));
   return `
-    <svg class="yearTrend" viewBox="0 0 800 310" role="img" aria-label="2026 monthly completed ticket speed with 3-month rolling average">
-      <text class="axisTitle" x="16" y="142" transform="rotate(-90 16 142)">Handling days</text>
-      <text class="axisTitle" x="318" y="292">Completion month, 2026</text>
+    <svg class="yearTrend" viewBox="0 0 460 304" role="img" aria-label="2026 monthly completed ticket speed with 3-month rolling average">
+      <defs>
+        <pattern id="priorYearStripe" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(135)">
+          <rect width="7" height="7" fill="rgba(29,42,61,.13)"></rect>
+          <rect width="2.5" height="7" fill="rgba(29,42,61,.34)"></rect>
+        </pattern>
+      </defs>
+      <text class="axisTitle" x="13" y="136" transform="rotate(-90 13 136)">Handling days</text>
+      <text class="axisTitle" x="162" y="288">Completion month, 2026</text>
       ${ticks.map(tick=>{
         const y=bottom-(tick/maxValue*height);
         return `<line class="gridLine" x1="${left}" y1="${y.toFixed(1)}" x2="${left+width}" y2="${y.toFixed(1)}"></line><text class="axisText" x="${left-12}" y="${(y+4).toFixed(1)}" text-anchor="end">${tick}</text>`;
@@ -1265,14 +1263,18 @@ function trendSvg(analysis){
         const rolling=rowNumber(row,"roll3") ?? rowNumber(row,"roll6");
         const rollingY=scaledY(rolling,maxValue,top,height);
         const tip=trendTooltip(row).replace(/"/g,"&quot;");
+        const completed=Number(row.completed)||0;
+        const prior=Number(row.priorCreated)||0;
+        const priorH=completed&&value!==null?h*Math.min(1,Math.max(0,prior/completed)):0;
+        const priorY=bottom-priorH;
         return `
-          ${value===null?`<text class="axisText" x="${(x+barWidth/2).toFixed(1)}" y="${bottom-6}" text-anchor="middle">--</text>`:`<rect class="avgBar ${row.maturing?"maturing":""}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(1,h).toFixed(1)}" rx="5" data-tip="${tip}"></rect><text class="axisText" x="${(x+barWidth/2).toFixed(1)}" y="${(Math.max(top+10,y-5)).toFixed(1)}" text-anchor="middle">${Math.round(value)}</text>`}
+          ${value===null?`<text class="axisText" x="${(x+barWidth/2).toFixed(1)}" y="${bottom-6}" text-anchor="middle">--</text>`:`<rect class="avgBar ${row.maturing?"maturing":""}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(1,h).toFixed(1)}" rx="5" data-tip="${tip}"></rect>${priorH>0?`<rect class="priorBarShadow" x="${x.toFixed(1)}" y="${priorY.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(1,priorH).toFixed(1)}" rx="5" data-tip="${tip}"></rect>`:""}<text class="axisText" x="${(x+barWidth/2).toFixed(1)}" y="${(Math.max(top+10,y-5)).toFixed(1)}" text-anchor="middle">${Math.round(value)}</text>`}
           ${label?`<text class="axisText" x="${(x+barWidth/2).toFixed(1)}" y="${bottom+18}" text-anchor="middle">${label}</text>`:""}
           ${rollingY===null?"":`<circle class="trendPoint" cx="${pointX(index).toFixed(1)}" cy="${rollingY.toFixed(1)}" r="3.5" data-tip="${tip}"></circle>`}
           <rect class="chartHit" x="${(left+index*barSlot).toFixed(1)}" y="${top}" width="${barSlot.toFixed(1)}" height="${height}" data-bucket="${row.label}" data-tip="${tip}"></rect>
         `;
       }).join("")}
-      <path class="rollingLine" d="${trendLinePath(rows,maxValue)}"></path>
+      <path class="rollingLine" d="${trendLinePath(rows,maxValue,left,top,width,height)}"></path>
     </svg>
   `;
 }
@@ -1288,19 +1290,23 @@ function bindPreviewTooltips(scope=document){
 }
 
 function renderFilteredTickets(analysis,bucketLabel,kind="duration"){
+  const exportLink=document.getElementById("filteredExport");
+  const selectionStrip=document.getElementById("selectionStrip");
+  const filteredList=document.getElementById("filteredList");
   const suffix=bucketLabel&&bucketLabel!=="All"?` - ${bucketLabel}${kind==="duration"?" days":""}`:"";
-  document.getElementById("filteredExport").textContent=`Export ${analysis.exportLabel}${suffix} + All Page Tickets Detail`;
-  document.getElementById("selectionStrip").innerHTML=`
+  if(exportLink)exportLink.textContent=`Export ${analysis.exportLabel}${suffix} + All Page Tickets Detail`;
+  if(selectionStrip)selectionStrip.innerHTML=`
     <span>Overtime tickets${suffix}</span>
     <div class="overtimeChips">
       ${analysis.tickets.map(row=>`<span class="overtimeChip"><strong>${row[0]}</strong><em>${row[2]}</em></span>`).join("")}
     </div>
   `;
-  document.getElementById("filteredList").innerHTML="";
+  if(filteredList)filteredList.innerHTML="";
 }
 
 function renderDurationDistribution(analysis,buckets,labelText="YTD completed"){
   const donut=document.getElementById("durationDonut");
+  if(!donut)return;
   const bucketRows=Array.isArray(buckets)&&buckets.length?buckets:analysis.buckets;
   const bucketTotal=bucketRows.reduce((sum,bucket)=>sum+(Number(bucket[3])||0),0);
   donut.style.background=donutGradient(bucketRows);
@@ -1321,23 +1327,90 @@ function renderDurationDistribution(analysis,buckets,labelText="YTD completed"){
   });
 }
 
-function renderDrilldown(stage){
-  const analysis=previewStageAnalysis[activeAnalysisKey(stage)];
-  if(!analysis)return;
-  document.getElementById("analyticsTitle").textContent=analysis.title||"Handling Duration Distribution";
-  document.getElementById("responsibilityBadge").textContent=analysis.responsibility;
-  renderDurationDistribution(analysis,analysis.buckets,"2026 YTD completed");
-  document.getElementById("trendChart").innerHTML=trendSvg(analysis);
-  document.querySelectorAll(".chartHit").forEach(hit=>{
-    hit.addEventListener("click",()=>{
-      const month=hit.dataset.bucket;
-      renderDurationDistribution(analysis,analysis.monthBuckets?analysis.monthBuckets[month]:analysis.buckets,`${month} completed`);
-      renderFilteredTickets(analysis,month,"month");
-      bindPreviewTooltips();
-    });
+function miniBucketRows(analysis,buckets){
+  const rows=Array.isArray(buckets)&&buckets.length?buckets:[];
+  const maxCount=Math.max(...rows.map(row=>Number(row[3])||0),1);
+  return rows.map(row=>{
+    const amountDistribution=analysis&&analysis.distributionAmount?analysis.distributionAmount[row[0]]:null;
+    const amountTip=amountDistribution?amountDistributionMarkup(amountDistribution):"";
+    const priorBucket=analysis&&analysis.priorBuckets?analysis.priorBuckets[row[0]]:null;
+    const priorCount=Number(priorBucket&&priorBucket.count)||0;
+    const bucketCount=Number(row[3])||0;
+    const priorPct=bucketCount?`${(priorCount/bucketCount*100).toFixed(1)}%`:"0.0%";
+    const priorTip=showPriorOverlay&&priorBucket?`<span>before ${selectedYear} created: ${fmt(priorCount)} / ${fmt(bucketCount)} (${priorPct})</span>`:"";
+    return `
+      <div class="miniBucketRow" data-tip="${tipAttr(`<strong>${row[0]} days</strong><span>${fmt(row[3])} tickets</span><span>${Number(row[1]||0).toFixed(1)}% of completed tickets</span>${priorTip}${amountTip}`)}">
+        <span>${row[0]}</span>
+        <span class="miniBucketTrack"><span class="miniBucketFill" style="--w:${Math.max(3,bucketCount/maxCount*100).toFixed(1)}%;--c:${row[2]||"#5bb8b0"}"></span><span class="miniBucketPrior" style="--prior-w:${Math.max(0,priorCount/maxCount*100).toFixed(1)}%"></span></span>
+        <span class="miniBucketValue">${fmt(row[3])} (${Number(row[1]||0).toFixed(1)}%)</span>
+      </div>
+    `;
+  }).join("");
+}
+
+function analyticsSectionMarkup(key,analysis){
+  if(!analysis)return "";
+  const buckets=Array.isArray(analysis.buckets)?analysis.buckets:[];
+  const total=buckets.reduce((sum,row)=>sum+(Number(row[3])||0),0);
+  const priorTotal=(Array.isArray(analysis.trend)?analysis.trend:[]).reduce((sum,row)=>sum+(Number(row.priorCreated)||0),0);
+  const priorPct=total?priorTotal/total*100:0;
+  const title=key==="closed"?"Total handling":analysis.exportLabel||analysis.responsibility||key;
+  const donutLabel=showPriorOverlay?`${fmt(total)} completed\n${priorPct.toFixed(1)}% before`:`${fmt(total)} completed`;
+  return `
+    <section class="analyticsSection ${showPriorOverlay?"showPriorOverlay":""}" data-analysis-key="${key}">
+      <div class="analyticsSectionHead">
+        <div>
+          <h3 class="analyticsSectionTitle">${title}</h3>
+          <div class="analyticsSectionMeta">
+            <span>${analysis.responsibility||"Completed tickets"}</span>
+            <span>${analysis.overLabel||""}</span>
+          </div>
+        </div>
+      </div>
+      <div class="analyticsSectionGrid">
+        <div class="analyticsMiniTrend">
+          <div class="panelKicker trendChartTitle">Monthly completion speed</div>
+          ${trendSvg(analysis)}
+          <div class="chartLegend"><span class="legendMark">monthly avg days</span><span class="legendMark line">3-month rolling avg</span></div>
+        </div>
+        <div>
+          <div class="analyticsMiniLabel">Handling Duration Distribution</div>
+          <div class="miniDistribution">
+            <div class="donut ${showPriorOverlay?"priorActive":""}" style="background:${donutGradient(buckets)}" data-label="${donutLabel}" data-tip="${tipAttr(`<strong>${title}</strong><span>${fmt(total)} completed tickets</span><span>before ${selectedYear} created: ${fmt(priorTotal)} (${priorPct.toFixed(1)}%)</span><span>YTD duration bucket share.</span>`)}"></div>
+            <div class="miniBucketList">${miniBucketRows(analysis,buckets)}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderAllAnalytics(){
+  const container=document.getElementById("analyticsSections");
+  if(!container)return;
+  const order=["approval","parts","repair","closed"];
+  if(!order.some(key=>previewStageAnalysis[key])){
+    container.innerHTML=`<div class="analyticsLoading">Loading completed-in-2026 analytics...</div>`;
+    return;
+  }
+  container.innerHTML=order.map(key=>analyticsSectionMarkup(key,previewStageAnalysis[key])).join("");
+  bindPreviewTooltips(container);
+}
+
+function bindPriorOverlayToggle(){
+  const button=document.getElementById("priorOverlayToggle");
+  if(!button)return;
+  button.addEventListener("click",()=>{
+    showPriorOverlay=!showPriorOverlay;
+    button.classList.toggle("active",showPriorOverlay);
+    button.setAttribute("aria-pressed",String(showPriorOverlay));
+    hidePreviewTooltip();
+    renderAllAnalytics();
   });
-  bindPreviewTooltips();
-  renderFilteredTickets(analysis,"All","duration");
+}
+
+function renderDrilldown(){
+  renderAllAnalytics();
 }
 
 function setActive(index,shouldPin=false){
@@ -1364,7 +1437,7 @@ function setActive(index,shouldPin=false){
   document.querySelectorAll(".stageBtn").forEach((btn,i)=>btn.classList.toggle("active",i===activeIndex));
   document.querySelectorAll(".segmentDuration").forEach((pill,i)=>pill.classList.toggle("active",i===Math.min(activeIndex,stages.length-2)));
   document.querySelectorAll(".summaryCard").forEach(card=>card.classList.toggle("active",Number(card.dataset.index)===activeIndex));
-  renderDrilldown(stage);
+  renderAllAnalytics();
 }
 
 function renderControls(){
@@ -1384,6 +1457,12 @@ function renderControls(){
       setActive(Number(button.dataset.index),true);
       renderTimelineEvidence();
     });
+    button.addEventListener("dblclick",event=>{
+      event.stopPropagation();
+      event.preventDefault();
+      evidenceVisible=false;
+      renderTimelineEvidence();
+    });
   });
   stageButtons.innerHTML=stages.map((stage,index)=>`
     <button class="stageBtn" type="button" style="--color:${stage.color}" data-index="${index}" aria-label="${stage.title}">
@@ -1401,7 +1480,9 @@ function renderControls(){
 }
 
 function renderSummary(){
-  document.getElementById("summaryGrid").innerHTML=stages.map((stage,index)=>({stage,index})).filter(item=>processDurationKeys.has(item.stage.key)).map(({stage,index})=>`
+  const summaryGrid=document.getElementById("summaryGrid");
+  if(!summaryGrid)return;
+  summaryGrid.innerHTML=stages.map((stage,index)=>({stage,index})).filter(item=>processDurationKeys.has(item.stage.key)).map(({stage,index})=>`
     <div class="summaryCard" style="--color:${stage.color}" data-index="${index}" role="button" tabindex="0" aria-label="${stage.title}">
       <div class="label">${stage.short}</div>
       <div class="value">${formatDays(stage.avg)}</div>
@@ -1443,6 +1524,7 @@ updateTimelineAvgDuration();
 renderControls();
 renderSummary();
 setActive(activeIndex);
+bindPriorOverlayToggle();
 loadTimelineSummary();
 loadCompletionAnalytics();
 </script>
