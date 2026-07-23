@@ -259,6 +259,7 @@ body{margin:0;background:
 .previewPage .analyticsSectionHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px}
 .previewPage .analyticsSectionTitle{margin:0;color:var(--heading);font-size:16px;font-weight:560;letter-spacing:0}
 .previewPage .analyticsSectionMeta{margin-top:3px;display:flex;gap:7px;align-items:center;flex-wrap:wrap;color:#647287;font-size:10.5px;font-weight:500}
+.previewPage .analyticsSectionAvg{margin-left:auto;flex:0 0 auto;display:inline-flex;align-items:center;min-height:27px;padding:0 9px;border-radius:999px;background:rgba(15,143,140,.1);border:1px solid rgba(15,143,140,.22);color:#0d6d6b;font-size:11px;font-weight:680;white-space:nowrap}
 .previewPage .analyticsSectionGrid{display:grid;grid-template-columns:1fr;gap:13px;align-items:start}
 .previewPage .analyticsMiniLabel{margin:0 0 8px;color:#526176;font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
 .previewPage .miniDistribution{display:grid;grid-template-columns:118px minmax(0,1fr);gap:12px;align-items:center}
@@ -1179,6 +1180,14 @@ function daysText(value){
   return Number.isFinite(number)?`${number.toFixed(1)} days`:"Not completed";
 }
 
+function trendAverageDays(analysis){
+  const values=(Array.isArray(analysis&&analysis.trend)?analysis.trend:[])
+    .map(row=>rowNumber(row,"avg"))
+    .filter(value=>value!==null);
+  if(!values.length)return null;
+  return values.reduce((sum,value)=>sum+value,0)/values.length;
+}
+
 function tipAttr(html){
   return String(html).replace(/"/g,"&quot;");
 }
@@ -1371,6 +1380,7 @@ function analyticsSectionMarkup(key,analysis){
   const priorTotal=(Array.isArray(analysis.trend)?analysis.trend:[]).reduce((sum,row)=>sum+(Number(row.priorCreated)||0),0);
   const priorPct=total?priorTotal/total*100:0;
   const title=key==="closed"?"Total handling":analysis.exportLabel||analysis.responsibility||key;
+  const sectionAvg=key==="closed"?trendAverageDays(analysis):null;
   const donutLabel=showPriorOverlay?`${fmt(total)} completed\n${priorPct.toFixed(1)}% before`:`${fmt(total)} completed`;
   return `
     <section class="analyticsSection ${showPriorOverlay?"showPriorOverlay":""}" data-analysis-key="${key}">
@@ -1382,6 +1392,7 @@ function analyticsSectionMarkup(key,analysis){
             <span>${analysis.overLabel||""}</span>
           </div>
         </div>
+        ${sectionAvg===null?"":`<div class="analyticsSectionAvg">Avg ${daysText(sectionAvg)}</div>`}
       </div>
       <div class="analyticsSectionGrid">
         <div class="analyticsMiniTrend">
