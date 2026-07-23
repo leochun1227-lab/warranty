@@ -1085,6 +1085,11 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const overlay=$("loadingOverlay");
     if(overlay)overlay.classList.remove("show");
     if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(version,"cached");
+    loadPartsFailureSummary().then(()=>{
+      renderInsights();
+      renderComponents();
+      saveAnalysisPageState(version);
+    }).catch(err=>console.warn("Parts failure summary background refresh failed",err));
     loadPartsClassifiedRows().then(()=>{buildPartsClassifiedIndex();renderComponents();}).catch(err=>console.warn("Classified rows background load failed",err));
     return true;
   }
@@ -1574,7 +1579,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       const tid = clean(ticketId);
       if (!tid) return;
       const series = extractSeries(ticketLike || {});
-      if (!series || isExcludedSeries(series)) return;
+      if (!series || isExcludedSeries(series) || !isTrackedSeries(series)) return;
       let counts = partsSeriesCounts.get(tid);
       if (!counts) {
         counts = new Map();
@@ -1646,8 +1651,11 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         });
         notePartsTicketSeries(ticketId, {
           "Ticket ID": ticketId,
+          "Sales Order": salesOrder,
           "Serial ID": serialId,
           "Chassis Number": chassis,
+          "Vehicle Dispatch Serial": dispatchSerial,
+          "Vehicle Dispatch Sales Order": dispatchSalesOrder,
         });
 
         let cost = Number(ticket.preferredCost);
@@ -1998,6 +2006,11 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (!Number.isFinite(rate)) return "";
     return rate>=0.20 ? "risk-hi" : rate>=0.10 ? "risk-md" : "risk-lo";
   }
+  function leaderboardSalesBase(row){
+    const direct = Number(row?.csvBase ?? row?.sold);
+    if (direct > 0) return direct;
+    return Math.max(0, Number(effectiveBase(row?.series)) || 0);
+  }
   function seriesBadgeColor(i){ return BADGE_COLORS[i % BADGE_COLORS.length]; }
 
 
@@ -2049,12 +2062,12 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   // ============ RENDER: Leaderboard ============
   function renderLeaderboard(){
     const sorted = sortRows(state.summary, state.seriesSort);
-    const maxGap = Math.max(...sorted.map(r=>Math.max(0, Number(r.mixGap) || 0)), 0.01);
+    const maxSalesBase = Math.max(...sorted.map(leaderboardSalesBase), 1);
     const target = $("lbRows");
     if (!sorted.length) { target.innerHTML = `<div class="empty">No data yet.</div>`; return; }
     target.innerHTML = sorted.map((row, i) => {
-      const gapWidth = Number.isFinite(row.mixGap) && row.mixGap > 0 ? Math.max(3, (row.mixGap/maxGap)*100) : 3;
-      const risk = riskClass(row.mixGap);
+      const salesBase = leaderboardSalesBase(row);
+      const barWidth = salesBase ? Math.max(4, (salesBase / maxSalesBase) * 100) : 4;
       const active = state.selected===row.series ? "active" : "";
       const badge = seriesBadgeColor(i);
       const flags = flagsForSeries(row.series);
@@ -2070,10 +2083,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         </div>
         <div class="lbBarWrap">
           <div class="lbBarLabel">
-            <span><strong>${pctValue(row.ticketShare) || "0.0%"}</strong> tickets vs <strong>${pctValue(row.salesShare) || "0.0%"}</strong> sales mix</span>
-            <span>${fmtPp(row.mixGap)}</span>
+            <span>Sold Vehicles</span>
+            <span><strong>${salesBase ? numFmt.format(salesBase) : "N/A"}</strong></span>
           </div>
-          <div class="lbBar"><div class="lbBarFill ${risk}" style="width:${gapWidth}%"></div></div>
+          <div class="lbBar"><div class="lbBarFill" style="width:${barWidth}%"></div></div>
           ${flagHtml}
         </div>
         <div class="lbMetric"><div class="lbMetricLabel">Sales Share</div><div class="lbMetricValue">${pctValue(row.salesShare) || "N/A"}</div></div>
@@ -2145,10 +2158,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const sorted = sortRows(state.summary, state.seriesSort);
     const target = $("lbRows");
     if (!sorted.length) { target.innerHTML = `<div class="empty">No data yet.</div>`; return; }
-    const maxVehicles = Math.max(...sorted.map(row => Number(row.vehicles) || 0), 1);
+    const maxSalesBase = Math.max(...sorted.map(leaderboardSalesBase), 1);
     target.innerHTML = sorted.map((row, i) => {
-      const barWidth = row.vehicles ? Math.max(4, (row.vehicles / maxVehicles) * 100) : 4;
-      const risk = riskClass(row.ticketShare);
+      const salesBase = leaderboardSalesBase(row);
+      const barWidth = salesBase ? Math.max(4, (salesBase / maxSalesBase) * 100) : 4;
       const active = state.selected === row.series ? "active" : "";
       const badge = seriesBadgeColor(i);
       return `<div class="lbRow ${active}" data-series="${row.series}">
@@ -2157,10 +2170,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         </div>
         <div class="lbBarWrap">
           <div class="lbBarLabel">
-            <span>Tickets Rate</span>
-            <span><strong>${row.ticketShare==null?"N/A":pctValue(row.ticketShare)}</strong></span>
+            <span>Sold Vehicles</span>
+            <span><strong>${salesBase ? numFmt.format(salesBase) : "N/A"}</strong></span>
           </div>
-          <div class="lbBar"><div class="lbBarFill ${risk}" style="width:${barWidth}%"></div></div>
+          <div class="lbBar"><div class="lbBarFill" style="width:${barWidth}%"></div></div>
         </div>
         <div class="lbMetric"><div class="lbMetricLabel">Sales Rate</div><div class="lbMetricValue ${row.salesRate==null?"na":""}">${row.salesRate==null?"N/A":pctValue(row.salesRate)}</div></div>
         <div class="lbMetric"><div class="lbMetricLabel">Tickets Rate</div><div class="lbMetricValue ${row.ticketShare==null?"na":""}">${row.ticketShare==null?"N/A":pctValue(row.ticketShare)}</div></div>

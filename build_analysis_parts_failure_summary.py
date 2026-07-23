@@ -12,11 +12,13 @@ OUTPUT_DIR = ROOT / "outputs"
 PARTS_META = OUTPUT_DIR / "parts_classified_meta.json"
 PARTS_CSV = OUTPUT_DIR / "parts_classified.csv"
 PARTS_TICKET_MAP = ROOT / "outputs" / "analysis_parts_ticket_cost_map.json"
+VEHICLE_BASE_SUMMARY = OUTPUT_DIR / "analysis_vehicle_base_summary.json"
 OUT = ROOT / "outputs" / "analysis_parts_failure_summary.json"
 OUT_JS = ROOT / "outputs" / "analysis_parts_failure_summary.js"
 
-SERIES_ORDER = ["SRC", "SRH", "SRT", "SRM", "SRP", "SRL", "SRV", "NG"]
-EXCLUDED_SERIES = {"UNKNOWN", "RO", "SR", "SCR", "VRV"}
+SERIES_ORDER = ["SRC", "SRH", "SRT", "SRM", "SRP", "SRL", "SRV", "SRS", "NG"]
+TRACKED_SERIES = {code.upper() for code in SERIES_ORDER}
+EXCLUDED_SERIES = {"UNKNOWN", "RO", "SR", "SCR", "STR", "RVV", "RR", "SPV", "SRO", "SEV", "RRC", "VRV"}
 COMPONENT_ALIASES = {
     "tail light": "Tail Light",
     "tail lights": "Tail Light",
@@ -156,7 +158,100 @@ def is_excluded_series(series):
     return normalize_series_code(series) in EXCLUDED_SERIES
 
 
-def extract_series(row):
+def is_tracked_series(series):
+    return normalize_series_code(series) in TRACKED_SERIES
+
+
+def vehicle_lookup_key(value):
+    return re.sub(r"[^A-Za-z0-9]", "", clean(value)).upper()
+
+
+def lookup_keys(values):
+    out = []
+    seen = set()
+    for value in values:
+        raw = clean(value)
+        if not raw:
+            continue
+        canonical = vehicle_lookup_key(raw)
+        for key in (raw, canonical):
+            if key and key not in seen:
+                seen.add(key)
+                out.append(key)
+    return out
+
+
+def vehicle_series_lookup_keys(row):
+    return lookup_keys([
+        row.get("Matched Chassis"),
+        row.get("matchedChassis"),
+        row.get("Matched Serial"),
+        row.get("matchedSerial"),
+        row.get("Chassis Number"),
+        row.get("ChassisNumber"),
+        row.get("chassisNumber"),
+        row.get("Ticket Chassis Number"),
+        row.get("ticketChassisNumber"),
+        row.get("Ticket Serial ID"),
+        row.get("ticketSerialId"),
+        row.get("Serial ID"),
+        row.get("SerialID"),
+        row.get("serialId"),
+        row.get("Vehicle Dispatch Serial"),
+        row.get("VehicleDispatchSerial"),
+        row.get("vehicleDispatchSerial"),
+    ])
+
+
+def sales_order_lookup_keys(row):
+    return lookup_keys([
+        row.get("Matched Sales Order"),
+        row.get("MatchedSalesOrder"),
+        row.get("matchedSalesOrder"),
+        row.get("Sales Order"),
+        row.get("SalesOrder"),
+        row.get("salesOrder"),
+        row.get("Ticket Sales Order"),
+        row.get("ticketSalesOrder"),
+        row.get("LookupSalesOrder"),
+        row.get("lookupSalesOrder"),
+        row.get("Vehicle Dispatch Sales Order"),
+        row.get("VehicleDispatchSalesOrder"),
+        row.get("vehicleDispatchSalesOrder"),
+    ])
+
+
+def load_vehicle_base_maps():
+    if not VEHICLE_BASE_SUMMARY.exists():
+        return {}, {}
+    try:
+        payload = json.loads(VEHICLE_BASE_SUMMARY.read_text(encoding="utf-8"))
+    except Exception:
+        return {}, {}
+    chassis = payload.get("seriesByChassis") if isinstance(payload, dict) else {}
+    sales_order = payload.get("seriesBySalesOrder") if isinstance(payload, dict) else {}
+    return (
+        chassis if isinstance(chassis, dict) else {},
+        sales_order if isinstance(sales_order, dict) else {},
+    )
+
+
+def mapped_series_for_row(row, series_by_chassis=None, series_by_sales_order=None):
+    series_by_chassis = series_by_chassis or {}
+    series_by_sales_order = series_by_sales_order or {}
+    for key in vehicle_series_lookup_keys(row):
+        if key in series_by_chassis:
+            return normalize_series_code(series_by_chassis[key])
+    for key in sales_order_lookup_keys(row):
+        if key in series_by_sales_order:
+            return normalize_series_code(series_by_sales_order[key])
+    return ""
+
+
+def extract_series(row, series_by_chassis=None, series_by_sales_order=None):
+    mapped = mapped_series_for_row(row, series_by_chassis, series_by_sales_order)
+    if mapped and not is_excluded_series(mapped):
+        return mapped
     parts = [
         row.get("Registered Product"),
         row.get("Product"),
@@ -166,13 +261,13 @@ def extract_series(row):
         row.get("Chassis Number"),
     ]
     text = " ".join(clean(v) for v in parts if clean(v) and clean(v) != "#").upper()
-    if re.search(r"NG[A-Z0-9-]*", text):
+    if re.search(r"\bNG[A-Z0-9-]*", text):
         return "NG"
     known = ["SRC", "SRH", "SRT", "SRM", "SRP", "SRL", "SRV", "LRV", "LRT", "LRH", "LRP", "LRL", "LRC", "LTR", "LVR", "LPV", "LEP", "RRV"]
     for code in known:
         if code in text:
             return normalize_series_code(code)
-    match = re.search(r"([A-Z]{2,4})\d{2,6}[A-Z]?", text)
+    match = re.search(r"\b([A-Z]{2,4})\d{2,6}[A-Z]?\b", text)
     return normalize_series_code(match.group(1)) if match else "UNKNOWN"
 
 
@@ -226,6 +321,7 @@ def finalize_bucket(bucket, total_tickets, total_cost):
 def main():
     parts_meta_path, parts_csv_path = resolve_parts_sources()
     ticket_map_payload = json.loads(PARTS_TICKET_MAP.read_text(encoding="utf-8"))
+    series_by_chassis, series_by_sales_order = load_vehicle_base_maps()
     ticket_series = {}
     ticket_series_counts = defaultdict(Counter)
     series_ticket_sets = defaultdict(set)
@@ -236,9 +332,12 @@ def main():
         series = extract_series({
             "Serial ID": row.get("serialId"),
             "Chassis Number": row.get("chassisNumber"),
+            "Sales Order": row.get("salesOrder"),
+            "Vehicle Dispatch Serial": row.get("vehicleDispatchSerial"),
+            "Vehicle Dispatch Sales Order": row.get("vehicleDispatchSalesOrder"),
             "Ticket ID": row.get("ticketId"),
-        })
-        if is_excluded_series(series):
+        }, series_by_chassis, series_by_sales_order)
+        if is_excluded_series(series) or not is_tracked_series(series):
             continue
         ticket_series_counts[ticket_id][series] += 1
         series_ticket_sets[series].add(ticket_id)
@@ -264,10 +363,21 @@ def main():
         ticket_id = clean(get_value(row, parts_index, "Ticket ID"))
         series = ticket_series.get(ticket_id, "UNKNOWN")
         if series == "UNKNOWN":
+            series = extract_series({
+                "Ticket ID": ticket_id,
+                "Sales Order": get_value(row, parts_index, "Sales Order"),
+                "Serial ID": get_value(row, parts_index, "Serial ID"),
+                "Chassis Number": get_value(row, parts_index, "Chassis Number"),
+                "Matched Serial": get_value(row, parts_index, "Matched Serial"),
+                "Matched Chassis": get_value(row, parts_index, "Matched Chassis"),
+                "Matched Sales Order": get_value(row, parts_index, "Matched Sales Order"),
+            }, series_by_chassis, series_by_sales_order)
+        if series == "UNKNOWN":
             unmatched_rows += 1
-        if is_excluded_series(series):
+        if is_excluded_series(series) or not is_tracked_series(series):
             excluded_rows += 1
             continue
+        series_ticket_sets[series].add(ticket_id)
         included_rows += 1
 
         keyword = clean(get_value(row, parts_index, "Matched Keyword"))
@@ -282,7 +392,7 @@ def main():
         add_component(parts_stats_all[component_label], ticket_id, category, cost)
         add_component(parts_stats_by_series[series][component_label], ticket_id, category, cost)
 
-    total_tickets_all = len({ticket for ticket, series in ticket_series.items() if not is_excluded_series(series)})
+    total_tickets_all = len({ticket for ticket, series in ticket_series.items() if not is_excluded_series(series) and is_tracked_series(series)})
     overall = {
         "lineItems": included_rows,
         "tickets": total_tickets_all,
@@ -319,6 +429,7 @@ def main():
             "excludedRows": excluded_rows,
             "partsSource": relative_path(parts_csv_path),
             "ticketMapSource": relative_path(PARTS_TICKET_MAP),
+            "vehicleBaseSource": relative_path(VEHICLE_BASE_SUMMARY) if VEHICLE_BASE_SUMMARY.exists() else "",
             "partsMetaSource": relative_path(parts_meta_path) if parts_meta_path else "",
         },
         "all": overall,
