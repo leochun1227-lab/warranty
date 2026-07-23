@@ -2499,6 +2499,7 @@ html{zoom:.8!important;}
 <section id="mappingPanel" class="panel mappingPanel collapsed"><div class="panelHead"><div><h2 class="panelTitle">Employee Status Mapping</h2></div><button id="mappingEditBtn" class="btn" type="button">Edit mapping</button></div><div class="mappingEditor"><div class="employeeDirectoryActions"><input id="employeeAddName" class="input" placeholder="Employee name"><button id="employeeAddBtn" class="btn" type="button">Add active employee</button><span id="employeeDirectorySaveState" class="saveState"></span></div><div class="tableWrap employeeDirectoryTable" style="margin-top:14px"><table><thead><tr><th>Employee</th><th>Status</th></tr></thead><tbody id="employeeDirectoryRows"></tbody></table></div></div></section>
 </main></div><div id="tooltip" class="tooltip"></div><div id="ticketModal" class="modalBackdrop"><div class="modal"><div class="modalHead"><div><div class="modalTitle" id="ticketModalTitle">Ticket details</div></div><button class="modalClose" id="ticketModalClose" type="button">x</button></div><div id="ticketModalBody"></div></div></div>
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
+<script src="browser-page-cache.js"></script>
 <script>
 
 function showCalcFloat(active,text){
@@ -2514,6 +2515,30 @@ function hideCalcFloat(delay=250){setTimeout(()=>showCalcFloat(false),delay)}
 const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
 const MONITOR_ROOT="ctmTicketStatusMonitorV44", DASHBOARD_MIN_DATE="2026-05-25";
 let analytics=null, teamAnalytics=null, rawCritical={loaded:false,views:{}}, rawPartsTickets=[], statusMapping={}, employeeDirectory={}, baseStats=[], detailRows=[], employeeStats=[], selectedMetric="totalRemoved", selectedEmployee="", chartAreas=[], activeClaim="all";
+const EMPLOYEE_PAGE_CACHE_KEY="employee-workbench";
+async function employeePageVersion(){try{return await window.WarrantyPageCache.fetchVersion();}catch(e){console.warn("Cannot read employee cache version",e);return "";}}
+function saveEmployeePageState(version){if(version&&window.WarrantyPageCache)window.WarrantyPageCache.setPage(EMPLOYEE_PAGE_CACHE_KEY,version,{analytics,teamAnalytics,activeClaim,employeeDirectory});}
+function restoreEmployeePageState(cached,version){
+  if(!cached||!cached.analytics)return false;
+  analytics=cached.analytics;
+  teamAnalytics=cached.teamAnalytics||null;
+  activeClaim=cached.activeClaim||analytics.defaultView||"all";
+  employeeDirectory=cached.employeeDirectory||defaultEmployeeDirectory();
+  rawCritical={loaded:false,views:{}};
+  rawPartsTickets=[];
+  statusMapping={};
+  $('loadError').style.display='none';
+  const view=currentEmployeeView();
+  baseStats=arrayFromMaybe(view.stats);
+  detailRows=arrayFromMaybe(view.detailRows);
+  const min=view.minDate||analytics.minDate||DASHBOARD_MIN_DATE;
+  $('dateFrom').min=min;$('dateTo').min=min;$('dateFrom').value=min;$('dateTo').value=toISODate(new Date());
+  applyPresetRange();
+  recalc();
+  finishCalcStatus();
+  if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(version,"cached");
+  return true;
+}
 const DEFAULT_ACTIVE_EMPLOYEES=["Marissa Colosimo","Ford Hapuku","Mark Bertoncini","Leanne Pulford","Kylie Clayton","Rosemary Johnstone","Michael Scordia","Robert Stella","Chloe Bolger","Salvino Briganti"];
 const $=id=>document.getElementById(id);
 function setCalcStatus(active,steps=[]){
@@ -3141,6 +3166,11 @@ async function loadEmployeeAnalytics(){
   return null;
 }
 async function loadData(){
+  const cacheVersion=await employeePageVersion();
+  try{
+    const cached=await window.WarrantyPageCache.getPage(EMPLOYEE_PAGE_CACHE_KEY,cacheVersion);
+    if(restoreEmployeePageState(cached,cacheVersion))return;
+  }catch(e){console.warn("Employee page cache restore failed",e);}
   try{
     setCalcStatus(true,['Loading pre-calculated Firebase analytics','Rendering employee dashboard cache','Preparing employee directory']);
     $('loadError').style.display='none';
@@ -3163,6 +3193,8 @@ async function loadData(){
     $('dateFrom').min=min;$('dateTo').min=min;$('dateFrom').value=min;$('dateTo').value=toISODate(new Date());
     applyPresetRange();
     recalc();
+    saveEmployeePageState(cacheVersion);
+    if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"fresh");
     finishCalcStatus();
   }catch(err){
     analytics=emptyAnalytics();baseStats=[];detailRows=[];recalc();

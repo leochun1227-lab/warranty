@@ -1095,6 +1095,7 @@
 </div>
 <div class="tip" id="tip"></div>
 
+<script src="browser-page-cache.js"></script>
 <script>
 "use strict";
 (function(){
@@ -1108,6 +1109,24 @@
     groups: [],
     costReport: null,
   };
+
+  const DELIVERY_PAGE_CACHE_KEY = "delivery-flow";
+  async function deliveryPageVersion(){try{return await window.WarrantyPageCache.fetchVersion(window.WarrantyPageCache.deliveryVersionUrl);}catch(e){console.warn("Cannot read delivery cache version",e);return "";}}
+  function saveDeliveryPageState(version){
+    if(!version||!window.WarrantyPageCache)return;
+    window.WarrantyPageCache.setPage(DELIVERY_PAGE_CACHE_KEY,version,{granularity:state.granularity,history:state.history,currentTickets:state.currentTickets,costReport:state.costReport});
+  }
+  function restoreDeliveryPageState(cached,version){
+    if(!cached||!Array.isArray(cached.history)||!cached.history.length)return false;
+    state.granularity=cached.granularity||"week";
+    state.history=cached.history;
+    state.currentTickets=Array.isArray(cached.currentTickets)?cached.currentTickets:[];
+    state.costReport=cached.costReport||null;
+    render();
+    setPageLoading(false);
+    if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(version,"cached");
+    return true;
+  }
 
   const els = {
     kpis: document.getElementById("kpis"),
@@ -3265,7 +3284,13 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     renderFooter(series, latest, normalizedIssuedSeries, leadSeries);
   }
 
-  Promise.allSettled([loadHistory(), loadCurrentTickets()]).then(results => {
+  (async () => {
+    const cacheVersion = await deliveryPageVersion();
+    try{
+      const cached = await window.WarrantyPageCache.getPage(DELIVERY_PAGE_CACHE_KEY,cacheVersion);
+      if(restoreDeliveryPageState(cached,cacheVersion))return;
+    }catch(e){console.warn("Delivery page cache restore failed",e);}
+    Promise.allSettled([loadHistory(), loadCurrentTickets()]).then(results => {
     const historyResult = results[0];
     const ticketsResult = results[1];
     if (historyResult.status === "fulfilled") {
@@ -3279,6 +3304,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       throw new Error("No history data");
     }
     render();
+    saveDeliveryPageState(cacheVersion);
+    if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"fresh");
   }).catch(err => {
     els.snapshotPill.innerHTML = `<strong>Latest</strong> unavailable`;
     els.kpis.innerHTML = "";
@@ -3288,6 +3315,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
   }).finally(() => {
     setPageLoading(false);
   });
+  })();
 
   window.addEventListener("resize", () => {
     if (!state.history.length) return;

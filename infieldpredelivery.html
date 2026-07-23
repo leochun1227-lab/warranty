@@ -399,6 +399,7 @@ body{
   </main>
 </div>
 
+<script src="browser-page-cache.js"></script>
 <script>
 const FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
 const ROOT="ctmTicketStatusMonitorV44";
@@ -1216,7 +1217,7 @@ function applyYear(year){
 
 function setActiveTab(id){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.target===id))}
 
-function init(view){
+function init(view,useCached=false){
   MONTHLY=buildMonthly(view||{});
   MONTHS_INDEX=Object.fromEntries(MONTHLY.map(r=>[r.month,r]));
   CLAIM_CLOSED_INDEX=buildClaimClosedIndex(RAW_TICKETS);
@@ -1230,7 +1231,7 @@ function init(view){
   activeStart=defaultRange.start;
   activeEnd=defaultRange.end;
   syncControls();
-  renderWithPageLoading(true,"Loading dashboard...");
+  renderWithPageLoading(!useCached,"Loading dashboard...");
   // controls
   $("yearSelect").onchange=()=>{customRange=false;applyYear($("yearSelect").value);syncControls();renderWithPageLoading(true,"Loading dashboard...")};
   $("applyRange").onclick=()=>{let a=$("fromMonth").value||b.min,c=$("toMonth").value||b.max;if(a>c)[a,c]=[c,a];const bb=dataBounds();activeStart=a<bb.min?bb.min:a;activeEnd=c>bb.max?bb.max:c;customRange=true;$("yearSelect").value="";renderWithPageLoading(true,"Loading dashboard...")};
@@ -1308,19 +1309,37 @@ function setupNav(){
 setupNav();
 window.addEventListener("load",()=>{const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);});
 
-Promise.all([readJson(`${ROOT}/analytics/teamDashboard`),readJson(TICKETS_PATH).catch(()=>[])]).then(([data,tickets])=>{
-  const view=(data&&data.views&&data.views.all)||data||{};
-  RAW_TICKETS=arr(tickets);
-  init(view);
-  const id=(location.hash||"").slice(1);
-  if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);
-}).catch(err=>{
-  // Firebase unavailable: still render the hardcoded SAP baseline.
-  showError(`Live dashboard data unavailable, showing SAP baseline only. (${err.message})`);
-  init({});
-  const id=(location.hash||"").slice(1);
-  if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);
-});
+const INFIELD_PAGE_CACHE_KEY="infield-pre-delivery";
+function finishInitialScroll(){const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);}
+(async()=>{
+  let cacheVersion="";
+  try{cacheVersion=await window.WarrantyPageCache.fetchVersion();}catch(e){console.warn("Cannot read in-field cache version",e);}
+  try{
+    const cached=await window.WarrantyPageCache.getPage(INFIELD_PAGE_CACHE_KEY,cacheVersion);
+    if(cached&&cached.view){
+      RAW_TICKETS=arr(cached.tickets);
+      init(cached.view,true);
+      if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"cached");
+      finishInitialScroll();
+      return;
+    }
+  }catch(e){console.warn("In-field page cache restore failed",e);}
+  Promise.all([readJson(`${ROOT}/analytics/teamDashboard`),readJson(TICKETS_PATH).catch(()=>[])]).then(([data,tickets])=>{
+    const view=(data&&data.views&&data.views.all)||data||{};
+    RAW_TICKETS=arr(tickets);
+    init(view);
+    if(cacheVersion&&window.WarrantyPageCache){
+      window.WarrantyPageCache.setPage(INFIELD_PAGE_CACHE_KEY,cacheVersion,{view,tickets:RAW_TICKETS});
+      window.WarrantyPageCache.showBadge(cacheVersion,"fresh");
+    }
+    finishInitialScroll();
+  }).catch(err=>{
+    // Firebase unavailable: still render the hardcoded SAP baseline.
+    showError(`Live dashboard data unavailable, showing SAP baseline only. (${err.message})`);
+    init({});
+    finishInitialScroll();
+  });
+})();
 </script>
 </body>
 </html>

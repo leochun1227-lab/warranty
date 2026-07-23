@@ -1967,9 +1967,9 @@ body.repair-analysis-page :is(.kpiValue,.rateStatValue,.weekMetric b){
 <section id="repair-details" class="panel"><div class="panelHead"><div><h2 class="panelTitle">Shop Summary</h2><p class="panelDesc">Open cases are tickets without a PO invoice; closed cases have one, so Open + Closed always matches Tickets.</p></div><div class="panelActions repairDetailsActions"><div class="repairHeaderSearch"><span class="repairHeaderSearchLabel">Search</span><div class="repairHeaderSearchField"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="searchBox" class="repairHeaderSearchInput" placeholder="Search repair name or shop ID"></div></div><button id="clearRepairFiltersBtn" class="btn" type="button">Clear filters</button><button id="repairExportBtn" class="btn" type="button">Export</button></div></div><div class="tableWrap"><table><thead><tr id="tableHead"></tr></thead><tbody id="repairRows"></tbody></table></div><div class="pager"><button id="prevPage" class="btn" type="button">Previous</button><span id="pageInfo"></span><button id="nextPage" class="btn" type="button">Next</button></div></section>
 </main></div>
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
-<script src="outputs/repairers_2026/repairers_2026_data.js"></script>
 <script src="assets/geo/australia-states.js?v=20260706a"></script>
 <script src="assets/geo/new-zealand.js?v=20260706a"></script>
+<script src="browser-page-cache.js"></script>
 <script>
 
 function showCalcFloat(active,text){
@@ -2004,6 +2004,41 @@ let ausGeo=null, nzGeo=null;
 let topRepairSort="ticket_count";
 // Client-side working copies (recomputed from details when rate changes)
 let workingSummary=null, workingRepairers=[], workingStates=[], workingWeekly=[], workingChassis=null;
+const REPAIR_PAGE_CACHE_KEY=`repairs:${selectedRepairYear}`;
+async function repairPageVersion(){try{return await window.WarrantyPageCache.fetchVersion();}catch(e){console.warn("Cannot read repair cache version",e);return "";}}
+function compactRepairWeeklyAnalysis(value){return value&&typeof value==="object"?{...value,details:[]}:value}
+function saveRepairPageState(version){
+  if(!version||!window.WarrantyPageCache)return;
+  window.WarrantyPageCache.setPage(REPAIR_PAGE_CACHE_KEY,version,{tickets,repairs,weeklyAnalysis:compactRepairWeeklyAnalysis(weeklyAnalysis),weeklyWeeks,weeklyIndex,weeklyMetric,selectedRegionCode,workingSummary,workingRepairers,workingStates,workingWeekly,workingChassis});
+}
+function restoreRepairPageState(cached,version){
+  if(!cached||!Array.isArray(cached.tickets)||!Array.isArray(cached.repairs))return false;
+  tickets=cached.tickets;
+  repairs=cached.repairs;
+  weeklyAnalysis=cached.weeklyAnalysis||null;
+  weeklyWeeks=Array.isArray(cached.weeklyWeeks)?cached.weeklyWeeks:(Array.isArray(weeklyAnalysis&&weeklyAnalysis.weekly)?weeklyAnalysis.weekly:[]);
+  weeklyIndex=Number.isFinite(Number(cached.weeklyIndex))?Number(cached.weeklyIndex):Math.max(0,weeklyWeeks.length-1);
+  weeklyMetric=cached.weeklyMetric||"confirmed_cost";
+  selectedRegionCode=cached.selectedRegionCode||"QLD";
+  ausGeo=globalThis.REPAIRERS_AUS_GEOJSON||ausGeo;
+  nzGeo=globalThis.REPAIRERS_NZ_GEOJSON||nzGeo;
+  workingSummary=cached.workingSummary||(weeklyAnalysis&&weeklyAnalysis.summary)||{};
+  workingRepairers=Array.isArray(cached.workingRepairers)?cached.workingRepairers:[];
+  workingStates=Array.isArray(cached.workingStates)?cached.workingStates:[];
+  workingWeekly=Array.isArray(cached.workingWeekly)?cached.workingWeekly:weeklyWeeks;
+  workingChassis=cached.workingChassis||null;
+  $("loadError").style.display="none";
+  $("weekError").style.display="none";
+  showRepairYearNotice(tickets.length);
+  renderSelect();
+  renderAll();
+  renderAll_v2();
+  if(!workingChassis)computeChassisRepeatDistribution();
+  renderChassisRepeatPanel();
+  hideCalcFloat(0);
+  if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(version,"cached");
+  return true;
+}
 const $=id=>document.getElementById(id);
 const clean=v=>v==null?"":String(v).trim();
 const esc=v=>clean(v).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
@@ -3743,6 +3778,11 @@ async function loadWeeklyAnalysis(){
   }
 }
 async function load(){
+  const cacheVersion=await repairPageVersion();
+  try{
+    const cached=await window.WarrantyPageCache.getPage(REPAIR_PAGE_CACHE_KEY,cacheVersion);
+    if(restoreRepairPageState(cached,cacheVersion))return;
+  }catch(e){console.warn("Repair page cache restore failed",e);}
   await loadWeeklyAnalysis();
   try{
     showCalcFloat(true,"Calculating...");
@@ -3797,6 +3837,8 @@ async function load(){
     renderAll_v2();
     computeChassisRepeatDistribution();
     renderChassisRepeatPanel();
+    saveRepairPageState(cacheVersion);
+    if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"fresh");
     hideCalcFloat(0);
   }
   catch(e){

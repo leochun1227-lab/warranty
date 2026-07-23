@@ -567,6 +567,7 @@ body{
 <script src="generated_exports/ticket_timeline_summary_2026.js"></script>
 <script src="generated_exports/ticket_timeline_summary.js"></script>
 <script src="generated_exports/ticket_timeline_completion_analytics_2026.js"></script>
+<script src="browser-page-cache.js"></script>
 <script>
 const TIMELINE_SUMMARY_URL="generated_exports/ticket_timeline_summary.json";
 const COMPLETION_ANALYTICS_URL="generated_exports/ticket_timeline_completion_analytics_2026.json";
@@ -908,6 +909,12 @@ function applyTimelineSummary(summary){
 }
 
 async function loadTimelineSummary(){
+  let cacheVersion="";
+  try{cacheVersion=await window.WarrantyPageCache.fetchVersion();}catch(e){console.warn("Cannot read timeline cache version",e);}
+  try{
+    const cached=await window.WarrantyPageCache.getPage(`ticket-lifecycle:summary:${selectedYear}`,cacheVersion);
+    if(cached&&Array.isArray(cached.stages)){applyTimelineSummary(cached);if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"cached");return;}
+  }catch(e){console.warn("Timeline summary cache restore failed",e);}
   const globalYearSummary=window[`TICKET_TIMELINE_SUMMARY_${selectedYear}`];
   if(globalYearSummary&&Array.isArray(globalYearSummary.stages)){
     applyTimelineSummary(globalYearSummary);
@@ -919,7 +926,9 @@ async function loadTimelineSummary(){
     try{
       const response=await fetch(`${url}?v=${Date.now()}`,{cache:"no-store"});
       if(!response.ok)continue;
-      applyTimelineSummary(await response.json());
+      const payload=await response.json();
+      applyTimelineSummary(payload);
+      if(cacheVersion&&window.WarrantyPageCache){window.WarrantyPageCache.setPage(`ticket-lifecycle:summary:${selectedYear}`,cacheVersion,payload);window.WarrantyPageCache.showBadge(cacheVersion,"fresh");}
       return;
     }catch(error){
       // Try the next summary source, then keep the current fallback/empty state.
@@ -928,6 +937,12 @@ async function loadTimelineSummary(){
 }
 
 async function loadCompletionAnalytics(){
+  let cacheVersion="";
+  try{cacheVersion=await window.WarrantyPageCache.fetchVersion();}catch(e){cacheVersion="";}
+  try{
+    const cached=await window.WarrantyPageCache.getPage("ticket-lifecycle:completion",cacheVersion);
+    if(cached&&cached.stages&&typeof cached.stages==="object"){previewStageAnalysis=cached.stages;renderAllAnalytics();return;}
+  }catch(e){console.warn("Timeline completion cache restore failed",e);}
   if(window.TICKET_TIMELINE_COMPLETION_ANALYTICS_2026&&window.TICKET_TIMELINE_COMPLETION_ANALYTICS_2026.stages){
     previewStageAnalysis=window.TICKET_TIMELINE_COMPLETION_ANALYTICS_2026.stages;
     renderAllAnalytics();
@@ -938,6 +953,7 @@ async function loadCompletionAnalytics(){
     const payload=await response.json();
     if(payload&&payload.stages&&typeof payload.stages==="object"){
       previewStageAnalysis=payload.stages;
+      if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.setPage("ticket-lifecycle:completion",cacheVersion,payload);
       renderDrilldown(stages[activeIndex]);
     }
   }catch(error){
@@ -1246,7 +1262,7 @@ function trendSvg(analysis){
           <rect width="2.5" height="7" fill="rgba(29,42,61,.34)"></rect>
         </pattern>
       </defs>
-      <text class="axisTitle" x="13" y="136" transform="rotate(-90 13 136)">Handling days</text>
+      <text class="axisTitle" x="13" y="136" transform="rotate(-90 13 136)">Avg handling days</text>
       <text class="axisTitle" x="162" y="288">Completion month, 2026</text>
       ${ticks.map(tick=>{
         const y=bottom-(tick/maxValue*height);

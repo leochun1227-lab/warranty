@@ -696,14 +696,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 }
 </style>
 <link rel="stylesheet" href="sidebar-light.css">
-<script src="outputs/repairers_2026/repairers_2026_data.js"></script>
-<script src="outputs/analysis_parts_failure_summary.js"></script>
-<script src="outputs/analysis_vehicle_base_summary.js"></script>
-<script src="outputs/analysis_parts_ticket_cost_map.js"></script>
-<script src="outputs/analysis_approved_cost_by_ticket.js"></script>
-<script src="outputs/analysis_ticket_failure_timing.js"></script>
-<script src="outputs/analysis_ticket_csv.js"></script>
-<script src="outputs/parts_classified_data.js"></script>
+<script src="browser-page-cache.js"></script>
 </head>
 <body>
 <div class="loadingOverlay show" id="loadingOverlay">
@@ -1014,6 +1007,87 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     compPreviewName: "",
     compPreviewCat: "",
   };
+
+  const ANALYSIS_PAGE_CACHE_KEY = "analysis:model-series";
+  function mapEntries(map){ return map instanceof Map ? Array.from(map.entries()) : []; }
+  function setValues(set){ return set instanceof Set ? Array.from(set.values()) : []; }
+  async function analysisPageVersion(){try{return await window.WarrantyPageCache.fetchVersion();}catch(e){console.warn("Cannot read analysis cache version",e);return "";}}
+  function saveAnalysisPageState(version){
+    if(!version||!window.WarrantyPageCache)return;
+    window.WarrantyPageCache.setPage(ANALYSIS_PAGE_CACHE_KEY,version,{
+      rows:state.rows,
+      sourceRowPool:state.sourceRowPool,
+      selected:state.selected,
+      scope:state.scope,
+      soldBySeries:state.soldBySeries,
+      autoBaseBySeries:state.autoBaseBySeries,
+      salesBaseBySeries:state.salesBaseBySeries,
+      deliveredBaseBySeries:state.deliveredBaseBySeries,
+      vehicleBaseSummary:state.vehicleBaseSummary,
+      chassisPgiMap:state.chassisPgiMap,
+      salesOrderPgiMap:state.salesOrderPgiMap,
+      chassisSeriesMap:state.chassisSeriesMap,
+      salesOrderSeriesMap:state.salesOrderSeriesMap,
+      ticketCostRows:state.ticketCostRows,
+      approvedCostByTicketId:state.approvedCostByTicketId,
+      partsCostByTicketId:state.partsCostByTicketId,
+      rejectionByTicketId:state.rejectionByTicketId,
+      dispatchByChassis:state.dispatchByChassis,
+      partsFailureSummary:state.partsFailureSummary,
+      sourceRows:state.sourceRows,
+      seriesSort:state.seriesSort,
+      repairerSort:state.repairerSort,
+      compMode:state.compMode,
+      monthlyTicketsScope:state.monthlyTicketsScope,
+      compTooltipScope:state.compTooltipScope,
+      ticketRowByIdEntries:mapEntries(state.ticketRowById),
+      partsIncludedTicketIds:setValues(state.partsIncludedTicketIds),
+      partsTicketSeriesByIdEntries:mapEntries(state.partsTicketSeriesById)
+    });
+  }
+  function restoreAnalysisPageState(cached,version){
+    if(!cached||!Array.isArray(cached.rows))return false;
+    Object.assign(state,{
+      rows:cached.rows||[],
+      sourceRowPool:cached.sourceRowPool||[],
+      selected:cached.selected||"ALL",
+      scope:cached.scope||"ALL",
+      soldBySeries:cached.soldBySeries||{},
+      autoBaseBySeries:cached.autoBaseBySeries||{},
+      salesBaseBySeries:cached.salesBaseBySeries||{},
+      deliveredBaseBySeries:cached.deliveredBaseBySeries||{},
+      vehicleBaseSummary:cached.vehicleBaseSummary||null,
+      chassisPgiMap:cached.chassisPgiMap||{},
+      salesOrderPgiMap:cached.salesOrderPgiMap||{},
+      chassisSeriesMap:cached.chassisSeriesMap||{},
+      salesOrderSeriesMap:cached.salesOrderSeriesMap||{},
+      ticketCostRows:cached.ticketCostRows||[],
+      approvedCostByTicketId:cached.approvedCostByTicketId||{},
+      partsCostByTicketId:cached.partsCostByTicketId||{},
+      rejectionByTicketId:cached.rejectionByTicketId||{},
+      dispatchByChassis:cached.dispatchByChassis||{},
+      partsFailureSummary:cached.partsFailureSummary||null,
+      sourceRows:Number(cached.sourceRows||0),
+      seriesSort:cached.seriesSort||{key:"vehicles",dir:"desc"},
+      repairerSort:cached.repairerSort||{key:"rejectionRate",dir:"desc"},
+      compMode:cached.compMode||"tickets",
+      monthlyTicketsScope:cached.monthlyTicketsScope||"all",
+      compTooltipScope:cached.compTooltipScope||"PRE",
+      ticketCostMemo:new WeakMap(),
+      ticketRowById:new Map(cached.ticketRowByIdEntries||[]),
+      partsIncludedTicketIds:new Set(cached.partsIncludedTicketIds||[]),
+      partsTicketSeriesById:new Map(cached.partsTicketSeriesByIdEntries||[]),
+      partsClassifiedRows:null,
+      partsClassifiedIndex:null,
+      partsClassifiedTicketMap:null
+    });
+    render();
+    const overlay=$("loadingOverlay");
+    if(overlay)overlay.classList.remove("show");
+    if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(version,"cached");
+    loadPartsClassifiedRows().then(()=>{buildPartsClassifiedIndex();renderComponents();}).catch(err=>console.warn("Classified rows background load failed",err));
+    return true;
+  }
 
   // ============ HELPERS ============
   const clean = (v) => (v==null ? "" : String(v)).trim();
@@ -3946,7 +4020,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       render();
     });
 
-    $("reloadBtn").addEventListener("click", () => loadAll());
+    $("reloadBtn").addEventListener("click", () => loadAll(true));
     $("exportBtn").addEventListener("click", exportExcel);
   }
 
@@ -4530,7 +4604,14 @@ ${worksheets}
     }
   }
 
-  async function loadAll(){
+  async function loadAll(forceRefresh=false){
+    const cacheVersion = await analysisPageVersion();
+    if(!forceRefresh){
+      try{
+        const cached = await window.WarrantyPageCache.getPage(ANALYSIS_PAGE_CACHE_KEY,cacheVersion);
+        if(restoreAnalysisPageState(cached,cacheVersion))return;
+      }catch(e){console.warn("Analysis page cache restore failed",e);}
+    }
     const overlay = $("loadingOverlay");
     if (overlay) overlay.classList.add("show");
     $("sourceCount").textContent = "…";
@@ -4596,6 +4677,8 @@ ${worksheets}
       }
 
       render();
+      saveAnalysisPageState(cacheVersion);
+      if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"fresh");
       if (overlay) overlay.classList.remove("show");
 
       // Load classified rows in background for component tooltips + monthly totals
