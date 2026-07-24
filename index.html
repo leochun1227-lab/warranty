@@ -3393,7 +3393,7 @@ body{
     <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repair</span></a>
     <div class="navDivider"></div>
     <div class="navSection">Tickets</div>
-    <a class="navLink" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15 17l2-2 2 2"/></svg><span>Claim Tickets Workflow</span></a>
+    <a class="navLink" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15 17l2-2 2 2"/></svg><span>Claim Trend Overview</span></a>
     <div class="navDivider"></div>
     <div class="navSection">Analysis</div>
      <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model And Parts</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket lifecycle</span></a>
@@ -3469,6 +3469,7 @@ function hideCalcFloat(delay=250){if(calcFloatHideTimer)clearTimeout(calcFloatHi
 
 const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
 const MONITOR_ROOT="ctmTicketStatusMonitorV44";
+const DASHBOARD_TIMEOUT_MS=15000;
 let team={views:{},defaultView:"all",claimOptions:[{key:"all",label:"All Claims"}]};
 let activeClaim="all", activeView=null, activePeriod="month", activeMonth="", trendPoints=[], rawCritical={loaded:false,views:{}}, rawTicketEntries=[], rawTicketEntryMap=new Map(), approvalState={}, approvalStateLoaded=false, approvalRowsCache=new Map(), statusMapping={}, dealerKeyLookup={exact:{},loose:{}}, employeeAnalytics=null, teamAssignMetric="totalRemoved", selectedEmployeeName="", employeeModalPeriod="all", employeeStatusMapping={}, employeeStatusEdit=false, employeeStatusSaving=false, employeeStatusSaveState="";
 const DEFAULT_RANGE_START="2026-05-25";
@@ -3540,7 +3541,27 @@ function isDefaultActiveEmployee(name){const key=employeeStatusKey(name);return 
 function isEmployeeExited(name){const entry=employeeStatusEntry(name),status=clean(entry&&typeof entry==="object"?entry.status:entry).toLowerCase();return status==="exited"}
 function isExitedEmployeeRow(row){return !!(row&&(row.isExited||clean(row.employeeStatus).toLowerCase()==="exited"||isEmployeeExited(row.name||row.employee||row.owner)))}
 function fbUrl(path){return DEFAULT_FIREBASE.replace(/\/+$/,'')+"/"+path.replace(/^\/+/,'')+".json"}
-async function readJson(path){const r=await fetch(fbUrl(path),{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
+function withTimeout(promise,timeoutMs,label){
+  let timer=null;
+  const timeout=new Promise((_,reject)=>{
+    timer=setTimeout(()=>reject(new Error(`${label} timed out after ${Math.round(timeoutMs/1000)}s`)),timeoutMs);
+  });
+  return Promise.race([promise,timeout]).finally(()=>{if(timer)clearTimeout(timer)});
+}
+async function readJson(path,timeoutMs=DASHBOARD_TIMEOUT_MS){
+  const controller=typeof AbortController!=="undefined"?new AbortController():null;
+  const timer=controller?setTimeout(()=>controller.abort(),timeoutMs):null;
+  try{
+    const r=await fetch(fbUrl(path),{cache:"no-store",signal:controller?controller.signal:undefined});
+    if(!r.ok)throw new Error(path+" HTTP "+r.status);
+    return await r.json();
+  }catch(err){
+    if(err&&err.name==="AbortError")throw new Error(`${path} timed out after ${Math.round(timeoutMs/1000)}s`);
+    throw err;
+  }finally{
+    if(timer)clearTimeout(timer);
+  }
+}
 const PAGE_ELEMENT_ADJUST_STORAGE_KEY="pageElementAdjustRel";
 const PAGE_ELEMENT_ADJUST_REMOTE_PATH=`${MONITOR_ROOT}/uiPrefs/pageElementAdjustRel`;
 let pageElementAdjustStore={};
@@ -6828,7 +6849,7 @@ function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(pr
 function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}
 function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const newDelta=deltaInfoMetric("entered",hit.p.cumulativeNewTickets,prev?prev.cumulativeNewTickets:hit.p.cumulativeNewTickets);const approvalDelta=deltaInfoMetric("entered",hit.p.cumulativeApprovedUnapprovedTickets,prev?prev.cumulativeApprovedUnapprovedTickets:hit.p.cumulativeApprovedUnapprovedTickets);const criticalDelta=deltaInfoMetric("critical",hit.p.criticalTotal,prev?prev.criticalTotal:hit.p.criticalTotal);tip.innerHTML=`<b>${esc(trendPointLabel(hit.p))}</b>${tipRow("Cumulative New Tickets","#3b82f6",hit.p.cumulativeNewTickets,newDelta)}${tipRow("Cumulative Approved + Unapproved","#16a34a",hit.p.cumulativeApprovedUnapprovedTickets,approvalDelta)}${tipRow("Critical total (right axis)","#fb6b1d",hit.p.criticalTotal,criticalDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
 const TEAM_PAGE_CACHE_KEY="team-dashboard";
-async function teamPageVersion(){try{return await window.WarrantyPageCache.fetchVersion();}catch(e){console.warn("Cannot read dashboard cache version",e);return "";}}
+async function teamPageVersion(){try{return await withTimeout(window.WarrantyPageCache.fetchVersion(),DASHBOARD_TIMEOUT_MS,"Dashboard cache version request");}catch(e){console.warn("Cannot read dashboard cache version",e);return "";}}
 function restoreTeamPageState(cached,version){
   if(!cached||!cached.team)return false;
   team=cached.team;
@@ -6846,7 +6867,7 @@ function saveTeamPageState(version){
   if(!version||!window.WarrantyPageCache)return;
   window.WarrantyPageCache.setPage(TEAM_PAGE_CACHE_KEY,version,{team,activeClaim,employeeAnalytics,employeeStatusMapping});
 }
-async function load(){const cacheVersion=await teamPageVersion();try{const cached=await window.WarrantyPageCache.getPage(TEAM_PAGE_CACHE_KEY,cacheVersion);if(restoreTeamPageState(cached,cacheVersion)){Promise.all([loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{}),loadEmployeeStatusMappingRemote()]).then(()=>{renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll();if($("employeeModalBackdrop")?.classList.contains("active")&&selectedEmployeeName)renderEmployeeModalWithLoading();saveTeamPageState(cacheVersion);}).catch(()=>{});return;}}catch(e){console.warn("Team page cache restore failed",e);}try{const started=performance.now();showCalcFloat(true,"Loading dashboard...");$("loadError").style.display="none";let data=await readJson(MONITOR_ROOT+"/analytics/teamDashboard").catch(()=>null);if(!data||typeof data!=="object")throw new Error("analytics/teamDashboard is empty. Please rebuild analytics.");team=data;activeClaim=canonicalClaimKey(team.defaultView||"all");await loadPageElementAdjustRemote();try{await Promise.all([ensureCurrentPeriodSnapshotDetails(),ensureFullTeamViewDetails()]);}catch(e){console.warn("Initial current period snapshot preload failed",e);}hideCalcFloat(Math.max(60,Math.min(350,400-performance.now()+started)));renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll();if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"fresh");Promise.all([loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{employeeAnalytics=null}),loadEmployeeStatusMappingRemote()]).then(async()=>{try{await Promise.all([ensureCurrentPeriodSnapshotDetails(),ensureFullTeamViewDetails()]);}catch(e){console.warn("Post-load current period snapshot preload failed",e);}renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll();if($("employeeModalBackdrop")?.classList.contains("active")&&selectedEmployeeName)renderEmployeeModalWithLoading();saveTeamPageState(cacheVersion);}).catch(()=>{saveTeamPageState(cacheVersion);});saveTeamPageState(cacheVersion);}catch(err){hideCalcFloat();$("loadError").innerHTML="Cannot load team analytics from Firebase. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll()}}
+async function load(){const cacheVersion=await teamPageVersion();try{const cached=await withTimeout(window.WarrantyPageCache.getPage(TEAM_PAGE_CACHE_KEY,cacheVersion),5000,"Dashboard page cache restore");if(restoreTeamPageState(cached,cacheVersion)){Promise.all([loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{}),loadEmployeeStatusMappingRemote()]).then(()=>{renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll();if($("employeeModalBackdrop")?.classList.contains("active")&&selectedEmployeeName)renderEmployeeModalWithLoading();saveTeamPageState(cacheVersion);}).catch(()=>{});return;}}catch(e){console.warn("Team page cache restore failed",e);}try{const started=performance.now();showCalcFloat(true,"Loading dashboard...");$("loadError").style.display="none";let data=await readJson(MONITOR_ROOT+"/analytics/teamDashboard").catch(()=>null);if(!data||typeof data!=="object")throw new Error("analytics/teamDashboard is empty. Please rebuild analytics.");team=data;activeClaim=canonicalClaimKey(team.defaultView||"all");await loadPageElementAdjustRemote();try{await Promise.all([ensureCurrentPeriodSnapshotDetails(),ensureFullTeamViewDetails()]);}catch(e){console.warn("Initial current period snapshot preload failed",e);}hideCalcFloat(Math.max(60,Math.min(350,400-performance.now()+started)));renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll();if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"fresh");Promise.all([loadEmployeeAnalytics().then(v=>{employeeAnalytics=v}).catch(()=>{employeeAnalytics=null}),loadEmployeeStatusMappingRemote()]).then(async()=>{try{await Promise.all([ensureCurrentPeriodSnapshotDetails(),ensureFullTeamViewDetails()]);}catch(e){console.warn("Post-load current period snapshot preload failed",e);}renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll();if($("employeeModalBackdrop")?.classList.contains("active")&&selectedEmployeeName)renderEmployeeModalWithLoading();saveTeamPageState(cacheVersion);}).catch(()=>{saveTeamPageState(cacheVersion);});saveTeamPageState(cacheVersion);}catch(err){hideCalcFloat();$("loadError").innerHTML="Cannot load team analytics from Firebase. Details: "+esc(err.message||err);$("loadError").style.display="block";renderAll();if(typeof scheduleReapplyAll==="function")scheduleReapplyAll()}}
 window.addEventListener("hashchange",()=>{repairAnalyticsScrollPending=location.hash===REPAIR_ANALYTICS_HASH;settleRepairAnalyticsScroll();});
 window.addEventListener("load",()=>{settleRepairAnalyticsScroll();});
 document.querySelectorAll("[data-period]").forEach(btn=>btn.addEventListener("click",()=>{activePeriod=btn.dataset.period||"all";syncRangeInputsToActivePeriod();renderAllWithLoading();}));if($("employeeModalClose"))$("employeeModalClose").onclick=closeEmployeeModal;if($("employeeModalBackdrop"))$("employeeModalBackdrop").onclick=e=>{if(e.target===$("employeeModalBackdrop"))closeEmployeeModal();};window.addEventListener("resize",()=>{drawTrend();applyLayoutAdjustWidth();scheduleStatusMixBottomAlignment();});bindTooltip();bindLayoutAdjustPanel();bindDashboardExportButtons();loadEmployeeStatusMapping();load();

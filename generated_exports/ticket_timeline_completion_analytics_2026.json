@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-24T10:43:09",
+  "generatedAt": "2026-07-24T14:47:17",
   "year": 2026,
   "basis": "completed month in selected year; ticket Created On can be earlier than the selected year",
   "stages": {
@@ -7,7 +7,7 @@
       "responsibility": "Warranty employee",
       "exportLabel": "Warranty Approval",
       "title": "Handling Duration Distribution",
-      "overLabel": "49.7% over",
+      "overLabel": "Ticket complete over avg time: 49.7%",
       "buckets": [
         [
           "0-7",
@@ -427,7 +427,7 @@
       "responsibility": "Parts tickets + days",
       "exportLabel": "Parts Preparation",
       "title": "Handling Duration Distribution",
-      "overLabel": "37.1% over",
+      "overLabel": "Ticket complete over avg time: 37.1%",
       "buckets": [
         [
           "0-7",
@@ -847,7 +847,7 @@
       "responsibility": "Repairer information",
       "exportLabel": "Repairer Time",
       "title": "Handling Duration Distribution",
-      "overLabel": "57.1% over",
+      "overLabel": "Ticket complete over avg time: 57.1%",
       "buckets": [
         [
           "0-7",
@@ -1267,7 +1267,7 @@
       "responsibility": "Total handling",
       "exportLabel": "Total Handling",
       "title": "Total Handling Duration Distribution",
-      "overLabel": "63.5% over",
+      "overLabel": "Ticket complete over avg time: 63.5%",
       "buckets": [
         [
           "0-30",

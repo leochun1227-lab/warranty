@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Claim Tickets Workflow</title>
+<title>Claim Trend Overview</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#dbe5f0;--blue:#156082;--orange:#e97132;--soft:#bfe5f3;--shadow:0 14px 34px rgba(15,23,42,.06)}
 *{box-sizing:border-box}
@@ -273,8 +273,8 @@ body{
 }
 </style>
 </head>
-<body class="calculating">
-<div id="calcFloat" class="calcFloat active" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Loading dashboard...</span></div>
+<body>
+<div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Loading dashboard...</span></div>
 <div class="app">
   <aside class="sidebar">
     <div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M4 12h16M12 4v16"/></svg></div><div class="brandText"><span>Warranty KPI</span><small>Warranty Team</small></div></div>
@@ -285,7 +285,7 @@ body{
     <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repair</span></a>
     <div class="navDivider"></div>
     <div class="navSection">Tickets</div>
-    <a class="navLink active" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15 17l2-2 2 2"/></svg><span>Claim Tickets Workflow</span></a>
+    <a class="navLink active" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15 17l2-2 2 2"/></svg><span>Claim Trend Overview</span></a>
     <div class="navDivider"></div>
 <div class="navSection">Analysis</div>
 <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model And Parts</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket lifecycle</span></a></aside>
@@ -435,7 +435,28 @@ const moneyK=v=>{const n=Number(v||0),abs=Math.abs(n);return abs>=1_000?`$${Math
 const arr=v=>Array.isArray(v)?v:(v&&typeof v==="object"?Object.values(v):[]);
 const amountNum=v=>Number(String(v??0).replace(/[$,]/g,"").trim()||0)||0;
 function showError(msg){$("error").style.display="block";$("error").textContent=msg}
-async function readJson(path){const res=await fetch(`${FIREBASE}/${path}.json`,{cache:"no-store"});if(!res.ok)throw new Error(`${res.status} ${res.statusText}`);return await res.json()}
+const FETCH_TIMEOUT_MS=15000;
+function withTimeout(promise,timeoutMs,label){
+  let timer=null;
+  const timeout=new Promise((_,reject)=>{
+    timer=setTimeout(()=>reject(new Error(`${label} timed out after ${Math.round(timeoutMs/1000)}s`)),timeoutMs);
+  });
+  return Promise.race([promise,timeout]).finally(()=>{if(timer)clearTimeout(timer)});
+}
+async function readJson(path,timeoutMs=FETCH_TIMEOUT_MS){
+  const controller=typeof AbortController!=="undefined"?new AbortController():null;
+  const timer=controller?setTimeout(()=>controller.abort(),timeoutMs):null;
+  try{
+    const res=await fetch(`${FIREBASE}/${path}.json`,{cache:"no-store",signal:controller?controller.signal:undefined});
+    if(!res.ok)throw new Error(`${res.status} ${res.statusText}`);
+    return await res.json();
+  }catch(err){
+    if(err&&err.name==="AbortError")throw new Error(`Firebase request timed out after ${Math.round(timeoutMs/1000)}s`);
+    throw err;
+  }finally{
+    if(timer)clearTimeout(timer);
+  }
+}
 function monthShort(m){const [y,mm]=clean(m).split("-").map(Number);if(!y||!mm)return m;return new Date(Date.UTC(y,mm-1,1)).toLocaleString("en-AU",{month:"short",timeZone:"UTC"})}
 function monthLong(m){const [y,mm]=clean(m).split("-").map(Number);if(!y||!mm)return m;return new Date(Date.UTC(y,mm-1,1)).toLocaleString("en-AU",{month:"long",year:"numeric",timeZone:"UTC"})}
 function addMonths(m,delta){const [y,mm]=clean(m).split("-").map(Number);const d=new Date(Date.UTC(y||2025,(mm||1)-1,1));d.setUTCMonth(d.getUTCMonth()+delta);return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}`}
@@ -1169,19 +1190,12 @@ function renderWithPageLoading(showLoading=false,label="Loading dashboard..."){
     clearTimeout(pageLoadingTimer);
     pageLoadingTimer=null;
   }
-  if(!showLoading){
+  if(showLoading)showPageLoading(true,label);
+  try{
     render();
+  }finally{
     showPageLoading(false,label);
-    return;
   }
-  showPageLoading(true,label);
-  requestAnimationFrame(()=>{
-    render();
-    pageLoadingTimer=setTimeout(()=>{
-      showPageLoading(false,label);
-      pageLoadingTimer=null;
-    },260);
-  });
 }
 
 function syncControls(){
@@ -1267,14 +1281,12 @@ function navigateToSectionWithLoading(id){
     pageLoadingTimer=null;
   }
   showPageLoading(true,"Loading section...");
-  requestAnimationFrame(()=>{
+  try{
     setActiveTab(id);
     scrollToSection(id,"smooth");
-    pageLoadingTimer=setTimeout(()=>{
-      showPageLoading(false,"Loading section...");
-      pageLoadingTimer=null;
-    },260);
-  });
+  }finally{
+    showPageLoading(false,"Loading section...");
+  }
 }
 function setupNav(){
   // tab buttons -> smooth offset-aware scroll
@@ -1304,13 +1316,13 @@ function setupNav(){
 setupNav();
 window.addEventListener("load",()=>{const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);});
 
-const INFIELD_PAGE_CACHE_KEY="infield-pre-delivery";
+const CLAIM_TREND_PAGE_CACHE_KEY="claim-trend-overview";
 function finishInitialScroll(){const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);}
 (async()=>{
   let cacheVersion="";
-  try{cacheVersion=await window.WarrantyPageCache.fetchVersion();}catch(e){console.warn("Cannot read in-field cache version",e);}
+  try{cacheVersion=await withTimeout(window.WarrantyPageCache.fetchVersion(),FETCH_TIMEOUT_MS,"Claim trend cache version request");}catch(e){console.warn("Cannot read claim trend cache version",e);}
   try{
-    const cached=await window.WarrantyPageCache.getPage(INFIELD_PAGE_CACHE_KEY,cacheVersion);
+    const cached=await withTimeout(window.WarrantyPageCache.getPage(CLAIM_TREND_PAGE_CACHE_KEY,cacheVersion),5000,"Claim trend page cache restore");
     if(cached&&cached.view){
       RAW_TICKETS=arr(cached.tickets);
       init(cached.view,true);
@@ -1324,7 +1336,7 @@ function finishInitialScroll(){const id=(location.hash||"").slice(1);if(SECTION_
     RAW_TICKETS=arr(tickets);
     init(view);
     if(cacheVersion&&window.WarrantyPageCache){
-      window.WarrantyPageCache.setPage(INFIELD_PAGE_CACHE_KEY,cacheVersion,{view,tickets:RAW_TICKETS});
+      window.WarrantyPageCache.setPage(CLAIM_TREND_PAGE_CACHE_KEY,cacheVersion,{view,tickets:RAW_TICKETS});
       window.WarrantyPageCache.showBadge(cacheVersion,"fresh");
     }
     finishInitialScroll();

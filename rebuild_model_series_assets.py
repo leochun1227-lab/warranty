@@ -119,6 +119,27 @@ def run_command(command: list[str], label: str, env: Optional[Dict[str, str]] = 
     subprocess.run(command, check=True, cwd=str(ROOT), env=env)
 
 
+def sync_page_assets_to_firebase(env: Dict[str, str], args: argparse.Namespace) -> None:
+    script = ROOT / "sync_dashboard_assets_to_firebase.py"
+    if not script.exists():
+        logger.warning("Dashboard page asset Firebase sync skipped. Script not found: %s", script)
+        return
+    run_command(
+        [
+            sys.executable,
+            str(script),
+            "--firebase-db-url",
+            args.firebase_db_url,
+            "--firebase-sa-path",
+            args.firebase_sa_path,
+            "--monitor-root",
+            args.monitor_root,
+        ],
+        "Dashboard page asset Firebase sync",
+        env=env,
+    )
+
+
 def with_node_heap(env: Dict[str, str], heap_mb: int) -> Dict[str, str]:
     updated = env.copy()
     existing = updated.get("NODE_OPTIONS", "").strip()
@@ -326,6 +347,7 @@ def main() -> int:
     write_parts_cost_js_fallback()
     write_approved_cost_js_fallback()
     write_parts_classified_js_fallback()
+    sync_page_assets_to_firebase(env, args)
     logger.info("Model-series assets rebuild completed successfully, including repair, parts, and approved-cost outputs.")
     return 0
 

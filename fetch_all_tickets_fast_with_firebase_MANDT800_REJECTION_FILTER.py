@@ -13,7 +13,7 @@ import subprocess
 from collections import Counter, defaultdict
 from datetime import datetime, timezone, date
 from pathlib import Path
-from typing import Dict, Any, List, Tuple, Optional, Iterable
+from typing import Dict, Any, List, Tuple, Optional, Iterable, Callable
 from urllib.parse import quote
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -61,6 +61,8 @@ APPROVED_COST_PO_PURCHASING_ORG = os.getenv("APPROVED_COST_PO_PURCHASING_ORG", o
 APPROVED_COST_PO_PURCHASING_GROUP = os.getenv("APPROVED_COST_PO_PURCHASING_GROUP", os.getenv("PURCHASING_GROUP", "E06"))
 APPROVED_COST_PO_PLANT_FILTER = os.getenv("APPROVED_COST_PO_PLANT_FILTER", "").strip()
 APPROVED_COST_EXCLUDE_DELETED_PO = os.getenv("APPROVED_COST_EXCLUDE_DELETED_PO", "false").strip().lower() in {"1", "true", "yes", "y"}
+HANA_OPERATION_RETRIES = max(1, int(os.getenv("HANA_OPERATION_RETRIES", "3")))
+HANA_RETRY_SLEEP_SECONDS = max(0.0, float(os.getenv("HANA_RETRY_SLEEP_SECONDS", "5")))
 ROOT_DIR = Path(__file__).resolve().parent
 OUTPUTS_DIR = ROOT_DIR / "outputs"
 VEHICLE_BASE_SUMMARY_PATH = OUTPUTS_DIR / "analysis_vehicle_base_summary.json"
@@ -371,6 +373,49 @@ logging.basicConfig(
 )
 logger = logging.getLogger("c4c_ticket_so_firebase_fast")
 SCRIPT_VERSION = "MANDT800_FULLJOIN_REJECTION_FILTER"
+
+
+def is_retryable_hana_error(exc: BaseException) -> bool:
+    text = str(exc).lower()
+    retryable_markers = [
+        "08003",
+        "connection not open",
+        "connection down",
+        "forcibly closed",
+        "sqlfetch",
+        "communication link failure",
+        "connection reset",
+        "recv",
+        "-10807",
+    ]
+    return isinstance(exc, pyodbc.Error) and any(marker in text for marker in retryable_markers)
+
+
+def run_hana_operation(label: str, operation: Callable[[Any], Any], retries: int = HANA_OPERATION_RETRIES) -> Any:
+    last_exc: BaseException | None = None
+    for attempt in range(1, max(1, retries) + 1):
+        try:
+            logger.info("SAP HANA operation: %s (attempt %s/%s)", label, attempt, retries)
+            with pyodbc.connect(SAP_HANA_DSN, autocommit=True) as conn:
+                return operation(conn)
+        except Exception as exc:
+            last_exc = exc
+            if attempt >= retries or not is_retryable_hana_error(exc):
+                logger.error("SAP HANA operation failed: %s: %s", label, exc)
+                raise
+            logger.warning(
+                "SAP HANA connection dropped during %s (attempt %s/%s): %s. Reconnecting after %.1fs ...",
+                label,
+                attempt,
+                retries,
+                exc,
+                HANA_RETRY_SLEEP_SECONDS,
+            )
+            if HANA_RETRY_SLEEP_SECONDS:
+                time.sleep(HANA_RETRY_SLEEP_SECONDS)
+    if last_exc:
+        raise last_exc
+    raise RuntimeError(f"SAP HANA operation did not run: {label}")
 
 
 # =================== çº¿ç¨‹æœ¬åœ° Session ===================
@@ -3823,6 +3868,7 @@ def rebuild_ticket_timeline_export_after_fetch() -> None:
     logger.info("Refreshing Ticket Timeline workbook, JSON, and price-mix PPT after fetch ...")
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
+    env["REQUIRE_PAGE_ASSET_SYNC"] = "1"
     try:
         subprocess.run([sys.executable, script_path], check=True, env=env)
     except subprocess.CalledProcessError as exc:
@@ -3911,15 +3957,32 @@ def main():
         logger.info("Current tickets with ERPFreeOrder for HANA refresh: %s", len(ticket_df))
 
     logger.info("Step 6/9: Connecting SAP HANA and fetching SO/item plus vehicle dispatch data ...")
-    with pyodbc.connect(SAP_HANA_DSN, autocommit=True) as conn:
-        so_item_df = fetch_so_items(conn, ticket_df) if not ticket_df.empty else pd.DataFrame()
-        direct_vehicle_dispatch_df = fetch_vehicle_dispatch_by_serial_candidates(conn, all_ticket_df)
-        sales_order_dispatch_df = fetch_vehicle_dispatch_by_sales_orders(
+    so_item_df = (
+        run_hana_operation("SO/item refresh", lambda conn: fetch_so_items(conn, ticket_df))
+        if not ticket_df.empty
+        else pd.DataFrame()
+    )
+    direct_vehicle_dispatch_df = run_hana_operation(
+        "vehicle dispatch by serial/chassis",
+        lambda conn: fetch_vehicle_dispatch_by_serial_candidates(conn, all_ticket_df),
+    )
+    sales_order_dispatch_df = run_hana_operation(
+        "vehicle dispatch by sales order",
+        lambda conn: fetch_vehicle_dispatch_by_sales_orders(
             conn,
-            sorted(set(so_item_df["Sales Order"].fillna("").astype(str).str.strip().tolist())) if not so_item_df.empty and "Sales Order" in so_item_df.columns else [],
-        )
-        vehicle_base_summary = fetch_vehicle_base_summary(conn, cutoff_yyyymmdd="20250101")
-        approved_cost_payload = build_approved_cost_sap_po_short_text_sidecar(conn)
+            sorted(set(so_item_df["Sales Order"].fillna("").astype(str).str.strip().tolist()))
+            if not so_item_df.empty and "Sales Order" in so_item_df.columns
+            else [],
+        ),
+    )
+    vehicle_base_summary = run_hana_operation(
+        "vehicle base summary",
+        lambda conn: fetch_vehicle_base_summary(conn, cutoff_yyyymmdd="20250101"),
+    )
+    approved_cost_payload = run_hana_operation(
+        "approved cost SAP PO short text sidecar",
+        build_approved_cost_sap_po_short_text_sidecar,
+    )
 
     logger.info("Matched SO item rows for current ERPFreeOrder tickets: %s", len(so_item_df))
     logger.info("Vehicle dispatch matches by ticket serial/chassis: %s", len(direct_vehicle_dispatch_df))

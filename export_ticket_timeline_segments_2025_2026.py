@@ -5,9 +5,11 @@ import csv
 import io
 import json
 import math
+import os
 import re
 import shutil
 import subprocess
+import sys
 from dataclasses import dataclass
 from datetime import date, datetime
 from pathlib import Path
@@ -1292,7 +1294,7 @@ def completion_stage_payload(
         "responsibility": responsibility,
         "exportLabel": export_label,
         "title": title,
-        "overLabel": f"{round(over_count / len(values) * 100, 1) if values else 0}% over",
+        "overLabel": f"Ticket complete over avg time: {round(over_count / len(values) * 100, 1) if values else 0}%",
         "buckets": build_completion_buckets(values, bucket_defs),
         "priorBuckets": build_prior_created_buckets(df, duration_col, year, bucket_defs),
         "monthBuckets": build_completion_month_buckets(df, completed_col, duration_col, year, as_of, bucket_defs),
@@ -2115,6 +2117,20 @@ def try_generate_price_mix_ppt(script_path: Path = DEFAULT_PRICE_MIX_PPT_SCRIPT)
     return ROOT / "generated_exports" / "ticket_timeline_price_mix_2026.pptx"
 
 
+def try_sync_page_assets_to_firebase() -> bool:
+    script_path = ROOT / "sync_dashboard_assets_to_firebase.py"
+    if not script_path.exists():
+        print(f"Dashboard page asset Firebase sync skipped: script not found at {script_path}")
+        return False
+    env = os.environ.copy()
+    env["PYTHONUNBUFFERED"] = "1"
+    result = subprocess.run([sys.executable, str(script_path)], cwd=ROOT, env=env)
+    if result.returncode != 0:
+        print(f"Dashboard page asset Firebase sync failed with exit code {result.returncode}.")
+        return False
+    return True
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Export Ticket Timeline segment ticket sheets for approved PO-backed tickets created in the selected year."
@@ -2280,6 +2296,9 @@ def main() -> int:
     print(f"Completion analytics JS written: {written_completion_analytics_js_path}")
     if written_price_mix_ppt_path:
         print(f"Price mix PPT written: {written_price_mix_ppt_path}")
+    synced_page_assets = try_sync_page_assets_to_firebase()
+    if not synced_page_assets and os.getenv("REQUIRE_PAGE_ASSET_SYNC", "").strip().lower() in {"1", "true", "yes"}:
+        raise SystemExit("Dashboard page asset Firebase sync is required but failed.")
     print(f"Qualifying tickets: {len(qualifying_df)}")
     print(f"Warranty approval rows: {len(approval_segment_df)}")
     print(f"Parts issuing rows: {len(parts_segment_df)}")

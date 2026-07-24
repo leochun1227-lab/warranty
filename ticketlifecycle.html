@@ -450,7 +450,7 @@ body{
     <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repair</span></a>
     <div class="navDivider"></div>
     <div class="navSection">Tickets</div>
-    <a class="navLink" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15 17l2-2 2 2"/></svg><span>Claim Tickets Workflow</span></a>
+    <a class="navLink" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15 17l2-2 2 2"/></svg><span>Claim Trend Overview</span></a>
     <div class="navDivider"></div>
     <div class="navSection">Analysis</div>
     <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model And Parts</span></a>
@@ -567,7 +567,16 @@ body{
 <script>
 const TIMELINE_SUMMARY_URL="generated_exports/ticket_timeline_summary.json";
 const COMPLETION_ANALYTICS_URL="generated_exports/ticket_timeline_completion_analytics_2026.json";
+const FIREBASE_PAGE_ASSETS_ROOT="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/ctmTicketStatusMonitorV44/analytics/pageAssets";
 const TIMELINE_CACHE_SCHEMA="sap-po-netwr-v1";
+const TIMELINE_TIMEOUT_MS=15000;
+function withTimeout(promise,timeoutMs,label){
+  let timer=null;
+  const timeout=new Promise((_,reject)=>{
+    timer=setTimeout(()=>reject(new Error(`${label} timed out after ${Math.round(timeoutMs/1000)}s`)),timeoutMs);
+  });
+  return Promise.race([promise,timeout]).finally(()=>{if(timer)clearTimeout(timer)});
+}
 const BASE_TIMELINE_YEAR=2026;
 const CURRENT_TIMELINE_YEAR=new Date().getFullYear();
 const FIRST_YEAR_REVIEW_MONTHS=3;
@@ -797,6 +806,10 @@ function summaryUrlForYear(year){
   return `generated_exports/ticket_timeline_summary_${year}.json`;
 }
 
+function remoteSummaryUrlForYear(year){
+  return `${FIREBASE_PAGE_ASSETS_ROOT}/timeline/summary${year}.json`;
+}
+
 function renderYearContext(){
   document.title=`${selectedYear} Ticket Timeline`;
   pageTitle.textContent=`${selectedYear} Ticket Timeline`;
@@ -907,7 +920,7 @@ function applyTimelineSummary(summary){
 
 async function loadTimelineSummary(){
   let cacheVersion="";
-  try{cacheVersion=await window.WarrantyPageCache.fetchVersion();}catch(e){console.warn("Cannot read timeline cache version",e);}
+  try{cacheVersion=await withTimeout(window.WarrantyPageCache.fetchVersion(),TIMELINE_TIMEOUT_MS,"Timeline cache version request");}catch(e){console.warn("Cannot read timeline cache version",e);}
   cacheVersion=cacheVersion?`${cacheVersion}:${TIMELINE_CACHE_SCHEMA}`:TIMELINE_CACHE_SCHEMA;
   const globalYearSummary=window[`TICKET_TIMELINE_SUMMARY_${selectedYear}`];
   let hasEmbeddedSummary=false;
@@ -920,16 +933,17 @@ async function loadTimelineSummary(){
   }
   if(!hasEmbeddedSummary){
     try{
-      const cached=await window.WarrantyPageCache.getPage(`ticket-lifecycle:summary:${selectedYear}`,cacheVersion);
+      const cached=await withTimeout(window.WarrantyPageCache.getPage(`ticket-lifecycle:summary:${selectedYear}`,cacheVersion),5000,"Timeline summary cache restore");
       if(cached&&Array.isArray(cached.stages)){applyTimelineSummary(cached);if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"cached");}
     }catch(e){console.warn("Timeline summary cache restore failed",e);}
   }
-  const urls=[summaryUrlForYear(selectedYear),TIMELINE_SUMMARY_URL];
+  const urls=[remoteSummaryUrlForYear(selectedYear),`${FIREBASE_PAGE_ASSETS_ROOT}/timeline/summaryLatest.json`,summaryUrlForYear(selectedYear),TIMELINE_SUMMARY_URL];
   for(const url of urls){
     try{
       const response=await fetch(`${url}?v=${Date.now()}`,{cache:"no-store"});
       if(!response.ok)continue;
       const payload=await response.json();
+      if(!payload||!Array.isArray(payload.stages))continue;
       applyTimelineSummary(payload);
       if(cacheVersion&&window.WarrantyPageCache){window.WarrantyPageCache.setPage(`ticket-lifecycle:summary:${selectedYear}`,cacheVersion,payload);window.WarrantyPageCache.showBadge(cacheVersion,"fresh");}
       return;
@@ -948,25 +962,29 @@ function applyCompletionAnalytics(payload){
 
 async function loadCompletionAnalytics(){
   let cacheVersion="";
-  try{cacheVersion=await window.WarrantyPageCache.fetchVersion();}catch(e){cacheVersion="";}
+  try{cacheVersion=await withTimeout(window.WarrantyPageCache.fetchVersion(),TIMELINE_TIMEOUT_MS,"Timeline completion cache version request");}catch(e){cacheVersion="";}
   cacheVersion=cacheVersion?`${cacheVersion}:${TIMELINE_CACHE_SCHEMA}`:TIMELINE_CACHE_SCHEMA;
   const hasEmbeddedAnalytics=applyCompletionAnalytics(window.TICKET_TIMELINE_COMPLETION_ANALYTICS_2026);
   if(!hasEmbeddedAnalytics){
     try{
-      const cached=await window.WarrantyPageCache.getPage("ticket-lifecycle:completion",cacheVersion);
+      const cached=await withTimeout(window.WarrantyPageCache.getPage("ticket-lifecycle:completion",cacheVersion),5000,"Timeline completion cache restore");
       if(cached&&applyCompletionAnalytics(cached)){if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"cached");}
     }catch(e){console.warn("Timeline completion cache restore failed",e);}
   }
-  try{
-    const response=await fetch(`${COMPLETION_ANALYTICS_URL}?v=${Date.now()}`,{cache:"no-store"});
-    if(!response.ok)return;
-    const payload=await response.json();
-    if(payload&&payload.stages&&typeof payload.stages==="object"){
-      applyCompletionAnalytics(payload);
-      if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.setPage("ticket-lifecycle:completion",cacheVersion,payload);
+  const urls=[`${FIREBASE_PAGE_ASSETS_ROOT}/timeline/completion2026.json`,COMPLETION_ANALYTICS_URL];
+  for(const url of urls){
+    try{
+      const response=await fetch(`${url}${url.includes("?")?"&":"?"}v=${Date.now()}`,{cache:"no-store"});
+      if(!response.ok)continue;
+      const payload=await response.json();
+      if(payload&&payload.stages&&typeof payload.stages==="object"){
+        applyCompletionAnalytics(payload);
+        if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.setPage("ticket-lifecycle:completion",cacheVersion,payload);
+        return;
+      }
+    }catch(error){
+      // Try the next source, then keep the embedded fallback analytics.
     }
-  }catch(error){
-    // Keep the embedded fallback analytics if the generated completion analytics is not available.
   }
 }
 
@@ -1337,6 +1355,16 @@ function renderFilteredTickets(analysis,bucketLabel,kind="duration"){
   if(filteredList)filteredList.innerHTML="";
 }
 
+function overAvgPercent(analysis){
+  const raw=String(analysis&&analysis.overLabel||"");
+  const match=raw.match(/[\d.]+%/);
+  return match?match[0]:"0.0%";
+}
+
+function overAvgText(analysis){
+  return `Ticket complete over avg time: ${overAvgPercent(analysis)}`;
+}
+
 function renderDurationDistribution(analysis,buckets,labelText="YTD completed"){
   const donut=document.getElementById("durationDonut");
   if(!donut)return;
@@ -1344,7 +1372,7 @@ function renderDurationDistribution(analysis,buckets,labelText="YTD completed"){
   const bucketTotal=bucketRows.reduce((sum,bucket)=>sum+(Number(bucket[3])||0),0);
   donut.style.background=donutGradient(bucketRows);
   donut.dataset.label=`${fmt(bucketTotal)} completed`;
-  donut.dataset.tip=`<strong>${labelText}</strong><span>${analysis.overLabel} over standard</span><span>Duration bucket share for completed tickets.</span>`;
+  donut.dataset.tip=`<strong>${labelText}</strong><span>${overAvgText(analysis)}</span><span>Duration bucket share for completed tickets.</span>`;
   document.getElementById("bucketList").innerHTML=bucketRows.map(bucket=>`
     <button class="bucketBtn" type="button" data-bucket="${bucket[0]}" data-tip="<strong>${bucket[0]} days</strong><span>${fmt(bucket[3])} tickets</span><span>${Number(bucket[1]).toFixed(1)}% of completed tickets</span>" style="--swatch:${bucket[2]}" aria-label="${bucket[0]} days bucket">
       <span class="swatch"></span>
@@ -1396,15 +1424,14 @@ function analyticsSectionMarkup(key,analysis){
         <div>
           <h3 class="analyticsSectionTitle">${title}</h3>
           <div class="analyticsSectionMeta">
-            <span>${analysis.responsibility||"Completed tickets"}</span>
-            <span>${analysis.overLabel||""}</span>
+            <span>${overAvgText(analysis)}</span>
           </div>
         </div>
         ${sectionAvg===null?"":`<div class="analyticsSectionAvg">Avg ${daysText(sectionAvg)}</div>`}
       </div>
       <div class="analyticsSectionGrid">
         <div class="analyticsMiniTrend">
-          <div class="panelKicker trendChartTitle">Monthly completion speed</div>
+          <div class="panelKicker trendChartTitle">Avg Monthly completion speed</div>
           ${trendSvg(analysis)}
           <div class="chartLegend"><span class="legendMark">monthly avg days</span><span class="legendMark line">3-month rolling avg</span></div>
         </div>

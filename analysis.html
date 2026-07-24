@@ -699,7 +699,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 <script src="browser-page-cache.js"></script>
 </head>
 <body>
-<div class="loadingOverlay show" id="loadingOverlay">
+<div class="loadingOverlay" id="loadingOverlay">
   <div class="loadingCard">
     <div class="loadingSpin"></div>
     <div>Loading analysis...</div>
@@ -723,7 +723,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repair</span></a>
     <div class="navDivider"></div>
     <div class="navSection">Tickets</div>
-    <a class="navLink" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15 17l2-2 2 2"/></svg><span>Claim Tickets Workflow</span></a>
+    <a class="navLink" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15 17l2-2 2 2"/></svg><span>Claim Trend Overview</span></a>
     <div class="navDivider"></div>
     <div class="navSection">Analysis</div>
     <a class="navLink active" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model And Parts</span></a>
@@ -933,6 +933,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const FB_TICKETS = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/tickets.json";
   const FB_VEHICLE_BASE_SUMMARY = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/analysisVehicleBaseSummary.json";
   const FB_APPROVED_COST_LATEST = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/ctmTicketStatusMonitorV44/analytics/approvedCost/sapPoShortText/latest.json";
+  const FB_PAGE_ASSETS_ROOT = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/ctmTicketStatusMonitorV44/analytics/pageAssets";
+  const FB_PARTS_FAILURE_SUMMARY = `${FB_PAGE_ASSETS_ROOT}/modelSeries/partsFailureSummary.json`;
   const REPAIRERS_ANALYSIS_JSON = "outputs/repairers_2026/repairers_2026_data.json";
   const PARTS_COST_CACHE = "outputs/analysis_parts_ticket_cost_map.json";
   const APPROVED_COST_CACHE = "outputs/analysis_approved_cost_by_ticket.json";
@@ -1004,9 +1006,17 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   };
 
   const ANALYSIS_PAGE_CACHE_KEY = "analysis:model-series";
+  const ANALYSIS_TIMEOUT_MS = 15000;
   function mapEntries(map){ return map instanceof Map ? Array.from(map.entries()) : []; }
   function setValues(set){ return set instanceof Set ? Array.from(set.values()) : []; }
-  async function analysisPageVersion(){try{return await window.WarrantyPageCache.fetchVersion();}catch(e){console.warn("Cannot read analysis cache version",e);return "";}}
+  function withTimeout(promise,timeoutMs,label){
+    let timer=null;
+    const timeout=new Promise((_,reject)=>{
+      timer=setTimeout(()=>reject(new Error(`${label} timed out after ${Math.round(timeoutMs/1000)}s`)),timeoutMs);
+    });
+    return Promise.race([promise,timeout]).finally(()=>{if(timer)clearTimeout(timer)});
+  }
+  async function analysisPageVersion(){try{return await withTimeout(window.WarrantyPageCache.fetchVersion(),ANALYSIS_TIMEOUT_MS,"Analysis cache version request");}catch(e){console.warn("Cannot read analysis cache version",e);return "";}}
   function saveAnalysisPageState(version){
     if(!version||!window.WarrantyPageCache)return;
     window.WarrantyPageCache.setPage(ANALYSIS_PAGE_CACHE_KEY,version,{
@@ -1579,9 +1589,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     }
 
     const fileOk = IS_FILE_CONTEXT ? await ingest("script") : false;
-    const cacheOk = fileOk || await ingest("cache");
-    if ((!cacheOk || Object.keys(approvedMap).length < 100) && !IS_FILE_CONTEXT) {
-      await ingest("firebase");
+    const firebaseOk = !IS_FILE_CONTEXT ? await ingest("firebase") : false;
+    const cacheOk = fileOk || firebaseOk || await ingest("cache");
+    if (!cacheOk || Object.keys(approvedMap).length < 100) {
+      await ingest("script");
     }
     state.approvedCostByTicketId = approvedMap;
   }
@@ -1699,11 +1710,14 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       return true;
     }
 
-    // Prefer script fallback when opened directly from file://, otherwise cache first.
+    // Keep this cache-first because c4cTickets_test/tickets can be very large.
     const fileOk = IS_FILE_CONTEXT ? await ingest("script") : false;
     const cacheOk = fileOk || await ingest("cache");
     if ((!cacheOk || Object.keys(costMap).length < 100) && !IS_FILE_CONTEXT) {
       await ingest("firebase");
+    }
+    if (!cacheOk && Object.keys(costMap).length < 100) {
+      await ingest("script");
     }
     if (Object.keys(dispatchMap).length < 100 && !IS_FILE_CONTEXT) {
       await ingest("firebase");
@@ -1731,11 +1745,28 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   async function loadPartsFailureSummary(){
     let fallback = globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY;
+    const sources = IS_FILE_CONTEXT
+      ? []
+      : [
+          { url: FB_PARTS_FAILURE_SUMMARY, label: "firebase pageAssets" },
+          { url: freshJsonUrl(PARTS_FAILURE_SUMMARY_CACHE), label: "render cache" },
+        ];
     try {
-      const r = await fetch(freshJsonUrl(PARTS_FAILURE_SUMMARY_CACHE), { cache:"no-store" });
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      state.partsFailureSummary = await r.json();
-      state.partsFailureError = "";
+      const errors = [];
+      for (const source of sources) {
+        try {
+          const r = await fetch(source.url, { cache:"no-store" });
+          if (!r.ok) throw new Error(`${source.label} HTTP ${r.status}`);
+          const payload = await r.json();
+          if (!payload || typeof payload !== "object") throw new Error(`${source.label} empty payload`);
+          state.partsFailureSummary = payload;
+          state.partsFailureError = "";
+          return;
+        } catch (sourceErr) {
+          errors.push(`${source.label}: ${sourceErr.message || sourceErr}`);
+        }
+      }
+      throw new Error(errors.join("; ") || "No remote parts failure summary source in file context");
     } catch (err) {
       fallback = fallback || await ensureFallbackScript("ANALYSIS_PARTS_FAILURE_SUMMARY", "outputs/analysis_parts_failure_summary.js");
       if (fallback && typeof fallback === "object") {
@@ -1776,8 +1807,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       return;
     }
     const attempts = [
-      { url: freshJsonUrl(VEHICLE_BASE_SUMMARY_CACHE), label:"cache" },
       { url: FB_VEHICLE_BASE_SUMMARY, label:"firebase" },
+      { url: freshJsonUrl(VEHICLE_BASE_SUMMARY_CACHE), label:"cache" },
     ];
     let fallbackPayload = null;
     for (const { url, label } of attempts) {
@@ -4647,12 +4678,16 @@ ${worksheets}
     const cacheVersion = await analysisPageVersion();
     if(!forceRefresh){
       try{
-        const cached = await window.WarrantyPageCache.getPage(ANALYSIS_PAGE_CACHE_KEY,cacheVersion);
+        const cached = await withTimeout(window.WarrantyPageCache.getPage(ANALYSIS_PAGE_CACHE_KEY,cacheVersion),5000,"Analysis page cache restore");
         if(restoreAnalysisPageState(cached,cacheVersion))return;
       }catch(e){console.warn("Analysis page cache restore failed",e);}
     }
     const overlay = $("loadingOverlay");
-    if (overlay) overlay.classList.add("show");
+    let overlayFailSafe=null;
+    if (overlay) {
+      overlay.classList.add("show");
+      overlayFailSafe=setTimeout(()=>overlay.classList.remove("show"),ANALYSIS_TIMEOUT_MS+5000);
+    }
     $("sourceCount").textContent = "…";
     $("ticketCount").textContent = "–";
     $("seriesCount").textContent = "–";
@@ -4718,6 +4753,7 @@ ${worksheets}
       render();
       saveAnalysisPageState(cacheVersion);
       if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"fresh");
+      if (overlayFailSafe) clearTimeout(overlayFailSafe);
       if (overlay) overlay.classList.remove("show");
 
       // Load classified rows in background for component tooltips + monthly totals
@@ -4728,6 +4764,7 @@ ${worksheets}
     } catch (err) {
       console.error(err);
       $("sourceCount").textContent = "err";
+      if (overlayFailSafe) clearTimeout(overlayFailSafe);
       if (overlay) overlay.classList.remove("show");
     }
   }

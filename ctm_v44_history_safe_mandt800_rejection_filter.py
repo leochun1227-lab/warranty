@@ -4454,6 +4454,7 @@ def rebuild_ticket_timeline_export() -> None:
 
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
+    env["REQUIRE_PAGE_ASSET_SYNC"] = "1"
 
     print(f"[TICKET TIMELINE] Rebuilding workbook and summary via {script.name} ...")
     result = subprocess.run([sys.executable, str(script)], env=env)
