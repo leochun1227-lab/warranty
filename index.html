@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>After-Sales Team Dashboard</title>
+<title>Warranty Team</title>
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#0f172a;--muted:#607089;--line:#dbe3ee;--nav:#0b1222;--blue:#3b82f6;--orange:#fb6b1d;--green:#16a34a;--shadow:0 10px 28px rgba(15,23,42,.06)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;font-size:14px;font-weight:400}.app{min-height:100vh;display:grid;grid-template-columns:288px 1fr}.sidebar{background:#0b1222;color:#e5e7eb;min-height:100vh;padding:22px 16px;position:sticky;top:0}.brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 28px}.brandMark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#2563eb);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(37,99,235,.25)}.brandMark svg{width:20px;height:20px;stroke-width:1.8}.brandText span{display:block;font-size:18px;font-weight:600}.brandText small{display:block;color:#9aa8bc;font-size:12px;margin-top:2px}.navSection{font-size:12px;letter-spacing:4px;color:#8ea0b8;text-transform:uppercase;margin:25px 8px 10px}.navBtn,.navLink{width:100%;display:flex;align-items:center;gap:13px;border:0;background:transparent;color:#d9e1ec;padding:13px 14px;border-radius:12px;font-weight:600;text-decoration:none;cursor:pointer;text-align:left}.navBtn.active,.navLink.active{background:rgba(255,255,255,.10);color:#fff}.navBtn:hover,.navLink:hover{background:rgba(255,255,255,.07)}.navBtn svg,.navLink svg{width:18px;height:18px;stroke-width:1.8;color:#aebcd1}.navDivider{height:1px;background:rgba(255,255,255,.10);margin:22px 8px}.main{min-width:0;padding:30px 40px 46px}.pageTop{display:flex;justify-content:space-between;gap:22px;align-items:flex-start;margin-bottom:18px}.pageTitle{font-size:28px;line-height:1.15;font-weight:600;margin:0 0 8px;letter-spacing:-.02em}.subTitle{color:#52627a;font-size:14px;margin:0}.topActions{display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;min-width:520px}.claimSwitch{display:inline-flex;padding:4px;border:1px solid #dbe7f5;background:#fff;border-radius:18px;box-shadow:0 8px 22px rgba(15,23,42,.04)}.claimBtn{height:38px;border:0;background:transparent;border-radius:14px;padding:0 17px;color:#334155;font-weight:500;cursor:pointer;white-space:nowrap}.claimBtn:hover{background:#f8fbff}.claimBtn.active{background:#eaf4ff;color:#1d4ed8;box-shadow:inset 0 0 0 1px #bfdbfe}.changeSwitch{display:inline-flex;padding:3px;border:1px solid #dbe7f5;background:#fff;border-radius:14px;box-shadow:0 8px 22px rgba(15,23,42,.04)}.changeBtn{height:32px;border:0;background:transparent;border-radius:11px;padding:0 12px;color:#334155;font-weight:500;cursor:pointer;white-space:nowrap}.changeBtn.active{background:#eef7ff;color:#155e9f;box-shadow:inset 0 0 0 1px #bfdbfe}.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px 28px;margin-bottom:24px;overflow:hidden}.panelHead{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:16px}.panelTitle{font-size:22px;font-weight:500;margin:0 0 8px;letter-spacing:-.015em}.panelDesc{color:#5f6f86;margin:0;font-size:13px;line-height:1.45}.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.input{height:42px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 13px;color:#0f172a}.chartWrap{height:390px;position:relative}canvas{width:100%;height:100%;display:block}.legend{display:flex;gap:18px;justify-content:center;align-items:center;margin-top:10px;color:#52627a;flex-wrap:wrap}.legend span{display:flex;gap:7px;align-items:center}.dot{width:9px;height:9px;border-radius:999px;display:inline-block}.blue{background:var(--blue)}.orange{background:var(--orange)}.green{background:var(--green)}.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin-bottom:16px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:0 0 24px}.speedKpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 18px}.speedKpis .kpi{min-height:82px;padding:13px 15px;border-radius:14px;box-shadow:0 8px 20px rgba(15,23,42,.045)}.speedKpis .kpiLabel{font-size:10px;letter-spacing:3px;margin-bottom:8px}.speedKpis .kpiValue{font-size:23px}.speedKpis .kpiHint{display:none}.speedKpis #kpiApprovedAmount,.speedKpis #kpiUnapprovedAmount{display:block}.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:21px 22px;box-shadow:var(--shadow);min-height:120px}.kpiLabel{font-weight:600;margin:0 0 14px;color:#52627a;font-size:12px;letter-spacing:4px;text-transform:uppercase}.kpiValue{font-size:30px;font-weight:500;letter-spacing:-.025em}.kpiHint{color:#64748b;font-size:12px;margin-top:9px}.infoGrid{display:grid;grid-template-columns:1.05fr .95fr;gap:22px}.barList{display:grid;gap:12px;margin-top:18px}.barRow{display:grid;grid-template-columns:210px 1fr 76px;gap:14px;align-items:center}.barLabel{color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.barTrack{height:16px;border-radius:999px;background:#eef3f8;border:1px solid #e2e8f0;overflow:hidden}.barFill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7dd3fc,#3b82f6)}.barValue{text-align:right;color:#334155;font-weight:500}.mixRows{display:grid;gap:10px;margin-top:18px}.mixRow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:11px 13px;border:1px solid #e5edf6;border-radius:12px;background:#f9fbfe;color:#334155}.mixRow b{font-weight:500;color:#0f172a}.tooltip{position:fixed;display:none;pointer-events:none;z-index:50;background:white;border:1px solid #e2e8f0;box-shadow:0 18px 44px rgba(15,23,42,.18);border-radius:14px;padding:12px 14px;font-size:13px;min-width:250px;line-height:1.45}.tooltip b{display:block;margin-bottom:8px}.tipRow{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:7px}.tipLeft{font-weight:500}.tipRight{display:flex;align-items:center;gap:10px;justify-content:flex-end;white-space:nowrap}.tipValue{font-weight:700;color:#0f172a}.tipDelta{font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;line-height:1.4}.tipDelta.up{color:#166534;background:#dcfce7}.tipDelta.down{color:#b91c1c;background:#fee2e2}.tipDelta.flat{color:#475569;background:#e2e8f0}@media(max-width:1120px){.app{grid-template-columns:250px 1fr}.kpis{grid-template-columns:repeat(2,1fr)}.infoGrid{grid-template-columns:1fr}.pageTop{display:block}.topActions{justify-content:flex-start;min-width:0;margin-top:14px}}@media(max-width:760px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}.kpis{grid-template-columns:1fr}.barRow{grid-template-columns:120px 1fr 58px}.claimSwitch{display:grid;grid-template-columns:1fr;width:100%}}
@@ -1603,7 +1603,7 @@
   .employeeStatusEditGrid{grid-template-columns:1fr!important}
 }
 
-/* Align the lower Team Dashboard cards across the main and side columns */
+/* Align the lower Warranty Team cards across the main and side columns */
 .dashboardTop{
   align-items:stretch!important;
 }
@@ -3388,20 +3388,20 @@ body{
   <aside class="sidebar">
     <div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div>
     <div class="navSection">Workspace</div>
-    <button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Team Dashboard</span></button>
- <a class="navLink" href="dealerworkbench.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-7h6v7"/><path d="M9 9h.01M15 9h.01"/></svg><span>Dealer Workbench</span></a><a class="navLink" href="delivery_flow.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17h2l2-7h10l2 7h2"/><path d="M7 17a2 2 0 1 0 4 0"/><path d="M15 17a2 2 0 1 0 4 0"/><path d="M8 10V6h8v4"/></svg><span>Parts Delivery</span></a>
+    <button class="navBtn active" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Warranty Team</span></button>
+ <a class="navLink" href="delivery_flow.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17h2l2-7h10l2 7h2"/><path d="M7 17a2 2 0 1 0 4 0"/><path d="M15 17a2 2 0 1 0 4 0"/><path d="M8 10V6h8v4"/></svg><span>Parts Delivery</span></a>
     <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repair</span></a>
     <div class="navDivider"></div>
     <div class="navSection">Tickets</div>
- <a class="navLink" href="dealerworkbench.html#tickets"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span>Critical Tickets</span></a><a class="navLink" href="infieldpredelivery.html#newclaim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14"/><path d="M5 12h14"/></svg><span>New Claim</span></a><a class="navLink" href="infieldpredelivery.html#created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M16 17l2-2 2 2"/></svg><span>In Field / Pre Delivery</span></a><a class="navLink" href="infieldpredelivery.html#approved"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 11l2 2 4-5"/><path d="M21 12a9 9 0 1 1-9-9"/><path d="M17 3h4v4"/></svg><span>Approved/ Unapproved</span></a><a class="navLink" href="infieldpredelivery.html#amount"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v18"/><path d="M17 7.5c0-1.9-2.2-3.5-5-3.5s-5 1.6-5 3.5 2.2 3.5 5 3.5 5 1.6 5 3.5-2.2 3.5-5 3.5-5-1.6-5-3.5"/></svg><span>Amount Claim</span></a><a class="navLink" href="infieldpredelivery.html#claimclosed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 7h12"/><path d="M6 12h8"/><path d="M6 17h6"/><path d="M18 16l-3 3-2-2"/></svg><span>Claim Closed</span></a>
+    <a class="navLink" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15 17l2-2 2 2"/></svg><span>Claim Tickets Workflow</span></a>
     <div class="navDivider"></div>
-    <div class="navSection">Model Series</div>
-     <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model Series</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket lifecycle</span></a>
-    
+    <div class="navSection">Analysis</div>
+     <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model And Parts</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket lifecycle</span></a>
+
   </aside>
   <main class="main">
     <div class="pageTop">
-      <div class="pageTitleWrap"><h1 class="pageTitle">After-Sales Team Dashboard（ Month to Month）</h1><span class="pageTitleNote" id="pageTitleNote">--</span></div>
+      <div class="pageTitleWrap"><h1 class="pageTitle">Warranty Team (Month to Month)</h1><span class="pageTitleNote" id="pageTitleNote">--</span></div>
       <div class="topActions"><input id="dateFrom" type="hidden"><input id="dateTo" type="hidden"><div id="claimSwitch" class="sidebarFilters"></div></div>
     </div>
     <div id="loadError" class="error"></div>
@@ -4547,7 +4547,7 @@ function renderKpis(){
   clearKpiPreview(document.querySelector(".benchmarkRateCard"));
   const noUpdateCard=document.querySelector(".unapprovedTicketsCard");
   clearKpiPreview(document.querySelector(".exitedValueCard"));
- if(noUpdateCard)noUpdateCard.onclick=()=>{try{localStorage.setItem("dealerWorkbenchNoUpdateTickets",JSON.stringify(noUpdate.rows||[]));}catch(e){}window.location.href="dealerworkbench.html?noUpdate=1#tickets";};
+ if(noUpdateCard)noUpdateCard.onclick=null;
   if($("kpiApprovedTrend")){ $("kpiApprovedTrend").innerHTML=kpiCustomMetaMarkup(approvalAnalyticsLabel()); $("kpiApprovedTrend").className="kpiTrend flat kpiTrendDateOnly"; }
   setTrend("kpiAvgCostTrend","avgCost",approvedAvg,prevApprovedAvg,"money",filtered);
   setTrend("kpiRateTrend","estimatedClearDays",h.clearDays||0,prevH.clearDays||0,"days",filtered);
@@ -4971,7 +4971,6 @@ function openDashboardTickets(rows,label){
     localStorage.setItem("dealerWorkbenchDashboardTickets",JSON.stringify(payload));
     localStorage.setItem("dealerWorkbenchDashboardTicketsLabel",label||"Dashboard tickets");
   }catch(e){}
- window.location.href="dealerworkbench.html?dashboardTickets=1#tickets";
 }
 function openDurationBucketTickets(key,label){
   const rows=criticalDurationRows().filter(row=>durationBucketMatch(row,key));
@@ -5245,9 +5244,10 @@ function renderCriticalLog(){
   const box=$("criticalLogRows");
   if(!box)return;
   const logs=periodTeamLogs().slice().sort((a,b)=>clean(b.detectedAt||b.date).localeCompare(clean(a.detectedAt||a.date))).slice(0,8);
- box.innerHTML=logs.length?logs.map(e=>{const id=clean(e.id||e.ticketId||"-");return `<div class="criticalLogRow"><span class="criticalLogTime">${esc(shortDateTime(e.detectedAt||e.date))}</span><span class="criticalLogStatus"><i class="criticalLogDot" style="background:${logColor(e)}"></i>${esc(logStatusLabel(e))}</span><a class="criticalLogTicket" href="dealerworkbench.html?ticketSearch=${encodeURIComponent(id)}#tickets">#${esc(id)}</a><span class="criticalLogAmount">${money(e.amount||e.value||0)}</span></div>`}).join(""):`<div class="panelDesc" style="padding:12px 0">No critical status changes in this period.</div>`;
+ box.innerHTML=logs.length?logs.map(e=>{const id=clean(e.id||e.ticketId||"-");return `<div class="criticalLogRow"><span class="criticalLogTime">${esc(shortDateTime(e.detectedAt||e.date))}</span><span class="criticalLogStatus"><i class="criticalLogDot" style="background:${logColor(e)}"></i>${esc(logStatusLabel(e))}</span><span class="criticalLogTicket">#${esc(id)}</span><span class="criticalLogAmount">${money(e.amount||e.value||0)}</span></div>`}).join(""):`<div class="panelDesc" style="padding:12px 0">No critical status changes in this period.</div>`;
 }
 function bindCriticalTicketSearch(){
+  return;
   const panel=document.querySelector(".criticalLogPanel");
   const link=document.querySelector(".criticalLogLink");
   if(!panel||!link||document.getElementById("criticalTicketSearchForm"))return;
@@ -5259,7 +5259,6 @@ function bindCriticalTicketSearch(){
     e.preventDefault();
     const q=clean(document.getElementById("criticalTicketSearchInput")?.value);
     if(!q)return;
- window.location.href=`dealerworkbench.html?ticketSearch=${encodeURIComponent(q)}#tickets`;
   };
   panel.insertBefore(form,link);
 }
@@ -6625,7 +6624,7 @@ function renderLists(){const rawView=currentRawCriticalView();const rows=selecte
   const dealerColors=["#4f46e5","#60a5fa","#7c3aed","#f59e0b","#ec4899","#8b5cf6","#22c55e","#94a3b8"];
   const dealerLimit=4;
   const shownDealers=dealerListExpanded?dealers:dealers.slice(0,dealerLimit);
-  if($("dealerBars")){$("dealerBars").className=`dealerCriticalList${dealerListExpanded?' expanded':''}`;$("dealerBars").innerHTML=dealers.length?shownDealers.map((x,i)=>`<div class="dealerCriticalRow" role="button" tabindex="0" data-dealer="${esc(x.dealer)}" title="Open ${esc(x.dealer)} in Dealer Workbench"><span class="dealerCriticalDot" style="background:${dealerColors[i%dealerColors.length]}"></span><span class="dealerCriticalLabel" title="${esc(x.dealer)}">${esc(x.dealer)}</span><span class="dealerCriticalValue">${num(x.criticalTickets)}</span></div>`).join("")+(dealers.length>dealerLimit?`<button class="dealerCriticalToggle" type="button" onclick="toggleDealerList()">${dealerListExpanded?'Collapse dealers':'View all dealers ->'}</button>`:""):`<div class="panelDesc">No dealer analytics found for this claim type and selected period.</div>`;$("dealerBars").querySelectorAll(".dealerCriticalRow").forEach(row=>{row.onclick=()=>openDealerWorkbench(row.dataset.dealer);row.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDealerWorkbench(row.dataset.dealer);}}});}
+  if($("dealerBars")){$("dealerBars").className=`dealerCriticalList${dealerListExpanded?' expanded':''}`;$("dealerBars").innerHTML=dealers.length?shownDealers.map((x,i)=>`<div class="dealerCriticalRow" data-dealer="${esc(x.dealer)}" title="${esc(x.dealer)}"><span class="dealerCriticalDot" style="background:${dealerColors[i%dealerColors.length]}"></span><span class="dealerCriticalLabel" title="${esc(x.dealer)}">${esc(x.dealer)}</span><span class="dealerCriticalValue">${num(x.criticalTickets)}</span></div>`).join("")+(dealers.length>dealerLimit?`<button class="dealerCriticalToggle" type="button" onclick="toggleDealerList()">${dealerListExpanded?'Collapse dealers':'View all dealers ->'}</button>`:""):`<div class="panelDesc">No dealer analytics found for this claim type and selected period.</div>`;}
   const statuses=currentCriticalStatusRows();
   const statusDonutRows=statuses.length>6?statuses.slice(0,5).concat({label:"Others",count:statuses.slice(5).reduce((sum,x)=>sum+Number(x.count||0),0),details:statuses.slice(5)}):statuses;
   if($("statusMix")){window.__dashboardStatusDonutRows=statusDonutRows;$("statusMix").className="statusPieLayout";$("statusMix").innerHTML=distributionDonutMarkup(statusDonutRows,"tickets",true);bindStatusMixTips();}
@@ -6634,7 +6633,7 @@ function renderLists(){const rawView=currentRawCriticalView();const rows=selecte
     $("criticalSideList").innerHTML=statuses.slice(0,8).map((x,i)=>`<div class="criticalSideRow"><span class="criticalSideDot" style="background:${colors[i%colors.length]}"></span><span class="criticalSideLabel" title="${esc(x.label)}">${esc(x.label)}</span><span class="criticalSideValue">${num(x.count)}</span></div>`).join("")||`<div class="panelDesc">No critical tickets found.</div>`;
   }
 }
- function openDealerWorkbench(dealer){const key=dealerKeyForName(dealer);if(key)localStorage.setItem("dealerWorkspaceSelectedKey",key);localStorage.setItem("dealerWorkspaceSelectedName",dealer||"");window.location.href="dealerworkbench.html";}
+ function openDealerWorkbench(dealer){}
 function toggleDealerList(){dealerListExpanded=!dealerListExpanded;renderLists();}
 
 function setDateDefaults(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;syncRangeInputsToActivePeriod();}
@@ -6796,7 +6795,7 @@ function renderAllWithLoading(text="Calculating..."){
   renderAllTimer=setTimeout(async()=>{
     renderAllTimer=null;
     try{
-      // Month-based Team Dashboard cards must render from the selected
+      // Month-based Warranty Team cards must render from the selected
       // period snapshot. If analytics/teamDashboard does not already include
       // that month snapshot, lazily read it from the full analytics/team
       // path before rendering so Approved Cost / Avg Cost do not fall back

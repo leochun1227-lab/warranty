@@ -1,1 +1,1 @@
-globalThis.ANALYSIS_VEHICLE_FAILURE_TIMING_SUMMARY = {"generatedAt":"2026-07-21T21:09:16+10:00","sourceWorkbook":"vehicle_failure_timing_2025_2026_latest.xlsx","sourceSheet":"sold_vehicles","totalSoldVehicles":4761,"totalVehicles":4761};
+globalThis.ANALYSIS_VEHICLE_FAILURE_TIMING_SUMMARY = {"generatedAt":"2026-07-23T21:06:09+10:00","sourceWorkbook":"vehicle_failure_timing_2025_2026_latest.xlsx","sourceSheet":"sold_vehicles","totalSoldVehicles":4809,"totalVehicles":4809};

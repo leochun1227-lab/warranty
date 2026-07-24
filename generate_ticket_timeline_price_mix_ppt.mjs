@@ -207,9 +207,17 @@ async function main() {
   await fs.mkdir(previewDir, { recursive: true });
   for (const [index, slide] of presentation.slides.items.entries()) {
     const png = await presentation.export({ slide, format: "png", scale: 1 });
-    await fs.writeFile(path.join(previewDir, `slide-${String(index + 1).padStart(2, "0")}.png`), new Uint8Array(await png.arrayBuffer()));
+    try {
+      await fs.writeFile(path.join(previewDir, `slide-${String(index + 1).padStart(2, "0")}.png`), new Uint8Array(await png.arrayBuffer()));
+    } catch (error) {
+      console.warn(`Preview PNG skipped for slide ${index + 1}: ${error.message || error}`);
+    }
     const layout = await slide.export({ format: "layout" });
-    await fs.writeFile(path.join(previewDir, `slide-${String(index + 1).padStart(2, "0")}.layout.json`), await layout.text());
+    try {
+      await fs.writeFile(path.join(previewDir, `slide-${String(index + 1).padStart(2, "0")}.layout.json`), await layout.text());
+    } catch (error) {
+      console.warn(`Preview layout skipped for slide ${index + 1}: ${error.message || error}`);
+    }
   }
   const pptx = await PresentationFile.exportPptx(presentation);
   await pptx.save(outPath);

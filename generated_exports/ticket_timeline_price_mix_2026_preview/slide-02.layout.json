@@ -2,13 +2,13 @@
   "schema": "openai.presentation.layout/v4",
   "unit": "px",
   "slide": {
-    "aid": "sl/w9n6hq",
-    "id": "w9n6hq",
+    "aid": "sl/yt0dpr",
+    "id": "yt0dpr",
     "slide": 2,
-    "layoutId": "db0e5f77-9d24-4933-ac30-3b274ee4d523",
+    "layoutId": "118236b5-001e-4e28-af3a-454295270a08",
     "layoutName": "Title Slide",
     "layoutType": "title",
-    "masterLayoutId": "a83cbdbb-2e30-4891-8e1b-a8f7ec47226e",
+    "masterLayoutId": "e4b088b0-bf95-40ca-9425-514bb19b6ab4",
     "masterLayoutName": "Master",
     "backgroundColor": "#F7FAFC",
     "frame": {
@@ -45,15 +45,15 @@
   "inheritedLayers": [
     {
       "scope": "layout",
-      "id": "db0e5f77-9d24-4933-ac30-3b274ee4d523",
+      "id": "118236b5-001e-4e28-af3a-454295270a08",
       "name": "Title Slide",
       "type": "title",
-      "parentLayoutId": "a83cbdbb-2e30-4891-8e1b-a8f7ec47226e",
+      "parentLayoutId": "e4b088b0-bf95-40ca-9425-514bb19b6ab4",
       "elements": []
     },
     {
       "scope": "master",
-      "id": "a83cbdbb-2e30-4891-8e1b-a8f7ec47226e",
+      "id": "e4b088b0-bf95-40ca-9425-514bb19b6ab4",
       "name": "Master",
       "type": "master",
       "elements": []
@@ -64,7 +64,7 @@
       "order": 1,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/jih0nihg",
+      "aid": "sh/fudk7q9c",
       "id": "1",
       "bbox": [
         64,
@@ -125,7 +125,7 @@
       "order": 2,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/kjqhwny1",
+      "aid": "sh/gvml0vqx",
       "id": "2",
       "bbox": [
         64,
@@ -186,7 +186,7 @@
       "order": 3,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/l4zip8zm",
+      "aid": "sh/hwv290ri",
       "id": "3",
       "bbox": [
         66,
@@ -195,8 +195,8 @@
         30
       ],
       "geometry": "rect",
-      "text": "5,173 priced tickets. Percentages are ticket-count share within each price band, not claim amount share.",
-      "textPreview": "5,173 priced tickets. Percentages are ticket-count share within each price band, not claim amount share.",
+      "text": "4,852 priced tickets. Percentages are ticket-count share within each price band, not claim amount share.",
+      "textPreview": "4,852 priced tickets. Percentages are ticket-count share within each price band, not claim amount share.",
       "resolvedFontSize": 16,
       "resolvedTextStyle": {
         "fontSize": 16,
@@ -215,14 +215,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "5,173 priced tickets. Percentages are ticket-count share within each price band, not claim amount share."
+            "text": "4,852 priced tickets. Percentages are ticket-count share within each price band, not claim amount share."
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "5,173 priced tickets. Percentages are ticket-count share within each price band, not claim amount share.",
+          "text": "4,852 priced tickets. Percentages are ticket-count share within each price band, not claim amount share.",
           "resolvedTextStyle": {
             "fontSize": 16,
             "color": "#647287"
@@ -230,7 +230,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "5,173 priced tickets. Percentages are ticket-count share within each price band, not claim amount share.",
+              "text": "4,852 priced tickets. Percentages are ticket-count share within each price band, not claim amount share.",
               "fontSize": 16,
               "color": "#647287"
             }
@@ -244,7 +244,7 @@
       "order": 4,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/adozqtgz",
+      "aid": "sh/65kjul8v",
       "id": "4",
       "bbox": [
         64,
@@ -261,7 +261,7 @@
       "order": 5,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/behgjyh4",
+      "aid": "sh/76tk3q9g",
       "id": "5",
       "bbox": [
         82,
@@ -322,7 +322,7 @@
       "order": 6,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/cfqhs3yp",
+      "aid": "sh/s7mlwbq1",
       "id": "6",
       "bbox": [
         82,
@@ -331,8 +331,8 @@
         22
       ],
       "geometry": "rect",
-      "text": "2,617 tickets  /  avg 22.1 days",
-      "textPreview": "2,617 tickets  /  avg 22.1 days",
+      "text": "2,809 tickets  /  avg 22.9 days",
+      "textPreview": "2,809 tickets  /  avg 22.9 days",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -351,14 +351,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "2,617 tickets  /  avg 22.1 days"
+            "text": "2,809 tickets  /  avg 22.9 days"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "2,617 tickets  /  avg 22.1 days",
+          "text": "2,809 tickets  /  avg 22.9 days",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#647287"
@@ -366,7 +366,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "2,617 tickets  /  avg 22.1 days",
+              "text": "2,809 tickets  /  avg 22.9 days",
               "fontSize": 13,
               "color": "#647287"
             }
@@ -380,7 +380,7 @@
       "order": 7,
       "kind": "chart",
       "scope": "slide",
-      "aid": "ch/xs7mlwvu",
+      "aid": "ch/9kr2ds7i",
       "id": "7",
       "bbox": [
         82,
@@ -394,7 +394,7 @@
       "order": 8,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/u9sz2xg3",
+      "aid": "sh/q1o3658z",
       "id": "8",
       "bbox": [
         252,
@@ -410,7 +410,7 @@
       "order": 9,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/va10v2ho",
+      "aid": "sh/r2xkfa9k",
       "id": "9",
       "bbox": [
         268,
@@ -468,7 +468,7 @@
       "order": 10,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/7yh4ji54",
+      "aid": "sh/3exsna90",
       "id": "10",
       "bbox": [
         362,
@@ -477,8 +477,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "1,218 tickets",
-      "textPreview": "1,218 tickets",
+      "text": "1,229 tickets",
+      "textPreview": "1,229 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -497,14 +497,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "1,218 tickets"
+            "text": "1,229 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "1,218 tickets",
+          "text": "1,229 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -513,7 +513,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "1,218 tickets",
+              "text": "1,229 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -528,7 +528,7 @@
       "order": 11,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/6x83qd4j",
+      "aid": "sh/2dobe58f",
       "id": "11",
       "bbox": [
         554,
@@ -537,8 +537,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "46.5%",
-      "textPreview": "46.5%",
+      "text": "43.8%",
+      "textPreview": "43.8%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -557,14 +557,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "46.5%"
+            "text": "43.8%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "46.5%",
+          "text": "43.8%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -573,7 +573,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "46.5%",
+              "text": "43.8%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -588,7 +588,7 @@
       "order": 12,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/tkzml8na",
+      "aid": "sh/pgzap0r6",
       "id": "12",
       "bbox": [
         252,
@@ -604,7 +604,7 @@
       "order": 13,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/8jqlsnmp",
+      "aid": "sh/4f6tgfql",
       "id": "13",
       "bbox": [
         268,
@@ -662,7 +662,7 @@
       "order": 14,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/vmh4ni5g",
+      "aid": "sh/bihsra9c",
       "id": "14",
       "bbox": [
         362,
@@ -671,8 +671,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "308 tickets",
-      "textPreview": "308 tickets",
+      "text": "364 tickets",
+      "textPreview": "364 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -691,14 +691,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "308 tickets"
+            "text": "364 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "308 tickets",
+          "text": "364 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -707,7 +707,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "308 tickets",
+              "text": "364 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -722,7 +722,7 @@
       "order": 15,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/ul83ud4v",
+      "aid": "sh/qh8bi58r",
       "id": "15",
       "bbox": [
         554,
@@ -731,8 +731,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "11.8%",
-      "textPreview": "11.8%",
+      "text": "13.0%",
+      "textPreview": "13.0%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -751,14 +751,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "11.8%"
+            "text": "13.0%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "11.8%",
+          "text": "13.0%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -767,7 +767,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "11.8%",
+              "text": "13.0%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -782,7 +782,7 @@
       "order": 16,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/hozmpsn6",
+      "aid": "sh/d4zatkr2",
       "id": "16",
       "bbox": [
         252,
@@ -798,7 +798,7 @@
       "order": 17,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/gnqlwnml",
+      "aid": "sh/cjqtkfqx",
       "id": "17",
       "bbox": [
         268,
@@ -856,7 +856,7 @@
       "order": 18,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/3q14r25c",
+      "aid": "sh/z6hsvu98",
       "id": "18",
       "bbox": [
         362,
@@ -865,8 +865,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "209 tickets",
-      "textPreview": "209 tickets",
+      "text": "238 tickets",
+      "textPreview": "238 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -885,14 +885,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "209 tickets"
+            "text": "238 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "209 tickets",
+          "text": "238 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -901,7 +901,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "209 tickets",
+              "text": "238 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -916,7 +916,7 @@
       "order": 19,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/ips3yx4r",
+      "aid": "sh/y58bmp8n",
       "id": "19",
       "bbox": [
         554,
@@ -925,8 +925,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "8.0%",
-      "textPreview": "8.0%",
+      "text": "8.5%",
+      "textPreview": "8.5%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -945,14 +945,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "8.0%"
+            "text": "8.5%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "8.0%",
+          "text": "8.5%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -961,7 +961,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "8.0%",
+              "text": "8.5%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -976,7 +976,7 @@
       "order": 20,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/elc7q1oz",
+      "aid": "sh/a1cvutsv",
       "id": "20",
       "bbox": [
         252,
@@ -992,7 +992,7 @@
       "order": 21,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/fmloj6pk",
+      "aid": "sh/v2lwnytg",
       "id": "21",
       "bbox": [
         268,
@@ -1050,7 +1050,7 @@
       "order": 22,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/0nupsr65",
+      "aid": "sh/w3udwja1",
       "id": "22",
       "bbox": [
         362,
@@ -1059,8 +1059,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "190 tickets",
-      "textPreview": "190 tickets",
+      "text": "219 tickets",
+      "textPreview": "219 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -1079,14 +1079,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "190 tickets"
+            "text": "219 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "190 tickets",
+          "text": "219 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -1095,7 +1095,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "190 tickets",
+              "text": "219 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -1110,7 +1110,7 @@
       "order": 23,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/18n6lw7q",
+      "aid": "sh/x43epobm",
       "id": "23",
       "bbox": [
         554,
@@ -1119,8 +1119,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "7.3%",
-      "textPreview": "7.3%",
+      "text": "7.8%",
+      "textPreview": "7.8%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -1139,14 +1139,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "7.3%"
+            "text": "7.8%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "7.3%",
+          "text": "7.8%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -1155,7 +1155,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "7.3%",
+              "text": "7.8%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -1170,7 +1170,7 @@
       "order": 24,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/qhc7mho3",
+      "aid": "sh/mdsvq9sz",
       "id": "24",
       "bbox": [
         252,
@@ -1186,7 +1186,7 @@
       "order": 25,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/rilofmpo",
+      "aid": "sh/ny1wjetk",
       "id": "25",
       "bbox": [
         268,
@@ -1244,7 +1244,7 @@
       "order": 26,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/sjupor6t",
+      "aid": "sh/8zudsja5",
       "id": "26",
       "bbox": [
         362,
@@ -1253,8 +1253,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "380 tickets",
-      "textPreview": "380 tickets",
+      "text": "429 tickets",
+      "textPreview": "429 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -1273,14 +1273,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "380 tickets"
+            "text": "429 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "380 tickets",
+          "text": "429 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -1289,7 +1289,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "380 tickets",
+              "text": "429 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -1304,7 +1304,7 @@
       "order": 27,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/dk36hw7e",
+      "aid": "sh/903eloba",
       "id": "27",
       "bbox": [
         554,
@@ -1313,8 +1313,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "14.5%",
-      "textPreview": "14.5%",
+      "text": "15.3%",
+      "textPreview": "15.3%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -1333,14 +1333,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "14.5%"
+            "text": "15.3%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "14.5%",
+          "text": "15.3%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -1349,7 +1349,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "14.5%",
+              "text": "15.3%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -1364,7 +1364,7 @@
       "order": 28,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/adw7ylo7",
+      "aid": "sh/6twvmds3",
       "id": "28",
       "bbox": [
         252,
@@ -1380,7 +1380,7 @@
       "order": 29,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/be58rq5s",
+      "aid": "sh/7u5wvito",
       "id": "29",
       "bbox": [
         268,
@@ -1438,7 +1438,7 @@
       "order": 30,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/5kbid4v6",
+      "aid": "sh/ho7ylcvq",
       "id": "30",
       "bbox": [
         362,
@@ -1447,8 +1447,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "312 tickets",
-      "textPreview": "312 tickets",
+      "text": "330 tickets",
+      "textPreview": "330 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -1467,14 +1467,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "312 tickets"
+            "text": "330 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "312 tickets",
+          "text": "330 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -1483,7 +1483,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "312 tickets",
+              "text": "330 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -1498,7 +1498,7 @@
       "order": 31,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/kji14zul",
+      "aid": "sh/gnyhs7u5",
       "id": "31",
       "bbox": [
         554,
@@ -1507,8 +1507,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "11.9%",
-      "textPreview": "11.9%",
+      "text": "11.7%",
+      "textPreview": "11.7%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -1527,14 +1527,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "11.9%"
+            "text": "11.7%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "11.9%",
+          "text": "11.7%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -1543,7 +1543,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "11.9%",
+              "text": "11.7%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -1558,7 +1558,7 @@
       "order": 32,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/ji90bed0",
+      "aid": "sh/f2pgj2d0",
       "id": "32",
       "bbox": [
         668,
@@ -1575,7 +1575,7 @@
       "order": 33,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/ih0j29cf",
+      "aid": "sh/u1gzqxcf",
       "id": "33",
       "bbox": [
         686,
@@ -1636,7 +1636,7 @@
       "order": 34,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/xgri94va",
+      "aid": "sh/t07yhsvu",
       "id": "34",
       "bbox": [
         686,
@@ -1645,8 +1645,8 @@
         22
       ],
       "geometry": "rect",
-      "text": "2,174 tickets  /  avg 26.1 days",
-      "textPreview": "2,174 tickets  /  avg 26.1 days",
+      "text": "1,814 tickets  /  avg 27.4 days",
+      "textPreview": "1,814 tickets  /  avg 27.4 days",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -1665,14 +1665,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "2,174 tickets  /  avg 26.1 days"
+            "text": "1,814 tickets  /  avg 27.4 days"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "2,174 tickets  /  avg 26.1 days",
+          "text": "1,814 tickets  /  avg 27.4 days",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#647287"
@@ -1680,7 +1680,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "2,174 tickets  /  avg 26.1 days",
+              "text": "1,814 tickets  /  avg 27.4 days",
               "fontSize": 13,
               "color": "#647287"
             }
@@ -1694,7 +1694,7 @@
       "order": 35,
       "kind": "chart",
       "scope": "slide",
-      "aid": "ch/sn610zup",
+      "aid": "ch/0rmtsbmh",
       "id": "35",
       "bbox": [
         686,
@@ -1708,7 +1708,7 @@
       "order": 36,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/ve907ud4",
+      "aid": "sh/7ypgfido",
       "id": "36",
       "bbox": [
         856,
@@ -1724,7 +1724,7 @@
       "order": 37,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/at0zypcj",
+      "aid": "sh/6xwfmxc3",
       "id": "37",
       "bbox": [
         872,
@@ -1782,7 +1782,7 @@
       "order": 38,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/hcv2lobe",
+      "aid": "sh/dwrytwby",
       "id": "38",
       "bbox": [
         966,
@@ -1791,8 +1791,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "849 tickets",
-      "textPreview": "849 tickets",
+      "text": "718 tickets",
+      "textPreview": "718 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -1811,14 +1811,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "849 tickets"
+            "text": "718 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "849 tickets",
+          "text": "718 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -1827,7 +1827,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "849 tickets",
+              "text": "718 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -1842,7 +1842,7 @@
       "order": 39,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/gb21cjut",
+      "aid": "sh/cvih0rud",
       "id": "39",
       "bbox": [
         1158,
@@ -1851,8 +1851,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "39.1%",
-      "textPreview": "39.1%",
+      "text": "39.6%",
+      "textPreview": "39.6%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -1871,14 +1871,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "39.1%"
+            "text": "39.6%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "39.1%",
+          "text": "39.6%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -1887,7 +1887,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "39.1%",
+              "text": "39.6%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -1902,7 +1902,7 @@
       "order": 40,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/ojqhgzqd",
+      "aid": "sh/kz6pkru9",
       "id": "40",
       "bbox": [
         856,
@@ -1918,7 +1918,7 @@
       "order": 41,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/pkzip47y",
+      "aid": "sh/l0f6twvu",
       "id": "41",
       "bbox": [
         872,
@@ -1976,7 +1976,7 @@
       "order": 42,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/2hozep87",
+      "aid": "sh/yxo7ihc3",
       "id": "42",
       "bbox": [
         966,
@@ -1985,8 +1985,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "307 tickets",
-      "textPreview": "307 tickets",
+      "text": "238 tickets",
+      "textPreview": "238 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -2005,14 +2005,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "307 tickets"
+            "text": "238 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "307 tickets",
+          "text": "238 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -2021,7 +2021,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "307 tickets",
+              "text": "238 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -2036,7 +2036,7 @@
       "order": 43,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/nix0nups",
+      "aid": "sh/jyxormdo",
       "id": "43",
       "bbox": [
         1158,
@@ -2045,8 +2045,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "14.1%",
-      "textPreview": "14.1%",
+      "text": "13.1%",
+      "textPreview": "13.1%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -2065,14 +2065,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "14.1%"
+            "text": "13.1%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "14.1%",
+          "text": "13.1%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -2081,7 +2081,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "14.1%",
+              "text": "13.1%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -2096,7 +2096,7 @@
       "order": 44,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/c7q1kzq9",
+      "aid": "sh/83qporu5",
       "id": "44",
       "bbox": [
         856,
@@ -2112,7 +2112,7 @@
       "order": 45,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/x8zit47u",
+      "aid": "sh/t4z6xwbq",
       "id": "45",
       "bbox": [
         872,
@@ -2170,7 +2170,7 @@
       "order": 46,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/al8zi98j",
+      "aid": "sh/6187m1cf",
       "id": "46",
       "bbox": [
         966,
@@ -2179,8 +2179,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "191 tickets",
-      "textPreview": "191 tickets",
+      "text": "150 tickets",
+      "textPreview": "150 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -2199,14 +2199,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "191 tickets"
+            "text": "150 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "191 tickets",
+          "text": "150 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -2215,7 +2215,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "191 tickets",
+              "text": "150 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -2230,7 +2230,7 @@
       "order": 47,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/b6h0repo",
+      "aid": "sh/72hov6dk",
       "id": "47",
       "bbox": [
         1158,
@@ -2239,8 +2239,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "8.8%",
-      "textPreview": "8.8%",
+      "text": "8.3%",
+      "textPreview": "8.3%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -2259,14 +2259,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "8.8%"
+            "text": "8.3%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "8.8%",
+          "text": "8.3%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -2275,7 +2275,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "8.8%",
+              "text": "8.3%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -2290,7 +2290,7 @@
       "order": 48,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/kba1ojql",
+      "aid": "sh/grqpsbuh",
       "id": "48",
       "bbox": [
         856,
@@ -2306,7 +2306,7 @@
       "order": 49,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/lcjixo76",
+      "aid": "sh/hszq1gb2",
       "id": "49",
       "bbox": [
         872,
@@ -2364,7 +2364,7 @@
       "order": 50,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/v6lkni98",
+      "aid": "sh/rmlsrad4",
       "id": "50",
       "bbox": [
         966,
@@ -2373,8 +2373,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "176 tickets",
-      "textPreview": "176 tickets",
+      "text": "143 tickets",
+      "textPreview": "143 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -2393,14 +2393,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "176 tickets"
+            "text": "143 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "176 tickets",
+          "text": "143 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -2409,7 +2409,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "176 tickets",
+              "text": "143 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -2424,7 +2424,7 @@
       "order": 51,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/u5c3udsn",
+      "aid": "sh/qlcri5wj",
       "id": "51",
       "bbox": [
         1158,
@@ -2433,8 +2433,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "8.1%",
-      "textPreview": "8.1%",
+      "text": "7.9%",
+      "textPreview": "7.9%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -2453,14 +2453,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "8.1%"
+            "text": "7.9%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "8.1%",
+          "text": "7.9%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -2469,7 +2469,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "8.1%",
+              "text": "7.9%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -2484,7 +2484,7 @@
       "order": 52,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/h832psre",
+      "aid": "sh/do3atkva",
       "id": "52",
       "bbox": [
         856,
@@ -2500,7 +2500,7 @@
       "order": 53,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/w7ulwnat",
+      "aid": "sh/cnu9kfep",
       "id": "53",
       "bbox": [
         872,
@@ -2558,7 +2558,7 @@
       "order": 54,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/72lkji9w",
+      "aid": "sh/3y1snaxs",
       "id": "54",
       "bbox": [
         966,
@@ -2567,8 +2567,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "356 tickets",
-      "textPreview": "356 tickets",
+      "text": "291 tickets",
+      "textPreview": "291 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -2587,14 +2587,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "356 tickets"
+            "text": "291 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "356 tickets",
+          "text": "291 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -2603,7 +2603,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "356 tickets",
+              "text": "291 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -2618,7 +2618,7 @@
       "order": 55,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/m1s3qdsr",
+      "aid": "sh/ixsre5wn",
       "id": "55",
       "bbox": [
         1158,
@@ -2627,8 +2627,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "16.4%",
-      "textPreview": "16.4%",
+      "text": "16.0%",
+      "textPreview": "16.0%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -2647,14 +2647,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "16.4%"
+            "text": "16.0%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "16.4%",
+          "text": "16.0%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -2663,7 +2663,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "16.4%",
+              "text": "16.0%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -2678,7 +2678,7 @@
       "order": 56,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/9432l8r2",
+      "aid": "sh/503ap0fy",
       "id": "56",
       "bbox": [
         856,
@@ -2694,7 +2694,7 @@
       "order": 57,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/83uls3ah",
+      "aid": "sh/4za9gved",
       "id": "57",
       "bbox": [
         872,
@@ -2752,7 +2752,7 @@
       "order": 58,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/ry54v29g",
+      "aid": "sh/nu5szudc",
       "id": "58",
       "bbox": [
         966,
@@ -2761,8 +2761,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "295 tickets",
-      "textPreview": "295 tickets",
+      "text": "274 tickets",
+      "textPreview": "274 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -2781,14 +2781,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "295 tickets"
+            "text": "274 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "295 tickets",
+          "text": "274 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -2797,7 +2797,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "295 tickets",
+              "text": "274 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -2812,7 +2812,7 @@
       "order": 59,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/6xw32xsv",
+      "aid": "sh/mtwbqpwr",
       "id": "59",
       "bbox": [
         1158,
@@ -2821,8 +2821,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "13.6%",
-      "textPreview": "13.6%",
+      "text": "15.1%",
+      "textPreview": "15.1%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -2841,14 +2841,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "13.6%"
+            "text": "15.1%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "13.6%",
+          "text": "15.1%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -2857,7 +2857,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "13.6%",
+              "text": "15.1%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -2872,7 +2872,7 @@
       "order": 60,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/m50fa5gf",
+      "aid": "sh/ypgvitgz",
       "id": "60",
       "bbox": [
         64,
@@ -2889,7 +2889,7 @@
       "order": 61,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/n6twjqxk",
+      "aid": "sh/jqpcryxk",
       "id": "61",
       "bbox": [
         82,
@@ -2950,7 +2950,7 @@
       "order": 62,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/o72xcvy5",
+      "aid": "sh/kbidk3y5",
       "id": "62",
       "bbox": [
         82,
@@ -2959,8 +2959,8 @@
         22
       ],
       "geometry": "rect",
-      "text": "357 tickets  /  avg 34.0 days",
-      "textPreview": "357 tickets  /  avg 34.0 days",
+      "text": "209 tickets  /  avg 36.9 days",
+      "textPreview": "209 tickets  /  avg 36.9 days",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -2979,14 +2979,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "357 tickets  /  avg 34.0 days"
+            "text": "209 tickets  /  avg 36.9 days"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "357 tickets  /  avg 34.0 days",
+          "text": "209 tickets  /  avg 36.9 days",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#647287"
@@ -2994,7 +2994,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "357 tickets  /  avg 34.0 days",
+              "text": "209 tickets  /  avg 36.9 days",
               "fontSize": 13,
               "color": "#647287"
             }
@@ -3008,7 +3008,7 @@
       "order": 63,
       "kind": "chart",
       "scope": "slide",
-      "aid": "ch/50zy50f6",
+      "aid": "ch/tkfqdc7i",
       "id": "63",
       "bbox": [
         82,
@@ -3022,7 +3022,7 @@
       "order": 64,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/a9kfe5gb",
+      "aid": "sh/6d0vmdgv",
       "id": "64",
       "bbox": [
         252,
@@ -3038,7 +3038,7 @@
       "order": 65,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/batg7axw",
+      "aid": "sh/7e9cvyxg",
       "id": "65",
       "bbox": [
         268,
@@ -3096,7 +3096,7 @@
       "order": 66,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/wb2xgfyh",
+      "aid": "sh/8fido3y1",
       "id": "66",
       "bbox": [
         362,
@@ -3105,8 +3105,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "139 tickets",
-      "textPreview": "139 tickets",
+      "text": "78 tickets",
+      "textPreview": "78 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -3125,14 +3125,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "139 tickets"
+            "text": "78 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "139 tickets",
+          "text": "78 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -3141,7 +3141,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "139 tickets",
+              "text": "78 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -3156,7 +3156,7 @@
       "order": 67,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/xcby9kf2",
+      "aid": "sh/tgrex8fm",
       "id": "67",
       "bbox": [
         554,
@@ -3165,8 +3165,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "38.9%",
-      "textPreview": "38.9%",
+      "text": "37.3%",
+      "textPreview": "37.3%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -3185,14 +3185,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "38.9%"
+            "text": "37.3%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "38.9%",
+          "text": "37.3%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -3201,7 +3201,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "38.9%",
+              "text": "37.3%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -3216,7 +3216,7 @@
       "order": 68,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/qdgf2lg7",
+      "aid": "sh/mhwbq9gr",
       "id": "68",
       "bbox": [
         252,
@@ -3232,7 +3232,7 @@
       "order": 69,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/repwb6xs",
+      "aid": "sh/ni5cjehc",
       "id": "69",
       "bbox": [
         268,
@@ -3290,7 +3290,7 @@
       "order": 70,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/tsfihoza",
+      "aid": "sh/5cvypczu",
       "id": "70",
       "bbox": [
         362,
@@ -3299,8 +3299,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "35 tickets",
-      "textPreview": "35 tickets",
+      "text": "22 tickets",
+      "textPreview": "22 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -3319,14 +3319,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "35 tickets"
+            "text": "22 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "35 tickets",
+          "text": "22 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -3335,7 +3335,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "35 tickets",
+              "text": "22 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -3350,7 +3350,7 @@
       "order": 71,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/8r6h8jip",
+      "aid": "sh/4bmxw7i9",
       "id": "71",
       "bbox": [
         554,
@@ -3359,8 +3359,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "9.8%",
-      "textPreview": "9.8%",
+      "text": "10.5%",
+      "textPreview": "10.5%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -3379,14 +3379,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "9.8%"
+            "text": "10.5%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "9.8%",
+          "text": "10.5%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -3395,7 +3395,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "9.8%",
+              "text": "10.5%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -3410,7 +3410,7 @@
       "order": 72,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/76x0feh4",
+      "aid": "sh/3adgn2ho",
       "id": "72",
       "bbox": [
         252,
@@ -3426,7 +3426,7 @@
       "order": 73,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/65oz690j",
+      "aid": "sh/i9kfux03",
       "id": "73",
       "bbox": [
         268,
@@ -3484,7 +3484,7 @@
       "order": 74,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/hwfiloz6",
+      "aid": "sh/d0vytwzq",
       "id": "74",
       "bbox": [
         362,
@@ -3493,8 +3493,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "18 tickets",
-      "textPreview": "18 tickets",
+      "text": "9 tickets",
+      "textPreview": "9 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -3513,14 +3513,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "18 tickets"
+            "text": "9 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "18 tickets",
+          "text": "9 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -3529,7 +3529,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "18 tickets",
+              "text": "9 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -3544,7 +3544,7 @@
       "order": 75,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/gv6hcjil",
+      "aid": "sh/sfmx0ril",
       "id": "75",
       "bbox": [
         554,
@@ -3553,8 +3553,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "5.0%",
-      "textPreview": "5.0%",
+      "text": "4.3%",
+      "textPreview": "4.3%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -3573,14 +3573,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "5.0%"
+            "text": "4.3%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "5.0%",
+          "text": "4.3%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -3589,7 +3589,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "5.0%",
+              "text": "4.3%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -3604,7 +3604,7 @@
       "order": 76,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/vux0jeh0",
+      "aid": "sh/redgrmh0",
       "id": "76",
       "bbox": [
         252,
@@ -3620,7 +3620,7 @@
       "order": 77,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/utozat0v",
+      "aid": "sh/qd4fyh0f",
       "id": "77",
       "bbox": [
         268,
@@ -3678,7 +3678,7 @@
       "order": 78,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/x0vi94z2",
+      "aid": "sh/tkbehszm",
       "id": "78",
       "bbox": [
         362,
@@ -3687,8 +3687,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "27 tickets",
-      "textPreview": "27 tickets",
+      "text": "13 tickets",
+      "textPreview": "13 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -3707,14 +3707,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "27 tickets"
+            "text": "13 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "27 tickets",
+          "text": "13 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -3723,7 +3723,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "27 tickets",
+              "text": "13 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -3738,7 +3738,7 @@
       "order": 79,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/wzmh0zih",
+      "aid": "sh/8j2xoni1",
       "id": "79",
       "bbox": [
         554,
@@ -3747,8 +3747,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "7.6%",
-      "textPreview": "7.6%",
+      "text": "6.2%",
+      "textPreview": "6.2%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -3767,14 +3767,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "7.6%"
+            "text": "6.2%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "7.6%",
+          "text": "6.2%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -3783,7 +3783,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "7.6%",
+              "text": "6.2%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -3798,7 +3798,7 @@
       "order": 80,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/oz250nqx",
+      "aid": "sh/k3y1obqx",
       "id": "80",
       "bbox": [
         252,
@@ -3814,7 +3814,7 @@
       "order": 81,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/p0bm9sri",
+      "aid": "sh/l4r2hgri",
       "id": "81",
       "bbox": [
         268,
@@ -3872,7 +3872,7 @@
       "order": 82,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/2x03yd87",
+      "aid": "sh/y1gjml8r",
       "id": "82",
       "bbox": [
         362,
@@ -3881,8 +3881,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "61 tickets",
-      "textPreview": "61 tickets",
+      "text": "35 tickets",
+      "textPreview": "35 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -3901,14 +3901,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "61 tickets"
+            "text": "35 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "61 tickets",
+          "text": "35 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -3917,7 +3917,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "61 tickets",
+              "text": "35 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -3932,7 +3932,7 @@
       "order": 83,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/3y947i9s",
+      "aid": "sh/z2pkfq9c",
       "id": "83",
       "bbox": [
         554,
@@ -3941,8 +3941,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "17.1%",
-      "textPreview": "17.1%",
+      "text": "16.7%",
+      "textPreview": "16.7%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -3961,14 +3961,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "17.1%"
+            "text": "16.7%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "17.1%",
+          "text": "16.7%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -3977,7 +3977,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "17.1%",
+              "text": "16.7%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -3992,7 +3992,7 @@
       "order": 84,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/gvilw3q1",
+      "aid": "sh/cfy1kbql",
       "id": "84",
       "bbox": [
         252,
@@ -4008,7 +4008,7 @@
       "order": 85,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/1wrm58rm",
+      "aid": "sh/d072dgr6",
       "id": "85",
       "bbox": [
         268,
@@ -4066,7 +4066,7 @@
       "order": 86,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/et03ud8v",
+      "aid": "sh/qdgji18v",
       "id": "86",
       "bbox": [
         362,
@@ -4075,8 +4075,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "77 tickets",
-      "textPreview": "77 tickets",
+      "text": "52 tickets",
+      "textPreview": "52 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -4095,14 +4095,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "77 tickets"
+            "text": "52 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "77 tickets",
+          "text": "52 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -4111,7 +4111,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "77 tickets",
+              "text": "52 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -4126,7 +4126,7 @@
       "order": 87,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/fu943i9g",
+      "aid": "sh/bepkb690",
       "id": "87",
       "bbox": [
         554,
@@ -4135,8 +4135,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "21.6%",
-      "textPreview": "21.6%",
+      "text": "24.9%",
+      "textPreview": "24.9%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -4155,14 +4155,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "21.6%"
+            "text": "24.9%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "21.6%",
+          "text": "24.9%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -4171,7 +4171,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "21.6%",
+              "text": "24.9%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -4186,7 +4186,7 @@
       "order": 88,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/0rm587q5",
+      "aid": "sh/wb2lwvq5",
       "id": "88",
       "bbox": [
         668,
@@ -4203,7 +4203,7 @@
       "order": 89,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/lsvmhcrq",
+      "aid": "sh/hwb2p0ra",
       "id": "89",
       "bbox": [
         686,
@@ -4264,7 +4264,7 @@
       "order": 90,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/vmx876ts",
+      "aid": "sh/rqd4fets",
       "id": "90",
       "bbox": [
         686,
@@ -4273,8 +4273,8 @@
         22
       ],
       "geometry": "rect",
-      "text": "25 tickets  /  avg 68.0 days",
-      "textPreview": "25 tickets  /  avg 68.0 days",
+      "text": "20 tickets  /  avg 69.5 days",
+      "textPreview": "20 tickets  /  avg 69.5 days",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -4293,14 +4293,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "25 tickets  /  avg 68.0 days"
+            "text": "20 tickets  /  avg 69.5 days"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "25 tickets  /  avg 68.0 days",
+          "text": "20 tickets  /  avg 69.5 days",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#647287"
@@ -4308,7 +4308,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "25 tickets  /  avg 68.0 days",
+              "text": "20 tickets  /  avg 69.5 days",
               "fontSize": 13,
               "color": "#647287"
             }
@@ -4322,7 +4322,7 @@
       "order": 91,
       "kind": "chart",
       "scope": "slide",
-      "aid": "ch/6dc7y1sn",
+      "aid": "ch/exsj6dkz",
       "id": "91",
       "bbox": [
         686,
@@ -4336,7 +4336,7 @@
       "order": 92,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/hofq9gby",
+      "aid": "sh/tsv6h4bi",
       "id": "92",
       "bbox": [
         856,
@@ -4352,7 +4352,7 @@
       "order": 93,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/wn6pgbad",
+      "aid": "sh/srm5ozad",
       "id": "93",
       "bbox": [
         872,
@@ -4410,7 +4410,7 @@
       "order": 94,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/jqh8bqt4",
+      "aid": "sh/fudojeto",
       "id": "94",
       "bbox": [
         966,
@@ -4419,8 +4419,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "4 tickets",
-      "textPreview": "4 tickets",
+      "text": "3 tickets",
+      "textPreview": "3 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -4439,14 +4439,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "4 tickets"
+            "text": "3 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "4 tickets",
+          "text": "3 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -4455,7 +4455,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "4 tickets",
+              "text": "3 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -4470,7 +4470,7 @@
       "order": 95,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/ipo7ilsj",
+      "aid": "sh/et4nq9s3",
       "id": "95",
       "bbox": [
         1158,
@@ -4479,8 +4479,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "16.0%",
-      "textPreview": "16.0%",
+      "text": "15.0%",
+      "textPreview": "15.0%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -4499,14 +4499,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "16.0%"
+            "text": "15.0%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "16.0%",
+          "text": "15.0%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -4515,7 +4515,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "16.0%",
+              "text": "15.0%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -4530,7 +4530,7 @@
       "order": 96,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/5czqdgba",
+      "aid": "sh/1wf6lobu",
       "id": "96",
       "bbox": [
         856,
@@ -4546,7 +4546,7 @@
       "order": 97,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/4rqpkbap",
+      "aid": "sh/gv65sja9",
       "id": "97",
       "bbox": [
         872,
@@ -4604,7 +4604,7 @@
       "order": 98,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/zudozmt0",
+      "aid": "sh/vyt4natk",
       "id": "98",
       "bbox": [
         966,
@@ -4613,8 +4613,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "3 tickets",
-      "textPreview": "3 tickets",
+      "text": "2 tickets",
+      "textPreview": "2 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -4633,14 +4633,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "3 tickets"
+            "text": "2 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "3 tickets",
+          "text": "2 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -4649,7 +4649,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "3 tickets",
+              "text": "2 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -4664,7 +4664,7 @@
       "order": 99,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/yt476hsf",
+      "aid": "sh/uxknepsz",
       "id": "99",
       "bbox": [
         1158,
@@ -4673,8 +4673,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "12.0%",
-      "textPreview": "12.0%",
+      "text": "10.0%",
+      "textPreview": "10.0%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -4693,14 +4693,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "12.0%"
+            "text": "10.0%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "12.0%",
+          "text": "10.0%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -4709,7 +4709,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "12.0%",
+              "text": "10.0%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -4724,7 +4724,7 @@
       "order": 100,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/vih03m5s",
+      "aid": "sh/vyhs3m98",
       "id": "100",
       "bbox": [
         856,
@@ -4740,7 +4740,7 @@
       "order": 101,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/uh8juhon",
+      "aid": "sh/ux8ruhsn",
       "id": "101",
       "bbox": [
         872,
@@ -4798,7 +4798,7 @@
       "order": 102,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/hkzi5wny",
+      "aid": "sh/h0ja5cre",
       "id": "102",
       "bbox": [
         966,
@@ -4858,7 +4858,7 @@
       "order": 103,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/gjq1wr6d",
+      "aid": "sh/gza9w7at",
       "id": "103",
       "bbox": [
         1158,
@@ -4867,8 +4867,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "8.0%",
-      "textPreview": "8.0%",
+      "text": "10.0%",
+      "textPreview": "10.0%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -4887,14 +4887,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "8.0%"
+            "text": "10.0%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "8.0%",
+          "text": "10.0%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -4903,7 +4903,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "8.0%",
+              "text": "10.0%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -4918,7 +4918,7 @@
       "order": 104,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/7uh0z25w",
+      "aid": "sh/7uhsz2tw",
       "id": "104",
       "bbox": [
         856,
@@ -4934,7 +4934,7 @@
       "order": 105,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/6t8zqhob",
+      "aid": "sh/6t8rqxsr",
       "id": "105",
       "bbox": [
         872,
@@ -4992,7 +4992,7 @@
       "order": 106,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/twzi1cn2",
+      "aid": "sh/twza1cr2",
       "id": "106",
       "bbox": [
         966,
@@ -5052,7 +5052,7 @@
       "order": 107,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/8vq1s76h",
+      "aid": "sh/8vq9s7ah",
       "id": "107",
       "bbox": [
         1158,
@@ -5112,7 +5112,7 @@
       "order": 108,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/rq10b650",
+      "aid": "sh/rq1sb69g",
       "id": "108",
       "bbox": [
         856,
@@ -5128,7 +5128,7 @@
       "order": 109,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/qpsj21of",
+      "aid": "sh/qpsb21sv",
       "id": "109",
       "bbox": [
         872,
@@ -5186,7 +5186,7 @@
       "order": 110,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/ovmxw3mx",
+      "aid": "sh/obmpw3qd",
       "id": "110",
       "bbox": [
         966,
@@ -5195,8 +5195,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "1 tickets",
-      "textPreview": "1 tickets",
+      "text": "2 tickets",
+      "textPreview": "2 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -5215,14 +5215,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "1 tickets"
+            "text": "2 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "1 tickets",
+          "text": "2 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -5231,7 +5231,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "1 tickets",
+              "text": "2 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -5246,7 +5246,7 @@
       "order": 111,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/9wvy583i",
+      "aid": "sh/pcv65ory",
       "id": "111",
       "bbox": [
         1158,
@@ -5255,8 +5255,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "4.0%",
-      "textPreview": "4.0%",
+      "text": "10.0%",
+      "textPreview": "10.0%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -5275,14 +5275,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "4.0%"
+            "text": "10.0%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "4.0%",
+          "text": "10.0%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -5291,7 +5291,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "4.0%",
+              "text": "10.0%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -5306,7 +5306,7 @@
       "order": 112,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/mtkfut47",
+      "aid": "sh/2947ut87",
       "id": "112",
       "bbox": [
         856,
@@ -5322,7 +5322,7 @@
       "order": 113,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/nudg3y5s",
+      "aid": "sh/nado3y9s",
       "id": "113",
       "bbox": [
         872,
@@ -5380,7 +5380,7 @@
       "order": 114,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/wzmx03m9",
+      "aid": "sh/czmp03q9",
       "id": "114",
       "bbox": [
         966,
@@ -5389,8 +5389,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "15 tickets",
-      "textPreview": "15 tickets",
+      "text": "11 tickets",
+      "textPreview": "11 tickets",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -5409,14 +5409,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "15 tickets"
+            "text": "11 tickets"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "15 tickets",
+          "text": "11 tickets",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -5425,7 +5425,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "15 tickets",
+              "text": "11 tickets",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -5440,7 +5440,7 @@
       "order": 115,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/x0vy983u",
+      "aid": "sh/x0f6987u",
       "id": "115",
       "bbox": [
         1158,
@@ -5449,8 +5449,8 @@
         19
       ],
       "geometry": "rect",
-      "text": "60.0%",
-      "textPreview": "60.0%",
+      "text": "55.0%",
+      "textPreview": "55.0%",
       "resolvedFontSize": 13,
       "resolvedTextStyle": {
         "fontSize": 13,
@@ -5469,14 +5469,14 @@
         "lines": [
           {
             "index": 1,
-            "text": "60.0%"
+            "text": "55.0%"
           }
         ]
       },
       "paragraphs": [
         {
           "index": 1,
-          "text": "60.0%",
+          "text": "55.0%",
           "resolvedTextStyle": {
             "fontSize": 13,
             "color": "#1D2A3D",
@@ -5485,7 +5485,7 @@
           "runs": [
             {
               "index": 1,
-              "text": "60.0%",
+              "text": "55.0%",
               "fontSize": 13,
               "color": "#1D2A3D",
               "alignment": "right"
@@ -5500,7 +5500,7 @@
       "order": 116,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/ax4fyd43",
+      "aid": "sh/ax47yt8j",
       "id": "116",
       "bbox": [
         940,
@@ -5560,7 +5560,7 @@
       "order": 117,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/bydg7ilo",
+      "aid": "sh/bydo7ypo",
       "id": "117",
       "bbox": [
         64,
@@ -5576,7 +5576,7 @@
       "order": 118,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/kn6x4nm5",
+      "aid": "sh/k36p4nql",
       "id": "118",
       "bbox": [
         64,
@@ -5634,7 +5634,7 @@
       "order": 119,
       "kind": "shape",
       "scope": "slide",
-      "aid": "sh/lofyds3q",
+      "aid": "sh/l4fqd876",
       "id": "119",
       "bbox": [
         1168,

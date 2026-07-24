@@ -1,2 +1,8 @@
 firebase-service-account.json
 *.inspect.ndjson 
+__pycache__/
+*.pyc
+tmp/
+logs/
+output/
+_ppt_tmp/

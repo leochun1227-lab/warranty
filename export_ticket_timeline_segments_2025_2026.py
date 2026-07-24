@@ -20,6 +20,7 @@ from openpyxl.utils import get_column_letter
 
 ROOT = Path(__file__).resolve().parent
 DEFAULT_ANALYSIS_TICKET_JS = ROOT / "outputs" / "analysis_ticket_csv.js"
+DEFAULT_APPROVED_COST_JSON = ROOT / "outputs" / "analysis_approved_cost_by_ticket.json"
 DEFAULT_FAILURE_TIMING_CSV = ROOT / "outputs" / "analysis_ticket_failure_timing.csv"
 DEFAULT_PARTS_CLASSIFIED_CSV = ROOT / "outputs" / "parts_classified.csv"
 DEFAULT_REPAIRERS_JSON = ROOT / "outputs" / "repairers_2026" / "repairers_2026_data.json"
@@ -50,6 +51,7 @@ UNAPPROVED_STATUS_TEXTS = {
 @dataclass(frozen=True)
 class Paths:
     analysis_ticket_js: Path
+    approved_cost_json: Path
     failure_timing_csv: Path
     parts_classified_csv: Path
     repairers_json: Path
@@ -278,6 +280,48 @@ def load_analysis_ticket_base(js_path: Path) -> pd.DataFrame:
     if out.empty:
         return out
     out["created_year"] = out["created_date"].map(lambda value: value.year if value else None)
+    return out
+
+
+def load_approved_cost_by_ticket(json_path: Path) -> dict[str, float]:
+    if not json_path.exists():
+        raise FileNotFoundError(f"Missing approved SAP PO cost map: {json_path}")
+    payload = json.loads(json_path.read_text(encoding="utf-8"))
+    node = payload.get("byTicket") if isinstance(payload, dict) else {}
+    out: dict[str, float] = {}
+    if not isinstance(node, dict):
+        return out
+    for key, value in node.items():
+        amount = None
+        if isinstance(value, dict):
+            amount = value.get("amount")
+        else:
+            amount = value
+        parsed = valid_amount_value(amount)
+        if parsed is not None:
+            out[clean(key)] = parsed
+    return out
+
+
+def attach_sap_po_amount(base_df: pd.DataFrame, approved_cost_by_ticket: dict[str, float]) -> pd.DataFrame:
+    out = base_df.copy()
+    if out.empty:
+        out["sap_po_netwr_amount"] = []
+        return out
+
+    def lookup(row: pd.Series) -> float | None:
+        ticket_number = clean(row.get("ticket_number"))
+        candidates = [
+            f"ticket_{ticket_number}" if ticket_number else "",
+            ticket_number,
+            clean(row.get("ticket_id_text")),
+        ]
+        for key in candidates:
+            if key and key in approved_cost_by_ticket:
+                return approved_cost_by_ticket[key]
+        return None
+
+    out["sap_po_netwr_amount"] = out.apply(lookup, axis=1)
     return out
 
 
@@ -811,6 +855,7 @@ def build_summary_sheet(
         {"Metric": "Warranty Approval Basis", "Value": "Claim Approved On - Created On"},
         {"Metric": "Parts Issuing Basis", "Value": "Complete Issue Date - SO Created Date"},
         {"Metric": "Repairer Basis", "Value": "Invoice Date - Created On - Approval Days - Parts Issuing Days"},
+        {"Metric": "Ticket Price Basis", "Value": "SAP PO Short Text EKPO.NETWR from outputs/analysis_approved_cost_by_ticket.json"},
         {"Metric": "Denominator Rule", "Value": "Each segment uses its own valid rows only; missing dates for a segment are excluded from that segment denominator."},
         {"Metric": "Qualifying Tickets", "Value": int(len(qualifying_df))},
         {"Metric": "Warranty Approval Rows", "Value": int(len(approval_segment_df))},
@@ -875,6 +920,7 @@ def build_qualifying_sheet(
             "registered_product_code",
             "product",
             "product_code",
+            "sap_po_netwr_amount",
             "claim_total_amount",
             "factory_parts_claim_total_amount",
             "labour_hours_total_amount",
@@ -977,7 +1023,7 @@ def amount_bucket_name(value: float) -> str:
     return AMOUNT_BUCKETS[-1][0]
 
 
-def build_amount_distribution(df: pd.DataFrame, amount_col: str = "claim_total_amount") -> dict[str, Any]:
+def build_amount_distribution(df: pd.DataFrame, amount_col: str = "sap_po_netwr_amount") -> dict[str, Any]:
     if df is None or df.empty or amount_col not in df.columns:
         return {"totalAmount": 0, "pricedTickets": 0, "missingTickets": int(len(df)) if df is not None else 0, "buckets": []}
     amounts: list[float] = []
@@ -1064,7 +1110,7 @@ def build_duration_amount_distributions(
 def build_price_duration_mix(
     df: pd.DataFrame,
     duration_col: str,
-    amount_col: str = "claim_total_amount",
+    amount_col: str = "sap_po_netwr_amount",
     bucket_defs: list[tuple[str, str]] | None = None,
 ) -> dict[str, Any]:
     duration_buckets = bucket_defs or COMPLETION_BUCKETS
@@ -1391,6 +1437,7 @@ def completion_detail_records(
                 "chassis_number": clean(row.get("chassis_number")),
                 "registered_product": clean(row.get("registered_product")),
                 "product": clean(row.get("product")),
+                "sap_po_netwr_amount": row.get("sap_po_netwr_amount"),
                 "claim_total_amount": row.get("claim_total_amount"),
                 "factory_parts_claim_total_amount": row.get("factory_parts_claim_total_amount"),
                 "labour_hours_total_amount": row.get("labour_hours_total_amount"),
@@ -1561,6 +1608,7 @@ def prepare_failure_sheet(df: pd.DataFrame) -> pd.DataFrame:
             "registered_product_code",
             "product",
             "product_code",
+            "sap_po_netwr_amount",
             "claim_total_amount",
             "factory_parts_claim_total_amount",
             "labour_hours_total_amount",
@@ -1599,6 +1647,7 @@ def prepare_approval_sheet(df: pd.DataFrame) -> pd.DataFrame:
             "registered_product_code",
             "product",
             "product_code",
+            "sap_po_netwr_amount",
             "claim_total_amount",
             "factory_parts_claim_total_amount",
             "labour_hours_total_amount",
@@ -1646,6 +1695,7 @@ def prepare_parts_sheet(df: pd.DataFrame) -> pd.DataFrame:
             "registered_product_code",
             "product",
             "product_code",
+            "sap_po_netwr_amount",
             "claim_total_amount",
             "factory_parts_claim_total_amount",
             "labour_hours_total_amount",
@@ -1737,6 +1787,7 @@ def prepare_repairer_sheet(df: pd.DataFrame) -> pd.DataFrame:
             "registered_product_code",
             "product",
             "product_code",
+            "sap_po_netwr_amount",
             "claim_total_amount",
             "factory_parts_claim_total_amount",
             "labour_hours_total_amount",
@@ -1873,6 +1924,7 @@ def prepare_formula_breakdown_sheet(df: pd.DataFrame) -> pd.DataFrame:
             "chassis_number",
             "registered_product",
             "product",
+            "sap_po_netwr_amount",
             "claim_total_amount",
             "factory_parts_claim_total_amount",
             "labour_hours_total_amount",
@@ -1973,8 +2025,11 @@ def build_timeline_summary_payload(
         "source": {
             "workbookPath": relative_path_text(workbook_path),
             "analysisTicketJs": relative_path_text(paths.analysis_ticket_js),
+            "approvedCostJson": relative_path_text(paths.approved_cost_json),
             "partsClassifiedCsv": relative_path_text(paths.parts_classified_csv),
             "repairersJson": relative_path_text(paths.repairers_json),
+            "amountSource": "SAP PO Short Text EKPO.NETWR",
+            "amountColumn": "sap_po_netwr_amount",
         },
         "totals": {
             "qualifyingTickets": int(len(qualifying_df)),
@@ -2065,6 +2120,7 @@ def parse_args() -> argparse.Namespace:
         description="Export Ticket Timeline segment ticket sheets for approved PO-backed tickets created in the selected year."
     )
     parser.add_argument("--analysis-ticket-js", default=str(DEFAULT_ANALYSIS_TICKET_JS))
+    parser.add_argument("--approved-cost-json", default=str(DEFAULT_APPROVED_COST_JSON))
     parser.add_argument("--failure-timing-csv", default=str(DEFAULT_FAILURE_TIMING_CSV))
     parser.add_argument("--parts-classified-csv", default=str(DEFAULT_PARTS_CLASSIFIED_CSV))
     parser.add_argument("--repairers-json", default=str(DEFAULT_REPAIRERS_JSON))
@@ -2079,7 +2135,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def validate_paths(paths: Paths) -> None:
-    missing = [path for path in [paths.analysis_ticket_js, paths.parts_classified_csv, paths.repairers_json] if not path.exists()]
+    missing = [path for path in [paths.analysis_ticket_js, paths.approved_cost_json, paths.parts_classified_csv, paths.repairers_json] if not path.exists()]
     if missing:
         raise FileNotFoundError("Missing required source files:\n" + "\n".join(str(path) for path in missing))
 
@@ -2088,6 +2144,7 @@ def main() -> int:
     args = parse_args()
     paths = Paths(
         analysis_ticket_js=Path(args.analysis_ticket_js),
+        approved_cost_json=Path(args.approved_cost_json),
         failure_timing_csv=Path(args.failure_timing_csv),
         parts_classified_csv=Path(args.parts_classified_csv),
         repairers_json=Path(args.repairers_json),
@@ -2103,7 +2160,8 @@ def main() -> int:
     if start_date is None:
         raise ValueError(f"Invalid --start-date: {args.start_date}")
 
-    base_df = load_analysis_ticket_base(paths.analysis_ticket_js)
+    approved_cost_by_ticket = load_approved_cost_by_ticket(paths.approved_cost_json)
+    base_df = attach_sap_po_amount(load_analysis_ticket_base(paths.analysis_ticket_js), approved_cost_by_ticket)
     qualifying_df = build_qualifying_universe(base_df, start_date=start_date, end_date=end_date)
     evidence_date_mask = base_df["created_date"].map(lambda value: value is not None and value >= start_date and (end_date is None or value <= end_date))
     approval_evidence_universe_df = base_df[
