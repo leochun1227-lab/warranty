@@ -6,3 +6,9 @@ tmp/
 logs/
 output/
 _ppt_tmp/
+
+# Large dated fetch/build artifacts. Keep the stable latest/source files tracked,
+# but do not add one-off dated snapshots by accident.
+outputs/parts_classification_20*/
+outputs/vehicle_failure_timing_2025_2026_20*.xlsx
+!outputs/vehicle_failure_timing_2025_2026_latest.xlsx
