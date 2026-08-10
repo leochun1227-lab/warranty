@@ -18,6 +18,8 @@ TICKET_FAILURE_TIMING = OUTPUT_DIR / "analysis_ticket_failure_timing.csv"
 TICKET_BASE_CSV = OUTPUT_DIR / "analysis_ticket_base.csv"
 OUT = ROOT / "outputs" / "analysis_parts_failure_summary.json"
 OUT_JS = ROOT / "outputs" / "analysis_parts_failure_summary.js"
+OUT_LIGHT = ROOT / "outputs" / "analysis_parts_failure_light.json"
+OUT_LIGHT_JS = ROOT / "outputs" / "analysis_parts_failure_light.js"
 OUT_DERIVED = ROOT / "outputs" / "analysis_parts_derived_cache.json"
 OUT_DERIVED_JS = ROOT / "outputs" / "analysis_parts_derived_cache.js"
 
@@ -627,6 +629,19 @@ def build_scope_payload(scope, scope_totals, scope_series_totals, month_totals, 
     return payload
 
 
+def compact_for_initial_render(value):
+    """Keep the component leaderboard payload small enough for first paint."""
+    if isinstance(value, dict):
+        return {
+            key: compact_for_initial_render(item)
+            for key, item in value.items()
+            if key != "componentTrends"
+        }
+    if isinstance(value, list):
+        return [compact_for_initial_render(item) for item in value]
+    return value
+
+
 def main():
     parts_meta_path, parts_csv_path = resolve_parts_sources()
     ticket_map_payload = json.loads(PARTS_TICKET_MAP.read_text(encoding="utf-8"))
@@ -847,11 +862,21 @@ def main():
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     payload_text = json.dumps(payload, ensure_ascii=False, indent=2)
+    light_payload = compact_for_initial_render(payload)
+    light_payload.setdefault("meta", {})["compactForInitialRender"] = True
+    light_text = json.dumps(light_payload, ensure_ascii=False, separators=(",", ":"))
     derived_text = json.dumps(derived_payload, ensure_ascii=False, separators=(",", ":"))
     OUT.write_text(payload_text, encoding="utf-8")
     OUT_JS.write_text(
         "globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = "
         + payload_text
+        + ";\n",
+        encoding="utf-8",
+    )
+    OUT_LIGHT.write_text(light_text, encoding="utf-8")
+    OUT_LIGHT_JS.write_text(
+        "globalThis.ANALYSIS_PARTS_FAILURE_LIGHT = "
+        + light_text
         + ";\n",
         encoding="utf-8",
     )
@@ -864,6 +889,8 @@ def main():
     )
     print(f"Wrote {OUT}")
     print(f"Wrote {OUT_JS}")
+    print(f"Wrote {OUT_LIGHT}")
+    print(f"Wrote {OUT_LIGHT_JS}")
     print(f"Wrote {OUT_DERIVED}")
     print(f"Wrote {OUT_DERIVED_JS}")
 

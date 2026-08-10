@@ -1213,7 +1213,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const APPROVED_COST_CACHE = "outputs/analysis_approved_cost_by_ticket.json";
   const VEHICLE_BASE_SUMMARY_CACHE = "outputs/analysis_vehicle_base_summary.json";
   const PARTS_FAILURE_SUMMARY_CACHE = "outputs/analysis_parts_failure_summary.json";
+  const PARTS_FAILURE_LIGHT_CACHE = "outputs/analysis_parts_failure_light.json";
+  const PARTS_FAILURE_LIGHT_JS = "outputs/analysis_parts_failure_light.js";
   const PARTS_DERIVED_CACHE = "outputs/analysis_parts_derived_cache.json";
+  const PARTS_PRECOMPUTED_ASSET_VERSION = "20260810-light-summary-v1";
   // Meta lives at a stable path and points at the current dated CSV folder.
   // We read meta first so the CSV path stays fresh across fetch-driven rebuilds.
   const PARTS_CLASSIFIED_META = "outputs/parts_classified_meta.json";
@@ -1290,7 +1293,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   };
 
   const ANALYSIS_TIMEOUT_MS = 15000;
-  const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v12";
+  const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v13-light-summary";
   const ANALYSIS_PAGE_CACHE_KEY = `analysis:parts-failure-components:${ANALYSIS_PAGE_CACHE_SCHEMA}`;
   const ANALYSIS_PAGE_CACHE_ENABLED = true;
   function mapEntries(map){ return map instanceof Map ? Array.from(map.entries()) : []; }
@@ -1912,6 +1915,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   // ============ DATA LOADERS ============
   const freshJsonUrl = (u) => `${u}${u.includes("?")?"&":"?"}t=${Date.now()}`;
+  const versionedAssetUrl = (u) => {
+    const version = encodeURIComponent(state.analysisCacheVersion || PARTS_PRECOMPUTED_ASSET_VERSION);
+    return `${u}${u.includes("?")?"&":"?"}v=${version}`;
+  };
   const FALLBACK_SCRIPT_LOADS = new Map();
   function fallbackScriptUrl(src){
     return IS_FILE_CONTEXT ? src : freshJsonUrl(src);
@@ -2173,9 +2180,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   async function loadPartsFailureSummary(){
-    let fallback = globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY;
-    const localSummarySource = { url: freshJsonUrl(PARTS_FAILURE_SUMMARY_CACHE), label: "render cache" };
-    const remoteSummarySource = { url: FB_PARTS_FAILURE_SUMMARY, label: "firebase pageAssets" };
+    let fallback = globalThis.ANALYSIS_PARTS_FAILURE_LIGHT || globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY;
+    const localSummarySource = { url: versionedAssetUrl(PARTS_FAILURE_LIGHT_CACHE), label: "render cache", cache:"force-cache" };
+    const remoteSummarySource = { url: FB_PARTS_FAILURE_SUMMARY, label: "firebase pageAssets", cache:"no-store" };
     const sources = IS_FILE_CONTEXT
       ? []
       : (IS_LOCAL_CONTEXT ? [localSummarySource, remoteSummarySource] : [remoteSummarySource, localSummarySource]);
@@ -2197,6 +2204,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       }
       throw new Error(errors.join("; ") || "No remote parts failure summary source in file context");
     } catch (err) {
+      fallback = fallback || await ensureFallbackScript("ANALYSIS_PARTS_FAILURE_LIGHT", PARTS_FAILURE_LIGHT_JS);
       fallback = fallback || await ensureFallbackScript("ANALYSIS_PARTS_FAILURE_SUMMARY", "outputs/analysis_parts_failure_summary.js");
       if (hasUsablePartsFailureSummary(fallback)) {
         state.partsFailureSummary = fallback;
@@ -3075,7 +3083,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const scopePayload = partsMonthScopePayload(componentScope());
     const seriesBucket = summarySeriesBucket(scopePayload, state.selected);
     const trends = seriesBucket?.componentTrends;
-    return componentTrendLookup(trends, component)
+    const trendPoints = componentTrendLookup(trends, component);
+    const points = trendPoints.length ? trendPoints : derivedComponentTrendPoints(normalizedComponent, normalizedCategory);
+    return points
       .map(point => {
         const rawMonth = Array.isArray(point) ? point[0] : point.month;
         const rawTickets = Array.isArray(point) ? point[1] : point.tickets;
@@ -3098,6 +3108,20 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       .filter(point => point.month && selectedTrendMonthMatches(point.month))
       .sort((a,b) => a.month.localeCompare(b.month))
       .slice(-20);
+  }
+
+  function derivedComponentTrendPoints(component, category = "Other"){
+    const key = componentKey(component, category);
+    const bucket = getDerivedSeriesBucket(key, partsDateBasis(), state.selected);
+    if (!bucket || !bucket.months) return [];
+    const entries = bucket.months instanceof Map ? Array.from(bucket.months.entries()) : Object.entries(bucket.months);
+    return entries.map(([month, item]) => ({
+      month,
+      label: partsMonthLabel(month),
+      tickets: Number(item?.tickets) || 0,
+      lineItems: Number(item?.lineItems) || 0,
+      cost: Number(item?.cost) || 0,
+    }));
   }
 
   function componentPanelModeLabel(mode = state.compMode){
@@ -3794,6 +3818,16 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   function componentKey(component, category){
     return `${clean(normalizeComponentLabel(component, category)).toLowerCase()}||${clean(category || "Other").toLowerCase()}`;
   }
+  function firebaseSafeKey(value){
+    return clean(value).replace(/[.$#[\]\/]/g, ch => ({
+      ".":"\uff0e",
+      "$":"\uff04",
+      "#":"\uff03",
+      "[":"\uff3b",
+      "]":"\uff3d",
+      "/":"\uff0f",
+    }[ch] || ch));
+  }
   async function buildPartsClassifiedIndex(){
     if (state.partsClassifiedIndex && state.partsDerivedCache) return state.partsClassifiedIndex;
     const rows = state.partsClassifiedRows || [];
@@ -3936,7 +3970,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (!cache || typeof cache !== "object") return null;
     const byKey = cache.byKey;
     if (byKey instanceof Map) return byKey.get(compKey) || null;
-    if (byKey && typeof byKey === "object") return byKey[compKey] || null;
+    if (byKey && typeof byKey === "object") return byKey[compKey] || byKey[firebaseSafeKey(compKey)] || null;
     return null;
   }
 
@@ -4416,7 +4450,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       let pre = 0;
       let field = 0;
       let other = 0;
-      for (const [monthKey, monthBucket] of bucket.months.entries()) {
+      const monthEntries = bucket.months instanceof Map ? bucket.months.entries() : Object.entries(bucket.months || {});
+      for (const [monthKey, monthBucket] of monthEntries) {
         if (!partsMonthSelectionMatchesKey(monthKey, monthSelection)) continue;
         total += Number(monthBucket.tickets) || 0;
         materialQty += Number(monthBucket.materialQty) || 0;
@@ -5895,8 +5930,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   async function loadPartsDerivedCache(){
     const fallbackScriptName = "ANALYSIS_PARTS_DERIVED_CACHE";
     let fallback = globalThis[fallbackScriptName];
-    const localCacheSource = { url: freshJsonUrl(PARTS_DERIVED_CACHE), label: "render cache" };
-    const remoteCacheSource = { url: FB_PARTS_DERIVED_CACHE, label: "firebase pageAssets" };
+    const localCacheSource = { url: versionedAssetUrl(PARTS_DERIVED_CACHE), label: "render cache", cache:"force-cache" };
+    const remoteCacheSource = { url: FB_PARTS_DERIVED_CACHE, label: "firebase pageAssets", cache:"no-store" };
     const sources = IS_FILE_CONTEXT
       ? []
       : (IS_LOCAL_CONTEXT ? [localCacheSource, remoteCacheSource] : [remoteCacheSource, localCacheSource]);
@@ -5904,7 +5939,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       const errors = [];
       for (const source of sources) {
         try {
-          const r = await fetch(source.url, { cache:"no-store" });
+          const r = await fetch(source.url, { cache:source.cache || "default" });
           if (!r.ok) throw new Error(`${source.label} HTTP ${r.status}`);
           const payload = await r.json();
           if (!hasUsablePartsDerivedCache(payload)) throw new Error(`${source.label} missing derived cache`);
@@ -6508,6 +6543,7 @@ ${worksheets}
 
   async function loadAll(forceRefresh=false){
     const cacheVersion = await analysisPageVersion();
+    state.analysisCacheVersion = cacheVersion || "";
     if(ANALYSIS_PAGE_CACHE_ENABLED && !forceRefresh){
       try{
         const cached = await withTimeout(window.WarrantyPageCache.getPage(ANALYSIS_PAGE_CACHE_KEY,cacheVersion),5000,"Analysis page cache restore");
@@ -6532,9 +6568,21 @@ ${worksheets}
     $("repairerCount").textContent = "-";
     try {
       loadSold();
-      await loadApprovedTicketCosts();
-      await loadPartsTicketCosts();
-      await loadPartsFailureSummary();
+      const partsSummaryPromise = loadPartsFailureSummary();
+      const partsDerivedPromise = loadPartsDerivedCache();
+      const approvedCostPromise = loadApprovedTicketCosts();
+      const partsCostPromise = loadPartsTicketCosts();
+      await partsSummaryPromise;
+      await partsDerivedPromise;
+      renderComponents();
+      if (overlayFailSafe) {
+        clearTimeout(overlayFailSafe);
+        overlayFailSafe = null;
+      }
+      if (overlay) overlay.classList.remove("show");
+      if (appShell) appShell.classList.remove("blurWhileLoading");
+      await approvedCostPromise;
+      await partsCostPromise;
       await loadVehicleBaseSummary();
 
       const processed = await loadRepairerAnalysisDetails();
@@ -6580,7 +6628,7 @@ ${worksheets}
       }
       state.ticketRowById = tById;
       await loadPartsClassifiedRows();
-      await loadPartsDerivedCache();
+      await partsDerivedPromise;
 
       // pick initial series
       const provisional = summaryBySeries(state.rows);

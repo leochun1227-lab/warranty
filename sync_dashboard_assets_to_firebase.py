@@ -24,7 +24,7 @@ ASSETS = {
     "timeline/summaryLatest": ROOT / "generated_exports" / "ticket_timeline_summary.json",
     "timeline/summary2026": ROOT / "generated_exports" / "ticket_timeline_summary_2026.json",
     "timeline/completion2026": ROOT / "generated_exports" / "ticket_timeline_completion_analytics_2026.json",
-    "modelSeries/partsFailureSummary": ROOT / "outputs" / "analysis_parts_failure_summary.json",
+    "modelSeries/partsFailureSummary": ROOT / "outputs" / "analysis_parts_failure_light.json",
     "modelSeries/partsDerivedCache": ROOT / "outputs" / "analysis_parts_derived_cache.json",
     "modelSeries/modelMtmCache": ROOT / "outputs" / "analysis_model_mtm_cache.json",
 }
@@ -36,6 +36,38 @@ def clean(value: Any) -> str:
 
 def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def firebase_safe_key(value: Any, fallback: str = "blank") -> str:
+    text = clean(value) or fallback
+    replacements = {
+        ".": "\uff0e",
+        "$": "\uff04",
+        "#": "\uff03",
+        "[": "\uff3b",
+        "]": "\uff3d",
+        "/": "\uff0f",
+    }
+    return "".join(replacements.get(ch, ch) for ch in text)
+
+
+def firebase_safe_json(value: Any) -> Any:
+    if isinstance(value, dict):
+        out = {}
+        used = set()
+        for raw_key, raw_val in value.items():
+            key = firebase_safe_key(raw_key)
+            base = key
+            i = 2
+            while key in used:
+                key = f"{base}_{i}"
+                i += 1
+            used.add(key)
+            out[key] = firebase_safe_json(raw_val)
+        return out
+    if isinstance(value, list):
+        return [firebase_safe_json(item) for item in value]
+    return value
 
 
 def init_firebase(db_url: str, sa_path: str) -> None:
@@ -67,7 +99,7 @@ def main() -> int:
             info.update({"ok": False, "reason": "missing", "path": str(path)})
             uploaded.append(info)
             continue
-        payload = load_json(path)
+        payload = firebase_safe_json(load_json(path))
         base_ref.child(asset_key).set(payload)
         info.update({
             "ok": True,
