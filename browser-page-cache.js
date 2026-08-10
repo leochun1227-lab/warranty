@@ -4,6 +4,10 @@
   const DB_NAME = "warranty-dashboard-page-cache";
   const STORE_NAME = "pages";
   const DB_VERSION = 1;
+  const MAX_PAGE_CACHE_BYTES = 12 * 1024 * 1024;
+  const MAX_CACHE_RECORDS = 24;
+  const MAX_CACHE_TOTAL_BYTES = 48 * 1024 * 1024;
+  const VERSION_FETCH_TIMEOUT_MS = 8000;
   const DEFAULT_VERSION_URL = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/ctmTicketStatusMonitorV44/analytics/meta/generatedAt.json";
   const DELIVERY_VERSION_URL = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/deliveryFlowHistory/latestSyncAt.json";
   let dbPromise = null;
@@ -50,6 +54,29 @@
     }));
   }
 
+  function getAllRecords(){
+    return openDb().then(db => new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readonly");
+      const store = tx.objectStore(STORE_NAME);
+      const req = store.getAll();
+      req.onsuccess = () => resolve(Array.isArray(req.result) ? req.result : []);
+      req.onerror = () => reject(req.error || new Error("IndexedDB getAll failed"));
+      tx.onabort = () => reject(tx.error || new Error("IndexedDB transaction aborted"));
+    }));
+  }
+
+  function deleteRecords(keys){
+    if(!keys || !keys.length) return Promise.resolve(true);
+    return openDb().then(db => new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readwrite");
+      const store = tx.objectStore(STORE_NAME);
+      keys.forEach(key => store.delete(key));
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => reject(tx.error || new Error("IndexedDB delete failed"));
+      tx.onabort = () => reject(tx.error || new Error("IndexedDB transaction aborted"));
+    }));
+  }
+
   function normalizeVersion(value){
     if(value == null) return "";
     if(typeof value === "string") return value.trim();
@@ -60,29 +87,87 @@
     return String(value).trim();
   }
 
-  async function fetchVersion(url){
-    const target = url || DEFAULT_VERSION_URL;
-    const res = await fetch(target, { cache:"no-store" });
-    if(!res.ok) throw new Error(`Version HTTP ${res.status}`);
-    return normalizeVersion(await res.json());
+  function estimateJsonBytes(value){
+    let json = "";
+    try{ json = JSON.stringify(value); }
+    catch(err){ return MAX_PAGE_CACHE_BYTES + 1; }
+    if(typeof TextEncoder !== "undefined"){
+      try{ return new TextEncoder().encode(json).length; }catch(err){}
+    }
+    return json.length;
   }
 
-  async function getPage(key, version){
-    if(!key || !version) return null;
+  async function pruneRecords(){
+    try{
+      const records = await getAllRecords();
+      let totalBytes = 0;
+      const deleteKeys = [];
+      records
+        .slice()
+        .sort((a, b) => String(b.savedAt || "").localeCompare(String(a.savedAt || "")))
+        .forEach((record, index) => {
+          totalBytes += Number(record.valueBytes || 0);
+          if(index >= MAX_CACHE_RECORDS || totalBytes > MAX_CACHE_TOTAL_BYTES) deleteKeys.push(record.key);
+        });
+      if(deleteKeys.length) await deleteRecords(deleteKeys);
+    }catch(err){
+      console.warn("Page cache prune failed", err);
+    }
+  }
+
+  async function fetchVersion(url, timeoutMs){
+    const target = url || DEFAULT_VERSION_URL;
+    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    const limit = Number(timeoutMs || VERSION_FETCH_TIMEOUT_MS);
+    const timer = controller && limit > 0 ? setTimeout(() => controller.abort(), limit) : null;
+    try{
+      const res = await fetch(target, { cache:"no-store", signal:controller ? controller.signal : undefined });
+      if(!res.ok) throw new Error(`Version HTTP ${res.status}`);
+      return normalizeVersion(await res.json());
+    }catch(err){
+      if(err && err.name === "AbortError") throw new Error(`Version request timed out after ${limit}ms`);
+      throw err;
+    }finally{
+      if(timer) clearTimeout(timer);
+    }
+  }
+
+  async function getPageRecord(key, version){
+    if(!key) return null;
     try{
       const record = await getRecord(key);
-      if(!record || record.version !== version) return null;
-      return record.value || null;
+      if(!record) return null;
+      if(version && record.version !== version) return null;
+      return {
+        key: record.key,
+        version: record.version || "",
+        savedAt: record.savedAt || "",
+        valueBytes: Number(record.valueBytes || 0),
+        value: record.value || null
+      };
     }catch(err){
       console.warn("Page cache read failed", err);
       return null;
     }
   }
 
+  async function getPage(key, version){
+    if(!key || !version) return null;
+    const record = await getPageRecord(key, version);
+    return record ? record.value || null : null;
+  }
+
   async function setPage(key, version, value){
     if(!key || !version || value == null) return false;
     try{
-      await putRecord({ key, version, savedAt:new Date().toISOString(), value });
+      await new Promise(resolve => setTimeout(resolve, 0));
+      const valueBytes = estimateJsonBytes(value);
+      if(valueBytes > MAX_PAGE_CACHE_BYTES){
+        console.warn(`Page cache write skipped for ${key}: ${Math.round(valueBytes/1024/1024*10)/10}MB exceeds ${Math.round(MAX_PAGE_CACHE_BYTES/1024/1024)}MB limit`);
+        return false;
+      }
+      await putRecord({ key, version, savedAt:new Date().toISOString(), valueBytes, value });
+      pruneRecords();
       return true;
     }catch(err){
       console.warn("Page cache write failed", err);
@@ -140,8 +225,10 @@
     defaultVersionUrl: DEFAULT_VERSION_URL,
     deliveryVersionUrl: DELIVERY_VERSION_URL,
     fetchVersion,
+    getPageRecord,
     getPage,
     setPage,
+    maxPageCacheBytes: MAX_PAGE_CACHE_BYTES,
     showBadge,
     formatVersion
   };

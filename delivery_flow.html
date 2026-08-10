@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="Cache-Control" content="no-store" />
 <meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>Parts Delivery</title>
 <style>
   :root{
@@ -194,15 +195,18 @@
   @media(max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media(max-width:520px){.kpis{grid-template-columns:1fr}}
   .kpi{
-    background:linear-gradient(180deg,#fff,#fbfdff);
+    background:#fff;
     border:1px solid #dce7f4;
-    border-radius:22px;
-    padding:12px 12px 34px;
-    min-height:116px;
+    border-radius:12px;
+    padding:16px 16px 14px;
+    min-height:164px;
     box-shadow:0 10px 24px rgba(15,23,42,.04);
-    display:grid;
-    grid-template-rows:auto minmax(0,1fr) auto;
-    gap:8px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    text-align:center;
     position:relative;
     overflow:hidden;
   }
@@ -216,68 +220,78 @@
   }
   .kpi:hover{box-shadow:0 16px 34px rgba(15,23,42,.08);transform:translateY(-1px)}
   .lbl{
-    font-family:var(--mono);
-    font-size:11px;
-    letter-spacing:.08em;
-    text-transform:uppercase;
-    color:#6b768a;
-    font-weight:700;
-    line-height:1.25;
+    font-family:var(--sans);
+    font-size:14px;
+    letter-spacing:-.01em;
+    text-transform:none;
+    color:#172033;
+    font-weight:560;
+    line-height:1.16;
   }
   .kpiHead{
     min-width:0;
     width:100%;
     display:flex;
-    align-items:flex-start;
+    align-items:center;
     justify-content:center;
     gap:8px;
+    min-height:54px;
   }
   .kpiHead .lbl{
     width:100%;
     text-align:center;
+    overflow-wrap:break-word;
+    text-wrap:balance;
   }
   .kpiAction{
-    position:absolute;
-    right:9px;
-    bottom:9px;
+    position:static;
     z-index:2;
-    padding:3px 6px;
-    font-size:8px;
-    letter-spacing:.04em;
+    min-height:28px;
+    padding:0 10px;
+    font-size:10px;
+    font-weight:540;
+    letter-spacing:.02em;
     box-shadow:none;
+    align-self:center;
+    margin-top:auto;
+  }
+  .flowExportBtn.kpiAction{
+    font-weight:540;
+    letter-spacing:.02em;
   }
   .kpiAction svg{
-    width:10px;
-    height:10px;
+    width:12px;
+    height:12px;
   }
   .val{
-    grid-row:2;
     align-self:center;
     justify-self:center;
     width:100%;
-    margin:0;
-    font-family:var(--mono);
-    font-size:clamp(24px, 2.1vw, 30px);
-    font-weight:700;
+    margin:auto 0 0;
+    font-family:var(--sans);
+    font-size:clamp(32px, 2.8vw, 40px);
+    font-weight:520;
     line-height:1;
-    letter-spacing:-.03em;
+    letter-spacing:-.035em;
     text-align:center;
+    font-variant-numeric:tabular-nums;
   }
   .val small{
-    font-size:13px;
+    font-size:.55em;
     color:var(--inkFaint);
-    font-weight:400;
+    font-weight:500;
     margin-left:2px;
   }
   .kpiNote{
-    grid-row:3;
     justify-self:center;
     max-width:100%;
     color:#7b8798;
-    font-size:10px;
-    line-height:1.25;
+    font-size:12px;
+    line-height:1.28;
+    font-weight:520;
     text-align:center;
     white-space:normal;
+    margin-top:2px;
   }
   .meta{
     display:none;
@@ -418,14 +432,12 @@
       justify-content:flex-start;
     }
     .kpi{
-      min-height:96px;
-      padding:11px 11px 32px;
-      gap:6px;
+      min-height:150px;
+      padding:15px 14px 14px;
+      gap:8px;
     }
     .kpiAction{
-      right:7px;
-      bottom:7px;
-      padding:2px 5px;
+      padding:0 10px;
     }
   }
   .chartBox{position:relative;width:100%}
@@ -551,6 +563,13 @@
     align-items:center;
     gap:8px;
     width:100%;
+  }
+  .kpis .costStatTop{
+    min-height:64px;
+    justify-content:center;
+  }
+  .kpis .costStatIcon{
+    display:none;
   }
   .costStatIcon{
     width:30px;
@@ -937,8 +956,188 @@
     .pageLoadingText{font-size:14px}
     .pageLoadingSub{font-size:11px}
   }
+
+  /* Parts Delivery screenshot tuning: tighter cards, clearer small labels. */
+  .wrap{
+    padding:14px 14px 18px;
+  }
+  .panelRow{
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .panel{
+    padding:14px 16px;
+    border-radius:16px;
+    margin-bottom:10px;
+  }
+  .panelHead{
+    margin-bottom:9px;
+    gap:10px;
+  }
+  .panelTitle{
+    color:#1c2535;
+    font-size:18px;
+    font-weight:600;
+  }
+  .panelDesc{
+    color:#72809a;
+    font-size:14.5px;
+    font-weight:500;
+  }
+  .panelIcon{
+    width:32px;
+    height:32px;
+    border-radius:11px;
+  }
+  .panelAging{
+    gap:0;
+  }
+  .panelAging .kpis{
+    gap:10px;
+    margin-top:14px;
+    margin-bottom:14px;
+  }
+  .kpi{
+    min-height:148px;
+    padding:14px 14px 12px;
+    gap:8px;
+    border-radius:12px;
+  }
+  .kpiHead{
+    min-height:44px;
+  }
+  .lbl{
+    color:#202a3a;
+    font-size:16.5px;
+    font-weight:560;
+  }
+  .val{
+    font-size:clamp(34px,2.6vw,40px);
+    color:#1d2433;
+    font-weight:520;
+  }
+  .kpiNote{
+    color:#77849a;
+    font-size:14.5px;
+    font-weight:520;
+  }
+  .kpiAction{
+    min-height:26px;
+    margin-top:6px;
+  }
+  .flowTableWrap{
+    max-height:260px;
+    border-radius:12px;
+  }
+  .flowTable{
+    font-size:15px;
+  }
+  .flowTable thead th{
+    color:#3d4a61;
+    font-size:13.5px;
+    font-weight:700;
+    padding:9px 12px;
+  }
+  .flowTable tbody td{
+    color:#293447;
+    font-size:15px;
+    padding:9px 12px;
+    font-weight:500;
+  }
+  .flowTable td.period{
+    color:#192333;
+    font-weight:600;
+  }
+  .flowTable td.num{
+    color:#233047;
+    font-size:15px;
+    font-weight:560;
+  }
+  .agingGrid,
+  #agingGrid{
+    gap:8px;
+    margin-top:10px!important;
+  }
+  .agingRow{
+    grid-template-columns:118px 1fr 76px;
+    gap:10px;
+  }
+  .agingLabel{
+    color:#2f3b52;
+    font-size:15.5px;
+    font-weight:560;
+  }
+  .agingTrack{
+    height:15px;
+  }
+  .agingValue{
+    color:#273349;
+    font-size:14.5px;
+    font-weight:560;
+  }
+  .chartIssued,
+  .chartLead{
+    height:218px;
+  }
+  .legend{
+    margin-top:8px;
+    color:#46556f;
+    font-size:14.5px;
+    font-weight:500;
+  }
+  .foot{
+    margin-top:7px;
+    color:#71809a;
+    font-size:13.5px;
+    font-weight:500;
+  }
+  .costGrid{
+    gap:10px;
+  }
+  .costBody{
+    gap:10px;
+  }
+  .costSummary{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    max-width:940px;
+  }
+  .costStat{
+    min-height:128px;
+    padding:12px 14px;
+    gap:7px;
+    border-radius:14px;
+  }
+  .costStatTop{
+    gap:6px;
+  }
+  .costStatIcon{
+    width:28px;
+    height:28px;
+  }
+  .costStat .k{
+    color:#56647b;
+    font-family:var(--sans);
+    font-size:14px;
+    font-weight:560;
+    letter-spacing:.04em;
+  }
+  .costStat .sub{
+    color:#748198;
+    font-size:13.5px;
+    font-weight:500;
+  }
+  .costStat .v{
+    font-family:var(--sans);
+    font-size:25px;
+    font-weight:620;
+    letter-spacing:0;
+  }
+  .costLineChart{
+    height:260px!important;
+  }
 </style>
-<link rel="stylesheet" href="sidebar-light.css">
+<link rel="stylesheet" href="sidebar-light.css?v=20260806-compact-sidebar">
 </head>
 <body class="is-loading">
 <div id="pageLoading" class="pageLoading active" aria-live="polite" aria-busy="true" aria-label="Loading Parts Delivery">
@@ -957,12 +1156,12 @@
   <a class="navLink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Warranty Team</span></a>
 
   <a class="navLink active" href="delivery_flow.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17h2l2-7h10l2 7h2"/><path d="M7 17a2 2 0 1 0 4 0"/><path d="M15 17a2 2 0 1 0 4 0"/><path d="M8 10V6h8v4"/></svg><span>Parts Delivery</span></a>
-  <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repair</span></a>
+  <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairer</span></a>
   <div class="navDivider"></div>
   <div class="navSection">Tickets</div>
     <a class="navLink" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15 17l2-2 2 2"/></svg><span>Claim Trend Overview</span></a><div class="navDivider"></div>
 <div class="navSection">Analysis</div>
- <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model And Parts</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket lifecycle</span></a></aside>
+ <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Repairs by Model</span></a><a class="navLink" href="parts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16"/><path d="M7 7v10"/><path d="M17 7v10"/><path d="M5 17h14"/><path d="M9 11h6"/></svg><span>Parts Failure Components</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket Timeline</span></a></aside>
 <main class="main">
   <div class="wrap">
     <div class="head">
@@ -984,7 +1183,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="M12 8v5l3 2"/><path d="M12 4v2"/><path d="M20 12h-2"/><path d="M6 12H4"/></svg>
           </div>
           <div>
-            <h2 class="panelTitle">Open Parts (Not Issued)</h2>
+            <h2 class="panelTitle">Open parts not issued waiting time</h2>
             <p class="panelDesc">Ageing analysis by days outstanding for unique SOs that are still open and not issued yet.</p>
           </div>
         </div>
@@ -1052,7 +1251,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/><path d="M9 3.5h6"/><path d="M12 20.5v-2"/></svg>
           </div>
           <div>
-            <h2 class="panelTitle">Average Parts Issuing Time</h2>
+            <h2 class="panelTitle">2026 YTD Average Complete Parts Issuing Time</h2>
           </div>
         </div>
         <div class="badge" id="leadBadge"></div>
@@ -1061,7 +1260,7 @@
         <canvas id="leadChart" class="chartLead"></canvas>
       </div>
       <div class="legend">
-        <span><i class="dot blue"></i> Avg complete issue time</span>
+        <span><i class="dot blue"></i> YTD avg complete issue time</span>
         <span><i class="dot violet"></i> 3M moving average</span>
       </div>
       <div class="foot" id="leadFoot"></div>
@@ -1102,6 +1301,7 @@
 (function(){
   const FB_HISTORY = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/deliveryFlowHistory/daily.json";
   const FB_TICKETS = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/tickets.json";
+  const CURRENT_SUMMARY_JSON = "outputs/delivery_flow_current_summary.json";
   const state = {
     granularity: "week",
     history: [],
@@ -1109,24 +1309,84 @@
     latest: null,
     groups: [],
     costReport: null,
+    currentSummary: null,
   };
 
-  const DELIVERY_PAGE_CACHE_KEY = "delivery-flow";
-  async function deliveryPageVersion(){try{return await window.WarrantyPageCache.fetchVersion(window.WarrantyPageCache.deliveryVersionUrl);}catch(e){console.warn("Cannot read delivery cache version",e);return "";}}
+  const DELIVERY_PAGE_CACHE_KEY = "delivery-flow-v10";
+  const DELIVERY_SYNC_VERSION_URL = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/ticketSoSyncAt.json";
+  async function deliveryPageVersion(){
+    try{
+      const results = await Promise.allSettled([
+        window.WarrantyPageCache.fetchVersion(window.WarrantyPageCache.deliveryVersionUrl),
+        window.WarrantyPageCache.fetchVersion(DELIVERY_SYNC_VERSION_URL),
+      ]);
+      const parts = results
+        .map(result => result.status === "fulfilled" ? clean(result.value) : "")
+        .filter(Boolean);
+      return parts.join("|");
+    }catch(e){
+      console.warn("Cannot read delivery cache version",e);
+      return "";
+    }
+  }
   function saveDeliveryPageState(version){
     if(!version||!window.WarrantyPageCache)return;
-    window.WarrantyPageCache.setPage(DELIVERY_PAGE_CACHE_KEY,version,{granularity:state.granularity,history:state.history,currentTickets:state.currentTickets,costReport:state.costReport});
+    if(!hasMeaningfulDeliverySummary(state.currentSummary)) return;
+    window.WarrantyPageCache.setPage(DELIVERY_PAGE_CACHE_KEY,version,{
+      cacheMode:"summary-v2",
+      granularity:state.granularity,
+      history:state.history,
+      currentTickets:[],
+      currentSummary:state.currentSummary,
+      costReport:state.costReport
+    });
   }
   function restoreDeliveryPageState(cached,version){
     if(!cached||!Array.isArray(cached.history)||!cached.history.length)return false;
+    if(cached.cacheMode!=="summary-v2")return false;
+    if(!hasMeaningfulDeliverySummary(cached.currentSummary))return false;
     state.granularity=cached.granularity||"week";
     state.history=cached.history;
     state.currentTickets=Array.isArray(cached.currentTickets)?cached.currentTickets:[];
+    state.currentSummary=normalizeCurrentSummary(cached.currentSummary);
     state.costReport=cached.costReport||null;
     render();
     setPageLoading(false);
     if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(version,"cached");
     return true;
+  }
+  function refreshCurrentTicketsSummary(cacheVersion){
+    return loadCurrentTickets().then(rows => {
+      if (!Array.isArray(rows) || !rows.length || !state.history.length) return false;
+      state.currentTickets = rows;
+      const latestHistory = state.history[state.history.length - 1];
+      const liveSummary = buildCurrentTicketsSummary(rows, latestHistory);
+      state.currentSummary = mergeCurrentSummary(state.currentSummary, liveSummary);
+      render();
+      saveDeliveryPageState(cacheVersion);
+      if (!hasMeaningfulLeadSeries(buildEffectiveMonthlyLeadSeries(latestHistory, state.currentSummary, state.currentTickets))){
+        return rebuildLeadSeriesFromLocalClassified(cacheVersion);
+      }
+      return true;
+    }).catch(err => {
+      console.warn("Background current ticket load failed", err);
+      return rebuildLeadSeriesFromLocalClassified(cacheVersion);
+    });
+  }
+  function rebuildLeadSeriesFromLocalClassified(cacheVersion){
+    return loadCurrentTicketsFromLocalClassified().then(rows => {
+      if (!Array.isArray(rows) || !rows.length || !state.history.length) return false;
+      const latestHistory = state.history[state.history.length - 1];
+      const localSummary = buildCurrentTicketsSummary(rows, latestHistory);
+      state.currentSummary = mergeCurrentSummary(state.currentSummary, localSummary);
+      if (!hasUsableTicketDetails(state.currentTickets)) state.currentTickets = rows;
+      render();
+      saveDeliveryPageState(cacheVersion);
+      return true;
+    }).catch(err => {
+      console.warn("Local classified lead-series rebuild failed", err);
+      return false;
+    });
   }
 
   const els = {
@@ -1250,6 +1510,49 @@
         : parseDate(last.key ? `${last.key}-01` : last.label);
     return fmtDateRangeShort(start, end);
   }
+  function currentYearMonthlySeries(series, latest=null){
+    const rows = Array.isArray(series) ? series.filter(Boolean) : [];
+    if (!rows.length) return [];
+    const latestDate = parseLooseDate(latest?.asOf) || parseDate(latest?.asOf);
+    const latestMonthStart = latestDate
+      ? new Date(Date.UTC(latestDate.getUTCFullYear(), latestDate.getUTCMonth(), 1))
+      : (rows[rows.length - 1].start instanceof Date
+        ? new Date(Date.UTC(rows[rows.length - 1].start.getUTCFullYear(), rows[rows.length - 1].start.getUTCMonth(), 1))
+        : null);
+    if (!latestMonthStart) return rows.slice(-12);
+    const firstMonthStart = new Date(Date.UTC(latestMonthStart.getUTCFullYear(), 0, 1));
+    const filtered = rows.filter(row => {
+      const start = row.start instanceof Date ? row.start : parseDate(row.key ? `${row.key}-01` : row.label);
+      return start && start >= firstMonthStart && start <= latestMonthStart;
+    });
+    return filtered.length ? filtered : rows.slice(-12);
+  }
+  function weightedLeadStatsFromSeries(series){
+    const rows = Array.isArray(series) ? series.filter(Boolean) : [];
+    let weightedSum = 0;
+    let weight = 0;
+    let periodStart = null;
+    let periodEnd = null;
+    rows.forEach(row => {
+      const count = n(row.partsIssued);
+      const avg = n(row.avgDaysToCompleteIssue ?? row.avgDaysToFirstIssue);
+      if (!count || !avg) return;
+      weightedSum += avg * count;
+      weight += count;
+      const start = row.start instanceof Date ? row.start : parseDate(row.key ? `${row.key}-01` : row.label);
+      const end = row.end instanceof Date ? row.end : (start ? addDaysUTC(addMonthsUTC(start, 1), -1) : null);
+      if (start && (!periodStart || start < periodStart)) periodStart = start;
+      if (end && (!periodEnd || end > periodEnd)) periodEnd = end;
+    });
+    if (!weight) return null;
+    return {
+      avgDaysToCompleteIssue: weightedSum / weight,
+      avgDaysToFirstIssue: weightedSum / weight,
+      leadCount: weight,
+      leadPeriodStart: periodStart,
+      leadPeriodEnd: periodEnd,
+    };
+  }
   function fmtAxis(v){
     const abs = Math.abs(v);
     if (abs >= 1000000) return `${(v / 1000000).toFixed(1)}m`;
@@ -1328,6 +1631,104 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     if (Array.isArray(node)) return node.filter(Boolean).map((value, index) => [String(index), value]);
     return Object.entries(node);
   }
+  async function fetchWithTimeout(url, options={}, timeoutMs=12000){
+    const controller = typeof AbortController === "function" ? new AbortController() : null;
+    const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+    try{
+      return await fetch(url, controller ? { ...options, signal: controller.signal } : options);
+    }finally{
+      if (timer) clearTimeout(timer);
+    }
+  }
+  function withTimeoutPromise(promise, timeoutMs, label){
+    const ms = Number(timeoutMs || 0);
+    if (!ms || !(promise && typeof promise.then === "function")) return Promise.resolve(promise);
+    let timer = null;
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`${label || "Operation"} timed out after ${ms}ms`)), ms);
+    });
+    return Promise.race([promise, timeout]).finally(() => {
+      if (timer) clearTimeout(timer);
+    });
+  }
+  async function loadText(url){
+    const res = await fetchWithTimeout(freshJsonUrl(url), { cache: "no-store" }, 12000);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.text();
+  }
+  function parseCsvText(text){
+    const rows = [];
+    let row = [];
+    let cell = "";
+    let i = 0;
+    let inQuotes = false;
+    while (i < text.length){
+      const ch = text[i];
+      if (inQuotes){
+        if (ch === '"'){
+          if (text[i + 1] === '"'){
+            cell += '"';
+            i += 2;
+            continue;
+          }
+          inQuotes = false;
+          i += 1;
+          continue;
+        }
+        cell += ch;
+        i += 1;
+        continue;
+      }
+      if (ch === '"'){
+        inQuotes = true;
+        i += 1;
+        continue;
+      }
+      if (ch === ","){
+        row.push(cell);
+        cell = "";
+        i += 1;
+        continue;
+      }
+      if (ch === "\n"){
+        row.push(cell);
+        rows.push(row);
+        row = [];
+        cell = "";
+        i += 1;
+        continue;
+      }
+      if (ch !== "\r") cell += ch;
+      i += 1;
+    }
+    if (cell.length || row.length){
+      row.push(cell);
+      rows.push(row);
+    }
+    return rows;
+  }
+  function csvObjects(text){
+    const rows = parseCsvText(text);
+    if (!rows.length) return [];
+    const header = rows[0].map(col => clean(col));
+    return rows.slice(1).filter(cols => cols.some(Boolean)).map(cols => {
+      const obj = {};
+      header.forEach((key, idx) => { obj[key] = cols[idx] ?? ""; });
+      return obj;
+    });
+  }
+  function detailField(value, aliases){
+    if (!value || typeof value !== "object") return undefined;
+    const aliasList = Array.isArray(aliases) ? aliases : [aliases];
+    for (const key of Object.keys(value)){
+      const normalized = clean(key).toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (!normalized) continue;
+      if (aliasList.some(alias => normalized === clean(alias).toLowerCase().replace(/[^a-z0-9]/g, ""))){
+        return value[key];
+      }
+    }
+    return undefined;
+  }
   function parseSalesOrderDetails(value){
     if (!value) return [];
     if (typeof value === "string"){
@@ -1341,37 +1742,50 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       return value.flatMap(item => parseSalesOrderDetails(item));
     }
     if (!value || typeof value !== "object") return [];
-    if (Object.keys(value).some(k => ["Delivery Count", "Description", "Material", "Order Qty", "Sales Order Item"].includes(k))){
+    const material = detailField(value, ["Material", "material"]);
+    const description = detailField(value, ["Description", "description"]);
+    const salesOrderItem = detailField(value, ["Sales Order Item", "salesOrderItem", "salesorderitem"]);
+    const orderQty = detailField(value, ["Order Qty", "orderQty", "orderqty"]);
+    const deliveryCount = detailField(value, ["Delivery Count", "deliveryCount", "deliverycount"]);
+    const firstIssueDate = detailField(value, ["First Issue Date", "firstIssueDate", "firstissuedate"]);
+    if (
+      material !== undefined ||
+      description !== undefined ||
+      salesOrderItem !== undefined ||
+      orderQty !== undefined ||
+      deliveryCount !== undefined ||
+      firstIssueDate !== undefined
+    ){
       return [{
-        salesOrderItem: clean(value["Sales Order Item"]),
-        material: clean(value.Material),
-        description: clean(value.Description),
-        orderQty: clean(value["Order Qty"]),
-        salesUnit: clean(value["Sales Unit"]),
-        purchaser: clean(value.Purchaser),
-        currency: clean(value.Currency),
-        netValue: clean(value["Net Value"]),
-        erpPurchaseOrder: clean(value.ERPPurchaseOrder),
-        amountIncludingTax: clean(value.AmountIncludingTax),
-        deliveryCount: n(value["Delivery Count"]),
-        firstIssueDate: clean(value["First Issue Date"]),
-        rejectionReason: clean(value["Rejection Reason"]),
-        itemRejectionStatus: clean(value["Item Rejection Status"]),
+        salesOrderItem: clean(salesOrderItem),
+        material: clean(material),
+        description: clean(description),
+        orderQty: clean(orderQty),
+        salesUnit: clean(detailField(value, ["Sales Unit", "salesUnit", "salesunit"])),
+        purchaser: clean(detailField(value, ["Purchaser", "purchaser"])),
+        currency: clean(detailField(value, ["Currency", "currency"])),
+        netValue: clean(detailField(value, ["Net Value", "netValue", "netvalue"])),
+        erpPurchaseOrder: clean(detailField(value, ["ERPPurchaseOrder", "ERP Purchase Order", "erpPurchaseOrder", "erppurchaseorder"])),
+        amountIncludingTax: clean(detailField(value, ["AmountIncludingTax", "Amount Including Tax", "amountIncludingTax", "amountincludingtax"])),
+        deliveryCount: n(deliveryCount),
+        firstIssueDate: clean(firstIssueDate),
+        rejectionReason: clean(detailField(value, ["Rejection Reason", "rejectionReason", "rejectionreason"])),
+        itemRejectionStatus: clean(detailField(value, ["Item Rejection Status", "itemRejectionStatus", "itemrejectionstatus"])),
         // SAP material prices (written by fetch_all_tickets_fast_*.py via sap_material_prices.py).
         // Numbers are stored raw in their original currency; CNY -> AUD conversion happens in
         // materialPriceCols() at export time.
-        cnSoPrice:    clean(value["3090 SO Net Price"]),
-        cnSoCurrency: clean(value["3090 SO Currency"]),
-        cnSoDate:     clean(value["3090 SO Date"]),
-        cnSoDoc:      clean(value["3090 SO Doc"]),
-        auPoPrice:    clean(value["3110 PO Net Price"]),
-        auPoCurrency: clean(value["3110 PO Currency"]),
-        auPoDate:     clean(value["3110 PO Date"]),
-        auPoDoc:      clean(value["3110 PO Doc"]),
-        cnPoPrice:    clean(value["3091 PO Net Price"]),
-        cnPoCurrency: clean(value["3091 PO Currency"]),
-        cnPoDate:     clean(value["3091 PO Date"]),
-        cnPoDoc:      clean(value["3091 PO Doc"]),
+        cnSoPrice:    clean(detailField(value, ["3090 SO Net Price", "3090SONetPrice"])),
+        cnSoCurrency: clean(detailField(value, ["3090 SO Currency", "3090SOCurrency"])),
+        cnSoDate:     clean(detailField(value, ["3090 SO Date", "3090SODate"])),
+        cnSoDoc:      clean(detailField(value, ["3090 SO Doc", "3090SODoc"])),
+        auPoPrice:    clean(detailField(value, ["3110 PO Net Price", "3110PONetPrice"])),
+        auPoCurrency: clean(detailField(value, ["3110 PO Currency", "3110POCurrency"])),
+        auPoDate:     clean(detailField(value, ["3110 PO Date", "3110PODate"])),
+        auPoDoc:      clean(detailField(value, ["3110 PO Doc", "3110PODoc"])),
+        cnPoPrice:    clean(detailField(value, ["3091 PO Net Price", "3091PONetPrice"])),
+        cnPoCurrency: clean(detailField(value, ["3091 PO Currency", "3091POCurrency"])),
+        cnPoDate:     clean(detailField(value, ["3091 PO Date", "3091PODate"])),
+        cnPoDoc:      clean(detailField(value, ["3091 PO Doc", "3091PODoc"])),
       }];
     }
     return Object.values(value).flatMap(item => parseSalesOrderDetails(item));
@@ -1391,24 +1805,35 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
   // Kept in one helper so both row builders (ticketItemRows and statusMixItemRows)
   // stay in sync automatically.
   const MATERIAL_PRICE_HEADERS = [
-    "3090 SO Net Price (AUD)", "3090 SO Original Currency", "3090 SO Date", "3090 SO Doc Number",
     "3110 PO Net Price (AUD)", "3110 PO Original Currency", "3110 PO Date", "3110 PO Doc Number",
+    "3090 SO Fallback Net Price (AUD)", "3090 SO Original Currency", "3090 SO Date", "3090 SO Doc Number",
     "3091 PO Net Price (AUD)", "3091 PO Original Currency", "3091 PO Date", "3091 PO Doc Number",
   ];
   function materialPriceCols(item){
     if (!item) return new Array(MATERIAL_PRICE_HEADERS.length).fill("");
     return [
-      priceToAud(item.cnSoPrice, item.cnSoCurrency), item.cnSoCurrency || "", item.cnSoDate || "", item.cnSoDoc || "",
       priceToAud(item.auPoPrice, item.auPoCurrency), item.auPoCurrency || "", item.auPoDate || "", item.auPoDoc || "",
+      priceToAud(item.cnSoPrice, item.cnSoCurrency), item.cnSoCurrency || "", item.cnSoDate || "", item.cnSoDoc || "",
       priceToAud(item.cnPoPrice, item.cnPoCurrency), item.cnPoCurrency || "", item.cnPoDate || "", item.cnPoDoc || "",
     ];
+  }
+  function hasMaterialPriceValue(value){
+    return value !== "" && value !== null && value !== undefined;
+  }
+  function preferredPartsUnitPriceSource(item){
+    if (!item) return "";
+    const auPo = priceToAud(item.auPoPrice, item.auPoCurrency);
+    if (hasMaterialPriceValue(auPo)) return "3110 PO Net Price";
+    const cnSo = priceToAud(item.cnSoPrice, item.cnSoCurrency);
+    if (hasMaterialPriceValue(cnSo)) return "3090 SO fallback";
+    return "";
   }
   function preferredPartsUnitPrice(item){
     if (!item) return "";
     const auPo = priceToAud(item.auPoPrice, item.auPoCurrency);
-    if (auPo !== "" && auPo !== null && auPo !== undefined) return auPo;
+    if (hasMaterialPriceValue(auPo)) return auPo;
     const cnSo = priceToAud(item.cnSoPrice, item.cnSoCurrency);
-    if (cnSo !== "" && cnSo !== null && cnSo !== undefined) return cnSo;
+    if (hasMaterialPriceValue(cnSo)) return cnSo;
     return "";
   }
   function preferredPartsLineCost(item){
@@ -1480,6 +1905,100 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       details,
     };
   }
+  function buildTicketRowsFromClassifiedRows(rows){
+    const grouped = new Map();
+    (rows || []).forEach(raw => {
+      const ticketKey = clean(raw["Ticket Key"] || raw.TicketKey || raw["Ticket ID"] || raw["Sales Order"]);
+      if (!ticketKey) return;
+      if (!grouped.has(ticketKey)){
+        grouped.set(ticketKey, {
+          ticketKey,
+          ticketId: clean(raw["Ticket ID"]),
+          salesOrder: clean(raw["Sales Order"]),
+          soCreatedDate: clean(raw["SO Created Date"]),
+          dealerId: clean(raw["Dealer ID"]),
+          dealerName: clean(raw["Dealer Name"]),
+          createdOn: clean(raw["SO Created Date"]),
+          ticketStatus: clean(raw["Ticket Status"]),
+          ticketStatusText: clean(raw["Ticket Status Text"]),
+          issueStatus: "",
+          orderRejectionStatus: "",
+          erpPurchaseOrder: clean(raw["ERP Purchase Order"]),
+          amountIncludingTax: n(raw["Amount Including Tax"]),
+          completeIssueDate: "",
+          firstIssueDate: "",
+          purchaser: clean(raw.Purchaser),
+          currency: clean(raw.Currency),
+          detailItems: 0,
+          issuedItems: 0,
+          openItems: 0,
+          details: [],
+        });
+      }
+      const ticket = grouped.get(ticketKey);
+      const item = {
+        salesOrderItem: clean(raw["Sales Order Item"]),
+        material: clean(raw.Material),
+        description: clean(raw.Description),
+        orderQty: clean(raw["Order Qty"]),
+        salesUnit: clean(raw["Sales Unit"]),
+        purchaser: clean(raw.Purchaser),
+        currency: clean(raw.Currency),
+        netValue: clean(raw["Net Value"]),
+        erpPurchaseOrder: clean(raw["ERP Purchase Order"]),
+        amountIncludingTax: clean(raw["Amount Including Tax"]),
+        deliveryCount: n(raw["Delivery Count"]),
+        firstIssueDate: clean(raw["First Issue Date"]),
+        rejectionReason: clean(raw["Rejection Reason"]),
+        itemRejectionStatus: clean(raw["Item Rejection Status"]),
+        cnSoPrice: clean(raw["3090 SO Net Price (AUD)"] || raw["3090 SO Net Price"]),
+        cnSoCurrency: clean(raw["3090 SO Original Currency"] || raw["3090 SO Currency"]),
+        cnSoDate: clean(raw["3090 SO Date"] || raw["3090 SO Date"]),
+        cnSoDoc: clean(raw["3090 SO Doc Number"] || raw["3090 SO Doc"]),
+        auPoPrice: clean(raw["3110 PO Net Price (AUD)"] || raw["3110 PO Net Price"]),
+        auPoCurrency: clean(raw["3110 PO Original Currency"] || raw["3110 PO Currency"]),
+        auPoDate: clean(raw["3110 PO Date"] || raw["3110 PO Date"]),
+        auPoDoc: clean(raw["3110 PO Doc Number"] || raw["3110 PO Doc"]),
+        cnPoPrice: clean(raw["3091 PO Net Price (AUD)"] || raw["3091 PO Net Price"]),
+        cnPoCurrency: clean(raw["3091 PO Original Currency"] || raw["3091 PO Currency"]),
+        cnPoDate: clean(raw["3091 PO Date"] || raw["3091 PO Date"]),
+        cnPoDoc: clean(raw["3091 PO Doc Number"] || raw["3091 PO Doc"]),
+      };
+      ticket.details.push(item);
+    });
+    return Array.from(grouped.values()).map(ticket => {
+      const issuedCount = ticket.details.filter(item => isIssuedMaterialItem(item)).length;
+      const openCount = ticket.details.filter(item => isOpenMaterialItem(item)).length;
+      const issueDates = ticket.details.map(item => clean(item.firstIssueDate)).filter(Boolean).sort((a, b) => {
+        const da = parseLooseDate(a) || parseDate(a);
+        const db = parseLooseDate(b) || parseDate(b);
+        if (da && db && da.getTime() !== db.getTime()) return da - db;
+        return a.localeCompare(b);
+      });
+      const completeIssueDate = issueDates[issueDates.length - 1] || "";
+      return {
+        ...ticket,
+        detailItems: ticket.details.length,
+        issuedItems: issuedCount,
+        openItems: openCount,
+        completeIssueDate,
+        firstIssueDate: completeIssueDate,
+      };
+    }).sort((a, b) => {
+      const byCreated = sortCreatedOnValue(b.createdOn) - sortCreatedOnValue(a.createdOn);
+      if (byCreated) return byCreated;
+      return clean(b.ticketId).localeCompare(clean(a.ticketId)) || clean(b.ticketKey).localeCompare(clean(a.ticketKey));
+    });
+  }
+  async function loadCurrentTicketsFromLocalClassified(){
+    const text = typeof globalThis.ANALYSIS_PARTS_CLASSIFIED_CSV_TEXT === "string" && globalThis.ANALYSIS_PARTS_CLASSIFIED_CSV_TEXT
+      ? globalThis.ANALYSIS_PARTS_CLASSIFIED_CSV_TEXT
+      : await loadText("outputs/parts_classified.csv");
+    return buildTicketRowsFromClassifiedRows(csvObjects(text));
+  }
+  function hasUsableTicketDetails(rows){
+    return Array.isArray(rows) && rows.some(row => Number(row.detailItems || 0) > 0 || (Array.isArray(row.details) && row.details.length > 0));
+  }
   function isIssuedMaterialItem(item){
     if (!item) return false;
     if (!clean(item.material)) return false;
@@ -1523,6 +2042,9 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
   }
   function openSoTicketRows(tickets){
     return uniqueTicketsBySalesOrder(tickets, ticket => Number(ticket.openItems || 0) > 0 && Number(ticket.issuedItems || 0) === 0);
+  }
+  function openMaterialTicketRows(tickets){
+    return (tickets || []).filter(ticket => (ticket.details || []).some(item => isOpenMaterialItem(item)));
   }
   function materialMetricsFromTickets(tickets, leadWindowStart=null, leadWindowEnd=null){
     let issuedCount = 0;
@@ -1568,7 +2090,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       }
     });
     soState.forEach(row => {
-      if (!row.hasIssued || row.hasOpen || !row.completeIssueDate) return;
+      if (!row.hasIssued || !row.completeIssueDate) return;
       if (leadWindowStart && row.completeIssueDate < leadWindowStart) return;
       if (leadWindowEnd && row.completeIssueDate > leadWindowEnd) return;
       leadSum += Math.max(0, Math.round((row.completeIssueDate - row.soCreated) / 86400000));
@@ -1622,61 +2144,102 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     );
     return rows;
   }
-  function ticketDetailRows(tickets){
-    return [["Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Created On","Ticket Status","Ticket Status Text","Issue Status","Order Rejection Status","ERP Purchase Order","Amount Including Tax","Preferred Parts Cost (AUD)","Complete Issue Date","Purchaser","Currency","Detail Items","Issued Items","Open Items"]].concat(tickets.map(row => [
-      row.ticketKey,
+  function partsIssueLeadDays(ticket){
+    const start = parseLooseDate(ticket?.soCreatedDate);
+    const end = parseLooseDate(ticket?.completeIssueDate || ticket?.firstIssueDate);
+    return start && end ? Math.max(0, Math.round((end - start) / 86400000)) : "";
+  }
+  function ticketDetailHeaders(prefix=[]){
+    return (prefix || []).concat([
+      "Ticket ID","Sales Order","SO Created Date","Complete Issue Date","Complete Issue Lead Days",
+      "Open Items","Issued Items","Detail Items","Issue Status","Ticket Status","Ticket Status Text",
+      "Order Rejection Status","Dealer Name","Dealer ID","ERP Purchase Order","Preferred Parts Cost (AUD)",
+      "Purchaser","Currency","Created On","Ticket Key"
+    ]);
+  }
+  function ticketDetailValues(row){
+    return [
       row.ticketId,
       row.salesOrder,
       row.soCreatedDate,
-      row.dealerId,
-      row.dealerName,
-      row.createdOn,
+      row.completeIssueDate || row.firstIssueDate,
+      partsIssueLeadDays(row),
+      row.openItems,
+      row.issuedItems,
+      row.detailItems,
+      row.issueStatus,
       row.ticketStatus,
       row.ticketStatusText,
-      row.issueStatus,
       row.orderRejectionStatus,
+      row.dealerName,
+      row.dealerId,
       row.erpPurchaseOrder,
-      row.amountIncludingTax,
       ticketPreferredPartsCost(row),
-      row.completeIssueDate || row.firstIssueDate,
       row.purchaser,
       row.currency,
-      row.detailItems,
-      row.issuedItems,
-      row.openItems,
-    ]));
+      row.createdOn,
+      row.ticketKey,
+    ];
+  }
+  function ticketDetailRows(tickets){
+    return [ticketDetailHeaders()].concat(tickets.map(row => ticketDetailValues(row)));
+  }
+  function itemDetailHeaders(prefix=[]){
+    return (prefix || []).concat([
+      "Ticket ID","Sales Order","SO Created Date","Sales Order Item","Material","Description","Order Qty","Sales Unit",
+      "Delivery Count","First Issue Date","Issued","Open Not Issued","Item Rejection Status","Rejection Reason",
+      "Preferred Line Cost (AUD)","Preferred Unit Price (AUD)","Preferred Price Source",
+      ...MATERIAL_PRICE_HEADERS,
+      "ERP Purchase Order","Purchaser","Currency","Net Value","Dealer Name","Dealer ID","Ticket Status","Ticket Status Text","Ticket Key"
+    ]);
+  }
+  function itemDetailValues(ticket, item){
+    const po = item.erpPurchaseOrder || ticket.erpPurchaseOrder;
+    return [
+      ticket.ticketId,
+      ticket.salesOrder,
+      ticket.soCreatedDate,
+      item.salesOrderItem,
+      item.material,
+      item.description,
+      item.orderQty,
+      item.salesUnit,
+      item.deliveryCount,
+      item.firstIssueDate,
+      isIssuedMaterialItem(item) ? "Yes" : "No",
+      isOpenMaterialItem(item) ? "Yes" : "No",
+      item.itemRejectionStatus,
+      item.rejectionReason,
+      preferredPartsLineCost(item),
+      preferredPartsUnitPrice(item),
+      preferredPartsUnitPriceSource(item),
+      ...materialPriceCols(item),
+      po,
+      item.purchaser || ticket.purchaser,
+      item.currency || ticket.currency,
+      item.netValue,
+      ticket.dealerName,
+      ticket.dealerId,
+      ticket.ticketStatus,
+      ticket.ticketStatusText,
+      ticket.ticketKey,
+    ];
   }
   function ticketItemRows(tickets){
-    const rows = [["Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Ticket Status","Ticket Status Text","Sales Order Item","Material","Description","Order Qty","Sales Unit","Purchaser","Currency","Net Value","ERP Purchase Order","Amount Including Tax","Preferred Line Cost (AUD)", ...MATERIAL_PRICE_HEADERS, "Delivery Count","First Issue Date","Rejection Reason","Item Rejection Status"]];
+    const rows = [itemDetailHeaders()];
     tickets.forEach(ticket => {
       (ticket.details || []).forEach(item => {
-        const po = item.erpPurchaseOrder || ticket.erpPurchaseOrder;
-        rows.push([
-          ticket.ticketKey,
-          ticket.ticketId,
-          ticket.salesOrder,
-          ticket.soCreatedDate,
-          ticket.dealerId,
-          ticket.dealerName,
-          ticket.ticketStatus,
-          ticket.ticketStatusText,
-          item.salesOrderItem,
-          item.material,
-          item.description,
-          item.orderQty,
-          item.salesUnit,
-          item.purchaser || ticket.purchaser,
-          item.currency || ticket.currency,
-          item.netValue,
-          po,
-          item.amountIncludingTax || ticket.amountIncludingTax,
-          preferredPartsLineCost(item),
-          ...materialPriceCols(item),
-          item.deliveryCount,
-          item.firstIssueDate,
-          item.rejectionReason,
-          item.itemRejectionStatus,
-        ]);
+        rows.push(itemDetailValues(ticket, item));
+      });
+    });
+    return rows;
+  }
+  function ticketItemRowsFiltered(tickets, itemFilter){
+    const rows = [itemDetailHeaders()];
+    tickets.forEach(ticket => {
+      (ticket.details || []).forEach(item => {
+        if (itemFilter && !itemFilter(item, ticket)) return;
+        rows.push(itemDetailValues(ticket, item));
       });
     });
     return rows;
@@ -1717,35 +2280,17 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
   }
   function statusMixAwaitingRows(tickets, latest){
     const seen = new Set();
-    const rows = [["Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Ticket Status","Ticket Status Text","Issue Status","Order Rejection Status","ERP Purchase Order","Amount Including Tax","Preferred Parts Cost (AUD)","Detail Items","Issued Items","Open Items","Latest Snapshot Date"]];
+    const rows = [ticketDetailHeaders(["Latest Snapshot Date"])];
     tickets.forEach(ticket => {
       const soKey = salesOrderKey(ticket.salesOrder);
       if (!ticket.salesOrder || !soKey || seen.has(soKey) || !isAwaitingPartsTicket(ticket)) return;
       seen.add(soKey);
-      rows.push([
-        ticket.ticketKey,
-        ticket.ticketId,
-        ticket.salesOrder,
-        ticket.soCreatedDate,
-        ticket.dealerId,
-        ticket.dealerName,
-        ticket.ticketStatus,
-        ticket.ticketStatusText,
-        ticket.issueStatus,
-        ticket.orderRejectionStatus,
-        ticket.erpPurchaseOrder,
-        ticket.amountIncludingTax,
-        ticketPreferredPartsCost(ticket),
-        ticket.detailItems,
-        ticket.issuedItems,
-        ticket.openItems,
-        latest?.asOf ? latest.asOf : "",
-      ]);
+      rows.push([latest?.asOf ? latest.asOf : ""].concat(ticketDetailValues(ticket)));
     });
     return rows;
   }
   function statusMixItemRows(tickets, latest){
-    const rows = [["Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Ticket Status","Ticket Status Text","Sales Order Item","Material","Description","Order Qty","Sales Unit","Purchaser","Currency","Net Value","ERP Purchase Order","Amount Including Tax","Preferred Line Cost (AUD)", ...MATERIAL_PRICE_HEADERS, "Delivery Count","First Issue Date","Rejection Reason","Item Rejection Status","Status Mix Group","Ticket Awaiting","Open Not Issued","Aging Days","Latest Snapshot Date"]];
+    const rows = [itemDetailHeaders(["Status Mix Group","Ticket Awaiting","Open Not Issued","Aging Days","Latest Snapshot Date"])];
     const latestDate = parseLooseDate(latest?.asOf);
     tickets.forEach(ticket => {
       (ticket.details || []).forEach(item => {
@@ -1753,46 +2298,24 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         const soCreated = parseLooseDate(ticket.soCreatedDate);
         const agingDays = latestDate && soCreated ? Math.max(0, Math.round((latestDate - soCreated) / 86400000)) : "";
         rows.push([
-          ticket.ticketKey,
-          ticket.ticketId,
-          ticket.salesOrder,
-          ticket.soCreatedDate,
-          ticket.dealerId,
-          ticket.dealerName,
-          ticket.ticketStatus,
-          ticket.ticketStatusText,
-          item.salesOrderItem,
-          item.material,
-          item.description,
-          item.orderQty,
-          item.salesUnit,
-          item.purchaser || ticket.purchaser,
-          item.currency || ticket.currency,
-          item.netValue,
-          item.erpPurchaseOrder || ticket.erpPurchaseOrder,
-          item.amountIncludingTax || ticket.amountIncludingTax,
-          preferredPartsLineCost(item),
-          ...materialPriceCols(item),
-          item.deliveryCount,
-          item.firstIssueDate,
-          item.rejectionReason,
-          item.itemRejectionStatus,
           mix.group,
           mix.ticketAwaiting ? "Yes" : "No",
           mix.openNotIssued ? "Yes" : "No",
           agingDays,
           latest?.asOf ? latest.asOf : "",
+          ...itemDetailValues(ticket, item),
         ]);
       });
     });
     return rows;
   }
   async function loadCurrentTickets(){
-    const res = await fetch(freshJsonUrl(FB_TICKETS), { cache: "no-store" });
-    if (!res.ok) throw new Error(`Firebase HTTP ${res.status}`);
-    const data = await res.json();
-    const entries = ticketValues(data);
-    return entries
+    try{
+      const res = await fetchWithTimeout(freshJsonUrl(FB_TICKETS), { cache: "no-store" }, 8000);
+      if (!res.ok) throw new Error(`Firebase HTTP ${res.status}`);
+      const data = await res.json();
+      const entries = ticketValues(data);
+      const rows = entries
       .map(([ticketKey, raw]) => normalizeTicketExportRow(ticketKey, raw))
       .filter(row => row.ticketId || row.salesOrder || row.detailItems)
       .sort((a, b) => {
@@ -1800,6 +2323,12 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         if (byCreated) return byCreated;
         return clean(b.ticketId).localeCompare(clean(a.ticketId)) || clean(b.ticketKey).localeCompare(clean(a.ticketKey));
       });
+      if (hasUsableTicketDetails(rows)) return rows;
+      console.warn("Firebase tickets loaded but without usable detail rows, falling back to local parts_classified.csv");
+    }catch(err){
+      console.warn("Firebase tickets load failed, falling back to local parts_classified.csv", err);
+    }
+    return loadCurrentTicketsFromLocalClassified();
   }
   function partsSelectedExportRows(series){
     const visible = state.granularity === "year" ? series : series.slice(-12);
@@ -1938,41 +2467,19 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     return rows;
   }
   function costMonthlyTicketRows(tickets){
-    const rows = [["Month","Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Created On","Ticket Status","Ticket Status Text","Issue Status","Order Rejection Status","ERP Purchase Order","Amount Including Tax","Preferred Parts Cost (AUD)","Complete Issue Date","Purchaser","Currency","Detail Items","Issued Items","Open Items"]];
+    const rows = [ticketDetailHeaders(["Month"])];
     const ordered = [...(tickets || [])].sort((a, b) => {
       const monthCmp = monthKeyFromTicket(a).localeCompare(monthKeyFromTicket(b));
       if (monthCmp) return monthCmp;
       return clean(a.ticketId).localeCompare(clean(b.ticketId)) || clean(a.ticketKey).localeCompare(clean(b.ticketKey));
     });
     ordered.forEach(ticket => {
-      rows.push([
-        monthLabelFromKey(monthKeyFromTicket(ticket)),
-        ticket.ticketKey,
-        ticket.ticketId,
-        ticket.salesOrder,
-        ticket.soCreatedDate,
-        ticket.dealerId,
-        ticket.dealerName,
-        ticket.createdOn,
-        ticket.ticketStatus,
-        ticket.ticketStatusText,
-        ticket.issueStatus,
-        ticket.orderRejectionStatus,
-        ticket.erpPurchaseOrder,
-        ticket.amountIncludingTax,
-        ticketPreferredPartsCost(ticket),
-        ticket.completeIssueDate || ticket.firstIssueDate,
-        ticket.purchaser,
-        ticket.currency,
-        ticket.detailItems,
-        ticket.issuedItems,
-        ticket.openItems,
-      ]);
+      rows.push([monthLabelFromKey(monthKeyFromTicket(ticket))].concat(ticketDetailValues(ticket)));
     });
     return rows;
   }
   function costMonthlyItemRows(tickets){
-    const rows = [["Month","Ticket Key","Ticket ID","Sales Order","SO Created Date","Dealer ID","Dealer Name","Ticket Status","Ticket Status Text","Sales Order Item","Material","Description","Order Qty","Sales Unit","Purchaser","Currency","Net Value","ERP Purchase Order","Amount Including Tax","Preferred Line Cost (AUD)", ...MATERIAL_PRICE_HEADERS, "Delivery Count","First Issue Date","Rejection Reason","Item Rejection Status"]];
+    const rows = [itemDetailHeaders(["Month"])];
     const ordered = [...(tickets || [])].sort((a, b) => {
       const monthCmp = monthKeyFromTicket(a).localeCompare(monthKeyFromTicket(b));
       if (monthCmp) return monthCmp;
@@ -1980,34 +2487,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     });
     ordered.forEach(ticket => {
       (ticket.details || []).forEach(item => {
-        const po = item.erpPurchaseOrder || ticket.erpPurchaseOrder;
-        rows.push([
-          monthLabelFromKey(monthKeyFromTicket(ticket)),
-          ticket.ticketKey,
-          ticket.ticketId,
-          ticket.salesOrder,
-          ticket.soCreatedDate,
-          ticket.dealerId,
-          ticket.dealerName,
-          ticket.ticketStatus,
-          ticket.ticketStatusText,
-          item.salesOrderItem,
-          item.material,
-          item.description,
-          item.orderQty,
-          item.salesUnit,
-          item.purchaser || ticket.purchaser,
-          item.currency || ticket.currency,
-          item.netValue,
-          po,
-          item.amountIncludingTax || ticket.amountIncludingTax,
-          preferredPartsLineCost(item),
-          ...materialPriceCols(item),
-          item.deliveryCount,
-          item.firstIssueDate,
-          item.rejectionReason,
-          item.itemRejectionStatus,
-        ]);
+        rows.push([monthLabelFromKey(monthKeyFromTicket(ticket))].concat(itemDetailValues(ticket, item)));
       });
     });
     return rows;
@@ -2135,6 +2615,246 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     });
     return Array.from(groups.values()).sort((a, b) => a.start - b.start);
   }
+  function reviveSeriesDates(series){
+    return (Array.isArray(series) ? series : []).map(row => {
+      const start = row.start instanceof Date ? row.start : (parseLooseDate(row.start) || parseDate(row.key));
+      const end = row.end instanceof Date ? row.end : (parseLooseDate(row.end) || start);
+      return {...row,start,end};
+    });
+  }
+  function normalizeCurrentSummary(summary){
+    if(!summary||typeof summary!=="object")return null;
+    const seriesByGranularity=summary.seriesByGranularity&&typeof summary.seriesByGranularity==="object"?summary.seriesByGranularity:{};
+    const materialStats=summary.materialStats&&typeof summary.materialStats==="object"?{...summary.materialStats}:null;
+    if(materialStats){
+      materialStats.leadWindowStart=parseLooseDate(materialStats.leadWindowStart)||materialStats.leadWindowStart||null;
+      materialStats.leadWindowEnd=parseLooseDate(materialStats.leadWindowEnd)||materialStats.leadWindowEnd||null;
+      materialStats.leadPeriodStart=parseLooseDate(materialStats.leadPeriodStart)||materialStats.leadPeriodStart||null;
+      materialStats.leadPeriodEnd=parseLooseDate(materialStats.leadPeriodEnd)||materialStats.leadPeriodEnd||null;
+    }
+    return {
+      ticketCount:n(summary.ticketCount),
+      awaitingNow:n(summary.awaitingNow),
+      agingBuckets:summary.agingBuckets||null,
+      materialStats,
+      seriesByGranularity:{
+        week:reviveSeriesDates(seriesByGranularity.week),
+        month:reviveSeriesDates(seriesByGranularity.month),
+        year:reviveSeriesDates(seriesByGranularity.year),
+      },
+      issuedSeriesMonth:reviveSeriesDates(summary.issuedSeriesMonth),
+      issuedLeadSeriesMonth:reviveSeriesDates(summary.issuedLeadSeriesMonth),
+    };
+  }
+  function hasMeaningfulSeries(series, key){
+    return sumSeriesValues(series, key) > 0 || countNonZeroSeries(series, key) > 0;
+  }
+  function hasMeaningfulDeliverySummary(summary){
+    const normalized = normalizeCurrentSummary(summary);
+    if(!normalized) return false;
+    return (
+      normalized.awaitingNow > 0 ||
+      agingBucketTotal(normalized.agingBuckets) > 0 ||
+      hasMeaningfulMaterialStats(normalized.materialStats) ||
+      hasMeaningfulSeries(normalized.seriesByGranularity?.week, "partsSelected") ||
+      hasMeaningfulSeries(normalized.seriesByGranularity?.month, "partsSelected") ||
+      hasMeaningfulSeries(normalized.seriesByGranularity?.year, "partsSelected") ||
+      hasMeaningfulIssuedSeries(normalized.issuedSeriesMonth) ||
+      hasMeaningfulLeadSeries(normalized.issuedLeadSeriesMonth)
+    );
+  }
+  function mergeCurrentSummary(base, live){
+    const baseSummary = normalizeCurrentSummary(base);
+    const liveSummary = normalizeCurrentSummary(live);
+    if(!baseSummary) return liveSummary;
+    if(!liveSummary) return baseSummary;
+    return {
+      ...baseSummary,
+      ticketCount: Math.max(n(baseSummary.ticketCount), n(liveSummary.ticketCount)),
+      awaitingNow: n(liveSummary.awaitingNow) > 0 ? n(liveSummary.awaitingNow) : n(baseSummary.awaitingNow),
+      agingBuckets: pickBetterBuckets(baseSummary.agingBuckets, liveSummary.agingBuckets),
+      materialStats: pickBetterMaterialStats(baseSummary.materialStats, liveSummary.materialStats),
+      seriesByGranularity: {
+        week: pickBetterSeries(baseSummary.seriesByGranularity?.week, liveSummary.seriesByGranularity?.week, "partsSelected"),
+        month: pickBetterSeries(baseSummary.seriesByGranularity?.month, liveSummary.seriesByGranularity?.month, "partsSelected"),
+        year: pickBetterSeries(baseSummary.seriesByGranularity?.year, liveSummary.seriesByGranularity?.year, "partsSelected"),
+      },
+      issuedSeriesMonth: pickBetterSeries(baseSummary.issuedSeriesMonth, liveSummary.issuedSeriesMonth, "partsIssued"),
+      issuedLeadSeriesMonth: pickBetterLeadSeries(baseSummary.issuedLeadSeriesMonth, liveSummary.issuedLeadSeriesMonth),
+    };
+  }
+  function sumSeriesValues(series, key){
+    return (Array.isArray(series) ? series : []).reduce((sum, row) => sum + n(row && row[key]), 0);
+  }
+  function countNonZeroSeries(series, key){
+    return (Array.isArray(series) ? series : []).reduce((count, row) => count + (n(row && row[key]) > 0 ? 1 : 0), 0);
+  }
+  function pickBetterNumber(baseValue, liveValue){
+    const base = n(baseValue);
+    const live = n(liveValue);
+    return live > base ? live : base;
+  }
+  function pickBetterBuckets(baseBuckets, liveBuckets){
+    const base = agingBucketTotal(baseBuckets);
+    const live = agingBucketTotal(liveBuckets);
+    return live > base ? liveBuckets : baseBuckets;
+  }
+  function pickBetterMaterialStats(baseStats, liveStats){
+    if (!baseStats) return liveStats || null;
+    if (!liveStats) return baseStats || null;
+    const baseScore = n(baseStats.leadCount) + n(baseStats.issuedCount) + n(baseStats.openCount);
+    const liveScore = n(liveStats.leadCount) + n(liveStats.issuedCount) + n(liveStats.openCount);
+    if (liveScore > baseScore){
+      return {
+        ...baseStats,
+        ...liveStats,
+        leadWindowStart: liveStats.leadWindowStart || baseStats.leadWindowStart || null,
+        leadWindowEnd: liveStats.leadWindowEnd || baseStats.leadWindowEnd || null,
+        leadPeriodStart: liveStats.leadPeriodStart || baseStats.leadPeriodStart || null,
+        leadPeriodEnd: liveStats.leadPeriodEnd || baseStats.leadPeriodEnd || null,
+      };
+    }
+    return baseStats;
+  }
+  function pickBetterSeries(baseSeries, liveSeries, key){
+    const base = Array.isArray(baseSeries) ? baseSeries : [];
+    const live = Array.isArray(liveSeries) ? liveSeries : [];
+    if (!base.length) return live;
+    if (!live.length) return base;
+    const baseTotal = sumSeriesValues(base, key);
+    const liveTotal = sumSeriesValues(live, key);
+    if (liveTotal > baseTotal) return live;
+    if (liveTotal < baseTotal) return base;
+    const baseNonZero = countNonZeroSeries(base, key);
+    const liveNonZero = countNonZeroSeries(live, key);
+    return liveNonZero > baseNonZero ? live : base;
+  }
+  function pickBetterLeadSeries(baseSeries, liveSeries){
+    const base = Array.isArray(baseSeries) ? baseSeries : [];
+    const live = Array.isArray(liveSeries) ? liveSeries : [];
+    if (!base.length) return live;
+    if (!live.length) return base;
+    const baseAvgPoints = countNonZeroSeries(base, "avgDaysToCompleteIssue") + countNonZeroSeries(base, "avgDaysToFirstIssue");
+    const liveAvgPoints = countNonZeroSeries(live, "avgDaysToCompleteIssue") + countNonZeroSeries(live, "avgDaysToFirstIssue");
+    if (liveAvgPoints > baseAvgPoints) return live;
+    if (liveAvgPoints < baseAvgPoints) return base;
+    const baseIssued = sumSeriesValues(base, "partsIssued");
+    const liveIssued = sumSeriesValues(live, "partsIssued");
+    if (liveIssued > baseIssued) return live;
+    if (liveIssued < baseIssued) return base;
+    return base;
+  }
+  function hasMeaningfulLeadSeries(series){
+    return Array.isArray(series) && series.some(row => n(row?.avgDaysToCompleteIssue) > 0 || n(row?.avgDaysToFirstIssue) > 0);
+  }
+  function buildLeadSeriesFallbackFromSummary(summary, latest){
+    const leadSeries = Array.isArray(summary?.issuedLeadSeriesMonth) ? summary.issuedLeadSeriesMonth : [];
+    return leadSeries.filter(row => n(row?.avgDaysToCompleteIssue) > 0 || n(row?.avgDaysToFirstIssue) > 0);
+  }
+  function buildEffectiveMonthlyLeadSeries(latest, currentSummary=null, currentTickets=null){
+    const liveSeries = buildMonthlyIssuedLeadSeriesFromTickets(Array.isArray(currentTickets) ? currentTickets : []);
+    if (hasMeaningfulLeadSeries(liveSeries)) return liveSeries;
+    const summaryFallback = buildLeadSeriesFallbackFromSummary(currentSummary, latest);
+    if (hasMeaningfulLeadSeries(summaryFallback)) return summaryFallback;
+    const historySeries = buildMonthlyIssuedLeadSeries(latest);
+    if (hasMeaningfulLeadSeries(historySeries)) return historySeries;
+    return summaryFallback.length ? summaryFallback : historySeries;
+  }
+  function hasMeaningfulIssuedSeries(series){
+    return sumSeriesValues(series, "partsIssued") > 0;
+  }
+  function hasMeaningfulMaterialStats(stats){
+    return !!stats && (
+      Number(stats.leadCount || 0) > 0 ||
+      Number(stats.avgDaysToCompleteIssue || 0) > 0 ||
+      Number(stats.avgDaysToFirstIssue || 0) > 0 ||
+      Number(stats.openCount || 0) > 0 ||
+      Number(stats.issuedCount || 0) > 0
+    );
+  }
+  function agingBucketTotal(buckets){
+    if (!buckets || typeof buckets !== "object") return 0;
+    return n(buckets["0-7"]) + n(buckets["8-14"]) + n(buckets["15-30"]) + n(buckets["30+"]);
+  }
+  async function loadCurrentSummary(){
+    const res = await fetchWithTimeout(freshJsonUrl(CURRENT_SUMMARY_JSON), { cache: "no-store" }, 12000);
+    if (!res.ok) throw new Error(`Current summary HTTP ${res.status}`);
+    return normalizeCurrentSummary(await res.json());
+  }
+  function buildCurrentTicketsSummary(tickets, latest){
+    if(!Array.isArray(tickets)||!tickets.length)return null;
+    const latestDate=parseLooseDate(latest?.asOf)||parseDate(latest?.asOf)||new Date();
+    const leadWindow=rollingMonthWindow(latestDate,12);
+    return normalizeCurrentSummary({
+      ticketCount:tickets.length,
+      awaitingNow:awaitingTicketRows(tickets).length,
+      agingBuckets:materialAgingFromTickets(tickets,latest?.asOf),
+      materialStats:materialMetricsFromTickets(tickets,leadWindow.start,leadWindow.end),
+      seriesByGranularity:{
+        week:buildUniqueSeriesFromTickets(tickets,"week",ticket=>parseLooseDate(ticket.soCreatedDate),"partsSelected"),
+        month:buildUniqueSeriesFromTickets(tickets,"month",ticket=>parseLooseDate(ticket.soCreatedDate),"partsSelected"),
+        year:buildUniqueSeriesFromTickets(tickets,"year",ticket=>parseLooseDate(ticket.soCreatedDate),"partsSelected"),
+      },
+      issuedSeriesMonth:buildIssuedMaterialSeriesFromTickets(tickets,"month"),
+      issuedLeadSeriesMonth:buildMonthlyIssuedLeadSeriesFromTickets(tickets),
+    });
+  }
+  function buildMonthlyIssuedLeadSeriesFromTickets(tickets){
+    const byMonth = new Map();
+    const soState = new Map();
+    (tickets || []).forEach(ticket => {
+      const soCreated = parseLooseDate(ticket.soCreatedDate);
+      const soKey = salesOrderKey(ticket.salesOrder) || ticket.ticketKey;
+      let hasIssued = false;
+      let hasOpen = false;
+      let completeIssueDate = parseLooseDate(ticket.completeIssueDate || ticket.firstIssueDate);
+      (ticket.details || []).forEach(item => {
+        if (isIssuedMaterialItem(item)){
+          hasIssued = true;
+          const d = materialIssueDate(ticket, item);
+          if (d && (!completeIssueDate || d > completeIssueDate)) completeIssueDate = d;
+          return;
+        }
+        if (isOpenMaterialItem(item)) hasOpen = true;
+      });
+      if (!soKey || !soCreated) return;
+      const existing = soState.get(soKey) || { soCreated, completeIssueDate: null, hasIssued:false, hasOpen:false };
+      if (soCreated < existing.soCreated) existing.soCreated = soCreated;
+      if (completeIssueDate && (!existing.completeIssueDate || completeIssueDate > existing.completeIssueDate)){
+        existing.completeIssueDate = completeIssueDate;
+      }
+      existing.hasIssued = existing.hasIssued || hasIssued;
+      existing.hasOpen = existing.hasOpen || hasOpen;
+      soState.set(soKey, existing);
+    });
+    soState.forEach(row => {
+      if (!row.hasIssued || !row.completeIssueDate) return;
+      const start = new Date(Date.UTC(row.completeIssueDate.getUTCFullYear(), row.completeIssueDate.getUTCMonth(), 1));
+      const key = dateKey(start);
+      const end = addDaysUTC(addMonthsUTC(start, 1), -1);
+      const leadDays = Math.max(0, Math.round((row.completeIssueDate - row.soCreated) / 86400000));
+      const entry = byMonth.get(key) || {
+        key,
+        start,
+        end,
+        label: fmtMonth(start),
+        tooltip: fmtDateRangeShort(start, end),
+        partsIssued: 0,
+        avgDaysToCompleteIssue: 0,
+        avgDaysToFirstIssue: 0,
+        _sum: 0,
+      };
+      entry.partsIssued += 1;
+      entry._sum += leadDays;
+      entry.avgDaysToCompleteIssue = entry._sum / entry.partsIssued;
+      entry.avgDaysToFirstIssue = entry.avgDaysToCompleteIssue;
+      byMonth.set(key, entry);
+    });
+    return Array.from(byMonth.values()).sort((a, b) => a.start - b.start).map(row => {
+      const { _sum, ...rest } = row;
+      return rest;
+    });
+  }
   function buildMonthlyIssuedLeadSeries(latest){
     const byMonth = latest?.avgIssuingTime?.byMonth || {};
     const volumeByMonth = latest?.avgIssuingTime?.volumeByMonth || {};
@@ -2159,7 +2879,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         avgDaysToFirstIssue: n(byMonth[key]),
       });
     }
-    return out;
+    const hasMeaningful = out.some(row => n(row.avgDaysToCompleteIssue) > 0 || n(row.avgDaysToFirstIssue) > 0);
+    return hasMeaningful ? out : [];
   }
   function rollingLeadStatsFromMonthly(latest, windowStart, windowEnd){
     const rows = buildMonthlyIssuedLeadSeries(latest).filter(row => {
@@ -2246,7 +2967,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         tickets = state.currentTickets && state.currentTickets.length ? state.currentTickets : await loadCurrentTickets();
       }catch(err){
         console.warn("Ticket detail export load failed:", err);
-        alert("已导出汇总，但当前 ticket 明细拉取失败，所以这次只会包含汇总和趋势。");
+        alert("å·²å¯¼å‡ºæ±‡æ€»ï¼Œä½†å½“å‰ ticket æ˜Žç»†æ‹‰å–å¤±è´¥ï¼Œæ‰€ä»¥è¿™æ¬¡åªä¼šåŒ…å«æ±‡æ€»å’Œè¶‹åŠ¿ã€‚");
       }
       const sheets = [
         { name:"Snapshot Summary", rows:partsSelectedSummaryRows(series, latest) },
@@ -2273,7 +2994,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         tickets = state.currentTickets && state.currentTickets.length ? state.currentTickets : await loadCurrentTickets();
       }catch(err){
         console.warn("Parts issued detail export load failed:", err);
-        alert("已导出汇总，但当前 ticket 明细拉取失败，所以这次只会包含汇总和趋势。");
+        alert("å·²å¯¼å‡ºæ±‡æ€»ï¼Œä½†å½“å‰ ticket æ˜Žç»†æ‹‰å–å¤±è´¥ï¼Œæ‰€ä»¥è¿™æ¬¡åªä¼šåŒ…å«æ±‡æ€»å’Œè¶‹åŠ¿ã€‚");
       }
       const series = tickets.length
         ? buildIssuedMaterialSeriesFromTickets(tickets, "month")
@@ -2306,7 +3027,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         tickets = state.currentTickets && state.currentTickets.length ? state.currentTickets : await loadCurrentTickets();
       }catch(err){
         console.warn("Total parts cost detail export load failed:", err);
-        alert("已导出汇总，但当前 ticket 明细拉取失败，所以这次只会包含成本汇总和月度趋势。");
+        alert("å·²å¯¼å‡ºæ±‡æ€»ï¼Œä½†å½“å‰ ticket æ˜Žç»†æ‹‰å–å¤±è´¥ï¼Œæ‰€ä»¥è¿™æ¬¡åªä¼šåŒ…å«æˆæœ¬æ±‡æ€»å’Œæœˆåº¦è¶‹åŠ¿ã€‚");
       }
       const latest = state.latest || state.history[state.history.length - 1] || null;
       const report = latest?.costReport || state.costReport || null;
@@ -2349,9 +3070,13 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     });
   }
   async function exportTicketScope(scopeLabel, filenameBase, rowFilter, sheetPrefix, btn){
-    if (btn) btn.disabled = true;
+    const originalHtml = btn ? btn.innerHTML : "";
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `${exportIcon()}<span>Exporting...</span>`;
+    }
     try{
-      const tickets = await loadCurrentTickets();
+      const tickets = hasUsableTicketDetails(state.currentTickets) ? state.currentTickets : await loadCurrentTickets();
       const filtered = uniqueTicketsBySalesOrder(tickets, rowFilter);
       if (!filtered.length){
         alert(`No ${scopeLabel} data found to export.`);
@@ -2366,7 +3091,10 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       console.warn(`${scopeLabel} detail export load failed:`, err);
       alert(`Unable to load ticket details for ${scopeLabel} export.`);
     }finally{
-      if (btn) btn.disabled = false;
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
     }
   }
   function exportCurrentAwaitingParts(){
@@ -2379,13 +3107,51 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     );
   }
   function exportOpenSo(){
-    return exportTicketScope(
-      "Open Parts",
-      "open-parts",
-      ticket => Number(ticket.openItems || 0) > 0,
-      "Open Parts",
-      els.kpis ? els.kpis.querySelector('[data-export-kind="open-so"]') : null
-    );
+    const btn = els.kpis ? els.kpis.querySelector('[data-export-kind="open-so"]') : null;
+    const originalHtml = btn ? btn.innerHTML : "";
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `${exportIcon()}<span>Exporting...</span>`;
+    }
+    return (async () => {
+      try{
+        let tickets = hasUsableTicketDetails(state.currentTickets) ? state.currentTickets : [];
+        let filtered = openMaterialTicketRows(tickets);
+        if (!filtered.length){
+          const localTickets = await loadCurrentTicketsFromLocalClassified();
+          const localFiltered = openMaterialTicketRows(localTickets);
+          if (localFiltered.length){
+            tickets = localTickets;
+            filtered = localFiltered;
+          }
+        }
+        if (!filtered.length){
+          const loadedTickets = await loadCurrentTickets();
+          const loadedFiltered = openMaterialTicketRows(loadedTickets);
+          if (loadedFiltered.length){
+            tickets = loadedTickets;
+            filtered = loadedFiltered;
+          }
+        }
+        if (!filtered.length){
+          alert("No Open Parts data found to export.");
+          return;
+        }
+        exportWorkbook([
+          { name: "Open Parts Summary", rows: ticketSummaryRows(filtered, "Open Parts (Not Issued)") },
+          { name: "Open Parts Detail", rows: ticketDetailRows(filtered) },
+          { name: "Open Parts Item Detail", rows: ticketItemRowsFiltered(filtered, item => isOpenMaterialItem(item)) },
+        ], `open-parts-${exportDateSuffix()}.xls`);
+      }catch(err){
+        console.warn("Open Parts detail export load failed:", err);
+        alert("Unable to load ticket details for Open Parts export.");
+      }finally{
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalHtml;
+        }
+      }
+    })();
   }
   function bindExportButtons(){
     const btn = els.flowExportBtn;
@@ -2640,23 +3406,48 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     return Array.from(groups.values()).sort((a, b) => a.start - b.start);
   }
 
-  function renderCards(latest, latestGroup, issuedSeries, report, currentTickets){
+  function renderCards(latest, latestGroup, issuedSeries, report, currentSummary=null, leadSeries=[]){
     const latestDate = parseLooseDate(latest?.asOf) || parseDate(latest?.asOf) || new Date();
-    const leadWindow = rollingMonthWindow(latestDate, 12);
-    const hasCurrentTickets = Array.isArray(currentTickets) && currentTickets.length;
-    const materialStats = hasCurrentTickets ? materialMetricsFromTickets(currentTickets, leadWindow.start, leadWindow.end) : null;
+    const leadWindow = {
+      start: new Date(Date.UTC(latestDate.getUTCFullYear(), 0, 1)),
+      end: latestDate,
+    };
+    const todayUtc = new Date();
+    const todayUtcDate = new Date(Date.UTC(todayUtc.getUTCFullYear(), todayUtc.getUTCMonth(), todayUtc.getUTCDate()));
+    const summaryMaterialStats = currentSummary?.materialStats || null;
+    const materialStats = hasMeaningfulMaterialStats(summaryMaterialStats)
+      ? summaryMaterialStats
+      : null;
     const fallbackLeadStats = materialStats ? null : rollingLeadStatsFromMonthly(latest, leadWindow.start, leadWindow.end);
     const avgIssueStats = materialStats || fallbackLeadStats;
-    const avgIssueSourceLabel = avgIssueStats ? "last 12 months" : "latest snapshot";
-    const awaitingNow = Array.isArray(currentTickets) && currentTickets.length
-      ? awaitingTicketRows(currentTickets).length
-      : (latest.awaitingParts?.current ?? latest.statusMix.awaitingItems ?? latest.kpi.openSoItems ?? 0);
-    const openNotIssuedParts = materialStats ? materialStats.openCount : (latest.kpi.openNotIssuedParts ?? latest.kpi.openSoItems ?? 0);
-    const avgDaysToCompleteIssue = avgIssueStats
-      ? (avgIssueStats.avgDaysToCompleteIssue ?? avgIssueStats.avgDaysToFirstIssue ?? 0)
-      : (latest.kpi.avgDaysToCompleteIssue ?? latest.kpi.avgDaysToFirstIssue ?? 0);
-    const avgIssuePeriod = avgIssueStats?.leadWindowStart && avgIssueStats?.leadWindowEnd
-      ? `Completed issue period: ${fmtDateRangeShort(avgIssueStats.leadWindowStart, avgIssueStats.leadWindowEnd)}`
+    const liveLeadSeries = currentYearMonthlySeries(
+      hasMeaningfulLeadSeries(leadSeries) ? leadSeries : buildEffectiveMonthlyLeadSeries(latest, currentSummary, state.currentTickets),
+      latest
+    );
+    const ytdLeadStats = weightedLeadStatsFromSeries(liveLeadSeries);
+    const avgIssueSourceLabel = ytdLeadStats ? `${latestDate.getUTCFullYear()} YTD` : (hasMeaningfulMaterialStats(materialStats) ? "current year" : "latest snapshot");
+    const awaitingNow = n(currentSummary?.awaitingNow) > 0
+      ? n(currentSummary.awaitingNow)
+      : (Array.isArray(state.currentTickets) && state.currentTickets.length
+        ? awaitingTicketRows(state.currentTickets).length
+        : 0);
+    const openNotIssuedParts = hasMeaningfulMaterialStats(materialStats) && Number(materialStats.openCount || 0) > 0
+      ? materialStats.openCount
+      : (latest.kpi.openNotIssuedParts ?? latest.kpi.openSoItems ?? 0);
+    let avgDaysToCompleteIssue = latest.kpi.avgDaysToCompleteIssue ?? latest.kpi.avgDaysToFirstIssue ?? 0;
+    if (avgIssueStats) {
+      avgDaysToCompleteIssue = avgIssueStats.avgDaysToCompleteIssue ?? avgIssueStats.avgDaysToFirstIssue ?? avgDaysToCompleteIssue;
+    }
+    if (ytdLeadStats) {
+      avgDaysToCompleteIssue = ytdLeadStats.avgDaysToCompleteIssue ?? ytdLeadStats.avgDaysToFirstIssue ?? avgDaysToCompleteIssue;
+    }
+    const ytdLeadPeriodEnd = ytdLeadStats?.leadPeriodEnd && ytdLeadStats.leadPeriodEnd > todayUtcDate
+      ? todayUtcDate
+      : ytdLeadStats?.leadPeriodEnd || null;
+    const avgIssuePeriod = ytdLeadStats?.leadPeriodStart && ytdLeadPeriodEnd
+      ? `YTD average from ${fmtDateRangeShort(ytdLeadStats.leadPeriodStart, ytdLeadPeriodEnd)}`
+      : avgIssueStats?.leadWindowStart && avgIssueStats?.leadWindowEnd
+        ? `Issued SOs completed from ${fmtDateRangeShort(avgIssueStats.leadWindowStart, avgIssueStats.leadWindowEnd)}`
       : latestGroup?.tooltip
         ? `Snapshot period: ${latestGroup.tooltip}`
         : latest?.asOf
@@ -2670,8 +3461,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     };
     const cards = [
       { label:"Current Awaiting Parts", value: integer.format(awaitingNow), left:"Ticket status YA / Awaiting Parts", right:"unique SOs awaiting parts", hint:`Awaiting unique SOs ${integer.format(awaitingNow)}`, theme:"blue", icon: icon.awaiting, action:{ kind:"awaiting", label:"Export", title:"Export Current Awaiting Parts with ticket details" } },
-      { label:"Open Parts (Not Issued)", value: integer.format(openNotIssuedParts), left:"Material rows", right:"still open today", hint:`Age bands use ${integer.format(openNotIssuedParts)} open parts`, theme:"orange", icon: icon.open, action:{ kind:"open-so", label:"Export", title:"Export Open Parts with ticket details" } },
-      { label:"Average Parts Issuing Time", value: `${daysFmt.format(avgDaysToCompleteIssue)}<small>d</small>`, note:avgIssuePeriod, left:avgIssueSourceLabel, right:"SO created to complete issues", hint:"Average across fully issued SOs; incomplete parts are excluded", theme:"violet", icon: icon.lead },
+      { label:"Open parts", value: integer.format(openNotIssuedParts), left:"Material rows", right:"still open today", hint:`Age bands use ${integer.format(openNotIssuedParts)} open parts`, theme:"orange", icon: icon.open, action:{ kind:"open-so", label:"Export", title:"Export Open Parts with ticket details" } },
+      { label:"2026 YTD Average Complete Parts Issuing Time", value: `${daysFmt.format(avgDaysToCompleteIssue)}<small>d</small>`, note:avgIssuePeriod, left:avgIssueSourceLabel, right:"SO Created Date to Complete Issue Date", hint:"Average across issued SOs completed in each month; 3M moving average is shown in the chart", theme:"violet", icon: icon.lead },
     ];
 
     els.kpis.innerHTML = cards.map(card => `
@@ -2703,6 +3494,11 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
   }
   function hideTip(){ els.tip.style.opacity = 0; }
 
+  function chartFont(size=14, weight=560){
+    const family = getComputedStyle(document.documentElement).getPropertyValue("--sans").trim() || "Segoe UI, Arial, sans-serif";
+    return `${weight} ${size}px ${family}`;
+  }
+
   function renderCanvas(canvas, height, draw){
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
@@ -2721,6 +3517,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
   function drawChartLabel(ctx, text, x, y, color){
     if (text === "" || text == null) return;
     ctx.save();
+    ctx.font = chartFont(14, 580);
     ctx.fillStyle = color || getComputedStyle(document.documentElement).getPropertyValue("--ink").trim();
     ctx.strokeStyle = "#fff";
     ctx.lineWidth = 3;
@@ -2786,8 +3583,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
   function drawIssuedChart(series){
     const canvas = els.issuedChart;
     const visible = series;
-    const { w, h } = renderCanvas(canvas, 236, (ctx, width, height) => {
-      const ml = 56, mr = 20, mt = 24, mb = 40;
+    const { w, h } = renderCanvas(canvas, 218, (ctx, width, height) => {
+      const ml = 62, mr = 18, mt = 22, mb = 36;
       const plotW = width - ml - mr, plotH = height - mt - mb;
       const values = visible.map(r => Math.max(0, Number(r.partsIssued) || 0));
       const axisMax = niceMax(Math.max(1, ...values));
@@ -2796,8 +3593,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       const xFor = i => ml + step * i + step / 2;
       const yFor = v => mt + plotH - (Math.max(0, Number(v) || 0) / axisMax) * plotH;
       ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--grid").trim();
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
-      ctx.font = "11px " + getComputedStyle(document.documentElement).getPropertyValue("--mono").trim();
+      ctx.fillStyle = "#5f6b80";
+      ctx.font = chartFont(14, 540);
       ctx.textAlign = "right";
       for (let i = 0; i <= 4; i++){
         const t = i / 4;
@@ -2819,11 +3616,12 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         drawChartLabel(ctx, integer.format(r.partsIssued), x, Math.max(mt + 12, y - 6), "rgba(31,157,107,.98)");
       });
       const tickStep = visible.length > 6 ? Math.ceil(visible.length / 6) : 1;
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
+      ctx.fillStyle = "#69758a";
+      ctx.font = chartFont(14, 540);
       drawXAxisLabels(ctx, visible, xFor, height - 14, tickStep, { lastPadding: 16 });
     });
 
-    const ml = 56, mr = 20, plotW = w - ml - mr, step = plotW / Math.max(1, visible.length);
+    const ml = 62, mr = 18, plotW = w - ml - mr, step = plotW / Math.max(1, visible.length);
     canvas.onmousemove = e => {
       if (!visible.length) return;
       const rect = canvas.getBoundingClientRect();
@@ -2843,21 +3641,21 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     canvas.onmouseleave = hideTip;
   }
 
-  function drawLeadChart(latest){
+  function drawLeadChart(latest, currentSummary=null, currentTickets=null){
     const canvas = els.leadChart;
-    const visible = buildMonthlyIssuedLeadSeries(latest);
-    const visibleWithMA = addMovingAverage(visible, 3, "avgDaysToCompleteIssue");
-    const { w, h } = renderCanvas(canvas, 236, (ctx, width, height) => {
-      const ml = 56, mr = 22, mt = 18, mb = 38;
+    const effectiveVisible = currentYearMonthlySeries(buildEffectiveMonthlyLeadSeries(latest, currentSummary, currentTickets), latest);
+    const visibleWithMA = addMovingAverage(effectiveVisible, 3, "avgDaysToCompleteIssue");
+    const { w, h } = renderCanvas(canvas, 218, (ctx, width, height) => {
+      const ml = 62, mr = 20, mt = 17, mb = 36;
       const plotW = width - ml - mr, plotH = height - mt - mb;
-      const axisMax = niceMax(Math.max(1, ...visible.map(r => r.avgDaysToCompleteIssue ?? r.avgDaysToFirstIssue), ...visibleWithMA.map(r => r.movingAvg || 0)));
-      const step = plotW / Math.max(1, visible.length);
+      const axisMax = niceMax(Math.max(1, ...effectiveVisible.map(r => r.avgDaysToCompleteIssue ?? r.avgDaysToFirstIssue), ...visibleWithMA.map(r => r.movingAvg || 0)));
+      const step = plotW / Math.max(1, effectiveVisible.length);
       const barW = Math.max(12, Math.min(28, step * 0.56));
       const xFor = i => ml + step * i + step / 2;
       const yFor = v => mt + plotH - (Number(v) || 0) / axisMax * plotH;
       ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--grid").trim();
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
-      ctx.font = "11px " + getComputedStyle(document.documentElement).getPropertyValue("--mono").trim();
+      ctx.fillStyle = "#5f6b80";
+      ctx.font = chartFont(14, 540);
       ctx.textAlign = "right";
       for (let i = 0; i <= 4; i++){
         const y = mt + plotH * i / 4;
@@ -2869,7 +3667,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         ctx.setLineDash([]);
         ctx.fillText(fmtAxis(axisMax * (1 - i / 4)), ml - 8, y + 4);
       }
-      visible.forEach((r, i) => {
+      effectiveVisible.forEach((r, i) => {
         const x = xFor(i);
         const avg = r.avgDaysToCompleteIssue ?? r.avgDaysToFirstIssue ?? 0;
         const y = yFor(avg);
@@ -2899,36 +3697,38 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         ctx.lineWidth = 1.8;
         ctx.stroke();
       });
-      const tickStep = visible.length > 6 ? Math.ceil(visible.length / 6) : 1;
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
-      drawXAxisLabels(ctx, visible, xFor, height - 14, tickStep, { lastPadding: 16 });
+      const tickStep = effectiveVisible.length > 6 ? Math.ceil(effectiveVisible.length / 6) : 1;
+      ctx.fillStyle = "#69758a";
+      ctx.font = chartFont(14, 540);
+      drawXAxisLabels(ctx, effectiveVisible, xFor, height - 14, tickStep, { lastPadding: 16 });
     });
 
-    const ml = 56, mr = 22, plotW = w - ml - mr, step = plotW / Math.max(1, visible.length);
+    const ml = 62, mr = 20, plotW = w - ml - mr, step = plotW / Math.max(1, effectiveVisible.length);
     canvas.onmousemove = e => {
-      if (!visible.length) return;
+      if (!effectiveVisible.length) return;
       const rect = canvas.getBoundingClientRect();
       const mx = e.clientX - rect.left;
       let idx = 0, best = Infinity;
-      for (let i = 0; i < visible.length; i++){
+      for (let i = 0; i < effectiveVisible.length; i++){
         const x = ml + step * i + step / 2;
         const d = Math.abs(x - mx);
         if (d < best){ best = d; idx = i; }
       }
-      const r = visible[idx];
+      const r = effectiveVisible[idx];
       const ma = visibleWithMA[idx] ? visibleWithMA[idx].movingAvg || 0 : 0;
       const avg = r.avgDaysToCompleteIssue ?? r.avgDaysToFirstIssue ?? 0;
       setTip(
-        `<div class="tipTitle">${esc(r.label)}</div><div class="tipLine">Avg complete issue time: ${daysFmt.format(avg)}d</div><div class="tipLine">3M moving average: ${daysFmt.format(ma)}d</div>`,
+        `<div class="tipTitle">${esc(r.label)}</div><div class="tipLine">Monthly avg complete issue time: ${daysFmt.format(avg)}d</div><div class="tipLine">3M moving average: ${daysFmt.format(ma)}d</div>`,
         e.clientX, e.clientY
       );
     };
     canvas.onmouseleave = hideTip;
   }
 
-  function renderAging(latest, currentTickets){
-    const agingBuckets = Array.isArray(currentTickets) && currentTickets.length
-      ? materialAgingFromTickets(currentTickets, latest.asOf)
+  function renderAging(latest, currentSummary=null){
+    const summaryBuckets = currentSummary?.agingBuckets || null;
+    const agingBuckets = agingBucketTotal(summaryBuckets) > 0
+      ? summaryBuckets
       : (latest.agingBuckets || {"0-7": 0, "8-14": 0, "15-30": 0, "30+": 0});
     const maxBucket = Math.max(
       agingBuckets["0-7"] || 0,
@@ -2992,7 +3792,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     if (!series.length){
       renderCanvas(canvas, 260, (ctx) => {
         ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
-        ctx.font = "12px " + getComputedStyle(document.documentElement).getPropertyValue("--mono").trim();
+      ctx.font = chartFont(14, 540);
         ctx.fillText("No cost data found.", 18, 28);
       });
       return;
@@ -3008,8 +3808,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       mono: getComputedStyle(document.documentElement).getPropertyValue("--mono").trim(),
     };
 
-    renderCanvas(canvas, 290, (ctx, width, height) => {
-      const ml = 60, mr = 20, mt = 18, mb = 42;
+    renderCanvas(canvas, 260, (ctx, width, height) => {
+      const ml = 68, mr = 18, mt = 16, mb = 38;
       const plotW = width - ml - mr;
       const plotH = height - mt - mb;
       const values = series.flatMap(row => [Number(row.cost) || 0, Number(row.poCost) || 0])
@@ -3044,8 +3844,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
 
       ctx.clearRect(0, 0, width, height);
       ctx.strokeStyle = colors.grid;
-      ctx.fillStyle = colors.inkFaint;
-      ctx.font = "11px " + colors.mono;
+      ctx.fillStyle = "#5f6b80";
+      ctx.font = chartFont(14, 540);
       ctx.textAlign = "right";
       for (let i = 0; i <= 4; i++){
         const t = i / 4;
@@ -3076,23 +3876,17 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         ctx.stroke();
       }
 
-      ctx.fillStyle = colors.inkFaint;
+      ctx.fillStyle = "#69758a";
+      ctx.font = chartFont(14, 540);
       ctx.textAlign = "center";
       const labelStep = Math.max(1, Math.ceil(series.length / 8));
-      for (let i = 0; i < series.length; i += labelStep){
-        ctx.fillText(series[i].label, xFor(i), height - 14);
-      }
-      if (series.length > 1 && ((series.length - 1) % labelStep) !== 0){
-        const last = series.length - 1;
-        ctx.textAlign = "right";
-        ctx.fillText(series[last].label, xFor(last), height - 14);
-      }
+      drawXAxisLabels(ctx, series, xFor, height - 14, labelStep, { lastPadding: 16 });
     });
 
     canvas.onmousemove = e => {
       if (!series.length) return;
       const rect = canvas.getBoundingClientRect();
-      const ml = 60, mr = 20, plotW = rect.width - ml - mr, step = plotW / Math.max(1, series.length);
+      const ml = 68, mr = 18, plotW = rect.width - ml - mr, step = plotW / Math.max(1, series.length);
       const mx = e.clientX - rect.left;
       let idx = 0, best = Infinity;
       for (let i = 0; i < series.length; i++){
@@ -3111,7 +3905,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     canvas.onmouseleave = hideTip;
   }
 
-  function renderCost(report, latest, currentTickets){
+  function renderCost(report, latest, currentTickets, currentSummary=null){
     const reportMonths = report && Array.isArray(report.months) ? report.months : [];
     // Period label mirrors the costBadge wording so the summary cards and
     // footer stay in sync when periodStart changes in Firebase (e.g. once
@@ -3140,6 +3934,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     const lineSeries = reportSeries.length ? reportSeries : fallbackSeries;
     const ticketCount = Array.isArray(currentTickets) && currentTickets.length
       ? currentTickets.length
+      : currentSummary
+        ? n(currentSummary.ticketCount)
       : (latest?.partsCost?.soCount || 0);
     const totalPeriodCost = report?.totalCost || latest.partsCost?.total || 0;
     const totalCardCount = ticketCount || latest?.partsCost?.soCount || 0;
@@ -3212,7 +4008,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     els.flowFoot.textContent = `Parts selected ${state.granularity.toUpperCase()} table by unique SO - ${visible.length} visible rows - latest period ${visible[visible.length - 1].tooltip}.`;
     const issuedVisible = issuedSeries;
     els.issuedFoot.textContent = `${issuedVisible.length} visible points - ${monthSeriesRange(issuedVisible)}`;
-    els.leadFoot.textContent = `${leadSeries.length} monthly points - ${monthSeriesRange(leadSeries)} - snapshot ${fmtDate(parseDate(latest.asOf))}`;
+    els.leadFoot.textContent = "";
   }
 
   function renderControls(){
@@ -3232,7 +4028,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
   }
 
   async function loadHistory(){
-    const res = await fetch(freshJsonUrl(FB_HISTORY), { cache: "no-store" });
+    const res = await fetchWithTimeout(freshJsonUrl(FB_HISTORY), { cache: "no-store" }, 12000);
     if (!res.ok) throw new Error(`Firebase HTTP ${res.status}`);
     const data = await res.json();
     const raw = Array.isArray(data) ? data : Object.values(data || {});
@@ -3252,14 +4048,16 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     }
 
     const latest = state.history[state.history.length - 1];
-    const series = state.currentTickets && state.currentTickets.length
-      ? buildUniqueSeriesFromTickets(state.currentTickets, state.granularity, ticket => parseLooseDate(ticket.soCreatedDate), "partsSelected")
-      : buildSeries(state.history, state.granularity);
-    const issuedSeries = state.currentTickets && state.currentTickets.length
-      ? buildIssuedMaterialSeriesFromTickets(state.currentTickets, "month")
-      : buildSeries(state.history, "month");
+    const currentSummary = state.currentSummary;
+    const summarySeriesRaw = currentSummary?.seriesByGranularity?.[state.granularity] || [];
+    const summarySeries = hasMeaningfulSeries(summarySeriesRaw, "partsSelected") ? summarySeriesRaw : [];
+    const series = summarySeries.length ? summarySeries : buildSeries(state.history, state.granularity);
+    const summaryIssuedSeriesRaw = currentSummary?.issuedSeriesMonth || [];
+    const summaryIssuedSeries = hasMeaningfulIssuedSeries(summaryIssuedSeriesRaw) ? summaryIssuedSeriesRaw : [];
+    const issuedSeries = summaryIssuedSeries.length ? summaryIssuedSeries : buildSeries(state.history, "month");
     const normalizedIssuedSeries = padMonthlySeriesFromStart(issuedSeries, FLOW_MONTHLY_START);
-    const leadSeries = buildMonthlyIssuedLeadSeries(latest);
+    const leadSeriesAll = buildEffectiveMonthlyLeadSeries(latest, currentSummary, state.currentTickets);
+    const leadSeries = currentYearMonthlySeries(leadSeriesAll, latest);
     const latestGroup = series[series.length - 1] || null;
     state.latest = latest;
     state.groups = series;
@@ -3277,50 +4075,95 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         : `Since 2025-07`;
 
     const costReport = latest.costReport || state.costReport;
-    renderCards(latest, latestGroup, normalizedIssuedSeries, costReport, state.currentTickets);
+    renderCards(latest, latestGroup, normalizedIssuedSeries, costReport, currentSummary, leadSeries);
     drawIssuedChart(normalizedIssuedSeries);
-    drawLeadChart(latest);
-    renderAging(latest, state.currentTickets);
-    renderCost(costReport, latest, state.currentTickets);
+    drawLeadChart(latest, currentSummary, state.currentTickets);
+    renderAging(latest, currentSummary);
+    renderCost(costReport, latest, state.currentTickets, currentSummary);
     renderFooter(series, latest, normalizedIssuedSeries, leadSeries);
   }
 
   (async () => {
-    const cacheVersion = await deliveryPageVersion();
+    let cacheVersion = "";
     try{
-      const cached = await window.WarrantyPageCache.getPage(DELIVERY_PAGE_CACHE_KEY,cacheVersion);
-      if(restoreDeliveryPageState(cached,cacheVersion))return;
-    }catch(e){console.warn("Delivery page cache restore failed",e);}
-    Promise.allSettled([loadHistory(), loadCurrentTickets()]).then(results => {
-    const historyResult = results[0];
-    const ticketsResult = results[1];
-    if (historyResult.status === "fulfilled") {
-      state.history = historyResult.value;
-      state.costReport = state.history.length ? (state.history[state.history.length - 1].costReport || null) : null;
+      cacheVersion = await withTimeoutPromise(deliveryPageVersion(), 10000, "Delivery page version");
+    }catch(e){
+      console.warn("Delivery page version failed", e);
+      cacheVersion = "local";
     }
-    if (ticketsResult.status === "fulfilled") {
-      state.currentTickets = ticketsResult.value;
+    try{
+      if (window.WarrantyPageCache){
+        const cached = await withTimeoutPromise(
+          window.WarrantyPageCache.getPage(DELIVERY_PAGE_CACHE_KEY, cacheVersion),
+          5000,
+          "Delivery page cache restore"
+        );
+        if (restoreDeliveryPageState(cached, cacheVersion)) {
+          refreshCurrentTicketsSummary(cacheVersion);
+          return;
+        }
+      }
+    }catch(e){
+      console.warn("Delivery page cache restore failed", e);
     }
-    if (!state.history.length){
-      throw new Error("No history data");
+    try{
+      const results = await Promise.allSettled([
+        withTimeoutPromise(loadHistory(), 15000, "Delivery history"),
+        withTimeoutPromise(loadCurrentSummary(), 15000, "Delivery summary"),
+        withTimeoutPromise(loadCurrentTickets(), 15000, "Delivery ticket details"),
+      ]);
+      const historyResult = results[0];
+      const summaryResult = results[1];
+      const ticketsResult = results[2];
+      if (historyResult.status === "fulfilled") {
+        state.history = historyResult.value;
+        state.costReport = state.history.length ? (state.history[state.history.length - 1].costReport || null) : null;
+      }
+      if (summaryResult.status === "fulfilled") {
+        state.currentSummary = summaryResult.value;
+      }
+      if (ticketsResult.status === "fulfilled" && Array.isArray(ticketsResult.value) && ticketsResult.value.length) {
+        state.currentTickets = ticketsResult.value;
+        const latestHistory = state.history[state.history.length - 1] || null;
+        if (latestHistory) {
+          const liveSummary = buildCurrentTicketsSummary(state.currentTickets, latestHistory);
+          state.currentSummary = mergeCurrentSummary(state.currentSummary, liveSummary);
+        }
+      }
+      if (!state.history.length){
+        throw new Error("No history data");
+      }
+      const latestHistory = state.history[state.history.length - 1] || null;
+      if (latestHistory && !hasMeaningfulLeadSeries(buildEffectiveMonthlyLeadSeries(latestHistory, state.currentSummary, state.currentTickets))){
+        try{
+          const localRows = await withTimeoutPromise(loadCurrentTicketsFromLocalClassified(), 12000, "Local classified lead-series rebuild");
+          if (Array.isArray(localRows) && localRows.length){
+            const localSummary = buildCurrentTicketsSummary(localRows, latestHistory);
+            state.currentSummary = mergeCurrentSummary(state.currentSummary, localSummary);
+            if (!hasUsableTicketDetails(state.currentTickets)) state.currentTickets = localRows;
+          }
+        }catch(err){
+          console.warn("Initial local classified lead-series rebuild failed", err);
+        }
+      }
+      render();
+      saveDeliveryPageState(cacheVersion);
+      if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"fresh");
+      refreshCurrentTicketsSummary(cacheVersion);
+    }catch(err){
+      els.snapshotPill.innerHTML = `<strong>Latest</strong> unavailable`;
+      els.kpis.innerHTML = "";
+      els.agingGrid.innerHTML = `<div class="hint">Unable to load delivery-flow history: ${esc(err.message)}</div>`;
+      els.flowFoot.textContent = "Unable to load delivery-flow history.";
+      els.leadFoot.textContent = "Unable to load delivery-flow history.";
+    }finally{
+      setPageLoading(false);
     }
-    render();
-    saveDeliveryPageState(cacheVersion);
-    if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"fresh");
-  }).catch(err => {
-    els.snapshotPill.innerHTML = `<strong>Latest</strong> unavailable`;
-    els.kpis.innerHTML = "";
-    els.agingGrid.innerHTML = `<div class="hint">Unable to load delivery-flow history: ${esc(err.message)}</div>`;
-    els.flowFoot.textContent = "Unable to load delivery-flow history.";
-    els.leadFoot.textContent = "Unable to load delivery-flow history.";
-  }).finally(() => {
-    setPageLoading(false);
-  });
   })();
 
   window.addEventListener("resize", () => {
     if (!state.history.length) return;
-    if (state.latest) drawLeadChart(state.latest);
+    if (state.latest) drawLeadChart(state.latest, state.currentSummary, state.currentTickets);
   });
 })();
 </script>

@@ -60,7 +60,7 @@ SAP_CLIENT = os.getenv("SAP_CLIENT", "800")
 APPROVED_COST_PO_PURCHASING_ORG = os.getenv("APPROVED_COST_PO_PURCHASING_ORG", os.getenv("PURCHASING_ORG", "3111"))
 APPROVED_COST_PO_PURCHASING_GROUP = os.getenv("APPROVED_COST_PO_PURCHASING_GROUP", os.getenv("PURCHASING_GROUP", "E06"))
 APPROVED_COST_PO_PLANT_FILTER = os.getenv("APPROVED_COST_PO_PLANT_FILTER", "").strip()
-APPROVED_COST_EXCLUDE_DELETED_PO = os.getenv("APPROVED_COST_EXCLUDE_DELETED_PO", "false").strip().lower() in {"1", "true", "yes", "y"}
+APPROVED_COST_EXCLUDE_DELETED_PO = os.getenv("APPROVED_COST_EXCLUDE_DELETED_PO", "true").strip().lower() in {"1", "true", "yes", "y"}
 HANA_OPERATION_RETRIES = max(1, int(os.getenv("HANA_OPERATION_RETRIES", "3")))
 HANA_RETRY_SLEEP_SECONDS = max(0.0, float(os.getenv("HANA_RETRY_SLEEP_SECONDS", "5")))
 ROOT_DIR = Path(__file__).resolve().parent
@@ -69,6 +69,8 @@ VEHICLE_BASE_SUMMARY_PATH = OUTPUTS_DIR / "analysis_vehicle_base_summary.json"
 VEHICLE_BASE_SUMMARY_JS_PATH = OUTPUTS_DIR / "analysis_vehicle_base_summary.js"
 PARTS_TICKET_COST_MAP_PATH = OUTPUTS_DIR / "analysis_parts_ticket_cost_map.json"
 PARTS_TICKET_COST_MAP_JS_PATH = OUTPUTS_DIR / "analysis_parts_ticket_cost_map.js"
+APPROVED_COST_CACHE_PATH = OUTPUTS_DIR / "analysis_approved_cost_by_ticket.json"
+APPROVED_COST_CACHE_JS_PATH = OUTPUTS_DIR / "analysis_approved_cost_by_ticket.js"
 ANALYSIS_TICKET_CSV_PATH = OUTPUTS_DIR / "analysis_ticket_base.csv"
 LEGACY_ANALYSIS_TICKET_CSV_PATH = ROOT_DIR / "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv"
 ANALYSIS_TICKET_CSV_JS_PATH = OUTPUTS_DIR / "analysis_ticket_csv.js"
@@ -531,8 +533,10 @@ def iso_utc_now() -> str:
 
 
 KNOWN_SERIES_CODES = [
-    "SRC", "SRH", "SRT", "SRM", "SRP", "SRL", "SRV",
-    "LRV", "LRT", "LRH", "LRP", "LRL", "LRC", "LTR", "LVR", "LPV", "LEP", "RRV",
+    "SRC", "SRH", "SRT", "SRM", "SRP", "SRL", "SRV", "SRS",
+    "NGB", "NG",
+    "LRV", "LRT", "LRH", "LRM", "LRP", "LRL", "LRS", "LRC", "LTR", "LVR", "LPV", "LEP",
+    "RRV", "RV",
 ]
 EXCLUDED_SERIES_CODES = {"UNKNOWN", "RO", "SR", "SCR", "STR", "RVV", "RR", "SPV", "SRO", "SEV", "RRC"}
 
@@ -659,6 +663,25 @@ def write_js_global(
     for key, value in (extra_globals or {}).items():
         lines.append(f"globalThis.{key} = {json.dumps(value, ensure_ascii=False)};")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def write_analysis_approved_cost_cache(report_payload: Dict[str, Any]) -> None:
+    if not isinstance(report_payload, dict) or not report_payload:
+        return
+    APPROVED_COST_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    APPROVED_COST_CACHE_PATH.write_text(
+        json.dumps(report_payload, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    write_js_global(APPROVED_COST_CACHE_JS_PATH, "ANALYSIS_APPROVED_COST_BY_TICKET", report_payload)
+    by_ticket = report_payload.get("byTicket") if isinstance(report_payload.get("byTicket"), dict) else {}
+    summary = report_payload.get("summary") if isinstance(report_payload.get("summary"), dict) else {}
+    logger.info(
+        "Wrote refreshed approved-cost cache: %s tickets, total=%s -> %s",
+        len(by_ticket),
+        summary.get("totalAmount", 0),
+        APPROVED_COST_CACHE_PATH,
+    )
 
 
 ANALYSIS_TICKET_CSV_HEADERS = [
@@ -946,7 +969,10 @@ def resolve_parts_classified_csv_path() -> Optional[Path]:
     return None
 
 
-def refresh_analysis_offline_assets(vehicle_base_summary: Optional[Dict[str, Any]] = None) -> None:
+def refresh_analysis_offline_assets(
+    vehicle_base_summary: Optional[Dict[str, Any]] = None,
+    approved_cost_payload: Optional[Dict[str, Any]] = None,
+) -> None:
     try:
         summary_payload = vehicle_base_summary
         if summary_payload is None and VEHICLE_BASE_SUMMARY_PATH.exists():
@@ -962,6 +988,15 @@ def refresh_analysis_offline_assets(vehicle_base_summary: Optional[Dict[str, Any
             write_js_global(PARTS_TICKET_COST_MAP_JS_PATH, "ANALYSIS_PARTS_TICKET_COST_MAP", cost_payload)
     except Exception as exc:
         logger.warning("Failed to write parts ticket cost JS fallback: %s", exc)
+
+    try:
+        cost_payload = approved_cost_payload
+        if cost_payload is None and APPROVED_COST_CACHE_PATH.exists():
+            cost_payload = json.loads(APPROVED_COST_CACHE_PATH.read_text(encoding="utf-8"))
+        if isinstance(cost_payload, dict) and cost_payload:
+            write_analysis_approved_cost_cache(cost_payload)
+    except Exception as exc:
+        logger.warning("Failed to write approved-cost JSON/JS fallback: %s", exc)
 
     try:
         ticket_csv_path = ANALYSIS_TICKET_CSV_PATH if ANALYSIS_TICKET_CSV_PATH.exists() else LEGACY_ANALYSIS_TICKET_CSV_PATH
@@ -1626,7 +1661,7 @@ ORDER BY
 
 def fetch_vehicle_base_summary(
     conn,
-    cutoff_yyyymmdd: str = "20250101",
+    cutoff_yyyymmdd: str = "19000101",
 ) -> Dict[str, Any]:
     """Comprehensive baseline: valid-PGI sales, in-stock
     (at plant 3111 LGORT 0024/0026), and in-transit (open POs, no GR yet).
@@ -1634,8 +1669,8 @@ def fetch_vehicle_base_summary(
     Returns both sales-only and broader denominator bases per series, plus
     per-chassis PGI dates so
     the analysis dashboard can:
-      - compute sales / repair-rate metrics against 2025+ valid PGI sold
-        vehicles only, and
+      - compute sales / repair-rate metrics against cumulative sold vehicles
+        using the same model-series classification as tickets, and
       - keep a wider pipeline/base view available (sold + in-stock +
         in-transit healthy vehicles never seen in tickets), and
       - resolve failure timing (delivery→ticket days) via chassis→PGI even
@@ -1832,6 +1867,7 @@ WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
     series_base_in_stock: Dict[str, int] = {}
     series_base_in_transit: Dict[str, int] = {}
     series_base_total: Dict[str, int] = {}
+    series_sales_by_month: Dict[str, Dict[str, int]] = {}
     pgi_by_chassis: Dict[str, str] = {}
     for serial, info in chassis_map.items():
         s = info.get("series", "UNKNOWN")
@@ -1839,6 +1875,10 @@ WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
         series_base_total[s] = series_base_total.get(s, 0) + 1
         if status == "shipped":
             series_base_shipped[s] = series_base_shipped.get(s, 0) + 1
+            pgi_month = (info.get("pgi") or "")[:7]
+            if pgi_month:
+                month_bucket = series_sales_by_month.setdefault(pgi_month, {})
+                month_bucket[s] = month_bucket.get(s, 0) + 1
         elif status == "inStock":
             series_base_in_stock[s] = series_base_in_stock.get(s, 0) + 1
         elif status == "inTransit":
@@ -1857,11 +1897,24 @@ WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
     def _sorted(d: Dict[str, int]) -> Dict[str, int]:
         return dict(sorted(d.items()))
 
+    series_sales_cumulative_by_month: Dict[str, Dict[str, int]] = {}
+    running_sales_by_series: Dict[str, int] = {}
+    for month in sorted(series_sales_by_month.keys()):
+        for series, count in series_sales_by_month[month].items():
+            running_sales_by_series[series] = running_sales_by_series.get(series, 0) + count
+        series_sales_cumulative_by_month[month] = _sorted(running_sales_by_series.copy())
+
     payload: Dict[str, Any] = {
         "generatedAt": iso_utc_now(),
         "cutoff": f"{cutoff_yyyymmdd[:4]}-{cutoff_yyyymmdd[4:6]}-{cutoff_yyyymmdd[6:]}",
-        # Sales-only base: valid PGI vehicles after the cutoff.
+        # Sales-only base: valid PGI vehicles after the cutoff. For the model
+        # page this cutoff is intentionally historical, because 2026 tickets can
+        # belong to vans sold in earlier years.
         "seriesSales": _sorted(series_base_shipped),
+        "seriesSalesByMonth": {
+            month: _sorted(bucket) for month, bucket in sorted(series_sales_by_month.items())
+        },
+        "seriesSalesCumulativeByMonth": series_sales_cumulative_by_month,
         # Broader denominator: valid PGI sold + in-stock + in-transit.
         "seriesBase": _sorted(series_base_total),
         # Breakdown so the UI can show how the denominator was composed.
@@ -1881,8 +1934,8 @@ WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
         # was missing.
         "pgiByChassis": pgi_by_chassis,
         # Vehicle-series mappings derived from SAP sales-order / chassis joins.
-        # The dashboard uses these first so Model Series no longer depends
-        # primarily on fuzzy parsing of ticket text.
+        # The dashboard keeps ticket fields first and uses these only as a
+        # fallback when the ticket itself does not expose a usable model code.
         "seriesByChassis": dict(sorted(series_by_chassis.items())),
         "seriesBySalesOrder": dict(sorted(series_by_sales_order.items())),
         # Sales-order-level PGI dates (fallback when only the SO is known).
@@ -3435,6 +3488,7 @@ def write_approved_cost_sidecar(report_payload: Dict[str, Any]) -> None:
     base = f"{MONITOR_ROOT}/analytics/approvedCost/sapPoShortText"
     db.reference(f"{base}/daily/{day_key}").set(report_payload)
     db.reference(f"{base}/latest").set(report_payload)
+    write_analysis_approved_cost_cache(report_payload)
     logger.info(
         "Wrote Approved Cost SAP PO Short Text sidecar (tickets=%s, total=%s)",
         report_payload.get("summary", {}).get("ticketCount", 0),
@@ -3977,7 +4031,7 @@ def main():
     )
     vehicle_base_summary = run_hana_operation(
         "vehicle base summary",
-        lambda conn: fetch_vehicle_base_summary(conn, cutoff_yyyymmdd="20250101"),
+        lambda conn: fetch_vehicle_base_summary(conn, cutoff_yyyymmdd="19000101"),
     )
     approved_cost_payload = run_hana_operation(
         "approved cost SAP PO short text sidecar",
@@ -3988,7 +4042,7 @@ def main():
     logger.info("Vehicle dispatch matches by ticket serial/chassis: %s", len(direct_vehicle_dispatch_df))
     logger.info("Vehicle dispatch matches by sales order fallback: %s", len(sales_order_dispatch_df))
     logger.info(
-        "Vehicle base summary rows: %s, total vehicles since 2025-01-01: %s",
+        "Vehicle base summary rows: %s, total historical vehicles: %s",
         vehicle_base_summary.get("totalRows", 0),
         vehicle_base_summary.get("totalVehicles", 0),
     )
@@ -4022,7 +4076,7 @@ def main():
     upload_vehicle_dispatch_to_firebase(vehicle_dispatch_df)
     write_vehicle_base_summary(vehicle_base_summary)
     write_analysis_ticket_base_csv(new_snapshot, final_df)
-    refresh_analysis_offline_assets(vehicle_base_summary)
+    refresh_analysis_offline_assets(vehicle_base_summary, approved_cost_payload=approved_cost_payload)
     if approved_cost_payload:
         logger.info("Step 8A/9: Writing Approved Cost SAP PO Short Text sidecar to Firebase ...")
         write_approved_cost_sidecar(approved_cost_payload)

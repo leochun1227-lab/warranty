@@ -1,9 +1,39 @@
 import fs from "node:fs/promises";
 import { SpreadsheetFile, Workbook } from "@oai/artifact-tool";
 
-const source = JSON.parse(await fs.readFile("po_compare_source.json", "utf8"));
+const rawSource = JSON.parse(await fs.readFile("po_compare_source.json", "utf8"));
+const approvedCostPayload = await readJsonIfExists("outputs/analysis_approved_cost_by_ticket.json");
 const outputDir = "po_compare_output";
 await fs.mkdir(outputDir, { recursive: true });
+
+async function readJsonIfExists(path) {
+  try {
+    return JSON.parse(await fs.readFile(path, "utf8"));
+  } catch {
+    return {};
+  }
+}
+
+function normalizeTicketNumber(value) {
+  const digits = String(value ?? "").replace(/\D+/g, "");
+  return digits || "";
+}
+
+function approvedCostForTicket(value) {
+  const ticket = normalizeTicketNumber(value);
+  if (!ticket) return null;
+  const byTicket = approvedCostPayload?.byTicket || {};
+  const rec = byTicket[`ticket_${ticket}`] || byTicket[ticket] || null;
+  const amount = Number(rec?.amount ?? rec?.netOrderValue ?? 0);
+  return Number.isFinite(amount) && amount > 0 ? amount : null;
+}
+
+const source = rawSource.map((row) => {
+  const approvedCost = approvedCostForTicket(row.ticket);
+  return approvedCost == null
+    ? row
+    : { ...row, po_price: approvedCost, po_price_source: "analysis_approved_cost_by_ticket" };
+});
 
 function toDate(value) {
   if (!value || typeof value !== "string") return null;

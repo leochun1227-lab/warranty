@@ -620,7 +620,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--purchasing-org", default=os.getenv("PURCHASING_ORG", DEFAULT_PURCHASING_ORG))
     parser.add_argument("--purchasing-group", default=os.getenv("PURCHASING_GROUP", DEFAULT_PURCHASING_GROUP))
     parser.add_argument("--po-plant-filter", default=os.getenv("PO_PLANT_FILTER", ""))
-    parser.add_argument("--exclude-deleted-po", action="store_true", default=os.getenv("EXCLUDE_DELETED_PO", "").lower() in {"1", "true", "yes", "y"})
+    parser.add_argument("--exclude-deleted-po", action="store_true", default=os.getenv("EXCLUDE_DELETED_PO", "true").lower() in {"1", "true", "yes", "y"})
     parser.add_argument("--date-from", type=valid_date, default=os.getenv("APPROVED_DATE_FROM", ""))
     parser.add_argument("--date-to", type=valid_date, default=os.getenv("APPROVED_DATE_TO", ""))
     parser.add_argument(

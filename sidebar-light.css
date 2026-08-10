@@ -1,136 +1,169 @@
-/* Light blue sidebar refresh shared by dashboard pages. */
+/* Shared dark color sidebar refresh for dashboard pages. */
 :root{
-  --sidebar-bg:#fbfdff;
-  --sidebar-bg-soft:#f6faff;
-  --sidebar-line:#e3edf8;
-  --sidebar-ink:#1d2d44;
-  --sidebar-muted:#7890a8;
-  --sidebar-blue:#2f80ed;
-  --sidebar-blue-strong:#1d4ed8;
-  --sidebar-blue-soft:#e9f4ff;
-  --sidebar-blue-hover:#f2f8ff;
+  --sidebar-bg:#15164f;
+  --sidebar-bg-deep:#111346;
+  --sidebar-line:rgba(178,190,255,.18);
+  --sidebar-ink:#eef2ff;
+  --sidebar-muted:#a8afd2;
+  --sidebar-icon:#dfe6ff;
+  --sidebar-active:#5637ef;
+  --sidebar-active-2:#4a2ee3;
+  --sidebar-hover:rgba(255,255,255,.08);
 }
 
 .app{
-  grid-template-columns:256px 1fr!important;
+  grid-template-columns:228px minmax(0,1fr)!important;
 }
 
 .sidebar{
-  background:linear-gradient(180deg,var(--sidebar-bg) 0%,var(--sidebar-bg-soft) 100%)!important;
+  min-height:100vh!important;
+  padding:14px 10px!important;
   color:var(--sidebar-ink)!important;
+  background:linear-gradient(180deg,var(--sidebar-bg) 0%,var(--sidebar-bg-deep) 100%)!important;
   border-right:1px solid var(--sidebar-line)!important;
-  box-shadow:14px 0 34px rgba(30,64,120,.045)!important;
-  padding:22px 14px!important;
+  box-shadow:none!important;
   overflow:hidden!important;
 }
 
-.brandWrap{
-  padding:0 8px!important;
-  gap:11px!important;
-  margin-bottom:26px!important;
+.brandWrap,
+.brand{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  padding:0 6px!important;
+  margin:0 0 22px!important;
 }
 
-.brandMark{
+.brandMark,
+.brand-mark{
   width:34px!important;
   height:34px!important;
   border-radius:11px!important;
+  display:grid!important;
+  place-items:center!important;
   color:#fff!important;
-  background:linear-gradient(135deg,#7dd3fc 0%,#2f80ed 55%,#2563eb 100%)!important;
-  box-shadow:0 12px 24px rgba(47,128,237,.24)!important;
+  background:linear-gradient(135deg,#74b6ff 0%,#5d6cff 52%,#6d4aff 100%)!important;
+  box-shadow:0 14px 26px rgba(77,95,255,.28)!important;
 }
 
-.brandMark svg{
+.brandMark svg,
+.brand-mark svg,
+.brand-mark i{
+  width:16px!important;
+  height:16px!important;
   color:#fff!important;
   stroke:currentColor!important;
 }
 
-.brandText span{
-  color:#17233a!important;
+.brandText span,
+.brand-text b{
+  display:block!important;
+  color:#fff!important;
   font-size:15px!important;
-  font-weight:560!important;
-  letter-spacing:0!important;
+  font-weight:700!important;
+  letter-spacing:-.01em!important;
+  line-height:1.2!important;
 }
 
-.brandText small{
-  color:#6f839b!important;
+.brandText small,
+.brand-text span{
+  display:block!important;
+  margin-top:3px!important;
+  color:#c0c6e4!important;
   font-size:11px!important;
+  font-weight:500!important;
+  line-height:1.25!important;
 }
 
-.navSection{
-  color:#7fa0bd!important;
-  font-size:10px!important;
-  letter-spacing:3.2px!important;
-  margin:24px 8px 10px!important;
-  font-weight:560!important;
+.navSection,
+.nav-title{
+  margin:22px 8px 8px!important;
+  color:var(--sidebar-muted)!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  letter-spacing:.02em!important;
+  text-transform:uppercase!important;
 }
 
 .navBtn,
-.navLink{
-  min-height:40px!important;
+.navLink,
+.nav-link{
+  width:100%!important;
+  min-height:38px!important;
   display:flex!important;
   align-items:center!important;
-  gap:11px!important;
-  color:#34445c!important;
-  background:transparent!important;
+  gap:10px!important;
+  padding:0 10px!important;
   border:1px solid transparent!important;
-  border-radius:12px!important;
-  padding:0 12px!important;
-  font-size:13px!important;
-  font-weight:500!important;
-  letter-spacing:0!important;
+  border-radius:11px!important;
+  background:transparent!important;
+  color:#dce2f8!important;
   box-shadow:none!important;
+  text-decoration:none!important;
+  text-align:left!important;
+  font-size:12.5px!important;
+  font-weight:700!important;
+  letter-spacing:0!important;
   transform:none!important;
 }
 
 .navBtn svg,
-.navLink svg{
-  width:17px!important;
-  height:17px!important;
-  color:#8ba1b7!important;
+.navLink svg,
+.nav-link svg,
+.nav-link i{
+  width:16px!important;
+  height:16px!important;
+  color:var(--sidebar-icon)!important;
   stroke:currentColor!important;
+  flex:0 0 auto!important;
 }
 
 .navBtn:hover,
-.navLink:hover{
-  background:var(--sidebar-blue-hover)!important;
-  border-color:#d8e9fb!important;
-  color:var(--sidebar-blue-strong)!important;
+.navLink:hover,
+.nav-link:hover{
+  background:var(--sidebar-hover)!important;
+  color:#fff!important;
+  border-color:transparent!important;
   transform:none!important;
 }
 
 .navBtn:hover svg,
-.navLink:hover svg{
-  color:var(--sidebar-blue)!important;
+.navLink:hover svg,
+.nav-link:hover svg,
+.nav-link:hover i{
+  color:#fff!important;
 }
 
 .navBtn.active,
-.navLink.active{
-  background:linear-gradient(180deg,#f4f9ff 0%,var(--sidebar-blue-soft) 100%)!important;
-  border-color:#c7e0ff!important;
-  color:#2257c5!important;
-  font-weight:540!important;
-  box-shadow:0 8px 18px rgba(47,128,237,.10), inset 3px 0 0 #7ab5ff!important;
+.navLink.active,
+.nav-link.active{
+  color:#fff!important;
+  background:linear-gradient(180deg,var(--sidebar-active) 0%,var(--sidebar-active-2) 100%)!important;
+  border-color:rgba(217,224,255,.92)!important;
+  box-shadow:0 16px 30px rgba(49,35,181,.24), inset 0 1px 0 rgba(255,255,255,.18)!important;
 }
 
 .navBtn.active svg,
-.navLink.active svg{
-  color:var(--sidebar-blue)!important;
+.navLink.active svg,
+.nav-link.active svg,
+.nav-link.active i{
+  color:#fff!important;
 }
 
 .navDivider{
   height:1px!important;
+  margin:18px 8px!important;
   background:var(--sidebar-line)!important;
-  margin:20px 8px!important;
 }
 
 .sideHiddenDealer{
-  background:#eef7ff!important;
-  border:1px solid #d4e8ff!important;
-  color:#2563eb!important;
+  background:rgba(255,255,255,.08)!important;
+  border:1px solid var(--sidebar-line)!important;
+  color:#eef2ff!important;
 }
 
 @media(max-width:1120px){
-  .app{grid-template-columns:240px 1fr!important}
+  .app{grid-template-columns:220px minmax(0,1fr)!important}
 }
 
 @media(max-width:900px){

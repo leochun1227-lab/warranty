@@ -26,6 +26,8 @@ PARTS_SOURCE_CSV = OUTPUT_DIR / "parts_classification_source.csv"
 PARTS_CLASSIFIED_FLAT_CSV = OUTPUT_DIR / "parts_classified.csv"
 PARTS_CLASSIFIED_STABLE_META = OUTPUT_DIR / "parts_classified_meta.json"
 PARTS_CLASSIFIED_DATA_JS = OUTPUT_DIR / "parts_classified_data.js"
+PARTS_DERIVED_CACHE_JSON = OUTPUT_DIR / "analysis_parts_derived_cache.json"
+PARTS_DERIVED_CACHE_JS = OUTPUT_DIR / "analysis_parts_derived_cache.js"
 PARTS_CLASSIFICATION_NODE_HEAP_MB = 8192
 
 DEFAULT_FIREBASE_DB_URL = os.getenv(
@@ -209,6 +211,13 @@ def write_parts_classified_js_fallback() -> None:
     )
 
 
+def write_parts_derived_cache_js_fallback() -> None:
+    if not PARTS_DERIVED_CACHE_JSON.exists():
+        return
+    payload = json.loads(PARTS_DERIVED_CACHE_JSON.read_text(encoding="utf-8"))
+    write_js_global(PARTS_DERIVED_CACHE_JS, "ANALYSIS_PARTS_DERIVED_CACHE", payload)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--firebase-db-url", default=DEFAULT_FIREBASE_DB_URL)
@@ -306,6 +315,10 @@ def main() -> int:
         env=env,
     )
 
+    run_command([node_exe, "build_repairers_fast_cache.mjs"], "Repair fast cache build", env=env)
+
+    run_command([node_exe, "build_analysis_model_mtm_cache.mjs"], "Model MTM cache build", env=env)
+
     run_command(
         [
             sys.executable,
@@ -347,6 +360,7 @@ def main() -> int:
     write_parts_cost_js_fallback()
     write_approved_cost_js_fallback()
     write_parts_classified_js_fallback()
+    write_parts_derived_cache_js_fallback()
     sync_page_assets_to_firebase(env, args)
     logger.info("Model-series assets rebuild completed successfully, including repair, parts, and approved-cost outputs.")
     return 0

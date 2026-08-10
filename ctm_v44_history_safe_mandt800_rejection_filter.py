@@ -63,6 +63,8 @@ CRITICAL_FALLBACK_CODES = {"Y6", "YA", "YC", "Z1", "Z2", "Z3", "Z4", "Z5", "Z6",
 DASHBOARD_MIN_DATE = "2026-05-25"
 CLAIM_MONTHLY_MIN_DATE = "2025-01-01"
 CLEAR_TARGET_CRITICAL = 300
+PO_CLAIM_SANITY_MIN_PO_AUD = float(os.getenv("PO_CLAIM_SANITY_MIN_PO_AUD", "50000"))
+PO_CLAIM_SANITY_RATIO = float(os.getenv("PO_CLAIM_SANITY_RATIO", "10"))
 IN_FIELD_KEYWORDS = ["in field", "in-field", "infield", "field warranty"]
 PRE_DELIVERY_KEYWORDS = ["pre delivery", "pre-delivery", "predelivery", "pdi"]
 CLAIM_TYPE_SEARCH_FIELDS = [
@@ -265,6 +267,19 @@ def parse_amount(v: Any) -> float:
         return 0.0
 
 
+def approved_cost_after_sanity_check(ticket_or_snapshot: Dict[str, Any], sap_amount: Any) -> float:
+    amount = parse_amount(sap_amount)
+    current = parse_amount(
+        (ticket_or_snapshot or {}).get("amount")
+        or (ticket_or_snapshot or {}).get("AmountIncludingTax")
+        or (ticket_or_snapshot or {}).get("ClaimTotalAmount")
+        or (ticket_or_snapshot or {}).get("Claim Total Amount")
+    )
+    if amount >= PO_CLAIM_SANITY_MIN_PO_AUD and current > 0 and amount / current >= PO_CLAIM_SANITY_RATIO:
+        return round(current, 2)
+    return amount
+
+
 def stable_hash(obj: Any) -> str:
     raw = json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
     return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
@@ -455,6 +470,8 @@ def ticket_status_text(ticket_or_snapshot: Dict[str, Any]) -> str:
 def is_approved_status(ticket_or_snapshot: Dict[str, Any]) -> bool:
     code = ticket_status_code(ticket_or_snapshot)
     text = ticket_status_text(ticket_or_snapshot)
+    if "reimbursement required" in text:
+        return True
     if not text and code not in APPROVED_C4C_STATUS_CODES:
         return False
     if "approved claims closed" in text or ("closed" in text and "approved" in text):
@@ -471,10 +488,12 @@ def is_closed_approved_status(ticket_or_snapshot: Dict[str, Any]) -> bool:
 def is_unapproved_ticket(ticket_or_snapshot: Dict[str, Any]) -> bool:
     code = ticket_status_code(ticket_or_snapshot)
     text = ticket_status_text(ticket_or_snapshot)
-    return code == "Y8" or text in {"unapproved claims closed", "unapproved claims closed (closed)"}
+    return code == "Y8" or "van recalled" in text or text in {"unapproved claims closed", "unapproved claims closed (closed)"}
 
 
 def is_c4c_approved_ticket(ticket_or_snapshot: Dict[str, Any]) -> bool:
+    if "reimbursement required" in ticket_status_text(ticket_or_snapshot):
+        return True
     return bool(ticket_claim_approved_on_value(ticket_or_snapshot)) and is_approved_status(ticket_or_snapshot)
 
 
@@ -501,7 +520,33 @@ def approval_decision_value_and_source(ticket_or_snapshot: Dict[str, Any]) -> tu
     decision = approval_decision(ticket_or_snapshot)
     if decision == "approved":
         claim_value = ticket_claim_approved_on_value(ticket_or_snapshot)
-        return (claim_value, "claim_approved_on") if claim_value else ("", "")
+        if claim_value:
+            return claim_value, "claim_approved_on"
+        if "reimbursement required" in ticket_status_text(ticket_or_snapshot):
+            resolved_value = ticket_resolved_on_value(ticket_or_snapshot)
+            changed_value = ticket_changed_on_value(ticket_or_snapshot)
+            value = first_nonempty_value(
+                resolved_value,
+                changed_value,
+                ticket_or_snapshot.get("decisionTime"),
+                ticket_or_snapshot.get("approvalDecisionDate"),
+                ticket_or_snapshot.get("lastUpdateDate"),
+                ticket_or_snapshot.get("LastUpdateDateTime"),
+                ticket_or_snapshot.get("Last Updated Date Time"),
+                ticket_or_snapshot.get("LastUpdatedDateTime"),
+                ticket_or_snapshot.get("LastUpdateOn"),
+                ticket_or_snapshot.get("LastChangedOn"),
+                ticket_or_snapshot.get("LastChangeDateTime"),
+                ticket_created_on_day(ticket_or_snapshot),
+                legacy_csv_created_on_for_ticket(ticket_or_snapshot),
+            )
+            if value:
+                if resolved_value:
+                    return value, "resolved_on_reimbursement_required"
+                if changed_value:
+                    return value, "changed_on_reimbursement_required"
+                return value, "reimbursement_required_backup"
+        return "", ""
 
     if decision == "unapproved":
         resolved_value = ticket_resolved_on_value(ticket_or_snapshot)
@@ -1852,7 +1897,13 @@ def calculate_handling_speed(
         "note": "2-week benchmark uses true entered-critical time; if missing, ticket CreatedOn/created date from full ticket snapshot is used. Estimated clear to target uses the visible dashboard stock window when daily critical stock is available: max(0, current critical - 300) divided by the window's average stock reduction speed. If stock reduction is not positive, it falls back to recent exited critical minus newly entered critical; if reduction is still not positive, no clear-date estimate is shown.",
     }
 
-def build_dealer_analytics(source_root: str, monitor_root: str, history_events: list[Dict[str, Any]], generated_at: str) -> Dict[str, Any]:
+def build_dealer_analytics(
+    source_root: str,
+    monitor_root: str,
+    history_events: list[Dict[str, Any]],
+    generated_at: str,
+    approved_cost_by_ticket: Optional[Dict[str, Dict[str, Any]]] = None,
+) -> Dict[str, Any]:
     mapping = load_mapping()
     rows = build_dealer_ticket_rows(source_root, mapping)
     # Defensive snapshot alias for dealer analytics. Some pre-calculated view
@@ -1865,6 +1916,12 @@ def build_dealer_analytics(source_root: str, monitor_root: str, history_events: 
     # Add a synthetic roll-up used by Dealer Workbench as the default overview.
     dealers = [ALL_DEALERS_DISPLAY] + sorted(set(base_dealers) | set(CONFIG_GROUP_DEALERS.keys()))
     claim_labels = ["All Claims", "In Field Warranty Claims", "Pre Delivery Warranty Claims"]
+    approved_cost_by_ticket = approved_cost_by_ticket if isinstance(approved_cost_by_ticket, dict) else {}
+
+    def dealer_approved_cost_amount(t: Dict[str, Any]) -> float:
+        tid = normalize_ticket_id(t.get("id") or t.get("ticketId") or t.get("TicketID"))
+        rec = approved_cost_by_ticket.get(tid, {}) if tid else {}
+        return approved_cost_after_sanity_check(t, (rec or {}).get("amount") or (rec or {}).get("netOrderValue"))
 
     def claim_key(label: str) -> str:
         return _claim_key(label)
@@ -1978,7 +2035,7 @@ def build_dealer_analytics(source_root: str, monitor_root: str, history_events: 
                 "totalTickets": len(all_rows),
                 "approvedTickets": len(approved_rows),
                 "unapprovedTickets": len(unapproved_rows),
-                "approvedValue": round(sum(parse_amount(t.get("amount")) for t in approved_rows), 2),
+                "approvedValue": round(sum(dealer_approved_cost_amount(t) for t in approved_rows), 2),
                 "unapprovedValue": 0.0,
                 "approvalRule": APPROVAL_RULE_DESCRIPTION,
                 "criticalTickets": len(critical_rows),
@@ -2091,10 +2148,18 @@ def build_employee_analytics(
     history_events: list[Dict[str, Any]],
     generated_at: str,
     employee_directory: Optional[Dict[str, Dict[str, str]]] = None,
+    approved_cost_by_ticket: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> Dict[str, Any]:
     ticket_by_id = {clean(v.get("id")): v for v in snap.values() if clean(v.get("id"))}
     claim_labels = ["All Claims", "In Field Warranty Claims", "Pre Delivery Warranty Claims"]
     employee_directory = normalize_employee_directory(employee_directory or {})
+    approved_cost_by_ticket = approved_cost_by_ticket if isinstance(approved_cost_by_ticket, dict) else {}
+
+    def approved_cost_amount(t: Dict[str, Any]) -> float:
+        """Use the same SAP PO Short Text amount rule as Team Dashboard."""
+        tid = normalize_ticket_id(t.get("id") or t.get("ticketId") or t.get("TicketID"))
+        rec = approved_cost_by_ticket.get(tid, {}) if tid else {}
+        return approved_cost_after_sanity_check(t, (rec or {}).get("amount") or (rec or {}).get("netOrderValue"))
 
     def approved_history_start_date() -> str:
         dates: list[str] = []
@@ -2241,7 +2306,7 @@ def build_employee_analytics(
             emp = clean(t.get("employee")) or "Unknown"
             if not is_real_employee_name(emp):
                 continue
-            amount = parse_amount(t.get("amount"))
+            amount = approved_cost_amount(t)
             approved_day = approved_daily_by_employee.setdefault(emp, {})
             approved_day[dkey] = approved_day.get(dkey, 0) + 1
             approved_amount_day = approved_amount_daily_by_employee.setdefault(emp, {})
@@ -2551,6 +2616,12 @@ def _date_range_points(start_date: str, end_date: str) -> list[str]:
     return out
 
 
+def _add_days_iso(day_key: str, days: int) -> str:
+    day = parse_date_any(day_key)
+    if not day:
+        return day_key
+    return day.date().fromordinal(day.date().toordinal() + days).isoformat()
+
 
 def _range_start_from_end(end_date: str, days: int, min_date: str = DASHBOARD_MIN_DATE) -> str:
     end = parse_date_any(end_date)
@@ -2722,7 +2793,7 @@ def aggregate_ticket_volume_trend(rows: list[Dict[str, Any]], granularity: str) 
 def _event_is_unapproved_exit(e: Dict[str, Any], t: Optional[Dict[str, Any]] = None) -> bool:
     code = clean(e.get("toCode") or e.get("newCode") or e.get("statusCode") or e.get("TicketStatus")).upper()
     text = clean(e.get("toStatus") or e.get("newStatus") or e.get("status") or e.get("statusText") or e.get("TicketStatusText") or e.get("type")).lower()
-    if code == "Y8" or "unapproved" in text:
+    if code == "Y8" or "unapproved" in text or "van recalled" in text:
         return True
     return False
 
@@ -2732,6 +2803,8 @@ def _event_is_approved_exit(e: Dict[str, Any], t: Optional[Dict[str, Any]] = Non
         return True
     code = clean(e.get("toCode") or e.get("newCode") or e.get("toStatusCode") or e.get("statusCode") or e.get("TicketStatus")).upper()
     text = clean(e.get("toStatus") or e.get("newStatus") or e.get("toStatusText") or e.get("status") or e.get("statusText") or e.get("TicketStatusText")).lower()
+    if "reimbursement required" in text:
+        return True
     claim_value = clean(
         e.get("claimApprovedOn")
         or e.get("claimApprovedOnDateTime")
@@ -2870,10 +2943,10 @@ def _build_team_view(
     ticket_by_name = {clean(v.get("name")).lower(): v for v in snap.values() if clean(v.get("name"))}
 
     def approved_cost_amount(t: Dict[str, Any]) -> float:
-        """Approved Cost must use SAP PO Short Text EKPO.NETWR, never C4C AmountIncludingTax."""
+        """Approved Cost uses SAP PO Short Text, with a guard for obvious stale PO explosions."""
         tid = normalize_ticket_id(t.get("id") or t.get("ticketId") or t.get("TicketID"))
         rec = approved_cost_by_ticket.get(tid, {}) if tid else {}
-        return parse_amount((rec or {}).get("amount") or (rec or {}).get("netOrderValue"))
+        return approved_cost_after_sanity_check(t, (rec or {}).get("amount") or (rec or {}).get("netOrderValue"))
 
     def approved_history_start_date() -> str:
         dates: list[str] = []
@@ -3180,14 +3253,27 @@ def _build_team_view(
                 "amount": t.get("amount", 0),
                 "created": clean(t.get("created")),
                 "claimType": clean(t.get("claimType")) or ticket_claim_type(t),
+                "employee": clean(t.get("employee")),
+                "owner": clean(t.get("employee")),
             }
     events_by_date: Dict[str, list[Dict[str, Any]]] = {}
     for e in matching_events:
         dkey = event_date_key(e)
         if dkey:
             events_by_date.setdefault(dkey, []).append(e)
+    def row_exists_on_or_before_snapshot(row: Dict[str, Any], snapshot_day: str) -> bool:
+        created_dt = parse_date_any(row.get("created"))
+        snapshot_dt = parse_date_any(snapshot_day)
+        if not created_dt or not snapshot_dt:
+            return True
+        return created_dt.date() <= snapshot_dt.date()
+
     for d in reversed(dates):
-        daily_critical_rows[d] = [dict(row) for row in critical_row_map.values()]
+        daily_critical_rows[d] = [
+            dict(row)
+            for row in critical_row_map.values()
+            if row_exists_on_or_before_snapshot(row, d)
+        ]
         for e in sorted(events_by_date.get(d, []), key=lambda x: event_time(x), reverse=True):
             tid = event_ticket_id(e)
             if not tid:
@@ -3204,6 +3290,8 @@ def _build_team_view(
                     "amount": (t or {}).get("amount", e.get("amount", 0)),
                     "created": clean((t or {}).get("created") or e.get("created")),
                     "claimType": clean((t or {}).get("claimType")) or ticket_claim_type(t) or _event_claim_type(e, ticket_by_id),
+                    "employee": event_employee_from_snapshot(e, ticket_by_id),
+                    "owner": event_employee_from_snapshot(e, ticket_by_id),
                 }
             elif typ == "moved" and tid in critical_row_map:
                 prev_status = clean(e.get("fromStatus") or e.get("oldStatus"))
@@ -3428,6 +3516,104 @@ def _build_team_view(
     for key, value in _calendar_month_ranges(DASHBOARD_MIN_DATE, generated_day).items():
         period_ranges[key] = value
 
+    def bridge_snapshot_rows(snapshot_day: str) -> list[Dict[str, Any]]:
+        return [dict(row) for row in daily_critical_rows.get(snapshot_day, [])]
+
+    def bridge_event_row(e: Dict[str, Any], movement_source: str, removed_bucket_value: str = "") -> Dict[str, Any]:
+        tid = event_ticket_id(e)
+        t = ticket_by_id.get(tid, {}) if tid else {}
+        row = {
+            "id": tid,
+            "dealer": clean((t or {}).get("dealer") or e.get("dealer") or "Unknown"),
+            "status": clean(e.get("toStatus") or e.get("newStatus") or (t or {}).get("statusText") or "Unknown"),
+            "statusCode": clean(e.get("toCode") or e.get("newCode") or (t or {}).get("statusCode")),
+            "fromStatus": clean(e.get("fromStatus") or e.get("oldStatus")),
+            "fromCode": clean(e.get("fromCode") or e.get("oldCode")),
+            "toStatus": clean(e.get("toStatus") or e.get("newStatus")),
+            "toCode": clean(e.get("toCode") or e.get("newCode")),
+            "amount": (t or {}).get("amount", e.get("amount", 0)),
+            "created": clean((t or {}).get("created") or e.get("created")),
+            "claimType": clean((t or {}).get("claimType")) or ticket_claim_type(t) or _event_claim_type(e, ticket_by_id),
+            "employee": event_employee_from_snapshot(e, ticket_by_id),
+            "owner": event_employee_from_snapshot(e, ticket_by_id),
+            "customer": clean((t or {}).get("name") or e.get("name")),
+            "detectedAt": event_time(e),
+            "date": event_date_key(e),
+            "movementSource": movement_source,
+        }
+        if removed_bucket_value:
+            row["removedBucket"] = removed_bucket_value
+        return row
+
+    def bridge_removed_bucket(e: Dict[str, Any]) -> str:
+        tid = event_ticket_id(e)
+        t = ticket_by_id.get(tid, {}) if tid else {}
+        if _event_is_unapproved_exit(e, t):
+            return "Unapproved"
+        if _event_is_approved_exit(e, t):
+            return "Approved"
+        return "Other"
+
+    def bridge_events(start: str, end: str, typ: str) -> list[Dict[str, Any]]:
+        return [
+            e for e in matching_events
+            if event_type(e) == typ and start <= (event_date_key(e) or "") <= end
+        ]
+
+    def build_ticket_movement_bridge(start: str, end: str, include_rows: bool = True) -> Dict[str, Any]:
+        opening_day = _add_days_iso(start, -1)
+        opening_rows = bridge_snapshot_rows(opening_day)
+        ending_rows = bridge_snapshot_rows(end)
+        entered_events = bridge_events(start, end, "entered")
+        exited_events = bridge_events(start, end, "exited")
+        new_ticket_rows: list[Dict[str, Any]] = []
+        old_ticket_rows: list[Dict[str, Any]] = []
+        for e in entered_events:
+            row = bridge_event_row(e, "New Ticket")
+            created_day = date_key(row.get("created"))
+            if created_day and start <= created_day <= end:
+                new_ticket_rows.append(row)
+            else:
+                row["movementSource"] = "Old Ticket"
+                old_ticket_rows.append(row)
+        removed_rows: list[Dict[str, Any]] = []
+        for e in exited_events:
+            bucket = bridge_removed_bucket(e)
+            removed_rows.append(bridge_event_row(e, "Removed", bucket))
+        approved_removed = sum(1 for row in removed_rows if clean(row.get("removedBucket")) == "Approved")
+        unapproved_removed = sum(1 for row in removed_rows if clean(row.get("removedBucket")) == "Unapproved")
+        other_review = sum(1 for row in removed_rows if clean(row.get("removedBucket")) == "Other")
+        added_to_waiting = len(new_ticket_rows) + len(old_ticket_rows)
+        formula_difference = len(opening_rows) + added_to_waiting - len(removed_rows) - len(ending_rows)
+        approval_removal_difference = len(removed_rows) - approved_removed - unapproved_removed - other_review
+        bridge = {
+            "start": start,
+            "end": end,
+            "openingDate": opening_day,
+            "opening": len(opening_rows),
+            "ending": len(ending_rows),
+            "newTickets": len(new_ticket_rows),
+            "oldTickets": len(old_ticket_rows),
+            "addedToWaiting": added_to_waiting,
+            "removed": len(removed_rows),
+            "approvedRemoved": approved_removed,
+            "unapprovedRemoved": unapproved_removed,
+            "otherReview": other_review,
+            "formulaDifference": formula_difference,
+            "approvalRemovalDifference": approval_removal_difference,
+            "approvedUnapprovedVsRemovedDifference": approved_removed + unapproved_removed - len(removed_rows),
+            "source": "python pre-calculated ticket movement bridge from critical enter/exit events",
+        }
+        if include_rows:
+            bridge.update({
+                "openingRows": opening_rows,
+                "endingRows": ending_rows,
+                "newTicketRows": new_ticket_rows,
+                "oldTicketRows": old_ticket_rows,
+                "removedRows": removed_rows,
+            })
+        return bridge
+
     period_snapshots: Dict[str, Dict[str, Any]] = {}
     for key, (start_day, end_day) in period_ranges.items():
         approval_start_day = approval_history_start if key == "all" else start_day
@@ -3505,7 +3691,20 @@ def _build_team_view(
             "exitedCriticalStored": exited_total,
             "movedCriticalStored": sum(int(v or 0) for v in moved_daily.values()),
         },
-        "currentCriticalRows": [{"id": clean(t.get("id")), "dealer": clean(t.get("dealer")) or "Unknown", "status": clean(t.get("statusText")) or clean(t.get("statusCode")) or "Unknown", "amount": t.get("amount", 0), "created": clean(t.get("created")), "isApproved": bool(t.get("isApproved"))} for t in critical_now],
+        "currentCriticalRows": [
+            {
+                "id": clean(t.get("id")),
+                "dealer": clean(t.get("dealer")) or "Unknown",
+                "status": clean(t.get("statusText")) or clean(t.get("statusCode")) or "Unknown",
+                "amount": t.get("amount", 0),
+                "created": clean(t.get("created")),
+                "claimType": clean(t.get("claimType")) or ticket_claim_type(t),
+                "employee": clean(t.get("employee")),
+                "owner": clean(t.get("employee")),
+                "isApproved": bool(t.get("isApproved")),
+            }
+            for t in critical_now
+        ],
         "logs": [team_log_row(e) for e in matching_events],
         "topDealers": [{"dealer": k, "criticalTickets": v} for k, v in sorted(by_dealer.items(), key=lambda kv: (-kv[1], kv[0]))],
         "ticketTypeMix": [{"type": k, "count": v} for k, v in sorted(type_mix.items(), key=lambda kv: (-kv[1], kv[0]))],
@@ -3732,13 +3931,13 @@ def write_analytics(
     except Exception:
         approval_state = {}
     approved_cost_by_ticket = load_approved_cost_by_ticket(monitor_root)
-    dealer_payload = build_dealer_analytics(source_root, monitor_root, history_events, ts) if include_dealer else None
+    dealer_payload = build_dealer_analytics(source_root, monitor_root, history_events, ts, approved_cost_by_ticket) if include_dealer else None
     payload = {
         "meta": {
             "generatedAt": ts,
             "sourceRoot": source_root,
             "monitorRoot": monitor_root,
-            "version": "python-precalculated-analytics-v5_approvalstate_numeric_key_fix",
+            "version": "python-precalculated-analytics-v6_approved_cost_consistency_guard",
             "historyEventsRead": len(history_events),
             "analyticsHistoryEventsUsed": len(analytics_history_events),
             "syntheticInitialUnapprovedEvents": max(0, len(analytics_history_events) - len(history_events)),
@@ -3749,7 +3948,7 @@ def write_analytics(
             "approvedCostTicketCount": len(approved_cost_by_ticket),
         },
         "team": build_team_analytics(snap, analytics_history_events, ts, employee_directory, approval_state, approved_cost_by_ticket),
-        "employee": build_employee_analytics(snap, analytics_history_events, ts, employee_directory),
+        "employee": build_employee_analytics(snap, analytics_history_events, ts, employee_directory, approved_cost_by_ticket),
     }
     if include_dealer:
         payload["dealer"] = dealer_payload

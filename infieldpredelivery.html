@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-store" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>Claim Trend Overview</title>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--ink:#0f172a;--muted:#64748b;--line:#dbe5f0;--blue:#156082;--orange:#e97132;--soft:#bfe5f3;--shadow:0 14px 34px rgba(15,23,42,.06)}
@@ -40,6 +43,7 @@ body.calculating .app{filter:blur(1.6px);opacity:.68;pointer-events:none;user-se
 .tab{appearance:none;border:0;background:transparent;color:#475569;font-weight:750;font-size:12px;padding:8px 14px;border-radius:999px;cursor:pointer;text-decoration:none;display:inline-block}
 .tab.active{background:#fff;color:#0b3a52;box-shadow:0 2px 8px rgba(15,23,42,.10)}
 .modeRow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.modeCluster{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .modeSwitch{display:inline-flex;gap:4px;background:#eef3f9;border:1px solid var(--line);border-radius:999px;padding:4px}
 .modeBtn{appearance:none;border:0;background:transparent;color:#475569;font-weight:800;font-size:12px;padding:8px 14px;border-radius:999px;cursor:pointer}
 .modeBtn.active{background:#fff;color:#0b3a52;box-shadow:0 2px 8px rgba(15,23,42,.10)}
@@ -68,6 +72,7 @@ body.calculating .app{filter:blur(1.6px);opacity:.68;pointer-events:none;user-se
 .miniSwitch{display:inline-flex;gap:4px;background:#eef3f9;border:1px solid var(--line);border-radius:999px;padding:4px;align-self:flex-start}
 .miniBtn{appearance:none;border:0;background:transparent;color:#475569;font-weight:800;font-size:11px;line-height:1;padding:7px 11px;border-radius:999px;cursor:pointer}
 .miniBtn.active{background:#fff;color:#0b3a52;box-shadow:0 2px 8px rgba(15,23,42,.10)}
+.fieldSwitch{display:inline-flex;gap:4px;background:#eef3f9;border:1px solid var(--line);border-radius:999px;padding:4px}
 .totalChip{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;border:1px solid #d8e4f1;background:#f8fbff;color:#516074;font-size:11px;font-weight:600;white-space:nowrap}
 .totalChip strong{color:#0f172a;font-size:12px;font-weight:500;letter-spacing:0;font-variant-numeric:tabular-nums}
 .grid{display:grid;grid-template-columns:430px minmax(0,1fr);gap:22px;align-items:start}
@@ -98,7 +103,6 @@ body.calculating .app{filter:blur(1.6px);opacity:.68;pointer-events:none;user-se
 @media(max-width:620px){.controls{grid-template-columns:1fr}.panelHead{display:block}.panelTitleWrap{margin-bottom:8px}.grandTotals{margin-top:10px;justify-content:flex-start;min-width:0}.chartWrap{height:200px}.chartWrapTall{height:240px}.calcSpinner{width:54px;height:54px;border-width:5px}.calcFloatText{font-size:14px;margin-top:14px}}
 </style>
 <link rel="stylesheet" href="flow-polish.css">
-<link rel="stylesheet" href="sidebar-light.css">
 <style>
 /* Match the cleaner Ticket Lifecycle typography across ticket analytics pages. */
 body,
@@ -188,6 +192,8 @@ body{
 .modeSwitch *,
 .miniSwitch,
 .miniSwitch *,
+.fieldSwitch,
+.fieldSwitch *,
 .totalChip,
 .jumpBtn,
 .datePill{
@@ -211,7 +217,8 @@ body{
 }
 .modeSwitch,
 .tabs,
-.miniSwitch{
+.miniSwitch,
+.fieldSwitch{
   background:#eef4fb!important;
   border-color:#d8e4f1!important;
 }
@@ -272,29 +279,37 @@ body{
   font-weight:540!important;
 }
 </style>
+<link rel="stylesheet" href="sidebar-light.css?v=20260806-compact-sidebar">
 </head>
 <body>
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Loading dashboard...</span></div>
 <div class="app">
   <aside class="sidebar">
-    <div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M4 12h16M12 4v16"/></svg></div><div class="brandText"><span>Warranty KPI</span><small>Warranty Team</small></div></div>
+    <div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div>
     <div class="navSection">Workspace</div>
     <a class="navLink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Warranty Team</span></a>
 
     <a class="navLink" href="delivery_flow.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17h2l2-7h10l2 7h2"/><path d="M7 17a2 2 0 1 0 4 0"/><path d="M15 17a2 2 0 1 0 4 0"/><path d="M8 10V6h8v4"/></svg><span>Parts Delivery</span></a>
-    <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repair</span></a>
+    <a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairer</span></a>
     <div class="navDivider"></div>
     <div class="navSection">Tickets</div>
     <a class="navLink active" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15 17l2-2 2 2"/></svg><span>Claim Trend Overview</span></a>
     <div class="navDivider"></div>
 <div class="navSection">Analysis</div>
-<a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model And Parts</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket lifecycle</span></a></aside>
+<a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Repairs by Model</span></a><a class="navLink" href="parts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16"/><path d="M7 7v10"/><path d="M17 7v10"/><path d="M5 17h14"/><path d="M9 11h6"/></svg><span>Parts Failure Components</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket Timeline</span></a></aside>
   <main class="main">
     <div class="toolbar">
       <div class="modeRow">
-        <div class="modeSwitch">
-          <button id="singleModeBtn" class="modeBtn active" type="button">Single / Range</button>
-          <button id="compareModeBtn" class="modeBtn" type="button">Year Compare</button>
+        <div class="modeCluster">
+          <div class="modeSwitch">
+            <button id="singleModeBtn" class="modeBtn active" type="button">Single / Range</button>
+            <button id="compareModeBtn" class="modeBtn" type="button">Year Compare</button>
+          </div>
+          <div class="fieldSwitch" aria-label="Claim field filter">
+            <button id="fieldAllBtn" class="miniBtn active" type="button">All Fields</button>
+            <button id="fieldInBtn" class="miniBtn" type="button">In Field</button>
+            <button id="fieldPreBtn" class="miniBtn" type="button">Pre Delivery</button>
+          </div>
         </div>
         <div id="viewNote" class="viewNote"></div>
       </div>
@@ -321,29 +336,12 @@ body{
     <div class="dashboardGrid">
       <section class="panel" id="newclaim">
         <div class="panelHead">
-          <h2 class="panelTitle"><span class="titleIcon ic-blue"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>Claims Received by Month</h2>
+          <h2 class="panelTitle"><span class="titleIcon ic-blue"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>Tickets Created by Month</h2>
           <div id="newClaimTotals" class="grandTotals"></div>
         </div>
         <div class="chartBox">
           <div class="chartWrap"><canvas id="newClaimChart"></canvas></div>
-          <div id="newClaimLegend" class="legend"><span><i style="background:var(--blue)"></i>Total Claims</span></div>
-        </div>
-      </section>
-
-      <section class="panel" id="created">
-        <div class="panelHead">
-          <div class="panelTitleWrap">
-            <h2 class="panelTitle"><span class="titleIcon ic-blue"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14h6"/></svg></span>Warranty Tickets Created by Month</h2>
-            <div class="miniSwitch" aria-label="Created ticket type">
-              <button id="createdInBtn" class="miniBtn active" type="button">In Field</button>
-              <button id="createdPreBtn" class="miniBtn" type="button">Pre Delivery</button>
-            </div>
-          </div>
-          <div id="createdTotals" class="grandTotals"></div>
-        </div>
-        <div class="chartBox">
-          <div class="chartWrap"><canvas id="createdChart"></canvas></div>
-          <div id="createdLegend" class="legend"><span><i style="background:var(--blue)"></i>In Field</span></div>
+          <div id="newClaimLegend" class="legend"><span><i style="background:var(--blue)"></i>Total Tickets Created</span></div>
         </div>
       </section>
 
@@ -461,6 +459,8 @@ function monthShort(m){const [y,mm]=clean(m).split("-").map(Number);if(!y||!mm)r
 function monthLong(m){const [y,mm]=clean(m).split("-").map(Number);if(!y||!mm)return m;return new Date(Date.UTC(y,mm-1,1)).toLocaleString("en-AU",{month:"long",year:"numeric",timeZone:"UTC"})}
 function addMonths(m,delta){const [y,mm]=clean(m).split("-").map(Number);const d=new Date(Date.UTC(y||2025,(mm||1)-1,1));d.setUTCMonth(d.getUTCMonth()+delta);return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}`}
 function iterMonths(start,end){const out=[];let cur=start;if(!cur||!end||cur>end)return out;while(cur<=end){out.push(cur);cur=addMonths(cur,1)}return out}
+function currentMonthKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`}
+function latestCompleteMonth(){return addMonths(currentMonthKey(),-1)}
 function moneyShort(v){const n=Number(v||0),abs=Math.abs(n);if(abs>=1_000_000)return `$${(n/1_000_000).toFixed(abs>=10_000_000?0:1)}m`;if(abs>=1_000)return `$${(n/1_000).toFixed(abs>=100_000?0:1)}k`;return moneyNum(n)}
 function niceCurrencyMax(maxRaw){
   if(!(maxRaw>0))return 1000;
@@ -471,8 +471,8 @@ function niceCurrencyMax(maxRaw){
   return nice*pow;
 }
 
-let MONTHLY=[],MONTHS_INDEX={},RAW_TICKETS=[],CLAIM_CLOSED_INDEX={},activeStart=HARD_MIN,activeEnd=HARD_MIN,customRange=false,viewMode="single",compareYearA="",compareYearB="",createdMetricMode="in";
-let pageLoadingTimer=null;
+let MONTHLY=[],MONTHS_INDEX={},RAW_TICKETS=[],CLAIM_CLOSED_INDEX={},activeStart=HARD_MIN,activeEnd=HARD_MIN,customRange=false,viewMode="single",compareYearA="",compareYearB="",fieldMode="all";
+let pageLoadingTimer=null, pageLoadingRunId=0;
 
 function emptyMonth(m){return {month:m,createdIn:0,createdPre:0,approvedIn:0,approvedPre:0,unapprovedIn:0,unapprovedPre:0,approvedAmountIn:0,approvedAmountPre:0,unapprovedAmountIn:0,unapprovedAmountPre:0}}
 
@@ -555,7 +555,13 @@ function buildMonthly(view){
   return Object.values(out).filter(r=>r.month>=HARD_MIN).sort((a,b)=>a.month.localeCompare(b.month));
 }
 
-function dataBounds(){const months=MONTHLY.map(r=>r.month);return {min:months[0]||HARD_MIN,max:months[months.length-1]||HARD_MIN,years:[...new Set(months.map(m=>m.slice(0,4)))].sort()}}
+function dataBounds(){
+  const rawMonths=MONTHLY.map(r=>r.month);
+  const rawMax=rawMonths[rawMonths.length-1]||HARD_MIN;
+  const max=rawMax>latestCompleteMonth()?latestCompleteMonth():rawMax;
+  const months=rawMonths.filter(m=>m<=max);
+  return {min:months[0]||HARD_MIN,max:months[months.length-1]||HARD_MIN,years:[...new Set(months.map(m=>m.slice(0,4)))].sort()}
+}
 
 function rowsForRange(){
   return iterMonths(activeStart,activeEnd).map(m=>({...(MONTHS_INDEX[m]||emptyMonth(m)),month:m,year:m.slice(0,4)}));
@@ -582,7 +588,11 @@ function defaultCompareYear(bounds=dataBounds(),primaryYear=preferredDefaultYear
 }
 
 function latestMonthForYear(year){
-  const months=MONTHLY.filter(r=>clean(r.month).startsWith(`${year}-`)).map(r=>Number(clean(r.month).slice(5,7)));
+  const max=dataBounds().max;
+  const months=MONTHLY.filter(r=>{
+    const month=clean(r.month);
+    return month<=max&&month.startsWith(`${year}-`);
+  }).map(r=>Number(clean(r.month).slice(5,7)));
   return months.length?Math.max(...months):0;
 }
 
@@ -599,6 +609,15 @@ function totalRowsForRange(inKey,preKey){
     month:r.month,
     year:r.year,
     total:Number(r[inKey]||0)+Number(r[preKey]||0)
+  }));
+}
+
+function metricRowsForRange(inKey,preKey){
+  const field=fieldConfig();
+  return rowsForRange().map(r=>({
+    month:r.month,
+    year:r.year,
+    total:field.value(r,inKey,preKey)
   }));
 }
 
@@ -622,6 +641,12 @@ function compareRowsForKey(key,yearA,yearB){
     });
   }
   return rows;
+}
+
+function compareRowsForMetric(inKey,preKey,yearA,yearB){
+  const field=fieldConfig();
+  if(field.mode==="all")return totalCompareRows(inKey,preKey,yearA,yearB);
+  return compareRowsForKey(field.mode==="pre"?preKey:inKey,yearA,yearB);
 }
 
 function totalCompareRows(inKey,preKey,yearA,yearB){
@@ -699,16 +724,26 @@ function buildClaimClosedIndex(tickets){
     const month=resolvedMonth(ticket);
     const decision=claimClosedDecision(ticket);
     if(!month||!decision)return;
-    counts[month]=Number(counts[month]||0)+1;
+    if(!counts[month])counts[month]={all:0,in:0,pre:0};
+    counts[month].all+=1;
+    if(ticketIsPreDelivery(ticket))counts[month].pre+=1;
+    else counts[month].in+=1;
   });
   return counts;
+}
+
+function claimClosedValue(month){
+  const row=CLAIM_CLOSED_INDEX[month]||0;
+  if(typeof row==="number")return row;
+  const field=fieldConfig();
+  return Number(row[field.mode]||0);
 }
 
 function claimClosedRowsForRange(){
   return iterMonths(activeStart,activeEnd).map(month=>({
     month,
     year:month.slice(0,4),
-    total:Number(CLAIM_CLOSED_INDEX[month]||0)
+    total:claimClosedValue(month)
   }));
 }
 
@@ -725,8 +760,8 @@ function claimClosedCompareRows(yearA,yearB){
       label:monthShort(firstKey),
       firstYear:yearA,
       secondYear:yearB,
-      firstValue:month<=latestA?Number(CLAIM_CLOSED_INDEX[firstKey]||0):null,
-      secondValue:month<=latestB?Number(CLAIM_CLOSED_INDEX[secondKey]||0):null
+      firstValue:month<=latestA?claimClosedValue(firstKey):null,
+      secondValue:month<=latestB?claimClosedValue(secondKey):null
     });
   }
   return rows;
@@ -798,32 +833,37 @@ function toggleModeButtons(){
   if($("compareControls"))$("compareControls").hidden=viewMode!=="compare";
 }
 
-function createdMetricConfig(){
-  return createdMetricMode==="pre"
-    ? {key:"createdPre",label:"Pre Delivery",color:"#e97132"}
-    : {key:"createdIn",label:"In Field",color:"#156082"};
+function fieldConfig(){
+  const configs={
+    all:{mode:"all",label:"All Fields",shortLabel:"All",color:"#156082",value:(r,inKey,preKey)=>Number(r[inKey]||0)+Number(r[preKey]||0)},
+    in:{mode:"in",label:"In Field",shortLabel:"In Field",color:"#156082",value:(r,inKey)=>Number(r[inKey]||0)},
+    pre:{mode:"pre",label:"Pre Delivery",shortLabel:"Pre Delivery",color:"#e97132",value:(r,_inKey,preKey)=>Number(r[preKey]||0)}
+  };
+  return configs[fieldMode]||configs.all;
 }
 
-function syncCreatedMetricButtons(){
-  $("createdInBtn")?.classList.toggle("active",createdMetricMode==="in");
-  $("createdPreBtn")?.classList.toggle("active",createdMetricMode==="pre");
+function syncFieldButtons(){
+  $("fieldAllBtn")?.classList.toggle("active",fieldMode==="all");
+  $("fieldInBtn")?.classList.toggle("active",fieldMode==="in");
+  $("fieldPreBtn")?.classList.toggle("active",fieldMode==="pre");
 }
 
 function updateViewNote(){
   const note=$("viewNote");
   if(!note)return;
+  const field=fieldConfig();
   if(viewMode==="compare"){
     const limit=compareMonthLimit(compareYearA,compareYearB);
-    note.textContent=limit>=12?`Comparing ${compareYearA} vs ${compareYearB}.`:`Comparing ${compareYearA} vs ${compareYearB} from Jan to ${monthShort(buildMonthKey(compareYearA,limit))}.`;
+    note.textContent=limit>=12?`Comparing ${compareYearA} vs ${compareYearB} (${field.label}).`:`Comparing ${compareYearA} vs ${compareYearB} from Jan to ${monthShort(buildMonthKey(compareYearA,limit))} (${field.label}).`;
     return;
   }
   if(activeStart===activeEnd){
-    note.textContent=`Showing ${monthLong(activeStart)}.`;
+    note.textContent=`Showing ${monthLong(activeStart)} (${field.label}).`;
     return;
   }
   const sameYear=activeStart.slice(0,4)===activeEnd.slice(0,4);
-  const fullYear=sameYear&&activeStart.endsWith("-01")&&(activeEnd.endsWith("-12")||activeEnd===dataBounds().max);
-  note.textContent=fullYear?`Showing ${activeStart.slice(0,4)}.`:`Showing ${monthLong(activeStart)} to ${monthLong(activeEnd)}.`;
+  const fullYear=sameYear&&activeStart.endsWith("-01")&&activeEnd.endsWith("-12");
+  note.textContent=fullYear?`Showing ${activeStart.slice(0,4)} (${field.label}).`:`Showing ${monthLong(activeStart)} to ${monthLong(activeEnd)} (${field.label}).`;
 }
 
 function showPageLoading(active,label="Loading dashboard..."){
@@ -1060,16 +1100,14 @@ function drawChart(canvasId,rows,inKey,preKey,opts={}){
 
 function render(){
   updateViewNote();
+  const field=fieldConfig();
   if(viewMode==="compare"){
-    const newClaimRows=totalCompareRows("createdIn","createdPre",compareYearA,compareYearB);
-    const createdMetric=createdMetricConfig();
-    const createdRows=compareRowsForKey(createdMetric.key,compareYearA,compareYearB);
-    const approvedRows=totalCompareRows("approvedIn","approvedPre",compareYearA,compareYearB);
-    const amountRows=totalCompareRows("approvedAmountIn","approvedAmountPre",compareYearA,compareYearB);
-    const unapprovedRows=totalCompareRows("unapprovedIn","unapprovedPre",compareYearA,compareYearB);
+    const newClaimRows=compareRowsForMetric("createdIn","createdPre",compareYearA,compareYearB);
+    const approvedRows=compareRowsForMetric("approvedIn","approvedPre",compareYearA,compareYearB);
+    const amountRows=compareRowsForMetric("approvedAmountIn","approvedAmountPre",compareYearA,compareYearB);
+    const unapprovedRows=compareRowsForMetric("unapprovedIn","unapprovedPre",compareYearA,compareYearB);
     const claimClosedRows=claimClosedCompareRows(compareYearA,compareYearB);
     drawCompareBarChart("newClaimChart",newClaimRows);
-    drawCompareBarChart("createdChart",createdRows);
     drawCompareBarChart("approvedChart",approvedRows);
     drawCompareBarChart("approvedAmountChart",amountRows,{yMax:niceCurrencyMax,pointFormatter:moneyK,minVisibleHeight:10,dodgeLabels:false});
     drawCompareBarChart("unapprovedChart",unapprovedRows);
@@ -1077,10 +1115,6 @@ function render(){
     setLegend("newClaimLegend",[
       {label:compareYearA,color:"#156082"},
       {label:compareYearB,color:"#e97132"}
-    ]);
-    setLegend("createdLegend",[
-      {label:`${compareYearA} ${createdMetric.label}`,color:"#156082"},
-      {label:`${compareYearB} ${createdMetric.label}`,color:"#e97132"}
     ]);
     setLegend("approvedLegend",[
       {label:compareYearA,color:"#156082"},
@@ -1102,10 +1136,6 @@ function render(){
       {label:compareYearA,value:num(sumValueRows(newClaimRows,"firstValue"))},
       {label:compareYearB,value:num(sumValueRows(newClaimRows,"secondValue"))}
     ]);
-    setTotals("createdTotals",[
-      {label:compareYearA,value:num(sumValueRows(createdRows,"firstValue"))},
-      {label:compareYearB,value:num(sumValueRows(createdRows,"secondValue"))}
-    ]);
     setTotals("approvedTotals",[
       {label:compareYearA,value:num(sumValueRows(approvedRows,"firstValue"))},
       {label:compareYearB,value:num(sumValueRows(approvedRows,"secondValue"))}
@@ -1125,77 +1155,75 @@ function render(){
     return;
   }
     const rows=rowsForRange();
-    const newClaimRows=totalRowsForRange("createdIn","createdPre");
+    const newClaimRows=metricRowsForRange("createdIn","createdPre");
+    const approvedRows=metricRowsForRange("approvedIn","approvedPre");
+    const amountRows=metricRowsForRange("approvedAmountIn","approvedAmountPre");
+    const unapprovedRows=metricRowsForRange("unapprovedIn","unapprovedPre");
     const claimClosedRows=claimClosedRowsForRange();
-    const createdMetric=createdMetricConfig();
-    const created=renderPivot("createdPivot",rows,"createdIn","createdPre","No created data found.");
     const approved=renderPivot("approvedPivot",rows,"approvedIn","approvedPre","No approved data found.");
     const unapproved=renderPivot("unapprovedPivot",rows,"unapprovedIn","unapprovedPre","No unapproved data found.");
     const amount=renderAmountPivot(rows);
     drawSingleLineChart("newClaimChart",newClaimRows,"total");
-    drawSingleLineChart("createdChart",rows,createdMetric.key,{color:createdMetric.color});
-    drawChart("approvedChart",rows,"approvedIn","approvedPre");
-    drawChart("unapprovedChart",rows,"unapprovedIn","unapprovedPre");
-    drawChart("approvedAmountChart",rows,"approvedAmountIn","approvedAmountPre",{yMax:niceCurrencyMax,pointFormatter:moneyK});
+    drawSingleLineChart("approvedChart",approvedRows,"total",{color:field.color});
+    drawSingleLineChart("unapprovedChart",unapprovedRows,"total",{color:field.color});
+    drawSingleLineChart("approvedAmountChart",amountRows,"total",{color:field.color,yMax:niceCurrencyMax,pointFormatter:moneyK});
     drawSingleLineChart("claimClosedChart",claimClosedRows,"total");
   setLegend("newClaimLegend",[
-    {label:"Total Claims",color:"#156082"}
-    ]);
-    setLegend("createdLegend",[
-      {label:createdMetric.label,color:createdMetric.color}
+    {label:`${field.shortLabel} Tickets Created`,color:field.color}
     ]);
   setLegend("approvedLegend",[
-    {label:"In Field",color:"#156082"},
-    {label:"Pre Delivery",color:"#e97132"}
+    {label:`${field.shortLabel} Approved`,color:field.color}
   ]);
   setLegend("amountLegend",[
-    {label:"In Field",color:"#156082"},
-    {label:"Pre Delivery",color:"#e97132"}
+    {label:`${field.shortLabel} Amount`,color:field.color}
   ]);
   setLegend("unapprovedLegend",[
-    {label:"In Field",color:"#156082"},
-    {label:"Pre Delivery",color:"#e97132"}
+    {label:`${field.shortLabel} Unapproved`,color:field.color}
   ]);
   setLegend("claimClosedLegend",[
-    {label:"Closed Claims",color:"#156082"}
+    {label:`${field.shortLabel} Closed Claims`,color:field.color}
   ]);
   setTotals("newClaimTotals",[
-    {label:"All",value:num(sumValueRows(newClaimRows))}
-    ]);
-    setTotals("createdTotals",[
-      {label:createdMetric.label,value:num(sumMetricRows(rows,createdMetric.key))}
+    {label:field.shortLabel,value:num(sumValueRows(newClaimRows))}
     ]);
   setTotals("approvedTotals",[
-    {label:"In Field",value:num(approved.inField)},
-    {label:"Pre Delivery",value:num(approved.preDelivery)},
-    {label:"All",value:num(approved.total)}
+    {label:field.shortLabel,value:num(sumValueRows(approvedRows))}
   ]);
   setTotals("amountTotals",[
-    {label:"In Field",value:moneyK(amount.inField)},
-    {label:"Pre Delivery",value:moneyK(amount.preDelivery)},
-    {label:"All",value:moneyNum(amount.total)}
+    {label:field.shortLabel,value:moneyNum(sumValueRows(amountRows))}
   ]);
   setTotals("unapprovedTotals",[
-    {label:"In Field",value:num(unapproved.inField)},
-    {label:"Pre Delivery",value:num(unapproved.preDelivery)},
-    {label:"All",value:num(unapproved.total)}
+    {label:field.shortLabel,value:num(sumValueRows(unapprovedRows))}
   ]);
   setTotals("claimClosedTotals",[
-    {label:"All",value:num(sumValueRows(claimClosedRows))}
+    {label:field.shortLabel,value:num(sumValueRows(claimClosedRows))}
   ]);
 }
 
-function renderWithPageLoading(showLoading=false,label="Loading dashboard..."){
+function renderWithPageLoading(showLoading=false,label="Calculating dashboard..."){
   if(pageLoadingTimer){
     clearTimeout(pageLoadingTimer);
     pageLoadingTimer=null;
   }
-  if(showLoading)showPageLoading(true,label);
-  try{
+  const runId=++pageLoadingRunId;
+  if(!showLoading){
     render();
-  }finally{
-    showPageLoading(false,label);
+    return;
   }
+  showPageLoading(true,label);
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      if(runId!==pageLoadingRunId)return;
+      try{
+        render();
+      }finally{
+        pageLoadingTimer=setTimeout(()=>{
+          if(runId===pageLoadingRunId)showPageLoading(false,label);
+          pageLoadingTimer=null;
+        },650);
+      }
+    });
+  });
 }
 
 function syncControls(){
@@ -1213,7 +1241,7 @@ function syncControls(){
   $("compareYearA").value=compareYearA;
   $("compareYearB").value=compareYearB;
   toggleModeButtons();
-  syncCreatedMetricButtons();
+  syncFieldButtons();
   updateViewNote();
 }
 
@@ -1226,14 +1254,17 @@ function applyYear(year){
 
 function setActiveTab(id){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.target===id))}
 
-function init(view,useCached=false){
+function init(view,useCached=false,claimClosedIndex=null){
   MONTHLY=buildMonthly(view||{});
   MONTHS_INDEX=Object.fromEntries(MONTHLY.map(r=>[r.month,r]));
-  CLAIM_CLOSED_INDEX=buildClaimClosedIndex(RAW_TICKETS);
+  CLAIM_CLOSED_INDEX=claimClosedIndex&&typeof claimClosedIndex==="object"
+    ? Object.fromEntries(Object.entries(claimClosedIndex).map(([k,v])=>[k,v&&typeof v==="object"?{all:Number(v.all||0),in:Number(v.in||0),pre:Number(v.pre||0)}:Number(v)||0]))
+    : buildClaimClosedIndex(RAW_TICKETS);
   const b=dataBounds();
   const defaultYear=preferredDefaultYear(b);
   const defaultRange=defaultSingleRange(b,defaultYear);
   viewMode="single";
+  fieldMode="all";
   compareYearA=defaultYear;
   compareYearB=defaultCompareYear(b,defaultYear);
   customRange=defaultRange.isMultiYear;
@@ -1248,8 +1279,9 @@ function init(view,useCached=false){
   $("clearRange").onclick=()=>{customRange=false;applyYear("");$("yearSelect").value="";syncControls();renderWithPageLoading(true,"Loading dashboard...")};
   $("singleModeBtn").onclick=()=>{viewMode="single";toggleModeButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
   $("compareModeBtn").onclick=()=>{viewMode="compare";toggleModeButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
-  $("createdInBtn").onclick=()=>{createdMetricMode="in";syncCreatedMetricButtons();renderWithPageLoading(true,"Loading dashboard...")};
-  $("createdPreBtn").onclick=()=>{createdMetricMode="pre";syncCreatedMetricButtons();renderWithPageLoading(true,"Loading dashboard...")};
+  $("fieldAllBtn").onclick=()=>{fieldMode="all";syncFieldButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
+  $("fieldInBtn").onclick=()=>{fieldMode="in";syncFieldButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
+  $("fieldPreBtn").onclick=()=>{fieldMode="pre";syncFieldButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
   $("applyCompare").onclick=()=>{
     compareYearA=$("compareYearA").value||compareYearA;
     compareYearB=$("compareYearB").value||compareYearB;
@@ -1266,7 +1298,7 @@ function init(view,useCached=false){
 }
 
 /* ---- Navigation: runs on the static DOM, independent of Firebase load ---- */
-const SECTION_IDS=["newclaim","created","approved","unapproved","amount","claimclosed"];
+const SECTION_IDS=["newclaim","approved","amount","unapproved","claimclosed"];
 function toolbarOffset(){const tb=document.querySelector(".toolbar");return (tb?tb.getBoundingClientRect().height:80)+16}
 function scrollToSection(id,behavior){
   if(id==="newclaim"){window.scrollTo({top:0,behavior:behavior||"auto"});return;}
@@ -1280,13 +1312,17 @@ function navigateToSectionWithLoading(id){
     clearTimeout(pageLoadingTimer);
     pageLoadingTimer=null;
   }
+  const runId=++pageLoadingRunId;
   showPageLoading(true,"Loading section...");
-  try{
+  requestAnimationFrame(()=>{
+    if(runId!==pageLoadingRunId)return;
     setActiveTab(id);
     scrollToSection(id,"smooth");
-  }finally{
-    showPageLoading(false,"Loading section...");
-  }
+    pageLoadingTimer=setTimeout(()=>{
+      if(runId===pageLoadingRunId)showPageLoading(false,"Loading section...");
+      pageLoadingTimer=null;
+    },420);
+  });
 }
 function setupNav(){
   // tab buttons -> smooth offset-aware scroll
@@ -1316,7 +1352,7 @@ function setupNav(){
 setupNav();
 window.addEventListener("load",()=>{const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);});
 
-const CLAIM_TREND_PAGE_CACHE_KEY="claim-trend-overview";
+const CLAIM_TREND_PAGE_CACHE_KEY="claim-trend-overview:approved-cost-v2";
 function finishInitialScroll(){const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);}
 (async()=>{
   let cacheVersion="";
@@ -1324,8 +1360,8 @@ function finishInitialScroll(){const id=(location.hash||"").slice(1);if(SECTION_
   try{
     const cached=await withTimeout(window.WarrantyPageCache.getPage(CLAIM_TREND_PAGE_CACHE_KEY,cacheVersion),5000,"Claim trend page cache restore");
     if(cached&&cached.view){
-      RAW_TICKETS=arr(cached.tickets);
-      init(cached.view,true);
+      RAW_TICKETS=[];
+      init(cached.view,true,cached.claimClosedIndex);
       if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"cached");
       finishInitialScroll();
       return;
@@ -1336,7 +1372,7 @@ function finishInitialScroll(){const id=(location.hash||"").slice(1);if(SECTION_
     RAW_TICKETS=arr(tickets);
     init(view);
     if(cacheVersion&&window.WarrantyPageCache){
-      window.WarrantyPageCache.setPage(CLAIM_TREND_PAGE_CACHE_KEY,cacheVersion,{view,tickets:RAW_TICKETS});
+      window.WarrantyPageCache.setPage(CLAIM_TREND_PAGE_CACHE_KEY,cacheVersion,{view,claimClosedIndex:CLAIM_CLOSED_INDEX});
       window.WarrantyPageCache.showBadge(cacheVersion,"fresh");
     }
     finishInitialScroll();

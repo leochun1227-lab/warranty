@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <title>Warranty Operations</title>
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --surface:#ffffff;
+      --surface-soft:#f9fbfe;
+      --ink:#132033;
+      --muted:#66758b;
+      --line:#dfe7f1;
+      --blue:#2563eb;
+      --blue-soft:#eaf2ff;
+      --green:#16a34a;
+      --green-soft:#e9f8ef;
+      --amber:#d97706;
+      --amber-soft:#fff4df;
+      --red:#dc2626;
+      --red-soft:#fff0f0;
+      --shadow:0 12px 28px rgba(24,39,75,.07);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--ink);
+      font-family:"Segoe UI Variable","Aptos","Segoe UI",Arial,sans-serif;
+      font-size:14px;
+    }
+
+    button,input,select{font:inherit}
+
+    .app{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns:248px minmax(0,1fr);
+    }
+
+    .sidebar{
+      position:sticky;
+      top:0;
+      min-height:100vh;
+      padding:20px 14px;
+      background:linear-gradient(180deg,#fbfdff,#f5f9fe);
+      border-right:1px solid var(--line);
+      box-shadow:10px 0 28px rgba(34,65,105,.04);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:11px;
+      padding:0 8px 22px;
+    }
+
+    .brand-mark{
+      width:34px;
+      height:34px;
+      border-radius:8px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      background:linear-gradient(135deg,#38bdf8,#2563eb);
+      box-shadow:0 10px 22px rgba(37,99,235,.18);
+    }
+
+    .brand-text b{
+      display:block;
+      font-size:15px;
+      font-weight:600;
+      color:#182842;
+    }
+
+    .brand-text span{
+      display:block;
+      margin-top:2px;
+      font-size:11px;
+      color:#73859c;
+    }
+
+    .nav-title{
+      margin:18px 8px 8px;
+      font-size:10px;
+      letter-spacing:2.8px;
+      text-transform:uppercase;
+      color:#8094aa;
+      font-weight:600;
+    }
+
+    .nav-link{
+      min-height:40px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:0 12px;
+      border-radius:8px;
+      color:#34445c;
+      text-decoration:none;
+      border:1px solid transparent;
+      font-weight:500;
+    }
+
+    .nav-link i{width:16px;height:16px;color:#8297ad}
+    .nav-link:hover{background:#f1f7ff;border-color:#d9e9fb;color:#1d4ed8}
+    .nav-link.active{background:#eaf2ff;border-color:#cfe3ff;color:#1d4ed8}
+
+    .main{
+      min-width:0;
+      padding:24px 30px 34px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
+      align-items:flex-start;
+      margin-bottom:18px;
+    }
+
+    h1{
+      margin:0 0 6px;
+      font-size:24px;
+      line-height:1.18;
+      font-weight:650;
+      letter-spacing:0;
+    }
+
+    .subtitle{
+      margin:0;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      gap:9px;
+      min-width:440px;
+    }
+
+    .field{
+      height:38px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      color:#24344d;
+      padding:0 11px;
+      outline:none;
+    }
+
+    .field:focus{border-color:#93c5fd;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+
+    .segmented{
+      display:inline-flex;
+      gap:3px;
+      padding:3px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:8px;
+    }
+
+    .segmented button{
+      height:30px;
+      border:0;
+      border-radius:6px;
+      background:transparent;
+      color:#40516a;
+      padding:0 10px;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    .segmented button.active{background:var(--blue);color:#fff}
+
+    .btn{
+      height:38px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      color:#24344d;
+      display:inline-flex;
+      align-items:center;
+      gap:7px;
+      padding:0 12px;
+      cursor:pointer;
+      font-weight:600;
+    }
+
+    .btn:hover{border-color:#bcd0e7;background:#f9fbfe}
+    .btn-primary{background:var(--blue);border-color:var(--blue);color:#fff}
+    .btn-primary:hover{background:#1d4ed8;border-color:#1d4ed8}
+
+    .kpi-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .card{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:8px;
+      box-shadow:var(--shadow);
+    }
+
+    .kpi{
+      padding:16px;
+      min-height:114px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .kpi-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+    }
+
+    .kpi-label{
+      margin:0;
+      color:#53647b;
+      font-size:12px;
+      font-weight:600;
+    }
+
+    .kpi-value{
+      margin-top:7px;
+      font-size:27px;
+      line-height:1;
+      font-weight:650;
+      letter-spacing:0;
+    }
+
+    .kpi-icon{
+      width:32px;
+      height:32px;
+      display:grid;
+      place-items:center;
+      border-radius:8px;
+      flex:0 0 auto;
+    }
+
+    .tone-blue{background:var(--blue-soft);color:var(--blue)}
+    .tone-green{background:var(--green-soft);color:var(--green)}
+    .tone-amber{background:var(--amber-soft);color:var(--amber)}
+    .tone-red{background:var(--red-soft);color:var(--red)}
+
+    .delta{
+      color:var(--muted);
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-size:12px;
+      min-height:18px;
+    }
+
+    .delta.good{color:var(--green)}
+    .delta.bad{color:var(--red)}
+
+    .content-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 340px;
+      gap:14px;
+      align-items:start;
+    }
+
+    .panel{padding:16px}
+
+    .panel-head{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:12px;
+    }
+
+    .panel-title{
+      margin:0;
+      font-size:16px;
+      font-weight:650;
+    }
+
+    .panel-note{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .chart-shell{
+      height:260px;
+      position:relative;
+      border-top:1px solid #edf2f8;
+      padding-top:14px;
+    }
+
+    canvas{display:block;width:100%;height:100%}
+
+    .work-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .queue{
+      display:grid;
+      gap:8px;
+    }
+
+    .queue-row{
+      width:100%;
+      border:1px solid #e7eef6;
+      background:#fbfdff;
+      border-radius:8px;
+      padding:10px 11px;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:10px;
+      text-align:left;
+      cursor:pointer;
+      color:inherit;
+    }
+
+    .queue-row:hover,.queue-row.active{border-color:#9fc7ff;background:#f2f8ff}
+
+    .ticket-title{
+      min-width:0;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      font-weight:650;
+    }
+
+    .ticket-title span{
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .ticket-meta{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:12px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .amount{
+      font-weight:650;
+      color:#182842;
+      white-space:nowrap;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:5px;
+      min-height:22px;
+      border-radius:999px;
+      padding:0 8px;
+      font-size:12px;
+      font-weight:650;
+      border:1px solid transparent;
+      white-space:nowrap;
+    }
+
+    .badge.approved{background:var(--green-soft);color:var(--green);border-color:#c7ecd3}
+    .badge.pending{background:var(--amber-soft);color:var(--amber);border-color:#ffe0a9}
+    .badge.unapproved{background:var(--red-soft);color:var(--red);border-color:#ffd1d1}
+    .badge.review{background:var(--blue-soft);color:var(--blue);border-color:#cfe3ff}
+
+    .stack{display:grid;gap:14px}
+
+    .detail-block{
+      border-top:1px solid #edf2f8;
+      padding-top:12px;
+      margin-top:12px;
+    }
+
+    .detail-list{
+      display:grid;
+      gap:9px;
+    }
+
+    .detail-line{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      color:#40516a;
+      font-size:13px;
+    }
+
+    .detail-line b{
+      color:#182842;
+      font-weight:650;
+      text-align:right;
+    }
+
+    .bar-list{display:grid;gap:11px}
+
+    .bar-row{
+      display:grid;
+      grid-template-columns:110px minmax(0,1fr) 42px;
+      gap:10px;
+      align-items:center;
+      font-size:13px;
+    }
+
+    .bar-label{
+      min-width:0;
+      color:#40516a;
+      overflow:hidden;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+    }
+
+    .bar-track{
+      height:10px;
+      background:#edf3f8;
+      border-radius:999px;
+      overflow:hidden;
+    }
+
+    .bar-fill{
+      height:100%;
+      width:0;
+      background:linear-gradient(90deg,#38bdf8,#2563eb);
+      border-radius:999px;
+      transition:width .2s ease;
+    }
+
+    .table-wrap{overflow:auto}
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:560px;
+    }
+
+    th,td{
+      border-bottom:1px solid #edf2f8;
+      padding:10px 8px;
+      text-align:left;
+      vertical-align:middle;
+    }
+
+    th{
+      color:#66758b;
+      font-size:12px;
+      font-weight:650;
+      background:#fbfdff;
+    }
+
+    td.num{text-align:right;font-variant-numeric:tabular-nums}
+
+    .empty{
+      padding:30px 12px;
+      text-align:center;
+      color:var(--muted);
+      border:1px dashed #cdd8e6;
+      border-radius:8px;
+      background:#fbfdff;
+    }
+
+    @media(max-width:1200px){
+      .content-grid{grid-template-columns:1fr}
+      .toolbar{justify-content:flex-start;min-width:0}
+      .topbar{display:block}
+      .toolbar{margin-top:14px}
+    }
+
+    @media(max-width:880px){
+      .app{display:block}
+      .sidebar{position:relative;min-height:auto}
+      .main{padding:20px}
+      .kpi-grid,.work-grid{grid-template-columns:1fr 1fr}
+    }
+
+    @media(max-width:640px){
+      .main{padding:16px}
+      .kpi-grid,.work-grid{grid-template-columns:1fr}
+      .toolbar,.segmented{width:100%}
+      .field,.btn{width:100%;justify-content:center}
+      .segmented{display:grid;grid-template-columns:repeat(2,1fr)}
+      .content-grid{gap:12px}
+      .bar-row{grid-template-columns:86px minmax(0,1fr) 38px}
+    }
+  </style>
+  <link rel="stylesheet" href="sidebar-light.css?v=20260806-compact-sidebar">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><i data-lucide="bar-chart-3" aria-hidden="true"></i></div>
+        <div class="brand-text">
+          <b>Warranty</b>
+          <span>Operations view</span>
+        </div>
+      </div>
+
+      <div class="nav-title">Workspace</div>
+      <a class="nav-link active" href="temp-interface.html"><i data-lucide="layout-dashboard" aria-hidden="true"></i><span>Operations</span></a>
+      <a class="nav-link" href="index.html"><i data-lucide="users" aria-hidden="true"></i><span>Warranty Team</span></a>
+      <a class="nav-link" href="delivery_flow.html"><i data-lucide="truck" aria-hidden="true"></i><span>Parts Delivery</span></a>
+      <a class="nav-link" href="repairs.html"><i data-lucide="wrench" aria-hidden="true"></i><span>Repairer</span></a>
+
+      <div class="nav-title">Analysis</div>
+      <a class="nav-link" href="analysis.html"><i data-lucide="file-bar-chart" aria-hidden="true"></i><span>Repairs by Model</span></a>
+      <a class="nav-link" href="parts.html"><i data-lucide="component" aria-hidden="true"></i><span>Parts Failure</span></a>
+      <a class="nav-link" href="ticketlifecycle.html"><i data-lucide="list-todo" aria-hidden="true"></i><span>Ticket Timeline</span></a>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h1>Warranty Operations</h1>
+          <p class="subtitle">Open tickets, approval cost, delivery risk, and next work queue.</p>
+        </div>
+        <div class="toolbar">
+          <select id="monthFilter" class="field" aria-label="Month">
+            <option value="Jul 2026">Jul 2026</option>
+            <option value="Jun 2026">Jun 2026</option>
+            <option value="May 2026">May 2026</option>
+          </select>
+          <input id="searchBox" class="field" type="search" placeholder="Search ticket, dealer, model" aria-label="Search">
+          <div class="segmented" aria-label="Status filter">
+            <button type="button" class="active" data-status="all">All</button>
+            <button type="button" data-status="pending">Pending</button>
+            <button type="button" data-status="approved">Approved</button>
+            <button type="button" data-status="unapproved">Unapproved</button>
+          </div>
+          <button id="refreshBtn" class="btn btn-primary" type="button"><i data-lucide="refresh-cw" aria-hidden="true"></i><span>Refresh</span></button>
+        </div>
+      </div>
+
+      <section class="kpi-grid" aria-label="Warranty KPIs">
+        <article class="card kpi">
+          <div class="kpi-top">
+            <div><p class="kpi-label">Open tickets</p><div id="kpiOpen" class="kpi-value">0</div></div>
+            <div class="kpi-icon tone-blue"><i data-lucide="ticket" aria-hidden="true"></i></div>
+          </div>
+          <div class="delta good"><i data-lucide="trending-down" aria-hidden="true"></i><span>8 fewer than prior view</span></div>
+        </article>
+        <article class="card kpi">
+          <div class="kpi-top">
+            <div><p class="kpi-label">Approved cost</p><div id="kpiCost" class="kpi-value">$0</div></div>
+            <div class="kpi-icon tone-green"><i data-lucide="badge-dollar-sign" aria-hidden="true"></i></div>
+          </div>
+          <div class="delta"><i data-lucide="minus" aria-hidden="true"></i><span>Stable against last cycle</span></div>
+        </article>
+        <article class="card kpi">
+          <div class="kpi-top">
+            <div><p class="kpi-label">Pending review</p><div id="kpiPending" class="kpi-value">0</div></div>
+            <div class="kpi-icon tone-amber"><i data-lucide="clock-3" aria-hidden="true"></i></div>
+          </div>
+          <div class="delta bad"><i data-lucide="triangle-alert" aria-hidden="true"></i><span>3 older than 7 days</span></div>
+        </article>
+        <article class="card kpi">
+          <div class="kpi-top">
+            <div><p class="kpi-label">Parts risk</p><div id="kpiRisk" class="kpi-value">0</div></div>
+            <div class="kpi-icon tone-red"><i data-lucide="package-x" aria-hidden="true"></i></div>
+          </div>
+          <div class="delta"><i data-lucide="route" aria-hidden="true"></i><span>Delivery queue watchlist</span></div>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <div>
+          <article class="card panel">
+            <div class="panel-head">
+              <div>
+                <h2 class="panel-title">Ticket movement</h2>
+                <p id="trendNote" class="panel-note">Jul 2026 by week</p>
+              </div>
+              <button id="exportBtn" class="btn" type="button"><i data-lucide="download" aria-hidden="true"></i><span>Export</span></button>
+            </div>
+            <div class="chart-shell">
+              <canvas id="trendChart" width="1000" height="360" aria-label="Weekly ticket movement chart"></canvas>
+            </div>
+          </article>
+
+          <div class="work-grid">
+            <article class="card panel">
+              <div class="panel-head">
+                <div>
+                  <h2 class="panel-title">Review queue</h2>
+                  <p class="panel-note">Sorted by age and amount</p>
+                </div>
+              </div>
+              <div id="queueList" class="queue"></div>
+            </article>
+
+            <article class="card panel">
+              <div class="panel-head">
+                <div>
+                  <h2 class="panel-title">Dealer concentration</h2>
+                  <p class="panel-note">Current filtered amount</p>
+                </div>
+              </div>
+              <div id="dealerBars" class="bar-list"></div>
+            </article>
+          </div>
+
+          <article class="card panel" style="margin-top:14px">
+            <div class="panel-head">
+              <div>
+                <h2 class="panel-title">Recent tickets</h2>
+                <p class="panel-note">Filtered by the controls above</p>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Ticket</th>
+                    <th>Dealer</th>
+                    <th>Model</th>
+                    <th>Status</th>
+                    <th class="num">Age</th>
+                    <th class="num">Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="ticketRows"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+
+        <aside class="stack">
+          <article class="card panel">
+            <div class="panel-head">
+              <div>
+                <h2 class="panel-title">Ticket focus</h2>
+                <p id="focusSubtitle" class="panel-note">Select a row from the review queue.</p>
+              </div>
+            </div>
+            <div id="focusBody"></div>
+          </article>
+
+          <article class="card panel">
+            <div class="panel-head">
+              <div>
+                <h2 class="panel-title">Status mix</h2>
+                <p class="panel-note">Current filtered ticket count</p>
+              </div>
+            </div>
+            <div id="statusBars" class="bar-list"></div>
+          </article>
+
+          <article class="card panel">
+            <div class="panel-head">
+              <div>
+                <h2 class="panel-title">Next actions</h2>
+                <p class="panel-note">Operational follow-up list</p>
+              </div>
+            </div>
+            <div class="queue">
+              <button class="queue-row" type="button">
+                <div><div class="ticket-title"><i data-lucide="mail-check" aria-hidden="true"></i><span>Send pending cost pack</span></div><div class="ticket-meta"><span>Finance</span><span>3 tickets</span></div></div>
+                <span class="badge pending">Today</span>
+              </button>
+              <button class="queue-row" type="button">
+                <div><div class="ticket-title"><i data-lucide="package-search" aria-hidden="true"></i><span>Confirm delayed parts ETA</span></div><div class="ticket-meta"><span>Delivery</span><span>5 tickets</span></div></div>
+                <span class="badge review">Open</span>
+              </button>
+              <button class="queue-row" type="button">
+                <div><div class="ticket-title"><i data-lucide="clipboard-check" aria-hidden="true"></i><span>Close approved no-response items</span></div><div class="ticket-meta"><span>Warranty</span><span>2 tickets</span></div></div>
+                <span class="badge approved">Ready</span>
+              </button>
+            </div>
+          </article>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script src="node_modules/lucide/dist/umd/lucide.js"></script>
+  <script>
+    const tickets = [
+      {id:"CTM-260718-041",dealer:"Auckland North",model:"T60 Max",status:"pending",age:11,amount:8420,risk:"Parts ETA",owner:"Warranty",month:"Jul 2026",part:"Front diff assembly"},
+      {id:"CTM-260716-027",dealer:"Perth Metro",model:"D90",status:"unapproved",age:9,amount:6150,risk:"PO mismatch",owner:"Finance",month:"Jul 2026",part:"Turbocharger"},
+      {id:"CTM-260715-018",dealer:"Sydney West",model:"Deliver 9",status:"approved",age:7,amount:3920,risk:"Ready to close",owner:"Warranty",month:"Jul 2026",part:"Sliding door rail"},
+      {id:"CTM-260714-033",dealer:"Melbourne East",model:"T60 Max",status:"pending",age:8,amount:5280,risk:"Photos missing",owner:"Dealer",month:"Jul 2026",part:"Transfer case"},
+      {id:"CTM-260711-009",dealer:"Brisbane South",model:"D90",status:"approved",age:5,amount:2710,risk:"Low",owner:"Repairer",month:"Jul 2026",part:"AC compressor"},
+      {id:"CTM-260708-052",dealer:"Auckland North",model:"Mifa 9",status:"pending",age:14,amount:7360,risk:"Parts ETA",owner:"Delivery",month:"Jul 2026",part:"Battery module"},
+      {id:"CTM-260624-030",dealer:"Sydney West",model:"T60 Max",status:"approved",age:6,amount:4880,risk:"Low",owner:"Warranty",month:"Jun 2026",part:"Steering rack"},
+      {id:"CTM-260621-015",dealer:"Hobart",model:"Deliver 9",status:"pending",age:12,amount:3650,risk:"Invoice wait",owner:"Repairer",month:"Jun 2026",part:"EGR valve"},
+      {id:"CTM-260618-044",dealer:"Perth Metro",model:"Mifa 9",status:"unapproved",age:10,amount:9080,risk:"Diagnosis gap",owner:"Dealer",month:"Jun 2026",part:"HV control unit"},
+      {id:"CTM-260514-028",dealer:"Melbourne East",model:"D90",status:"approved",age:4,amount:2240,risk:"Low",owner:"Warranty",month:"May 2026",part:"Rear sensor loom"},
+      {id:"CTM-260512-011",dealer:"Brisbane South",model:"T60 Max",status:"pending",age:13,amount:5870,risk:"Parts ETA",owner:"Delivery",month:"May 2026",part:"Injector set"},
+      {id:"CTM-260509-007",dealer:"Adelaide City",model:"Deliver 9",status:"approved",age:3,amount:1810,risk:"Low",owner:"Warranty",month:"May 2026",part:"Window regulator"}
+    ];
+
+    const trend = {
+      "Jul 2026":[
+        {week:"W1",opened:22,approved:14,pending:9},
+        {week:"W2",opened:25,approved:16,pending:11},
+        {week:"W3",opened:21,approved:19,pending:8},
+        {week:"W4",opened:18,approved:21,pending:6}
+      ],
+      "Jun 2026":[
+        {week:"W1",opened:18,approved:15,pending:7},
+        {week:"W2",opened:20,approved:18,pending:8},
+        {week:"W3",opened:24,approved:17,pending:10},
+        {week:"W4",opened:19,approved:20,pending:6}
+      ],
+      "May 2026":[
+        {week:"W1",opened:17,approved:13,pending:8},
+        {week:"W2",opened:16,approved:15,pending:7},
+        {week:"W3",opened:19,approved:14,pending:9},
+        {week:"W4",opened:15,approved:18,pending:5}
+      ]
+    };
+
+    const state = {
+      month:"Jul 2026",
+      status:"all",
+      search:"",
+      selectedId:"CTM-260718-041"
+    };
+
+    const fmtMoney = value => "$" + Math.round(value).toLocaleString("en-AU");
+    const titleCase = value => value.charAt(0).toUpperCase() + value.slice(1);
+
+    function filteredTickets(){
+      const query = state.search.trim().toLowerCase();
+      return tickets.filter(ticket => {
+        if(ticket.month !== state.month) return false;
+        if(state.status !== "all" && ticket.status !== state.status) return false;
+        if(!query) return true;
+        return [ticket.id,ticket.dealer,ticket.model,ticket.part,ticket.owner].some(value => String(value).toLowerCase().includes(query));
+      });
+    }
+
+    function statusBadge(status){
+      return `<span class="badge ${status}">${titleCase(status)}</span>`;
+    }
+
+    function renderKpis(rows){
+      const open = rows.length;
+      const cost = rows.filter(row => row.status === "approved").reduce((sum,row) => sum + row.amount,0);
+      const pending = rows.filter(row => row.status === "pending").length;
+      const risk = rows.filter(row => row.risk !== "Low" && row.risk !== "Ready to close").length;
+      document.getElementById("kpiOpen").textContent = open;
+      document.getElementById("kpiCost").textContent = fmtMoney(cost);
+      document.getElementById("kpiPending").textContent = pending;
+      document.getElementById("kpiRisk").textContent = risk;
+    }
+
+    function renderQueue(rows){
+      const queue = rows.slice().sort((a,b) => (b.age - a.age) || (b.amount - a.amount)).slice(0,5);
+      const list = document.getElementById("queueList");
+      if(!queue.length){
+        list.innerHTML = `<div class="empty">No tickets match the current filters.</div>`;
+        return;
+      }
+      if(!queue.some(row => row.id === state.selectedId)) state.selectedId = queue[0].id;
+      list.innerHTML = queue.map(row => `
+        <button class="queue-row ${row.id === state.selectedId ? "active" : ""}" type="button" data-ticket="${row.id}">
+          <div>
+            <div class="ticket-title"><i data-lucide="ticket-check" aria-hidden="true"></i><span>${row.id}</span></div>
+            <div class="ticket-meta"><span>${row.dealer}</span><span>${row.model}</span><span>${row.age}d</span></div>
+          </div>
+          <div>
+            <div class="amount">${fmtMoney(row.amount)}</div>
+            <div style="margin-top:7px;text-align:right">${statusBadge(row.status)}</div>
+          </div>
+        </button>
+      `).join("");
+      list.querySelectorAll("[data-ticket]").forEach(button => {
+        button.addEventListener("click", () => {
+          state.selectedId = button.dataset.ticket;
+          render();
+        });
+      });
+    }
+
+    function renderFocus(rows){
+      const ticket = tickets.find(row => row.id === state.selectedId) || rows[0];
+      const body = document.getElementById("focusBody");
+      if(!ticket){
+        document.getElementById("focusSubtitle").textContent = "No current ticket.";
+        body.innerHTML = `<div class="empty">No ticket selected.</div>`;
+        return;
+      }
+      document.getElementById("focusSubtitle").textContent = `${ticket.id} selected`;
+      body.innerHTML = `
+        <div class="ticket-title" style="font-size:16px"><i data-lucide="clipboard-list" aria-hidden="true"></i><span>${ticket.dealer}</span></div>
+        <div class="ticket-meta" style="margin-top:8px">${statusBadge(ticket.status)}<span>${ticket.model}</span><span>${ticket.age} days open</span></div>
+        <div class="detail-block detail-list">
+          <div class="detail-line"><span>Claim amount</span><b>${fmtMoney(ticket.amount)}</b></div>
+          <div class="detail-line"><span>Owner</span><b>${ticket.owner}</b></div>
+          <div class="detail-line"><span>Primary part</span><b>${ticket.part}</b></div>
+          <div class="detail-line"><span>Risk</span><b>${ticket.risk}</b></div>
+        </div>
+        <div class="detail-block" style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" type="button"><i data-lucide="file-search" aria-hidden="true"></i><span>Review</span></button>
+          <button class="btn" type="button"><i data-lucide="send" aria-hidden="true"></i><span>Follow up</span></button>
+        </div>
+      `;
+    }
+
+    function renderDealerBars(rows){
+      const totals = new Map();
+      rows.forEach(row => totals.set(row.dealer,(totals.get(row.dealer) || 0) + row.amount));
+      const data = Array.from(totals,([label,value]) => ({label,value})).sort((a,b) => b.value - a.value).slice(0,5);
+      const max = Math.max(...data.map(row => row.value),1);
+      document.getElementById("dealerBars").innerHTML = data.length ? data.map(row => `
+        <div class="bar-row">
+          <div class="bar-label">${row.label}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.max(8,row.value / max * 100)}%"></div></div>
+          <div class="amount">${Math.round(row.value / 1000)}k</div>
+        </div>
+      `).join("") : `<div class="empty">No dealer data.</div>`;
+    }
+
+    function renderStatusBars(rows){
+      const keys = ["approved","pending","unapproved"];
+      const max = Math.max(...keys.map(key => rows.filter(row => row.status === key).length),1);
+      document.getElementById("statusBars").innerHTML = keys.map(key => {
+        const count = rows.filter(row => row.status === key).length;
+        return `
+          <div class="bar-row">
+            <div class="bar-label">${titleCase(key)}</div>
+            <div class="bar-track"><div class="bar-fill" style="width:${count ? Math.max(10,count / max * 100) : 0}%"></div></div>
+            <div class="amount">${count}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderTable(rows){
+      document.getElementById("ticketRows").innerHTML = rows.map(row => `
+        <tr>
+          <td>${row.id}</td>
+          <td>${row.dealer}</td>
+          <td>${row.model}</td>
+          <td>${statusBadge(row.status)}</td>
+          <td class="num">${row.age}d</td>
+          <td class="num">${fmtMoney(row.amount)}</td>
+        </tr>
+      `).join("") || `<tr><td colspan="6"><div class="empty">No tickets match the current filters.</div></td></tr>`;
+    }
+
+    function drawChart(){
+      const canvas = document.getElementById("trendChart");
+      const ctx = canvas.getContext("2d");
+      const ratio = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.max(640, Math.floor(rect.width * ratio));
+      canvas.height = Math.max(280, Math.floor(rect.height * ratio));
+      ctx.setTransform(ratio,0,0,ratio,0,0);
+
+      const width = rect.width;
+      const height = rect.height;
+      ctx.clearRect(0,0,width,height);
+
+      const rows = trend[state.month] || trend["Jul 2026"];
+      const padding = {left:46,right:18,top:18,bottom:38};
+      const plotW = width - padding.left - padding.right;
+      const plotH = height - padding.top - padding.bottom;
+      const max = Math.max(...rows.flatMap(row => [row.opened,row.approved,row.pending]),10) + 4;
+      const series = [
+        {key:"opened",label:"Opened",color:"#2563eb"},
+        {key:"approved",label:"Approved",color:"#16a34a"},
+        {key:"pending",label:"Pending",color:"#d97706"}
+      ];
+
+      ctx.font = "12px Segoe UI, Arial";
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "#e6edf5";
+      ctx.fillStyle = "#6b7b91";
+      for(let i=0;i<=4;i++){
+        const y = padding.top + plotH - (plotH * i / 4);
+        const value = Math.round(max * i / 4);
+        ctx.beginPath();
+        ctx.moveTo(padding.left,y);
+        ctx.lineTo(width - padding.right,y);
+        ctx.stroke();
+        ctx.fillText(String(value),8,y + 4);
+      }
+
+      rows.forEach((row,index) => {
+        const x = padding.left + plotW * index / Math.max(rows.length - 1,1);
+        ctx.fillStyle = "#6b7b91";
+        ctx.fillText(row.week,x - 8,height - 12);
+      });
+
+      series.forEach(item => {
+        ctx.beginPath();
+        rows.forEach((row,index) => {
+          const x = padding.left + plotW * index / Math.max(rows.length - 1,1);
+          const y = padding.top + plotH - (row[item.key] / max * plotH);
+          if(index === 0) ctx.moveTo(x,y);
+          else ctx.lineTo(x,y);
+        });
+        ctx.strokeStyle = item.color;
+        ctx.lineWidth = 2.4;
+        ctx.stroke();
+
+        rows.forEach((row,index) => {
+          const x = padding.left + plotW * index / Math.max(rows.length - 1,1);
+          const y = padding.top + plotH - (row[item.key] / max * plotH);
+          ctx.fillStyle = "#fff";
+          ctx.beginPath();
+          ctx.arc(x,y,4.5,0,Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = item.color;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        });
+      });
+
+      let legendX = padding.left;
+      series.forEach(item => {
+        ctx.fillStyle = item.color;
+        ctx.fillRect(legendX,4,10,10);
+        ctx.fillStyle = "#40516a";
+        ctx.fillText(item.label,legendX + 16,14);
+        legendX += 92;
+      });
+    }
+
+    function render(){
+      const rows = filteredTickets();
+      renderKpis(rows);
+      renderQueue(rows);
+      renderFocus(rows);
+      renderDealerBars(rows);
+      renderStatusBars(rows);
+      renderTable(rows);
+      document.getElementById("trendNote").textContent = `${state.month} by week`;
+      drawChart();
+      if(window.lucide) window.lucide.createIcons();
+    }
+
+    document.getElementById("monthFilter").addEventListener("change", event => {
+      state.month = event.target.value;
+      render();
+    });
+
+    document.getElementById("searchBox").addEventListener("input", event => {
+      state.search = event.target.value;
+      render();
+    });
+
+    document.querySelectorAll(".segmented button").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".segmented button").forEach(item => item.classList.remove("active"));
+        button.classList.add("active");
+        state.status = button.dataset.status;
+        render();
+      });
+    });
+
+    document.getElementById("refreshBtn").addEventListener("click", () => render());
+    document.getElementById("exportBtn").addEventListener("click", () => {
+      const rows = filteredTickets();
+      const csv = ["Ticket,Dealer,Model,Status,Age,Amount"].concat(rows.map(row => [row.id,row.dealer,row.model,row.status,row.age,row.amount].join(","))).join("\n");
+      const blob = new Blob([csv],{type:"text/csv"});
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "warranty-temp-view.csv";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    window.addEventListener("resize", drawChart);
+    render();
+  </script>
+</body>
+</html>

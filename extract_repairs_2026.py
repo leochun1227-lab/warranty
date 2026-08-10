@@ -24,6 +24,8 @@ DEFAULT_DSN = os.getenv(
 )
 DEFAULT_MANDT = os.getenv("SAP_CLIENT", "800")
 DEFAULT_CNY_TO_AUD = 5.0
+PO_CLAIM_SANITY_MIN_PO_AUD = float(os.getenv("PO_CLAIM_SANITY_MIN_PO_AUD", "50000"))
+PO_CLAIM_SANITY_RATIO = float(os.getenv("PO_CLAIM_SANITY_RATIO", "10"))
 
 logger = logging.getLogger("extract_repairs_2026")
 
@@ -421,6 +423,27 @@ def cny_to_aud(amount: float, currency: str, rate: float) -> float:
     return round(amount, 2)
 
 
+def current_claim_amount_aud(row: Dict[str, Any]) -> float:
+    claim_total = parse_amount(row.get("ClaimTotalAmount"))
+    if claim_total > 0:
+        return round(claim_total, 2)
+    parts_total = sum(
+        parse_amount(row.get(field))
+        for field in (
+            "Factory Parts Claim Total Amount",
+            "LabourHoursTotalAmount",
+            "Repairer Parts Claim Total Amount",
+        )
+    )
+    return round(parts_total, 2) if parts_total > 0 else 0.0
+
+
+def should_override_sap_po_cost(sap_po_aud: float, current_claim_aud: float) -> bool:
+    if sap_po_aud < PO_CLAIM_SANITY_MIN_PO_AUD or current_claim_aud <= 0:
+        return False
+    return (sap_po_aud / current_claim_aud) >= PO_CLAIM_SANITY_RATIO
+
+
 # ---------------------------------------------------------------------------
 # Data structures
 # ---------------------------------------------------------------------------
@@ -600,6 +623,10 @@ def read_rows(source: Path, start_year: int) -> Tuple[List[Dict[str, Any]], Dict
                 "Ticket ID": clean(raw.get("Ticket ID")),
                 "Ticket": clean(raw.get("Ticket")),
                 "Ticket Type": clean(raw.get("Ticket Type")),
+                "Serial ID": clean(raw.get("Serial ID")),
+                "Chassis Number": clean(raw.get("Chassis Number")),
+                "Registered Product": clean(raw.get("Registered Product")),
+                "Product": clean(raw.get("Product")),
                 "Status": clean(raw.get("Status")),
                 "Dealer": clean(raw.get("Dealer")),
                 "Dealer Name": clean(raw.get("Dealer Name")),
@@ -722,10 +749,27 @@ def build_summaries(
             confirmed_native = float(po_info.get("amount") or 0)
             confirmed_currency = po_info.get("currency") or "AUD"
             confirmed_aud = cny_to_aud(confirmed_native, confirmed_currency, cny_to_aud_rate)
+            confirmed_cost_source = "sap_po_netwr"
         else:
             confirmed_native = 0.0
             confirmed_currency = ""
             confirmed_aud = 0.0
+            confirmed_cost_source = "missing_sap_po_cost"
+
+        sap_po_native = confirmed_native
+        sap_po_currency = confirmed_currency
+        sap_po_aud = confirmed_aud
+        current_claim_aud = current_claim_amount_aud(row)
+        po_cost_override_reason = ""
+        if should_override_sap_po_cost(sap_po_aud, current_claim_aud):
+            po_cost_override_reason = (
+                f"SAP PO amount {sap_po_aud:.2f} AUD is at least "
+                f"{PO_CLAIM_SANITY_RATIO:g}x current claim amount {current_claim_aud:.2f} AUD"
+            )
+            confirmed_native = current_claim_aud
+            confirmed_currency = "AUD"
+            confirmed_aud = current_claim_aud
+            confirmed_cost_source = "current_claim_amount_sanity_override"
 
         inv = invoice_map.get(po) if po else None
         if inv:
@@ -809,6 +853,12 @@ def build_summaries(
             "invoice_status": invoice_status,
             "invoice_number": invoice_number,
             "invoice_date": invoice_date,
+            "current_claim_amount_aud": current_claim_aud,
+            "sap_po_cost_native": round(sap_po_native, 2),
+            "sap_po_cost_currency": sap_po_currency,
+            "sap_po_cost_aud": round(sap_po_aud, 2),
+            "confirmed_cost_source": confirmed_cost_source,
+            "po_cost_override_reason": po_cost_override_reason,
             "confirmed_cost_native": round(confirmed_native, 2),
             "confirmed_cost_currency": confirmed_currency,
             "confirmed_cost_aud": confirmed_aud,
@@ -930,6 +980,7 @@ def write_json(
     avg_confirmed = round(total_confirmed / len(detail_rows), 2) if detail_rows else 0.0
     unique_repairers_raw = len({clean(r.get("raw_repairer_name")) for r in detail_rows if clean(r.get("raw_repairer_name"))})
     unique_repairers_normalized = len({clean(r.get("normalized_key")) for r in detail_rows if clean(r.get("normalized_key"))})
+    po_cost_sanity_overrides = sum(1 for r in detail_rows if clean(r.get("po_cost_override_reason")))
 
     repairer_display_map = {r["split_key"]: r["repairer_name"] for r in repairer_rows}
     address_buckets: Dict[str, Dict[str, Any]] = {}
@@ -994,6 +1045,7 @@ def write_json(
             "unique_repairers_raw": unique_repairers_raw,
             "unique_repairers_normalized": unique_repairers_normalized,
             "unique_addresses": len(address_rows),
+            "po_cost_sanity_overrides": po_cost_sanity_overrides,
         },
         "summary": {
             "total_tickets": len(detail_rows),
@@ -1010,6 +1062,7 @@ def write_json(
             "unique_states": len(state_rows),
             "unique_addresses": len(address_rows),
             "unique_weeks": len(weekly_rows),
+            "po_cost_sanity_overrides": po_cost_sanity_overrides,
             "top_repairers": repairer_rows[:20],
         },
         "repairers": repairer_rows,
@@ -1048,6 +1101,7 @@ def main() -> None:
     parser.add_argument("--mandt", default=DEFAULT_MANDT, help="SAP client (default 800)")
     parser.add_argument("--skip-invoice", action="store_true", help="Skip SAP invoice enrichment (all tickets = open)")
     parser.add_argument("--skip-firebase", action="store_true", help="Skip Firebase RepairerBusinessNameID overlay (use only CSV Service Technician for names)")
+    parser.add_argument("--allow-missing-po-costs", action="store_true", help="Allow output even when no SAP PO cost rows are fetched")
     parser.add_argument("--firebase-root", default=FIREBASE_ROOT, help=f"Firebase root node (default: {FIREBASE_ROOT})")
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
@@ -1077,6 +1131,11 @@ def main() -> None:
 
     po_cost_map = fetch_po_costs(po_numbers, dsn=args.dsn, mandt=args.mandt)
     logger.info("Found PO cost rows for %s / %s unique POs", len(po_cost_map), unique_pos)
+    if unique_pos and not po_cost_map and not args.allow_missing_po_costs:
+        raise RuntimeError(
+            "No SAP PO cost rows were fetched for repair analysis. "
+            "Refusing to write a zero-cost repair cache; use --allow-missing-po-costs for offline diagnostics only."
+        )
 
     if args.skip_invoice:
         logger.warning("--skip-invoice set: all tickets will be marked open.")
@@ -1113,6 +1172,7 @@ def main() -> None:
         "unique_weeks": len(weekly_rows),
         "confirmed_cost_aud": round(sum(r["confirmed_cost_aud"] for r in detail_rows), 2),
         "pending_amount_aud": 0.0,
+        "po_cost_sanity_overrides": sum(1 for r in detail_rows if clean(r.get("po_cost_override_reason"))),
         "state_breakdown": {r["state"]: r["ticket_count"] for r in state_rows},
         "firebase_overlay_count": len(firebase_name_map),
         "firebase_overlay_used": sum(1 for r in detail_rows if r.get("RepairerBusinessNameID")),

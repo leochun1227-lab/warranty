@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-store" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>Analysis</title>
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#0f172a;--muted:#607089;--line:#dbe3ee;--blue:#3b82f6;--green:#10b981;--amber:#f59e0b;--red:#ef4444;--shadow:0 10px 28px rgba(15,23,42,.06)}
@@ -522,9 +525,9 @@ body.repair-insights-page .calcFloat{
 </style>
 </head>
 <body class="repair-insights-page"><main class="main">
-<div class="header"><div><h1 id="title" class="title" style="display:none">Analysis</h1></div><div><button class="btn" id="exportExcelBtn" type="button">Export Excel</button> <a class="btn" href="index.html">Warranty Team</a> <a class="btn" href="analysis.html">Model And Parts</a> <a class="btn" href="delivery_flow.html">Parts Delivery</a> <a class="btn" href="repairs.html">Repair</a> <a class="btn" href="infieldpredelivery.html">Claim Trend Overview</a></div></div>
+<div class="header"><div><h1 id="title" class="title" style="display:none">Analysis</h1></div><div><button class="btn" id="exportExcelBtn" type="button">Export Excel</button> <a class="btn" href="index.html">Warranty Team</a> <a class="btn" href="analysis.html">Repairs by Model</a> <a class="btn" href="parts.html">Parts Failure Components</a> <a class="btn" href="delivery_flow.html">Parts Delivery</a> <a class="btn" href="repairs.html">Repairer</a> <a class="btn" href="infieldpredelivery.html">Claim Trend Overview</a></div></div>
 <div id="loadError" class="error"></div>
-<section class="kpis"><div class="kpi"><div class="kpiLabel">Tickets</div><div id="kpiTickets" class="kpiValue">0</div></div><div class="kpi"><div class="kpiLabel">Total Cost</div><div id="kpiCost" class="kpiValue">$0</div></div><div class="kpi"><div class="kpiLabel">Avg Cost</div><div id="kpiAvg" class="kpiValue">$0</div></div></section>
+<section class="kpis"><div class="kpi"><div class="kpiLabel">Repeated Claim Tickets (Chassis &gt;2x)</div><div id="kpiTickets" class="kpiValue">0</div></div><div class="kpi"><div class="kpiLabel">Repeated Ticket Claim Amount</div><div id="kpiCost" class="kpiValue">$0</div></div><div class="kpi"><div class="kpiLabel">Avg Claim Amount / Repeated Ticket</div><div id="kpiAvg" class="kpiValue">$0</div></div></section>
 <section class="overviewGrid">
 <div class="overviewLeft">
   <div class="piePair">
@@ -533,7 +536,7 @@ body.repair-insights-page .calcFloat{
   </div>
 </div>
 <div class="overviewRight">
-  <div class="panel"><h2 class="panelTitle">ERP PO / Invoice Cost Distribution</h2><div class="chart"><canvas id="amountChart"></canvas></div></div>
+  <div class="panel"><h2 class="panelTitle">Repeated Ticket Claim Amount Distribution</h2><div class="chart"><canvas id="amountChart"></canvas></div></div>
 </div>
 <div class="panel repeatSection">
   <div class="repeatSectionHead">
@@ -544,7 +547,7 @@ body.repair-insights-page .calcFloat{
 </section>
 <section class="panel trendPanel"><h2 class="panelTitle">Ticket CreatedOn Trend</h2><div class="chart"><canvas id="createdChart"></canvas></div></section>
 </main>
-<div id="repeatModal" class="modalBackdrop" aria-hidden="true"><div class="modal repeatModal"><div class="modalHead"><div><h2 id="repeatModalTitle" style="margin:0"></h2><p class="desc" id="repeatModalDesc">Ticket-level details</p></div><button class="btn" id="repeatModalClose" type="button">x</button></div><div class="tableWrap modalTableWrap"><table><thead><tr><th>Chassis</th><th>Ticket</th><th>Created</th><th>Cost</th><th>Status</th><th>Serial</th><th>Dealer</th></tr></thead><tbody id="repeatModalRows"></tbody></table></div></div></div>
+<div id="repeatModal" class="modalBackdrop" aria-hidden="true"><div class="modal repeatModal"><div class="modalHead"><div><h2 id="repeatModalTitle" style="margin:0"></h2><p class="desc" id="repeatModalDesc">Ticket-level details</p></div><button class="btn" id="repeatModalClose" type="button">x</button></div><div class="tableWrap modalTableWrap"><table><thead><tr><th>Chassis</th><th>Ticket</th><th>Created</th><th>Claim Amount Used</th><th>Status</th><th>Serial</th><th>Dealer</th></tr></thead><tbody id="repeatModalRows"></tbody></table></div></div></div>
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
 <script src="browser-page-cache.js"></script>
 <script>
@@ -560,7 +563,7 @@ function hideCalcFloat(delay=250){setTimeout(()=>showCalcFloat(false),delay)}
 
 
 const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
-const ANALYSIS_JSON="outputs/repairers_2026/repairers_2026_data.json";
+const ANALYSIS_JSON="outputs/repairers_2026/repairers_2026_light.json";
 const urlParams=new URLSearchParams(location.search);
 const repairId=urlParams.get("repairId")||"no-repair";
 const BASE_REPAIR_YEAR=2026;
@@ -571,17 +574,36 @@ const selectedRepairYear=CURRENT_REPAIR_YEAR>BASE_REPAIR_YEAR&&requestedRepairYe
   : CURRENT_REPAIR_YEAR;
 const REPAIR_SCOPE_START=`${selectedRepairYear}-01-01`;
 const REPAIR_SCOPE_END=`${selectedRepairYear}-12-31`;
+const REPAIR_COST_RULE_CACHE_SCHEMA="repeated-claim-amount-v1";
+const REPAIR_INSIGHTS_PAGE_CACHE_ENABLED=false;
+const REPAIR_COST_SANITY_MIN_AUD=50000;
+const REPAIR_COST_SANITY_RATIO=10;
+const REPAIR_INSIGHTS_FETCH_TIMEOUT_MS=8000;
 const $=id=>document.getElementById(id), clean=v=>v==null?"":String(v).trim();
 const esc=v=>clean(v).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
 const num=(v,d=0)=>Number(v||0).toLocaleString(undefined,{maximumFractionDigits:d,minimumFractionDigits:d});
 const money=v=>Number(v||0).toLocaleString(undefined,{style:"currency",currency:"AUD",maximumFractionDigits:0});
 function fbUrl(path){return DEFAULT_FIREBASE.replace(/\/+$/,'')+"/"+path.replace(/^\/+/,'')+".json"}
-async function readJson(path){const r=await fetch(fbUrl(path),{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
-async function readStaticJson(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
+async function fetchJsonWithTimeout(url,label,timeoutMs=REPAIR_INSIGHTS_FETCH_TIMEOUT_MS){
+  const controller=typeof AbortController!=="undefined"?new AbortController():null;
+  const timer=controller&&timeoutMs>0?setTimeout(()=>controller.abort(),timeoutMs):null;
+  try{
+    const r=await fetch(url,{cache:"no-store",signal:controller?controller.signal:undefined});
+    if(!r.ok)throw new Error(label+" HTTP "+r.status);
+    return await r.json();
+  }catch(e){
+    if(e&&e.name==="AbortError")throw new Error(label+" timed out after "+timeoutMs+"ms");
+    throw e;
+  }finally{
+    if(timer)clearTimeout(timer);
+  }
+}
+async function readJson(path,timeoutMs=REPAIR_INSIGHTS_FETCH_TIMEOUT_MS){return await fetchJsonWithTimeout(fbUrl(path),path,timeoutMs)}
+async function readStaticJson(path,timeoutMs=REPAIR_INSIGHTS_FETCH_TIMEOUT_MS){return await fetchJsonWithTimeout(path,path,timeoutMs)}
 let firebaseTicketMapPromise=null;
 async function loadFirebaseTicketMap(){
   if(!firebaseTicketMapPromise){
-    firebaseTicketMapPromise=readJson("c4cTickets_test/tickets").then(node=>{
+    firebaseTicketMapPromise=readJson("c4cTickets_test/tickets",REPAIR_INSIGHTS_FETCH_TIMEOUT_MS).then(node=>{
       const map=new Map();
       Object.entries(node||{}).forEach(([key,row])=>{
         if(!row||typeof row!=="object")return;
@@ -629,10 +651,58 @@ function repairCostFromTicket(ticket){
   const fields=["confirmed_cost_aud","confirmed_cost","invoice_amount_aud","invoice_amount","po_amount_aud","po_amount"];
   for(const field of fields){
     if(ticket&&Object.prototype.hasOwnProperty.call(ticket,field)){
-      return parseAmount(ticket[field]);
+      return repairCostAfterSanityCheck(ticket,parseAmount(ticket[field]));
     }
   }
   return 0;
+}
+function claimAmountFromTicket(ticket){
+  const fields=["ClaimTotalAmount","Claim Total Amount","claim_total_amount","claim_total_amount_aud","AmountIncludingTax","Amount Including Tax","rawTicketAmount","amount"];
+  for(const field of fields){
+    if(ticket&&Object.prototype.hasOwnProperty.call(ticket,field)){
+      const amount=parseAmount(ticket[field]);
+      if(amount>0)return amount;
+    }
+  }
+  const parts=[
+    ticket?.["Factory Parts Claim Total Amount"],
+    ticket?.FactoryPartsClaimTotalAmount,
+    ticket?.LabourHoursTotalAmount,
+    ticket?.["Repairer Parts Claim Total Amount"],
+    ticket?.RepairerPartsClaimTotalAmount,
+  ].reduce((sum,value)=>sum+parseAmount(value),0);
+  return parts>0?parts:0;
+}
+function repairCostAfterSanityCheck(ticket,cost){
+  const amount=Number(cost);
+  if(!Number.isFinite(amount)||amount<=0)return 0;
+  const claim=claimAmountFromTicket(ticket);
+  if(amount>=REPAIR_COST_SANITY_MIN_AUD&&claim>0&&amount/claim>=REPAIR_COST_SANITY_RATIO){
+    return claim;
+  }
+  return amount;
+}
+function openPoRepairCostFromTicket(ticket){
+  const cost=repairCostFromTicket(ticket);
+  return cost>0&&!isClosedCase(ticket)&&isApprovedRepairCostTicket(ticket)?cost:0;
+}
+function hasRepairCost(ticket){return openPoRepairCostFromTicket(ticket)>0}
+function approvedCostRows(rows){return (Array.isArray(rows)?rows:[]).filter(entry=>hasRepairCost(entry?.ticket))}
+function approvedCostSummary(rows){
+  const costRows=approvedCostRows(rows);
+  const total=costRows.reduce((sum,entry)=>sum+openPoRepairCostFromTicket(entry.ticket),0);
+  return {rows:costRows,total,avg:costRows.length?total/costRows.length:0};
+}
+function approvedAmountBins(rows){
+  const amountBins={"$0.01 - $500":0,"$500 - $2k":0,"$2k - $5k":0,"$5k+":0};
+  approvedCostRows(rows).forEach(entry=>{
+    const amount=openPoRepairCostFromTicket(entry.ticket);
+    if(amount<500)amountBins["$0.01 - $500"]++;
+    else if(amount<2000)amountBins["$500 - $2k"]++;
+    else if(amount<5000)amountBins["$2k - $5k"]++;
+    else amountBins["$5k+"]++;
+  });
+  return amountBins;
 }
 function parseDate(v){if(!v)return null;const s=clean(v);let m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m){const d=new Date(+m[3],+m[2]-1,+m[1]);return isNaN(d)?null:d}const d=new Date(s);return isNaN(d)?null:d}
 function dateKey(v){const d=parseDate(v);return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`:""}
@@ -679,9 +749,20 @@ function repairInfo(entry){
   return {id:repairId||"no-repair",name:repairerName||"No Repair Shop Assigned"};
 }
 function isClosedCase(ticket){
-  const status=clean(ticket?.invoice_status).toLowerCase();
-  const invoiceNumber=clean(ticket?.invoice_number);
-  return !!invoiceNumber || status==="invoiced" || status==="closed";
+  const status=clean(ticket?.invoice_status||ticket?.["Invoice Status"]||ticket?.InvoiceStatus).toLowerCase();
+  const invoiceNumber=clean(ticket?.invoice_number||ticket?.["Invoice Number"]||ticket?.InvoiceNumber);
+  const ticketStatus=clean(ticket?.Status||ticket?.TicketStatusText||ticket?.TicketStatus||ticket?.["Status"]||ticket?.["Ticket Status Text"]||ticket?.["Ticket Status"]).toLowerCase();
+  return !!invoiceNumber || status==="invoiced" || status==="closed" || ticketStatus.includes("invoiced") || ticketStatus.includes("closed");
+}
+function isUnapprovedRepairTicket(ticket){
+  const status=clean(ticket?.Status||ticket?.TicketStatusText||ticket?.TicketStatus||ticket?.["Status"]||ticket?.["Ticket Status Text"]||ticket?.["Ticket Status"]).toLowerCase();
+  return status.includes("unapproved");
+}
+function isApprovedRepairCostTicket(ticket){
+  if(isUnapprovedRepairTicket(ticket))return false;
+  const status=clean(ticket?.Status||ticket?.TicketStatusText||ticket?.TicketStatus||ticket?.["Status"]||ticket?.["Ticket Status Text"]||ticket?.["Ticket Status"]).toLowerCase();
+  const approvedDate=clean(ticket?.approved_date||ticket?.ApprovedDate||ticket?.["Approved Date"]);
+  return !!approvedDate || status.includes("approved");
 }
 function chassis(entry){const t=entry.ticket;let v=clean(t.SerialID)||clean(t.ChassisNumber);if(!v){const parts=clean(t.TicketName).split(/\s+/);v=parts[parts.length-1]||""}return v.replace(/-/g,"")}
 function normalizedChassis(entry){return chassis(entry);}
@@ -1067,8 +1148,11 @@ function buildRepeatState(rows){
       ticketId:clean(entry.id||entry.ticket.TicketID||entry.ticket.Ticket||""),
       ticketName:clean(entry.ticket.TicketName||entry.ticket.Ticket||entry.ticket.TicketID||""),
       created:dateKey(entry.ticket.CreatedOn),
-      cost:repairCostFromTicket(entry.ticket),
+      claimAmount:claimAmountFromTicket(entry.ticket),
+      approvedDate:dateKey(entry.ticket.approved_date||entry.ticket.ApprovedDate||entry.ticket["Approved Date"]||""),
       status:clean(entry.ticket.TicketStatusText||entry.ticket.TicketStatus||"Unknown"),
+      invoiceStatus:clean(entry.ticket.invoice_status||entry.ticket["Invoice Status"]||entry.ticket.InvoiceStatus||""),
+      invoiceNumber:clean(entry.ticket.invoice_number||entry.ticket["Invoice Number"]||entry.ticket.InvoiceNumber||""),
       serialId:clean(entry.ticket.SerialID||""),
       chassisNumber:clean(entry.ticket.ChassisNumber||""),
       dealerName:clean(entry.ticket.DealerName||entry.ticket["Dealer Name"]||""),
@@ -1078,7 +1162,7 @@ function buildRepeatState(rows){
     rec.tickets.push(ticket);
     chassisMap.set(chassis,rec);
   });
-  const buckets=repeatBuckets.map(cfg=>({ ...cfg, chassisCount:0, ticketCount:0, costTotal:0, tickets:[], chassisRows:[] }));
+  const buckets=repeatBuckets.map(cfg=>({ ...cfg, chassisCount:0, ticketCount:0, claimTotal:0, tickets:[], chassisRows:[] }));
   const chassisRows=[];
   chassisMap.forEach(rec=>{
     const cfg=repeatBuckets.find(r=>rec.count>=r.min&&rec.count<r.max);
@@ -1087,8 +1171,8 @@ function buildRepeatState(rows){
     bucket.chassisCount++;
     bucket.tickets.push(...rec.tickets.map(t=>({...t,repeatKey:cfg.key,repeatLabel:cfg.label,chassisCount:rec.count})));
     bucket.ticketCount+=rec.tickets.length;
-    bucket.costTotal+=rec.tickets.reduce((sum,t)=>sum+Number(t.cost||0),0);
-    const totalCost=rec.tickets.reduce((sum,t)=>sum+Number(t.cost||0),0);
+    const totalClaimAmount=rec.tickets.reduce((sum,t)=>sum+Number(t.claimAmount||0),0);
+    bucket.claimTotal+=totalClaimAmount;
     const dates=rec.tickets.map(t=>t.created).filter(Boolean).sort();
     const repairNames=Array.from(new Set(rec.tickets.map(t=>t.dealerName).filter(Boolean))).sort((a,b)=>a.localeCompare(b));
     const sortedTickets=rec.tickets.slice().sort((a,b)=>(b.created||"").localeCompare(a.created||"")||(b.ticketId||"").localeCompare(a.ticketId||""));
@@ -1098,8 +1182,8 @@ function buildRepeatState(rows){
       repeatLabel:cfg.label,
       chassisCount:rec.count,
       ticketCount:rec.tickets.length,
-      totalCost,
-      avgCost:rec.tickets.length?totalCost/rec.tickets.length:0,
+      claimTotal:totalClaimAmount,
+      avgClaimAmount:rec.tickets.length?totalClaimAmount/rec.tickets.length:0,
       repairerNames:repairNames,
       firstCreated:dates[0]||"",
       lastCreated:dates[dates.length-1]||"",
@@ -1111,8 +1195,8 @@ function buildRepeatState(rows){
       repeatLabel:cfg.label,
       chassisCount:rec.count,
       ticketCount:rec.tickets.length,
-      totalCost,
-      avgCost:rec.tickets.length?totalCost/rec.tickets.length:0,
+      claimTotal:totalClaimAmount,
+      avgClaimAmount:rec.tickets.length?totalClaimAmount/rec.tickets.length:0,
       tickets:sortedTickets,
     });
   });
@@ -1120,16 +1204,41 @@ function buildRepeatState(rows){
   buckets.forEach(bucket=>bucket.chassisRows.sort((a,b)=>b.ticketCount-a.ticketCount||b.chassisCount-a.chassisCount||a.chassis.localeCompare(b.chassis)));
   return {buckets,chassisRows,totalChassis:chassisMap.size,totalTickets:rows.length};
 }
+function repeatTicketsOver2(repeat){
+  return (repeat?.chassisRows||[])
+    .filter(row=>Number(row.chassisCount||0)>2)
+    .flatMap(row=>(row.tickets||[]).map(ticket=>({
+      ...ticket,
+      repeatLabel:row.repeatLabel,
+      chassisCount:row.chassisCount,
+    })));
+}
+function repeatedClaimSummary(repeat){
+  const tickets=repeatTicketsOver2(repeat);
+  const total=tickets.reduce((sum,ticket)=>sum+Number(ticket.claimAmount||0),0);
+  return {tickets,total,avg:tickets.length?total/tickets.length:0};
+}
+function claimAmountBinsForRepeat(repeat){
+  const bins={"$0 - $500":0,"$500 - $2k":0,"$2k - $5k":0,"$5k+":0};
+  repeatTicketsOver2(repeat).forEach(ticket=>{
+    const amount=Number(ticket.claimAmount||0);
+    if(amount<500)bins["$0 - $500"]++;
+    else if(amount<2000)bins["$500 - $2k"]++;
+    else if(amount<5000)bins["$2k - $5k"]++;
+    else bins["$5k+"]++;
+  });
+  return bins;
+}
 function openRepeatModal(bucketKey){
   if(!window.__repairInsightsState)return;
   const bucket=window.__repairInsightsState.repeat.buckets.find(b=>b.key===bucketKey);
   if(!bucket)return;
   $("repeatModalTitle").textContent=bucket.label;
-  $("repeatModalDesc").textContent=`${num(bucket.chassisCount)} chassis | ${num(bucket.ticketCount)} tickets`;
+  $("repeatModalDesc").textContent=`${num(bucket.chassisCount)} chassis | ${num(bucket.ticketCount)} tickets | ${money(bucket.claimTotal)} claim amount`;
   const rows=bucket.tickets||[];
   $("repeatModalRows").innerHTML=rows.map(ticket=>{
     const cls=bucket.key==="repeat4"?"repeatRowRepeat4":bucket.key==="repeat23"?"repeatRowRepeat23":"";
-    return `<tr class="${cls}"><td>${esc(ticket.chassis)}</td><td><b>${esc(ticket.ticketId)}</b><div style="color:#64748b;font-size:12px;margin-top:3px">${esc(ticket.ticketName)}</div></td><td>${esc(ticket.created)}</td><td>${money(ticket.cost)}</td><td>${esc(ticket.status)}</td><td>${esc(ticket.serialId||ticket.chassisNumber||"-")}</td><td>${esc(ticket.dealerName||"-")}</td></tr>`;
+    return `<tr class="${cls}"><td>${esc(ticket.chassis)}</td><td><b>${esc(ticket.ticketId)}</b><div style="color:#64748b;font-size:12px;margin-top:3px">${esc(ticket.ticketName)}</div></td><td>${esc(ticket.created)}</td><td>${money(ticket.claimAmount)}</td><td>${esc(ticket.status)}</td><td>${esc(ticket.serialId||ticket.chassisNumber||"-")}</td><td>${esc(ticket.dealerName||"-")}</td></tr>`;
   }).join("")||'<tr><td colspan="7"><div class="empty">No tickets in this repeat bucket.</div></td></tr>';
   $("repeatModal").classList.add("active");
   $("repeatModal").setAttribute("aria-hidden","false");
@@ -1146,7 +1255,7 @@ function renderRepeatChart(){
   const totalChassis=Math.max(1,Number(state.totalChassis||0));
   box.innerHTML=state.buckets.map(bucket=>{
     const pct=(Number(bucket.chassisCount||0)/totalChassis)*100;
-    return `<button class="repeatCard ${bucket.cls}" type="button" data-bucket="${esc(bucket.key)}"><div class="repeatCardHead"><div><div class="repeatCardLabel">${esc(bucket.label)}</div><div class="repeatCardSub">${num(bucket.chassisCount)} chassis | ${num(bucket.ticketCount)} tickets</div></div><div class="repeatCardBadge">${pct.toFixed(1)}%</div></div><div class="repeatBar"><span style="width:${pct}%;background:${bucket.bar}"></span></div><div class="repeatCardFoot"><span>Total cost</span><b>${money(bucket.costTotal)}</b></div></button>`;
+    return `<button class="repeatCard ${bucket.cls}" type="button" data-bucket="${esc(bucket.key)}"><div class="repeatCardHead"><div><div class="repeatCardLabel">${esc(bucket.label)}</div><div class="repeatCardSub">${num(bucket.chassisCount)} chassis | ${num(bucket.ticketCount)} tickets</div></div><div class="repeatCardBadge">${pct.toFixed(1)}%</div></div><div class="repeatBar"><span style="width:${pct}%;background:${bucket.bar}"></span></div><div class="repeatCardFoot"><span>Ticket claim amount</span><b>${money(bucket.claimTotal)}</b></div></button>`;
   }).join("");
   box.querySelectorAll(".repeatCard").forEach(btn=>btn.onclick=()=>openRepeatModal(btn.dataset.bucket));
 }
@@ -1156,47 +1265,59 @@ function exportRepeatWorkbook(){
   const repairName=$("title")?.textContent||"Analysis";
   const repeat=state.repeat;
   const caseSplit=state.caseSplit||{open:0,closed:0};
+  const repeatedSummary=repeatedClaimSummary(repeat);
+  const over2Chassis=(repeat.chassisRows||[]).filter(row=>Number(row.chassisCount||0)>2).length;
   const summaryRows=[
     ["Metric","Value"],
     ["Repair shop",repairName],
     ["Repair ID",repairId],
     ["Tickets",Number(state.rows.length||0)],
+    ["Repeated claim rule","Repeated claim metrics use tickets on chassis with more than 2 tickets at this repair shop. The ticket claim amount includes closed/invoiced tickets and does not require approved/open PO status."],
+    ["Repeated claim tickets (chassis >2x)",Number(repeatedSummary.tickets.length||0)],
+    ["Repeated ticket claim amount",Number(repeatedSummary.total||0)],
+    ["Avg claim amount / repeated ticket",Number(repeatedSummary.avg||0)],
+    ["Claim amount source","ClaimTotalAmount -> Claim Total Amount -> claim_total_amount -> claim_total_amount_aud -> AmountIncludingTax -> Amount Including Tax -> rawTicketAmount -> amount -> parts/labour subtotal fallback"],
     ["Open Cases",Number(caseSplit.open||0)],
     ["Closed Cases",Number(caseSplit.closed||0)],
     ["Unique chassis",Number(repeat.totalChassis||0)],
-    ["Chassis with repeats",Number((repeat.buckets.find(b=>b.key==="repeat23")?.chassisCount||0)+(repeat.buckets.find(b=>b.key==="repeat4")?.chassisCount||0))],
-    ["2 - 3 repeats chassis",Number(repeat.buckets.find(b=>b.key==="repeat23")?.chassisCount||0)],
+    ["Chassis with >2 tickets",Number(over2Chassis||0)],
+    ["2 - 3 ticket chassis",Number(repeat.buckets.find(b=>b.key==="repeat23")?.chassisCount||0)],
     ["4+ repeats chassis",Number(repeat.buckets.find(b=>b.key==="repeat4")?.chassisCount||0)],
   ];
   const bucketRows=[
-    ["Repeat bucket","Chassis count","Ticket count","Total cost","Average cost"],
-    ...repeat.buckets.map(b=>[b.label,Number(b.chassisCount||0),Number(b.ticketCount||0),Number(b.costTotal||0),Number(b.ticketCount?b.costTotal/b.ticketCount:0)]),
+    ["Repeat bucket","Chassis count","Ticket count","Ticket claim amount","Avg claim amount / ticket"],
+    ...repeat.buckets.map(b=>[b.label,Number(b.chassisCount||0),Number(b.ticketCount||0),Number(b.claimTotal||0),Number(b.ticketCount?b.claimTotal/b.ticketCount:0)]),
   ];
   const chassisRows=[
-    ["Chassis","Repeat bucket","Repeat count","Ticket count","Total cost","Avg cost","First claim","Last claim","Tickets"],
+    ["Chassis","Repeat bucket","Repeat count","Ticket count","Included in Chassis >2x Repeated Claim","Ticket claim amount","Avg claim amount / ticket","First claim","Last claim","Tickets"],
     ...repeat.chassisRows.map(row=>[
       row.chassis||"",
       row.repeatLabel||"",
       Number(row.chassisCount||0),
       Number(row.ticketCount||0),
-      Number(row.totalCost||0),
-      Number(row.avgCost||0),
+      Number(row.chassisCount||0)>2?"Yes":"No",
+      Number(row.claimTotal||0),
+      Number(row.avgClaimAmount||0),
       row.firstCreated||"",
       row.lastCreated||"",
       (row.tickets||[]).map(t=>t.ticketId).join(", "),
     ]),
   ];
   const ticketRows=[
-    ["Repeat bucket","Chassis","Chassis repeat count","Ticket ID","Ticket name","Created","Cost","Status","Serial ID","Chassis number","Dealer name"],
+    ["Repeat bucket","Chassis","Chassis repeat count","Included in Chassis >2x Repeated Claim","Ticket ID","Ticket name","Created","Approved Date","Claim Amount Used AUD","Status","Invoice status","Invoice number","Serial ID","Chassis number","Dealer name"],
     ...repeat.buckets.flatMap(bucket=>bucket.tickets.map(ticket=>[
       bucket.label,
       ticket.chassis||"",
       Number(ticket.chassisCount||0),
+      Number(ticket.chassisCount||0)>2?"Yes":"No",
       ticket.ticketId||"",
       ticket.ticketName||"",
       ticket.created||"",
-      Number(ticket.cost||0),
+      ticket.approvedDate||"",
+      Number(ticket.claimAmount||0),
       ticket.status||"",
+      ticket.invoiceStatus||"",
+      ticket.invoiceNumber||"",
       ticket.serialId||"",
       ticket.chassisNumber||"",
       ticket.dealerName||"",
@@ -1209,27 +1330,59 @@ function exportRepeatWorkbook(){
     {name:"Tickets",rows:ticketRows},
   ],`repair-insights-${repairId}-${new Date().toISOString().slice(0,10)}`);
 }
+function buildCaseSplit(rows){
+  const caseSplit={open:0,closed:0};
+  (Array.isArray(rows)?rows:[]).forEach(row=>{
+    if(isClosedCase(row?.ticket))caseSplit.closed++;
+    else caseSplit.open++;
+  });
+  return caseSplit;
+}
+function repairInsightStatusMonth(rows){
+  const status={}, month={};
+  (Array.isArray(rows)?rows:[]).forEach(row=>{
+    const ticket=row?.ticket||{};
+    const d=dateKey(ticket.CreatedOn);
+    const st=clean(ticket.TicketStatusText)||clean(ticket.TicketStatus)||"Unknown";
+    status[st]=(status[st]||0)+1;
+    if(d){
+      const m=d.slice(0,7);
+      month[m]=(month[m]||0)+1;
+    }
+  });
+  return {status,month};
+}
+function renderRepairInsightKpis(repeat){
+  const summary=repeatedClaimSummary(repeat);
+  $("kpiTickets").textContent=num(summary.tickets.length);
+  $("kpiCost").textContent=money(summary.total);
+  $("kpiAvg").textContent=money(summary.avg);
+}
+function renderRepairInsightCharts(rows,caseSplit,repeat){
+  const amountBins=claimAmountBinsForRepeat(repeat);
+  const {status,month}=repairInsightStatusMonth(rows);
+  const statusRows=statusVolumeRows(status);
+  barChart("amountChart",Object.entries(amountBins).map(([label,value])=>({label,value,color:"#3b82f6"})));
+  pieChart("statusChart",statusRows);
+  renderStatusVolumeLegend(statusRows);
+  pieChart("caseSplitChart",[{label:"Open Cases",value:caseSplit.open,color:"#3b82f6"},{label:"Closed Cases",value:caseSplit.closed,color:"#10b981"}]);
+  renderCaseSplitLegend(caseSplit);
+  lineChart("createdChart",Object.entries(month).sort().map(([label,value])=>({label,value})));
+}
 async function load(){
   let cacheVersion="";
-  try{cacheVersion=await window.WarrantyPageCache.fetchVersion();}catch(e){console.warn("Cannot read repair insight cache version",e);}
-  const cacheKey=`repair-insights:${repairId}:${selectedRepairYear}`;
-  try{
+  if(REPAIR_INSIGHTS_PAGE_CACHE_ENABLED){
+    try{cacheVersion=await window.WarrantyPageCache.fetchVersion();}catch(e){console.warn("Cannot read repair insight cache version",e);}
+  }
+  const cacheKey=`repair-insights:${repairId}:${selectedRepairYear}:${REPAIR_COST_RULE_CACHE_SCHEMA}`;
+  if(REPAIR_INSIGHTS_PAGE_CACHE_ENABLED)try{
     const cached=await window.WarrantyPageCache.getPage(cacheKey,cacheVersion);
     if(cached&&Array.isArray(cached.rows)){
-      const rows=cached.rows, name=cached.name||"Repair shop", repeat=cached.repeat||buildRepeatState(rows), caseSplit=cached.caseSplit||{open:0,closed:0};
+      const rows=cached.rows, name=cached.name||"Repair shop", repeat=buildRepeatState(rows), caseSplit=buildCaseSplit(rows);
       $("title").textContent=name;const subtitle=$("subtitle");if(subtitle)subtitle.textContent=`Repair ID ${repairId} - ${selectedRepairYear} only`;
-      const total=rows.reduce((s,x)=>s+repairCostFromTicket(x.ticket),0), avg=rows.length?total/rows.length:0;
-      $("kpiTickets").textContent=num(rows.length);$("kpiCost").textContent=money(total);$("kpiAvg").textContent=money(avg);
-      const amountBins={"0 - 500":0,"500 - 2k":0,"2k - 5k":0,"5k+":0}, status={}, month={};
-      rows.forEach(x=>{const a=repairCostFromTicket(x.ticket), d=dateKey(x.ticket.CreatedOn), st=clean(x.ticket.TicketStatusText)||clean(x.ticket.TicketStatus)||"Unknown";if(a<500)amountBins["0 - 500"]++;else if(a<2000)amountBins["500 - 2k"]++;else if(a<5000)amountBins["2k - 5k"]++;else amountBins["5k+"]++;status[st]=(status[st]||0)+1;if(d){const m=d.slice(0,7);month[m]=(month[m]||0)+1}});
-      const statusRows=statusVolumeRows(status);
       window.__repairInsightsState={name,repairId,rows,repeat,caseSplit};
-      barChart("amountChart",Object.entries(amountBins).map(([label,value])=>({label,value,color:"#3b82f6"})));
-      pieChart("statusChart",statusRows);
-      renderStatusVolumeLegend(statusRows);
-      pieChart("caseSplitChart",[{label:"Open Cases",value:caseSplit.open,color:"#3b82f6"},{label:"Closed Cases",value:caseSplit.closed,color:"#10b981"}]);
-      renderCaseSplitLegend(caseSplit);
-      lineChart("createdChart",Object.entries(month).sort().map(([label,value])=>({label,value})));
+      renderRepairInsightKpis(repeat);
+      renderRepairInsightCharts(rows,caseSplit,repeat);
       renderRepeatChart();
       hideCalcFloat();
       if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"cached");
@@ -1237,41 +1390,29 @@ async function load(){
     }
   }catch(e){console.warn("Repair insight cache restore failed",e);}
   try{showCalcFloat(true,"Calculating...");
-    const firebaseMap=await loadFirebaseTicketMap();
     const analysis=await readStaticJson(ANALYSIS_JSON).catch(()=>globalThis.REPAIRERS_2026_ANALYSIS||{});
     const localDetails=Array.isArray(analysis?.details)&&analysis.details.length
       ? analysis.details
       : null;
     const all=localDetails
-      ? overlayFirebaseTicketRows(localDetails,firebaseMap).map((r,i)=>normalize(r,clean(r["Ticket ID"]||r.TicketID||r.Ticket||`detail-${i+1}`))).filter(x=>x.id)
+      ? localDetails.map((r,i)=>normalize(r,clean(r["Ticket ID"]||r.TicketID||r.Ticket||`detail-${i+1}`))).filter(x=>x.id)
       : Object.entries(await readJson("c4cTickets_test/tickets")||{}).map(([k,r])=>normalize(r,k)).filter(x=>x.id);
     const rows=all.filter(x=>repairInfo(x).id===repairId&&isRepairScopeDate(x.ticket.CreatedOn)), first=rows[0], name=first?cleanRepairShopDisplayName(repairInfo(first).name):"Repair shop";
     $("title").textContent=name;const subtitle=$("subtitle");if(subtitle)subtitle.textContent=`Repair ID ${repairId} - ${selectedRepairYear} only`;
-    const total=rows.reduce((s,x)=>s+repairCostFromTicket(x.ticket),0), avg=rows.length?total/rows.length:0;
-    $("kpiTickets").textContent=num(rows.length);$("kpiCost").textContent=money(total);$("kpiAvg").textContent=money(avg);
-    const amountBins={"0 - 500":0,"500 - 2k":0,"2k - 5k":0,"5k+":0}, status={}, month={}, chassisCount={}, caseSplit={open:0,closed:0};
-    rows.forEach(x=>{const a=repairCostFromTicket(x.ticket), ch=chassis(x), d=dateKey(x.ticket.CreatedOn), st=clean(x.ticket.TicketStatusText)||clean(x.ticket.TicketStatus)||"Unknown";if(a<500)amountBins["0 - 500"]++;else if(a<2000)amountBins["500 - 2k"]++;else if(a<5000)amountBins["2k - 5k"]++;else amountBins["5k+"]++;status[st]=(status[st]||0)+1;if(isClosedCase(x.ticket))caseSplit.closed++;else caseSplit.open++;if(d){const m=d.slice(0,7);month[m]=(month[m]||0)+1}if(ch)chassisCount[ch]=(chassisCount[ch]||0)+1});
+    const caseSplit=buildCaseSplit(rows);
     const repeat=buildRepeatState(rows);
-    const statusRows=statusVolumeRows(status);
     window.__repairInsightsState={name,repairId,rows,repeat,caseSplit};
-    barChart("amountChart",Object.entries(amountBins).map(([label,value])=>({label,value,color:"#3b82f6"})));
-    pieChart("statusChart",statusRows);
-    renderStatusVolumeLegend(statusRows);
-    pieChart("caseSplitChart",[
-      {label:"Open Cases",value:caseSplit.open,color:"#3b82f6"},
-      {label:"Closed Cases",value:caseSplit.closed,color:"#10b981"},
-    ]);
-    renderCaseSplitLegend(caseSplit);
-    lineChart("createdChart",Object.entries(month).sort().map(([label,value])=>({label,value})));
+    renderRepairInsightKpis(repeat);
+    renderRepairInsightCharts(rows,caseSplit,repeat);
     renderRepeatChart();
-    if(cacheVersion&&window.WarrantyPageCache){
+    if(REPAIR_INSIGHTS_PAGE_CACHE_ENABLED&&cacheVersion&&window.WarrantyPageCache){
       window.WarrantyPageCache.setPage(cacheKey,cacheVersion,window.__repairInsightsState);
       window.WarrantyPageCache.showBadge(cacheVersion,"fresh");
     }
     hideCalcFloat();
   }catch(e){hideCalcFloat();$("loadError").textContent="Failed to load repair insight data: "+(e.message||e);$("loadError").style.display="block"}
 }
-window.addEventListener("resize",()=>{if(window.__repairInsightsState){renderRepeatChart();const rows=window.__repairInsightsState.rows||[], caseSplit=window.__repairInsightsState.caseSplit||{open:0,closed:0};const amountBins={"0 - 500":0,"500 - 2k":0,"2k - 5k":0,"5k+":0}, status={}, month={};rows.forEach(x=>{const a=repairCostFromTicket(x.ticket), d=dateKey(x.ticket.CreatedOn), st=clean(x.ticket.TicketStatusText)||clean(x.ticket.TicketStatus)||"Unknown";if(a<500)amountBins["0 - 500"]++;else if(a<2000)amountBins["500 - 2k"]++;else if(a<5000)amountBins["2k - 5k"]++;else amountBins["5k+"]++;status[st]=(status[st]||0)+1;if(d){const m=d.slice(0,7);month[m]=(month[m]||0)+1}});const statusRows=statusVolumeRows(status);barChart("amountChart",Object.entries(amountBins).map(([label,value])=>({label,value,color:"#3b82f6"})));pieChart("statusChart",statusRows);renderStatusVolumeLegend(statusRows);pieChart("caseSplitChart",[{label:"Open Cases",value:caseSplit.open,color:"#3b82f6"},{label:"Closed Cases",value:caseSplit.closed,color:"#10b981"}]);renderCaseSplitLegend(caseSplit);lineChart("createdChart",Object.entries(month).sort().map(([label,value])=>({label,value})));}});
+window.addEventListener("resize",()=>{if(window.__repairInsightsState){renderRepeatChart();const rows=window.__repairInsightsState.rows||[], repeat=window.__repairInsightsState.repeat||buildRepeatState(rows), caseSplit=window.__repairInsightsState.caseSplit||buildCaseSplit(rows);renderRepairInsightCharts(rows,caseSplit,repeat);}});
 $("exportExcelBtn").onclick=exportRepeatWorkbook;
 $("repeatModalClose").onclick=closeRepeatModal;
 $("repeatModal").onclick=e=>{if(e.target.id==="repeatModal")closeRepeatModal()};

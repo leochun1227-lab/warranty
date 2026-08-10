@@ -25,6 +25,8 @@ ASSETS = {
     "timeline/summary2026": ROOT / "generated_exports" / "ticket_timeline_summary_2026.json",
     "timeline/completion2026": ROOT / "generated_exports" / "ticket_timeline_completion_analytics_2026.json",
     "modelSeries/partsFailureSummary": ROOT / "outputs" / "analysis_parts_failure_summary.json",
+    "modelSeries/partsDerivedCache": ROOT / "outputs" / "analysis_parts_derived_cache.json",
+    "modelSeries/modelMtmCache": ROOT / "outputs" / "analysis_model_mtm_cache.json",
 }
 
 

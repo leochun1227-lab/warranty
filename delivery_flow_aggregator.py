@@ -468,15 +468,18 @@ def aggregate(tickets_node: Dict[str, Any], as_of: date) -> Dict[str, Any]:
             partially_tickets += 1
         elif state["hasIssued"] and not state["hasOpen"]:
             fully_tickets += 1
-            if state["completeIssueDate"]:
-                lt = max(0, (state["completeIssueDate"] - so_created).days)
-                part_leadtimes.append(lt)
-                issue_month = state["completeIssueDate"].strftime("%Y-%m")
-                issue_leadtime_sum_by_month[issue_month] += lt
-                issue_leadtime_count_by_month[issue_month] += 1
-                db_dealer = dealer_bucket(state["dealerId"], state["dealerName"])
-                db_dealer["leadtimes"].append(lt)
-        elif state["hasOpen"] and not state["hasIssued"]:
+
+        # Record leadtime for all issued parts (partial or full)
+        if state["hasIssued"] and state["completeIssueDate"]:
+            lt = max(0, (state["completeIssueDate"] - so_created).days)
+            part_leadtimes.append(lt)
+            issue_month = state["completeIssueDate"].strftime("%Y-%m")
+            issue_leadtime_sum_by_month[issue_month] += lt
+            issue_leadtime_count_by_month[issue_month] += 1
+            db_dealer = dealer_bucket(state["dealerId"], state["dealerName"])
+            db_dealer["leadtimes"].append(lt)
+
+        if state["hasOpen"] and not state["hasIssued"]:
             notissued_tickets += 1
 
         db_dealer = dealer_bucket(state["dealerId"], state["dealerName"])

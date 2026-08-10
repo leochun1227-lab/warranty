@@ -2,13 +2,44 @@ firebase-service-account.json
 *.inspect.ndjson 
 __pycache__/
 *.pyc
+node_modules/
+.claude/
 tmp/
+tmp_ppt_render/
 logs/
 output/
 _ppt_tmp/
+generated_exports/*_20??????.xlsx
+generated_exports/*_20??????_*.xlsx
+po_compare_output/
+outputs (2)/
+
+# Local raw SAP/report exports and validation workbooks.
+SAPAnalyticsReport*.csv
+approved_logic_validation*.xlsx
+approved_cost_from_sap_po_short_text.xlsx
+e03_spend*.xlsx
+open-parts-*.xlsx
+open-parts-*.xls
+repairer_payment_from_c4c_po.xlsx
 
 # Large dated fetch/build artifacts. Keep the stable latest/source files tracked,
 # but do not add one-off dated snapshots by accident.
 outputs/parts_classification_20*/
 outputs/vehicle_failure_timing_2025_2026_20*.xlsx
 !outputs/vehicle_failure_timing_2025_2026_latest.xlsx
+outputs/claim_ytd_comparison/claim_ytd_comparison_*_20*.xlsx
+!outputs/claim_ytd_comparison/claim_ytd_comparison_2025_vs_2026_ytd_latest.xlsx
+!outputs/claim_ytd_comparison/claim_ytd_comparison_tickets_detail_latest.xlsx
+
+# Large local precompute caches. Regenerate locally/Firebase-side instead of
+# pushing 70MB-100MB files to GitHub.
+outputs/analysis_model_mtm_cache.json
+outputs/analysis_model_mtm_cache.js
+
+# One-off reconciliation/debug folders generated during local checks.
+outputs/counted_not_stock_removed/
+outputs/employee_other_jul2026/
+outputs/mismatch_export/
+outputs/ticket_movement_bridge_*/
+outputs/tickets_in_progress_month_mismatch_*/

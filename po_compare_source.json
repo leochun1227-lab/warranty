@@ -70313,7 +70313,8 @@
   },
   {
     "ticket": 30105,
-    "po_price": 1216823.25,
+    "po_price": 2048.25,
+    "po_price_source": "analysis_approved_cost_by_ticket",
     "amount_including_tax": null,
     "status_group": "approved",
     "status_text": "Sales Order Approved",
