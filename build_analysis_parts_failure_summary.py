@@ -509,6 +509,7 @@ def make_derived_month_bucket():
         "tickets": 0,
         "materialQty": 0.0,
         "scope": {"PRE": 0, "FIELD": 0, "OTHER": 0},
+        "scopeCost": {"PRE": 0.0, "FIELD": 0.0, "OTHER": 0.0},
         "_ticketIds": set(),
         "_scopeIds": {"PRE": set(), "FIELD": set(), "OTHER": set()},
     }
@@ -537,6 +538,12 @@ def finalize_derived_month_bucket(bucket):
         "PRE": len(scope_ids.get("PRE", set())),
         "FIELD": len(scope_ids.get("FIELD", set())),
         "OTHER": len(scope_ids.get("OTHER", set())),
+    }
+    scope_cost = bucket.get("scopeCost") or {}
+    bucket["scopeCost"] = {
+        "PRE": round(float(scope_cost.get("PRE") or 0.0), 3),
+        "FIELD": round(float(scope_cost.get("FIELD") or 0.0), 3),
+        "OTHER": round(float(scope_cost.get("OTHER") or 0.0), 3),
     }
     return bucket
 
@@ -755,6 +762,9 @@ def main():
                 month_bucket["lineItems"] += 1
                 month_bucket["cost"] += cost
                 month_bucket["materialQty"] += material_qty
+                scope_cost_key = claim_scope if claim_scope in {"PRE", "FIELD", "OTHER"} else "OTHER"
+                month_bucket.setdefault("scopeCost", {"PRE": 0.0, "FIELD": 0.0, "OTHER": 0.0})
+                month_bucket["scopeCost"][scope_cost_key] = float(month_bucket["scopeCost"].get(scope_cost_key) or 0.0) + cost
                 if ticket_id:
                     month_bucket["_ticketIds"].add(ticket_id)
                     month_bucket["_scopeIds"].setdefault(claim_scope, set()).add(ticket_id)

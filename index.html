@@ -2133,7 +2133,7 @@
 }
 .repairCostPanel .employeeWorkloadMetricBlock .teamAssignActions{
   display:grid!important;
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
   gap:7px!important;
   width:100%!important;
   justify-content:stretch!important;
@@ -2165,11 +2165,49 @@
   overflow-x:hidden!important;
   padding:8px 8px 10px!important;
 }
+.repairCostPanel .employeeWorkloadMetricBlock .teamAssignValueHeaderRow{
+  display:grid!important;
+  grid-template-columns:108px minmax(0,1fr) 56px!important;
+  align-items:end!important;
+  width:100%!important;
+  max-width:100%!important;
+  padding:0 8px 2px!important;
+}
+.repairCostPanel .employeeWorkloadMetricBlock .teamAssignValueHeaderRow span{
+  grid-column:3!important;
+  display:block!important;
+  font-size:9px!important;
+  line-height:1.05!important;
+  color:#7b8798!important;
+  font-weight:700!important;
+  text-align:left!important;
+  transform:translateX(-10px)!important;
+}
 .repairCostPanel .employeeWorkloadMetricBlock .teamAssignRow{
-  grid-template-columns:126px minmax(0,1fr) 70px!important;
+  grid-template-columns:108px minmax(0,1fr) 56px!important;
   width:100%!important;
   max-width:100%!important;
   padding:0 8px!important;
+}
+.repairCostPanel .employeeWorkloadMetricBlock .teamAssignValue{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  gap:2px!important;
+  text-align:left!important;
+  min-width:56px!important;
+  flex:0 0 56px!important;
+  transform:translateX(-10px)!important;
+}
+.repairCostPanel .employeeWorkloadMetricBlock .teamAssignValuePair{
+  display:block!important;
+  font-size:13px!important;
+  line-height:1!important;
+  color:#4f46e5!important;
+  font-weight:700!important;
+  white-space:nowrap!important;
+  letter-spacing:-0.01em!important;
 }
 .repairCostPanel .employeeWorkloadMetricBlock .teamAssignLegend{
   flex:0 0 auto!important;
@@ -2911,6 +2949,105 @@
 }
 .trendPanel .chartWrap{
   height:300px!important;
+  position:relative!important;
+}
+.trendPanel .trendChartLayout{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 110px!important;
+  gap:0!important;
+  align-items:stretch!important;
+  height:100%!important;
+}
+.trendPanel .trendCanvasWrap{
+  min-width:0!important;
+  height:100%!important;
+}
+.trendPanel .trendCanvasWrap canvas{
+  width:100%!important;
+  height:100%!important;
+  display:block!important;
+}
+.trendPanel .trendSideSummary{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:4px!important;
+  align-content:start!important;
+  height:100%!important;
+  padding:0 0 0 1px!important;
+  border-left:1px solid #e6edf6!important;
+}
+.trendPanel .trendSideDate{
+  font-size:10px!important;
+  line-height:1.2!important;
+  color:#7b8798!important;
+  font-weight:700!important;
+  text-align:left!important;
+  padding:0 0 3px 0!important;
+}
+.trendPanel .trendSideStat{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:4px!important;
+  min-width:0!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  padding:0!important;
+  box-shadow:none!important;
+  text-align:left!important;
+}
+.trendPanel .trendSideStat b{
+  display:block!important;
+  flex:0 0 auto!important;
+  font-size:16px!important;
+  line-height:1!important;
+  margin:0!important;
+  text-align:right!important;
+}
+.trendPanel .trendSideStat span{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:5px!important;
+  min-width:0!important;
+  flex:1 1 auto!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  color:#52627a!important;
+  font-weight:700!important;
+}
+.trendPanel .trendSideLabelText{
+  display:inline-block!important;
+  text-align:left!important;
+  max-width:none!important;
+  white-space:normal!important;
+}
+.trendPanel .trendSideMiniDot{
+  width:7px!important;
+  height:7px!important;
+  border-radius:999px!important;
+  display:inline-block!important;
+  flex:0 0 auto!important;
+  margin-top:0!important;
+}
+.trendPanel .trendSideStat.added b{color:#2563eb!important}
+.trendPanel .trendSideStat.removed b{color:#047857!important}
+.trendPanel .trendSideStat.remaining b{color:#b45309!important}
+.trendPanel .trendSideStat.added .trendSideMiniDot{background:#2563eb!important}
+.trendPanel .trendSideStat.removed .trendSideMiniDot{background:#047857!important}
+.trendPanel .trendSideStat.remaining .trendSideMiniDot{background:#b45309!important}
+@media(max-width:1024px){
+  .trendPanel .trendChartLayout{
+    grid-template-columns:1fr!important;
+  }
+  .trendPanel .trendSideSummary{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    border-left:0!important;
+    border-top:1px solid #e6edf6!important;
+    padding:10px 0 0!important;
+    height:auto!important;
+  }
 }
 .trendPanel .trendCreatedNote{
   display:block!important;
@@ -3954,7 +4091,7 @@ body{
           <div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Tickets in Progress Completion Within 14 Days</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div>
         </section>
         <section class="trendLogGrid">
-          <section class="panel trendPanel"><button id="ticketMovementExportBtn" class="trendMovementExportBtn" type="button" title="Export Ticket Movement detail to Excel" aria-label="Export Ticket Movement detail to Excel"></button><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Ticket Movement</h2><span id="ticketMovementExportSpinner" class="titleInlineSpinner" aria-hidden="true"></span></div><div class="trendAxisLegend"><span><i class="dot blue"></i>Added to Waiting <span id="trendNewTicketsLegend"></span></span><span><i class="dot green"></i>Removed (Approved + Unapproved)</span><span><i class="dot orange"></i>Tickets in Progress Remaining</span></div></div></div><div class="chartWrap"><canvas id="trendChart"></canvas></div><div class="panelDesc trendCreatedNote" id="trendCreatedNote"></div></section>
+          <section class="panel trendPanel"><button id="ticketMovementExportBtn" class="trendMovementExportBtn" type="button" title="Export Ticket Movement detail to Excel" aria-label="Export Ticket Movement detail to Excel"></button><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Ticket Movement</h2><span id="ticketMovementExportSpinner" class="titleInlineSpinner" aria-hidden="true"></span></div></div></div><div class="chartWrap"><div class="trendChartLayout"><div class="trendCanvasWrap"><canvas id="trendChart"></canvas></div><div id="trendSideSummary" class="trendSideSummary"></div></div></div><div class="panelDesc trendCreatedNote" id="trendCreatedNote"></div></section>
           <section id="repair-analytics" class="panel criticalLogPanel repairCostPanel"><div class="panelTitleRow"><h2 class="panelTitle">Employee Workload</h2><button id="employeeWorkloadExportBtn" class="summaryExportBtn" type="button" title="Export Removed, Tickets in Progress, Approved, and Unapproved tickets to Excel" aria-label="Export Removed, Tickets in Progress, Approved, and Unapproved tickets to Excel"></button><span class="dateNote" data-date-note>through --</span></div><div class="employeeWorkloadMetricBlock"><div class="teamAssignHeadTools"><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed from Critical</span><span><i style="background:#4f46e5"></i>Tickets in Progress</span></div></div></section>
         </section>
         <section class="dashboardAnalysisGrid trendSupportGrid"><div class="panel statusMixPanel"><div class="panelTitleRow"><h2 class="panelTitle">Tickets in Progress Remaining Status Mix</h2></div><div id="statusMix" class="mixRows"></div></div><div class="panel speedPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Tickets in Progress Remaining Duration Distribution</h2></div></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel repairCostDistributionPanel"><div class="panelTitleRow"><h2 class="panelTitle">Approved Repair Cost Distribution</h2></div><div id="criticalLogRows" class="statusPieLayout repairCostPie"></div></div></section>
@@ -4967,6 +5104,11 @@ function resolvedApprovalCostSummary(snapshotSummary,approval){
   const avgCostPerTicket=Number((approval&&approval.avgCostPerTicket)??s.avgCostPerTicket??(approvedCostTickets?approvedAmount/approvedCostTickets:0));
   return {approvedAmount,approvedCostTickets,avgCostPerTicket};
 }
+function approvedCostPerTicket(summary){
+  const approvedAmount=Number(summary&&summary.approvedAmount||0);
+  const approvedCostTickets=Number(summary&&summary.approvedCostTickets||summary&&summary.approvedPoCostTickets||summary&&summary.openPoCostTickets||0);
+  return approvedCostTickets>0?approvedAmount/approvedCostTickets:0;
+}
 function fallbackSummaryForBounds(start,end,approval){
   const view=currentView()||{};
   const daily=view.daily||{};
@@ -5473,30 +5615,27 @@ function updateTrendPanelCopy(){
   const title=panel.querySelector(".panelTitle");
   const periodLabel=selectedMonthPeriodLabel();
   if(title)title.textContent=`Ticket Movement (${periodLabel})`;
+  const bounds=periodBounds();
+  const bridge=ticketMovementBridge(bounds.start,bounds.end);
+  const cumulativePoints=cumulativeTrendPoints(trendPoints);
+  const lastRaw=trendPoints.slice(-1)[0]||{};
+  const last=cumulativePoints.slice(-1)[0]||{};
+  const newTickets=Number(last.cumulativeEnteredCritical||last.newCreatedTickets||0);
+  const ending=remainingTotalForSnapshot();
+  const removed=Number(bridge.removed||last.cumulativeExitedCritical||last.exitedCritical||0);
+  const sideSummary=$("trendSideSummary");
+  if(sideSummary){
+    const snapshotText=selectedSnapshotText();
+    sideSummary.innerHTML=`<div class="trendSideDate">On ${esc(snapshotText)}</div>`+[
+      {cls:"added",label:"Added to Waiting",value:newTickets},
+      {cls:"removed",label:"Removed",value:removed},
+      {cls:"remaining",label:"In Progress Remaining",value:Number(lastRaw.criticalTotal||last.criticalTotal||ending||0)}
+    ].map(item=>`<div class="trendSideStat ${item.cls}"><span><i class="trendSideMiniDot"></i><span class="trendSideLabelText">${esc(item.label)}</span></span><b>${esc(num(item.value))}</b></div>`).join("");
+  }
   const createdNote=$("trendCreatedNote");
   if(createdNote){
-    const last=trendPoints.slice(-1)[0]||{};
-    const approvedRemoved=Number(last.approvedRemoved||0);
-    const unapprovedRemoved=Number(last.unapprovedRemoved||0);
-    const abnormal=ticketMovementAbnormalAnalysis(periodBounds().start,periodBounds().end);
-    const abnormalCount=Number(abnormal&&abnormal.abnormalRows&&abnormal.abnormalRows.length||0);
-    const createdFallback=createdTicketsForSelectedMonthFallback();
-    const newTickets=Math.max(Number(last.newCreatedTickets||0),createdFallback);
-    const ending=remainingTotalForSnapshot();
-    const opening=Number(trendPoints[0]&&trendPoints[0].criticalTotal||0);
-    const stockFormulaRemoved=Math.max(0,opening+newTickets+Number(last.reenteredTickets||0)-ending);
-    const removed=Number(last.bridgeCumulative)?Number(last.exitedCritical||0):stockFormulaRemoved;
-    const otherRemoved=Number(last.otherReview??Math.max(0,removed-approvedRemoved-unapprovedRemoved));
-    if(Number(last.bridgeCumulative)){
-      createdNote.textContent=`Critical Exits ${num(removed)} = Approved ${num(approvedRemoved)} + Unapproved ${num(unapprovedRemoved)} + Other Review ${num(otherRemoved)}. Abnormal Tickets ${num(abnormalCount)}.`;
-    }else{
-      createdNote.textContent=`Critical Exits ${num(removed)}. Abnormal Tickets ${num(abnormalCount)}.`;
-    }
-  }
-  const newLegend=$("trendNewTicketsLegend");
-  if(newLegend){
-    const last=trendPoints.slice(-1)[0]||{};
-    newLegend.textContent=`(New Tickets: ${num(Math.max(Number(last.newCreatedTickets||0),createdTicketsForSelectedMonthFallback()))})`;
+    createdNote.textContent="";
+    createdNote.style.display="none";
   }
   let desc=panel.querySelector(".trendPanelDesc");
   if(desc)desc.remove();
@@ -5561,7 +5700,7 @@ function drawTrend(){
     ctx.fillText("No trend data found for this date range.",w/2,h/2);
     return;
   }
-  const left=70,right=78,top=31,bottom=39,plotW=w-left-right,plotH=h-top-bottom;
+  const left=46,right=56,top=40,bottom=54,plotW=w-left-right,plotH=h-top-bottom;
   const cumulativeMax=niceMax(Math.max(1,...pts.flatMap(p=>[p.cumulativeEnteredCritical,p.cumulativeExitedCritical])));
   const criticalMax=niceMax(Math.max(1,...pts.map(p=>p.criticalTotal)));
   const xFor=i=>left+(pts.length<=1?plotW/2:plotW*i/(pts.length-1));
@@ -5631,10 +5770,7 @@ function drawTrend(){
     drawTrendValueTag(ctx,num(pts[i].criticalTotal),pt.x,pt.y,orange,labelBounds,{occupied,dy:24});
   });
   const lastIdx=pts.length-1;
-  [[bluePts[lastIdx],blue,pts[lastIdx].cumulativeEnteredCritical,-28],[greenPts[lastIdx],green,pts[lastIdx].cumulativeExitedCritical,-6]].forEach(([pt,color,value,dy])=>{
-    drawTrendMarker(ctx,pt,color,3.5);
-    drawTrendValueTag(ctx,num(value),pt.x,pt.y,color,labelBounds,{occupied,anchor:"right",dy});
-  });
+  [bluePts[lastIdx],greenPts[lastIdx]].forEach((pt,idx)=>drawTrendMarker(ctx,pt,idx===0?blue:green,3.5));
   c._points=pts.map((p,i)=>({x:xFor(i),p,idx:i}));
 }
 function setKpiTrendHidden(id,hidden,mode="range"){const el=$(id);if(!el)return;el.innerHTML=kpiDateMetaMarkup(mode);el.className="kpiTrend flat kpiTrendDateOnly";}
@@ -5730,8 +5866,13 @@ function renderKpis(){
   const prevH=periodHandlingSummaryForBounds(pb.start,pb.end,prev.criticalNow);
   const filtered=hasTicketFilter();
   const noUpdate=noUpdateAgingSummary();
-  const approvedAvg=Number(s.avgCostPerTicket||0);
-  const prevApprovedAvg=Number(prev.avgCostPerTicket||0);
+  const approvedAmountCurrent=Number(s.approvedAmount||0);
+  const approvedCostTicketsCurrent=Number(s.approvedCostTickets||0);
+  const approvedAvg=approvedCostPerTicket({
+    approvedAmount:approvedAmountCurrent,
+    approvedCostTickets:approvedCostTicketsCurrent
+  });
+  const prevApprovedAvg=approvedCostPerTicket(prev);
   const removedApproval=ticketMovementRemovedApprovalSummary(b.start,b.end);
   const ratioUnapproved=Number(removedApproval.unapprovedTickets||0);
   const ratioApproved=Number(removedApproval.approvedTickets||0);
@@ -5751,7 +5892,7 @@ function renderKpis(){
   $("kpiCritical").textContent=num(totalTicketValue);
   if($("kpiUnapproved"))$("kpiUnapproved").textContent=num(noUpdate.count);
   if($("kpiBenchmark"))$("kpiBenchmark").textContent=todayMode?"-":`${numFixed(h.rate||0,1)}%`;
-  if($("kpiApproved"))$("kpiApproved").textContent=money(approvalMonthSummary.approvedAmount);
+  if($("kpiApproved"))$("kpiApproved").textContent=money(approvedAmountCurrent);
   if($("kpiAvgCost"))$("kpiAvgCost").textContent=money(approvedAvg);
   if($("kpiUnapprovedAmount"))$("kpiUnapprovedAmount").textContent=money(s.unapprovedAmount);
   if($("kpiUnapprovedRatio"))$("kpiUnapprovedRatio").textContent=todayMode?"-":pctText(ratio,2);
@@ -6275,50 +6416,47 @@ function benchmarkCreatedDateForEvent(e){
 }
 function periodTwoWeekBenchmarkSummary(start,end){
   const snap=periodSnapshotForBounds(start,end);
-  const hs=(snap&&snap.handlingSpeed)||(snap&&snap.summary&&snap.summary.handlingSpeed)||currentView().handlingSpeed||{};
-  if(!arrayFromMaybe(currentView().logs).length){
-    const total=Number(hs.benchmarkTotal||hs.twoWeekBenchmarkTotal||hs.total||0);
-    const within=Number(hs.benchmarkWithinTwoWeeks||hs.withinTwoWeeks||hs.within||0);
-    const rate=Number(hs.rate||hs.benchmarkRate||hs.twoWeekBenchmarkRate||hs.resolvedWithinTwoWeeksRate||hs.withinTwoWeeksRate||0);
-    if(total||within||rate)return {total,within,rate:rate||(total?within/total*100:0)};
+  const hs=(snap&&snap.handlingSpeed)||(snap&&snap.summary&&snap.summary.handlingSpeed)||{};
+  const preTotal=Number(hs.benchmarkTotal||hs.twoWeekBenchmarkTotal||hs.resolvedTotal||hs.total||0);
+  const preWithin=Number(hs.benchmarkWithinTwoWeeks||hs.withinTwoWeeks||hs.resolvedWithinTwoWeeks||hs.within||0);
+  const preRate=Number(hs.rate||hs.benchmarkRate||hs.twoWeekBenchmarkRate||hs.resolvedWithinTwoWeeksRate||hs.withinTwoWeeksRate||0);
+  // Prefer Python-precomputed benchmark so the KPI does not re-scan logs on every page load.
+  if(preTotal||preWithin||preRate)return {total:preTotal,within:preWithin,rate:preRate||(preTotal?preWithin/preTotal*100:0)};
+  const rawLogs=arrayFromMaybe(currentView().logs);
+  if(!rawLogs.length&&isLatestPeriodEnd(end)){
+    const viewHs=currentView().handlingSpeed||{};
+    const viewTotal=Number(viewHs.benchmarkTotal||viewHs.twoWeekBenchmarkTotal||viewHs.resolvedTotal||viewHs.total||0);
+    const viewWithin=Number(viewHs.benchmarkWithinTwoWeeks||viewHs.withinTwoWeeks||viewHs.resolvedWithinTwoWeeks||viewHs.within||0);
+    const viewRate=Number(viewHs.rate||viewHs.benchmarkRate||viewHs.twoWeekBenchmarkRate||viewHs.resolvedWithinTwoWeeksRate||viewHs.withinTwoWeeksRate||0);
+    if(viewTotal||viewWithin||viewRate)return {total:viewTotal,within:viewWithin,rate:viewRate||(viewTotal?viewWithin/viewTotal*100:0)};
   }
-  const enterMap=new Map();
-  let total=0,within=0;
-  arrayFromMaybe(currentView().logs).slice().sort((a,b)=>{
+  const sortedLogs=rawLogs.slice().sort((a,b)=>{
     const at=criticalLogSortTime(a),bt=criticalLogSortTime(b);
     const byTime=at.localeCompare(bt);
     return byTime||(criticalLogSortRank(a)-criticalLogSortRank(b));
-  }).forEach(e=>{
-    if(!logMatchesClaim(e))return;
+  });
+  const lastEnterByTicket=new Map();
+  let total=0,within=0;
+  for(const e of sortedLogs){
+    if(!logMatchesClaim(e))continue;
     const d=criticalEventDate(e);
-    if(!d||d>end)return;
+    if(!d||d>end)continue;
     const id=criticalEventId(e);
-    if(!id)return;
+    if(!id)continue;
     const cls=criticalLogClass(e);
     if(cls==="enter"){
-      enterMap.set(id,d);
-      return;
+      lastEnterByTicket.set(id,d);
+      continue;
     }
-    if(cls!=="exit")return;
-    if(d>=start){
-      let days=null;
-      const entered=enterMap.get(id);
-      if(entered&&entered<=d)days=daysBetweenISO(entered,d);
-      if(days==null){
-        const created=benchmarkCreatedDateForEvent(e);
-        if(created&&created<=d)days=daysBetweenISO(created,d);
-      }
-      if(days==null){
-        const direct=durationDaysForTeamLog(e);
-        if(Number.isFinite(direct)&&direct<999)days=direct;
-      }
-      if(days!=null&&Number.isFinite(days)){
-        total++;
-        if(days<=14)within++;
-      }
-    }
-    enterMap.delete(id);
-  });
+    if(cls!=="exit")continue;
+    const enteredDate=lastEnterByTicket.get(id)||benchmarkCreatedDateForEvent(e);
+    lastEnterByTicket.delete(id);
+    if(d<start||d>end)continue;
+    if(!enteredDate||enteredDate>d)continue;
+    total++;
+    const days=daysBetweenISO(enteredDate,d);
+    if(Number.isFinite(days)&&days<=14)within++;
+  }
   return {total,within,rate:total?within/total*100:0};
 }
 function dashboardDailyCriticalStockRows(){
@@ -6481,7 +6619,8 @@ function bindCriticalTicketSearch(){
 }
 function repairCostBucketDefs(){
   return [
-    {label:"$0.01 - $100",min:0,max:100,count:0,total:0},
+    {label:"$0",min:0,max:0.01,count:0,total:0},
+    {label:"$0.01 - $100",min:0.01,max:100,count:0,total:0},
     {label:"$100 - $500",min:100,max:500,count:0,total:0},
     {label:"$500 - $1k",min:500,max:1000,count:0,total:0},
     {label:"$1k - $2.5k",min:1000,max:2500,count:0,total:0},
@@ -6493,7 +6632,7 @@ function repairCostBucketFor(amount,buckets){
 }
 function repairCostDistributionFromApprovedRows(start,end){
   const buckets=repairCostBucketDefs();
-  approvedPoCostRows(approvalBucketTicketRowsForRange("approved",start,end)).forEach(row=>{
+  approvalBucketTicketRowsForRange("approved",start,end).forEach(row=>{
     const amount=approvalRowAmountValue(row);
     const bucket=repairCostBucketFor(amount,buckets);
     bucket.count+=1;
@@ -6557,7 +6696,7 @@ function repairCostDistributionRows(){
       label:clean(row.label),
       count:Number(row.count||0),
       total,
-      details:[{label:"Approved PO cost tickets",count:Number(row.count||0)},{label:"Total approved cost",count:money(total)}]
+      details:[{label:"Approved tickets",count:Number(row.count||0)},{label:"Total approved cost",count:money(total)}]
     };
   }).filter(row=>row.count>0||row.total>0);
 }
@@ -6967,9 +7106,9 @@ function openRepairCostBucketTickets(key,label){
   const bucket=repairCostBucketByKey(key);
   const rows=!bucket?[]:approvalBucketTicketRows("approved").filter(row=>{
     const amount=approvalRowAmountValue(row);
-    return amount>0&&amount>=Number(bucket.min||0)&&amount<Number(bucket.max||0);
+    return amount>=Number(bucket.min||0)&&amount<Number(bucket.max||0);
   });
-  openDashboardTickets(rows,`Approved PO Cost Tickets - ${label}`);
+  openDashboardTickets(rows,`Approved Tickets - ${label}`);
 }
 function bindRepairCostTicketLinks(box){
   box.querySelectorAll("[data-repair-cost-key]").forEach(el=>{
@@ -7554,18 +7693,41 @@ function ticketMovementAbnormalAnalysis(start,end){
     });
   });
   const abnormalRowsById=new Map();
+  function pushAbnormalReason(rawRow,category,reason){
+    const row=rawRow&&typeof rawRow==="object"?{...rawRow}:{};
+    const id=clean(row.id);
+    if(!id)return;
+    const existing=abnormalRowsById.get(id);
+    if(existing){
+      if(!existing._abnormalCategories.includes(category))existing._abnormalCategories.push(category);
+      if(!existing._abnormalReasons.includes(reason))existing._abnormalReasons.push(reason);
+      return;
+    }
+    row._abnormalCategories=[category];
+    row._abnormalReasons=[reason];
+    abnormalRowsById.set(id,row);
+  }
   countedNotRemoved.forEach(item=>{
     const row=item&&item.row||{};
-    const id=clean(row.id);
-    if(id&&!abnormalRowsById.has(id))abnormalRowsById.set(id,row);
+    pushAbnormalReason(
+      row,
+      "Approved/Unapproved Counted But Not Removed",
+      "Counted in Approved/Unapproved but did not belong to stock removals in the selected period."
+    );
   });
   reenteredOldRows.forEach(row=>{
-    const id=clean(row&&row.id);
-    if(id&&!abnormalRowsById.has(id))abnormalRowsById.set(id,row);
+    pushAbnormalReason(
+      row,
+      "Old Ticket Re-entered Critical",
+      "Old ticket re-entered Critical during the selected period and remained in the pool."
+    );
   });
   removedNotCountedRows.forEach(row=>{
-    const id=clean(row&&row.id);
-    if(id&&!abnormalRowsById.has(id))abnormalRowsById.set(id,row);
+    pushAbnormalReason(
+      row,
+      "Removed From Critical Without Approval Row",
+      "Removed from the Critical pool but had no corresponding Approved/Unapproved row."
+    );
   });
   return {
     countedNotRemoved,
@@ -7582,9 +7744,11 @@ function ticketMovementAbnormalExportRows(start,end){
     `${num(analysis.reenteredOldRows.length)} old tickets re-entered Critical and remained in the pool.`,
     `${num(analysis.removedNotCountedRows.length)} tickets were removed from the Critical pool but had no corresponding Approved/Unapproved row.`
   ];
-  const header=["Ticket ID","Status","Decision","Decision Date","Created On","Changed On","Claim Type","Dealer","Employee","Aging Days","Customer","Repair"];
+  const header=["Ticket ID","Abnormal Category","Abnormal Reason","Status","Decision","Decision Date","Created On","Changed On","Claim Type","Dealer","Employee","Aging Days","Customer","Repair"];
   const detailRows=rows.map(row=>[
     clean(row&&row.id),
+    arrayFromMaybe(row&&row._abnormalCategories).map(clean).filter(Boolean).join(" | "),
+    arrayFromMaybe(row&&row._abnormalReasons).map(clean).filter(Boolean).join(" | "),
     clean(row&&row.status),
     clean(row&&row.approvalDecision),
     clean(row&&row.decisionDate),
@@ -8082,6 +8246,11 @@ function teamAssignRowsWithDirectory(){
     addTeamAssignMetric(byKey,row.name,"approved",row.approved);
     addTeamAssignMetric(byKey,row.name,"unapproved",row.unapproved);
   });
+  byKey.forEach(row=>{
+    const approved=Number(row.approved||0);
+    const unapproved=Number(row.unapproved||0);
+    if(approved>0||unapproved>0)row.removed=approved+unapproved;
+  });
   employeeDirectoryNames().forEach(name=>{
     if(isOtherTeamAssignRow(teamAssignDisplayName(name)))return;
     const key=employeeStatusKey(name);
@@ -8096,9 +8265,7 @@ function renderTeamAssignActions(){
   if(!box)return;
   const options=[
     {key:"totalRemoved",label:"Removed",title:`Removed from Critical (${selectedPeriodText()})`},
-    {key:"currentCritical",label:"Tickets in Progress",title:`Tickets in Progress (On ${selectedSnapshotText()})`},
-    {key:"approved",label:"Approved",title:`Approved (${selectedMonthPeriodLabel()})`},
-    {key:"unapproved",label:"Unapproved",title:`Unapproved (${selectedMonthPeriodLabel()})`}
+    {key:"currentCritical",label:"Tickets in Progress",title:`Tickets in Progress (On ${selectedSnapshotText()})`}
   ];
   if(!options.some(o=>o.key===teamAssignMetric))teamAssignMetric="totalRemoved";
   box.innerHTML=options.map(o=>`<button class="teamAssignBtn ${teamAssignMetric===o.key?'active':''}" data-assign-metric="${esc(o.key)}" type="button" title="${esc(o.title)}" aria-label="${esc(o.title)}">${esc(o.label)}</button>`).join("");
@@ -8259,7 +8426,8 @@ function renderTeamAssignChart(){
   if(!rows.length){box.innerHTML=`<div class="teamAssignEmpty">No C4C Assign To workload found for this period.</div>`;renderEmployeeStatusMapping();return;}
   box.style.gridTemplateRows="";
   const max=Math.max(1,...rows.map(r=>Number(teamAssignMetricValue(r)||0)));
-  box.innerHTML=rows.map(row=>{
+  const headerMarkup=teamAssignMetric==="totalRemoved"?`<div class="teamAssignValueHeaderRow"><span>Unapproved / Approved</span></div>`:"";
+  box.innerHTML=headerMarkup+rows.map(row=>{
     const value=teamAssignMetricValue(row);
     const pct=Math.max(value?2:0,Math.min(100,value/max*100));
     const label=teamAssignMetricLabel(value);
@@ -8269,7 +8437,11 @@ function renderTeamAssignChart(){
     const nameLabel=esc(row.name);
     const canOpen=!isOtherTeamAssignRow(row.name);
     const openAttrs=canOpen?` role="button" tabindex="0" data-employee="${esc(row.name)}" aria-label="Open ${esc(row.name)} workload details" title="Open ${esc(row.name)} workload details"`:` aria-label="Other workload summary" title="Other workload summary"`;
-    return `<div class="teamAssignRow"><div class="teamAssignName" title="${esc(row.name)}">${nameLabel}</div><div class="teamAssignTrack"${openAttrs}><div class="${colorClass}" style="width:${pct}%"></div>${inline}</div><div class="teamAssignValue"><span class="${valueClass}">${label}</span></div></div>`;
+    const approvalPair=`${num(Number(row.unapproved||0))} / ${num(Number(row.approved||0))}`;
+    const valueMarkup=teamAssignMetric==="totalRemoved"
+      ?`<span class="teamAssignValuePair">${esc(approvalPair)}</span>`
+      :`<span class="${valueClass}">${label}</span>`;
+    return `<div class="teamAssignRow"><div class="teamAssignName" title="${esc(row.name)}">${nameLabel}</div><div class="teamAssignTrack"${openAttrs}><div class="${colorClass}" style="width:${pct}%"></div>${inline}</div><div class="teamAssignValue">${valueMarkup}</div></div>`;
   }).join("");
   renderEmployeeStatusMapping();
   box.querySelectorAll(".teamAssignTrack[data-employee]").forEach(track=>{
@@ -8488,6 +8660,15 @@ function renderAllWithLoading(text="Calculating..."){
   const req=++renderAllRequestSeq;
   renderAllTimer=setTimeout(async()=>{
     renderAllTimer=null;
+    if(req!==renderAllRequestSeq)return;
+    try{
+      await Promise.all([
+        ensureCurrentPeriodSnapshotDetails(),
+        ensureFullTeamViewDetails()
+      ]);
+    }catch(e){
+      console.warn("Dashboard period detail preload failed",e);
+    }
     if(req!==renderAllRequestSeq)return;
     renderAll();
     if(!hasFullEmployeeAnalytics()){

@@ -208,6 +208,10 @@ function isTrackedSeries(series) {
   return TRACKED_SERIES.has(normalizeSeriesCode(series));
 }
 
+function isDisplaySeries(series) {
+  return normalizeSeriesCode(series) !== OTHERS_SERIES;
+}
+
 function seriesCodeFromVehicleToken(token) {
   const key = vehicleLookupKey(token);
   if (!key) return "";
@@ -697,7 +701,7 @@ function createSeriesBucket(series) {
     vehicles: new Set(),
     firstFailureByVehicle: new Map(),
     repairedTickets: 0,
-    buckets: [0, 0, 0, 0],
+    buckets: [0, 0, 0, 0, 0],
     timingSources: { pgi: 0 },
     fullyRej: 0,
     partRej: 0,
@@ -753,12 +757,13 @@ function summaryBySeries(rows, activeBase) {
   const summary = Array.from(map.values()).map((item) => {
     const vehicles = item.vehicles.size;
     const firstFailureAges = Array.from(item.firstFailureByVehicle.values()).filter(Number.isFinite);
-    const buckets = [0, 0, 0, 0];
+    const buckets = [0, 0, 0, 0, 0];
     for (const age of firstFailureAges) {
       if (age <= 30) buckets[0] += 1;
       else if (age <= 90) buckets[1] += 1;
       else if (age <= 180) buckets[2] += 1;
-      else buckets[3] += 1;
+      else if (age <= 360) buckets[3] += 1;
+      else buckets[4] += 1;
     }
     const avgRepairs = vehicles ? (item.repairedTickets || 0) / vehicles : null;
     const costPerVehicle = vehicles ? item.cost / vehicles : null;
@@ -778,6 +783,7 @@ function summaryBySeries(rows, activeBase) {
       medianAge: median(firstFailureAges),
       buckets,
       timingSources: { pgi: firstFailureAges.length },
+      pgiMatchedVehicles: firstFailureAges.length,
       fullyRej: item.fullyRej,
       partRej: item.partRej,
       anyRej: item.anyRej,
@@ -861,22 +867,23 @@ function repairerAggregation(rows) {
 }
 
 function allDetailForRows(rows, summary) {
-  const totalTickets = summary.reduce((sum, item) => sum + (Number(item.tickets) || 0), 0);
-  const totalVehicles = summary.reduce((sum, item) => sum + (Number(item.vehicles) || 0), 0);
-  const totalCost = summary.reduce((sum, item) => sum + (Number(item.cost) || 0), 0);
-  const totalRepairedTickets = summary.reduce((sum, item) => sum + (Number(item.repairedTickets) || 0), 0);
-  const totalCostTickets = summary.reduce((sum, item) => sum + (Number(item.costTickets) || 0), 0);
-  const buckets = [0, 0, 0, 0];
+  const displaySummary = summary.filter((item) => isDisplaySeries(item.series));
+  const totalTickets = displaySummary.reduce((sum, item) => sum + (Number(item.tickets) || 0), 0);
+  const totalVehicles = displaySummary.reduce((sum, item) => sum + (Number(item.vehicles) || 0), 0);
+  const totalCost = displaySummary.reduce((sum, item) => sum + (Number(item.cost) || 0), 0);
+  const totalRepairedTickets = displaySummary.reduce((sum, item) => sum + (Number(item.repairedTickets) || 0), 0);
+  const totalCostTickets = displaySummary.reduce((sum, item) => sum + (Number(item.costTickets) || 0), 0);
+  const buckets = [0, 0, 0, 0, 0];
   const timingSources = { pgi: 0 };
-  for (const item of summary) {
-    const itemBuckets = Array.isArray(item.buckets) ? item.buckets : [0, 0, 0, 0];
+  for (const item of displaySummary) {
+    const itemBuckets = Array.isArray(item.buckets) ? item.buckets : [0, 0, 0, 0, 0];
     itemBuckets.forEach((count, index) => {
       buckets[index] += Number(count) || 0;
     });
-    timingSources.pgi += Number(item.timingSources?.pgi) || 0;
+    timingSources.pgi += Number(item.pgiMatchedVehicles ?? item.timingSources?.pgi) || 0;
   }
   const firstAgeByVehicle = new Map();
-  for (const row of rows) {
+  for (const row of rows.filter((item) => isDisplaySeries(extractSeries(item)))) {
     const timing = failureAgeDays(row);
     const key = normalizedChassis(row);
     if (timing.source === "pgi" && key && Number.isFinite(timing.age) && timing.age >= 0) {
@@ -898,6 +905,7 @@ function allDetailForRows(rows, summary) {
     buckets,
     medianAge: median(ages),
     timingSources,
+    pgiMatchedVehicles: timingSources.pgi,
   });
 }
 

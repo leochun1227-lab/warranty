@@ -296,26 +296,15 @@ def main() -> int:
         env=env,
     )
 
-    repair_source_csv = resolve_repair_source_csv()
-    logger.info("Repair source CSV: %s", repair_source_csv)
     run_command(
         [
             sys.executable,
-            "extract_repairs_2026.py",
-            "--source",
-            str(repair_source_csv),
-            "--output-dir",
-            str(REPAIR_OUTPUT_DIR),
-            "--mandt",
-            args.sap_client,
-            "--firebase-root",
-            args.firebase_root,
+            "refresh_repairer_page.py",
+            "--skip-fetch",
         ],
-        "Repair analysis export",
+        "Repair analysis export - C4C eligible SAP authoritative",
         env=env,
     )
-
-    run_command([node_exe, "build_repairers_fast_cache.mjs"], "Repair fast cache build", env=env)
 
     run_command([node_exe, "build_analysis_model_mtm_cache.mjs"], "Model MTM cache build", env=env)
 

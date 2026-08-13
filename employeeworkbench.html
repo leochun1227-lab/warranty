@@ -2439,7 +2439,7 @@ html{zoom:.8!important;}
 .employeePanel .employeeBarTrack .employeeEndValue,
 .employeePanel .employeeBarTrack .employeeEndValue.redValue,
 .employeePanel .employeeBarTrack .employeeEndValue.blueValue{
-  transform:translate(-50%,-50%)!important;
+  transform:translate(calc(-100% - 8px),-50%)!important;
   margin-left:0!important;
   top:50%!important;
   height:16px!important;
@@ -2472,7 +2472,7 @@ html{zoom:.8!important;}
   padding:0 5px!important;
 }
 .employeePanel .employeeBarTrack .employeeEndValue.closeValue.before{
-  transform:translate(calc(-100% - 2px),-50%)!important;
+  transform:translate(calc(-100% - 10px),-50%)!important;
 }
 .employeePanel .employeeBarTrack .employeeEndValue.closeValue.after{
   transform:translate(2px,-50%)!important;
@@ -2922,7 +2922,9 @@ function recalc(){
   detailRows=rangeDetailRows.filter(t=>isRealEmployeeName(t.employee));
 
   employeeStats=rawStats.filter(s=>isRealEmployeeName(s.name)).map(s=>{
-    const removed=sumDaily(s.removedDaily,from,to);
+    const removedApproved=sumDaily(s.approvedDaily,from,to);
+    const removedUnapproved=sumDaily(s.unapprovedDaily,from,to);
+    const removed=(removedApproved||removedUnapproved)?(removedApproved+removedUnapproved):sumDaily(s.removedDaily,from,to);
     const scopedTotal=rangeCriticalByEmployee.get(normEmp(s.name));
     const total=scopedTotal==null?Number(s.criticalTickets ?? s.totalTickets ?? 0):scopedTotal;
     return {...s, total, removed, avgDaily:removed/dayCount, avgWeekly:removed/dayCount*7};
@@ -2967,14 +2969,14 @@ function prepareCanvas(c){const dpr=window.devicePixelRatio||1,w=c.clientWidth||
 function roundRect(ctx,x,y,w,h,r){const rr=Math.min(r,Math.abs(w)/2,Math.abs(h)/2);ctx.beginPath();ctx.moveTo(x+rr,y);ctx.arcTo(x+w,y,x+w,y+h,rr);ctx.arcTo(x+w,y+h,x,y+h,rr);ctx.arcTo(x,y+h,x,y,rr);ctx.arcTo(x,y,x+w,y,rr);ctx.closePath()}
 function shorten(s,max=27){s=clean(s);return s.length>max?s.slice(0,max-1)+'...':s}
 function employeeBarLabelPositions(redPct,totalPct,redValue,totalValue){
-  const clamp=(value,min=7,max=95)=>Math.max(min,Math.min(max,value));
+  const clamp=(value,min=7,max=88)=>Math.max(min,Math.min(max,value));
   let red=clamp(Number(redPct||0));
   let blue=clamp(Number(totalPct||0));
   if(!(redValue>0)||!(totalValue>0)) return {red,blue,close:false,redSide:'',blueSide:''};
   const closeThreshold=12;
   const diff=Math.abs(red-blue);
   if(diff>closeThreshold) return {red,blue,close:false,redSide:'',blueSide:''};
-  const center=clamp((red+blue)/2,11,91);
+  const center=clamp((red+blue)/2,11,84);
   const redIsLeft=red<=blue;
   return {
     red:center,

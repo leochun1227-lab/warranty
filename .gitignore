@@ -1,5 +1,5 @@
 firebase-service-account.json
-*.inspect.ndjson 
+*.inspect.ndjson
 __pycache__/
 *.pyc
 node_modules/
@@ -43,3 +43,9 @@ outputs/employee_other_jul2026/
 outputs/mismatch_export/
 outputs/ticket_movement_bridge_*/
 outputs/tickets_in_progress_month_mismatch_*/
+
+# Local repairer SAP/PO reconciliation exports. These are generated audit files
+# and can be rebuilt locally when needed.
+outputs/repairers_2026/c4c_sap_po_repairer_compare*
+outputs/repairers_2026/ekbe_invoice_ticket_audit*
+outputs/repairers_2026/sap_authoritative_repair_payments*

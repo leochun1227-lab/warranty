@@ -1251,7 +1251,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/><path d="M9 3.5h6"/><path d="M12 20.5v-2"/></svg>
           </div>
           <div>
-            <h2 class="panelTitle">2026 YTD Average Complete Parts Issuing Time</h2>
+            <h2 class="panelTitle">Monthly Average Complete Parts Issuing Time</h2>
           </div>
         </div>
         <div class="badge" id="leadBadge"></div>
@@ -1279,7 +1279,7 @@
       </div>
       <div class="panelActions">
         <button class="flowExportBtn" id="costExportBtn" type="button" title="Export Total Parts Cost with monthly ticket details to Excel" aria-label="Export Total Parts Cost with monthly ticket details to Excel"></button>
-        <div class="badge" id="costBadge">Since 2025-07</div>
+        <div class="badge" id="costBadge">Since 2026-01</div>
       </div>
     </div>
     <div class="costGrid">
@@ -1497,17 +1497,36 @@
   function fmtShortRange(start, end){
     return `${fmtDate(start)} - ${fmtDate(end)}`;
   }
+  function monthStartFromRow(row){
+    if (!row) return null;
+    if (row.start instanceof Date){
+      return new Date(Date.UTC(row.start.getUTCFullYear(), row.start.getUTCMonth(), 1));
+    }
+    if (row.key){
+      const parsedKey = parseDate(row.key);
+      if (parsedKey){
+        return new Date(Date.UTC(parsedKey.getUTCFullYear(), parsedKey.getUTCMonth(), 1));
+      }
+    }
+    if (row.label){
+      const parsedLabel = parseDate(`${row.label}-01`);
+      if (parsedLabel){
+        return new Date(Date.UTC(parsedLabel.getUTCFullYear(), parsedLabel.getUTCMonth(), 1));
+      }
+    }
+    return null;
+  }
   function monthSeriesRange(series){
     const rows = Array.isArray(series) ? series.filter(Boolean) : [];
     if (!rows.length) return "";
     const first = rows[0];
     const last = rows[rows.length - 1];
-    const start = first.start instanceof Date ? first.start : parseDate(first.key ? `${first.key}-01` : first.label);
+    const start = monthStartFromRow(first);
     const end = last.end instanceof Date
       ? last.end
       : last.start instanceof Date
         ? addDaysUTC(addMonthsUTC(last.start, 1), -1)
-        : parseDate(last.key ? `${last.key}-01` : last.label);
+        : monthStartFromRow(last);
     return fmtDateRangeShort(start, end);
   }
   function currentYearMonthlySeries(series, latest=null){
@@ -1522,10 +1541,53 @@
     if (!latestMonthStart) return rows.slice(-12);
     const firstMonthStart = new Date(Date.UTC(latestMonthStart.getUTCFullYear(), 0, 1));
     const filtered = rows.filter(row => {
-      const start = row.start instanceof Date ? row.start : parseDate(row.key ? `${row.key}-01` : row.label);
+      const start = monthStartFromRow(row);
       return start && start >= firstMonthStart && start <= latestMonthStart;
     });
     return filtered.length ? filtered : rows.slice(-12);
+  }
+  function currentYearStartDate(latest=null){
+    const latestDate = parseLooseDate(latest?.asOf) || parseDate(latest?.asOf) || new Date();
+    return new Date(Date.UTC(latestDate.getUTCFullYear(), 0, 1));
+  }
+  function currentYearTicketRows(tickets, latest=null){
+    const rows = Array.isArray(tickets) ? tickets.filter(Boolean) : [];
+    if (!rows.length) return [];
+    const yearStart = currentYearStartDate(latest);
+    const year = yearStart.getUTCFullYear();
+    return rows.filter(ticket => {
+      const monthKey = monthKeyFromTicket(ticket);
+      if (monthKey){
+        return monthKey.slice(0, 4) === String(year);
+      }
+      const fallbackDate = parseLooseDate(ticket?.soCreatedDate || ticket?.createdOn || ticket?.completeIssueDate || ticket?.firstIssueDate);
+      return fallbackDate && fallbackDate >= yearStart && fallbackDate.getUTCFullYear() === year;
+    });
+  }
+  function summarizeCostSeries(series){
+    return (Array.isArray(series) ? series : []).reduce((acc, row) => {
+      acc.totalCost += n(row.cost);
+      acc.poTotalCost += n(row.poCost);
+      acc.fallbackTotalCost += n(row.fallbackCost);
+      acc.poHitCount += n(row.poHitCount);
+      acc.fallbackCount += n(row.fallbackCount);
+      acc.materialRows += n(row.materialRows);
+      acc.totalSoCount += n(row.soCount);
+      return acc;
+    }, {
+      totalCost: 0,
+      poTotalCost: 0,
+      fallbackTotalCost: 0,
+      poHitCount: 0,
+      fallbackCount: 0,
+      materialRows: 0,
+      totalSoCount: 0,
+    });
+  }
+  function uniqueTicketCountForCost(tickets, latest=null){
+    const ytdTickets = currentYearTicketRows(tickets, latest);
+    const uniqueTickets = uniqueTicketsBySalesOrder(ytdTickets, () => true);
+    return uniqueTickets.length;
   }
   function weightedLeadStatsFromSeries(series){
     const rows = Array.isArray(series) ? series.filter(Boolean) : [];
@@ -2397,18 +2459,18 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     ]));
   }
   function costSummaryRows(report, latest, tickets, series){
-    const totalCost = report?.totalCost || latest?.partsCost?.total || 0;
-    const poTotalCost = report?.poTotalCost || latest?.partsCost?.poCost || 0;
-    const fallbackTotalCost = report?.fallbackTotalCost || latest?.partsCost?.fallbackCost || 0;
-    const poHitCount = report?.poHitCount || latest?.partsCost?.poHitCount || 0;
-    const fallbackCount = report?.fallbackCount || latest?.partsCost?.fallbackCount || 0;
-    const materialRows = report?.materialRows || latest?.partsCost?.materialRows || 0;
-    const totalSoCount = report?.totalSoCount || latest?.partsCost?.soCount || (Array.isArray(tickets) ? tickets.length : 0);
-    const ticketCount = Array.isArray(tickets) && tickets.length ? tickets.length : totalSoCount;
+    const summary = summarizeCostSeries(series);
+    const ticketCount = uniqueTicketCountForCost(tickets, latest);
+    const totalCost = summary.totalCost;
+    const poTotalCost = summary.poTotalCost;
+    const fallbackTotalCost = summary.fallbackTotalCost;
+    const poHitCount = summary.poHitCount;
+    const fallbackCount = summary.fallbackCount;
+    const materialRows = summary.materialRows;
+    const totalSoCount = summary.totalSoCount || ticketCount;
     const avgPartsCostPerTicket = ticketCount ? (totalCost / ticketCount) : 0;
-    const reportStartRaw = report?.periodStart || report?.source?.periodStart || FLOW_MONTHLY_START;
-    const reportStart = reportStartRaw && reportStartRaw < FLOW_MONTHLY_START ? FLOW_MONTHLY_START : reportStartRaw;
-    const reportEnd = report?.periodEnd || "";
+    const reportStart = series[0]?.key || dateKey(currentYearStartDate(latest));
+    const reportEnd = series[series.length - 1]?.key || "";
     const latestMonth = series && series.length ? series[series.length - 1] : null;
     return [
       ["Metric","Value"],
@@ -2996,17 +3058,17 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         console.warn("Parts issued detail export load failed:", err);
         alert("å·²å¯¼å‡ºæ±‡æ€»ï¼Œä½†å½“å‰ ticket æ˜Žç»†æ‹‰å–å¤±è´¥ï¼Œæ‰€ä»¥è¿™æ¬¡åªä¼šåŒ…å«æ±‡æ€»å’Œè¶‹åŠ¿ã€‚");
       }
+      const latest = state.latest || state.history[state.history.length - 1] || null;
       const series = tickets.length
         ? buildIssuedMaterialSeriesFromTickets(tickets, "month")
         : buildSeries(state.history, "month");
-      const issuedSeries = padMonthlySeriesFromStart(series, FLOW_MONTHLY_START);
-      const latest = state.latest || state.history[state.history.length - 1] || null;
+      const issuedSeries = currentYearMonthlySeries(padMonthlySeriesFromStart(series, FLOW_MONTHLY_START), latest);
       const sheets = [
         { name:"Parts Issued Summary", rows:partsIssuedSummaryRows(issuedSeries, latest) },
         { name:"Parts Issued Trend", rows:partsIssuedExportRows(issuedSeries) },
       ];
       if (tickets.length){
-        const issued = issuedTicketRows(tickets);
+        const issued = currentYearTicketRows(issuedTicketRows(tickets), latest);
         sheets.push(
           { name:"Ticket Summary", rows:ticketSummaryRows(issued, "Parts Issued Materials") },
           { name:"Ticket Detail", rows:ticketDetailRows(issued) },
@@ -3052,16 +3114,17 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         fallbackShare: 0,
         avgPerSo: 0,
       })), FLOW_MONTHLY_START);
-      const series = reportSeries.length ? reportSeries : fallbackSeries;
+      const series = currentYearMonthlySeries(reportSeries.length ? reportSeries : fallbackSeries, latest);
+      const ytdTickets = currentYearTicketRows(tickets, latest);
       const sheets = [
         { name:"Cost Summary", rows:costSummaryRows(report, latest, tickets, series) },
         { name:"Monthly Trend", rows:costTrendRows(series) },
       ];
-      if (tickets.length){
+      if (ytdTickets.length){
         sheets.push(
-          { name:"Monthly Ticket Summary", rows:costMonthlyTicketSummaryRows(tickets) },
-          { name:"Monthly Ticket Detail", rows:costMonthlyTicketRows(tickets) },
-          { name:"Monthly Item Detail", rows:costMonthlyItemRows(tickets) },
+          { name:"Monthly Ticket Summary", rows:costMonthlyTicketSummaryRows(ytdTickets) },
+          { name:"Monthly Ticket Detail", rows:costMonthlyTicketRows(ytdTickets) },
+          { name:"Monthly Item Detail", rows:costMonthlyItemRows(ytdTickets) },
         );
       }
       exportWorkbook(sheets, `total-parts-cost-${exportDateSuffix()}.xls`);
@@ -3931,14 +3994,12 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       fallbackShare: 0,
       avgPerSo: 0,
     })), FLOW_MONTHLY_START);
-    const lineSeries = reportSeries.length ? reportSeries : fallbackSeries;
-    const ticketCount = Array.isArray(currentTickets) && currentTickets.length
-      ? currentTickets.length
-      : currentSummary
-        ? n(currentSummary.ticketCount)
-      : (latest?.partsCost?.soCount || 0);
-    const totalPeriodCost = report?.totalCost || latest.partsCost?.total || 0;
-    const totalCardCount = ticketCount || latest?.partsCost?.soCount || 0;
+    const lineSeries = currentYearMonthlySeries(reportSeries.length ? reportSeries : fallbackSeries, latest);
+    const seriesSummary = summarizeCostSeries(lineSeries);
+    const ticketCount = uniqueTicketCountForCost(currentTickets, latest)
+      || seriesSummary.totalSoCount
+      || (currentSummary ? n(currentSummary.ticketCount) : 0);
+    const totalPeriodCost = seriesSummary.totalCost;
     const avgPartsCostPerTicket = ticketCount ? (totalPeriodCost / ticketCount) : 0;
     els.costCompare.style.display = "none";
     els.costCompare.innerHTML = "";
@@ -3951,12 +4012,12 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       return;
     }
     const latestPoint = lineSeries[lineSeries.length - 1] || null;
-    const poTotalCost = report?.poTotalCost || latest.partsCost?.poCost || 0;
-    const fallbackTotalCost = report?.fallbackTotalCost || latest.partsCost?.fallbackCost || 0;
-    const poHitCount = report?.poHitCount || latest.partsCost?.poHitCount || 0;
-    const fallbackCount = report?.fallbackCount || latest.partsCost?.fallbackCount || 0;
-    const materialRows = report?.materialRows || latest.partsCost?.materialRows || 0;
-    const costPeriodLabel = `${displayPeriodStart || FLOW_MONTHLY_START} onward`;
+    const poTotalCost = seriesSummary.poTotalCost;
+    const fallbackTotalCost = seriesSummary.fallbackTotalCost;
+    const poHitCount = seriesSummary.poHitCount;
+    const fallbackCount = seriesSummary.fallbackCount;
+    const materialRows = seriesSummary.materialRows;
+    const costPeriodLabel = lineSeries[0]?.key ? `${lineSeries[0].key} onward` : `${dateKey(currentYearStartDate(latest))} onward`;
     const coverageText = materialRows
       ? `${integer.format(poHitCount)} rows from 3110 PO, ${integer.format(fallbackCount)} rows from 3090 SO fallback`
       : "No material rows";
@@ -3971,7 +4032,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       els.costSummary.style.display = "grid";
       els.costSummary.innerHTML = [
         { label:"Total Cost", value: money.format(totalPeriodCost), theme:"sky", icon: summaryIcons.total },
-        { label:"Avg Parts Cost / Ticket", value: money.format(avgPartsCostPerTicket), left:"", right:`${integer.format(ticketCount)} tickets`, theme:"red", icon: summaryIcons.avg },
+        { label:"Avg Parts Cost / Ticket", value: money.format(avgPartsCostPerTicket), left:"", right:"", theme:"red", icon: summaryIcons.avg },
       ].map(card => `
         <div class="costStat">
           <div class="costStatTop">
@@ -4055,7 +4116,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     const summaryIssuedSeriesRaw = currentSummary?.issuedSeriesMonth || [];
     const summaryIssuedSeries = hasMeaningfulIssuedSeries(summaryIssuedSeriesRaw) ? summaryIssuedSeriesRaw : [];
     const issuedSeries = summaryIssuedSeries.length ? summaryIssuedSeries : buildSeries(state.history, "month");
-    const normalizedIssuedSeries = padMonthlySeriesFromStart(issuedSeries, FLOW_MONTHLY_START);
+    const normalizedIssuedSeries = currentYearMonthlySeries(padMonthlySeriesFromStart(issuedSeries, FLOW_MONTHLY_START), latest);
     const leadSeriesAll = buildEffectiveMonthlyLeadSeries(latest, currentSummary, state.currentTickets);
     const leadSeries = currentYearMonthlySeries(leadSeriesAll, latest);
     const latestGroup = series[series.length - 1] || null;
@@ -4068,11 +4129,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     els.flowBadge.textContent = state.granularity === "week" ? "Weekly" : state.granularity === "month" ? "Monthly" : "Yearly";
     els.leadBadge.textContent = monthSeriesRange(leadSeries);
     els.issuedBadge.textContent = monthSeriesRange(normalizedIssuedSeries);
-    els.costBadge.textContent = state.costReport?.periodStart && state.costReport.periodStart < FLOW_MONTHLY_START
-      ? `Since ${FLOW_MONTHLY_START.slice(0, 7)}`
-      : state.costReport?.periodStart
-        ? `Since ${state.costReport.periodStart.slice(0, 7)}`
-        : `Since 2025-07`;
+    els.costBadge.textContent = `Since ${dateKey(currentYearStartDate(latest)).slice(0, 7)}`;
 
     const costReport = latest.costReport || state.costReport;
     renderCards(latest, latestGroup, normalizedIssuedSeries, costReport, currentSummary, leadSeries);

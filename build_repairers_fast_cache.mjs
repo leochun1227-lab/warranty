@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import crypto from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,11 +9,13 @@ const TICKET_BASE_CSV = path.join(ROOT, "outputs", "analysis_ticket_base.csv");
 const FAST_JSON = path.join(OUTPUT_DIR, "repairers_2026_fast.json");
 const LIGHT_JSON = path.join(OUTPUT_DIR, "repairers_2026_light.json");
 const DATA_JSON = path.join(OUTPUT_DIR, "repairers_2026_data.json");
+const REPAIRER_NAME_RULE_MAPPING_JSON = path.join(ROOT, "assets", "repairer_name_rule_mapping.json");
 const REPAIR_YEAR = 2026;
 const REPAIR_COST_SANITY_MIN_AUD = Number(process.env.REPAIR_COST_SANITY_MIN_AUD || "50000");
 const REPAIR_COST_SANITY_RATIO = Number(process.env.REPAIR_COST_SANITY_RATIO || "10");
 const LIGHT_DETAIL_FIELDS = [
-  "Ticket ID", "TicketID", "Ticket", "Created On", "Posting Date", "Changed On", "Approved Date",
+  "Ticket ID", "TicketID", "C4C Ticket ID", "Ticket", "Created On", "Posting Date", "Changed On", "Approved Date",
+  "C4C Claim Approved On", "c4c_claim_approved_on",
   "Ticket Type", "Status", "Service Technician", "repairer_name", "repairer_base_name",
   "raw_repairer_name", "repairer_split_key", "repairshop_id", "RepairerBusinessNameID",
   "Dealer", "Dealer Name", "Country/Region", "Service Requester Postal Code", "state",
@@ -22,6 +25,14 @@ const LIGHT_DETAIL_FIELDS = [
   "sap_po_cost_aud", "confirmed_cost_source", "po_cost_override_reason", "confirmed_cost_aud",
   "pending_amount_aud", "is_snowy_river", "Serial ID", "Chassis Number", "Registered Product",
   "Product",
+  "sap_authoritative", "sap_invoice_line_count", "sap_invoice_docs", "sap_last_invoice_date", "sap_pos",
+  "sap_cancelled_pos",
+  "sap_repairer_vendor_id", "sap_repairer_name", "sap_raw_invoice_amount",
+  "sap_signed_invoice_amount", "sap_po_net_value", "sap_cancelled_po_net_value",
+  "sap_po_cancelled", "sap_currency", "c4c_compare_repairer", "c4c_compare_po",
+  "c4c_compare_approved_cost", "c4c_eligible_for_repairer_analysis",
+  "c4c_eligibility_match_source", "c4c_eligibility_reason", "c4c_status",
+  "c4c_service_technician",
 ];
 
 const STATE_ABBR_LABELS = new Set(["QLD", "NSW", "VIC", "WA", "SA", "TAS", "ACT", "NT", "NZ"]);
@@ -35,6 +46,10 @@ const VEHICLE_PREFIXES = [
 
 function clean(value) {
   return value == null ? "" : String(value).trim();
+}
+
+function isReasonableC4cTicketId(value) {
+  return /^\d{1,5}$/.test(clean(value));
 }
 
 function parseAmount(value) {
@@ -51,6 +66,167 @@ function round(value, digits = 2) {
 function readJson(filePath, fallback = null) {
   if (!fs.existsSync(filePath)) return fallback;
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
+}
+
+function fileSha256(filePath) {
+  if (!fs.existsSync(filePath)) return "";
+  return crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
+}
+
+function repairNameRuleKey(value) {
+  return clean(value)
+    .replace(/\u00a0/g, " ")
+    .toUpperCase()
+    .replace(/\bAS\s+REPAIRER\b/g, " ")
+    .replace(/\bREPAIRER\b/g, " ")
+    .replace(/\bREPAIRS\b/g, " ")
+    .replace(/[^A-Z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function buildRepairerRuleMap() {
+  const payload = readJson(REPAIRER_NAME_RULE_MAPPING_JSON, {});
+  const general = new Map();
+  const snowyParts = new Map();
+  const snowyPartEntries = [];
+  const add = (map, key, value) => {
+    const k = repairNameRuleKey(key);
+    const v = clean(value);
+    if (k && v && !map.has(k)) map.set(k, v);
+    return { key: k, value: v };
+  };
+  for (const row of Array.isArray(payload.general) ? payload.general : []) {
+    add(general, row.repairShopC4C, row.mappingName);
+  }
+  for (const row of Array.isArray(payload.snowyRiverParts) ? payload.snowyRiverParts : []) {
+    for (const variant of Array.isArray(row.repairerBusinessNameVariants) ? row.repairerBusinessNameVariants : []) {
+      const entry = add(snowyParts, variant, row.mappingName);
+      if (entry.key && entry.value) snowyPartEntries.push(entry);
+    }
+  }
+  snowyPartEntries.sort((a, b) => b.key.length - a.key.length);
+  return { general, snowyParts, snowyPartEntries };
+}
+
+const REPAIRER_RULE_MAP = buildRepairerRuleMap();
+
+function isSnowyRiverRvRepairerName(value) {
+  const key = repairNameRuleKey(value);
+  return key.includes("SNOWY RIVER RV PTY LTD");
+}
+
+function formatRepairerNameWithState(name, state) {
+  const base = clean(name);
+  const code = stateAbbr(state);
+  if (!base || !code || /\s\([A-Z]{2,3}\)$/.test(base)) return base;
+  return `${base} (${code})`;
+}
+
+function mappedRepairerStateOverride(mappedName) {
+  const key = repairNameRuleKey(mappedName);
+  if (key.includes("PERTH")) return "WA";
+  if (key.includes("LAUNCESTON")) return "TAS";
+  if (key.includes("FRANKSTON")) return "VIC";
+  if (key.includes("WANGARATTA")) return "VIC";
+  if (key.includes("NEWCASTLE")) return "NSW";
+  if (key.includes("TOWNSVILLE")) return "QLD";
+  return "";
+}
+
+function snowyRiverPartMappingName(value) {
+  const key = repairNameRuleKey(value);
+  if (!key) return "";
+  const exact = REPAIRER_RULE_MAP.snowyParts.get(key);
+  if (exact) return exact;
+  const compactKey = key.replace(/\s+/g, "");
+  const match = REPAIRER_RULE_MAP.snowyPartEntries.find((entry) => {
+    if (!entry.key || entry.key.length < 6) return false;
+    const compactEntryKey = entry.key.replace(/\s+/g, "");
+    return key.includes(entry.key) ||
+      entry.key.includes(key) ||
+      compactKey.includes(compactEntryKey) ||
+      compactEntryKey.includes(compactKey);
+  });
+  return match?.value || "";
+}
+
+function mappedRepairerBaseName(row, fallbackName) {
+  const baseName = clean(fallbackName);
+  const snowyTriggerFields = [
+    baseName,
+    row.repairer_base_name,
+    row.repairer_name,
+    row.raw_repairer_name,
+    row.sap_repairer_name,
+    row["Service Technician"],
+    row.ServiceTechnician,
+  ];
+  if (snowyTriggerFields.some(isSnowyRiverRvRepairerName)) {
+    const snowyCandidates = [
+      row.c4c_compare_repairer,
+      row.c4c_service_technician,
+      row.RepairerBusinessNameID,
+      row["RepairerBusinessNameID"],
+      row["Repairer Business Name ID"],
+      row["Repairer Business Name"],
+      row.repairshop_id,
+      row.repairshopId,
+    ];
+    for (const candidate of snowyCandidates) {
+      const mapped = snowyRiverPartMappingName(candidate);
+      if (mapped) return { name: mapped, source: "snowyRiverParts" };
+    }
+  }
+  const generalCandidates = [
+    baseName,
+    row.repairer_base_name,
+    row.repairer_name,
+    row.raw_repairer_name,
+    row["Service Technician"],
+    row.ServiceTechnician,
+  ];
+  for (const candidate of generalCandidates) {
+    const mapped = REPAIRER_RULE_MAP.general.get(repairNameRuleKey(candidate));
+    if (mapped) return { name: mapped, source: "general" };
+  }
+  return { name: baseName, source: "" };
+}
+
+function sleep(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function safeWriteJson(targetPath, payload, { retries = 20, retryMs = 500 } = {}) {
+  const dir = path.dirname(targetPath);
+  fs.mkdirSync(dir, { recursive: true });
+  const text = JSON.stringify(payload);
+  let lastError = null;
+
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    const tempPath = path.join(dir, `${path.basename(targetPath)}.${process.pid}.${Date.now()}.${attempt}.tmp`);
+    try {
+      fs.writeFileSync(tempPath, text, "utf8");
+      try {
+        fs.renameSync(tempPath, targetPath);
+      } catch (renameError) {
+        if (fs.existsSync(targetPath)) {
+          fs.rmSync(targetPath, { force: true });
+        }
+        fs.renameSync(tempPath, targetPath);
+      }
+      return;
+    } catch (error) {
+      lastError = error;
+      try {
+        if (fs.existsSync(tempPath)) fs.unlinkSync(tempPath);
+      } catch {}
+      if (attempt === retries) break;
+      sleep(retryMs * (attempt + 1));
+    }
+  }
+
+  throw lastError;
 }
 
 function readDetailPayload() {
@@ -79,7 +255,7 @@ function writeLightPayload(sourcePayload, details) {
     weekly: Array.isArray(sourcePayload?.weekly) ? sourcePayload.weekly : [],
     details: details.map(lightDetailRow),
   };
-  fs.writeFileSync(LIGHT_JSON, JSON.stringify(payload), "utf8");
+  safeWriteJson(LIGHT_JSON, payload);
 }
 
 function parseCSV(text) {
@@ -176,7 +352,7 @@ function ticketKey(row) {
 }
 
 function sourceTicketKey(row) {
-  return clean(row?.["Ticket ID"] || row?.Ticket || "");
+  return clean(row?.["Ticket ID"] || row?.Ticket || row?.["C4C Ticket ID"] || row?.C4CTicketID || row?.c4c_ticket_id || "");
 }
 
 function addMapValue(map, key, value) {
@@ -190,6 +366,7 @@ function buildSourceEnrichment() {
   const map = new Map();
   sourceRows.forEach((row) => {
     const value = {
+      c4cTicketId: clean(row["C4C Ticket ID"] || row.C4CTicketID || row.C4C_Ticket_ID || row.c4c_ticket_id),
       serialId: clean(row["Serial ID"] || row.SerialID),
       chassisNumber: clean(row["Chassis Number"] || row.ChassisNumber),
       registeredProduct: clean(row["Registered Product"] || row.RegisteredProduct),
@@ -199,6 +376,10 @@ function buildSourceEnrichment() {
     addMapValue(map, sourceTicketKey(row), value);
     addMapValue(map, row.Ticket, value);
     addMapValue(map, row["Ticket ID"], value);
+    addMapValue(map, row.TicketID, value);
+    addMapValue(map, row["C4C Ticket ID"], value);
+    addMapValue(map, row.C4CTicketID, value);
+    addMapValue(map, row.c4c_ticket_id, value);
   });
   return map;
 }
@@ -230,13 +411,39 @@ function vehicleTokenFromText(value) {
 
 function enrichDetailRows(rows, sourceMap) {
   return (Array.isArray(rows) ? rows : []).map((row) => {
-    const source = sourceMap.get(ticketKey(row)) || sourceMap.get(clean(row.Ticket)) || {};
+    const existingC4cTicketId = clean(row["C4C Ticket ID"] || row.C4CTicketID || row.c4c_ticket_id);
+    const source = sourceMap.get(ticketKey(row)) ||
+      sourceMap.get(clean(row.Ticket)) ||
+      sourceMap.get(existingC4cTicketId) ||
+      {};
     const out = { ...row };
+    if (!isReasonableC4cTicketId(existingC4cTicketId) && isReasonableC4cTicketId(source.c4cTicketId)) {
+      out["C4C Ticket ID"] = source.c4cTicketId;
+    }
     if (!clean(out["Serial ID"]) && !clean(out.SerialID)) out["Serial ID"] = source.serialId || "";
     if (!clean(out["Chassis Number"]) && !clean(out.ChassisNumber)) out["Chassis Number"] = source.chassisNumber || "";
     if (!clean(out["Registered Product"]) && !clean(out.RegisteredProduct)) out["Registered Product"] = source.registeredProduct || "";
     if (!clean(out.Product)) out.Product = source.product || "";
     if (!clean(out["Sales Order"]) && !clean(out.SalesOrder)) out["Sales Order"] = source.salesOrder || "";
+    const currentBase = clean(out.repairer_base_name || out.repairer_name || out.RepairerName || out["Service Technician"] || out.ServiceTechnician);
+    const mapped = mappedRepairerBaseName(out, currentBase);
+    if (mapped.name) {
+      const state = mappedRepairerStateOverride(mapped.name) || stateAbbr(out.state || out.State);
+      const display = formatRepairerNameWithState(mapped.name, state);
+      out.repairer_name_rule_source = mapped.source;
+      out.repairer_name_before_rule_mapping = currentBase;
+      if (state) {
+        out.state = state;
+        out.State = state;
+      }
+      out.repairer_base_name = mapped.name;
+      out.repairer_name = display;
+      out.RepairerName = display;
+      out.normalized_key = repairNameRuleKey(mapped.name);
+      out.repairer_split_key = `${mapped.name}|${state || "NA"}`;
+      out.repairer_id = out.repairer_split_key;
+      out.repairerId = out.repairer_split_key;
+    }
     return out;
   });
 }
@@ -382,8 +589,17 @@ function repairInfo(row) {
 
 function isSnowyRiverTicket(row) {
   if (row.is_snowy_river === true || String(row.is_snowy_river).toLowerCase() === "true") return true;
-  const text = clean(row["Service Technician"] || row.ServiceTechnician || row.raw_repairer_name || row.rawRepairerName || row.RepairerName || row.repairer_name).toUpperCase();
-  return text.includes("SNOWY RIVER RV PTY LTD") || /\bSNOWY\s+RIVER\b/.test(text);
+  const text = clean([
+    row.c4c_compare_repairer,
+    row.c4c_service_technician,
+    row["Service Technician"],
+    row.ServiceTechnician,
+    row.raw_repairer_name,
+    row.rawRepairerName,
+    row.RepairerName,
+    row.repairer_name,
+  ].filter(Boolean).join(" ")).toUpperCase();
+  return text.replace(/[^A-Z0-9]+/g, "").includes("SNOWYRIVER") || /\bSNOWY\s+RIVER\b/.test(text);
 }
 
 function emptyRepair(id, name, state = "") {
@@ -681,29 +897,45 @@ function defaultPeriodKeys(baseFast, allRows) {
   return ["total", ...months];
 }
 
+function isSapAuthoritativePayload(payload) {
+  const meta = payload?.meta || {};
+  const sourceOfTruth = clean(meta.source_of_truth).toLowerCase();
+  return sourceOfTruth.includes("sap ekbe") ||
+    sourceOfTruth.includes("sap ekpo") ||
+    clean(meta.source).toLowerCase().includes("sap_authoritative_repair_payments");
+}
+
 function main() {
   const baseFast = readJson(FAST_JSON, {});
+  const repairerMappingHash = fileSha256(REPAIRER_NAME_RULE_MAPPING_JSON);
   const { payload: detailPayload, filePath: detailSourcePath } = readDetailPayload();
   if (!detailPayload || !Array.isArray(detailPayload.details)) {
     throw new Error(`No repair detail payload found at ${LIGHT_JSON} or ${DATA_JSON}`);
   }
+  const useBasePeriodBounds = !isSapAuthoritativePayload(detailPayload);
+  const baseForPeriods = useBasePeriodBounds ? baseFast : {};
   const sourceMap = buildSourceEnrichment();
   const details = enrichDetailRows(detailPayload.details, sourceMap);
   writeLightPayload(detailPayload, details);
   const periods = {};
-  for (const key of defaultPeriodKeys(baseFast, details)) {
-    periods[key] = buildPeriod(details, key, baseFast?.periods?.[key] || {});
+  for (const key of defaultPeriodKeys(baseForPeriods, details)) {
+    periods[key] = buildPeriod(details, key, baseForPeriods?.periods?.[key] || {});
   }
-  const total = periods.total || buildPeriod(details, "total", baseFast?.periods?.total || {});
+  const total = periods.total || buildPeriod(details, "total", baseForPeriods?.periods?.total || {});
   const output = {
     ...baseFast,
     meta: {
-      ...(detailPayload.meta || {}),
       ...(baseFast.meta || {}),
+      ...(detailPayload.meta || {}),
       cache_schema: "repairers-fast-approved-decision-cost-chassis-v3",
       cache_generated_at: new Date().toISOString(),
       cache_source: path.relative(ROOT, detailSourcePath).replace(/\\/g, "/"),
       cache_light_refreshed_at: new Date().toISOString(),
+      repairer_name_rule_mapping: "assets/repairer_name_rule_mapping.json",
+      repairer_name_rule_mapping_sha256: repairerMappingHash,
+      repairer_name_rule_mapping_general_count: REPAIRER_RULE_MAP.general.size,
+      repairer_name_rule_mapping_snowy_parts_count: REPAIRER_RULE_MAP.snowyParts.size,
+      repairer_name_rule_mapping_snowy_part_variant_count: REPAIRER_RULE_MAP.snowyPartEntries.length,
       cache_ticket_base_enrichment_rows: sourceMap.size,
       cost_rule: "approved decision-period tickets with approved repair cost > 0; includes invoiced and approved closed; excludes unapproved",
       repeated_chassis_rule: "repeat buckets and repair-shop repeated chassis use approved decision-period cost tickets; repeated means 2+ eligible tickets",
@@ -715,7 +947,7 @@ function main() {
     repairers: total.repairers,
     states: total.states,
   };
-  fs.writeFileSync(FAST_JSON, JSON.stringify(output), "utf8");
+  safeWriteJson(FAST_JSON, output);
   console.log(JSON.stringify({
     output: path.relative(ROOT, FAST_JSON),
     bytes: fs.statSync(FAST_JSON).size,

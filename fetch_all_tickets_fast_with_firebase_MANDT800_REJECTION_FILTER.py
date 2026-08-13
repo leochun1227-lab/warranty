@@ -687,6 +687,8 @@ def write_analysis_approved_cost_cache(report_payload: Dict[str, Any]) -> None:
 ANALYSIS_TICKET_CSV_HEADERS = [
     "Ticket",
     "",
+    "C4C Ticket ID",
+    "",
     "Ticket ID",
     "",
     "Ticket Type",
@@ -837,6 +839,12 @@ def write_analysis_ticket_base_csv(
         ticket = node.get("ticket", {})
         if not isinstance(ticket, dict):
             ticket = {}
+        c4c_ticket_id = as_clean_str(
+            node.get("c4c_ticket_id")
+            or ticket.get("C4CTicketID")
+            or ticket.get("C4C Ticket ID")
+            or ticket.get("C4C_Ticket_ID")
+        )
 
         ticket_number = first_clean_ticket_value(ticket, "TicketID", "Ticket ID") or str(ticket_id)
         summary = hana_summary.get(str(ticket_id), {})
@@ -882,6 +890,8 @@ def write_analysis_ticket_base_csv(
             [
                 csv_value(title),
                 csv_value(ticket_number),
+                csv_value(c4c_ticket_id),
+                csv_value(c4c_ticket_id),
                 csv_value(title),
                 csv_value(ticket_number),
                 csv_value(first_clean_ticket_value(ticket, "TicketTypeText", "Ticket Type", "TicketType")),
@@ -1270,13 +1280,20 @@ def build_new_snapshot() -> Tuple[Dict[str, Any], int]:
 
                 tid_key = sanitize_key(tid)
                 ticket_data, role_data = split_ticket_row(row)
+                c4c_ticket_id = str(row.get("TicketID") or "").strip()
+                if c4c_ticket_id:
+                    ticket_data["C4CTicketID"] = c4c_ticket_id
+                    ticket_data["C4C Ticket ID"] = c4c_ticket_id
 
                 if tid_key not in new_snapshot:
                     new_snapshot[tid_key] = {
+                        "c4c_ticket_id": c4c_ticket_id,
                         "ticket": ticket_data,
                         "roles": {},
                     }
                 else:
+                    if c4c_ticket_id and not as_clean_str(new_snapshot[tid_key].get("c4c_ticket_id")):
+                        new_snapshot[tid_key]["c4c_ticket_id"] = c4c_ticket_id
                     if ticket_data:
                         new_snapshot[tid_key]["ticket"] = ticket_data
 

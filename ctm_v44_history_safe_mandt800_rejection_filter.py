@@ -1606,6 +1606,8 @@ def calculate_handling_speed(
     ticket_by_id: Optional[Dict[str, Dict[str, Any]]] = None,
     as_of: Optional[Any] = None,
     critical_daily_counts: Optional[Dict[str, int]] = None,
+    benchmark_start: Optional[str] = None,
+    benchmark_end: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Pre-calculate handling speed using the true full available history.
 
@@ -1646,6 +1648,8 @@ def calculate_handling_speed(
     now_dt = parse_date_any(as_of) or datetime.now(timezone.utc)
     if now_dt.tzinfo is None:
         now_dt = now_dt.replace(tzinfo=timezone.utc)
+    benchmark_start_dt = parse_date_any(benchmark_start) if benchmark_start else None
+    benchmark_end_dt = parse_date_any(benchmark_end) if benchmark_end else None
     ticket_by_id = ticket_by_id or {}
     enter_times_by_ticket: Dict[str, list[datetime]] = {}
     exit_items: list[tuple[str, datetime, Dict[str, Any]]] = []
@@ -1734,6 +1738,10 @@ def calculate_handling_speed(
     resolved_rows: list[Dict[str, Any]] = []
     start_source_counts = {"enteredCritical": 0, "ticketCreated": 0, "missingStart": 0}
     for tid, exit_dt, e in exit_items:
+        if benchmark_start_dt and exit_dt.date() < benchmark_start_dt.date():
+            continue
+        if benchmark_end_dt and exit_dt.date() > benchmark_end_dt.date():
+            continue
         candidates = [x for x in enter_times_by_ticket.get(tid, []) if x <= exit_dt]
         if candidates:
             start_dt = candidates[-1]
@@ -2257,43 +2265,13 @@ def build_employee_analytics(
         total_removed_daily: Dict[str, int] = {}
         unmapped_label = "Unmapped removed events"
 
-        removed_events = latest_event_by_ticket(
-            e for e in history_events
-            if event_type(e) == "exited"
-            and (event_date_key(e) or "") >= DASHBOARD_MIN_DATE
-            and event_matches(e, label)
-        )
-        for e in removed_events:
-            dkey = event_date_key(e)
-            tid = event_ticket_id(e)
-            ticket = ticket_by_id.get(tid, {})
-            emp = event_employee_from_snapshot(e, ticket_by_id)
-
-            # Count each ticket once using its latest removed event in the window.
-            # This avoids double-counting manual corrections where a ticket leaves
-            # Critical, re-enters, then leaves Critical again.
-            total_removed += 1
-            if dkey:
-                total_removed_daily[dkey] = total_removed_daily.get(dkey, 0) + 1
-
+        def removed_bucket_for_employee(emp: str) -> tuple[str, str]:
             if is_real_employee_name(emp):
-                bucket = emp
-            else:
-                bucket = unmapped_label
-                reason = "missing role 40 Assign To / InvolvedPartyName"
-                if is_excluded_employee_name(emp):
-                    reason = "excluded admin/test/demo/sample owner, not a real employee"
-                unmapped_removed_events.append(make_unmapped_removed_event_row(e, ticket, reason))
-
-            removed_by_employee[bucket] = removed_by_employee.get(bucket, 0) + 1
-            if dkey:
-                by_day = removed_daily_by_employee.setdefault(bucket, {})
-                by_day[dkey] = by_day.get(dkey, 0) + 1
-            if tid and bucket != unmapped_label:
-                removed_by_ticket[tid] = removed_by_ticket.get(tid, 0) + 1
-                et = event_time(e)
-                if et and et > last_removed_by_ticket.get(tid, ""):
-                    last_removed_by_ticket[tid] = et
+                return emp, ""
+            reason = "missing role 40 Assign To / InvolvedPartyName"
+            if is_excluded_employee_name(emp):
+                reason = "excluded admin/test/demo/sample owner, not a real employee"
+            return unmapped_label, reason
 
         for t in snap.values():
             if not ticket_matches(t, label):
@@ -2303,13 +2281,42 @@ def build_employee_analytics(
             dkey = date_key(t.get("approvalDecisionDate"))
             if not dkey or dkey < DASHBOARD_MIN_DATE:
                 continue
+            tid = clean(t.get("id"))
             emp = clean(t.get("employee")) or "Unknown"
-            if not is_real_employee_name(emp):
-                continue
+            bucket, reason = removed_bucket_for_employee(emp)
             amount = approved_cost_amount(t)
-            approved_day = approved_daily_by_employee.setdefault(emp, {})
+            total_removed += 1
+            total_removed_daily[dkey] = total_removed_daily.get(dkey, 0) + 1
+            removed_by_employee[bucket] = removed_by_employee.get(bucket, 0) + 1
+            removed_day = removed_daily_by_employee.setdefault(bucket, {})
+            removed_day[dkey] = removed_day.get(dkey, 0) + 1
+            if bucket == unmapped_label:
+                unmapped_removed_events.append({
+                    "id": tid,
+                    "ticketId": tid,
+                    "detectedAt": clean(t.get("approvalDecisionDate")) or dkey,
+                    "date": dkey,
+                    "reason": reason,
+                    "employeeRaw": emp,
+                    "employeeFromRole40": clean(t.get("role40Employee")),
+                    "assignedToRaw": clean(t.get("assignedToRaw")),
+                    "resolvedEmployee": clean(t.get("employee")),
+                    "dealer": clean(t.get("dealer")),
+                    "claimType": clean(t.get("claimType")),
+                    "fromCode": "",
+                    "fromStatus": "",
+                    "toCode": clean(t.get("statusCode") or t.get("code")),
+                    "toStatus": clean(t.get("statusText") or t.get("status")),
+                    "currentStatus": clean(t.get("statusText") or t.get("status")),
+                })
+            if tid and bucket != unmapped_label:
+                removed_by_ticket[tid] = removed_by_ticket.get(tid, 0) + 1
+                removed_at = clean(t.get("approvalDecisionDate")) or dkey
+                if removed_at and removed_at > last_removed_by_ticket.get(tid, ""):
+                    last_removed_by_ticket[tid] = removed_at
+            approved_day = approved_daily_by_employee.setdefault(bucket, {})
             approved_day[dkey] = approved_day.get(dkey, 0) + 1
-            approved_amount_day = approved_amount_daily_by_employee.setdefault(emp, {})
+            approved_amount_day = approved_amount_daily_by_employee.setdefault(bucket, {})
             approved_amount_day[dkey] = round(approved_amount_day.get(dkey, 0.0) + amount, 2)
 
         unapproved_events = latest_event_by_ticket(
@@ -2323,9 +2330,21 @@ def build_employee_analytics(
             tid = event_ticket_id(e)
             ticket = ticket_by_id.get(tid, {})
             emp = event_employee_from_snapshot(e, ticket_by_id)
-            if not is_real_employee_name(emp):
-                continue
-            unapproved_day = unapproved_daily_by_employee.setdefault(emp, {})
+            bucket, reason = removed_bucket_for_employee(emp)
+            total_removed += 1
+            if dkey:
+                total_removed_daily[dkey] = total_removed_daily.get(dkey, 0) + 1
+                removed_day = removed_daily_by_employee.setdefault(bucket, {})
+                removed_day[dkey] = removed_day.get(dkey, 0) + 1
+            removed_by_employee[bucket] = removed_by_employee.get(bucket, 0) + 1
+            if bucket == unmapped_label:
+                unmapped_removed_events.append(make_unmapped_removed_event_row(e, ticket, reason))
+            if tid and bucket != unmapped_label:
+                removed_by_ticket[tid] = removed_by_ticket.get(tid, 0) + 1
+                removed_at = event_time(e) or dkey
+                if removed_at and removed_at > last_removed_by_ticket.get(tid, ""):
+                    last_removed_by_ticket[tid] = removed_at
+            unapproved_day = unapproved_daily_by_employee.setdefault(bucket, {})
             unapproved_day[dkey] = unapproved_day.get(dkey, 0) + 1
 
         for tid, cnt in removed_by_ticket.items():
@@ -2549,9 +2568,8 @@ def build_employee_analytics(
                 "unapprovedTickets": unapproved_critical,
                 "approvalHistoryStartDate": approval_history_start,
                 "approvalRule": APPROVAL_RULE_DESCRIPTION,
-                # All exited critical events by day. This is used by Employee KPI
-                # so Critical Removed and rates match Team Dashboard Exited Critical
-                # for the same claim/date filter, including unmapped/excluded owners.
+                # Removed must stay aligned with Ticket Movement:
+                # Approved + Unapproved only, bucketed by decision/exit day.
                 "removedDaily": total_removed_daily,
             },
             "stats": stats,
@@ -3394,7 +3412,8 @@ def _build_team_view(
 
     def repair_cost_distribution_for_rows(rows: list[Dict[str, Any]]) -> list[Dict[str, Any]]:
         buckets = [
-            {"key": "0-100", "label": "$0 - $100", "min": 0, "max": 100, "count": 0, "total": 0.0},
+            {"key": "0", "label": "$0", "min": 0, "max": 0.01, "count": 0, "total": 0.0},
+            {"key": "0.01-100", "label": "$0.01 - $100", "min": 0.01, "max": 100, "count": 0, "total": 0.0},
             {"key": "100-500", "label": "$100 - $500", "min": 100, "max": 500, "count": 0, "total": 0.0},
             {"key": "500-1000", "label": "$500 - $1k", "min": 500, "max": 1000, "count": 0, "total": 0.0},
             {"key": "1000-2500", "label": "$1k - $2.5k", "min": 1000, "max": 2500, "count": 0, "total": 0.0},
@@ -3638,6 +3657,14 @@ def _build_team_view(
             "repairCostDistribution": repair_cost_distribution_for_rows(approved_rows_for_range(approval_start_day, end_day)),
             "approvalTicketRows": approval_ticket_rows_for_range(approval_start_day, end_day),
             "employeeApprovalRows": employee_approval_rows_for_range(approval_start_day, end_day),
+            "handlingSpeed": calculate_handling_speed(
+                matching_events,
+                end_rows,
+                ticket_by_id,
+                end_day,
+                benchmark_start=start_day,
+                benchmark_end=end_day,
+            ),
             "handlingSpeedBuckets": calculate_handling_speed([], end_rows, ticket_by_id, end_day).get("buckets", []),
         }
 

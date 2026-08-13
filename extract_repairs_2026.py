@@ -89,6 +89,92 @@ def normalize_name(value: Any) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+DISPLAY_TOKEN_OVERRIDES = {
+    "RV": "RV",
+    "RVS": "RVs",
+    "NSW": "NSW",
+    "QLD": "QLD",
+    "VIC": "VIC",
+    "WA": "WA",
+    "SA": "SA",
+    "TAS": "TAS",
+    "ACT": "ACT",
+    "NT": "NT",
+    "NZ": "NZ",
+    "SRC": "SRC",
+    "SRT": "SRT",
+    "SRH": "SRH",
+    "SRP": "SRP",
+    "SRL": "SRL",
+    "SRS": "SRS",
+    "SRV": "SRV",
+    "NG": "NG",
+}
+
+REPAIRER_NAME_REPLACEMENTS: List[Tuple[str, str]] = [
+    ("SNOWYRIVER", "SNOWY RIVER"),
+    ("SNOWYRIVER", "SNOWY RIVER"),
+    ("NEW CASTLE", "NEWCASTLE"),
+    ("FORESTGLEN", "FOREST GLEN"),
+    ("SLACKSCREEK", "SLACKS CREEK"),
+    ("GREENRV", "GREEN RV"),
+]
+
+
+def title_case_repairer_tokens(text: str) -> str:
+    tokens = normalize_name(text).split()
+    if not tokens:
+        return ""
+    out = []
+    for token in tokens:
+        if token in DISPLAY_TOKEN_OVERRIDES:
+            out.append(DISPLAY_TOKEN_OVERRIDES[token])
+        elif token.endswith("S") and token[:-1] in DISPLAY_TOKEN_OVERRIDES:
+            out.append(DISPLAY_TOKEN_OVERRIDES[token[:-1]] + "s")
+        else:
+            out.append(token.capitalize())
+    return " ".join(out).strip()
+
+
+def normalize_repairer_display_name(value: Any) -> str:
+    text = clean(value)
+    if not text:
+        return ""
+    normalized = normalize_name(text)
+    if not normalized:
+        return ""
+    compact = normalized.replace(" ", "")
+    for src, dst in REPAIRER_NAME_REPLACEMENTS:
+        if src in compact:
+            compact = compact.replace(src, dst.replace(" ", ""))
+    normalized = compact
+    for src, dst in REPAIRER_NAME_REPLACEMENTS:
+        normalized = normalized.replace(src.replace(" ", ""), dst.replace(" ", " "))
+    normalized = re.sub(r"[^A-Z0-9]+", " ", normalized)
+    normalized = re.sub(r"\s+", " ", normalized).strip()
+    if normalized.startswith("GREEN RV "):
+        return "Green RV"
+    if normalized == "GREEN RV":
+        return "Green RV"
+    snowy_patterns = {
+        "SNOWY RIVER NEWCASTLE": "Snowy River Newcastle",
+        "SNOWY RIVER PERTH": "Snowy River Perth",
+        "SNOWY RIVER FRANKSTON": "Snowy River Frankston",
+        "SNOWY RIVER GEELONG": "Snowy River Geelong",
+        "SNOWY RIVER TRARALGON": "Snowy River Traralgon",
+        "SNOWY RIVER LAUNCESTON": "Snowy River Launceston",
+        "SNOWY RIVER WANGARATTA": "Snowy River Wangaratta",
+        "SNOWY RIVER BRISBANE": "Snowy River Brisbane",
+        "SNOWY RIVER BUNDABERG": "Snowy River Bundaberg",
+        "SNOWY RIVER TOWNSVILLE": "Snowy River Townsville",
+        "SNOWY RIVER TOOWOOMBA": "Snowy River Toowoomba",
+    }
+    for pattern, label in snowy_patterns.items():
+        if pattern in normalized:
+            return label
+    return title_case_repairer_tokens(normalized)
+
+
 def family_key(value: Any) -> str:
     tokens = normalize_name(value).split()
     if not tokens:
@@ -131,6 +217,13 @@ def is_unassigned_repairer(value: Any) -> bool:
 
 
 SNOWY_RIVER_RV_TOKEN = "SNOWY RIVER RV PTY LTD"
+OWN_REPAIRER_CANONICAL_RULES: List[Tuple[str, Tuple[str, ...]]] = [
+    ("Perth", ("PERTH", "CARAVANS WA", "ST JAMES", "JANDAKOT", "CANNING VALE", "BELMONT", "MANDURAH")),
+    ("Traralgon", ("TRARALGON",)),
+    ("Launceston", ("LAUNCESTON", "ROCHERLEA")),
+    ("Geelong", ("GEELONG",)),
+    ("Frankston", ("FRANKSTON",)),
+]
 
 
 def is_snowy_river_service_tech(value: Any) -> bool:
@@ -164,12 +257,24 @@ def choose_snowy_river_repair_name(
     service_text = clean(service_tech)
     dealer_text = meaningful_text(dealer_name) or "Unassigned"
     if not is_snowy_river_service_tech(service_text):
-        return service_text or dealer_text
+        return normalize_repairer_display_name(service_text or dealer_text)
 
     shop_text = meaningful_text(repairshop_id)
     if is_valid_repairshop_name(shop_text):
-        return shop_text
-    return dealer_text
+        return normalize_repairer_display_name(shop_text)
+    return normalize_repairer_display_name(dealer_text)
+
+
+def canonical_own_repairer_name(*values: Any) -> str:
+    text = " ".join(normalize_name(value) for value in values if normalize_name(value))
+    if not text:
+        return "Other"
+    for canonical_name, patterns in OWN_REPAIRER_CANONICAL_RULES:
+        for pattern in patterns:
+            normalized_pattern = normalize_name(pattern)
+            if normalized_pattern and re.search(rf"\b{re.escape(normalized_pattern)}\b", text):
+                return canonical_name
+    return "Other"
 
 
 # ---------------------------------------------------------------------------
@@ -513,15 +618,15 @@ FIREBASE_SA_PATH = os.getenv("FIREBASE_SA_PATH", "firebase-service-account.json"
 FIREBASE_ROOT = os.getenv("FIREBASE_ROOT", "c4cTickets_test")
 
 
-def load_firebase_repairer_names(root: str = FIREBASE_ROOT) -> Dict[str, str]:
-    """Fetch every ticket's RepairerBusinessNameID from Firebase.
+def load_firebase_ticket_overlay(root: str = FIREBASE_ROOT) -> Dict[str, Dict[str, str]]:
+    """Fetch per-ticket Firebase overlay fields.
 
-    Returns {ticket_id: repairer_business_name_id}. Tickets whose Firebase
-    record does not carry a RepairerBusinessNameID are omitted, so an
-    absent entry in the caller means "fall back to the CSV Service
-    Technician value". Firebase sometimes returns the /tickets node as a
-    list (auto-array conversion when keys look numeric), so both list and
-    dict shapes are handled.
+    Returns {ticket_id: {"repairer_business_name_id": ..., "c4c_ticket_id": ...}}.
+    Tickets whose Firebase record does not carry either field are omitted, so
+    an absent entry in the caller means "fall back to the CSV row alone".
+    Firebase sometimes returns the /tickets node as a list (auto-array
+    conversion when keys look numeric), so both list and dict shapes are
+    handled.
 
     Failures (no service-account JSON, firebase-admin not installed, network
     error) log a warning and return {}, so the extract still runs on CSV
@@ -556,26 +661,59 @@ def load_firebase_repairer_names(root: str = FIREBASE_ROOT) -> Dict[str, str]:
     else:
         return {}
 
-    out: Dict[str, str] = {}
-    for _, row in entries:
+    out: Dict[str, Dict[str, str]] = {}
+
+    def add_overlay_key(key: Any, payload: Dict[str, str]) -> None:
+        lookup_key = clean(key)
+        if lookup_key:
+            out[lookup_key] = payload
+
+    for node_key, row in entries:
         if not isinstance(row, dict):
             continue
         ticket = row.get("ticket") if isinstance(row.get("ticket"), dict) else row
         if not isinstance(ticket, dict):
             continue
-        tid = clean(
-            ticket.get("TicketID")
-            or ticket.get("Ticket ID")
-            or ticket.get("Ticket")
-            or row.get("TicketID")
-            or row.get("Ticket ID")
-            or row.get("Ticket")
-        )
         name = clean(ticket.get("RepairerBusinessNameID"))
-        if tid and name:
-            out[tid] = name
-    logger.info("Firebase RepairerBusinessNameID overlay loaded for %s tickets", len(out))
+        c4c_ticket_id = clean(
+            ticket.get("C4C Ticket ID")
+            or ticket.get("C4CTicketID")
+            or ticket.get("C4C_Ticket_ID")
+            or ticket.get("c4c_ticket_id")
+            or row.get("C4C Ticket ID")
+            or row.get("C4CTicketID")
+            or row.get("C4C_Ticket_ID")
+            or row.get("c4c_ticket_id")
+            or (node_key if is_reasonable_c4c_ticket_id(node_key) else "")
+        )
+        if not (name or c4c_ticket_id):
+            continue
+        payload = {
+            "repairer_business_name_id": name,
+            "c4c_ticket_id": c4c_ticket_id if is_reasonable_c4c_ticket_id(c4c_ticket_id) else "",
+        }
+        for key in (
+            ticket.get("TicketID"),
+            ticket.get("Ticket ID"),
+            ticket.get("Ticket"),
+            ticket.get("TicketName"),
+            ticket.get("Ticket Name"),
+            row.get("TicketID"),
+            row.get("Ticket ID"),
+            row.get("Ticket"),
+            row.get("TicketName"),
+            row.get("Ticket Name"),
+            c4c_ticket_id,
+            node_key if is_reasonable_c4c_ticket_id(node_key) else "",
+        ):
+            add_overlay_key(key, payload)
+    logger.info("Firebase ticket overlay loaded for %s tickets", len(out))
     return out
+
+
+def is_reasonable_c4c_ticket_id(value: Any) -> bool:
+    """C4C ticket node IDs are compact numeric keys in the Firebase ticket tree."""
+    return bool(re.fullmatch(r"\d{1,5}", clean(value)))
 
 
 def read_rows(source: Path, start_year: int) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
@@ -620,6 +758,12 @@ def read_rows(source: Path, start_year: int) -> Tuple[List[Dict[str, Any]], Dict
                 "Created On": clean(raw.get("Created On")),
                 "Posting Date": clean(raw.get("Posting Date")),
                 "Changed On": clean(raw.get("Changed On")),
+                "C4C Ticket ID": clean(
+                    raw.get("C4C Ticket ID")
+                    or raw.get("C4CTicketID")
+                    or raw.get("C4C_Ticket_ID")
+                    or raw.get("c4c_ticket_id")
+                ),
                 "Ticket ID": clean(raw.get("Ticket ID")),
                 "Ticket": clean(raw.get("Ticket")),
                 "Ticket Type": clean(raw.get("Ticket Type")),
@@ -701,7 +845,7 @@ def build_summaries(
     po_cost_map: Dict[str, Dict[str, Any]],
     invoice_map: Dict[str, Dict[str, Any]],
     cny_to_aud_rate: float,
-    firebase_name_map: Optional[Dict[str, str]] = None,
+    firebase_ticket_map: Optional[Dict[str, Dict[str, str]]] = None,
 ) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]], List[Dict[str, Any]], List[Dict[str, Any]], List[Dict[str, Any]]]:
     repair_groups: Dict[str, RepairGroup] = {}
     state_groups: Dict[str, StateGroup] = {}
@@ -721,12 +865,35 @@ def build_summaries(
         if counter
     }
 
-    firebase_name_map = firebase_name_map or {}
-    logger.info("Firebase RepairerBusinessNameID overlay available for %s tickets", len(firebase_name_map))
+    firebase_ticket_map = firebase_ticket_map or {}
+    logger.info("Firebase ticket overlay available for %s tickets", len(firebase_ticket_map))
 
     for row in rows:
         ticket_id = clean(row.get("Ticket ID"))
-        firebase_name = firebase_name_map.get(ticket_id, "") if ticket_id else ""
+        csv_c4c_ticket_id = clean(
+            row.get("C4C Ticket ID")
+            or row.get("C4CTicketID")
+            or row.get("C4C_Ticket_ID")
+            or row.get("c4c_ticket_id")
+        )
+        firebase_overlay = {}
+        for lookup_key in (
+            ticket_id,
+            clean(row.get("TicketID")),
+            clean(row.get("Ticket")),
+            csv_c4c_ticket_id,
+        ):
+            if lookup_key and lookup_key in firebase_ticket_map:
+                firebase_overlay = firebase_ticket_map[lookup_key]
+                break
+        firebase_name = clean(firebase_overlay.get("repairer_business_name_id"))
+        overlay_c4c_ticket_id = clean(firebase_overlay.get("c4c_ticket_id"))
+        if is_reasonable_c4c_ticket_id(csv_c4c_ticket_id):
+            c4c_ticket_id = csv_c4c_ticket_id
+        elif is_reasonable_c4c_ticket_id(overlay_c4c_ticket_id):
+            c4c_ticket_id = overlay_c4c_ticket_id
+        else:
+            c4c_ticket_id = ""
         service_tech = clean(row.get("Service Technician"))
         dealer_name = meaningful_text(row.get("Dealer Name")) or "Unassigned"
         dealer_counter_name = meaningful_text(row.get("Dealer Name")) or meaningful_text(row.get("Dealer")) or "Unknown"
@@ -735,8 +902,9 @@ def build_summaries(
         raw_name = choose_snowy_river_repair_name(service_tech, repairshop_hint, dealer_name)
         if not raw_name:
             raw_name = "Unassigned"
+        canonical_name = canonical_own_repairer_name(raw_name, repairshop_hint, dealer_name, service_tech)
         base_key = normalize_name(raw_name) or "UNASSIGNED"
-        normalized_key = family_key(raw_name) or base_key
+        normalized_key = family_key(canonical_name) or normalize_name(canonical_name) or base_key
         addr = address_group(row)
         created = clean(row.get("Created On"))
         approved_date = clean(row.get("Posting Date")) or created
@@ -783,9 +951,9 @@ def build_summaries(
         pending_aud = 0.0
 
         # Per-state split: same repairer name in two states = two rows
-        split_key = f"{base_key}|{state or 'Unknown'}"
+        split_key = f"{normalize_name(canonical_name) or base_key}|{state or 'Unknown'}"
         if split_key not in repair_groups:
-            repair_groups[split_key] = RepairGroup(key=split_key, display_name=raw_name, state=state or "Unknown")
+            repair_groups[split_key] = RepairGroup(key=split_key, display_name=canonical_name, state=state or "Unknown")
         rg = repair_groups[split_key]
         rg.total_tickets += 1
         rg.confirmed_cost_aud += confirmed_aud
@@ -793,7 +961,7 @@ def build_summaries(
             rg.invoiced_tickets += 1
         else:
             rg.open_tickets += 1
-        rg.raw_name_counter[raw_name] += 1
+        rg.raw_name_counter[canonical_name] += 1
         if firebase_name:
             rg.firebase_name_counter[firebase_name] += 1
         rg.address_counter[addr] += 1
@@ -838,10 +1006,12 @@ def build_summaries(
         detail_rows.append({
             **row,
             "TicketID": ticket_id,  # explicit alias so HTML doesn't have to key-guess
+            "C4C Ticket ID": c4c_ticket_id,
             "raw_repairer_name": raw_name,
+            "canonical_repairer_name": canonical_name,
             "normalized_key": normalized_key,
-            "repairer_name": f"{raw_name} ({state_key})" if state_key and state_key != "Unknown" else raw_name,
-            "repairer_base_name": raw_name,
+            "repairer_name": f"{canonical_name} ({state_key})" if state_key and state_key != "Unknown" else canonical_name,
+            "repairer_base_name": canonical_name,
             "repairer_split_key": split_key,
             "repairshop_id": repairshop_hint,
             "RepairerBusinessNameID": firebase_name,
@@ -1013,6 +1183,7 @@ def write_json(
             "country_region": clean(row.get("Country/Region")) or "",
             "postal_code": clean(row.get("Service Requester Postal Code")) or "",
             "ticket_id": clean(row.get("Ticket ID")) or clean(row.get("TicketID")) or "",
+            "c4c_ticket_id": clean(row.get("C4C Ticket ID")) or "",
             "created_on": clean(row.get("Created On")) or "",
             "status": clean(row.get("Status")) or "",
             "claim_total_amount": float(row.get("ClaimTotalAmount") or 0.0),
@@ -1146,12 +1317,12 @@ def main() -> None:
 
     if args.skip_firebase:
         logger.warning("--skip-firebase set: repairer names will be CSV Service Technician only")
-        firebase_name_map: Dict[str, str] = {}
+        firebase_name_map: Dict[str, Dict[str, str]] = {}
     else:
-        firebase_name_map = load_firebase_repairer_names(root=args.firebase_root)
+        firebase_name_map = load_firebase_ticket_overlay(root=args.firebase_root)
 
     repairer_rows, state_rows, weekly_rows, detail_rows, _ = build_summaries(
-        rows, po_cost_map, invoice_map, args.cny_to_aud, firebase_name_map=firebase_name_map,
+        rows, po_cost_map, invoice_map, args.cny_to_aud, firebase_ticket_map=firebase_name_map,
     )
 
     json_path = write_json(output_dir, stats, repairer_rows, state_rows, weekly_rows, detail_rows, args.cny_to_aud)

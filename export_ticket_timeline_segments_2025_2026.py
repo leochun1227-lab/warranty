@@ -217,61 +217,80 @@ def should_include_approval_evidence_universe(row: pd.Series) -> bool:
 def load_analysis_ticket_base(js_path: Path) -> pd.DataFrame:
     raw_csv = read_embedded_csv_text(js_path)
     reader = csv.reader(io.StringIO(raw_csv))
-    next(reader, None)  # header row is position-based and intentionally skipped
+    headers = next(reader, None) or []
+    header_index = {clean(header): idx for idx, header in enumerate(headers) if clean(header)}
+
+    def cell(row: list[str], header: str, fallback_idx: int) -> str:
+        idx = header_index.get(header, fallback_idx)
+        return clean(row[idx]) if idx < len(row) else ""
+
+    def next_cell(row: list[str], header: str, fallback_idx: int) -> str:
+        idx = header_index.get(header)
+        if idx is not None:
+            idx += 1
+        else:
+            idx = fallback_idx
+        return clean(row[idx]) if idx < len(row) else ""
 
     rows: list[dict[str, Any]] = []
     for raw_row in reader:
-        row = list(raw_row) + [""] * max(0, 34 - len(raw_row))
-        created_date = parse_date(row[14])
-        approved_date = parse_date(row[19])
-        purchase_date = parse_date(row[18])
-        changed_date = parse_date(row[32])
-        posting_date = parse_date(row[33])
-        status_text = clean(row[25])
-        ticket_number = clean(row[1] or row[3])
-        ticket_key = clean(row[0] or row[2])
-        po = normalize_po(row[12])
+        row = list(raw_row) + [""] * max(0, max(len(headers), 36) - len(raw_row))
+        created_on = cell(row, "Created On", 14)
+        claim_approved_on = cell(row, "Claim Approved On", 19)
+        date_of_purchase = cell(row, "Date of Purchase", 18)
+        changed_on = cell(row, "Changed On", 32)
+        posting_date_text = cell(row, "Posting Date", 33)
+        status_text = cell(row, "Status", 25)
+        ticket_number = cell(row, "C4C Ticket ID", 1) or next_cell(row, "Ticket", 1)
+        ticket_key = cell(row, "Ticket", 0) or ticket_number
+        ticket_id_text = cell(row, "C4C Ticket ID", 2) or ticket_number
+        po = normalize_po(cell(row, "ERP Purchase Order ID", 12))
+        created_date = parse_date(created_on)
+        approved_date = parse_date(claim_approved_on)
+        purchase_date = parse_date(date_of_purchase)
+        changed_date = parse_date(changed_on)
+        posting_date = parse_date(posting_date_text)
 
         rows.append(
             {
                 "ticket_number": ticket_number,
                 "ticket_key": ticket_key,
-                "ticket_id_text": clean(row[2]),
-                "ticket_type": clean(row[4]),
-                "claim_scope": ticket_claim_scope(row[4]),
-                "agent_name": clean(row[5]),
-                "agent_id": clean(row[6]),
-                "serial_id": clean(row[7]),
-                "chassis_number": clean(row[8]),
-                "account_name": clean(row[9]),
-                "account_id": clean(row[10]),
-                "erp_free_order_id": clean(row[11]),
+                "ticket_id_text": ticket_id_text,
+                "ticket_type": cell(row, "Ticket Type", 4),
+                "claim_scope": ticket_claim_scope(cell(row, "Ticket Type", 4)),
+                "agent_name": cell(row, "Agent", 5),
+                "agent_id": next_cell(row, "Agent", 6),
+                "serial_id": cell(row, "Serial ID", 7),
+                "chassis_number": cell(row, "Chassis Number", 8),
+                "account_name": cell(row, "Account", 9),
+                "account_id": next_cell(row, "Account", 10),
+                "erp_free_order_id": cell(row, "ERP Free Order ID", 11),
                 "po": po,
-                "erp_service_order_id": clean(row[13]),
-                "created_on": clean(row[14]),
+                "erp_service_order_id": cell(row, "ERP Service Order ID", 13),
+                "created_on": created_on,
                 "created_date": created_date,
-                "dealer_code": clean(row[15]),
-                "dealer_name": clean(row[16]),
-                "country_region": clean(row[17]),
-                "date_of_purchase": clean(row[18]),
+                "dealer_code": cell(row, "Dealer", 15),
+                "dealer_name": cell(row, "Dealer Name", 16),
+                "country_region": cell(row, "Country/Region", 17),
+                "date_of_purchase": date_of_purchase,
                 "purchase_date": purchase_date,
-                "claim_approved_on": clean(row[19]),
+                "claim_approved_on": claim_approved_on,
                 "approved_date": approved_date,
-                "postal_code": clean(row[20]),
-                "registered_product": clean(row[21]),
-                "registered_product_code": clean(row[22]),
-                "product": clean(row[23]),
-                "product_code": clean(row[24]),
+                "postal_code": cell(row, "Service Requester Postal Code", 20),
+                "registered_product": cell(row, "Registered Product", 21),
+                "registered_product_code": next_cell(row, "Registered Product", 22),
+                "product": cell(row, "Product", 23),
+                "product_code": next_cell(row, "Product", 24),
                 "status_text": status_text,
-                "service_technician": clean(row[26]),
-                "service_technician_id": clean(row[27]),
-                "claim_total_amount": parse_amount(row[28]),
-                "factory_parts_claim_total_amount": parse_amount(row[29]),
-                "labour_hours_total_amount": parse_amount(row[30]),
-                "repairer_parts_claim_total_amount": parse_amount(row[31]),
-                "changed_on": clean(row[32]),
+                "service_technician": cell(row, "Service Technician", 26),
+                "service_technician_id": next_cell(row, "Service Technician", 27),
+                "claim_total_amount": parse_amount(cell(row, "ClaimTotalAmount", 28)),
+                "factory_parts_claim_total_amount": parse_amount(cell(row, "Factory Parts Claim Total Amount", 29)),
+                "labour_hours_total_amount": parse_amount(cell(row, "LabourHoursTotalAmount", 30)),
+                "repairer_parts_claim_total_amount": parse_amount(cell(row, "Repairer Parts Claim Total Amount", 31)),
+                "changed_on": changed_on,
                 "changed_date": changed_date,
-                "posting_date": clean(row[33]),
+                "posting_date": posting_date_text,
                 "posting_date_value": posting_date,
                 "is_unapproved": is_unapproved_status(status_text),
                 "is_approved_like_status": is_approved_like_status(status_text),
@@ -718,7 +737,7 @@ def build_parts_segment(parts_joined_df: pd.DataFrame, anomalies: list[dict[str,
             )
         )
 
-    return work[work["parts_issuing_days_valid"]].copy()
+    return work[work["parts_issuing_days_valid"].astype(bool)].copy()
 
 
 def build_repairer_segment(
@@ -726,9 +745,43 @@ def build_repairer_segment(
     invoice_df: pd.DataFrame,
     anomalies: list[dict[str, Any]],
 ) -> pd.DataFrame:
-    merged = parts_joined_df.merge(invoice_df, on="po", how="left")
+    left = parts_joined_df.copy()
+    for column in ("po", "chassis_number", "created_date", "complete_issue_date_joined", "approval_days", "parts_issuing_days"):
+        if column not in left.columns:
+            left[column] = ""
+
+    right = invoice_df.copy()
+    for column in (
+        "po",
+        "invoice_status",
+        "invoice_number",
+        "invoice_date",
+        "invoice_date_text",
+        "repairer_status_text",
+        "repairer_ticket_key",
+        "repairer_name_from_repairs",
+    ):
+        if column not in right.columns:
+            right[column] = pd.NaT if column == "invoice_date" else ""
+
+    merged = left.merge(right, on="po", how="left")
     merged["po_last_invoice_date"] = merged["invoice_date"]
     merged["chassis_invoice_key"] = merged["chassis_number"].map(normalize_vehicle_key)
+
+    if merged.empty:
+        for column in (
+            "chassis_last_invoice_date",
+            "created_to_invoice_days",
+            "created_to_chassis_invoice_days",
+            "invoice_minus_complete_issue_days",
+            "chassis_invoice_minus_complete_issue_days",
+            "repairer_repair_days",
+            "repairer_repair_days_by_chassis_invoice",
+            "po_vs_chassis_invoice_gap_days",
+        ):
+            merged[column] = pd.Series(dtype="object")
+        merged["repairer_repair_days_valid"] = pd.Series(dtype="bool")
+        return merged.copy()
 
     chassis_invoice_lookup = (
         merged.loc[merged["chassis_invoice_key"].ne("") & merged["po_last_invoice_date"].notna(), ["chassis_invoice_key", "po_last_invoice_date"]]
@@ -810,7 +863,7 @@ def build_repairer_segment(
             )
         )
 
-    return merged[merged["repairer_repair_days_valid"]].copy()
+    return merged[merged["repairer_repair_days_valid"].astype(bool)].copy()
 
 
 def anomaly_row(stage: str, reason: str, row: pd.Series, detail: str = "") -> dict[str, Any]:
@@ -838,6 +891,9 @@ def anomaly_row(stage: str, reason: str, row: pd.Series, detail: str = "") -> di
         "repairer_repair_days": row.get("repairer_repair_days"),
         "detail": detail,
     }
+
+
+ANOMALY_COLUMNS = list(anomaly_row("", "", pd.Series(dtype="object")).keys())
 
 
 def build_summary_sheet(
@@ -1321,29 +1377,34 @@ def build_created_month_trend(
     year: int,
     as_of: date,
 ) -> list[dict[str, Any]]:
+    completed = completed_df.copy()
+    universe = universe_df.copy()
+    if "created_date" not in completed.columns:
+        completed["created_date"] = pd.Series(dtype="object")
+    if "created_date" not in universe.columns:
+        universe["created_date"] = pd.Series(dtype="object")
+
     rows: list[dict[str, Any]] = []
     monthly_avgs: list[float | None] = []
     for month_index, month_label in enumerate(MONTH_LABELS, start=1):
         if date(year, month_index, 1) > as_of:
             break
-        universe_month_df = universe_df[
-            universe_df["created_date"].map(
-                lambda value, month_index=month_index: (
-                    (created_date := to_date(value)) is not None
-                    and created_date.year == year
-                    and created_date.month == month_index
-                )
+        universe_mask = universe["created_date"].map(
+            lambda value, month_index=month_index: (
+                (created_date := to_date(value)) is not None
+                and created_date.year == year
+                and created_date.month == month_index
             )
-        ]
-        month_df = completed_df[
-            completed_df["created_date"].map(
-                lambda value, month_index=month_index: (
-                    (created_date := to_date(value)) is not None
-                    and created_date.year == year
-                    and created_date.month == month_index
-                )
+        ).astype(bool)
+        completed_mask = completed["created_date"].map(
+            lambda value, month_index=month_index: (
+                (created_date := to_date(value)) is not None
+                and created_date.year == year
+                and created_date.month == month_index
             )
-        ]
+        ).astype(bool)
+        universe_month_df = universe[universe_mask]
+        month_df = completed[completed_mask]
         completed_month_df = month_df[month_df[duration_col].map(is_valid_duration_value)].copy() if duration_col in month_df.columns else month_df.iloc[0:0].copy()
         values = valid_duration_values(completed_month_df.get(duration_col, []))
         avg = round(sum(values) / len(values), 2) if values else None
@@ -1461,10 +1522,11 @@ def build_completion_analytics_payload(
     base_all_df["approval_days"] = base_all_df.apply(lambda row: day_diff(row["approved_date"], row["created_date"]), axis=1)
     base_all_df["approval_days_completed"] = base_all_df["approval_days"]
 
-    approval_completed_df = base_all_df[
-        base_all_df["approved_date"].map(lambda value: completed_in_year(value, year, as_of))
-        & base_all_df["approval_days_completed"].map(lambda value: value is not None and value >= 0)
-    ].copy()
+    approval_completed_mask = (
+        base_all_df["approved_date"].map(lambda value: completed_in_year(value, year, as_of)).astype(bool)
+        & base_all_df["approval_days_completed"].map(lambda value: value is not None and value >= 0).astype(bool)
+    )
+    approval_completed_df = base_all_df[approval_completed_mask].copy()
 
     scratch_anomalies: list[dict[str, Any]] = []
     all_parts_joined_df = merge_parts_data(base_all_df, parts_by_ticket_df, parts_by_po_df, scratch_anomalies)
@@ -1473,30 +1535,30 @@ def build_completion_analytics_payload(
         axis=1,
     )
     all_parts_joined_df["parts_issuing_days_completed"] = all_parts_joined_df["parts_issuing_days"]
-    parts_completed_df = all_parts_joined_df[
-        all_parts_joined_df["complete_issue_date_joined"].map(lambda value: completed_in_year(value, year, as_of))
-        & all_parts_joined_df["parts_issuing_days_completed"].map(lambda value: value is not None and value >= 0)
-    ].copy()
+    parts_completed_mask = (
+        all_parts_joined_df["complete_issue_date_joined"].map(lambda value: completed_in_year(value, year, as_of)).astype(bool)
+        & all_parts_joined_df["parts_issuing_days_completed"].map(lambda value: value is not None and value >= 0).astype(bool)
+    )
+    parts_completed_df = all_parts_joined_df[parts_completed_mask].copy()
 
-    valid_parts_for_repair_df = all_parts_joined_df[
-        all_parts_joined_df["parts_issuing_days"].map(lambda value: value is not None and value >= 0)
-    ].copy()
+    valid_parts_for_repair_mask = all_parts_joined_df["parts_issuing_days"].map(lambda value: value is not None and value >= 0).astype(bool)
+    valid_parts_for_repair_df = all_parts_joined_df[valid_parts_for_repair_mask].copy()
     repairer_all_df = build_repairer_segment(valid_parts_for_repair_df, invoice_df, scratch_anomalies)
-    repairer_completed_df = repairer_all_df[
-        repairer_all_df["invoice_date"].map(lambda value: completed_in_year(value, year, as_of))
-    ].copy()
+    repairer_completed_mask = repairer_all_df["invoice_date"].map(lambda value: completed_in_year(value, year, as_of)).astype(bool)
+    repairer_completed_df = repairer_all_df[repairer_completed_mask].copy()
     total_handling_all_df = repairer_all_df.copy()
     total_handling_all_df["created_to_invoice_days_completed"] = total_handling_all_df["created_to_invoice_days"]
-    total_handling_completed_df = total_handling_all_df[
-        total_handling_all_df["invoice_date"].map(lambda value: completed_in_year(value, year, as_of))
-        & total_handling_all_df["created_to_invoice_days_completed"].map(lambda value: value is not None and value >= 0)
-        & total_handling_all_df["approval_days"].map(lambda value: value is not None and value >= 0)
-        & total_handling_all_df["parts_issuing_days"].map(lambda value: value is not None and value >= 0)
-        & total_handling_all_df["repairer_repair_days"].map(lambda value: value is not None and value >= 0)
-        & total_handling_all_df["approved_date"].notna()
-        & total_handling_all_df["so_created_date_joined"].notna()
-        & total_handling_all_df["complete_issue_date_joined"].notna()
-    ].copy()
+    total_handling_completed_mask = (
+        total_handling_all_df["invoice_date"].map(lambda value: completed_in_year(value, year, as_of)).astype(bool)
+        & total_handling_all_df["created_to_invoice_days_completed"].map(lambda value: value is not None and value >= 0).astype(bool)
+        & total_handling_all_df["approval_days"].map(lambda value: value is not None and value >= 0).astype(bool)
+        & total_handling_all_df["parts_issuing_days"].map(lambda value: value is not None and value >= 0).astype(bool)
+        & total_handling_all_df["repairer_repair_days"].map(lambda value: value is not None and value >= 0).astype(bool)
+        & total_handling_all_df["approved_date"].notna().astype(bool)
+        & total_handling_all_df["so_created_date_joined"].notna().astype(bool)
+        & total_handling_all_df["complete_issue_date_joined"].notna().astype(bool)
+    )
+    total_handling_completed_df = total_handling_all_df[total_handling_completed_mask].copy()
 
     payload = {
         "generatedAt": datetime.now().isoformat(timespec="seconds"),
@@ -2179,22 +2241,19 @@ def main() -> int:
     approved_cost_by_ticket = load_approved_cost_by_ticket(paths.approved_cost_json)
     base_df = attach_sap_po_amount(load_analysis_ticket_base(paths.analysis_ticket_js), approved_cost_by_ticket)
     qualifying_df = build_qualifying_universe(base_df, start_date=start_date, end_date=end_date)
-    evidence_date_mask = base_df["created_date"].map(lambda value: value is not None and value >= start_date and (end_date is None or value <= end_date))
-    approval_evidence_universe_df = base_df[
-        evidence_date_mask
-        & base_df.apply(should_include_approval_evidence_universe, axis=1)
-    ].copy()
+    evidence_date_mask = base_df["created_date"].map(lambda value: value is not None and value >= start_date and (end_date is None or value <= end_date)).astype(bool)
+    approval_evidence_mask = evidence_date_mask & base_df.apply(should_include_approval_evidence_universe, axis=1).astype(bool)
+    approval_evidence_universe_df = base_df[approval_evidence_mask].copy()
     approval_evidence_universe_df["approval_days"] = approval_evidence_universe_df.apply(lambda row: day_diff(row["approved_date"], row["created_date"]), axis=1)
-    approval_evidence_completed_df = approval_evidence_universe_df[
-        approval_evidence_universe_df["approval_days"].map(is_valid_duration_value)
-    ].copy()
+    approval_evidence_completed_mask = approval_evidence_universe_df["approval_days"].map(is_valid_duration_value).astype(bool)
+    approval_evidence_completed_df = approval_evidence_universe_df[approval_evidence_completed_mask].copy()
 
     parts_by_ticket_df, parts_by_po_df = load_parts_ticket_summary(paths.parts_classified_csv)
     invoice_df = load_repairer_invoice_rows(paths.repairers_json)
 
     anomalies: list[dict[str, Any]] = []
 
-    approval_segment_df = qualifying_df[qualifying_df["approval_days_valid"]].copy()
+    approval_segment_df = qualifying_df[qualifying_df["approval_days_valid"].astype(bool)].copy()
 
     for _, row in qualifying_df[~qualifying_df["approval_days_valid"]].iterrows():
         anomalies.append(
@@ -2210,7 +2269,8 @@ def main() -> int:
     parts_segment_df = build_parts_segment(parts_joined_df, anomalies)
     repair_evidence_universe_df = parts_segment_df.copy()
     repairer_segment_df = build_repairer_segment(parts_segment_df, invoice_df, anomalies)
-    anomalies_df = pd.DataFrame(anomalies).sort_values(["stage", "reason", "ticket_number", "ticket_key"], na_position="last").reset_index(drop=True)
+    anomalies_df = pd.DataFrame(anomalies, columns=ANOMALY_COLUMNS)
+    anomalies_df = anomalies_df.sort_values(["stage", "reason", "ticket_number", "ticket_key"], na_position="last").reset_index(drop=True)
 
     summary_df = build_summary_sheet(
         qualifying_df=qualifying_df,

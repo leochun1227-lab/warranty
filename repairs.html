@@ -135,6 +135,21 @@
 .chassisRepeatLegendSwatch{width:10px;height:10px;border-radius:999px}
 .chassisRepeatLegendItem b{color:#0f172a}
 .chassisRepeatEmpty{padding:20px;border:1px dashed #d6e0eb;border-radius:14px;background:#fff;color:#64748b;font-size:13px}
+.chassisRepeatSimpleTable{width:100%;border-collapse:separate;border-spacing:0;border:1px solid #dbe5f0;border-radius:16px;overflow:hidden;background:#fff}
+.chassisRepeatSimpleTable th,.chassisRepeatSimpleTable td{padding:12px 14px;border-bottom:1px solid #edf2f7;text-align:left;font-size:13px}
+.chassisRepeatSimpleTable th{background:#f8fbff;color:#64748b;font-weight:700}
+.chassisRepeatSimpleTable td{color:#0f172a;font-weight:600}
+.chassisRepeatSimpleTable tr:last-child td{border-bottom:0}
+.chassisRepeatSimpleTable td.num{text-align:right}
+.chassisRepeatSimpleTable td.labelCell{font-weight:700}
+.chassisRepeatScenarioGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.chassisRepeatScenarioCard{border:1px solid #dbe5f0;border-radius:16px;background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);padding:14px 16px}
+.chassisRepeatScenarioTitle{font-size:15px;font-weight:800;color:#0f172a;margin:0 0 10px}
+.chassisRepeatScenarioMeta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;color:#64748b;font-size:12px}
+.chassisRepeatScenarioMeta b{color:#0f172a}
+@media (max-width: 980px){
+  .chassisRepeatScenarioGrid{grid-template-columns:1fr}
+}
 </style>
 <style>
 /* Compact repairs filter bar */
@@ -2813,13 +2828,13 @@ body.repair-analysis-page #rankViewCard .stateRankStateTable{
   table-layout:fixed!important;
   border-collapse:collapse!important;
 }
-body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColPos{width:42px}
-body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColState{width:15%}
-body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColCost{width:17%}
-body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColTickets{width:14%}
-body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColAvg{width:15%}
-body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColRepairers{width:16%}
-body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColStateAvg{width:17%}
+body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColPos{width:34px}
+body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColState{width:20%}
+body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColCost{width:15%}
+body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColCostShare{width:11%}
+body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColTickets{width:13%}
+body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColTicketShare{width:11%}
+body.repair-analysis-page #rankViewCard .stateRankStateTable .rankColAvg{width:16%}
 body.repair-analysis-page #rankViewCard .stateRankStateTable th,
 body.repair-analysis-page #rankViewCard .stateRankStateTable td{
   box-sizing:border-box!important;
@@ -3245,20 +3260,21 @@ body.repair-analysis-page :is(.panelDesc,.stateRankMetric,#repair-details .panel
   text-overflow:ellipsis!important;
 }
 body.repair-analysis-page .repairsAnalyticsGrid{
-  flex:0 0 238px!important;
-  min-height:238px!important;
-  max-height:238px!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  min-height:0!important;
+  max-height:none!important;
   display:grid!important;
-  grid-template-columns:minmax(0,1.55fr) minmax(340px,.85fr)!important;
+  grid-template-columns:minmax(0,1fr)!important;
   gap:12px!important;
-  overflow:hidden!important;
+  overflow:visible!important;
 }
 body.repair-analysis-page .weekOverview,
 body.repair-analysis-page .costRangePanel{
   min-height:0!important;
-  height:238px!important;
-  max-height:238px!important;
-  overflow:hidden!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
 }
 body.repair-analysis-page .analyticsCardHead{
   min-height:32px!important;
@@ -4062,6 +4078,375 @@ body.repair-analysis-page .chassisRepeatSummary b{
     grid-template-columns:repeat(auto-fit,minmax(160px,1fr))!important;
   }
 }
+body.repair-analysis-page #repairRepeatSummary{
+  display:none!important;
+}
+body.repair-analysis-page #repairRepeatScenarios,
+body.repair-analysis-page #repairRepeatScenarios[hidden]{
+  display:block!important;
+  margin-top:0!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatScenarioGrid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatScenarioCard{
+  border:1px solid #dbe5f0!important;
+  border-radius:16px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%)!important;
+  padding:16px!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatScenarioTitle{
+  font-size:14px!important;
+  font-weight:600!important;
+  color:#0f172a!important;
+  margin:0 0 8px!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatScenarioMeta{
+  display:flex!important;
+  gap:12px!important;
+  flex-wrap:wrap!important;
+  margin-bottom:8px!important;
+  color:#334155!important;
+  font-size:13px!important;
+  font-weight:620!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatScenarioMeta b{
+  color:#0f172a!important;
+  font-size:13px!important;
+  margin:0!important;
+  display:inline!important;
+  font-weight:650!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable{
+  width:100%!important;
+  border-collapse:separate!important;
+  border-spacing:0!important;
+  border:1px solid #dbe5f0!important;
+  border-radius:14px!important;
+  overflow:hidden!important;
+  background:#fff!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable th,
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable td{
+  padding:11px 12px!important;
+  border-bottom:1px solid #edf2f7!important;
+  border-right:0!important;
+  font-size:13px!important;
+  white-space:normal!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable tr:last-child td{
+  border-bottom:0!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable th{
+  background:#f8fbff!important;
+  color:#64748b!important;
+  font-weight:700!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable td{
+  background:#fff!important;
+  color:#0f172a!important;
+  font-weight:600!important;
+}
+body.repair-analysis-page #repair-details .tableWrap,
+body.repair-analysis-page .repairLowerGrid #repair-details .tableWrap,
+body.repair-analysis-page #repair-details .pager{
+  display:none!important;
+}
+@media (max-width:980px){
+  body.repair-analysis-page #repairRepeatSummary{
+    grid-template-columns:1fr!important;
+  }
+  body.repair-analysis-page #repairRepeatScenarios .chassisRepeatScenarioGrid{
+    grid-template-columns:1fr!important;
+  }
+}
+
+/* Relax the one-screen dashboard constraint: let Repairer Analysis breathe and scroll naturally. */
+html,
+body.repair-analysis-page{
+  height:auto!important;
+  min-height:100%!important;
+  overflow:auto!important;
+}
+body.repair-analysis-page .app{
+  height:auto!important;
+  min-height:100vh!important;
+  overflow:visible!important;
+  align-items:start!important;
+}
+body.repair-analysis-page .sidebar{
+  height:100vh!important;
+  max-height:100vh!important;
+  overflow:auto!important;
+  position:sticky!important;
+  top:0!important;
+}
+body.repair-analysis-page .main{
+  height:auto!important;
+  min-height:100vh!important;
+  overflow:visible!important;
+  gap:8px!important;
+  padding:14px 18px 22px!important;
+}
+body.repair-analysis-page .repairPageHeader{
+  flex:0 0 auto!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin-bottom:0!important;
+}
+body.repair-analysis-page .panel{
+  margin-bottom:0!important;
+}
+body.repair-analysis-page .repairsAnalyticsGrid{
+  flex:0 0 auto!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  gap:8px!important;
+  margin-bottom:0!important;
+}
+body.repair-analysis-page .weekPanel.weekOverview,
+body.repair-analysis-page .weekOverview,
+body.repair-analysis-page .costRangePanel{
+  height:auto!important;
+  min-height:250px!important;
+  max-height:none!important;
+  overflow:visible!important;
+  margin-bottom:0!important;
+  padding:12px 16px!important;
+}
+body.repair-analysis-page .weekMapShell{
+  height:auto!important;
+  min-height:360px!important;
+  overflow:visible!important;
+}
+body.repair-analysis-page .weekMapCard .mapSvg{
+  height:420px!important;
+  max-height:none!important;
+}
+body.repair-analysis-page .costRangePanel .rangeChartShell{
+  height:auto!important;
+  min-height:190px!important;
+  max-height:none!important;
+  align-items:center!important;
+}
+body.repair-analysis-page .costRangePanel .rangeChartWrap{
+  height:174px!important;
+  max-height:none!important;
+}
+body.repair-analysis-page #rankViewCard{
+  flex:0 0 auto!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  margin-top:0!important;
+  margin-bottom:0!important;
+  padding:12px 16px!important;
+}
+body.repair-analysis-page #rankViewCard .stateRankTableWrap,
+body.repair-analysis-page #rankViewCard .topRepairRankOnly{
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:auto!important;
+}
+body.repair-analysis-page #rankViewCard[data-rank-view="top"] .topRepairRankOnly{
+  height:276px!important;
+  max-height:276px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  scrollbar-gutter:stable!important;
+}
+body.repair-analysis-page #rankViewCard[data-rank-view="top"] .topRepairRankTable{
+  width:100%!important;
+}
+body.repair-analysis-page #rankViewCard[data-rank-view="top"] .topRepairRankTable thead th{
+  position:sticky!important;
+  top:0!important;
+  z-index:3!important;
+  background:#f8fbff!important;
+}
+body.repair-analysis-page .repairLowerGrid{
+  flex:0 0 auto!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  gap:8px!important;
+  margin-top:0!important;
+}
+body.repair-analysis-page .repairLowerGrid #repair-details,
+body.repair-analysis-page #repair-details{
+  flex:0 0 auto!important;
+  height:auto!important;
+  min-height:320px!important;
+  max-height:none!important;
+  overflow:visible!important;
+  padding:12px 16px!important;
+  margin-top:0!important;
+}
+body.repair-analysis-page #repairRepeatSummary{
+  margin-bottom:8px!important;
+}
+body.repair-analysis-page #repairRepeatScenarios{
+  min-height:170px!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatScenarioGrid{
+  align-items:stretch!important;
+  gap:8px!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+body.repair-analysis-page .repairLowerGrid > .chassisRepeatPanel[hidden],
+body.repair-analysis-page .repairLowerGrid > .chassisRepeatPanel[aria-hidden="true"]{
+  display:none!important;
+  visibility:hidden!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  overflow:hidden!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatScenarioCard{
+  min-width:0!important;
+  overflow:hidden!important;
+  padding:10px 12px!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable{
+  table-layout:fixed!important;
+  width:100%!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable th,
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable td{
+  padding:8px 10px!important;
+  vertical-align:middle!important;
+  font-size:12px!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable th:nth-child(1),
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable td:nth-child(1){
+  width:46%!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable th:nth-child(2),
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable td:nth-child(2){
+  width:24%!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable th:nth-child(3),
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable td:nth-child(3){
+  width:15%!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable th:nth-child(4),
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable td:nth-child(4){
+  width:15%!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable .labelCell{
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable .num{
+  text-align:right!important;
+  font-variant-numeric:tabular-nums!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable th.num{
+  white-space:normal!important;
+  line-height:1.15!important;
+  overflow-wrap:anywhere!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable td.num{
+  white-space:nowrap!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .chassisRepeatSimpleTable th small{
+  display:block!important;
+  font-size:10px!important;
+  line-height:1.1!important;
+  color:#64748b!important;
+  font-weight:700!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .repeatShopGrid{
+  width:100%!important;
+  border:1px solid #dbe5f0!important;
+  border-radius:14px!important;
+  overflow:auto!important;
+  max-height:292px!important;
+  background:#fff!important;
+  scrollbar-gutter:stable!important;
+  overscroll-behavior:contain!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .repeatShopGrid::-webkit-scrollbar{
+  width:9px!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .repeatShopGrid::-webkit-scrollbar-track{
+  background:#f1f5fb!important;
+  border-radius:999px!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .repeatShopGrid::-webkit-scrollbar-thumb{
+  background:#c4d2e5!important;
+  border-radius:999px!important;
+  border:2px solid #f1f5fb!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .repeatShopGridRow{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 118px 92px 70px!important;
+  align-items:center!important;
+  min-width:0!important;
+  border-bottom:1px solid #edf2f7!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .repeatShopGridRow:last-child{
+  border-bottom:0!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .repeatShopGridHead{
+  background:#f8fbff!important;
+  color:#334155!important;
+  font-weight:700!important;
+  position:sticky!important;
+  top:0!important;
+  z-index:2!important;
+  box-shadow:0 1px 0 #edf2f7!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .repeatShopGridCell{
+  min-width:0!important;
+  padding:9px 10px!important;
+  font-size:12px!important;
+  line-height:1.15!important;
+  color:#0f172a!important;
+  font-weight:560!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .repeatShopGridHead .repeatShopGridCell{
+  color:#334155!important;
+  white-space:normal!important;
+  font-weight:700!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .repeatShopGridCell.num{
+  text-align:right!important;
+  font-variant-numeric:tabular-nums!important;
+}
+body.repair-analysis-page #repairRepeatScenarios .repeatShopGridCell small{
+  display:block!important;
+  font-size:10px!important;
+  line-height:1.05!important;
+  color:#475569!important;
+}
+@media (max-width:980px){
+  body.repair-analysis-page #repairRepeatScenarios .chassisRepeatScenarioGrid{
+    grid-template-columns:1fr!important;
+  }
+  body.repair-analysis-page #repairRepeatScenarios .repeatShopGridRow{
+    grid-template-columns:minmax(0,1fr) 118px 92px 70px!important;
+  }
+}
 </style>
 </head>
 <body class="repair-analysis-page">
@@ -4078,7 +4463,7 @@ body.repair-analysis-page .chassisRepeatSummary b{
 <main class="main">
 <header class="repairPageHeader">
   <div class="repairHeaderText">
-    <h1 class="pageTitle">Repairer Analysis</h1>
+    <h1 class="pageTitle">Repairer Analysis (Excludes Customer / Self-Repair)</h1>
     <div id="repairYearSwitch" class="repairYearSwitch" aria-label="Repair year"></div>
     <div id="repairYearNotice" class="repairYearNotice" hidden></div>
   </div>
@@ -4124,26 +4509,10 @@ body.repair-analysis-page .chassisRepeatSummary b{
           <div class="stateTooltipStat"><span>Approved repair cost</span><span class="stateTooltipStatValue" data-role="total-cost">$0</span></div>
           <div class="stateTooltipStat"><span>Approved repair cost tickets</span><span class="stateTooltipStatValue" data-role="tickets">0</span></div>
           <div class="stateTooltipStat stateTooltipAvgStat"><span>Avg approved repair cost</span><span class="stateTooltipStatValue" data-role="avg-ticket-price">$0</span></div>
-          <div class="stateTooltipStat stateTooltipSnowyStat"><span>Snowy</span><span class="stateTooltipSnowyValue" data-role="snowy-line">0 tickets - 0.0% share</span></div>
         </div>
       </div>
   </div>
 </div>
-</section>
-<section class="panel costRangePanel">
-  <div class="panelHead">
-    <div>
-      <h2 class="panelTitle">Cost Range Breakdown</h2>
-    </div>
-    <div class="chassisRepeatActions">
-      <button id="costRangeExport" class="btn chassisRepeatExportBtn" type="button">Export Excel</button>
-    </div>
-  </div>
-  <div class="rangeChartShell">
-    <div class="chartWrap rangeChartWrap"><canvas id="rangeChart"></canvas></div>
-    <div id="rangeChartLegend" class="rangeChartLegend"></div>
-  </div>
-  <p class="costRangeFootnote">Excludes customer/self-repair &amp; unassigned</p>
 </section>
 </div>
 <section class="panel stateListCard" id="rankViewCard" data-rank-view="state">
@@ -4158,6 +4527,7 @@ body.repair-analysis-page .chassisRepeatSummary b{
           <button id="rankViewStateBtn" class="stateMetricBtn is-active" type="button" data-rank-view="state">State</button>
           <button id="rankViewTopBtn" class="stateMetricBtn" type="button" data-rank-view="top">Top Repairers</button>
         </div>
+        <button id="rankViewExportBtn" class="btn chassisRepeatExportBtn" type="button">Export Ticket Details</button>
         <div class="topRepairControls rankTopRepairControls">
           <label class="topRepairSortLabel" for="topRepairSort">Sort by</label>
           <select id="topRepairSort" class="select topRepairSortSelect">
@@ -4175,20 +4545,20 @@ body.repair-analysis-page .chassisRepeatSummary b{
         <col class="rankColPos">
         <col class="rankColState">
         <col class="rankColCost">
+        <col class="rankColCostShare">
         <col class="rankColTickets">
+        <col class="rankColTicketShare">
         <col class="rankColAvg">
-        <col class="rankColRepairers">
-        <col class="rankColStateAvg">
       </colgroup>
       <thead>
         <tr>
           <th class="stateRankPos">#</th>
           <th>State</th>
-          <th class="stateRankValue">Approved Repair Cost</th>
-          <th class="stateRankValue">Approved Cost Tickets</th>
-          <th class="stateRankValue">Avg Approved Cost / Ticket</th>
-          <th class="stateRankValue">Repairers With Approved Cost</th>
-          <th class="stateRankValue">State Avg Approved Cost / Ticket</th>
+          <th class="stateRankValue">Cost</th>
+          <th class="stateRankValue">Cost %</th>
+          <th class="stateRankValue">Tickets</th>
+          <th class="stateRankValue">Tickets %</th>
+          <th class="stateRankValue">Avg Cost / Ticket</th>
         </tr>
       </thead>
       <tbody id="weekStateList"></tbody>
@@ -4200,9 +4570,9 @@ body.repair-analysis-page .chassisRepeatSummary b{
         <tr>
           <th class="stateRankPos">#</th>
           <th class="repairShopName">Repair Shop</th>
-          <th class="stateRankValue">Approved Repair Cost</th>
-          <th class="stateRankValue">Approved Cost Tickets</th>
-          <th class="stateRankValue">Avg Approved Cost / Ticket</th>
+          <th class="stateRankValue">Cost</th>
+          <th class="stateRankValue">Tickets</th>
+          <th class="stateRankValue">Avg Cost / Ticket</th>
         </tr>
       </thead>
       <tbody id="topRepairList"></tbody>
@@ -4213,29 +4583,17 @@ body.repair-analysis-page .chassisRepeatSummary b{
 
 <section class="panel repairFilterPanel" hidden aria-hidden="true"><div class="filters"><div class="field"><label>Repair shop</label><select id="repairSelect" class="select"></select></div><div class="field"><label>Visible</label><div class="filterHintPill">Search from the header to narrow repair names or shop IDs.</div></div></div></section>
 <div class="repairLowerGrid">
-<section class="panel chassisRepeatPanel">
-  <div class="panelHead">
-    <div>
-      <div class="chassisRepeatTitleRow">
-        <span class="repeatIcon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>
-        <div>
-          <h2 class="panelTitle">Repeated Claims on the Same Chassis</h2>
-          <p class="panelDesc">Excludes customer/self-repair &amp; unassigned</p>
-        </div>
-        <button id="chassisRepeatExport" class="btn chassisRepeatExportBtn" type="button">Export Excel</button>
-      </div>
-    </div>
-  </div>
+<section class="panel chassisRepeatPanel" hidden aria-hidden="true">
   <div id="chassisRepeatSummary" class="chassisRepeatSummary"></div>
   <div id="chassisRepeatViz" class="chassisRepeatViz" hidden></div>
 </section>
-<section id="repair-details" class="panel"><div class="panelHead"><div><h2 class="panelTitle">Chassis Check Repair Shops</h2><p class="panelDesc"></p></div><div class="panelActions repairDetailsActions"><div class="repairHeaderSearch"><span class="repairHeaderSearchLabel">Search</span><div class="repairHeaderSearchField"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="searchBox" class="repairHeaderSearchInput" placeholder="Search repair name or shop ID"></div></div><button id="clearRepairFiltersBtn" class="btn" type="button">Clear filters</button><button id="repairExportBtn" class="btn" type="button">Export Excel</button></div></div><div class="tableWrap"><table><thead><tr id="tableHead"></tr></thead><tbody id="repairRows"></tbody></table></div><div class="pager"><button id="prevPage" class="btn" type="button">Previous</button><span id="pageInfo"></span><button id="nextPage" class="btn" type="button">Next</button></div></section>
+<section id="repair-details" class="panel"><div class="panelHead"><div><h2 class="panelTitle">Repeated Repairs Check</h2><p class="panelDesc">Repeated same-chassis request patterns by repair shop</p></div><div class="panelActions repairDetailsActions"><button id="chassisRepeatExport" class="btn chassisRepeatExportBtn" type="button">Export Excel</button></div></div><div id="repairRepeatSummary" class="chassisRepeatSummary"></div><div id="repairRepeatScenarios" class="chassisRepeatViz"></div><div class="tableWrap" hidden><table><thead><tr id="tableHead"></tr></thead><tbody id="repairRows"></tbody></table></div><div class="pager" hidden><button id="prevPage" class="btn" type="button">Previous</button><span id="pageInfo"></span><button id="nextPage" class="btn" type="button">Next</button></div></section>
 </div>
 </main></div>
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
 <script src="assets/geo/australia-states.js?v=20260706a"></script>
 <script src="assets/geo/new-zealand.js?v=20260706a"></script>
-<script src="browser-page-cache.js"></script>
+<script src="browser-page-cache.js?v=repairer-name-map-v5"></script>
 <script>
 
 function showCalcFloat(active,text){
@@ -4289,22 +4647,27 @@ const selectedRepairYear=CURRENT_REPAIR_YEAR>BASE_REPAIR_YEAR&&requestedRepairYe
 const REPAIR_SCOPE_START=`${selectedRepairYear}-01-01`;
 const REPAIR_SCOPE_END=`${selectedRepairYear}-12-31`;
 let allRepairTickets=[], tickets=[], repairs=[], filtered=[], tableFiltered=[], selectedRepairId="all", selectedRepairPeriod="total", search="", page=1, sortKey="repeatChassisOver2Count", sortDir="desc";
+let chassisRepeatDetailRefreshStarted=false;
 let weeklyAnalysis=null, weeklyWeeks=[], weeklyIndex=0, weeklyMetric="confirmed_cost", selectedRegionCode="QLD", overviewHoverStateCode="", overviewRankView="state", precomputedRepairPeriods=null;
 let repairDetailsLoaded=false, repairDetailsPromise=null;
 let ausGeo=null, nzGeo=null;
 let topRepairSort="ticket_count";
 // Client-side working copies (recomputed from details when rate changes)
 let workingSummary=null, workingRepairers=[], workingStates=[], workingWeekly=[], workingChassis=null;
-const REPAIR_COST_RULE_CACHE_SCHEMA="approved-decision-repair-cost-chassis-repeat-2plus-v5";
+const REPAIR_COST_RULE_CACHE_SCHEMA="c4c-eligible-sap-po-authoritative-repairer-name-map-v5";
 const REPAIR_PAGE_CACHE_KEY=`repairs:${selectedRepairYear}:${REPAIR_COST_RULE_CACHE_SCHEMA}`;
-const REPAIR_PAGE_CACHE_ENABLED=true;
+const REPAIR_PAGE_CACHE_ENABLED=false;
 const REPAIR_COST_SANITY_MIN_AUD=50000;
 const REPAIR_COST_SANITY_RATIO=10;
 let repairPageVersionPromise=null;
 let repairAnalysisFetchPromise=null;
+function repairStaticJsonUrl(path){
+  const sep=String(path).includes("?")?"&":"?";
+  return `${path}${sep}v=${encodeURIComponent(REPAIR_COST_RULE_CACHE_SCHEMA)}`;
+}
 function loadRepairAnalysisJson(){
   if(!repairAnalysisFetchPromise){
-    repairAnalysisFetchPromise=readStaticJson(ANALYSIS_JSON).catch(e=>{
+    repairAnalysisFetchPromise=readStaticJson(repairStaticJsonUrl(ANALYSIS_JSON)).catch(e=>{
       repairAnalysisFetchPromise=null;
       throw e;
     });
@@ -4315,7 +4678,11 @@ async function repairPageVersion(){
   if(repairPageVersionPromise)return repairPageVersionPromise;
   repairPageVersionPromise=(async()=>{
     const staticVersion=await withTimeoutPromise(
-      loadRepairAnalysisJson().then(data=>clean(data?.meta?.cache_generated_at||data?.meta?.generatedAt||data?.generatedAt||"")),
+      loadRepairAnalysisJson().then(data=>{
+        const generated=clean(data?.meta?.cache_generated_at||data?.meta?.generatedAt||data?.generatedAt||"");
+        const mappingHash=clean(data?.meta?.repairer_name_rule_mapping_sha256||"").slice(0,16);
+        return [generated,mappingHash&&`map:${mappingHash}`].filter(Boolean).join(":");
+      }),
       8000,
       "Repair analysis version"
     ).catch(()=>"");
@@ -4674,6 +5041,45 @@ function repairCostFromTicket(ticket){
   }
   return 0;
 }
+function ticketCostMergeRecord(entry){
+  const ticket=entry?.ticket||{};
+  const out={};
+  [
+    "confirmed_cost_aud","confirmed_cost","invoice_amount_aud","invoice_amount","po_amount_aud","po_amount",
+    "ERP Purchase Order ID","ERPPurchaseOrderID","ERPPO","sap_pos","sap_po_net_value","sap_po_cost_aud",
+    "sap_signed_invoice_amount","sap_raw_invoice_amount","SAP Signed Invoice Amount",
+    "invoice_status","Invoice Status","invoice_number","Invoice Number","invoice_date","Invoice Date",
+    "sap_invoice_docs","sap_last_invoice_date","Posting Date","PostingDate","Approved Date","approved_date",
+    "sap_cancelled_pos",
+    "C4C Claim Approved On","c4c_claim_approved_on"
+  ].forEach(field=>{
+    if(ticket&&Object.prototype.hasOwnProperty.call(ticket,field))out[field]=ticket[field];
+  });
+  return out;
+}
+function addTicketCostMergeKey(map,key,record){
+  key=clean(key);
+  if(!key||!record||!Object.keys(record).length)return;
+  map.set(key,record);
+}
+function mergeTicketCostsIntoRawTickets(rawTickets,costSourceTickets){
+  const costMap=new Map();
+  (Array.isArray(costSourceTickets)?costSourceTickets:[]).forEach(entry=>{
+    const record=ticketCostMergeRecord(entry);
+    const ticket=entry?.ticket||{};
+    addTicketCostMergeKey(costMap,entry?.id,record);
+    addTicketCostMergeKey(costMap,ticket.TicketID||ticket["Ticket ID"],record);
+    addTicketCostMergeKey(costMap,ticket["C4C Ticket ID"]||ticket.C4CTicketID||ticket.c4c_ticket_id,record);
+  });
+  if(!costMap.size)return rawTickets;
+  return (Array.isArray(rawTickets)?rawTickets:[]).map(entry=>{
+    const ticket=entry?.ticket||{};
+    const record=costMap.get(clean(entry?.id))||
+      costMap.get(clean(ticket.TicketID||ticket["Ticket ID"]))||
+      costMap.get(clean(ticket["C4C Ticket ID"]||ticket.C4CTicketID||ticket.c4c_ticket_id));
+    return record?{...entry,ticket:{...ticket,...record}}:entry;
+  });
+}
 function claimAmountFromTicket(ticket){
   const fields=["ClaimTotalAmount","Claim Total Amount","claim_total_amount","claim_total_amount_aud","AmountIncludingTax","Amount Including Tax","rawTicketAmount","amount"];
   for(const field of fields){
@@ -4870,7 +5276,7 @@ function normalizeTicket(row,key){
     const postingDate=clean(raw["Posting Date"]||raw.PostingDate||raw.approved_date||raw["Created On"]||raw.CreatedOn);
     const createdOn=clean(raw["Created On"]||raw.CreatedOn||postingDate);
     const repairerBusinessName=clean(raw.RepairerBusinessNameID||raw["RepairerBusinessNameID"]||raw["Repairer Business Name ID"]||raw["Repairer Business Name"]||raw.RepairerBusinessName);
-    const serviceTechnician=clean(raw["Service Technician"]||raw.ServiceTechnician||raw.repairer_name||raw.repairerName);
+    const serviceTechnician=clean(raw.repairer_name||raw.repairerName||raw["Service Technician"]||raw.ServiceTechnician);
     const repairshopId=clean(raw.repairshop_id||raw.repairshopId||raw["Repairhop ID"]||raw["Repair Shop ID"]||repairerBusinessName);
     const state=clean(raw.state||raw.State);
     const repairerName=resolveRepairDisplayName({...raw,ServiceTechnician:serviceTechnician,repairer_name:serviceTechnician,repairshop_id:repairshopId,RepairerBusinessNameID:repairerBusinessName},repairerBusinessName);
@@ -4904,6 +5310,14 @@ function normalizeTicket(row,key){
       invoice_status:clean(raw.invoice_status),
       invoice_number:clean(raw.invoice_number),
       invoice_date:clean(raw.invoice_date),
+      ERPPurchaseOrderID:clean(raw.ERPPurchaseOrderID||raw["ERP Purchase Order ID"]||raw.ERPPO||raw.sap_pos),
+      sap_pos:clean(raw.sap_pos||raw["ERP Purchase Order ID"]||raw.ERPPurchaseOrderID||raw.ERPPO),
+      sap_po_net_value:Number(raw.sap_po_net_value||raw.sap_po_cost_aud||0)||0,
+      sap_po_cost_aud:Number(raw.sap_po_cost_aud||raw.sap_po_net_value||0)||0,
+      sap_signed_invoice_amount:Number(raw.sap_signed_invoice_amount||raw.sap_raw_invoice_amount||0)||0,
+      sap_raw_invoice_amount:Number(raw.sap_raw_invoice_amount||raw.sap_signed_invoice_amount||0)||0,
+      sap_last_invoice_date:clean(raw.sap_last_invoice_date||raw.invoice_date),
+      c4c_claim_approved_on:clean(raw.c4c_claim_approved_on||raw["C4C Claim Approved On"]),
       confirmed_cost_aud:repairCostFromTicket(raw),
       repair_cost_aud:repairCostFromTicket(raw),
       pending_amount_aud:Number(raw.pending_amount_aud??0)||0
@@ -5034,6 +5448,8 @@ function buildTicketDetailExportRows(entries,options={}){
       posting:dateKey(t.PostingDate||t["Posting Date"]||t.CreatedOn||t["Created On"]||""),
       changed:dateKey(t.ChangedOn||t["Changed On"]||t.LastUpdateDateTime||t.LastChangedOn||""),
       approved:dateKey(t.approved_date||t["Approved Date"]||""),
+      c4cApproved:dateKey(t.c4c_claim_approved_on||t["C4C Claim Approved On"]||t.ClaimApprovedOnDateTime||t.ClaimApprovedOn||t["Claim Approved On"]||""),
+      c4cId:clean(t["C4C Ticket ID"]||t.C4CTicketID||t.c4c_ticket_id||""),
       id:clean(t.TicketID||t["Ticket ID"]||t.Ticket||entry.id||""),
       name:clean(t.TicketName||t.Ticket||t["Ticket Name"]||t.TicketID||entry.id||""),
       type:clean(t.TicketTypeText||t["Ticket Type"]||t.TicketType||""),
@@ -5046,12 +5462,13 @@ function buildTicketDetailExportRows(entries,options={}){
       dealerName:clean(t.DealerName||t["Dealer Name"]||""),
       country:clean(t["Country/Region"]||t.CountryRegion||""),
       postal:clean(t["Service Requester Postal Code"]||t["Postal Code"]||t.PostalCode||""),
-      technician:clean(t["Service Technician"]||t.ServiceTechnician||""),
+      technician:info.repairName||clean(t.repairer_name||t.RepairerName||t["Service Technician"]||t.ServiceTechnician||""),
       po:clean(t["ERP Purchase Order ID"]||t.ErpPurchaseOrderId||t.purchaseOrderId||""),
       salesOrder:clean(t["Sales Order"]||t.SalesOrder||""),
       invoiceStatus:clean(t.invoice_status||t["Invoice Status"]||""),
       invoiceNumber:clean(t.invoice_number||t["Invoice Number"]||""),
       invoiceDate:clean(t.invoice_date||t["Invoice Date"]||""),
+      invoiceAmount:Number(t.sap_signed_invoice_amount||t.sap_raw_invoice_amount||t["SAP Signed Invoice Amount"]||0)||0,
       serial:clean(t.SerialID||t["Serial ID"]||""),
       chassis:normalizedChassis(entry),
       poCost:openPoRepairCostFromTicket(t),
@@ -5062,21 +5479,21 @@ function buildTicketDetailExportRows(entries,options={}){
   };
   if(mode==="chassisCheck"){
     return [
-      ["Decision Date","Created On","Ticket ID","Repair Shop","Repair Shop ID","State","Chassis Number","Eligible tickets on same chassis at this repair shop","Included in Repeated Chassis","Approved Repair Cost Used AUD","Ticket","Ticket Type","Status","Invoice Status","Invoice Number","Invoice Date","Serial ID","Dealer","Dealer Name","ERP Purchase Order ID","Sales Order","Posting Date","Changed On","Approved Date","Country/Region","Postal Code","Service Technician","Repairer Business Name ID"],
+      ["Decision Date","Created On","Ticket ID","Repair Shop","Repair Shop ID","State","Chassis Number","Eligible tickets on same chassis at this repair shop","Included in Repeated Chassis","SAP PO Cost Used AUD","SAP Invoice Amount AUD","Ticket","Ticket Type","Status","Invoice Status","Invoice Number","Invoice Date","Serial ID","Dealer","Dealer Name","ERP Purchase Order ID","Sales Order","SAP PO Date","Changed On","C4C Approved Date","Country/Region","Postal Code","Service Technician","Repairer Business Name ID"],
       ...rows.map(entry=>{
         const r=commonRow(entry);
         const chassis=normalizedChassis(entry);
         const rec=repeatedMap.get(`${r.repairId}||${chassis}`)||{count:0};
         const included=Number(rec.count||0)>=2;
-        return [r.decisionDate,r.created,r.id,r.repairName,r.repairId,r.state,r.chassis,Number(rec.count||0),included?"Yes":"No",included?r.poCost:0,r.name,r.type,r.status,r.invoiceStatus,r.invoiceNumber,r.invoiceDate,r.serial,r.dealer,r.dealerName,r.po,r.salesOrder,r.posting,r.changed,r.approved,r.country,r.postal,r.technician,r.repairerBusinessId];
+        return [r.decisionDate,r.created,r.id,r.repairName,r.repairId,r.state,r.chassis,Number(rec.count||0),included?"Yes":"No",included?r.poCost:0,r.invoiceAmount,r.name,r.type,r.status,r.invoiceStatus,r.invoiceNumber,r.invoiceDate,r.serial,r.dealer,r.dealerName,r.po,r.salesOrder,r.posting,r.changed,r.c4cApproved,r.country,r.postal,r.technician,r.repairerBusinessId];
       }),
     ];
   }
   return [
-    ["Decision Date","Created On","Ticket ID","Repair Shop","Repair Shop ID","State","Approved Repair Cost AUD","Cost Eligible","ERP Purchase Order ID","Ticket","Ticket Type","Status","Invoice Status","Invoice Number","Invoice Date","Chassis Number","Serial ID","Dealer","Dealer Name","Sales Order","Posting Date","Changed On","Approved Date","Country/Region","Postal Code","Service Technician","Repairer Business Name ID"],
+    ["Decision Date","Created On","Ticket ID","Repair Shop","Repair Shop ID","State","SAP PO Cost AUD","SAP Invoice Amount AUD","Cost Eligible","ERP Purchase Order ID","Ticket","Ticket Type","Status","Invoice Status","Invoice Number","Invoice Date","Chassis Number","Serial ID","Dealer","Dealer Name","Sales Order","SAP PO Date","Changed On","C4C Approved Date","Country/Region","Postal Code","Service Technician","Repairer Business Name ID"],
     ...rows.map(entry=>{
       const r=commonRow(entry);
-      return [r.decisionDate,r.created,r.id,r.repairName,r.repairId,r.state,r.poCost,r.costEligible,r.po,r.name,r.type,r.status,r.invoiceStatus,r.invoiceNumber,r.invoiceDate,r.chassis,r.serial,r.dealer,r.dealerName,r.salesOrder,r.posting,r.changed,r.approved,r.country,r.postal,r.technician,r.repairerBusinessId];
+      return [r.decisionDate,r.created,r.id,r.repairName,r.repairId,r.state,r.poCost,r.invoiceAmount,r.costEligible,r.po,r.name,r.type,r.status,r.invoiceStatus,r.invoiceNumber,r.invoiceDate,r.chassis,r.serial,r.dealer,r.dealerName,r.salesOrder,r.posting,r.changed,r.c4cApproved,r.country,r.postal,r.technician,r.repairerBusinessId];
     }),
   ];
 }
@@ -5090,30 +5507,83 @@ function repairCostTicketEntries(){
   return repairScopeTicketEntries().filter(entry=>hasRepairCost(entry?.ticket));
 }
 function buildOverviewStateExportRows(list){
+  const rows=Array.isArray(list)?list:[];
+  const totalCost=rows.reduce((sum,r)=>sum+Number(r?.confirmed_cost||0),0);
+  const totalTickets=rows.reduce((sum,r)=>sum+Number(r?.ticket_count||0),0);
   return [
-    ["State","State Name","Total Approved Repair Cost","Tickets with Approved Repair Cost","Repair Shops With Approved Repair Cost","Avg Approved Repair Cost/Ticket","Snowy Repair Shops With Approved Repair Cost","Snowy Tickets with Approved Repair Cost","Snowy Approved Repair Cost","Snowy Avg Approved Repair Cost/Ticket"],
-    ...(Array.isArray(list)?list:[]).map(r=>{
-      const snowy=snowyRepairerSummary(r.state)||{};
+    ["State","State Name","Cost","Cost Share %","Tickets","Tickets Share %","Avg Cost / Ticket"],
+    ...rows.map(r=>{
+      const cost=Number(r.confirmed_cost||0);
+      const tickets=Number(r.ticket_count||0);
       return [
         r.state||"",
         stateLabel(r.state||""),
-        Number(r.confirmed_cost||0),
-        Number(r.ticket_count||0),
-        Number(r.unique_repairers||0),
+        cost,
+        totalCost>0?(cost/totalCost)*100:0,
+        tickets,
+        totalTickets>0?(tickets/totalTickets)*100:0,
         Number(r.avg_confirmed_cost||0),
-        Number(snowy.repairerCount||0),
-        Number(snowy.ticketCount||0),
-        Number(snowy.confirmedCost||0),
-        Number(snowy.avgConfirmedCost||0),
       ];
     }),
   ];
+}
+async function exportRankViewExcel(){
+  return withDownloadFloat(async()=>{
+    await ensureRepairDetailsLoaded();
+    const overviewStates=sortAustraliaStates(orderedAustraliaStates(repairOverviewStateRows()));
+    const allCostTickets=repairCostTicketEntries();
+    if(overviewRankView==="top"){
+      const rows=repairOverviewRepairerRows().slice();
+      rows.sort((a,b)=>{
+        if(topRepairSort==="ticket_count")return b.ticket_count-a.ticket_count||b.confirmed_cost-a.confirmed_cost;
+        if(topRepairSort==="avg_confirmed_cost")return b.avg_confirmed_cost-a.avg_confirmed_cost||b.ticket_count-a.ticket_count;
+        return b.confirmed_cost-a.confirmed_cost||b.ticket_count-a.ticket_count;
+      });
+      const top=rows.slice(0,20);
+      const repairIds=new Set(top.map(r=>r.repairId).filter(Boolean));
+      const detailRows=allCostTickets.filter(entry=>repairIds.has(repairInfo(entry).repairId));
+      if(!top.length||!detailRows.length){
+        alert("No top repairer ranking data found.");
+        return;
+      }
+      exportWorkbook([
+        {name:"Summary",rows:[
+          ["Metric","Value"],
+          ["Rank View","Top Repairers"],
+          ["Selected Period",repairPeriodLabel()],
+          ["Selected Date Range",repairPeriodText()],
+          ["Sort By",topRepairSort],
+          ["Top Repairers Exported",Number(top.length||0)],
+          ["Ticket Details Exported",Number(detailRows.length||0)],
+        ]},
+        {name:"Top Repairers",rows:buildRepairerExportRows(top,{priceMode:"po"})},
+        {name:"Ticket Details",rows:buildTicketDetailExportRows(detailRows,{priceMode:"po"})},
+      ],`top-repairers-ranking-${repairPeriodFileSuffix()}-${new Date().toISOString().slice(0,10)}`);
+      return;
+    }
+    if(!overviewStates.length||!allCostTickets.length){
+      alert("No state ranking data found.");
+      return;
+    }
+    exportWorkbook([
+      {name:"Summary",rows:[
+        ["Metric","Value"],
+        ["Rank View","State"],
+        ["Selected Period",repairPeriodLabel()],
+        ["Selected Date Range",repairPeriodText()],
+        ["States Exported",Number(overviewStates.length||0)],
+        ["Ticket Details Exported",Number(allCostTickets.length||0)],
+      ]},
+      {name:"States",rows:buildOverviewStateExportRows(overviewStates)},
+      {name:"Ticket Details",rows:buildTicketDetailExportRows(allCostTickets,{priceMode:"po"})},
+    ],`state-ranking-${repairPeriodFileSuffix()}-${new Date().toISOString().slice(0,10)}`);
+  });
 }
 async function exportOverviewExcel(){
   return withDownloadFloat(async()=>{
     await ensureRepairDetailsLoaded();
     const period=repairPeriodLabel();
-    const overviewStates=sortAustraliaStates(orderedAustraliaStates(Array.isArray(workingStates)?workingStates:[]));
+    const overviewStates=sortAustraliaStates(orderedAustraliaStates(repairOverviewStateRows()));
     const allRepairers=(Array.isArray(repairs)?repairs.slice():[]).filter(r=>Number(r.ticketCount||0)>0);
     const costTickets=repairCostTicketEntries();
     if(!overviewStates.length&&!costTickets.length){
@@ -6025,6 +6495,34 @@ function snowyTooltipLine(summary,row){
   if(weeklyMetric==="ticket_count")return `Snowy ${num(summary?.ticketCount||0)} tickets - ${share}% share`;
   return `Snowy ${money(summary?.confirmedCost||0)} | avg ${money(summary?.avgConfirmedCost||0)} - ${share}% share`;
 }
+function repairOverviewStateRows(){
+  const candidates=[
+    precomputedRepairPeriods?.[selectedRepairPeriod]?.states,
+    precomputedRepairPeriods?.total?.states,
+    workingStates,
+    weeklyAnalysis?.states,
+  ];
+  for(const rows of candidates){
+    if(Array.isArray(rows)&&rows.some(row=>row&&clean(row.state)&&Number(row.ticket_count||0)>0)){
+      return rows;
+    }
+  }
+  return [];
+}
+function repairOverviewRepairerRows(){
+  const candidates=[
+    precomputedRepairPeriods?.[selectedRepairPeriod]?.repairers,
+    precomputedRepairPeriods?.total?.repairers,
+    workingRepairers,
+    weeklyAnalysis?.repairers,
+  ];
+  for(const rows of candidates){
+    if(Array.isArray(rows)&&rows.some(row=>row&&clean(row.repairName||row.repairer_name||row.repairer_base_name)&&Number(row.ticket_count||row.ticketCount||0)>0)){
+      return repairersToWorkingRows(rows);
+    }
+  }
+  return [];
+}
 function renderCardTooltip({tipId,svgId,cardId,stateId,code,row}){
   const tip=$(tipId);
   const svg=$(svgId);
@@ -6033,15 +6531,12 @@ function renderCardTooltip({tipId,svgId,cardId,stateId,code,row}){
   if(!row){hideOverviewTooltip(tip);return;}
   const selectedCode=code||row.state||"QLD";
   $(stateId).textContent=stateLabel(row.state);
-  const snowySummary=snowyRepairerSummary(row.state);
   const totalCostEl=tip.querySelector('[data-role="total-cost"]');
   const ticketsEl=tip.querySelector('[data-role="tickets"]');
   const avgCostEl=tip.querySelector('[data-role="avg-ticket-price"]');
-  const snowyLineEl=tip.querySelector('[data-role="snowy-line"]');
   if(totalCostEl)totalCostEl.textContent=money(row?.confirmed_cost||0);
   if(ticketsEl)ticketsEl.textContent=num(row?.ticket_count||0);
   if(avgCostEl)avgCostEl.textContent=money(row?.avg_confirmed_cost||0);
-  if(snowyLineEl)snowyLineEl.textContent=snowyTooltipLine(snowySummary,row);
   tip.style.display="block";
   tip.style.opacity="0";
   tip.style.visibility="hidden";
@@ -6113,7 +6608,8 @@ function syncRankView(){
   $("rankViewTopBtn")?.classList.toggle("is-active",isTop);
 }
 function renderWeekPanel(){
-  const allStates=Array.isArray(workingStates)?workingStates:[];
+  const allStates=repairOverviewStateRows();
+  if(allStates.length&&(!Array.isArray(workingStates)||!workingStates.length))workingStates=allStates;
   const rankBodyEl=$("weekStateList");
   if(!allStates.length){
     $("weekError").textContent="No annual overview available.";
@@ -6130,9 +6626,9 @@ function renderWeekPanel(){
   const costRangeTitle=document.querySelector(".costRangePanel .panelTitle");
   if(costRangeTitle)costRangeTitle.textContent="Cost Range Breakdown";
   const chassisTitle=document.querySelector(".chassisRepeatPanel .panelTitle");
-  if(chassisTitle)chassisTitle.textContent="Repeated Claims on the Same Chassis";
+  if(chassisTitle)chassisTitle.textContent="Repeated Repairs Check";
   const shopTitle=document.querySelector("#repair-details .panelTitle");
-  if(shopTitle)shopTitle.textContent="Chassis Check Repair Shops";
+  if(shopTitle)shopTitle.textContent="Repeated Repairs Check";
   const shopDesc=document.querySelector("#repair-details .panelDesc");
   if(shopDesc)shopDesc.textContent="";
   const overviewStates=sortAustraliaStates(orderedAustraliaStates(allStates));
@@ -6146,11 +6642,8 @@ function renderWeekPanel(){
   if(!overviewStates.some(r=>r.state===selectedRegionCode))selectedRegionCode=overviewStates.some(r=>r.state==="QLD")?"QLD":overviewStates[0].state;
   const selected=selectedOverviewState(overviewStates);
   const legendMax=Math.max(1,...overviewStates.map(s=>weekStateMetric(s)));
-  const snowyByCode=Object.fromEntries(overviewStates.map(s=>[s.state,snowyRepairerSummary(s.state)]));
   const valueByCode=Object.fromEntries(overviewStates.map(s=>[s.state,weekStateMetric(s)]));
   const metaByCode=Object.fromEntries(overviewStates.map(s=>{
-    const snowy=snowyByCode[s.state]||{repairerCount:0,ticketCount:0,confirmedCost:0,avgConfirmedCost:0,names:[]};
-    const share=snowyMetricPercent(snowy,s);
     return [s.state,{
       ticket_count:Number(s.ticket_count||0),
       invoiced_tickets:Number(s.invoiced_tickets||0),
@@ -6158,20 +6651,22 @@ function renderWeekPanel(){
       confirmed_cost:Number(s.confirmed_cost||0),
       avg_confirmed_cost:Number(s.avg_confirmed_cost||0),
       unique_repairers:Number(s.unique_repairers||0),
-      snowyValue:snowyMetricValue(snowy),
-      snowyShare:share,
+      snowyValue:0,
+      snowyShare:0,
     }];
   }));
   const combinedGeo=ausGeo&&nzGeo?{type:"FeatureCollection",features:[...(ausGeo.features||[]),...(nzGeo.features||[])]}:ausGeo||nzGeo;
   renderGeoSvg($("ausMap"),combinedGeo,valueByCode,STATE_ABBR_LABELS,metaByCode);
   const weekLegendTitle=$("weekLegendTitle");
   if(weekLegendTitle)weekLegendTitle.textContent=metricLabel();
+  const totalCost=overviewStates.reduce((sum,r)=>sum+Number(r.confirmed_cost||0),0);
+  const totalTickets=overviewStates.reduce((sum,r)=>sum+Number(r.ticket_count||0),0);
   const rowsHtml=overviewStates.map((r,i)=>{
-    const snowy=snowyByCode[r.state]||{repairerCount:0,ticketCount:0,confirmedCost:0,avgConfirmedCost:0,names:[]};
-    const snowyLine=Number(snowy.ticketCount||0)>0
-      ? `<span class="stateRankSnowyMeta">${num(snowy.ticketCount||0)} Snowy tickets | ${num(snowyMetricPercent(snowy,r),1)}% share</span>`
-      : `<span class="stateRankSnowyEmpty">No Snowy repairer</span>`;
-    return `<tr class="stateRankRow ${r.state===selected.state?"is-active":""}" data-state="${esc(r.state)}" role="button" tabindex="0"><td class="stateRankPos">${num(i+1)}</td><td><div class="stateRankState"><span class="stateName">${esc(stateLabel(r.state))}</span></div></td><td class="stateRankValue">${money(r.confirmed_cost||0)}</td><td class="stateRankValue">${num(r.ticket_count||0)}</td><td class="stateRankValue">${money(r.avg_confirmed_cost||0)}</td><td class="stateRankValue">${num(r.unique_repairers||0)}</td><td class="stateRankValue stateRankAvgCell"><span class="stateRankAvgTop">${money(r.avg_confirmed_cost||0)}</span>${snowyLine}</td></tr>`;
+    const cost=Number(r.confirmed_cost||0);
+    const tickets=Number(r.ticket_count||0);
+    const costShare=totalCost>0?(cost/totalCost)*100:0;
+    const ticketShare=totalTickets>0?(tickets/totalTickets)*100:0;
+    return `<tr class="stateRankRow ${r.state===selected.state?"is-active":""}" data-state="${esc(r.state)}" role="button" tabindex="0"><td class="stateRankPos">${num(i+1)}</td><td><div class="stateRankState"><span class="stateName">${esc(stateLabel(r.state))}</span></div></td><td class="stateRankValue">${money(cost)}</td><td class="stateRankValue">${num(costShare,1)}%</td><td class="stateRankValue">${num(tickets)}</td><td class="stateRankValue">${num(ticketShare,1)}%</td><td class="stateRankValue">${money(r.avg_confirmed_cost||0)}</td></tr>`;
   }).join("");
   if(rankBodyEl)rankBodyEl.innerHTML=rowsHtml;
   hideOverviewTooltip($("weekMapTooltip"));
@@ -6180,6 +6675,11 @@ function renderWeekPanel(){
 function renderWeekPanelIfReady(){if(weeklyAnalysis){renderWeekPanel()}}
 const columns=[["repairName","Repair Shop Name"],["repeatChassisOver2Count","Repeated Chassis Count"],["repeatedClaimTicketCount","Repeated Approved Repair Cost Tickets"],["repeatedClaimAmount","Repeated Approved Repair Cost"],["avgRepeatedClaimAmount","Avg Approved Repair Cost / Repeated Ticket"],["repeatRate","Repeat Rate"],["chassisTicketCount","Eligible Chassis Tickets"],["uniqueChassisCount","Unique Eligible Chassis"],["export","Export"],["insights","Insights"]];
 function renderTable(){
+  const wrap=document.querySelector("#repair-details .tableWrap");
+  const pager=document.querySelector("#repair-details .pager");
+  if(wrap)wrap.hidden=true;
+  if(pager)pager.hidden=true;
+  return;
   $("tableHead").innerHTML=columns.map(([k,l])=>`<th data-key="${k}" class="${k==="repeatRate"?"num uniqueRatioHead":k!=="repairName"&&k!=="insights"&&k!=="export"?"num":""}">${esc(l)} ${sortKey===k?(sortDir==="asc"?"up":"down"):""}</th>`).join("");
   $("tableHead").querySelectorAll("th[data-key]").forEach(th=>th.onclick=()=>{const k=th.dataset.key;if(k==="insights"||k==="export")return;if(sortKey===k)sortDir=sortDir==="asc"?"desc":"asc";else{sortKey=k;sortDir="desc"}renderAll()});
   tableFiltered=currentChassisCheckRows(filtered);
@@ -6199,8 +6699,10 @@ function syncRepairExportButton(){
   btn.title="Export current repair shop table and matching ticket details to Excel";
 }
 function renderSelect(){
+  const selectEl=$("repairSelect");
+  if(!selectEl)return;
   const opts=[`<option value="all">All repair shops</option>`].concat(currentChassisCheckRows(repairs).map(r=>`<option value="${esc(r.repairId)}">${esc(r.repairName)} (${esc(r.repairId)})</option>`));
-  $("repairSelect").innerHTML=opts.join("");$("repairSelect").value=selectedRepairId;
+  selectEl.innerHTML=opts.join("");selectEl.value=selectedRepairId;
   syncRepairExportButton();
 }
 function renderKpis(){
@@ -6222,7 +6724,7 @@ function round2(v){return Math.round((Number(v)||0)*100)/100}
 function renderTop20Panel(){
   const list=$("topRepairList");
   if(!list)return;
-  const rows=(workingRepairers||[]).slice();
+  const rows=repairOverviewRepairerRows().slice();
   rows.sort((a,b)=>{
     if(topRepairSort==="ticket_count")return b.ticket_count-a.ticket_count||b.confirmed_cost-a.confirmed_cost;
     if(topRepairSort==="avg_confirmed_cost")return b.avg_confirmed_cost-a.avg_confirmed_cost||b.ticket_count-a.ticket_count;
@@ -6279,259 +6781,380 @@ function chassisRepeatCostBucket(cost,costBuckets){
   return (Array.isArray(costBuckets)?costBuckets:[]).find(cb=>cost>=cb.min&&cost<cb.max)||null;
 }
 function computeChassisRepeatDistribution(){
-  // Uses the currently loaded repair ticket details.
-  // Restricts to selected repair-year approved/decision date to match repair panel scope.
-  if(!Array.isArray(tickets)||!tickets.length){workingChassis={distribution:[],totals:{unique:0,repeat23:0,repeat4:0,ticketsMatched:0},bucketDetails:{},repeatLabels:{},costLabels:{},chassisRows:[],costBuckets:[]};return}
-  const chassisMap=new Map();
-  tickets.forEach(entry=>{
+  const sourceRows=(Array.isArray(allRepairTickets)&&allRepairTickets.length?allRepairTickets:tickets)
+    .filter(entryInSelectedRepairPeriod);
+  if(!Array.isArray(sourceRows)||!sourceRows.length){
+    workingChassis={totalUniqueChassis:0,repeatedClaimsOnSameChassis:0,repeatedChassisCount:0,repeatRate:0,categories:[],groups:[],summaryByKey:{},detailRows:[]};
+    return;
+  }
+  const totalChassisSet=new Set();
+  const repairerTotals=new Map();
+  const groupMap=new Map();
+  sourceRows.forEach(entry=>{
     const created=repairEntryDateKey(entry);
     if(!created||!isRepairScopeDate(created))return;
-    const cost=openPoRepairCostFromTicket(entry.ticket);
-    if(cost<=0)return;
+    const ticket=entry?.ticket||{};
     const chassis=normalizedChassisFromRaw(entry);
     if(!chassis)return;
+    totalChassisSet.add(chassis);
     const info=repairInfo(entry);
     if(info.repairName==="No Repair Shop Assigned"||info.repairId==="no-repair")return;
-    const rec=chassisMap.get(chassis)||{chassis,count:0,tickets:[]};
-    rec.count++;rec.tickets.push({
-      cost,
-      created,
+    const repairerTotal=repairerTotals.get(info.repairId)||{repairId:info.repairId,repairName:info.repairName,chassisSet:new Set(),ticketCount:0};
+    repairerTotal.chassisSet.add(chassis);
+    repairerTotal.ticketCount+=1;
+    repairerTotals.set(info.repairId,repairerTotal);
+    const approvedCost=openPoRepairCostFromTicket(ticket);
+    const approved=approvedCost>0;
+    const unapproved=isUnapprovedRepairTicket(ticket);
+    const record={
+      chassis,
       repairId:info.repairId,
       repairName:info.repairName,
-      ticketId:clean(entry.id||entry.ticket.TicketID||entry.ticket.Ticket||""),
-      ticketName:clean(entry.ticket.TicketName||entry.ticket.Ticket||entry.ticket.TicketID||""),
-      state:clean(entry.ticket.state||entry.ticket.State||""),
-      ticketStatus:clean(entry.ticket.TicketStatusText||entry.ticket.TicketStatus||""),
-      ticketType:clean(entry.ticket.TicketTypeText||entry.ticket.TicketType||""),
-      invoiceStatus:clean(entry.ticket.invoice_status||""),
-      invoiceNumber:clean(entry.ticket.invoice_number||""),
-      invoiceDate:clean(entry.ticket.invoice_date||""),
-      serialId:clean(entry.ticket.SerialID||""),
-      chassisNumber:clean(entry.ticket.ChassisNumber||""),
-      dealerName:clean(entry.ticket.DealerName||entry.ticket["Dealer Name"]||""),
-    });
-    chassisMap.set(chassis,rec);
+      created,
+      approved,
+      unapproved,
+      approvedCost,
+      c4cTicketId:clean(ticket["C4C Ticket ID"]||ticket.C4CTicketID||ticket.c4c_ticket_id||""),
+      ticketId:clean(entry.id||ticket.TicketID||ticket.Ticket||""),
+      ticketName:clean(ticket.TicketName||ticket.Ticket||ticket.TicketID||""),
+      state:clean(ticket.state||ticket.State||""),
+      ticketStatus:clean(ticket.TicketStatusText||ticket.TicketStatus||ticket.Status||""),
+      ticketType:clean(ticket.TicketTypeText||ticket.TicketType||""),
+      invoiceStatus:clean(ticket.invoice_status||ticket["Invoice Status"]||""),
+      invoiceNumber:clean(ticket.invoice_number||ticket["Invoice Number"]||ticket.sap_invoice_docs||""),
+      invoiceDate:clean(ticket.invoice_date||ticket["Invoice Date"]||ticket.sap_last_invoice_date||""),
+      invoiceAmount:Number(ticket.sap_signed_invoice_amount||ticket.sap_raw_invoice_amount||ticket["SAP Signed Invoice Amount"]||0)||0,
+      serialId:clean(ticket.SerialID||""),
+      chassisNumber:clean(ticket.ChassisNumber||""),
+      dealerName:clean(ticket.DealerName||ticket["Dealer Name"]||""),
+      approvedDate:clean(ticket.c4c_claim_approved_on||ticket["C4C Claim Approved On"]||ticket.ClaimApprovedOnDateTime||ticket.ClaimApprovedOn||ticket["Claim Approved On"]||ticket.approved_date||ticket.ApprovedDate||ticket["Approved Date"]||""),
+      postingDate:clean(ticket.PostingDate||ticket["Posting Date"]||""),
+      createdOn:clean(ticket.CreatedOn||ticket["Created On"]||""),
+      erpPo:clean(ticket.ERPPurchaseOrderID||ticket["ERP Purchase Order ID"]||ticket.ERPPO||ticket.sap_pos||""),
+      cancelledErpPo:clean(ticket.sap_cancelled_pos||""),
+    };
+    const groupKey=`${info.repairId}||${chassis}`;
+    const group=groupMap.get(groupKey)||{key:groupKey,chassis,repairId:info.repairId,repairName:info.repairName,tickets:[]};
+    group.tickets.push(record);
+    groupMap.set(groupKey,group);
   });
-  const repeatBuckets=[
-    {key:"unique",label:"Unique (1 claim)",min:1,max:2},
-    {key:"repeat23",label:"2 - 3 repeats",min:2,max:4},
-    {key:"repeat4",label:"4+ repeats",min:4,max:Infinity},
+  const categories=[
+    {key:"unapproved_until_approved",label:"Repeat Tickets : Partially Approved",rows:[],chassisSet:new Set(),approvedCost:0},
+    {key:"all_approved",label:"Repeat Tickets : ALL Approved",rows:[],chassisSet:new Set(),approvedCost:0},
   ];
-  const costBuckets=[
-    {key:"low",label:"$0.01 - $500",min:0,max:500},
-    {key:"mid",label:"$500 - $2k",min:500,max:2000},
-    {key:"high",label:"$2k - $5k",min:2000,max:5000},
-    {key:"prem",label:"$5k+",min:5000,max:Infinity},
-  ];
-  const dist=repeatBuckets.map(rb=>({label:rb.label,key:rb.key,cells:Object.fromEntries(costBuckets.map(cb=>[cb.key,0])),total:0,costTotal:0,chassisCount:0}));
-  const totals={unique:0,repeat23:0,repeat4:0,ticketsMatched:0,costTicketsMatched:0};
-  const bucketDetails={};
-  const repeatLabels=Object.fromEntries(repeatBuckets.map(rb=>[rb.key,rb.label]));
-  const costLabels=Object.fromEntries(costBuckets.map(cb=>[cb.key,cb.label]));
-  const chassisRows=[];
-  chassisMap.forEach(rec=>{
-    const rb=repeatBuckets.find(r=>rec.count>=r.min&&rec.count<r.max);
-    if(!rb)return;
-    totals[rb.key]++;
-    totals.ticketsMatched+=rec.count;
-    const costTickets=rec.tickets.filter(t=>Number(t.cost||0)>0);
-    const totalCost=costTickets.reduce((s,t)=>s+Number(t.cost||0),0);
-    const repairerNames=Array.from(new Set(rec.tickets.map(t=>t.repairName).filter(Boolean))).sort((a,b)=>a.localeCompare(b));
-    const dates=rec.tickets.map(t=>t.created).filter(Boolean).sort();
-    rec.tickets.forEach(t=>{
-      const ticketCost=Number(t.cost||0);
-      if(ticketCost<=0)return;
-      const cb=chassisRepeatCostBucket(ticketCost,costBuckets);
-      if(!cb)return;
-      const row=dist.find(d=>d.key===rb.key);
-      row.cells[cb.key]++;row.total++;
-      row.costTotal+=ticketCost;
-      totals.costTicketsMatched++;
-      const bucketKey=`${rb.key}|${cb.key}`;
-      (bucketDetails[bucketKey]||(bucketDetails[bucketKey]=[])).push({
-        chassis:rec.chassis||chassis,
-        repeatKey:rb.key,
-        repeatLabel:rb.label,
-        costKey:cb.key,
-        costLabel:cb.label,
-        chassisCount:rec.count,
-        ticket:t,
+  const categoryByKey=Object.fromEntries(categories.map(cat=>[cat.key,cat]));
+  const detailRows=[];
+  const groups=[];
+  const repeatedApprovedChassisSet=new Set();
+  groupMap.forEach(group=>{
+    if(!Array.isArray(group.tickets)||group.tickets.length<2)return;
+    const sorted=group.tickets.slice().sort((a,b)=>(a.created||"").localeCompare(b.created||"")||(a.ticketId||"").localeCompare(b.ticketId||""));
+    const approvedTickets=sorted.filter(row=>row.approved&&Number(row.approvedCost||0)>0);
+    const unapprovedTickets=sorted.filter(row=>row.unapproved);
+    if(approvedTickets.length>=2)repeatedApprovedChassisSet.add(group.chassis);
+    let categoryKey="";
+    let approvedCost=0;
+    if(approvedTickets.length&&unapprovedTickets.length){
+      categoryKey="unapproved_until_approved";
+      approvedCost=Number(approvedTickets[approvedTickets.length-1]?.approvedCost||0);
+    }else if(sorted.length===approvedTickets.length&&approvedTickets.length>=2){
+      categoryKey="all_approved";
+      approvedCost=approvedTickets.reduce((sum,row)=>sum+Number(row.approvedCost||0),0);
+    }
+    if(!categoryKey)return;
+    const category=categoryByKey[categoryKey];
+    if(!category)return;
+    const firstDate=sorted[0]?.created||"";
+    const lastDate=sorted[sorted.length-1]?.created||"";
+    const row={
+      categoryKey,
+      categoryLabel:category.label,
+      chassis:group.chassis,
+      repairId:group.repairId,
+      repairName:group.repairName,
+      requestCount:sorted.length,
+      approvedTicketCount:approvedTickets.length,
+      unapprovedTicketCount:unapprovedTickets.length,
+      approvedCost,
+      firstCreated:firstDate,
+      lastCreated:lastDate,
+      tickets:sorted,
+    };
+    category.rows.push(row);
+    category.chassisSet.add(group.chassis);
+    category.approvedCost+=approvedCost;
+    groups.push(row);
+    sorted.forEach(ticket=>{
+      detailRows.push({
+        categoryKey,
+        categoryLabel:category.label,
+        chassis:group.chassis,
+        repairId:group.repairId,
+        repairName:group.repairName,
+        requestCount:sorted.length,
+        approvedTicketCount:approvedTickets.length,
+        unapprovedTicketCount:unapprovedTickets.length,
+        groupApprovedCost:approvedCost,
+        ticket,
       });
     });
-    const row=dist.find(d=>d.key===rb.key);
-    row.chassisCount++;
-    chassisRows.push({
-      chassis:rec.chassis,
-      repeatKey:rb.key,
-      repeatLabel:rb.label,
-      chassisCount:rec.count,
-      ticketCount:rec.tickets.length,
-      eligibleCostTicketCount:costTickets.length,
-      totalCost,
-      avgCost:costTickets.length?totalCost/costTickets.length:0,
-      repairerCount:repairerNames.length,
-      repairerNames,
-      firstCreated:dates[0]||"",
-      lastCreated:dates[dates.length-1]||"",
-      tickets:rec.tickets.slice().sort((a,b)=>(b.created||"").localeCompare(a.created||"")||(a.ticketId||"").localeCompare(b.ticketId||"")),
-    });
   });
-  chassisRows.sort((a,b)=>b.ticketCount-a.ticketCount||b.chassisCount-a.chassisCount||a.chassis.localeCompare(b.chassis));
-  workingChassis={distribution:dist,costBuckets,totals,uniqueChassis:chassisMap.size,bucketDetails,repeatLabels,costLabels,chassisRows};
+  categories.forEach(category=>{
+    category.chassisCount=category.chassisSet.size;
+    category.share=totalChassisSet.size?category.chassisCount/totalChassisSet.size*100:0;
+    category.rows.sort((a,b)=>b.approvedCost-a.approvedCost||b.requestCount-a.requestCount||(a.chassis||"").localeCompare(b.chassis||""));
+    const repairerMap=new Map();
+    category.rows.forEach(row=>{
+      const totalInfo=repairerTotals.get(row.repairId)||{chassisSet:new Set(),ticketCount:0};
+      const repairer=repairerMap.get(row.repairId)||{
+        repairId:row.repairId,
+        repairName:row.repairName,
+        totalChassis:Number(totalInfo.chassisSet?.size||0),
+        totalTickets:Number(totalInfo.ticketCount||0),
+        repeatedChassisSet:new Set(),
+        repeatedTickets:0,
+        approvedCost:0,
+        groups:0,
+      };
+      repairer.repeatedChassisSet.add(row.chassis);
+      repairer.repeatedTickets+=Number(row.requestCount||0);
+      repairer.approvedCost+=Number(row.approvedCost||0);
+      repairer.groups+=1;
+      repairerMap.set(row.repairId,repairer);
+    });
+    category.repairers=[...repairerMap.values()].map(row=>{
+      const repeatedChassis=row.repeatedChassisSet.size;
+      return {
+        repairId:row.repairId,
+        repairName:row.repairName,
+        totalChassis:row.totalChassis,
+        repeatedChassis,
+        repeatedTickets:row.repeatedTickets,
+        totalTickets:row.totalTickets,
+        approvedCost:row.approvedCost,
+        groups:row.groups,
+        repeatRate:row.totalTickets?row.repeatedTickets/row.totalTickets*100:0,
+      };
+    }).sort((a,b)=>b.repeatedTickets-a.repeatedTickets||b.repeatRate-a.repeatRate||b.repeatedChassis-a.repeatedChassis||(a.repairName||"").localeCompare(b.repairName||""));
+    delete category.chassisSet;
+  });
+  const repeatedChassisSet=new Set(groups.map(row=>row.chassis).filter(Boolean));
+  const repeatedTicketCount=groups.reduce((sum,row)=>sum+Number(row.requestCount||0),0);
+  const totalTicketCount=[...repairerTotals.values()].reduce((sum,row)=>sum+Number(row.ticketCount||0),0);
+  workingChassis={
+    totalUniqueChassis:totalChassisSet.size,
+    repeatedClaimsOnSameChassis:repeatedApprovedChassisSet.size,
+    repeatedChassisCount:repeatedChassisSet.size,
+    repeatedTicketCount,
+    totalTicketCount,
+    repeatRate:totalTicketCount?repeatedTicketCount/totalTicketCount*100:0,
+    categories,
+    groups,
+    summaryByKey:Object.fromEntries(categories.map(category=>[category.key,category])),
+    detailRows,
+  };
+}
+function legacyChassisRepeatSummary(w){
+  const source=w&&typeof w==="object"?w:{};
+  const totals=source.totals&&typeof source.totals==="object"?source.totals:{};
+  const unique=Number(source.totalUniqueChassis||source.uniqueChassis||totals.unique||0);
+  const repeatChassis=Number(source.repeatedClaimsOnSameChassis||source.repeatedChassisCount||totals.repeat23||0)+Number(totals.repeat4||0);
+  const ticketsMatched=Number(totals.ticketsMatched||0);
+  const totalRepeatTickets=Number(source.totalRepeatedRepairTickets||Math.max(0,ticketsMatched-unique)||0);
+  const repeatValue=Number(source.repeatedRepairTicketValue||
+    (Array.isArray(source.distribution)?source.distribution.filter(row=>row&&row.key!=="unique").reduce((sum,row)=>sum+Number(row.costTotal||0),0):0)
+  );
+  const repeatRate=unique?repeatChassis/unique*100:Number(source.repeatRate||0);
+  return {unique,repeatChassis,totalRepeatTickets,repeatValue,repeatRate};
+}
+function requestChassisRepeatDetailRefresh(){
+  if(chassisRepeatDetailRefreshStarted||repairDetailsLoaded)return;
+  chassisRepeatDetailRefreshStarted=true;
+  ensureRepairDetailsLoaded({renderAfter:false}).then(()=>{
+    rebuildRepairWorkingData();
+    renderChassisRepeatPanel();
+    renderTop20Panel();
+    renderWeekPanelIfReady();
+    repairPageVersion().then(v=>saveRepairPageState(v)).catch(()=>{});
+  }).catch(err=>console.warn("Chassis repeat detail refresh failed",err));
+}
+function chassisRepeatTotalTicketDenominator(w=workingChassis){
+  const explicit=Number(w?.totalTicketCount||0);
+  if(explicit>0)return explicit;
+  if(Array.isArray(allRepairTickets)&&allRepairTickets.length)return allRepairTickets.length;
+  return Number(workingSummary?.detail_rows||workingSummary?.total_tickets||0);
+}
+function chassisRepeatApprovedTicketCount(w=workingChassis){
+  const currentEntries=Array.isArray(tickets)&&tickets.length?tickets:(Array.isArray(allRepairTickets)?allRepairTickets:[]);
+  const approvedFromDetails=currentEntries.filter(entry=>hasRepairCost(entry?.ticket)).length;
+  if(approvedFromDetails>0)return approvedFromDetails;
+  return Number(
+    workingSummary?.total_tickets||
+    precomputedRepairPeriods?.[selectedRepairPeriod]?.summary?.total_tickets||
+    precomputedRepairPeriods?.total?.summary?.total_tickets||
+    0
+  );
+}
+function chassisRepeatCategoryTotals(row,w=workingChassis){
+  const repairers=Array.isArray(row?.repairers)?row.repairers:[];
+  const repeatTickets=repairers.reduce((sum,repairer)=>sum+Number(repairer.repeatedTickets||0),0);
+  const totalTickets=chassisRepeatTotalTicketDenominator(w);
+  return {
+    repeatTickets,
+    totalTickets,
+    rate:totalTickets?repeatTickets/totalTickets*100:0,
+  };
 }
 function renderChassisRepeatPanel(){
-  const summary=$("chassisRepeatSummary"), viz=$("chassisRepeatViz");
+  const summary=$("repairRepeatSummary")||$("chassisRepeatSummary");
+  const viz=$("repairRepeatScenarios")||$("chassisRepeatViz");
   if(!summary||!viz)return;
-  const w=workingChassis||{distribution:[],totals:{unique:0,repeat23:0,repeat4:0,ticketsMatched:0,costTicketsMatched:0},uniqueChassis:0,bucketDetails:{},repeatLabels:{},costLabels:{},costBuckets:[],chassisRows:[]};
-  const t=w.totals||{};
-  const repeatChassis=Number(t.repeat23||0)+Number(t.repeat4||0);
-  const repeatRate=w.uniqueChassis?repeatChassis/Number(w.uniqueChassis||1)*100:0;
-  const totalRepeatClaims=Math.max(0,Number(t.ticketsMatched||0)-Number(w.uniqueChassis||0));
-  const repeatClaimValue=(Array.isArray(w.distribution)?w.distribution:[])
-    .filter(row=>row&&row.key!=="unique")
-    .reduce((sum,row)=>sum+Number(row.costTotal||0),0);
+  const w=workingChassis||{totalUniqueChassis:0,repeatedChassisCount:0,repeatRate:0,categories:[]};
+  const legacy=legacyChassisRepeatSummary(w);
+  const repeatedProcess=Number(w.repeatedTicketCount||w.repeatedChassisCount||0);
+  const totalTickets=chassisRepeatTotalTicketDenominator(w);
+  const approvedTicketCount=chassisRepeatApprovedTicketCount(w);
+  const repeatedProcessRate=totalTickets?repeatedProcess/totalTickets*100:Number(w.repeatRate||0);
   summary.innerHTML=`
-    <div><span>Total Chassis</span><b>${num(w.uniqueChassis||0)}</b></div>
-    <div><span>Chassis with Repeat Claims</span><b>${num(repeatChassis)}</b></div>
-    <div><span>Repeat Rate</span><b>${num(repeatRate,1)}%</b></div>
-    <div><span>Total Repeat Claims</span><b>${num(totalRepeatClaims)}</b></div>
-    <div><span>Repeat Claim Value</span><b>${money(repeatClaimValue)}</b></div>`;
-  viz.hidden=true;
-  viz.innerHTML="";
-  viz.style.display="none";
-  return;
-  const cb=Array.isArray(w.costBuckets)&&w.costBuckets.length?w.costBuckets:[
-    {key:"low",label:"$0.01 - $500"},
-    {key:"mid",label:"$500 - $2k"},
-    {key:"high",label:"$2k - $5k"},
-    {key:"prem",label:"$5k+"},
-  ];
-  if(!w.distribution.length){viz.innerHTML='<div class="chassisRepeatEmpty">No chassis repeat data available in this export.</div>';return}
-  const legendColors={low:"#3b82f6",mid:"#f59e0b",high:"#ef4444",prem:"#7c3aed"};
-  const bucketTotals=Object.fromEntries(cb.map(c=>[c.key,w.distribution.reduce((s,r)=>s+Number(r.cells[c.key]||0),0)]));
-  const legendHtml=cb.map(c=>`<button class="chassisRepeatLegendItem" type="button" data-cost-key="${esc(c.key)}"><span class="chassisRepeatLegendSwatch" style="background:${legendColors[c.key]||"#3b82f6"}"></span>${esc(c.label)} <b>${num(bucketTotals[c.key]||0)}</b></button>`).join("");
-  const rowCards=w.distribution.map(row=>{
-    const rowTotal=Math.max(0,Number(row.total||0));
-    const stack=rowTotal?cb.map(c=>{
-      const v=Number(row.cells[c.key]||0);
-      if(!v)return "";
-      const pct=(v/rowTotal)*100;
-      const showLabel=pct>=16||v>=100;
-      const label=showLabel?num(v):"";
-      const ariaLabel=`${row.label} ${c.label} ${num(v)} approved repair cost tickets`;
-      return `<button class="chassisRepeatSeg ${esc(c.key)}${showLabel?"":" isTiny"}" type="button" data-repeat-key="${esc(row.key||"")}" data-cost-key="${esc(c.key)}" aria-label="${esc(ariaLabel)}" style="flex:0 0 ${pct}%;background:${legendColors[c.key]||"#3b82f6"}" title="${esc(row.label)}  |  ${esc(c.label)}  |  ${num(v)} approved repair cost tickets">${label}</button>`;
-    }).join(""):'<span class="chassisRepeatSeg low" style="flex:1 1 auto;background:linear-gradient(90deg,#dbeafe,#bfdbfe);color:#1e3a8a;text-shadow:none">No approved repair cost tickets</span>';
-    const avg=rowTotal?money(row.costTotal/rowTotal):money(0);
-    const stats=[
-      `${num(row.chassisCount||0)} chassis`,
-      `${num(row.total||0)} approved repair cost tickets`,
-      `avg ${avg}`,
-    ].map(text=>`<span class="chassisRepeatMetaStat">${esc(text)}</span>`).join("");
-    return `<article class="chassisRepeatVizCard">
-      <div class="chassisRepeatVizHead">
-        <div>
-          <div class="chassisRepeatVizTitle">${esc(row.label)}</div>
-          <div class="chassisRepeatVizMeta">${stats}</div>
-        </div>
-        <div class="chassisRepeatVizTotals"><b>${money(row.costTotal||0)}</b>Approved repair cost</div>
-      </div>
-      <div class="chassisRepeatStack">${stack}</div>
-    </article>`;
-  }).join("");
-  viz.innerHTML=`<div class="chassisRepeatLegend">${legendHtml}</div>${rowCards}`;
-  viz.querySelectorAll(".chassisRepeatSeg[data-repeat-key][data-cost-key]").forEach(btn=>{
-    btn.onclick=()=>exportChassisRepeatExcel(btn.dataset.repeatKey||null,btn.dataset.costKey||null);
-  });
-  viz.querySelectorAll(".chassisRepeatLegendItem[data-cost-key]").forEach(btn=>{
-    btn.onclick=()=>exportChassisRepeatExcel(null,btn.dataset.costKey||null);
-  });
-}
-async function exportChassisRepeatExcel(repeatKey=null,costKey=null){
-  return withDownloadFloat(async()=>{
-  if(repeatKey&&typeof repeatKey==="object")repeatKey=null;
-  if(costKey&&typeof costKey==="object")costKey=null;
-  await ensureRepairDetailsLoaded();
-  const w=workingChassis||{};
-  if(!w||!Array.isArray(w.distribution)||!w.distribution.length||!Array.isArray(w.chassisRows)||!w.chassisRows.length){alert("No chassis repeat data available to export.");return}
-  const cb=Array.isArray(w.costBuckets)&&w.costBuckets.length?w.costBuckets:[
-    {key:"low",label:"$0.01 - $500",min:0,max:500},
-    {key:"mid",label:"$500 - $2k",min:500,max:2000},
-    {key:"high",label:"$2k - $5k",min:2000,max:5000},
-    {key:"prem",label:"$5k+",min:5000,max:Infinity},
-  ];
-  const hasRepeat=!!repeatKey&&repeatKey!=="all";
-  const hasCost=!!costKey;
-  const allDetails=Object.values(w.bucketDetails||{}).flat().filter(Boolean);
-  let bucketDetails=null;
-  if(hasRepeat&&hasCost){
-    bucketDetails=Array.isArray(w.bucketDetails?.[`${repeatKey}|${costKey}`])?w.bucketDetails[`${repeatKey}|${costKey}`]:null;
-  }else if(hasCost){
-    bucketDetails=allDetails.filter(item=>item.costKey===costKey);
-  }else if(hasRepeat){
-    bucketDetails=allDetails.filter(item=>item.repeatKey===repeatKey);
+    <div><span>Tickets QTY (Repeat Requests)</span><b>${num(repeatedProcess)}</b></div>
+    <div><span>Repeat Rate</span><b>${num(repeatedProcessRate,1)}%</b></div>`;
+  const rows=Array.isArray(w.categories)?w.categories:[];
+  viz.hidden=false;
+  viz.style.display="";
+  if(!rows.length){
+    requestChassisRepeatDetailRefresh();
+    const message=repairDetailsLoaded
+      ? "No repeated chassis cases match the current scope."
+      : "Loading repeated request detail from ticket history...";
+    viz.innerHTML=`<div class="chassisRepeatEmpty">${esc(message)}</div>`;
+    return;
   }
-  if((hasRepeat||hasCost)&&(!bucketDetails||!bucketDetails.length)){alert("No chassis repeat data available for the selected cell.");return}
-  if(bucketDetails){
-    const repeatLabel=hasRepeat?(w.repeatLabels?.[repeatKey]||repeatKey||""):"All repeat buckets";
-    const costLabel=hasCost?(w.costLabels?.[costKey]||costKey||""):"All cost buckets";
-    const chassisMap=new Map();
-    bucketDetails.forEach(item=>{
-      const ticket=item.ticket||{};
-      const chassis=item.chassis||"";
-      const row=chassisMap.get(chassis)||{
-        chassis,
-        repeatLabel:item.repeatLabel||repeatLabel,
-        chassisCount:Number(item.chassisCount||0),
-        ticketCount:0,
-        totalCost:0,
-        avgCost:0,
-        repairerNames:new Set(),
-        firstCreated:"",
-        lastCreated:"",
-      };
-      const created=ticket.created||"";
-      row.ticketCount++;
-      row.totalCost+=Number(ticket.cost||0);
-      if(ticket.repairName)row.repairerNames.add(ticket.repairName);
-      if(created&&(!row.firstCreated||created<row.firstCreated))row.firstCreated=created;
-      if(created&&(!row.lastCreated||created>row.lastCreated))row.lastCreated=created;
-      chassisMap.set(chassis,row);
-    });
-    const chassisRows=[...chassisMap.values()].map(row=>({
-      ...row,
-      avgCost:row.ticketCount?row.totalCost/row.ticketCount:0,
-      repairerNames:[...row.repairerNames].sort((a,b)=>a.localeCompare(b)),
-    })).sort((a,b)=>b.ticketCount-a.ticketCount||b.chassisCount-a.chassisCount||a.chassis.localeCompare(b.chassis));
-    const totalCost=bucketDetails.reduce((s,item)=>s+Number(item.ticket?.cost||0),0);
+  viz.innerHTML=`<div class="chassisRepeatScenarioGrid">
+    ${rows.map(row=>`
+      <section class="chassisRepeatScenarioCard">
+        <h3 class="chassisRepeatScenarioTitle">${esc(row.label||"")}</h3>
+        <div class="chassisRepeatScenarioMeta">
+          <span>Repeat Tickets <b>${num(chassisRepeatCategoryTotals(row,w).repeatTickets)}</b></span>
+          <span>Total Repair Requests <small>(Approved Tickets ${num(approvedTicketCount)})</small> <b>${num(chassisRepeatCategoryTotals(row,w).totalTickets)}</b></span>
+          <span>Rate <b>${num(chassisRepeatCategoryTotals(row,w).rate,1)}%</b></span>
+        </div>
+        <div class="repeatShopGrid">
+          <div class="repeatShopGridRow repeatShopGridHead">
+            <div class="repeatShopGridCell">Repair Shop</div>
+            <div class="repeatShopGridCell num">Repeat Tickets<small>(Caravans)</small></div>
+            <div class="repeatShopGridCell num">Total Repair Requests</div>
+            <div class="repeatShopGridCell num">Rate</div>
+          </div>
+          ${(Array.isArray(row.repairers)?row.repairers:[]).slice(0,20).map(repairer=>`
+            <div class="repeatShopGridRow">
+              <div class="repeatShopGridCell" title="${esc(repairer.repairName||"")}">${esc(repairer.repairName||"")}</div>
+              <div class="repeatShopGridCell num">${num(repairer.repeatedTickets||0)} (${num(repairer.repeatedChassis||0)})</div>
+              <div class="repeatShopGridCell num">${num(repairer.totalTickets||0)}</div>
+              <div class="repeatShopGridCell num">${num(repairer.repeatRate||0,1)}%</div>
+            </div>`).join("")||`<div class="empty">No repair shops match this scenario.</div>`}
+        </div>
+      </section>`).join("")}
+  </div>`;
+}
+async function exportChassisRepeatExcel(){
+  return withDownloadFloat(async()=>{
+    await ensureRepairDetailsLoaded();
+    const w=workingChassis||{};
+    if(!w||!Array.isArray(w.categories)||!w.categories.length){alert("No repeated chassis data available to export.");return}
+    const categoryTicketTotals=row=>chassisRepeatCategoryTotals(row,w);
+    const approvedTicketCount=chassisRepeatApprovedTicketCount(w);
     const summaryRows=[
       ["Metric","Value"],
-      ["Repeat bucket",repeatLabel],
-      ["Cost bucket",costLabel],
-      ["Unique chassis",chassisRows.length],
-      ["Exported eligible tickets",bucketDetails.length],
-      ["Approved repair cost",totalCost],
+      ["Caravans QTY (Total Repairs)",Number(w.totalUniqueChassis||0)],
+      ["Caravans QTY (Repeat Repairs)",Number(w.repeatedClaimsOnSameChassis||0)],
+      ["Tickets QTY (Repeat Requests)",Number(w.repeatedTicketCount||0)],
+      ["Total Repair Requests",Number(chassisRepeatTotalTicketDenominator(w)||0)],
+      ["Approved Tickets inside Total Repair Requests",Number(approvedTicketCount||0)],
+      ["Repeat Repair Rate %",Number(w.repeatRate||0)],
+      ...w.categories.flatMap(row=>[
+        [`${row.label} - Repeat Tickets`,Number(categoryTicketTotals(row).repeatTickets||0)],
+        [`${row.label} - Total Repair Requests`,Number(categoryTicketTotals(row).totalTickets||0)],
+        [`${row.label} - Approved Tickets inside Total Repair Requests`,Number(approvedTicketCount||0)],
+        [`${row.label} - Repeat Rate %`,Number(categoryTicketTotals(row).rate||0)],
+        [`${row.label} - Caravan QTY`,Number(row.chassisCount||0)],
+        [`${row.label} - Approved Cost`,Number(row.approvedCost||0)],
+      ]),
+    ];
+    const scenarioRows=[
+      ["Scenario","Repeat Tickets","Total Repair Requests","Approved Tickets inside Total Repair Requests","Repeat Rate %","Caravan QTY","Approved Cost"],
+      ...w.categories.map(row=>{
+        const totals=categoryTicketTotals(row);
+        return [
+          row.label||"",
+          Number(totals.repeatTickets||0),
+          Number(totals.totalTickets||0),
+          Number(approvedTicketCount||0),
+          Number(totals.rate||0),
+          Number(row.chassisCount||0),
+          Number(row.approvedCost||0),
+        ];
+      }),
+    ];
+    const repairerRows=[
+      ["Scenario","Repair Shop","Repair Shop ID","Repeat Tickets","Total Repair Requests","Repeat Rate %","Repeated Chassis","Total Chassis","Approved Cost","Avg Approved Cost / Repeat Ticket","Repeated Groups"],
+      ...w.categories.flatMap(row=>(Array.isArray(row.repairers)?row.repairers:[]).map(repairer=>[
+        row.label||"",
+        repairer.repairName||"",
+        repairer.repairId||"",
+        Number(repairer.repeatedTickets||0),
+        Number(repairer.totalTickets||0),
+        Number(repairer.repeatRate||0),
+        Number(repairer.repeatedChassis||0),
+        Number(repairer.totalChassis||0),
+        Number(repairer.approvedCost||0),
+        Number(repairer.repeatedTickets||0)?Number(repairer.approvedCost||0)/Number(repairer.repeatedTickets||0):0,
+        Number(repairer.groups||0),
+      ])),
+    ];
+    const groupRows=[
+      ["Scenario","Chassis","Repair Shop","Repair Shop ID","Requests","Approved Tickets","Unapproved Tickets","SAP PO Cost Used","First Date","Last Date"],
+      ...(Array.isArray(w.groups)?w.groups:[]).map(row=>[
+        row.categoryLabel||"",
+        row.chassis||"",
+        row.repairName||"",
+        row.repairId||"",
+        Number(row.requestCount||0),
+        Number(row.approvedTicketCount||0),
+        Number(row.unapprovedTicketCount||0),
+        Number(row.approvedCost||0),
+        row.firstCreated||"",
+        row.lastCreated||"",
+      ]),
     ];
     const ticketRows=[
-      ["Repeat bucket","Cost bucket","Chassis","Total eligible chassis tickets","Ticket ID","Ticket name","Decision Date","Repair shop","Repair shop ID","State","Ticket type","Ticket status","Invoice status","Invoice number","Invoice date","Approved repair cost","Serial ID","Chassis number","Dealer name"],
-      ...bucketDetails.map(item=>{
-        const ticket=item.ticket||{};
+      ["Scenario","Chassis","Repair Shop","Repair Shop ID","Requests in Group","Approved Tickets in Group","Unapproved Tickets in Group","SAP PO Cost Used by Group","Decision Date","C4C Approved Date","SAP PO Date","Created On","Ticket ID","Ticket name","State","Ticket type","Ticket status","Invoice status","Invoice number","Invoice date","SAP Invoice Amount AUD","This Ticket SAP PO Cost AUD","ERP Purchase Order ID","Cancelled SAP PO(s) - Audit","Serial ID","Chassis number","Dealer name"],
+      ...(Array.isArray(w.detailRows)?w.detailRows:[]).map(row=>{
+        const ticket=row.ticket||{};
         return [
-          item.repeatLabel||repeatLabel,
-          item.costLabel||costLabel,
-          item.chassis||"",
-          Number(item.chassisCount||0),
+          row.categoryLabel||"",
+          row.chassis||"",
+          row.repairName||"",
+          row.repairId||"",
+          Number(row.requestCount||0),
+          Number(row.approvedTicketCount||0),
+          Number(row.unapprovedTicketCount||0),
+          Number(row.groupApprovedCost||0),
+          ticket.created||"",
+          ticket.approvedDate||"",
+          ticket.postingDate||"",
+          ticket.createdOn||"",
           ticket.ticketId||"",
           ticket.ticketName||"",
-          ticket.created||"",
-          ticket.repairName||"",
-          ticket.repairId||"",
           ticket.state||"",
           ticket.ticketType||"",
           ticket.ticketStatus||"",
           ticket.invoiceStatus||"",
           ticket.invoiceNumber||"",
           ticket.invoiceDate||"",
-          Number(ticket.cost||0),
+          Number(ticket.invoiceAmount||0),
+          Number(ticket.approvedCost||0),
+          ticket.erpPo||"",
+          ticket.cancelledErpPo||"",
           ticket.serialId||"",
           ticket.chassisNumber||"",
           ticket.dealerName||"",
@@ -6540,87 +7163,11 @@ async function exportChassisRepeatExcel(repeatKey=null,costKey=null){
     ];
     exportWorkbook([
       {name:"Overview",rows:summaryRows},
-      {name:"Chassis",rows:[["Chassis","Repeat bucket","Total eligible chassis tickets","Selected cell tickets","Approved repair cost","Avg approved repair cost","Repairers","First claim","Last claim"],...chassisRows.map(row=>[
-        row.chassis||"",
-        row.repeatLabel||"",
-        Number(row.chassisCount||0),
-        Number(row.ticketCount||0),
-        Number(row.totalCost||0),
-        Number(row.avgCost||0),
-        (row.repairerNames||[]).join("  |  "),
-        row.firstCreated||"",
-        row.lastCreated||"",
-      ])]},
+      {name:"Scenarios",rows:scenarioRows},
+      {name:"Repairers",rows:repairerRows},
+      {name:"Groups",rows:groupRows},
       {name:"Tickets",rows:ticketRows},
-    ],`repeated-chassis-tickets-${safeFileName(repeatLabel)}-${safeFileName(costLabel)}-${new Date().toISOString().slice(0,10)}.xls`);
-    return;
-  }
-  const summaryRows=[
-    ["Metric","Value"],
-    ["Unique chassis",Number(w.uniqueChassis||0)],
-    ["Chassis with repeats",Number((w.totals?.repeat23||0)+(w.totals?.repeat4||0))],
-    ["Heavy repeat (4+)",Number(w.totals?.repeat4||0)],
-    ["Eligible chassis tickets",Number(w.totals?.ticketsMatched||0)],
-    ["Approved repair cost",Number((Array.isArray(w.distribution)?w.distribution:[]).reduce((s,row)=>s+Number(row.costTotal||0),0))],
-  ];
-  const bucketRows=[
-    ["Repeat bucket",...cb.map(c=>c.label),"Approved repair cost tickets","Approved repair cost"],
-    ...w.distribution.map(row=>[
-      row.label,
-      ...cb.map(c=>Number(row.cells[c.key]||0)),
-      Number(row.total||0),
-      Number(row.costTotal||0),
-    ]),
-  ];
-  const chassisRows=[
-    ["Chassis","Repeat bucket","Total eligible chassis tickets","Approved repair cost","Avg approved repair cost","Repairers","First claim","Last claim"],
-    ...w.chassisRows.map(row=>[
-      row.chassis||"",
-      row.repeatLabel||"",
-      Number(row.chassisCount||0),
-      Number(row.totalCost||0),
-      Number(row.avgCost||0),
-      (row.repairerNames||[]).join("  |  "),
-      row.firstCreated||"",
-      row.lastCreated||"",
-    ]),
-  ];
-  const ticketRows=[
-    ["Repeat bucket","Cost bucket","Chassis","Total eligible chassis tickets","Ticket ID","Ticket name","Decision Date","Repair shop","Repair shop ID","State","Ticket type","Ticket status","Invoice status","Invoice number","Invoice date","Approved repair cost","Serial ID","Chassis number","Dealer name"],
-  ];
-  w.chassisRows.forEach(row=>{
-    row.tickets.forEach(ticket=>{
-      const ticketCost=Number(ticket.cost||0);
-      const bucket=ticketCost>0?chassisRepeatCostBucket(ticketCost,cb):null;
-      ticketRows.push([
-        row.repeatLabel||"",
-        bucket?bucket.label:"No approved repair cost",
-        row.chassis||"",
-        Number(row.chassisCount||0),
-        ticket.ticketId||"",
-        ticket.ticketName||"",
-        ticket.created||"",
-        ticket.repairName||"",
-        ticket.repairId||"",
-        ticket.state||"",
-        ticket.ticketType||"",
-        ticket.ticketStatus||"",
-        ticket.invoiceStatus||"",
-        ticket.invoiceNumber||"",
-        ticket.invoiceDate||"",
-        Number(ticket.cost||0),
-        ticket.serialId||"",
-        ticket.chassisNumber||"",
-        ticket.dealerName||"",
-      ]);
-    });
-  });
-  exportWorkbook([
-    {name:"Overview",rows:summaryRows},
-    {name:"Buckets",rows:bucketRows},
-    {name:"Chassis",rows:chassisRows},
-    {name:"Tickets",rows:ticketRows},
-  ],`repeated-chassis-tickets-${new Date().toISOString().slice(0,10)}`);
+    ],`repeated-requests-same-chassis-${new Date().toISOString().slice(0,10)}`);
   });
 }
 function renderAll_v2(){
@@ -6628,7 +7175,7 @@ function renderAll_v2(){
   renderChassisRepeatPanel();
   if(weeklyAnalysis){
     weeklyAnalysis.weekly=workingWeekly;
-    weeklyAnalysis.states=workingStates;
+    if(Array.isArray(workingStates)&&workingStates.length)weeklyAnalysis.states=workingStates;
     weeklyAnalysis.repairers=workingRepairers;
     weeklyAnalysis.summary={...(weeklyAnalysis.summary||{}),...(workingSummary||{})};
     renderWeekPanel();
@@ -6672,7 +7219,7 @@ async function ensureRepairDetailsLoaded({renderAfter=true}={}){
         ? weeklyAnalysis.details
         : (Array.isArray(globalThis.REPAIRERS_2026_ANALYSIS?.details)&&globalThis.REPAIRERS_2026_ANALYSIS.details.length?globalThis.REPAIRERS_2026_ANALYSIS.details:null);
       if(!localDetails){
-        const detailAnalysis=await readStaticJson(ANALYSIS_DETAILS_JSON).catch(()=>null);
+        const detailAnalysis=await readStaticJson(repairStaticJsonUrl(ANALYSIS_DETAILS_JSON)).catch(()=>null);
         localDetails=Array.isArray(detailAnalysis?.details)&&detailAnalysis.details.length?detailAnalysis.details:null;
       }
       if(localDetails){
@@ -6681,6 +7228,11 @@ async function ensureRepairDetailsLoaded({renderAfter=true}={}){
           .map((r,i)=>enrichRepairDetailRow(r,enrichmentMap))
           .map((r,i)=>normalizeTicket(r,clean(r["Ticket ID"]||r.TicketID||r.Ticket||`detail-${i+1}`)))
           .filter(x=>x.id&&x.ticket);
+        if(!tickets.some(entry=>isUnapprovedRepairTicket(entry.ticket))){
+          const rawNode=await readJson("c4cTickets_test/tickets").catch(()=>null);
+          const rawTickets=Object.entries(rawNode||{}).map(([k,r])=>normalizeTicket(r,k)).filter(x=>x.id&&x.ticket);
+          if(rawTickets.some(entry=>isUnapprovedRepairTicket(entry.ticket)))tickets=mergeTicketCostsIntoRawTickets(rawTickets,tickets);
+        }
       }else{
         const node=await readJson("c4cTickets_test/tickets");
         tickets=Object.entries(node||{}).map(([k,r])=>normalizeTicket(r,k)).filter(x=>x.id&&x.ticket);
@@ -6760,7 +7312,7 @@ async function load(){
     $("loadError").style.display="block"
   }
 }
-$("repairSelect").onchange=()=>{selectedRepairId=$("repairSelect").value;page=1;renderAll()};
+if($("repairSelect"))$("repairSelect").onchange=()=>{selectedRepairId=$("repairSelect").value;page=1;renderAll()};
 $("repairPeriodSelect").onchange=()=>{
   selectedRepairPeriod=$("repairPeriodSelect").value||"total";
   sortKey="repeatChassisOver2Count";
@@ -6770,11 +7322,11 @@ $("repairPeriodSelect").onchange=()=>{
   renderAll_v2();
   repairPageVersion().then(v=>saveRepairPageState(v)).catch(()=>{});
 };
-$("searchBox").oninput=()=>{search=$("searchBox").value;page=1;renderAll()};
-$("clearRepairFiltersBtn").onclick=clearRepairFilters;
-$("prevPage").onclick=()=>{if(page>1){page--;renderAll()}};
-$("nextPage").onclick=()=>{const pages=Math.max(1,Math.ceil(currentChassisCheckRows(filtered).length/PAGE_SIZE));if(page<pages){page++;renderAll()}};
-$("repairExportBtn").onclick=()=>exportAllRepairersExcel();
+$("searchBox")&&($("searchBox").oninput=()=>{search=$("searchBox").value;page=1;renderAll()});
+$("clearRepairFiltersBtn")&&($("clearRepairFiltersBtn").onclick=clearRepairFilters);
+$("prevPage")&&($("prevPage").onclick=()=>{if(page>1){page--;renderAll()}});
+$("nextPage")&&($("nextPage").onclick=()=>{const pages=Math.max(1,Math.ceil(currentChassisCheckRows(filtered).length/PAGE_SIZE));if(page<pages){page++;renderAll()}}); 
+$("repairExportBtn")&&($("repairExportBtn").onclick=()=>exportAllRepairersExcel());
 document.querySelectorAll(".stateMetricBtn[data-metric]").forEach(btn=>{
   btn.onclick=()=>{weeklyMetric=btn.dataset.metric;renderWeekPanel()};
 });
@@ -6799,6 +7351,9 @@ if($("costRangeExport")){
 }
 if($("overviewExportBtn")){
   $("overviewExportBtn").onclick=()=>exportOverviewExcel();
+}
+if($("rankViewExportBtn")){
+  $("rankViewExportBtn").onclick=()=>exportRankViewExcel();
 }
 renderRepairYearContext();
 showRepairYearNotice(0);

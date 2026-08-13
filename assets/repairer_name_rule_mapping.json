@@ -1,0 +1,428 @@
+{
+  "meta": {
+    "source": "Repairer_Business_Name_Rule_Mapping.xlsx",
+    "source_sheets": [
+      "General Mapping",
+      "SNOWY RIVER RV PTY LTD (Parts)"
+    ]
+  },
+  "general": [
+    {
+      "repairShopC4C": "ABCO CARAVAN SERVICES Repairs",
+      "mappingName": "ABCO Caravan Services"
+    },
+    {
+      "repairShopC4C": "AUSWIDE CARAVAN & RV'S Repairs",
+      "mappingName": "Auswide Caravan & RV's"
+    },
+    {
+      "repairShopC4C": "BADMAN ENTERPRISES PTY LTD As Repairer",
+      "mappingName": "Badman Enterprises Pty Ltd"
+    },
+    {
+      "repairShopC4C": "CARAVAN AND CAMPER SERVICING As Repairer",
+      "mappingName": "Caravan and Camper Servicing"
+    },
+    {
+      "repairShopC4C": "DESTINY RV As Repairer",
+      "mappingName": "Destiny RV"
+    },
+    {
+      "repairShopC4C": "GREAT OCEAN ROAD RV AND CARAVANS PTY LTD Repairs",
+      "mappingName": "Great Ocean Road RV and Caravans Pty Ltd"
+    },
+    {
+      "repairShopC4C": "GREEN RV PTY LTD Repairs",
+      "mappingName": "Green RV Pty Ltd"
+    },
+    {
+      "repairShopC4C": "HC PLUMBING SERVICES Repairer",
+      "mappingName": "HC Plumbing Services"
+    },
+    {
+      "repairShopC4C": "LEISURE LION PTY LTD Repairs",
+      "mappingName": "Leisure Lion Pty Ltd"
+    },
+    {
+      "repairShopC4C": "Max Caravan Repairs Repairs",
+      "mappingName": "Max Caravan Repairs"
+    },
+    {
+      "repairShopC4C": "New Age Caravans Newcastle Pty Ltd Repairs",
+      "mappingName": "New Age Caravans Newcastle Pty Ltd"
+    },
+    {
+      "repairShopC4C": "NEWCASTLE CARAVANS & RV'S Repairs",
+      "mappingName": "Newcastle Caravans & RV's"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER PERTH(SERVICE CENTRE) As Repairer",
+      "mappingName": "Snowy River Perth (Service Centre)"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "mappingName": "Snowy River RV Pty Ltd"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER WANGARATTA As Repairer",
+      "mappingName": "Snowy River Wangaratta"
+    },
+    {
+      "repairShopC4C": "THE CARAVAN HUB Repairs",
+      "mappingName": "The Caravan Hub"
+    },
+    {
+      "repairShopC4C": "ULLADULLA RV REPAIR CENTRE PTY LTD Repairs",
+      "mappingName": "Ulladulla RV Repair Centre Pty Ltd"
+    },
+    {
+      "repairShopC4C": "UNITED RV PTY LTD Repairs",
+      "mappingName": "United RV Pty Ltd"
+    },
+    {
+      "repairShopC4C": "VANARI CARAVANS Repairs",
+      "mappingName": "Vanari Caravans"
+    },
+    {
+      "repairShopC4C": "VANARI CHRISTCHURCH As Repairer",
+      "mappingName": "Vanari Christchurch"
+    }
+  ],
+  "snowyRiverParts": [
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "A1 CARAVAN REPAIRS",
+        "A1 Caravan Repairs",
+        "A1 caravan repairs",
+        "A1 Caravan Service Perth",
+        "A1 CARAVAN SERVICE PERTH",
+        "A1 Caravan servicing and repairsA1 Caravans",
+        "A1 CARAVANS"
+      ],
+      "mappingName": "A1 Caravan Service Perth"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Albany Caravan & RV Centre"
+      ],
+      "mappingName": "Albany Caravan & RV Centre"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "BKM Plumbing"
+      ],
+      "mappingName": "BKM Plumbing"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "BM POWERED ELECTRICAL"
+      ],
+      "mappingName": "BM POWERED ELECTRICAL"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "caravan and camper servicing wa",
+        "Caravan and camper servicing wa"
+      ],
+      "mappingName": "Caravan and camper servicing WA"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Caravan Hub Townsville"
+      ],
+      "mappingName": "Caravan Hub Townsville"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Caravans WA",
+        "CARAVANS WA"
+      ],
+      "mappingName": "Caravans WA"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Dans caravan repairs"
+      ],
+      "mappingName": "Dans caravan repairs"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "DJM caravan & RV repairs",
+        "DJM CARAVANS AND RV REPAIRS"
+      ],
+      "mappingName": "DJM Caravan & RV Repairs"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Esperance caravan repair centre"
+      ],
+      "mappingName": "Esperance caravan repair centre"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "GEELONG CARAVAN AND RV",
+        "SNOWY RIVER CARAVANS GEELONG"
+      ],
+      "mappingName": "GEELONG CARAVAN AND RV / SNOWY RIVER CARAVANS GEELONG"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Harleys Complete Plumbing",
+        "Harleys Complete Plumbing Services",
+        "Harleys Plumbing",
+        "Harleys Plumbing Services"
+      ],
+      "mappingName": "Harleys Complete Plumbing Services"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "JOLLY GOOD AUTO ELECTRICS"
+      ],
+      "mappingName": "JOLLY GOOD AUTO ELECTRICS"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Mandurah caravan repair centre"
+      ],
+      "mappingName": "Mandurah caravan repair centre"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Martin Meupelenberg"
+      ],
+      "mappingName": "Martin Meupelenberg"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Mercury Caravan Repairs"
+      ],
+      "mappingName": "Mercury Caravan Repairs"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Mike's Caravan Repairs & Service"
+      ],
+      "mappingName": "Mike's Caravan Repairs & Service"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "OMNIBUS"
+      ],
+      "mappingName": "OMNIBUS"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Owner to fit"
+      ],
+      "mappingName": "Owner to fit"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Perth Caravan Repair Centre"
+      ],
+      "mappingName": "Perth Caravan Repair Centre"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Regent RV - Frankston",
+        "REGENT RV Frankston"
+      ],
+      "mappingName": "Regent RV Frankston"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Regent RV Perth 1739 Albany Hwy Kenwick WA"
+      ],
+      "mappingName": "Regent RV Perth 1739 Albany Hwy Kenwick WA"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "RM Autos"
+      ],
+      "mappingName": "RM Autos"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Rockingham RV"
+      ],
+      "mappingName": "Rockingham RV"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Signature Caravan Repair Perth"
+      ],
+      "mappingName": "Signature Caravan Repair Perth"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Signature Caravan Repairs"
+      ],
+      "mappingName": "Signature Caravan Repairs"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River"
+      ],
+      "mappingName": "Snowy River"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River Caravans"
+      ],
+      "mappingName": "Snowy River Caravans"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River Caravans Frankston"
+      ],
+      "mappingName": "Snowy River Caravans Frankston"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River Caravans Geelong"
+      ],
+      "mappingName": "Snowy River Caravans Geelong"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River caravans perth",
+        "Snowy River Caravans Perth"
+      ],
+      "mappingName": "Snowy River Caravans Perth"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River Caravans Traralgon",
+        "Snowy river caravans Traralgon"
+      ],
+      "mappingName": "Snowy River Caravans Traralgon"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River Frankston"
+      ],
+      "mappingName": "Snowy River Frankston"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River Geelong",
+        "SNOWY RIVER GEELONG"
+      ],
+      "mappingName": "Snowy River Geelong"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River Launceston",
+        "Snowyriver Launceston",
+        "SRC Launceston"
+      ],
+      "mappingName": "Snowy River Launceston"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "SNNOWY RIVER PERTH",
+        "Snow River Perth",
+        "Snowy Rive Perth",
+        "Snowy River Pert",
+        "Snowy River Perth",
+        "SNOWY RIVER PERTH",
+        "Snowy river perth",
+        "Snowy River perth",
+        "Snowy river Perth",
+        "Snowy RIVER pERTH",
+        "snowy river perth",
+        "SRC PERTH",
+        "SRC perth",
+        "SRC Perth"
+      ],
+      "mappingName": "Snowy River Perth"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River Service"
+      ],
+      "mappingName": "Snowy River Service"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River Somerton"
+      ],
+      "mappingName": "Snowy River Somerton"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River Toowoomba"
+      ],
+      "mappingName": "Snowy River Toowoomba"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River Traralgon",
+        "Snowy river Traralgon"
+      ],
+      "mappingName": "Snowy River Traralgon"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River Wangaratta",
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "mappingName": "Snowy River Wangaratta"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "Snowy River Western Junction Tasmania 7212"
+      ],
+      "mappingName": "Snowy River Western Junction Tasmania 7212"
+    },
+    {
+      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
+      "repairerBusinessNameVariants": [
+        "The RV Repair Centre"
+      ],
+      "mappingName": "The RV Repair Centre"
+    }
+  ]
+}

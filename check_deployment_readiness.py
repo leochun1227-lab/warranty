@@ -46,7 +46,7 @@ def node_executable() -> str:
 def check_writable_dir(path: Path) -> tuple[bool, str]:
     try:
         path.mkdir(parents=True, exist_ok=True)
-        probe = path / ".deployment_write_test"
+        probe = path / "_deployment_write_test.tmp"
         probe.write_text("ok", encoding="utf-8")
         probe.unlink(missing_ok=True)
         return True, ""
