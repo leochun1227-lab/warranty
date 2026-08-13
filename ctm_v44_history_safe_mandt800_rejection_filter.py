@@ -4638,6 +4638,7 @@ def run_company_fetch(company_file: str, db_url: str, sa_path: str, source_root:
     env["SOURCE_ROOT"] = source_root
     env["MONITOR_ROOT"] = monitor_root
     env["PYTHONUNBUFFERED"] = "1"
+    env["SKIP_MODEL_SERIES_ASSETS_AFTER_FETCH"] = "0"
     env["SKIP_ANALYTICS_REBUILD_AFTER_FETCH"] = "1"
     env["SKIP_TICKET_TIMELINE_EXPORT_AFTER_FETCH"] = "1"
 

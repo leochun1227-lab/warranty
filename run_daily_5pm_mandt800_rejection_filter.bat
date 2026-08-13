@@ -41,6 +41,7 @@ set "SOURCE_ROOT=c4cTickets_test"
 set "FIREBASE_ROOT=c4cTickets_test"
 set "MONITOR_ROOT=ctmTicketStatusMonitorV44"
 set "PYTHONUNBUFFERED=1"
+set "SKIP_MODEL_SERIES_ASSETS_AFTER_FETCH=0"
 
 if exist "%~dp0check_deployment_readiness.py" (
   if "%PYTHON_CMD%"=="py -3" (

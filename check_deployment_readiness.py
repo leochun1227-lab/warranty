@@ -13,12 +13,15 @@ REQUIRED_FILES = [
     "ctm_v44_history_safe_mandt800_rejection_filter.py",
     "fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py",
     "rebuild_model_series_assets.py",
+    "build_analysis_parts_failure_summary.py",
     "delivery_flow_aggregator.py",
     "export_ticket_timeline_segments_2025_2026.py",
     "sync_dashboard_assets_to_firebase.py",
     "build_parts_classification.mjs",
     "firebase-service-account.json",
     "outputs/parts_classified_meta.json",
+    "outputs/analysis_parts_failure_light.json",
+    "outputs/analysis_parts_derived_cache.json",
 ]
 
 REQUIRED_MODULES = [

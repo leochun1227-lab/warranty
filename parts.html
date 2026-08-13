@@ -1271,7 +1271,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     partsFailureSummary: null,
     warrantyMonthlyCounts: null,
     partsClassifiedRows: null,
-    partsClassifiedIndex: null,     // Map<compKey, {rows:[], byTicketId:Map}>
     partsClassifiedTicketMap: null, // Map<TicketID, [classifiedRow,...]>
     partsIncludedTicketIds: null,   // Set<TicketID> aligned to outputs/analysis_parts_failure_summary.json
     partsTicketSeriesById: null,    // Map<TicketID, normalized series code>
@@ -1293,7 +1292,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   };
 
   const ANALYSIS_TIMEOUT_MS = 15000;
-  const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v15-scope-cost-monthly";
+  const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v16-unique-component-tickets";
   const ANALYSIS_PAGE_CACHE_KEY = `analysis:parts-failure-components:${ANALYSIS_PAGE_CACHE_SCHEMA}`;
   const ANALYSIS_PAGE_CACHE_ENABLED = true;
   function mapEntries(map){ return map instanceof Map ? Array.from(map.entries()) : []; }
@@ -1467,27 +1466,25 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       partsIncludedTicketIds:new Set(cached.partsIncludedTicketIds||[]),
       partsTicketSeriesById:new Map(cached.partsTicketSeriesByIdEntries||[]),
       partsClassifiedRows:null,
-      partsClassifiedIndex:null,
       partsClassifiedTicketMap:null,
       partsDerivedCache:null,
       analysisCacheVersion: version || ""
     });
-    render();
     const overlay=$("loadingOverlay");
-    if(overlay)overlay.classList.remove("show");
+    if(overlay)overlay.classList.add("show");
     if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(version,"cached");
     const refreshSummary=state.partsFailureSummary
       ? Promise.resolve()
       : loadPartsFailureSummary();
     refreshSummary.then(async ()=>{
-      await loadPartsClassifiedRows();
       await loadPartsDerivedCache();
-      renderInsights();
-      renderMonthButtons();
-      renderChips();
-      renderComponents();
+      render();
+      if(overlay)overlay.classList.remove("show");
       scheduleAnalysisPageSave(version);
-    }).catch(err=>console.warn("Parts failure background refresh failed",err));
+    }).catch(err=>{
+      if(overlay)overlay.classList.remove("show");
+      console.warn("Parts failure background refresh failed",err);
+    });
     return true;
   }
 
@@ -2687,6 +2684,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     return Number.isFinite(count) ? count : 0;
   }
 
+  function componentDisplayTicketCount(row){
+    return componentTicketCount(row);
+  }
+
   const ENABLE_SERIES_SELECTION = true;
 
   function componentLineItems(row){
@@ -3029,32 +3030,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const key = componentKey(component, category);
     const value = sumDerivedSeriesMonths(key, partsDateBasis(), state.selected, month, monthBucket => monthBucket.cost);
     return value == null ? null : Number(Number(value).toFixed(2));
-  }
-
-  function computeComponentSelectionStats(compKey){
-    const list = state.partsClassifiedIndex && state.partsClassifiedIndex.get(compKey);
-    if (!Array.isArray(list) || !list.length) return null;
-    const scope = componentScope();
-    const tickets = new Set();
-    let lineItems = 0;
-    let cost = 0;
-    for (const line of list) {
-      if (!partsMonthMatchesLine(line)) continue;
-      if (state.selected !== "ALL") {
-        const series = classifiedRowSeries(line);
-        if (series !== state.selected) continue;
-      }
-      if (scope !== "ALL" && classifiedRowScope(line) !== scope) continue;
-      const tid = clean(line["Ticket ID"]);
-      if (tid) tickets.add(tid);
-      lineItems += 1;
-      cost += classifiedLinePreferredCost(line);
-    }
-    return {
-      tickets: tickets.size,
-      lineItems,
-      cost: Number(cost.toFixed(2)),
-    };
   }
 
   function componentTrendRows(component, category = "Other"){
@@ -3485,12 +3460,12 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (state.compMode === "cost") {
       rows.sort((a,b) => (Number(b.cost)||0) - (Number(a.cost)||0));
     } else {
-      rows.sort((a,b) => componentTicketCount(b) - componentTicketCount(a) || componentLineItems(b) - componentLineItems(a));
+      rows.sort((a,b) => componentDisplayTicketCount(b) - componentDisplayTicketCount(a) || componentLineItems(b) - componentLineItems(a));
     }
     rows = rows.slice(0, 10).map(normalizeComponentPreviewRow);
 
     const modeIsCost = state.compMode === "cost";
-    const primaryValues = rows.map(r => modeIsCost ? (Number(r.cost)||0) : componentTicketCount(r));
+    const primaryValues = rows.map(r => modeIsCost ? (Number(r.cost)||0) : componentDisplayTicketCount(r));
     const maxPrimary = Math.max(...primaryValues, 1);
     const activeRow = rows.find(r => r.key === state.compPreviewKey) || rows[0];
     if (activeRow) {
@@ -3501,7 +3476,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     state.compPreviewRows = rows;
 
     const rowsHtml = rows.map((r, i) => {
-      const tickets = componentTicketCount(r);
+      const tickets = componentDisplayTicketCount(r);
       const lineItems = componentLineItems(r);
       const cost = Number(r.cost)||0;
       const primary = primaryValues[i];
@@ -3792,14 +3767,15 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       ${items.map((item, index) => {
         const trendRows = componentTrendRows(item.component, item.category);
         const values = trendRows.map(row => componentTrendMetricValue(row));
-        const latest = values.length ? values[values.length - 1] : (state.compMode === "cost" ? (Number(item.cost) || 0) : componentTicketCount(item));
+        const displayTickets = componentDisplayTicketCount(item);
+        const latest = values.length ? values[values.length - 1] : (state.compMode === "cost" ? (Number(item.cost) || 0) : displayTickets);
         const rate = componentTrendRate(trendRows);
         const rateClass = rate == null ? "" : rate > 0.5 ? " up" : rate < -0.5 ? " down" : "";
         const rateText = rate == null ? "n/a" : `${rate >= 0 ? "+" : ""}${rate.toFixed(1)}%`;
         const first = trendRows[0];
         const last = trendRows[trendRows.length - 1];
         const active = item.key === state.compPreviewKey ? " active" : "";
-        const metaLabel = `${esc(item.category)} - ${formatTicketCount(componentTicketCount(item))}`;
+        const metaLabel = `${esc(item.category)} - ${formatTicketCount(displayTickets)}`;
         const trendMetricLabel = normalizeCompMode(state.compMode) === "cost" ? "cost" : "tickets";
         const rateTip = rate == null
           ? `Trend % needs at least 6 complete months of ${trendMetricLabel} data`
@@ -3815,7 +3791,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
             </div>
           </div>
           <div class="compTrendTotals">
-            <div class="compTrendTotal"><span>Total Tickets</span><b>${numFmt.format(componentTicketCount(item))}</b></div>
+            <div class="compTrendTotal"><span>Total Tickets</span><b>${numFmt.format(displayTickets)}</b></div>
             <div class="compTrendTotal"><span>Total Price</span><b>${moneyFmt.format(item.cost)}</b></div>
           </div>
           ${sparklineSvg(trendRows)}
@@ -3849,87 +3825,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       "/":"\uff0f",
     }[ch] || ch));
   }
-  async function buildPartsClassifiedIndex(){
-    if (state.partsClassifiedIndex && state.partsDerivedCache) return state.partsClassifiedIndex;
-    const rows = state.partsClassifiedRows || [];
-    const byKey = new Map();       // compKey -> [rows]
-    const byTicket = new Map();    // ticketId -> [rows]
-    const includedTicketIds = state.partsIncludedTicketIds;
-    const byDerivedKey = new Map();
-    const totalRows = rows.length || 1;
-    const chunkSize = 700;
-    const updateProgress = (done) => {
-      const sub = $("loadingOverlaySub");
-      if (sub && done < totalRows) sub.textContent = `Precomputing parts summaries... ${numFmt.format(done)} / ${numFmt.format(totalRows)} rows`;
-    };
-    for (let i = 0; i < rows.length; i++) {
-      const r = rows[i];
-      const tid = clean(r["Ticket ID"]);
-      if (includedTicketIds instanceof Set && tid && !includedTicketIds.has(tid)) continue;
-      const kw = clean(r["Matched Keyword"]);
-      const cat = clean(r["Part Category"]);
-      const key = componentKey(kw || "Other", cat || "Other");
-      if (!byKey.has(key)) byKey.set(key, []);
-      byKey.get(key).push(r);
-      if (tid) {
-        if (!byTicket.has(tid)) byTicket.set(tid, []);
-        byTicket.get(tid).push(r);
-      }
-
-      if (!byDerivedKey.has(key)) byDerivedKey.set(key, makeDerivedComponentEntry());
-      const derivedEntry = byDerivedKey.get(key);
-      const series = normalizeSeriesCode(classifiedRowSeries(r) || "ALL");
-      const scope = classifiedRowScope(r) || "OTHER";
-      const cost = classifiedLinePreferredCost(r);
-      const materialQty = asNumber(r["Order Qty"]);
-      derivedEntry.materialQty += materialQty;
-      for (const basis of ["APPROVED", "CREATED"]) {
-        const d = classifiedRowDate(r, basis);
-        if (!d) continue;
-        const monthKey = partsMonthKeyFromDate(d);
-        if (!monthKey) continue;
-        for (const seriesKey of [series, "ALL"]) {
-          const seriesBucket = ensureDerivedSeriesBucket(derivedEntry, basis, seriesKey);
-          const monthBucket = ensureDerivedMonthBucket(seriesBucket, monthKey);
-          if (!monthBucket) continue;
-          monthBucket.lineItems += 1;
-          monthBucket.cost += cost;
-          monthBucket.materialQty += materialQty;
-          if (monthBucket.scopeCost && Object.prototype.hasOwnProperty.call(monthBucket.scopeCost, scope)) {
-            monthBucket.scopeCost[scope] += cost;
-          }
-          if (tid && !monthBucket._ticketIds.has(tid)) {
-            monthBucket._ticketIds.add(tid);
-            monthBucket.tickets += 1;
-          }
-          if (monthBucket._scopeIds[scope] && tid && !monthBucket._scopeIds[scope].has(tid)) {
-            monthBucket._scopeIds[scope].add(tid);
-            monthBucket.scope[scope] += 1;
-          }
-        }
-      }
-
-      if ((i + 1) % chunkSize === 0) {
-        updateProgress(i + 1);
-        // Yield so the loading overlay can paint and the browser stays responsive.
-        await new Promise(resolve => setTimeout(resolve, 0));
-      }
-    }
-    state.partsClassifiedIndex = byKey;
-    state.partsClassifiedTicketMap = byTicket;
-    for (const entry of byDerivedKey.values()) {
-      for (const basisKey of Object.keys(entry.bases)) {
-        const basisBucket = entry.bases[basisKey];
-        for (const seriesBucket of basisBucket.series.values()) {
-          for (const monthBucket of seriesBucket.months.values()) finalizeDerivedMonthBucket(monthBucket);
-        }
-      }
-    }
-    state.partsDerivedCache = { byKey: byDerivedKey };
-    updateProgress(totalRows);
-    return state.partsClassifiedIndex;
-  }
-
   function partsMonthSelectionMatchesKey(monthKey, month = selectedPartsMonth()){
     const key = clean(monthKey);
     if (!key) return false;
@@ -3943,55 +3838,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       return !!parts && parts.y === Number(month);
     }
     return key === month;
-  }
-
-  function makeDerivedSeriesBucket(){
-    return { months: new Map(), totals: { lineItems:0, cost:0, tickets:0, materialQty:0, scope:{ PRE:0, FIELD:0, OTHER:0 } } };
-  }
-
-  function makeDerivedComponentEntry(){
-    return {
-      materialQty: 0,
-      bases: {
-        APPROVED: { series: new Map() },
-        CREATED: { series: new Map() },
-      },
-    };
-  }
-
-  function ensureDerivedSeriesBucket(entry, basis, series){
-    const basisKey = normalizePartsDateBasis(basis);
-    const basisBucket = entry?.bases?.[basisKey];
-    if (!basisBucket) return null;
-    const seriesKey = normalizeSeriesCode(series || "ALL");
-    if (!basisBucket.series.has(seriesKey)) basisBucket.series.set(seriesKey, makeDerivedSeriesBucket());
-    return basisBucket.series.get(seriesKey);
-  }
-
-  function ensureDerivedMonthBucket(seriesBucket, monthKey){
-    if (!seriesBucket) return null;
-    const key = clean(monthKey);
-    if (!key) return null;
-    if (!seriesBucket.months.has(key)) {
-      seriesBucket.months.set(key, { lineItems:0, cost:0, tickets:0, materialQty:0, scope:{ PRE:0, FIELD:0, OTHER:0 }, scopeCost:{ PRE:0, FIELD:0, OTHER:0 }, _ticketIds:new Set(), _scopeIds:{ PRE:new Set(), FIELD:new Set(), OTHER:new Set() } });
-    }
-    return seriesBucket.months.get(key);
-  }
-
-  function finalizeDerivedMonthBucket(bucket){
-    if (!bucket) return bucket;
-    delete bucket._ticketIds;
-    delete bucket._scopeIds;
-    if (bucket.scopeCost) {
-      bucket.scopeCost.PRE = round(Number(bucket.scopeCost.PRE) || 0, 2);
-      bucket.scopeCost.FIELD = round(Number(bucket.scopeCost.FIELD) || 0, 2);
-      bucket.scopeCost.OTHER = round(Number(bucket.scopeCost.OTHER) || 0, 2);
-    }
-    return bucket;
-  }
-
-  function buildPartsDerivedCache(){
-    return buildPartsClassifiedIndex();
   }
 
   function getDerivedComponentEntry(compKey){
@@ -4067,30 +3913,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const t = state.ticketRowById && state.ticketRowById.get(tid);
     if (!t) return null;
     return extractSeries(t);
-  }
-
-  // Count tickets for each top-component in the last N days (dedupe by TicketID)
-  function computeSurgeCounts(days){
-    const out = new Map();
-    if (!state.partsClassifiedIndex) return out;
-    const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - days); cutoff.setHours(0,0,0,0);
-    const selectedSeries = state.selected;
-    for (const [key, list] of state.partsClassifiedIndex.entries()) {
-      const seen = new Set();
-      for (const cr of list) {
-        const d = classifiedRowDate(cr);
-        if (!d || d < cutoff) continue;
-        if (selectedSeries !== "ALL") {
-          const s = classifiedRowSeries(cr);
-          if (s !== selectedSeries) continue;
-        }
-        const tid = clean(cr["Ticket ID"]);
-        if (!tid || seen.has(tid)) continue;
-        seen.add(tid);
-      }
-      if (seen.size) out.set(key, seen.size);
-    }
-    return out;
   }
 
   // Monthly buckets cover the previous full year plus elapsed months this year.
@@ -4201,40 +4023,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const el = document.getElementById("monthlyTrendTip");
     if (el) el.classList.remove("visible");
   }
-  function renderCompTooltip(compName, compCat, compKey, anchorEl){
-    const el = ensureCompTooltipEl();
-    if (!state.partsClassifiedIndex) {
-      el.innerHTML = `<div class="compTooltipName">${esc(compName)}</div><div class="compTooltipHint">Loading monthly data...</div>`;
-    } else {
-      const scope = componentScope();
-      const buckets = computeComponentMonthly(compKey, scope);
-      const monthWindow = componentMonthWindowLabel();
-      const total = buckets.reduce((s,b)=>s+b.count, 0);
-      const max = Math.max(...buckets.map(b=>b.count), 1);
-      const scopeLbl = componentScopeLabel(scope);
-      const scopeCls = componentScopeClass(scope);
-      const barsHtml = buckets.map(b => {
-        const h = Math.max(1, (b.count / max) * 60);
-        const pct = total > 0 ? (b.count / total * 100).toFixed(1) : 0;
-        return `<div class="compTooltipBar ${scopeCls}">
-          <div class="bar" style="height:${h}px" title="${b.label}: ${numFmt.format(b.count)} tickets (${pct}% of total)"></div>
-          <div class="lbl">${b.label}</div>
-        </div>`;
-      }).join("");
-      el.style.setProperty("--cols", buckets.length);
-      el.innerHTML = `
-        <div class="compTooltipHead">
-          <div class="compTooltipName">${esc(compName)}</div>
-          <div class="compTooltipMode ${scopeCls}">${scopeLbl}</div>
-        </div>
-        <div class="compTooltipTotal">${numFmt.format(total)} tickets - ${esc(monthWindow)} - ${esc(compCat)}</div>
-        <div class="compTooltipBars">${barsHtml}</div>
-        <div class="compTooltipHint">Hover months to see breakdown. Percentages show share of total tickets for this component.</div>
-      `;
-    }
-    positionCompTooltip(el, anchorEl);
-    el.classList.add("visible");
-  }
   function positionCompTooltip(el, anchor){
     if (!anchor) return;
     const r = anchor.getBoundingClientRect();
@@ -4279,159 +4067,20 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     });
   }
 
-  // ------- Monthly totals table (bottom of components panel) -------
-  function renderComponentTotals(rows){
-    const target = $("compTotalsWrap");
-    if (!target) return;
-    if (!state.partsClassifiedIndex) {
-      target.innerHTML = `<div class="compTotalsHead">
-        <div class="compTotalsTitle">Monthly totals <small>loading...</small></div>
-      </div>`;
-      return;
-    }
-    // Empty index means the CSV failed to load or returned no rows - surface
-    // this explicitly so the user knows why everything is 0.
-    if (state.partsClassifiedIndex.size === 0) {
-      const err = state.partsClassifiedError;
-      const attempts = Array.isArray(err)
-        ? `<ul style="margin:6px 0 0 18px;padding:0;font-size:11px;color:var(--muted)">${err.map(a => `<li>${esc(a.url || "?")} - ${esc(a.reason || "failed")}</li>`).join("")}</ul>`
-        : "";
-      target.innerHTML = `<div class="compTotalsHead">
-        <div class="compTotalsTitle" style="color:#b91c1c">Monthly totals unavailable</div>
-      </div>
-      <div style="font-size:11.5px;color:var(--muted);line-height:1.5">
-        The parts classification CSV could not be loaded, so the monthly
-        breakdown and 30-day surge cannot be computed. Component list above
-        still works because it comes from the failure summary JSON.
-        ${attempts}
-      </div>`;
-      return;
-    }
-    const months = 6; // last 6 months for the visible chart+table (compact)
-    const seriesLabel = state.selected === "ALL" ? "All Tickets by Caravans" : state.selected;
-
-    // Aggregate monthly PRE / FIELD counts by the selected date basis for all classified rows in scope.
-    const now = new Date();
-    const buckets = [];
-    for (let i = months - 1; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      buckets.push({
-        y: d.getFullYear(), m: d.getMonth(),
-        label: d.toLocaleString("en-AU", { month:"short" }),
-        yearLabel: `${d.getFullYear()}`.slice(-2),
-        pre: 0, field: 0, other: 0,
-        preSet: new Set(), fieldSet: new Set(), otherSet: new Set()
-      });
-    }
-    const bidx = new Map();
-    buckets.forEach((b,i) => bidx.set(`${b.y}-${b.m}`, i));
-    for (const cr of rows) {
-      const key = componentKey(cr.component, cr.category);
-      const list = state.partsClassifiedIndex.get(key) || [];
-      for (const line of list) {
-        const d = classifiedRowDate(line);
-        if (!d) continue;
-        const bi = bidx.get(`${d.getFullYear()}-${d.getMonth()}`);
-        if (bi == null) continue;
-        if (state.selected !== "ALL") {
-          const s = classifiedRowSeries(line);
-          if (s !== state.selected) continue;
-        }
-        const tid = clean(line["Ticket ID"]);
-        if (!tid) continue;
-        const scope = classifiedRowScope(line);
-        const b = buckets[bi];
-        if (scope === "PRE") { if (!b.preSet.has(tid)) { b.preSet.add(tid); b.pre++; } }
-        else if (scope === "FIELD") { if (!b.fieldSet.has(tid)) { b.fieldSet.add(tid); b.field++; } }
-        else { if (!b.otherSet.has(tid)) { b.otherSet.add(tid); b.other++; } }
-      }
-    }
-    const max = Math.max(...buckets.map(b => b.pre + b.field), 1);
-    const barsHtml = buckets.map(b => {
-      const total = b.pre + b.field;
-      const totalH = Math.max(2, (total / max) * 80);
-      const preH = total ? (b.pre / total) * totalH : 0;
-      const fieldH = total ? (b.field / total) * totalH : 0;
-      return `<div class="compTotalsBar">
-        <div class="barVal">${total ? numFmt.format(total) : ""}</div>
-        <div class="barStack" style="height:${totalH}px">
-          ${b.pre ? `<div class="barSeg pre" style="height:${preH}px" title="Pre-Delivery: ${b.pre}"></div>` : ""}
-          ${b.field ? `<div class="barSeg field" style="height:${fieldH}px" title="In-Field: ${b.field}"></div>` : ""}
-        </div>
-        <div class="barLbl">${b.label}</div>
-      </div>`;
-    }).join("");
-
-    const totalsRow = buckets.reduce((acc,b) => {
-      acc.pre += b.pre; acc.field += b.field; acc.other += b.other; return acc;
-    }, { pre:0, field:0, other:0 });
-    const grandTotal = totalsRow.pre + totalsRow.field + totalsRow.other;
-
-    const tableHtml = `
-      <table class="compTotalsTable">
-        <thead>
-          <tr>
-            <th>Month</th>
-            ${buckets.map(b => `<th>${b.label}</th>`).join("")}
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Pre-Delivery</td>
-            ${buckets.map(b => `<td>${numFmt.format(b.pre)}</td>`).join("")}
-            <td>${numFmt.format(totalsRow.pre)}</td>
-          </tr>
-          <tr>
-            <td>In-Field</td>
-            ${buckets.map(b => `<td>${numFmt.format(b.field)}</td>`).join("")}
-            <td>${numFmt.format(totalsRow.field)}</td>
-          </tr>
-          <tr class="totalRow">
-            <td>Total</td>
-            ${buckets.map(b => `<td>${numFmt.format(b.pre + b.field + b.other)}</td>`).join("")}
-            <td>${numFmt.format(grandTotal)}</td>
-          </tr>
-        </tbody>
-      </table>
-    `;
-
-    target.innerHTML = `
-      <div class="compTotalsHead">
-        <div class="compTotalsTitle">Monthly Tickets by ${esc(partsDateBasisLabel())} <small>${esc(seriesLabel)} - all components - last ${months} months</small></div>
-        <div class="compTotalsMeta">Unique tickets, split by claim scope; not limited to top components.</div>
-      </div>
-      <div class="compTotalsBars" style="--cols:${buckets.length}">${barsHtml}</div>
-      <div class="compTotalsLegend">
-        <span><span class="swatch pre"></span>Pre-Delivery (${numFmt.format(totalsRow.pre)})</span>
-        <span><span class="swatch field"></span>In-Field (${numFmt.format(totalsRow.field)})</span>
-      </div>
-      ${tableHtml}
-    `;
-  }
-
   function componentRowsForSelection(summary, selected){
     const applyClassifiedStats = rows => {
       if (!Array.isArray(rows)) return [];
       const hydrated = rows.map(row => {
         const normalized = normalizeComponentPreviewRow(row);
         if (!normalized) return row;
-        if (!state.partsClassifiedIndex) return row;
-        const stats = computeComponentSelectionStats(normalized.key);
-        if (!stats) return row;
-        return {
-          ...row,
-          tickets: stats.tickets,
-          lineItems: stats.lineItems,
-          cost: stats.cost,
-        };
+        return row;
       });
-      const totalTickets = hydrated.reduce((sum, row) => sum + componentTicketCount(row), 0);
+      const totalTickets = hydrated.reduce((sum, row) => sum + componentDisplayTicketCount(row), 0);
       const totalLineItems = hydrated.reduce((sum, row) => sum + componentLineItems(row), 0);
       const totalCost = hydrated.reduce((sum, row) => sum + (Number(row?.cost) || 0), 0);
       return hydrated.map(row => ({
         ...row,
-        ticketShare: totalTickets ? componentTicketCount(row) / totalTickets : 0,
+        ticketShare: totalTickets ? componentDisplayTicketCount(row) / totalTickets : 0,
         lineShare: totalLineItems ? componentLineItems(row) / totalLineItems : 0,
         costShare: totalCost ? (Number(row?.cost) || 0) / totalCost : 0,
       }));
@@ -4467,7 +4116,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       });
     });
     return applyClassifiedStats(Array.from(grouped.values()))
-      .sort((a,b)=>componentTicketCount(b) - componentTicketCount(a) || componentLineItems(b) - componentLineItems(a));
+      .sort((a,b)=>componentDisplayTicketCount(b) - componentDisplayTicketCount(a) || componentLineItems(b) - componentLineItems(a));
   }
 
   function computeComponentStatic(compKey){
@@ -4475,7 +4124,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (bucket) {
       const monthSelection = selectedPartsMonth();
       let total = 0;
-      let materialQty = 0;
+      let bucketMaterialQty = 0;
       let pre = 0;
       let field = 0;
       let other = 0;
@@ -4483,188 +4132,14 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       for (const [monthKey, monthBucket] of monthEntries) {
         if (!partsMonthSelectionMatchesKey(monthKey, monthSelection)) continue;
         total += Number(monthBucket.tickets) || 0;
-        materialQty += Number(monthBucket.materialQty) || 0;
+        bucketMaterialQty += Number(monthBucket.materialQty) || 0;
         pre += Number(monthBucket.scope?.PRE) || 0;
         field += Number(monthBucket.scope?.FIELD) || 0;
         other += Number(monthBucket.scope?.OTHER) || 0;
       }
-      return { total, materialQty, pre, field, other };
+      return { total, materialQty: bucketMaterialQty, pre, field, other };
     }
-    const list = state.partsClassifiedIndex && state.partsClassifiedIndex.get(compKey);
-    const selectedSeries = state.selected;
-    const totalSet = new Set();
-    const preSet = new Set();
-    const fieldSet = new Set();
-    const otherSet = new Set();
-    let materialQty = 0;
-    if (!list || !list.length) {
-      return { total:0, materialQty:0, pre:0, field:0, other:0 };
-    }
-    for (const line of list) {
-      if (selectedSeries !== "ALL") {
-        const s = classifiedRowSeries(line);
-        if (s !== selectedSeries) continue;
-      }
-      const tid = clean(line["Ticket ID"]);
-      if (!tid) continue;
-      if (!partsMonthMatchesLine(line)) continue;
-      materialQty += asNumber(line["Order Qty"]);
-      totalSet.add(tid);
-      const scope = classifiedRowScope(line);
-      if (scope === "PRE") preSet.add(tid);
-      else if (scope === "FIELD") fieldSet.add(tid);
-      else otherSet.add(tid);
-    }
-    return {
-      total: totalSet.size,
-      materialQty,
-      pre: preSet.size,
-      field: fieldSet.size,
-      other: otherSet.size,
-    };
-  }
-
-  function renderCompTooltip(compName, compCat, compKey, anchorEl){
-    const el = ensureCompTooltipEl();
-    if (!state.partsClassifiedIndex) {
-      el.innerHTML = `<div class="compTooltipName">${esc(compName)}</div><div class="compTooltipHint">Loading static counts...</div>`;
-    } else {
-      const stats = computeComponentStatic(compKey);
-      const displayTickets = Number(anchorEl?.getAttribute("data-comp-tickets")) || stats.total;
-      const scope = componentScope();
-      const scopeLbl = componentScopeLabel(scope);
-      const scopeCls = componentScopeClass(scope);
-      const focusCount = componentScopeFocusCount(stats, scope);
-      el.innerHTML = `
-        <div class="compTooltipHead">
-          <div class="compTooltipName">${esc(compName)}</div>
-          <div class="compTooltipMode ${scopeCls}">${scopeLbl}</div>
-        </div>
-        <div class="compTooltipTotal">${numFmt.format(displayTickets)} tickets  -  ${esc(compCat)}</div>
-        <div style="display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:10.5px;color:#cbd5e1;font-weight:600">
-          <div>Total</div><div>${numFmt.format(displayTickets)}</div>
-          <div>Pre-Delivery</div><div>${numFmt.format(stats.pre)}</div>
-          <div>In-Field</div><div>${numFmt.format(stats.field)}</div>
-          <div>Other</div><div>${numFmt.format(stats.other)}</div>
-        </div>
-        <div class="compTooltipHint">${scopeLbl}: ${numFmt.format(focusCount)} tickets in the selected global scope</div>
-      `;
-    }
-    positionCompTooltip(el, anchorEl);
-    el.classList.add("visible");
-  }
-
-  function renderComponentTotals(rows){
-    const target = $("compTotalsWrap");
-    if (!target) return;
-    if (!state.partsClassifiedIndex) {
-      target.innerHTML = `<div class="compTotalsHead">
-        <div class="compTotalsTitle">Static totals <small>loading...</small></div>
-      </div>`;
-      return;
-    }
-    if (state.partsClassifiedIndex.size === 0) {
-      const err = state.partsClassifiedError;
-      const attempts = Array.isArray(err)
-        ? `<ul style="margin:6px 0 0 18px;padding:0;font-size:11px;color:var(--muted)">${err.map(a => `<li>${esc(a.url || "?")} - ${esc(a.reason || "failed")}</li>`).join("")}</ul>`
-        : "";
-      target.innerHTML = `<div class="compTotalsHead">
-        <div class="compTotalsTitle" style="color:#b91c1c">Static totals unavailable</div>
-      </div>
-      <div style="font-size:11.5px;color:var(--muted);line-height:1.5">
-        The parts classification CSV could not be loaded, so the static component split cannot be computed.
-        ${attempts}
-      </div>`;
-      return;
-    }
-
-    const seriesLabel = state.selected === "ALL" ? "All Tickets by Caravans" : state.selected;
-    const enriched = rows.map(r => {
-      const stats = computeComponentStatic(componentKey(r.component, r.category));
-      return { ...r, ...stats };
-    });
-    const previewRows = enriched.slice(0, 8);
-    const totals = enriched.reduce((acc, row) => {
-      acc.tickets += Number(row.total) || 0;
-      acc.pre += Number(row.pre) || 0;
-      acc.field += Number(row.field) || 0;
-      acc.other += Number(row.other) || 0;
-      return acc;
-    }, { tickets:0, pre:0, field:0, other:0 });
-    const previewMax = Math.max(...previewRows.map(row => Number(row.total) || 0), 1);
-    const barsHtml = previewRows.map(row => {
-      const total = Number(row.total) || 0;
-      const pre = Number(row.pre) || 0;
-      const field = Number(row.field) || 0;
-      const other = Number(row.other) || 0;
-      const totalH = Math.max(20, (total / previewMax) * 164);
-      const preH = total ? (pre / total) * totalH : 0;
-      const fieldH = total ? (field / total) * totalH : 0;
-      const otherH = total ? (other / total) * totalH : 0;
-      const label = String(row.component || "Other").split(/\s+/).slice(0, 3).join(" ");
-      return `<div class="compTotalsBar" title="${esc(row.component || "Other")}: ${numFmt.format(total)} tickets">
-        <div class="barVal">${numFmt.format(total)}</div>
-        <div class="barStack" style="height:${totalH}px">
-          ${pre ? `<div class="barSeg pre" style="height:${preH}px" title="Pre-Delivery: ${numFmt.format(pre)}"></div>` : ""}
-          ${field ? `<div class="barSeg field" style="height:${fieldH}px" title="In-Field: ${numFmt.format(field)}"></div>` : ""}
-          ${other ? `<div class="barSeg other" style="height:${otherH}px" title="Other: ${numFmt.format(other)}"></div>` : ""}
-        </div>
-        <div class="barLbl" title="${esc(row.component || "Other")}">${esc(label || "Other")}</div>
-      </div>`;
-    }).join("");
-
-    const tableHtml = `
-      <table class="compTotalsTable">
-        <thead>
-          <tr>
-            <th>Component</th>
-            <th>Category</th>
-            <th>Tickets</th>
-            <th title="Percentage of total tickets for this component">Share %</th>
-            <th>Pre-Delivery</th>
-            <th>In-Field</th>
-            <th>Other</th>
-            <th>Cost AUD</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${enriched.map(row => `<tr>
-            <td>${esc(row.component || "Other")}</td>
-            <td>${esc(row.category || "Other")}</td>
-            <td>${numFmt.format(Number(row.total) || 0)}</td>
-            <td>${pctValue(Number(row.ticketShare) || 0) || "0.0%"}</td>
-            <td>${numFmt.format(Number(row.pre) || 0)}</td>
-            <td>${numFmt.format(Number(row.field) || 0)}</td>
-            <td>${numFmt.format(Number(row.other) || 0)}</td>
-            <td>${moneyFmt.format(Number(row.cost) || 0)}</td>
-          </tr>`).join("")}
-          <tr class="totalRow">
-            <td>Total</td>
-            <td></td>
-            <td>${numFmt.format(totals.tickets)}</td>
-            <td>${totals.tickets ? "100.0%" : "0.0%"}</td>
-            <td>${numFmt.format(totals.pre)}</td>
-            <td>${numFmt.format(totals.field)}</td>
-            <td>${numFmt.format(totals.other)}</td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-    `;
-
-    target.innerHTML = `
-      <div class="compTotalsHead">
-        <div class="compTotalsTitle">Static totals  -  Top 8 components <small>${esc(seriesLabel)}</small></div>
-        <div class="compTotalsMeta">Unique tickets, no monthly bucketing</div>
-      </div>
-      <div class="compTotalsBars">${barsHtml}</div>
-      <div class="compTotalsLegend">
-        <span><span class="swatch pre"></span>Pre-Delivery (${numFmt.format(totals.pre)})</span>
-        <span><span class="swatch field"></span>In-Field (${numFmt.format(totals.field)})</span>
-        <span><span class="swatch other"></span>Other (${numFmt.format(totals.other)})</span>
-      </div>
-      ${tableHtml}
-    `;
+    return { total:0, materialQty:0, pre:0, field:0, other:0 };
   }
 
   // ============ RENDER: Repairer table ============
@@ -4692,291 +4167,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     `;
     positionCompTooltip(el, anchorEl);
     el.classList.add("visible");
-  }
-
-  function renderComponentTotals(rows){
-    const target = $("compTotalsWrap");
-    if (!target) return;
-    if (!state.partsClassifiedIndex) {
-      target.innerHTML = `<div class="compTotalsHead">
-        <div class="compTotalsTitle">Monthly component volume <small>loading...</small></div>
-      </div>`;
-      return;
-    }
-    if (state.partsClassifiedIndex.size === 0) {
-      const err = state.partsClassifiedError;
-      const attempts = Array.isArray(err)
-        ? `<ul style="margin:6px 0 0 18px;padding:0;font-size:11px;color:var(--muted)">${err.map(a => `<li>${esc(a.url || "?")} - ${esc(a.reason || "failed")}</li>`).join("")}</ul>`
-        : "";
-      target.innerHTML = `<div class="compTotalsHead">
-        <div class="compTotalsTitle" style="color:#b91c1c">Monthly component chart unavailable</div>
-      </div>
-      <div style="font-size:11.5px;color:var(--muted);line-height:1.5">
-        The parts classification CSV could not be loaded, so the monthly component chart cannot be computed.
-        ${attempts}
-      </div>`;
-      return;
-    }
-
-    const seriesLabel = state.selected === "ALL" ? "All Tickets by Caravans" : state.selected;
-    const monthWindow = componentMonthWindowLabel();
-    const buckets = componentMonthWindowBuckets().map(bucket => ({
-      ...bucket,
-      pre: 0,
-      field: 0,
-      other: 0,
-      preSet: new Set(),
-      fieldSet: new Set(),
-      otherSet: new Set(),
-    }));
-
-    const bucketIndex = new Map();
-    buckets.forEach((bucket, index) => bucketIndex.set(`${bucket.y}-${bucket.m}`, index));
-
-    const classifiedSourceRows = Array.isArray(state.partsClassifiedRows) ? state.partsClassifiedRows : [];
-    for (const line of classifiedSourceRows) {
-      const date = classifiedRowDate(line);
-      if (!date) continue;
-      const idx = bucketIndex.get(`${date.getFullYear()}-${date.getMonth()}`);
-      if (idx == null) continue;
-      if (state.selected !== "ALL") {
-        const series = classifiedRowSeries(line);
-        if (series !== state.selected) continue;
-      }
-      const ticketId = clean(line["Ticket ID"]);
-      if (!ticketId) continue;
-      const scope = classifiedRowScope(line);
-      const bucket = buckets[idx];
-      if (scope === "PRE") {
-        if (!bucket.preSet.has(ticketId)) {
-          bucket.preSet.add(ticketId);
-          bucket.pre++;
-        }
-      } else if (scope === "FIELD") {
-        if (!bucket.fieldSet.has(ticketId)) {
-          bucket.fieldSet.add(ticketId);
-          bucket.field++;
-        }
-      } else {
-        if (!bucket.otherSet.has(ticketId)) {
-          bucket.otherSet.add(ticketId);
-          bucket.other++;
-        }
-      }
-    }
-
-    const totals = buckets.reduce((acc, bucket) => {
-      acc.pre += bucket.pre;
-      acc.field += bucket.field;
-      acc.other += bucket.other;
-      return acc;
-    }, { pre:0, field:0, other:0 });
-    const currentYear = Math.max(...buckets.map(bucket => bucket.y));
-    const previousYear = currentYear - 1;
-    const ytdMonthLimit = Math.max(...buckets.filter(bucket => bucket.y === currentYear).map(bucket => bucket.m), -1);
-    const monthlyScope = monthlyScopeFromGlobal();
-    const monthlyScopeLabels = {
-      all: "All Tickets",
-      pre: "Pre-Delivery Tickets",
-      field: "In-Field Tickets",
-    };
-    const ytdMonths = Array.from({ length: 12 }, (_, monthIndex) => {
-      const d = new Date(currentYear, monthIndex, 1);
-      return { m: monthIndex, label: d.toLocaleString("en-AU", { month:"short" }) };
-    });
-    const monthMap = new Map(buckets.map(bucket => [`${bucket.y}-${bucket.m}`, bucket]));
-    const bucketTotal = (bucket, scope = monthlyScope) => {
-      if (!bucket) return 0;
-      if (scope === "pre") return bucket.pre;
-      if (scope === "field") return bucket.field;
-      return bucket.pre + bucket.field + bucket.other;
-    };
-    const compareMax = Math.max(...ytdMonths.flatMap(month => [
-      bucketTotal(monthMap.get(`${previousYear}-${month.m}`)),
-      month.m <= ytdMonthLimit ? bucketTotal(monthMap.get(`${currentYear}-${month.m}`)) : 0,
-    ]), 1);
-    const ytdCompareHtml = ytdMonths.map(month => {
-      const prevTotal = bucketTotal(monthMap.get(`${previousYear}-${month.m}`));
-      const currIsFuture = month.m > ytdMonthLimit;
-      const currTotal = currIsFuture ? null : bucketTotal(monthMap.get(`${currentYear}-${month.m}`));
-      const prevH = prevTotal ? Math.max(6, (prevTotal / compareMax) * 176) : 0;
-      const currH = currTotal ? Math.max(6, (currTotal / compareMax) * 176) : 0;
-      const currTitle = currIsFuture
-        ? `${month.label} ${currentYear}: not available yet`
-        : `${month.label} ${currentYear}: ${numFmt.format(currTotal)} tickets`;
-      return `<div class="ytdMonthGroup">
-        <div class="ytdValueRow"><span>${prevTotal ? numFmt.format(prevTotal) : ""}</span><span>${currTotal ? numFmt.format(currTotal) : ""}</span></div>
-        <div class="ytdBarPair">
-          <div class="ytdBar prev" style="height:${prevH}px" title="${month.label} ${previousYear}: ${numFmt.format(prevTotal)} tickets"></div>
-          <div class="ytdBar curr ${currIsFuture ? "future" : ""}" style="height:${currH}px" title="${currTitle}"></div>
-        </div>
-        <div class="ytdMonthLabel">${month.label}</div>
-      </div>`;
-    }).join("");
-    const continuousTrendChart = () => {
-      const trendScope = monthlyScope;
-      const trendLabel = monthlyScopeLabels[monthlyScope];
-      const trendRows = buckets.map(bucket => ({
-        label: bucket.label,
-        year: bucket.y,
-        value: bucketTotal(bucket, trendScope),
-      }));
-      const maxValue = Math.max(...trendRows.map(row => row.value), 1);
-      const left = 42;
-      const top = 22;
-      const width = 480;
-      const height = 192;
-      const bottom = top + height;
-      const xFor = index => left + (index * (width / Math.max(1, trendRows.length - 1)));
-      const yFor = value => bottom - (value / maxValue) * height;
-      const path = trendRows.map((row, index) => `${index ? "L" : "M"} ${xFor(index).toFixed(1)} ${yFor(row.value).toFixed(1)}`).join(" ");
-      const isTurn = index => {
-        if (index <= 0 || index >= trendRows.length - 1) return true;
-        const prevDelta = trendRows[index].value - trendRows[index - 1].value;
-        const nextDelta = trendRows[index + 1].value - trendRows[index].value;
-        return (prevDelta > 0 && nextDelta < 0) || (prevDelta < 0 && nextDelta > 0);
-      };
-      const points = trendRows.map((row, index) => {
-        const turn = isTurn(index);
-        const tip = esc(monthlyTrendTipHtml(row, trendLabel, trendRows.reduce((sum, item) => sum + item.value, 0)));
-        return `<circle class="monthlyTrendPoint ${turn ? "turn" : ""}" cx="${xFor(index).toFixed(1)}" cy="${yFor(row.value).toFixed(1)}" r="${turn ? "4.4" : "3.8"}" data-monthly-trend-tip="${tip}"></circle>`;
-      }).join("");
-      const labels = trendRows.map((row, index) => {
-        if (!isTurn(index)) return "";
-        const pointY = yFor(row.value);
-        if (pointY < top + 18) return "";
-        const y = pointY - 8;
-        return `<text class="monthlyTrendValue turn" x="${xFor(index).toFixed(1)}" y="${y.toFixed(1)}" text-anchor="middle">${numFmt.format(row.value)}</text>`;
-      }).join("");
-      const xLabels = trendRows.map((row, index) => {
-        const show = index === 0 || index === trendRows.length - 1 || row.label === "Apr" || row.label === "Jul" || row.label === "Oct" || row.label === "Jan";
-        if (!show) return "";
-        const label = row.label === "Jan" ? `${row.label} ${row.year}` : row.label;
-        return `<text class="monthlyTrendText" x="${xFor(index).toFixed(1)}" y="${bottom + 20}" text-anchor="middle">${esc(label)}</text>`;
-      }).join("");
-      const total = trendRows.reduce((sum, row) => sum + row.value, 0);
-      const half = Math.round(maxValue / 2);
-      const hits = trendRows.map((row, index) => {
-        const slot = width / Math.max(1, trendRows.length - 1);
-        const x = xFor(index) - slot / 2;
-        const hitWidth = index === 0 || index === trendRows.length - 1 ? slot : slot;
-        return `<rect class="monthlyTrendHit" x="${Math.max(left, x).toFixed(1)}" y="${top}" width="${Math.min(hitWidth, left + width - Math.max(left, x)).toFixed(1)}" height="${height}" data-monthly-trend-tip="${esc(monthlyTrendTipHtml(row, trendLabel, total))}"></rect>`;
-      }).join("");
-      return `<div class="monthlyTrendPanel">
-        <svg class="monthlyTrendSvg" viewBox="0 0 548 250" aria-label="Monthly parts trend ${trendLabel} ${previousYear} to ${currentYear}">
-          <line class="monthlyTrendGrid" x1="${left}" y1="${bottom}" x2="${left + width}" y2="${bottom}"></line>
-          <line class="monthlyTrendGrid" x1="${left}" y1="${top + height / 2}" x2="${left + width}" y2="${top + height / 2}"></line>
-          <line class="monthlyTrendGrid" x1="${left}" y1="${top}" x2="${left + width}" y2="${top}"></line>
-          <line class="monthlyTrendAxis" x1="${left}" y1="${top}" x2="${left}" y2="${bottom}"></line>
-          <line class="monthlyTrendAxis" x1="${left}" y1="${bottom}" x2="${left + width}" y2="${bottom}"></line>
-          <text class="monthlyTrendText" x="${left - 7}" y="${top + 3}" text-anchor="end">${numFmt.format(maxValue)}</text>
-          <text class="monthlyTrendText" x="${left - 7}" y="${top + height / 2 + 3}" text-anchor="end">${numFmt.format(half)}</text>
-          <text class="monthlyTrendText" x="${left - 7}" y="${bottom + 3}" text-anchor="end">0</text>
-          <path class="monthlyTrendPath" d="${path}"></path>
-          ${hits}
-          ${points}
-          ${labels}
-          ${xLabels}
-        </svg>
-        <div class="miniLineMeta">${trendLabel} by ${esc(partsDateBasisLabel())}: ${formatTicketCount(total)}</div>
-      </div>`;
-    };
-    const lineChartsHtml = continuousTrendChart();
-    const maxTotal = Math.max(...buckets.map(bucket => bucket.pre + bucket.field + bucket.other), 1);
-    const barsHtml = buckets.map(bucket => {
-      const total = bucket.pre + bucket.field + bucket.other;
-      const totalHeight = total ? Math.max(12, (total / maxTotal) * 176) : 0;
-      const preH = total ? (bucket.pre / total) * totalHeight : 0;
-      const fieldH = total ? (bucket.field / total) * totalHeight : 0;
-      const otherH = total ? (bucket.other / total) * totalHeight : 0;
-      return `<div class="compTotalsBar" title="${bucket.label} ${bucket.y}: ${numFmt.format(total)} tickets">
-        <div class="barVal">${numFmt.format(total)}</div>
-        <div class="barTrack">
-          <div class="barStack" style="height:${totalHeight}px">
-            ${bucket.pre ? `<div class="barSeg pre" style="height:${preH}px" title="Pre-Delivery: ${numFmt.format(bucket.pre)}"></div>` : ""}
-            ${bucket.field ? `<div class="barSeg field" style="height:${fieldH}px" title="In-Field: ${numFmt.format(bucket.field)}"></div>` : ""}
-            ${bucket.other ? `<div class="barSeg other" style="height:${otherH}px" title="Other: ${numFmt.format(bucket.other)}"></div>` : ""}
-          </div>
-        </div>
-        <div class="barLbl monthLbl" title="${bucket.label} ${bucket.y}">${bucket.label}</div>
-      </div>`;
-    }).join("");
-    const yearGroups = [];
-    buckets.forEach((bucket, index) => {
-      const last = yearGroups[yearGroups.length - 1];
-      if (last && last.year === bucket.y) {
-        last.span++;
-      } else {
-        yearGroups.push({ year: bucket.y, start: index + 1, span: 1 });
-      }
-    });
-    const yearAxisHtml = yearGroups.map(group =>
-      `<div class="compTotalsYearLabel" style="--start:${group.start};--span:${group.span}">${group.year}</div>`
-    ).join("");
-
-    const tableHtml = `
-      <table class="compTotalsTable">
-        <thead>
-          <tr>
-            <th>Month</th>
-            <th>Pre-Delivery</th>
-            <th>In-Field</th>
-            <th>Other</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${buckets.map(bucket => `<tr>
-            <td>${bucket.label} ${bucket.y}</td>
-            <td>${numFmt.format(bucket.pre)}</td>
-            <td>${numFmt.format(bucket.field)}</td>
-            <td>${numFmt.format(bucket.other)}</td>
-            <td>${numFmt.format(bucket.pre + bucket.field + bucket.other)}</td>
-          </tr>`).join("")}
-          <tr class="totalRow">
-            <td>Total</td>
-            <td>${numFmt.format(totals.pre)}</td>
-            <td>${numFmt.format(totals.field)}</td>
-            <td>${numFmt.format(totals.other)}</td>
-            <td>${numFmt.format(totals.pre + totals.field + totals.other)}</td>
-          </tr>
-        </tbody>
-      </table>
-    `;
-
-    target.innerHTML = `
-      <div class="compTotalsHead">
-        <div>
-          <div class="compTotalsTitle">Monthly Tickets by ${esc(partsDateBasisLabel())} <small>${esc(seriesLabel)} - ${esc(monthWindow)} - all components</small></div>
-        </div>
-        <div class="compTotalsActions">
-          <button class="btn compMonthlyExportBtn" type="button" data-monthly-created-export>Export Ticket + Parts Detail Excel</button>
-        </div>
-      </div>
-      <div class="compTotalsSplit ytdLayout">
-        <div class="compTotalsTablePane">
-          <div class="compTotalsPaneHead">
-            <div class="compTotalsPaneTitle">Parts by ${esc(partsDateBasisLabel())} - 2025 vs 2026 YTD</div>
-            <div class="compTotalsMeta">${monthlyScopeLabels[monthlyScope]}</div>
-          </div>
-          <div class="ytdCompareBars" style="--months:${ytdMonths.length}">${ytdCompareHtml}</div>
-          <div class="compTotalsLegend ytdLegend">
-            <span><span class="swatch prev"></span>${previousYear}</span>
-            <span><span class="swatch curr"></span>${currentYear} YTD</span>
-          </div>
-        </div>
-        <div class="compTotalsChartPane">
-          <div class="compTotalsPaneHead">
-            <div class="compTotalsPaneTitle">Monthly parts trend by ${esc(partsDateBasisLabel())}</div>
-          </div>
-          ${lineChartsHtml}
-          <div class="compTotalsLegend">
-            <span><span class="swatch trend"></span>${monthlyScopeLabels[monthlyScope]} by ${esc(partsDateBasisLabel())} - ${previousYear}-${currentYear}</span>
-          </div>
-        </div>
-      </div>
-    `;
-    bindMonthlyCreatedOnControls(target);
   }
 
   function monthKeyParts(monthKey){
@@ -5173,6 +4363,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const selected = state.selected === "ALL" ? "All Tickets by Cars" : state.selected;
     const lineRows = [];
     const ticketIds = new Set();
+    const scopedTicketIds = currentPartsTicketIdSet();
     const monthSummary = buckets.map(bucket => ({
       label:`${bucket.label} ${bucket.y}`,
       pre:0,
@@ -5190,6 +4381,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       if (bucketPos == null) continue;
       const ticketId = clean(line["Ticket ID"]);
       if (!ticketId) continue;
+      if (!scopedTicketIds.has(ticketId)) continue;
       const series = classifiedRowSeries(line) || "";
       if (state.selected !== "ALL" && series !== state.selected) continue;
       const claim = classifiedRowScope(line);
@@ -5271,6 +4463,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     try {
       await loadPartsClassifiedRows();
       await loadPartsDerivedCache();
+      await ensureTicketRowLookupForExport();
       const data = monthlyCreatedOnExportData();
       if (!data.lineRows.length) {
         alert(`No ticket detail found for the current ${partsDateBasisLabel()} selection.`);
@@ -5947,6 +5140,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     try {
       await loadPartsClassifiedRows();
       await loadPartsDerivedCache();
+      await ensureTicketRowLookupForExport();
       exportExcelWorkbook();
     } finally {
       if (overlay) overlay.classList.remove("show");
@@ -5985,11 +5179,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         return;
       }
       state.partsDerivedCache = null;
-      if (Array.isArray(state.partsClassifiedRows) && state.partsClassifiedRows.length) {
-        console.warn("Parts derived cache load failed, rebuilding locally:", err);
-        await buildPartsClassifiedIndex();
-        return;
-      }
       console.warn("Parts derived cache load failed:", err);
     }
   }
@@ -6111,7 +5300,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           ...componentRows.map(r => {
             const stats = computeComponentStatic(componentKey(r.component, r.category));
             const lineItems = componentLineItems(r);
-            const tickets = componentTicketCount(r) || Number(stats.total) || 0;
+            const tickets = componentDisplayTicketCount(r) || Number(stats.total) || 0;
             return [
               r.component || "Other",
               r.category || "Other",
@@ -6249,7 +5438,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (state.compMode === "cost") {
       rows.sort((a,b) => (Number(b.cost)||0) - (Number(a.cost)||0));
     } else {
-      rows.sort((a,b) => componentTicketCount(b) - componentTicketCount(a) || componentLineItems(b) - componentLineItems(a));
+      rows.sort((a,b) => componentDisplayTicketCount(b) - componentDisplayTicketCount(a) || componentLineItems(b) - componentLineItems(a));
     }
     return rows.slice(0, limit).map(normalizeComponentPreviewRow).filter(Boolean);
   }
@@ -6354,6 +5543,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       const componentRowsByKey = new Map(topComponents.map(row => [row.key, row]));
       const lineRows = [];
       const ticketLines = new Map();
+      const scopedTicketIds = currentPartsTicketIdSet();
 
       for (const line of (state.partsClassifiedRows || [])) {
         if (!partsMonthMatchesLine(line, month)) continue;
@@ -6367,6 +5557,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         if (componentKeys.size && !componentKeys.has(key) && !keyMatched) continue;
         const ticketId = clean(line["Ticket ID"]);
         if (!ticketId) continue;
+        if (!scopedTicketIds.has(ticketId)) continue;
         const normalized = { ...line, _component:component, _category:category, _componentKey:key, _series:series };
         lineRows.push(normalized);
         if (!ticketLines.has(ticketId)) ticketLines.set(ticketId, []);
@@ -6383,17 +5574,12 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         .sort((a,b) => String(a[0]).localeCompare(String(b[0]), undefined, { numeric:true }))
         .map(([ticketId, lines]) => componentExportTicketRow(ticketId, lines));
       const componentSummaryRows = topComponents.map(row => {
-        const matching = lineRows.filter(line => line._componentKey === row.key);
-        const ticketCount = new Set(matching.map(line => clean(line["Ticket ID"])).filter(Boolean)).size;
-        const lineCost = matching.reduce((sum, line) => sum + (asNumber(line["Preferred Line Cost (AUD)"]) || 0), 0);
         return [
           row.component,
           row.category,
-          ticketCount,
-          matching.length,
-          round(lineCost, 2),
-          componentRowsByKey.get(row.key)?.tickets || row.tickets || "",
-          round(Number(componentRowsByKey.get(row.key)?.cost || row.cost || 0), 2),
+          componentDisplayTicketCount(row),
+          componentLineItems(row),
+          round(Number(row.cost) || 0, 2),
         ];
       });
 
@@ -6455,7 +5641,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         {
           name:"Top Components",
           rows:[
-            ["Field","Part Category","Exported Unique Tickets","Exported Lines","Exported PO Line Price AUD","Page Tickets","Page Cost AUD"],
+            ["Field","Part Category","Unique Tickets","Component Lines","PO Line Price AUD"],
             ...componentSummaryRows,
           ],
         },
@@ -6545,14 +5731,31 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     return state.viewRows.filter(row => extractSeries(row) === state.selected);
   }
 
+  function currentPartsTicketIdSet(){
+    const rows = rowsForSelectedSeries();
+    const ids = new Set();
+    rows.forEach(row => {
+      const id = numericTicketIdValue(row) || clean(row["Ticket ID"] || row.TicketID || row.TicketId);
+      if (id) ids.add(id);
+    });
+    return ids;
+  }
+
+  function lineInCurrentPartsTicketScope(line, scopedTicketIds = currentPartsTicketIdSet()){
+    const ticketId = clean(line && line["Ticket ID"]);
+    return !!ticketId && scopedTicketIds.has(ticketId);
+  }
+
   function currentPartsScopedTicketMap(){
     const map = new Map();
     const scope = componentScope();
+    const scopedTicketIds = currentPartsTicketIdSet();
     for (const line of (state.partsClassifiedRows || [])) {
       if (!partsMonthMatchesLine(line)) continue;
       if (scope !== "ALL" && classifiedRowScope(line) !== scope) continue;
       const ticketId = clean(line["Ticket ID"]);
       if (!ticketId || map.has(ticketId)) continue;
+      if (!scopedTicketIds.has(ticketId)) continue;
       const series = classifiedRowSeries(line) || "";
       if (state.selected !== "ALL" && series !== state.selected) continue;
       const ticket = state.ticketRowById && state.ticketRowById.get(ticketId);
@@ -6860,8 +6063,6 @@ ${worksheets}
       const approvedCostPromise = loadApprovedTicketCosts();
       const partsCostPromise = loadPartsTicketCosts();
       await partsSummaryPromise;
-      await partsDerivedPromise;
-      renderComponents();
       if (overlayFailSafe) {
         clearTimeout(overlayFailSafe);
         overlayFailSafe = null;
@@ -6914,7 +6115,6 @@ ${worksheets}
         if (id && !tById.has(id)) tById.set(id, r);
       }
       state.ticketRowById = tById;
-      await loadPartsClassifiedRows();
       await partsDerivedPromise;
 
       // pick initial series

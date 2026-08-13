@@ -1,6 +1,7 @@
 import csv
 import json
 import calendar
+import os
 import re
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
@@ -56,6 +57,13 @@ def clean(value):
     if value is None:
         return ""
     return str(value).strip()
+
+
+def write_text_atomic(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f"{path.name}.tmp")
+    tmp.write_text(text, encoding="utf-8")
+    os.replace(tmp, path)
 
 
 def parse_date(value):
@@ -181,15 +189,22 @@ def load_ticket_month_scope():
                     or parse_date(row.get("Approved Date"))
                 )
                 scope = ticket_claim_scope(row)
-                existing = attrs.setdefault(ticket_id, {"month": "", "approvedMonth": "", "scope": "OTHER"})
+                existing = attrs.setdefault(ticket_id, {"month": "", "approvedMonth": "", "scope": "OTHER", "hasPgi": False})
                 created_month = month_key_for_date(created)
                 approved_month = month_key_for_date(approved)
+                pgi_date = (
+                    parse_date(row.get("PGI Date"))
+                    or parse_date(row.get("Delivery Date"))
+                    or parse_date(row.get("Dispatch Date"))
+                )
                 if created_month and not existing.get("month"):
                     existing["month"] = created_month
                 if approved_month and not existing.get("approvedMonth"):
                     existing["approvedMonth"] = approved_month
                 if existing.get("scope") == "OTHER" and scope != "OTHER":
                     existing["scope"] = scope
+                if pgi_date:
+                    existing["hasPgi"] = True
     return attrs, source_paths[0] if source_paths else None
 
 
@@ -649,6 +664,72 @@ def compact_for_initial_render(value):
     return value
 
 
+def validate_summary_bucket(bucket, label):
+    if not isinstance(bucket, dict):
+        return
+    tickets = int(bucket.get("tickets") or 0)
+    line_items = int(bucket.get("lineItems") or 0)
+    if tickets < 0 or line_items < 0:
+        raise ValueError(f"{label} has negative tickets or lineItems")
+    if tickets > line_items:
+        raise ValueError(f"{label} has tickets > lineItems ({tickets} > {line_items})")
+    for component in bucket.get("topComponents") or []:
+        comp_label = f"{label} / {component.get('component', 'component')}"
+        comp_tickets = int(component.get("tickets") or 0)
+        comp_lines = int(component.get("lineItems") or 0)
+        if comp_tickets > comp_lines:
+            raise ValueError(f"{comp_label} has tickets > lineItems ({comp_tickets} > {comp_lines})")
+
+
+def validate_summary_tree(value, label="summary"):
+    if isinstance(value, dict):
+        if "tickets" in value and "lineItems" in value:
+            validate_summary_bucket(value, label)
+        for key, item in value.items():
+            if key == "componentTrends":
+                continue
+            validate_summary_tree(item, f"{label}.{key}")
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            validate_summary_tree(item, f"{label}[{index}]")
+
+
+def validate_derived_cache(derived_payload):
+    by_key = derived_payload.get("byKey") if isinstance(derived_payload, dict) else None
+    if not isinstance(by_key, dict) or not by_key:
+        raise ValueError("derived cache has no component buckets")
+    for comp_key, entry in by_key.items():
+        bases = entry.get("bases") if isinstance(entry, dict) else {}
+        for basis_key, basis_bucket in (bases or {}).items():
+            series_map = (basis_bucket or {}).get("series") or {}
+            for series_key, series_bucket in series_map.items():
+                months = (series_bucket or {}).get("months") or {}
+                for month_key, month_bucket in months.items():
+                    tickets = int((month_bucket or {}).get("tickets") or 0)
+                    line_items = int((month_bucket or {}).get("lineItems") or 0)
+                    if tickets > line_items:
+                        raise ValueError(
+                            f"derived {comp_key} {basis_key}/{series_key}/{month_key} "
+                            f"has tickets > lineItems ({tickets} > {line_items})"
+                        )
+
+
+def validate_outputs(payload, derived_payload):
+    meta = payload.get("meta") or {}
+    included_rows = int(meta.get("includedPartsRows") or 0)
+    mapped_tickets = int(meta.get("mappedTickets") or 0)
+    if included_rows <= 0:
+        raise ValueError("parts failure summary has no included parts rows")
+    if mapped_tickets <= 0:
+        raise ValueError("parts failure summary has no mapped tickets")
+    validate_summary_tree(payload)
+    validate_derived_cache(derived_payload)
+    derived_meta = derived_payload.get("meta") or {}
+    for key in ("includedPartsRows", "mappedTickets"):
+        if int(derived_meta.get(key) or 0) != int(meta.get(key) or 0):
+            raise ValueError(f"summary and derived cache meta mismatch for {key}")
+
+
 def main():
     parts_meta_path, parts_csv_path = resolve_parts_sources()
     ticket_map_payload = json.loads(PARTS_TICKET_MAP.read_text(encoding="utf-8"))
@@ -656,7 +737,6 @@ def main():
     series_by_chassis, series_by_sales_order = load_vehicle_base_maps()
     ticket_series = {}
     ticket_series_counts = defaultdict(Counter)
-    series_ticket_sets = defaultdict(set)
     for row in ticket_map_payload.get("rows", []):
         ticket_id = clean(row.get("ticketId"))
         if not ticket_id:
@@ -672,7 +752,6 @@ def main():
         if is_excluded_series(series) or not is_tracked_series(series):
             continue
         ticket_series_counts[ticket_id][series] += 1
-        series_ticket_sets[series].add(ticket_id)
 
     for ticket_id, counter in ticket_series_counts.items():
         ticket_series[ticket_id] = counter.most_common(1)[0][0]
@@ -724,7 +803,10 @@ def main():
         if is_excluded_series(series) or not is_tracked_series(series):
             excluded_rows += 1
             continue
-        series_ticket_sets[series].add(ticket_id)
+        attrs = ticket_month_scope.get(ticket_id)
+        if not attrs or not attrs.get("hasPgi"):
+            excluded_rows += 1
+            continue
         included_rows += 1
 
         keyword = clean(get_value(row, parts_index, "Matched Keyword"))
@@ -738,14 +820,11 @@ def main():
         add_component(parts_stats_all[component_label], ticket_id, category, cost)
         add_component(parts_stats_by_series[series][component_label], ticket_id, category, cost)
 
-        attrs = ticket_month_scope.get(ticket_id)
         month_by_basis = {
             "CREATED": attrs.get("month") if attrs else "",
             "APPROVED": attrs.get("approvedMonth") if attrs else "",
         }
         claim_scope = attrs.get("scope") if attrs else "OTHER"
-        if not attrs:
-            monthly_missing_ticket_attrs += 1
 
         comp_key = f"{component_label.lower()}||{category.lower()}"
         if comp_key not in derived_by_key:
@@ -786,7 +865,7 @@ def main():
                 add_to_aggregate(aggs["year_totals"][(scope_key, year)], component_label, ticket_id, category, cost)
                 add_to_aggregate(aggs["year_series_totals"][(scope_key, year)][series], component_label, ticket_id, category, cost)
 
-    total_tickets_all = len({ticket for ticket, series in ticket_series.items() if not is_excluded_series(series) and is_tracked_series(series)})
+    total_tickets_all = len({ticket for stat in parts_stats_all.values() for ticket in stat["tickets"]})
     overall = {
         "lineItems": included_rows,
         "tickets": total_tickets_all,
@@ -801,9 +880,7 @@ def main():
     )
     for series in all_series_keys:
         bucket = parts_stats_by_series[series]
-        ticket_total = len(series_ticket_sets.get(series, set()))
-        if ticket_total == 0:
-            ticket_total = len({ticket for stat in bucket.values() for ticket in stat["tickets"]})
+        ticket_total = len({ticket for stat in bucket.values() for ticket in stat["tickets"]})
         series_cost = sum(stat["cost"] for stat in bucket.values())
         series_line_items = sum(stat["lineItems"] for stat in bucket.values())
         series_payload[series] = {
@@ -869,6 +946,7 @@ def main():
         "monthlyMissingTicketRows": monthly_missing_ticket_attrs,
         "monthlyTicketSource": relative_path(ticket_month_scope_source) if ticket_month_scope_source else "",
     })
+    validate_outputs(payload, derived_payload)
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     payload_text = json.dumps(payload, ensure_ascii=False, indent=2)
@@ -876,26 +954,26 @@ def main():
     light_payload.setdefault("meta", {})["compactForInitialRender"] = True
     light_text = json.dumps(light_payload, ensure_ascii=False, separators=(",", ":"))
     derived_text = json.dumps(derived_payload, ensure_ascii=False, separators=(",", ":"))
-    OUT.write_text(payload_text, encoding="utf-8")
-    OUT_JS.write_text(
+    write_text_atomic(OUT, payload_text)
+    write_text_atomic(
+        OUT_JS,
         "globalThis.ANALYSIS_PARTS_FAILURE_SUMMARY = "
         + payload_text
-        + ";\n",
-        encoding="utf-8",
+        + ";\n"
     )
-    OUT_LIGHT.write_text(light_text, encoding="utf-8")
-    OUT_LIGHT_JS.write_text(
+    write_text_atomic(OUT_LIGHT, light_text)
+    write_text_atomic(
+        OUT_LIGHT_JS,
         "globalThis.ANALYSIS_PARTS_FAILURE_LIGHT = "
         + light_text
-        + ";\n",
-        encoding="utf-8",
+        + ";\n"
     )
-    OUT_DERIVED.write_text(derived_text, encoding="utf-8")
-    OUT_DERIVED_JS.write_text(
+    write_text_atomic(OUT_DERIVED, derived_text)
+    write_text_atomic(
+        OUT_DERIVED_JS,
         "globalThis.ANALYSIS_PARTS_DERIVED_CACHE = "
         + derived_text
-        + ";\n",
-        encoding="utf-8",
+        + ";\n"
     )
     print(f"Wrote {OUT}")
     print(f"Wrote {OUT_JS}")
