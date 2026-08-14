@@ -363,6 +363,7 @@ WITH obj AS (
         vbak."MANDT"                    AS "MANDT",
         vbak."VBELN"                    AS "Sales Order",
         vbak."ERDAT"                    AS "SO Created Date",
+        LPAD(TO_VARCHAR(vbap."POSNR"), 6, '0') AS "Sales Order Item",
         vbap."MATNR"                    AS "Material",
         vbap."ARKTX"                    AS "Description",
         objk."SERNR"                    AS "Serial",
@@ -371,12 +372,11 @@ WITH obj AS (
     INNER JOIN "SAPHANADB"."VBAP" vbap
         ON vbap."MANDT" = vbak."MANDT"
        AND vbap."VBELN" = vbak."VBELN"
-       AND LPAD(TO_VARCHAR(vbap."POSNR"), 6, '0') = '000010'
        AND vbap."MATNR" LIKE 'Z%'
     INNER JOIN "SAPHANADB"."SER02" ser02
         ON ser02."MANDT" = vbak."MANDT"
        AND ser02."SDAUFNR" = vbak."VBELN"
-       AND LPAD(TO_VARCHAR(ser02."POSNR"), 6, '0') = '000010'
+       AND LPAD(TO_VARCHAR(ser02."POSNR"), 6, '0') = LPAD(TO_VARCHAR(vbap."POSNR"), 6, '0')
     INNER JOIN "SAPHANADB"."OBJK" objk
         ON objk."MANDT" = ser02."MANDT"
        AND objk."OBKNR" = ser02."OBKNR"
@@ -393,6 +393,7 @@ gi AS (
         obj."Serial"                    AS "Serial",
         obj."VIN"                       AS "VIN",
         obj."Sales Order"               AS "Sales Order",
+        obj."Sales Order Item"          AS "Sales Order Item",
         obj."SO Created Date"           AS "SO Created Date",
         obj."Material"                  AS "Material",
         obj."Description"               AS "Description",
@@ -405,7 +406,7 @@ gi AS (
     INNER JOIN "SAPHANADB"."NSDM_V_MSEG" gi
         ON gi."MANDT" = obj."MANDT"
        AND gi."KDAUF" = obj."Sales Order"
-       AND LPAD(TO_VARCHAR(gi."KDPOS"), 6, '0') = '000010'
+       AND LPAD(TO_VARCHAR(gi."KDPOS"), 6, '0') = obj."Sales Order Item"
        AND gi."WERKS" = '3111'
        AND gi."BWART" = '601'
        AND gi."BUDAT_MKPF" >= '{sql_quote(start_yyyymmdd)}'

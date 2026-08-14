@@ -156,9 +156,19 @@ def repaired_ticket_row(headers, row):
     return out
 
 
+def lookup_first_date(row, maps, key_fn):
+    for key in key_fn(row):
+        value = maps.get(key)
+        parsed = parse_date(value)
+        if parsed:
+            return parsed
+    return None
+
+
 def load_ticket_month_scope():
     attrs = {}
     source_paths = []
+    _, _, pgi_by_chassis, pgi_by_sales_order = load_vehicle_base_maps()
     for path in (TICKET_BASE_CSV, TICKET_FAILURE_TIMING):
         if not path.exists():
             continue
@@ -205,6 +215,8 @@ def load_ticket_month_scope():
                     parse_date(row.get("PGI Date"))
                     or parse_date(row.get("Delivery Date"))
                     or parse_date(row.get("Dispatch Date"))
+                    or lookup_first_date(row, pgi_by_chassis, vehicle_series_lookup_keys)
+                    or lookup_first_date(row, pgi_by_sales_order, sales_order_lookup_keys)
                 )
                 good_receive_date = (
                     parse_date(row.get("Good Receive Date"))
@@ -227,7 +239,7 @@ def load_ticket_month_scope():
                         existing["pgiDate"] = pgi_date.isoformat()
                 if good_receive_date and not existing.get("goodReceiveDate"):
                     existing["goodReceiveDate"] = good_receive_date.isoformat()
-    return attrs, source_paths[0] if source_paths else None
+    return attrs, source_paths[0] if source_paths else None, source_paths
 
 
 def parse_amount(value):
@@ -402,16 +414,20 @@ def sales_order_lookup_keys(row):
 
 def load_vehicle_base_maps():
     if not VEHICLE_BASE_SUMMARY.exists():
-        return {}, {}
+        return {}, {}, {}, {}
     try:
         payload = json.loads(VEHICLE_BASE_SUMMARY.read_text(encoding="utf-8"))
     except Exception:
-        return {}, {}
+        return {}, {}, {}, {}
     chassis = payload.get("seriesByChassis") if isinstance(payload, dict) else {}
     sales_order = payload.get("seriesBySalesOrder") if isinstance(payload, dict) else {}
+    pgi_chassis = payload.get("pgiByChassis") if isinstance(payload, dict) else {}
+    pgi_sales_order = payload.get("pgiBySalesOrder") if isinstance(payload, dict) else {}
     return (
         chassis if isinstance(chassis, dict) else {},
         sales_order if isinstance(sales_order, dict) else {},
+        pgi_chassis if isinstance(pgi_chassis, dict) else {},
+        pgi_sales_order if isinstance(pgi_sales_order, dict) else {},
     )
 
 
@@ -848,8 +864,8 @@ def validate_outputs(payload, derived_payload):
 def main():
     parts_meta_path, parts_csv_path = resolve_parts_sources()
     ticket_map_payload = json.loads(PARTS_TICKET_MAP.read_text(encoding="utf-8"))
-    ticket_month_scope, ticket_month_scope_source = load_ticket_month_scope()
-    series_by_chassis, series_by_sales_order = load_vehicle_base_maps()
+    ticket_month_scope, ticket_month_scope_source, ticket_month_scope_sources = load_ticket_month_scope()
+    series_by_chassis, series_by_sales_order, pgi_by_chassis, pgi_by_sales_order = load_vehicle_base_maps()
     ticket_series = {}
     ticket_series_counts = defaultdict(Counter)
     for row in ticket_map_payload.get("rows", []):
@@ -1057,6 +1073,8 @@ def main():
             "partsSource": relative_path(parts_csv_path),
             "ticketMapSource": relative_path(PARTS_TICKET_MAP),
             "vehicleBaseSource": relative_path(VEHICLE_BASE_SUMMARY) if VEHICLE_BASE_SUMMARY.exists() else "",
+            "vehicleBasePgiChassisKeys": len(pgi_by_chassis),
+            "vehicleBasePgiSalesOrderKeys": len(pgi_by_sales_order),
             "partsMetaSource": relative_path(parts_meta_path) if parts_meta_path else "",
         },
         "all": overall,
@@ -1069,6 +1087,7 @@ def main():
     payload["meta"]["monthlyMissingTicketRows"] = monthly_missing_ticket_attrs
     payload["meta"]["monthCount"] = len(payload["monthScopes"]["ALL"].get("months", []))
     payload["meta"]["monthlyTicketSource"] = relative_path(ticket_month_scope_source) if ticket_month_scope_source else ""
+    payload["meta"]["monthlyTicketSources"] = [relative_path(path) for path in ticket_month_scope_sources]
 
     derived_payload = finalize_derived_cache(derived_by_key)
     derived_payload["meta"].update({
@@ -1080,11 +1099,14 @@ def main():
         "partsSource": relative_path(parts_csv_path),
         "ticketMapSource": relative_path(PARTS_TICKET_MAP),
         "vehicleBaseSource": relative_path(VEHICLE_BASE_SUMMARY) if VEHICLE_BASE_SUMMARY.exists() else "",
+        "vehicleBasePgiChassisKeys": len(pgi_by_chassis),
+        "vehicleBasePgiSalesOrderKeys": len(pgi_by_sales_order),
         "partsMetaSource": relative_path(parts_meta_path) if parts_meta_path else "",
         "monthlyRows": monthly_rows,
         "approvedMonthlyRows": approved_monthly_rows,
         "monthlyMissingTicketRows": monthly_missing_ticket_attrs,
         "monthlyTicketSource": relative_path(ticket_month_scope_source) if ticket_month_scope_source else "",
+        "monthlyTicketSources": [relative_path(path) for path in ticket_month_scope_sources],
     })
     validate_outputs(payload, derived_payload)
 

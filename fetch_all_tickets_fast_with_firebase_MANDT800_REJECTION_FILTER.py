@@ -126,6 +126,7 @@ WITH obj AS (
     SELECT DISTINCT
         vbak."MANDT"                    AS "MANDT",
         vbak."VBELN"                    AS "Sales Order",
+        LPAD(TO_VARCHAR(vbap."POSNR"), 6, '0') AS "Sales Order Item",
         vbap."MATNR"                    AS "Material",
         vbap."ARKTX"                    AS "Description",
         objk."SERNR"                    AS "Serial",
@@ -134,12 +135,11 @@ WITH obj AS (
     INNER JOIN "SAPHANADB"."VBAP" vbap
         ON vbap."MANDT" = vbak."MANDT"
        AND vbap."VBELN" = vbak."VBELN"
-       AND LPAD(TO_VARCHAR(vbap."POSNR"), 6, '0') = '000010'
        AND vbap."MATNR" LIKE 'Z%'
     INNER JOIN "SAPHANADB"."SER02" ser02
         ON ser02."MANDT" = vbak."MANDT"
        AND ser02."SDAUFNR" = vbak."VBELN"
-       AND LPAD(TO_VARCHAR(ser02."POSNR"), 6, '0') = '000010'
+       AND LPAD(TO_VARCHAR(ser02."POSNR"), 6, '0') = LPAD(TO_VARCHAR(vbap."POSNR"), 6, '0')
     INNER JOIN "SAPHANADB"."OBJK" objk
         ON objk."MANDT" = ser02."MANDT"
        AND objk."OBKNR" = ser02."OBKNR"
@@ -154,22 +154,25 @@ vehicle_gr AS (
     SELECT
         obj."MANDT"                     AS "MANDT",
         obj."Sales Order"               AS "Sales Order",
+        obj."Sales Order Item"          AS "Sales Order Item",
         MIN(gr."BUDAT_MKPF")            AS "Good Receive Date"
     FROM obj
     INNER JOIN "SAPHANADB"."NSDM_V_MSEG" gr
         ON gr."MANDT" = obj."MANDT"
        AND gr."KDAUF" = obj."Sales Order"
-       AND LPAD(TO_VARCHAR(gr."KDPOS"), 6, '0') = '000010'
+       AND LPAD(TO_VARCHAR(gr."KDPOS"), 6, '0') = obj."Sales Order Item"
        AND gr."WERKS" = '3111'
        AND gr."BWART" IN ('101','103','105')
     GROUP BY
         obj."MANDT",
-        obj."Sales Order"
+        obj."Sales Order",
+        obj."Sales Order Item"
 ),
 gi AS (
     SELECT DISTINCT
         obj."MANDT"                     AS "MANDT",
         obj."Sales Order"               AS "Sales Order",
+        obj."Sales Order Item"          AS "Sales Order Item",
         obj."Material"                  AS "Material",
         obj."Description"               AS "Description",
         obj."Serial"                    AS "Serial",
@@ -181,7 +184,7 @@ gi AS (
     INNER JOIN "SAPHANADB"."NSDM_V_MSEG" gi
         ON gi."MANDT" = obj."MANDT"
        AND gi."KDAUF" = obj."Sales Order"
-       AND LPAD(TO_VARCHAR(gi."KDPOS"), 6, '0') = '000010'
+       AND LPAD(TO_VARCHAR(gi."KDPOS"), 6, '0') = obj."Sales Order Item"
        AND gi."WERKS" = '3111'
        AND gi."BWART" = '601'
        AND gi."BUDAT_MKPF" >= '{{cutoff}}'
@@ -200,6 +203,7 @@ FROM gi
 LEFT JOIN vehicle_gr gr
     ON gr."MANDT" = gi."MANDT"
    AND gr."Sales Order" = gi."Sales Order"
+   AND gr."Sales Order Item" = gi."Sales Order Item"
 LEFT JOIN "SAPHANADB"."NSDM_V_MSEG" rev
     ON rev."MANDT" = gi."MANDT"
    AND rev."SMBLN" = gi."PGI Material Doc"
@@ -667,6 +671,7 @@ def write_vehicle_base_summary(payload: Dict[str, Any]) -> None:
         json.dumps(payload, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
+    write_js_global(VEHICLE_BASE_SUMMARY_JS_PATH, "ANALYSIS_VEHICLE_BASE_SUMMARY", payload)
 
 
 def write_js_global(
@@ -1764,7 +1769,7 @@ INNER JOIN "SAPHANADB"."VBAK" vbak
 INNER JOIN "SAPHANADB"."VBAP" vbap
     ON vbap."MANDT" = s2."MANDT"
    AND vbap."VBELN" = s2."SDAUFNR"
-   AND LPAD(TO_VARCHAR(vbap."POSNR"), 6, '0') = '000010'
+   AND LPAD(TO_VARCHAR(vbap."POSNR"), 6, '0') = LPAD(TO_VARCHAR(s2."POSNR"), 6, '0')
    AND vbap."MATNR" LIKE 'Z%'
 LEFT JOIN "SAPHANADB"."ZTSD002" z
     ON z."MANDT" = o."MANDT"
@@ -1773,12 +1778,11 @@ LEFT JOIN "SAPHANADB"."ZTSD002" z
 INNER JOIN "SAPHANADB"."LIPS" lips
     ON lips."MANDT" = s2."MANDT"
    AND lips."VGBEL" = s2."SDAUFNR"
-   AND LPAD(TO_VARCHAR(lips."VGPOS"), 6, '0') = '000010'
+   AND LPAD(TO_VARCHAR(lips."VGPOS"), 6, '0') = LPAD(TO_VARCHAR(s2."POSNR"), 6, '0')
 INNER JOIN "SAPHANADB"."LIKP" likp
     ON likp."MANDT" = lips."MANDT"
    AND likp."VBELN" = lips."VBELN"
 WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
-  AND LPAD(TO_VARCHAR(s2."POSNR"), 6, '0') = '000010'
   AND likp."WADAT_IST" IS NOT NULL
   AND likp."WADAT_IST" <> '00000000'
   AND likp."WADAT_IST" >= '{sql_quote(cutoff_yyyymmdd)}'
