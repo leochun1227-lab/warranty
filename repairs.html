@@ -4593,7 +4593,7 @@ body.repair-analysis-page #repairRepeatScenarios .repeatShopGridCell small{
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
 <script src="assets/geo/australia-states.js?v=20260706a"></script>
 <script src="assets/geo/new-zealand.js?v=20260706a"></script>
-<script src="browser-page-cache.js?v=repairer-name-map-v5"></script>
+<script src="browser-page-cache.js?v=repairer-name-map-v12"></script>
 <script>
 
 function showCalcFloat(active,text){
@@ -4654,7 +4654,7 @@ let ausGeo=null, nzGeo=null;
 let topRepairSort="ticket_count";
 // Client-side working copies (recomputed from details when rate changes)
 let workingSummary=null, workingRepairers=[], workingStates=[], workingWeekly=[], workingChassis=null;
-const REPAIR_COST_RULE_CACHE_SCHEMA="c4c-eligible-sap-po-authoritative-repairer-name-map-v5";
+const REPAIR_COST_RULE_CACHE_SCHEMA="c4c-eligible-sap-po-authoritative-repairer-name-map-v12";
 const REPAIR_PAGE_CACHE_KEY=`repairs:${selectedRepairYear}:${REPAIR_COST_RULE_CACHE_SCHEMA}`;
 const REPAIR_PAGE_CACHE_ENABLED=false;
 const REPAIR_COST_SANITY_MIN_AUD=50000;
@@ -4781,8 +4781,31 @@ function showRepairYearNotice(ticketCount){
 }
 function xmlEscape(v){return clean(v).replace(/[<>&'"]/g,s=>({"<":"&lt;",">":"&gt;","&":"&amp;","'":"&apos;","\"":"&quot;"}[s]))}
 function xlsSheetName(name){return clean(name).replace(/[:\\/?*\[\]]/g," ").slice(0,31)||"Sheet"}
+function isBlankExportCell(value){
+  return value==null || (typeof value==="string" && value.trim()==="");
+}
+function trimEmptyExportColumns(rows){
+  const source=Array.isArray(rows)?rows:[];
+  if(source.length<2)return source;
+  const width=source.reduce((max,row)=>Math.max(max,Array.isArray(row)?row.length:0),0);
+  if(!width)return source;
+  const keep=[];
+  for(let col=0;col<width;col++){
+    const hasData=source.slice(1).some(row=>!isBlankExportCell(Array.isArray(row)?row[col]:""));
+    if(hasData)keep.push(col);
+  }
+  if(!keep.length)return source;
+  return source.map(row=>keep.map(col=>Array.isArray(row)?row[col]:""));
+}
 function exportWorkbook(sheets,filename){
-  const valid=(sheets||[]).filter(sheet=>sheet&&Array.isArray(sheet.rows)&&sheet.rows.length);
+  const withRules=(sheets||[]).slice();
+  if(!withRules.some(sheet=>clean(sheet?.name).toLowerCase()==="repairer naming rules")){
+    withRules.push({name:"Repairer Naming Rules",rows:buildRepairerNamingRulesExportRows()});
+  }
+  const valid=withRules
+    .filter(sheet=>sheet&&Array.isArray(sheet.rows)&&sheet.rows.length)
+    .map(sheet=>({...sheet,rows:trimEmptyExportColumns(sheet.rows)}))
+    .filter(sheet=>Array.isArray(sheet.rows)&&sheet.rows.length&&sheet.rows[0]?.length);
   if(!valid.length){alert("No export data found for the selected filters.");return}
   const workbook=`<?xml version="1.0"?>
 <?mso-application progid="Excel.Sheet"?>
@@ -4833,6 +4856,237 @@ async function readJson(path,timeoutMs=15000){
 }
 async function readStaticJson(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
 async function readStaticText(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.text()}
+let repairerNameRuleMapPromise=null;
+function repairNameRuleKey(value){
+  return clean(value)
+    .replace(/\u00a0/g," ")
+    .toUpperCase()
+    .replace(/\bAS\s+REPAIRER\b/g," ")
+    .replace(/\bREPAIRER\b/g," ")
+    .replace(/\bREPAIRS\b/g," ")
+    .replace(/[^A-Z0-9]+/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+async function loadRepairerNameRuleMap(){
+  if(!repairerNameRuleMapPromise){
+    repairerNameRuleMapPromise=readStaticJson("assets/repairer_name_rule_mapping.json").then(payload=>{
+      const general=new Map(), snowyParts=new Map(), snowyDealerCodes=new Map(), snowyPartEntries=[], generalRows=[], snowyDealerRows=[];
+      const add=(map,key,value)=>{
+        const k=repairNameRuleKey(key), v=clean(value);
+        if(k&&v&&!map.has(k))map.set(k,v);
+        return {key:k,value:v};
+      };
+      const dealerCodeKey=value=>{
+        const text=clean(value).replace(/\D+/g,"");
+        return text ? (text.replace(/^0+/,"")||"0") : "";
+      };
+      (Array.isArray(payload?.general)?payload.general:[]).forEach(row=>{
+        add(general,row.repairShopC4C,row.mappingName);
+        if(clean(row.repairShopC4C)&&clean(row.mappingName))generalRows.push({repairShopC4C:clean(row.repairShopC4C),mappingName:clean(row.mappingName)});
+      });
+      (Array.isArray(payload?.snowyRiverParts)?payload.snowyRiverParts:[]).forEach(row=>{
+        (Array.isArray(row.repairerBusinessNameVariants)?row.repairerBusinessNameVariants:[]).forEach(variant=>{
+          const entry=add(snowyParts,variant,row.mappingName);
+          if(entry.key&&entry.value)snowyPartEntries.push(entry);
+        });
+      });
+      (Array.isArray(payload?.snowyRiverDealerCodes)?payload.snowyRiverDealerCodes:[]).forEach(row=>{
+        const dealership=clean(row.dealership||row.mappingName);
+        if(!dealership)return;
+        snowyDealerRows.push({
+          oldCode:clean(row.oldWarrantyHandlingDealerAssign),
+          newCode:clean(row.newWarrantyHandlingDealerAssign),
+          dealership,
+        });
+        [
+          row.oldWarrantyHandlingDealerAssign,
+          row.newWarrantyHandlingDealerAssign,
+          row.warrantyHandlingDealerAssign,
+        ].forEach(code=>{
+          const key=dealerCodeKey(code);
+          if(key&&!snowyDealerCodes.has(key))snowyDealerCodes.set(key,dealership);
+        });
+      });
+      snowyPartEntries.sort((a,b)=>b.key.length-a.key.length);
+      return {general,snowyParts,snowyDealerCodes,snowyPartEntries,generalRows,snowyDealerRows};
+    }).catch(()=>({general:new Map(),snowyParts:new Map(),snowyDealerCodes:new Map(),snowyPartEntries:[],generalRows:[],snowyDealerRows:[]}));
+  }
+  return repairerNameRuleMapPromise;
+}
+let repairerNameRuleMap={general:new Map(),snowyParts:new Map(),snowyDealerCodes:new Map(),snowyPartEntries:[],generalRows:[],snowyDealerRows:[]};
+function repairDealerCodeKey(value){
+  const text=clean(value).replace(/\D+/g,"");
+  return text ? (text.replace(/^0+/,"")||"0") : "";
+}
+function snowyRiverDealerCodeMappedName(value){
+  const key=repairDealerCodeKey(value);
+  return key ? (repairerNameRuleMap.snowyDealerCodes.get(key)||"") : "";
+}
+function firstWarrantyHandlingDealerCode(values){
+  for(const value of values){
+    const raw=clean(value), key=repairDealerCodeKey(raw);
+    if(key&&raw!=="#")return {raw,key};
+  }
+  return {raw:"",key:""};
+}
+function repairerNameBase(value){
+  return clean(value).replace(/\s*\((?:QLD|NSW|VIC|WA|SA|TAS|ACT|NT|NZ|AU)\)\s*$/i,"");
+}
+function repairerNamingExplanation(ticket,displayName=""){
+  const current=clean(displayName);
+  const sourceCandidates=[
+    ticket?.OriginalRepairerName,
+    ticket?.originalRepairerName,
+    ticket?.repairer_name_before_rule_mapping,
+    ticket?.raw_repairer_name,
+    ticket?.rawRepairerName,
+    ticket?.["Repair Shop"],
+    ticket?.["Repair Shop Name"],
+    ticket?.RepairShop,
+    ticket?.repairShop,
+    ticket?.repairer_base_name,
+    ticket?.ServiceTechnician,
+    ticket?.["Service Technician"],
+    ticket?.repairer_name,
+    ticket?.RepairerName,
+  ];
+  const directCandidates=[...sourceCandidates,current];
+  const original=sourceCandidates.map(clean).find(Boolean)||current;
+  const whdCandidates=[
+    ticket?.WarrantyHandlingDealerID,
+    ticket?.WarrantyHandlingDealerAssign,
+    ticket?.["Warranty Handling Dealer(Assign)"],
+    ticket?.["Warranty Handling Dealer Assign"],
+    ticket?.["Warranty Handling Dealer ID"],
+  ];
+  if(directCandidates.some(isSnowyRiverName)){
+    for(const candidate of whdCandidates){
+      const code=clean(candidate);
+      const mapped=snowyRiverDealerCodeMappedName(code);
+      if(mapped)return {
+        rule:"SNOWY RV: Warranty Handling Dealer(Assign) code -> Dealership (Excel Sheet2)",
+        originalName:original,
+        warrantyHandlingDealerCode:code,
+        mappedName:mapped,
+      };
+    }
+    const dealerCode=firstWarrantyHandlingDealerCode(whdCandidates);
+    return {
+      rule:dealerCode.key?"SNOWY RV: Warranty Handling Dealer(Assign) code not found in Excel Sheet2":"SNOWY RV: Warranty Handling Dealer(Assign) missing/not assigned",
+      originalName:original,
+      warrantyHandlingDealerCode:dealerCode.raw,
+      mappedName:current,
+    };
+  }
+  for(const candidate of [...sourceCandidates,current]){
+    const mapped=repairerNameRuleMap.general.get(repairNameRuleKey(candidate));
+    if(mapped)return {
+      rule:"General Mapping (Excel General Mapping sheet)",
+      originalName:clean(candidate),
+      warrantyHandlingDealerCode:"",
+      mappedName:mapped,
+    };
+  }
+  return {
+    rule:"No Excel mapping matched; original display name used",
+    originalName:original,
+    warrantyHandlingDealerCode:"",
+    mappedName:repairerNameBase(current)||current,
+  };
+}
+function repairerSummaryNamingRule(displayName){
+  const base=repairerNameBase(displayName);
+  if(/^Unmapped Warranty Handling Dealer/i.test(base))return"SNOWY RV: Warranty Handling Dealer(Assign) code not found in Excel Sheet2";
+  if(base==="Warranty Handling Dealer Not Assigned")return"SNOWY RV: Warranty Handling Dealer(Assign) missing/not assigned";
+  if((repairerNameRuleMap.snowyDealerRows||[]).some(row=>repairNameRuleKey(row.dealership)===repairNameRuleKey(base)))return"SNOWY RV: Warranty Handling Dealer(Assign) code -> Dealership (Excel Sheet2)";
+  if((repairerNameRuleMap.generalRows||[]).some(row=>repairNameRuleKey(row.mappingName)===repairNameRuleKey(base)))return"General Mapping (Excel General Mapping sheet)";
+  return"Original display name / no Excel mapping matched";
+}
+function buildRepairerNamingRulesExportRows(){
+  const rows=[
+    ["Rule Type","Source Value","Mapped Display Name","Notes"],
+    ["SNOWY RV rule","Warranty Handling Dealer(Assign) old/new code","Dealership","Used only when repairer is SNOWY RV PTY LTD / SNOWY RIVER RV PTY LTD. Old business-name ID fields are ignored."],
+    ["General repairer rule","Repair Shop(C4C)","Mapping name","Used for all non-Snowy repairers from the General Mapping sheet."],
+    ["Export columns","Repair Shop Display Name","Original Repairer Name","Summary sheets use display names. Ticket Details keeps the raw/source repairer in Original Repairer Name."],
+    [],
+    ["General Mapping","Repair Shop(C4C)","Mapping name",""],
+    ...(repairerNameRuleMap.generalRows||[]).map(row=>["General Mapping",row.repairShopC4C,row.mappingName,""]),
+    [],
+    ["SNOWY RV Sheet2","Old CODE","New CODE","Dealership"],
+    ...(repairerNameRuleMap.snowyDealerRows||[]).map(row=>["SNOWY RV Sheet2",row.oldCode,row.newCode,row.dealership]),
+  ];
+  return rows;
+}
+function snowyRiverPartMappedName(value){
+  const key=repairNameRuleKey(value);
+  if(!key)return"";
+  const exact=repairerNameRuleMap.snowyParts.get(key);
+  if(exact)return exact;
+  const compactKey=key.replace(/\s+/g,"");
+  const match=repairerNameRuleMap.snowyPartEntries.find(entry=>{
+    if(!entry.key||entry.key.length<6)return false;
+    const compactEntryKey=entry.key.replace(/\s+/g,"");
+    return key.includes(entry.key)||entry.key.includes(key)||compactKey.includes(compactEntryKey)||compactEntryKey.includes(compactKey);
+  });
+  return match?.value||"";
+}
+function applyRepairerNameRule(ticket,displayName){
+  const current=clean(displayName);
+  const directCandidates=[
+    ticket?.OriginalRepairerName,
+    ticket?.originalRepairerName,
+    ticket?.repairer_name_before_rule_mapping,
+    ticket?.rawRepairerName,
+    current,
+    ticket?.["Repair Shop"],
+    ticket?.["Repair Shop Name"],
+    ticket?.RepairShop,
+    ticket?.repairShop,
+    ticket?.raw_repairer_name,
+    ticket?.repairer_base_name,
+    ticket?.repairer_name,
+    ticket?.RepairerName,
+    ticket?.ServiceTechnician,
+    ticket?.["Service Technician"],
+  ];
+  if(directCandidates.some(isSnowyRiverName)){
+    const snowyDealerCodeCandidates=[
+      ticket?.WarrantyHandlingDealerID,
+      ticket?.WarrantyHandlingDealerAssign,
+      ticket?.["Warranty Handling Dealer(Assign)"],
+      ticket?.["Warranty Handling Dealer Assign"],
+      ticket?.["Warranty Handling Dealer ID"],
+    ];
+    for(const candidate of snowyDealerCodeCandidates){
+      const mapped=snowyRiverDealerCodeMappedName(candidate);
+      if(mapped)return mapped;
+    }
+    const dealerCode=firstWarrantyHandlingDealerCode(snowyDealerCodeCandidates);
+    return dealerCode.key ? `Unmapped Warranty Handling Dealer ${dealerCode.raw}` : "Warranty Handling Dealer Not Assigned";
+  }
+  for(const candidate of directCandidates){
+    const mapped=repairerNameRuleMap.general.get(repairNameRuleKey(candidate));
+    if(mapped)return mapped;
+  }
+  return current;
+}
+function repairerDisplayNameFromRow(row){
+  if(!row||typeof row!=="object")return cleanRepairShopDisplayName(row);
+  return applyRepairerNameRule(row, clean(
+    row.repairName||
+    row.repairer_name||
+    row.repairer_base_name||
+    row.top_dealer_name||
+    row.top_address_group||
+    row["Repair Shop"]||
+    row["Repair Shop Name"]||
+    row.RepairShop||
+    row.repairShop||
+    row.raw_repairer_name||
+    ""
+  ));
+}
 function parseCsvRows(text){
   if(!text)return[];
   if(text.charCodeAt(0)===0xFEFF)text=text.slice(1);
@@ -4891,6 +5145,8 @@ async function loadRepairDetailEnrichmentMap(){
             registeredProduct:clean(row["Registered Product"]||row.RegisteredProduct),
             product:clean(row.Product),
             salesOrder:clean(row["Sales Order"]||row.SalesOrder||row["ERP Free Order ID"]),
+            warrantyHandlingDealerId:clean(row.WarrantyHandlingDealerID||row.WarrantyHandlingDealerAssign||row["Warranty Handling Dealer(Assign)"]||row["Warranty Handling Dealer Assign"]||row.Dealer),
+            warrantyHandlingDealerName:clean(row.WarrantyHandlingDealerName||row["Warranty Handling Dealer Name"]||row.DealerName||row["Dealer Name"]),
           };
           addRepairEnrichmentKey(map,repairSourceTicketKey(row),value);
           addRepairEnrichmentKey(map,row.Ticket,value);
@@ -4915,6 +5171,15 @@ function enrichRepairDetailRow(row,map){
   if(!clean(out["Registered Product"])&&!clean(out.RegisteredProduct))out["Registered Product"]=source.registeredProduct||"";
   if(!clean(out.Product))out.Product=source.product||"";
   if(!clean(out["Sales Order"])&&!clean(out.SalesOrder))out["Sales Order"]=source.salesOrder||"";
+  if(!clean(out.WarrantyHandlingDealerID)&&!clean(out.WarrantyHandlingDealerAssign)&&!clean(out["Warranty Handling Dealer(Assign)"])){
+    out.WarrantyHandlingDealerID=source.warrantyHandlingDealerId||"";
+    out.WarrantyHandlingDealerAssign=source.warrantyHandlingDealerId||"";
+    out["Warranty Handling Dealer(Assign)"]=source.warrantyHandlingDealerId||"";
+  }
+  if(!clean(out.WarrantyHandlingDealerName)&&!clean(out["Warranty Handling Dealer Name"])){
+    out.WarrantyHandlingDealerName=source.warrantyHandlingDealerName||"";
+    out["Warranty Handling Dealer Name"]=source.warrantyHandlingDealerName||"";
+  }
   return out;
 }
 let firebaseTicketMapPromise=null;
@@ -4934,7 +5199,7 @@ async function loadFirebaseTicketMap(){
   return firebaseTicketMapPromise;
 }
 function cleanRepairShopDisplayName(value){
-  return clean(value);
+  return applyRepairerNameRule(null, value) || clean(value);
 }
 const SNOWY_RIVER_RV_TOKEN="SNOWY RIVER RV PTY LTD";
 function isNumericish(value){
@@ -4946,7 +5211,7 @@ function isSnowyRiverServiceTech(value){
 }
 function isSnowyRiverName(value){
   const text=clean(value).toUpperCase();
-  return (text.includes(SNOWY_RIVER_RV_TOKEN)||/\bSNOWY\s+RIVER\b/.test(text)) && !text.includes("WANGARATTA");
+  return text.includes(SNOWY_RIVER_RV_TOKEN)||text.includes("SNOWY RV PTY LTD");
 }
 function isSnowyRiverTicket(ticket){
   if(ticket?.is_snowy_river===true||String(ticket?.is_snowy_river).toLowerCase()==="true")return true;
@@ -4984,17 +5249,13 @@ function resolveRepairDisplayName(ticket,fallbackName=""){
     ticket?.repairshop_id||
     ticket?.repairshopId||
     ticket?.["Repairhop ID"]||
-    ticket?.["Repair Shop ID"]||
-    ticket?.RepairerBusinessNameID||
-    ticket?.["RepairerBusinessNameID"]||
-    ticket?.["Repairer Business Name ID"]||
-    ticket?.["Repairer Business Name"]
+    ticket?.["Repair Shop ID"]
   );
   const dealerName=clean(ticket?.DealerName||ticket?.["Dealer Name"]);
   if(isSnowyRiverServiceTech(serviceTech)){
-    return chooseSnowyRiverRepairName(serviceTech,repairshopId,dealerName);
+    return applyRepairerNameRule(ticket, chooseSnowyRiverRepairName(serviceTech,repairshopId,dealerName));
   }
-  return serviceTech||clean(fallbackName)||repairshopId||dealerName||"No Repair Shop Assigned";
+  return applyRepairerNameRule(ticket, serviceTech||repairshopId||clean(fallbackName)||dealerName||"No Repair Shop Assigned");
 }
 function repairNameMatchKey(value){
   return clean(value)
@@ -5003,6 +5264,11 @@ function repairNameMatchKey(value){
     .replace(/[^A-Z0-9]+/g," ")
     .replace(/\s+/g," ")
     .trim();
+}
+function repairIdMatchesDisplayName(repairId,displayName){
+  const idName=clean(repairId).split("|")[0];
+  if(!idName)return false;
+  return repairNameMatchKey(idName)===repairNameMatchKey(displayName);
 }
 function overlayFirebaseTicketRows(rows,firebaseMap){
   const map=firebaseMap instanceof Map?firebaseMap:new Map();
@@ -5021,7 +5287,6 @@ function overlayFirebaseTicketRows(rows,firebaseMap){
       ...rowTicket,
       ...(row&&typeof row==="object"?row:{})
     };
-    if(clean(fbTicket.RepairerBusinessNameID))mergedTicket.RepairerBusinessNameID=clean(fbTicket.RepairerBusinessNameID);
     if(clean(fbTicket["Order Rejection Status"]))mergedTicket["Order Rejection Status"]=clean(fbTicket["Order Rejection Status"]);
     return {
       ...(fb&&typeof fb==="object"?fb:{}),
@@ -5051,7 +5316,14 @@ function ticketCostMergeRecord(entry){
     "invoice_status","Invoice Status","invoice_number","Invoice Number","invoice_date","Invoice Date",
     "sap_invoice_docs","sap_last_invoice_date","Posting Date","PostingDate","Approved Date","approved_date",
     "sap_cancelled_pos",
-    "C4C Claim Approved On","c4c_claim_approved_on"
+    "C4C Claim Approved On","c4c_claim_approved_on",
+    "state","State","state_source",
+    "repairer_split_key","repairerSplitKey","repairer_id","repairerId",
+    "RepairerName","repairer_name","repairer_base_name","repairer_name_before_rule_mapping","raw_repairer_name",
+    "OriginalRepairerName","originalRepairerName",
+    "repairshop_id","repairshopId",
+    "WarrantyHandlingDealerID","WarrantyHandlingDealerAssign","Warranty Handling Dealer(Assign)","Warranty Handling Dealer Assign","Warranty Handling Dealer ID",
+    "WarrantyHandlingDealerName","Warranty Handling Dealer Name"
   ].forEach(field=>{
     if(ticket&&Object.prototype.hasOwnProperty.call(ticket,field))out[field]=ticket[field];
   });
@@ -5275,12 +5547,12 @@ function normalizeTicket(row,key){
     const ticketId=clean(raw["Ticket ID"]||raw.TicketID||raw.Ticket||key);
     const postingDate=clean(raw["Posting Date"]||raw.PostingDate||raw.approved_date||raw["Created On"]||raw.CreatedOn);
     const createdOn=clean(raw["Created On"]||raw.CreatedOn||postingDate);
-    const repairerBusinessName=clean(raw.RepairerBusinessNameID||raw["RepairerBusinessNameID"]||raw["Repairer Business Name ID"]||raw["Repairer Business Name"]||raw.RepairerBusinessName);
-    const serviceTechnician=clean(raw.repairer_name||raw.repairerName||raw["Service Technician"]||raw.ServiceTechnician);
-    const repairshopId=clean(raw.repairshop_id||raw.repairshopId||raw["Repairhop ID"]||raw["Repair Shop ID"]||repairerBusinessName);
+    const originalRepairerName=clean(raw.OriginalRepairerName||raw.originalRepairerName||raw.repairer_name_before_rule_mapping||raw.raw_repairer_name||raw.rawRepairerName||raw["Service Technician"]||raw.ServiceTechnician||raw.RepairerName||raw.repairerName||raw.repairer_name);
+    const serviceTechnician=clean(raw.repairer_name||raw.repairerName||raw.RepairerName||originalRepairerName);
+    const repairshopId=clean(raw.repairshop_id||raw.repairshopId||raw["Repairhop ID"]||raw["Repair Shop ID"]);
     const state=clean(raw.state||raw.State);
-    const repairerName=resolveRepairDisplayName({...raw,ServiceTechnician:serviceTechnician,repairer_name:serviceTechnician,repairshop_id:repairshopId,RepairerBusinessNameID:repairerBusinessName},repairerBusinessName);
-    const repairId=clean(raw.repairer_split_key||raw.repairerSplitKey||raw.repairer_id||raw.repairerId||(repairerName?`${repairerName}|${state||"NA"}`:"no-repair"));
+    const repairerName=resolveRepairDisplayName({...raw,OriginalRepairerName:originalRepairerName,ServiceTechnician:originalRepairerName||serviceTechnician,repairer_name:serviceTechnician,repairshop_id:repairshopId},originalRepairerName||serviceTechnician||repairshopId);
+    const repairId=repairerName&&repairerName!=="No Repair Shop Assigned"?`${repairerName}|${state||"NA"}`:clean(raw.repairer_split_key||raw.repairerSplitKey||raw.repairer_id||raw.repairerId||"no-repair");
     const serialId=clean(raw.SerialID||raw["Serial ID"]||raw.VehicleDispatchSerial||raw["Vehicle Dispatch Serial"]);
     const chassisNumber=clean(raw.ChassisNumber||raw["Chassis Number"]||raw.Chassis||raw.chassis);
     const ticketName=clean(raw.TicketName||raw.Ticket||ticketId);
@@ -5297,14 +5569,20 @@ function normalizeTicket(row,key){
       RegisteredProduct:clean(raw.RegisteredProduct||raw["Registered Product"]),
       Product:clean(raw.Product),
       TicketName:ticketName,
-      RepairerBusinessNameID:repairerBusinessName,
       repairshop_id:repairshopId,
-      raw_repairer_name:serviceTechnician,
+      OriginalRepairerName:originalRepairerName,
+      raw_repairer_name:originalRepairerName,
+      repairer_name_before_rule_mapping:clean(raw.repairer_name_before_rule_mapping||originalRepairerName),
       normalized_key:clean(raw.normalized_key||raw.normalizedKey||repairNameMatchKey(repairerName)),
       repairer_split_key:repairId,
       RepairerName:repairerName,
       repairer_name:repairerName,
       repairer_base_name:repairerName,
+      WarrantyHandlingDealerID:clean(raw.WarrantyHandlingDealerID||raw.WarrantyHandlingDealerAssign||raw["Warranty Handling Dealer(Assign)"]||raw["Warranty Handling Dealer Assign"]),
+      WarrantyHandlingDealerAssign:clean(raw.WarrantyHandlingDealerAssign||raw.WarrantyHandlingDealerID||raw["Warranty Handling Dealer(Assign)"]||raw["Warranty Handling Dealer Assign"]),
+      "Warranty Handling Dealer(Assign)":clean(raw["Warranty Handling Dealer(Assign)"]||raw.WarrantyHandlingDealerAssign||raw.WarrantyHandlingDealerID||raw["Warranty Handling Dealer Assign"]),
+      WarrantyHandlingDealerName:clean(raw.WarrantyHandlingDealerName||raw["Warranty Handling Dealer Name"]||raw.DealerName||raw["Dealer Name"]),
+      "Warranty Handling Dealer Name":clean(raw["Warranty Handling Dealer Name"]||raw.WarrantyHandlingDealerName||raw.DealerName||raw["Dealer Name"]),
       DealerName:clean(raw["Dealer Name"]||raw.DealerName),
       state,
       invoice_status:clean(raw.invoice_status),
@@ -5324,7 +5602,7 @@ function normalizeTicket(row,key){
     });
   }
   if(flatDetail&&!roles["43"]){
-    const repairName=resolveRepairDisplayName(ticket,ticket.RepairerBusinessNameID)||"No Repair Shop Assigned";
+    const repairName=resolveRepairDisplayName(ticket,ticket.RepairerName||ticket.repairer_name||ticket.repairshop_id)||"No Repair Shop Assigned";
     const repairId=clean(ticket.repairer_split_key||ticket.repairerSplitKey||(repairName!=="No Repair Shop Assigned"?`${repairName}|${clean(ticket.state||ticket.State||"NA")}`:"no-repair"));
     roles["43"]={InvolvedPartyBusinessPartnerID:repairId,InvolvedPartyName:repairName};
   }
@@ -5334,16 +5612,22 @@ function normalizeTicket(row,key){
 function repairInfo(entry){
   const r=entry.roles&&entry.roles["43"]&&typeof entry.roles["43"]==="object"?entry.roles["43"]:null;
   if(r){
-    const id=clean(r.InvolvedPartyBusinessPartnerID)||"no-repair";
     const ticket=entry.ticket||{};
-    const name=resolveRepairDisplayName(ticket,r.InvolvedPartyName);
+    const name=resolveRepairDisplayName({...ticket,OriginalRepairerName:ticket.OriginalRepairerName||ticket.originalRepairerName||ticket.repairer_name_before_rule_mapping||ticket.raw_repairer_name||r.InvolvedPartyName},r.InvolvedPartyName);
+    const state=clean(ticket.state||ticket.State);
+    const existingId=clean(ticket.repairer_split_key||ticket.repairerSplitKey||ticket.repairerId||ticket.repairer_id);
+    const validExistingId=repairIdMatchesDisplayName(existingId,name)?existingId:"";
+    const id=validExistingId || (name&&name!=="No Repair Shop Assigned"
+      ? `${name}|${state||"NA"}`
+      : (clean(r.InvolvedPartyBusinessPartnerID)||"no-repair"));
     const legacyRepairName=clean(r.InvolvedPartyName||ticket.RepairerName||ticket.repairer_name||ticket.ServiceTechnician||ticket["Service Technician"]||ticket.DealerName||ticket["Dealer Name"]);
-    return {repairId:id,repairName:repairDisplayName(ticket,name,entry.ticket?.state||entry.ticket?.State),legacyRepairName};
+    return {repairId:id,repairName:repairDisplayName(ticket,name,state),legacyRepairName};
   }
   const t=entry.ticket||{};
   const repairerName=resolveRepairDisplayName(t);
   const state=clean(t.state||t.State);
-  const repairId=clean(t.repairer_split_key||t.repairerSplitKey||t.repairerId||t.repairer_id||(repairerName?`${repairerName}|${state||"NA"}`:"no-repair"));
+  const existingId=clean(t.repairer_split_key||t.repairerSplitKey||t.repairerId||t.repairer_id);
+  const repairId=(repairIdMatchesDisplayName(existingId,repairerName)?existingId:"")||(repairerName?`${repairerName}|${state||"NA"}`:"no-repair");
   const repairName=repairDisplayName(t,repairerName,state);
   const legacyRepairName=clean(t.RepairerName||t.repairer_name||t.ServiceTechnician||t["Service Technician"]||t.DealerName||t["Dealer Name"]);
   return {repairId,repairName,legacyRepairName};
@@ -5363,6 +5647,12 @@ function repairTicketRowsForExport(repairId){
     return bd.localeCompare(ad)||clean(a.id).localeCompare(clean(b.id));
   });
 }
+function repairInfoMatchesExportRow(info,row){
+  if(!info||!row)return false;
+  const rowId=clean(row.repairId||row.repairer_split_key||row.split_key);
+  if(rowId)return clean(info.repairId)===rowId;
+  return repairNameMatchKey(info.repairName)===repairNameMatchKey(repairerDisplayNameFromRow(row)||row.repairName||row.repairer_name||row.repairer_base_name);
+}
 function safeFileName(v){
   return clean(v).replace(/[<>:"/\\|?*\x00-\x1F]+/g," ").replace(/\s+/g," ").trim().slice(0,120)||"repairer";
 }
@@ -5370,9 +5660,10 @@ function buildRepairerExportRows(list,options={}){
   const mode=options.priceMode==="po"?"po":"chassisCheck";
   if(mode==="po"){
     return [
-      ["Repair Shop Name","Repair Shop ID","State","Total Approved Repair Cost","Tickets with Approved Repair Cost","Avg Approved Repair Cost/Ticket","Repeated Chassis Count","Repeat Rate","Repeated Chassis / Unique Eligible Chassis %","Eligible Chassis Tickets","Unique Eligible Chassis","Top Dealer","Top Address Group","First Decision Date","Last Decision Date"],
+      ["Repair Shop Display Name","Repair Shop Naming Rule","Repair Shop ID","State","Total Approved Repair Cost","Tickets with Approved Repair Cost","Avg Approved Repair Cost/Ticket","Repeated Chassis Count","Repeat Rate","Repeated Chassis / Unique Eligible Chassis %","Eligible Chassis Tickets","Unique Eligible Chassis","Top Dealer","Top Address Group","First Decision Date","Last Decision Date"],
       ...(Array.isArray(list)?list:[]).map(r=>[
         r.repairName||"",
+        repairerSummaryNamingRule(r.repairName||r.repairer_name||r.repairer_base_name||""),
         r.repairId||"",
         r.state||"",
         Number(r.totalCost||0),
@@ -5391,9 +5682,10 @@ function buildRepairerExportRows(list,options={}){
     ];
   }
   return [
-    ["Repair Shop Name","Repair Shop ID","State","Repeated Chassis Count","Repeated Approved Repair Cost Tickets","Repeated Approved Repair Cost","Avg Approved Repair Cost / Repeated Ticket","Repeat Rate","Repeated Chassis / Unique Eligible Chassis %","Eligible Chassis Tickets","Unique Eligible Chassis","Tickets with Approved Repair Cost","Total Approved Repair Cost","Avg Approved Repair Cost/Ticket","Top Dealer","Top Address Group","First Decision Date","Last Decision Date"],
+    ["Repair Shop Display Name","Repair Shop Naming Rule","Repair Shop ID","State","Repeated Chassis Count","Repeated Approved Repair Cost Tickets","Repeated Approved Repair Cost","Avg Approved Repair Cost / Repeated Ticket","Repeat Rate","Repeated Chassis / Unique Eligible Chassis %","Eligible Chassis Tickets","Unique Eligible Chassis","Tickets with Approved Repair Cost","Total Approved Repair Cost","Avg Approved Repair Cost/Ticket","Top Dealer","Top Address Group","First Decision Date","Last Decision Date"],
     ...(Array.isArray(list)?list:[]).map(r=>[
       r.repairName||"",
+      repairerSummaryNamingRule(r.repairName||r.repairer_name||r.repairer_base_name||""),
       r.repairId||"",
       r.state||"",
       Number(r.repeatChassisOver2Count||0),
@@ -5442,6 +5734,8 @@ function buildTicketDetailExportRows(entries,options={}){
   const commonRow=(entry)=>{
     const t=entry.ticket||{};
     const info=repairInfo(entry);
+    const roleRepairer=entry.roles&&entry.roles["43"]&&typeof entry.roles["43"]==="object"?clean(entry.roles["43"].InvolvedPartyName):"";
+    const naming=repairerNamingExplanation({...t,OriginalRepairerName:clean(t.OriginalRepairerName||t.originalRepairerName||t.repairer_name_before_rule_mapping||t.raw_repairer_name||roleRepairer)},info.repairName);
     return {
       decisionDate:repairEntryDateKey(entry),
       created:dateKey(t.CreatedOn||t["Created On"]||t.createdOn||""),
@@ -5454,8 +5748,11 @@ function buildTicketDetailExportRows(entries,options={}){
       name:clean(t.TicketName||t.Ticket||t["Ticket Name"]||t.TicketID||entry.id||""),
       type:clean(t.TicketTypeText||t["Ticket Type"]||t.TicketType||""),
       status:clean(t.TicketStatusText||t.Status||t.TicketStatus||""),
-      repairerBusinessId:clean(t.RepairerBusinessNameID||t["RepairerBusinessNameID"]||t["Repairer Business Name ID"]||""),
       repairName:info.repairName,
+      repairNameRule:naming.rule,
+      originalRepairerName:naming.originalName,
+      warrantyHandlingDealerCode:naming.warrantyHandlingDealerCode,
+      ruleMappedName:naming.mappedName,
       repairId:info.repairId,
       state:clean(t.state||t.State||""),
       dealer:clean(t.Dealer||t["Dealer"]||""),
@@ -5479,21 +5776,21 @@ function buildTicketDetailExportRows(entries,options={}){
   };
   if(mode==="chassisCheck"){
     return [
-      ["Decision Date","Created On","Ticket ID","Repair Shop","Repair Shop ID","State","Chassis Number","Eligible tickets on same chassis at this repair shop","Included in Repeated Chassis","SAP PO Cost Used AUD","SAP Invoice Amount AUD","Ticket","Ticket Type","Status","Invoice Status","Invoice Number","Invoice Date","Serial ID","Dealer","Dealer Name","ERP Purchase Order ID","Sales Order","SAP PO Date","Changed On","C4C Approved Date","Country/Region","Postal Code","Service Technician","Repairer Business Name ID"],
+      ["Decision Date","Created On","Ticket ID","Repair Shop Display Name","Repair Shop Naming Rule","Original Repairer Name","Warranty Handling Dealer(Assign)","Rule Mapped Name","Repair Shop ID","State","Chassis Number","Eligible tickets on same chassis at this repair shop","Included in Repeated Chassis","SAP PO Cost Used AUD","SAP Invoice Amount AUD","Ticket","Ticket Type","Status","Invoice Status","Invoice Number","Invoice Date","Serial ID","Dealer","Dealer Name","ERP Purchase Order ID","Sales Order","SAP PO Date","Changed On","C4C Approved Date","Country/Region","Postal Code","Service Technician"],
       ...rows.map(entry=>{
         const r=commonRow(entry);
         const chassis=normalizedChassis(entry);
         const rec=repeatedMap.get(`${r.repairId}||${chassis}`)||{count:0};
         const included=Number(rec.count||0)>=2;
-        return [r.decisionDate,r.created,r.id,r.repairName,r.repairId,r.state,r.chassis,Number(rec.count||0),included?"Yes":"No",included?r.poCost:0,r.invoiceAmount,r.name,r.type,r.status,r.invoiceStatus,r.invoiceNumber,r.invoiceDate,r.serial,r.dealer,r.dealerName,r.po,r.salesOrder,r.posting,r.changed,r.c4cApproved,r.country,r.postal,r.technician,r.repairerBusinessId];
+        return [r.decisionDate,r.created,r.id,r.repairName,r.repairNameRule,r.originalRepairerName,r.warrantyHandlingDealerCode,r.ruleMappedName,r.repairId,r.state,r.chassis,Number(rec.count||0),included?"Yes":"No",included?r.poCost:0,r.invoiceAmount,r.name,r.type,r.status,r.invoiceStatus,r.invoiceNumber,r.invoiceDate,r.serial,r.dealer,r.dealerName,r.po,r.salesOrder,r.posting,r.changed,r.c4cApproved,r.country,r.postal,r.technician];
       }),
     ];
   }
   return [
-    ["Decision Date","Created On","Ticket ID","Repair Shop","Repair Shop ID","State","SAP PO Cost AUD","SAP Invoice Amount AUD","Cost Eligible","ERP Purchase Order ID","Ticket","Ticket Type","Status","Invoice Status","Invoice Number","Invoice Date","Chassis Number","Serial ID","Dealer","Dealer Name","Sales Order","SAP PO Date","Changed On","C4C Approved Date","Country/Region","Postal Code","Service Technician","Repairer Business Name ID"],
+    ["Decision Date","Created On","Ticket ID","Repair Shop Display Name","Repair Shop Naming Rule","Original Repairer Name","Warranty Handling Dealer(Assign)","Rule Mapped Name","Repair Shop ID","State","SAP PO Cost AUD","SAP Invoice Amount AUD","Cost Eligible","ERP Purchase Order ID","Ticket","Ticket Type","Status","Invoice Status","Invoice Number","Invoice Date","Chassis Number","Serial ID","Dealer","Dealer Name","Sales Order","SAP PO Date","Changed On","C4C Approved Date","Country/Region","Postal Code","Service Technician"],
     ...rows.map(entry=>{
       const r=commonRow(entry);
-      return [r.decisionDate,r.created,r.id,r.repairName,r.repairId,r.state,r.poCost,r.invoiceAmount,r.costEligible,r.po,r.name,r.type,r.status,r.invoiceStatus,r.invoiceNumber,r.invoiceDate,r.chassis,r.serial,r.dealer,r.dealerName,r.salesOrder,r.posting,r.changed,r.c4cApproved,r.country,r.postal,r.technician,r.repairerBusinessId];
+      return [r.decisionDate,r.created,r.id,r.repairName,r.repairNameRule,r.originalRepairerName,r.warrantyHandlingDealerCode,r.ruleMappedName,r.repairId,r.state,r.poCost,r.invoiceAmount,r.costEligible,r.po,r.name,r.type,r.status,r.invoiceStatus,r.invoiceNumber,r.invoiceDate,r.chassis,r.serial,r.dealer,r.dealerName,r.salesOrder,r.posting,r.changed,r.c4cApproved,r.country,r.postal,r.technician];
     }),
   ];
 }
@@ -5540,8 +5837,10 @@ async function exportRankViewExcel(){
         return b.confirmed_cost-a.confirmed_cost||b.ticket_count-a.ticket_count;
       });
       const top=rows.slice(0,20);
-      const repairIds=new Set(top.map(r=>r.repairId).filter(Boolean));
-      const detailRows=allCostTickets.filter(entry=>repairIds.has(repairInfo(entry).repairId));
+      const detailRows=allCostTickets.filter(entry=>{
+        const info=repairInfo(entry);
+        return top.some(row=>repairInfoMatchesExportRow(info,row));
+      });
       if(!top.length||!detailRows.length){
         alert("No top repairer ranking data found.");
         return;
@@ -5660,9 +5959,14 @@ async function exportAllRepairersExcel(){
     await ensureRepairDetailsLoaded();
     applyFilters();
     const allRepairers=currentChassisCheckRows(filtered);
-    const repairIds=new Set(allRepairers.map(r=>r.repairId).filter(Boolean));
-    const allTickets=repairCostTicketEntries().filter(entry=>repairIds.has(repairInfo(entry).repairId)&&normalizedChassis(entry));
-    const costTickets=repairCostTicketEntries().filter(entry=>repairIds.has(repairInfo(entry).repairId));
+    const allTickets=repairCostTicketEntries().filter(entry=>{
+      const info=repairInfo(entry);
+      return normalizedChassis(entry)&&allRepairers.some(row=>repairInfoMatchesExportRow(info,row));
+    });
+    const costTickets=repairCostTicketEntries().filter(entry=>{
+      const info=repairInfo(entry);
+      return allRepairers.some(row=>repairInfoMatchesExportRow(info,row));
+    });
     if(!allRepairers.length||!allTickets.length){
       alert("No export data found.");
       return;
@@ -5926,28 +6230,32 @@ function analyzeStateRows(rows){
   });
 }
 function repairersToWorkingRows(rows){
-  return (Array.isArray(rows)?rows:[]).map(r=>({
-    ...r,
-    repairName:r.repairName||r.repairer_name||r.repairer_base_name||"",
-    repairId:r.repairId||r.repairer_split_key||r.split_key||"",
-    state:r.state||"",
-    ticket_count:Number(r.ticketCount??r.ticket_count??0),
-    confirmed_cost:Number(r.totalCost??r.confirmed_cost??0),
-    avg_confirmed_cost:Number(r.avgCost??r.avg_confirmed_cost??0),
-    chassis_ticket_count:Number(r.chassisTicketCount??r.chassis_ticket_count??0),
-    unique_chassis_count:Number(r.uniqueChassisCount??r.unique_chassis_count??0),
-    repeat_chassis_over2_count:Number(r.repeatChassisOver2Count??r.repeat_chassis_over2_count??0),
-    repeat_chassis_over2_ratio:Number(r.repeatChassisOver2Ratio??r.repeat_chassis_over2_ratio??0),
-    repeat_rate:Number(r.repeatRate??r.repeat_rate??(Number(r.chassisTicketCount??r.chassis_ticket_count??0)?Number(r.repeatedClaimTicketCount??r.repeated_claim_ticket_count??0)/Number(r.chassisTicketCount??r.chassis_ticket_count??0)*100:0)),
-    invoiced_tickets:Number(r.invoiced_tickets??0),
-    open_tickets:Number(r.openCases??r.open_tickets??r.ticketCount??r.ticket_count??0),
-    repairer_name:r.repairName||r.repairer_name||r.repairer_base_name||"",
-    repairer_base_name:r.repairer_base_name||r.repairName||r.repairer_name||"",
-    top_dealer_name:r.top_dealer_name||r.top_address_group||r.repairName||r.repairer_name||"",
-    top_address_group:r.top_address_group||r.top_dealer_name||r.repairName||r.repairer_name||"",
-    split_key:r.repairId||r.repairer_split_key||r.split_key||"",
-    repairer_split_key:r.repairId||r.repairer_split_key||r.split_key||"",
-  }));
+  return (Array.isArray(rows)?rows:[]).map(r=>{
+    const display=repairerDisplayNameFromRow(r)||r.repairName||r.repairer_name||r.repairer_base_name||"";
+    return {
+      ...r,
+      repairName:display,
+      repairLegacyName:display,
+      repairId:r.repairId||r.repairer_split_key||r.split_key||"",
+      state:r.state||"",
+      ticket_count:Number(r.ticketCount??r.ticket_count??0),
+      confirmed_cost:Number(r.totalCost??r.confirmed_cost??0),
+      avg_confirmed_cost:Number(r.avgCost??r.avg_confirmed_cost??0),
+      chassis_ticket_count:Number(r.chassisTicketCount??r.chassis_ticket_count??0),
+      unique_chassis_count:Number(r.uniqueChassisCount??r.unique_chassis_count??0),
+      repeat_chassis_over2_count:Number(r.repeatChassisOver2Count??r.repeat_chassis_over2_count??0),
+      repeat_chassis_over2_ratio:Number(r.repeatChassisOver2Ratio??r.repeat_chassis_over2_ratio??0),
+      repeat_rate:Number(r.repeatRate??r.repeat_rate??(Number(r.chassisTicketCount??r.chassis_ticket_count??0)?Number(r.repeatedClaimTicketCount??r.repeated_claim_ticket_count??0)/Number(r.chassisTicketCount??r.chassis_ticket_count??0)*100:0)),
+      invoiced_tickets:Number(r.invoiced_tickets??0),
+      open_tickets:Number(r.openCases??r.open_tickets??r.ticketCount??r.ticket_count??0),
+      repairer_name:display,
+      repairer_base_name:display,
+      top_dealer_name:display,
+      top_address_group:display,
+      split_key:r.repairId||r.repairer_split_key||r.split_key||"",
+      repairer_split_key:r.repairId||r.repairer_split_key||r.split_key||"",
+    };
+  });
 }
 function emptyChassisWorkingData(){
   return {distribution:[],totals:{unique:0,repeat23:0,repeat4:0,ticketsMatched:0,costTicketsMatched:0},bucketDetails:{},repeatLabels:{},costLabels:{},chassisRows:[],costBuckets:[],uniqueChassis:0};
@@ -5957,31 +6265,35 @@ function precomputedRepairPeriodPayload(period=selectedRepairPeriod){
   return precomputedRepairPeriods[period]||precomputedRepairPeriods.total||null;
 }
 function cachedRepairRowsFromPeriod(periodPayload){
-  return (Array.isArray(periodPayload?.repairers)?periodPayload.repairers:[]).map(row=>({
-    repairId:clean(row.repairId||row.repairer_split_key||row.split_key),
-    repairName:clean(row.repairName||row.repairer_name||row.repairer_base_name),
-    state:clean(row.state||row.State),
-    ticketCount:Number(row.ticketCount??row.ticket_count??0),
-    totalCost:Number(row.totalCost??row.confirmed_cost??0),
-    avgCost:Number(row.avgCost??row.avg_confirmed_cost??0),
-    openCases:Number(row.openCases??row.open_tickets??row.ticketCount??row.ticket_count??0),
-    closedCases:Number(row.closedCases??row.invoiced_tickets??0),
-    chassisTicketCount:Number(row.chassisTicketCount??row.chassis_ticket_count??0),
-    uniqueChassisCount:Number(row.uniqueChassisCount??row.unique_chassis_count??0),
-    repeatChassisOver2Count:Number(row.repeatChassisOver2Count??row.repeat_chassis_over2_count??0),
-    repeatChassisOver2Ratio:Number(row.repeatChassisOver2Ratio??row.repeat_chassis_over2_ratio??0),
-    repeatRate:Number(row.repeatRate??row.repeat_rate??(Number(row.chassisTicketCount??row.chassis_ticket_count??0)?Number(row.repeatedClaimTicketCount??row.repeated_claim_ticket_count??0)/Number(row.chassisTicketCount??row.chassis_ticket_count??0)*100:0)),
-    chassisTicketRatio:Number(row.chassisTicketRatio??row.chassis_ticket_ratio??0),
-    repeatedClaimTicketCount:Number(row.repeatedClaimTicketCount??row.repeated_claim_ticket_count??0),
-    repeatedClaimAmount:Number(row.repeatedClaimAmount??row.repeated_claim_amount??0),
-    avgRepeatedClaimAmount:Number(row.avgRepeatedClaimAmount??row.avg_repeated_claim_amount??0),
-    costRanges:{low:Number(row.costRanges?.low||0),medium:Number(row.costRanges?.medium||0),high:Number(row.costRanges?.high||0)},
-    costByType:row.costByType||{},
-    top_dealer_name:clean(row.top_dealer_name||""),
-    top_address_group:clean(row.top_address_group||row.top_dealer_name||""),
-    first_created_on:clean(row.first_created_on||""),
-    last_created_on:clean(row.last_created_on||""),
-  })).filter(row=>row.repairId&&row.repairName);
+  return (Array.isArray(periodPayload?.repairers)?periodPayload.repairers:[]).map(row=>{
+    const display=repairerDisplayNameFromRow(row)||clean(row.repairName||row.repairer_name||row.repairer_base_name);
+    return {
+      repairId:clean(row.repairId||row.repairer_split_key||row.split_key),
+      repairName:display,
+      repairLegacyName:display,
+      state:clean(row.state||row.State),
+      ticketCount:Number(row.ticketCount??row.ticket_count??0),
+      totalCost:Number(row.totalCost??row.confirmed_cost??0),
+      avgCost:Number(row.avgCost??row.avg_confirmed_cost??0),
+      openCases:Number(row.openCases??row.open_tickets??row.ticketCount??row.ticket_count??0),
+      closedCases:Number(row.closedCases??row.invoiced_tickets??0),
+      chassisTicketCount:Number(row.chassisTicketCount??row.chassis_ticket_count??0),
+      uniqueChassisCount:Number(row.uniqueChassisCount??row.unique_chassis_count??0),
+      repeatChassisOver2Count:Number(row.repeatChassisOver2Count??row.repeat_chassis_over2_count??0),
+      repeatChassisOver2Ratio:Number(row.repeatChassisOver2Ratio??row.repeat_chassis_over2_ratio??0),
+      repeatRate:Number(row.repeatRate??row.repeat_rate??(Number(row.chassisTicketCount??row.chassis_ticket_count??0)?Number(row.repeatedClaimTicketCount??row.repeated_claim_ticket_count??0)/Number(row.chassisTicketCount??row.chassis_ticket_count??0)*100:0)),
+      chassisTicketRatio:Number(row.chassisTicketRatio??row.chassis_ticket_ratio??0),
+      repeatedClaimTicketCount:Number(row.repeatedClaimTicketCount??row.repeated_claim_ticket_count??0),
+      repeatedClaimAmount:Number(row.repeatedClaimAmount??row.repeated_claim_amount??0),
+      avgRepeatedClaimAmount:Number(row.avgRepeatedClaimAmount??row.avg_repeated_claim_amount??0),
+      costRanges:{low:Number(row.costRanges?.low||0),medium:Number(row.costRanges?.medium||0),high:Number(row.costRanges?.high||0)},
+      costByType:row.costByType||{},
+      top_dealer_name:display,
+      top_address_group:display,
+      first_created_on:clean(row.first_created_on||""),
+      last_created_on:clean(row.last_created_on||""),
+    };
+  }).filter(row=>row.repairId&&row.repairName);
 }
 function rebuildRepairWorkingData(){
   const canUseLoadedDetails=repairDetailsLoaded&&Array.isArray(allRepairTickets)&&allRepairTickets.length;
@@ -6230,9 +6542,10 @@ async function exportCostRangeExcel(bucketKey=null){
         }),
       ];
   const repairRows=[
-    ["Repair Shop Name","Total Approved Repair Cost","Tickets with Approved Repair Cost","Avg Approved Repair Cost","Repeated Chassis Count","Repeat Rate","Repeated Chassis / Unique Eligible Chassis %","Eligible Chassis Tickets","Unique Eligible Chassis"],
+    ["Repair Shop Display Name","Repair Shop Naming Rule","Total Approved Repair Cost","Tickets with Approved Repair Cost","Avg Approved Repair Cost","Repeated Chassis Count","Repeat Rate","Repeated Chassis / Unique Eligible Chassis %","Eligible Chassis Tickets","Unique Eligible Chassis"],
     ...repairRowsSource.map(r=>[
       r.repairName||"",
+      repairerSummaryNamingRule(r.repairName||r.repairer_name||r.repairer_base_name||""),
       Number(r.totalCost||0),
       Number(r.ticketCount||0),
       Number(r.avgCost||0),
@@ -6780,6 +7093,17 @@ function normalizedChassisFromRaw(entry){
 function chassisRepeatCostBucket(cost,costBuckets){
   return (Array.isArray(costBuckets)?costBuckets:[]).find(cb=>cost>=cb.min&&cost<cb.max)||null;
 }
+function chassisRepeatRepairBaseName(value){
+  return clean(value).replace(/\s*\((?:QLD|NSW|VIC|WA|SA|TAS|ACT|NT|NZ|AU)\s*\)\s*$/i,"");
+}
+function chassisRepeatRepairKey(value){
+  return repairNameMatchKey(chassisRepeatRepairBaseName(value));
+}
+function chassisRepeatDisplayName(base,state){
+  const name=chassisRepeatRepairBaseName(base);
+  const code=clean(state);
+  return name && code && code!=="NA" ? `${name} (${code})` : name;
+}
 function computeChassisRepeatDistribution(){
   const sourceRows=(Array.isArray(allRepairTickets)&&allRepairTickets.length?allRepairTickets:tickets)
     .filter(entryInSelectedRepairPeriod);
@@ -6799,17 +7123,23 @@ function computeChassisRepeatDistribution(){
     totalChassisSet.add(chassis);
     const info=repairInfo(entry);
     if(info.repairName==="No Repair Shop Assigned"||info.repairId==="no-repair")return;
-    const repairerTotal=repairerTotals.get(info.repairId)||{repairId:info.repairId,repairName:info.repairName,chassisSet:new Set(),ticketCount:0};
+    const repeatBase=chassisRepeatRepairBaseName(info.repairName);
+    const repeatKey=chassisRepeatRepairKey(info.repairName);
+    const repeatState=clean(ticket.state||ticket.State||clean(info.repairId).split("|")[1]||"");
+    const repeatDisplay=chassisRepeatDisplayName(repeatBase,repeatState);
+    const repeatId=repeatKey||info.repairId;
+    const repairerTotal=repairerTotals.get(repeatId)||{repairId:repeatId,repairName:repeatDisplay||info.repairName,chassisSet:new Set(),ticketCount:0};
+    if(repeatDisplay&&repeatState&&repeatState!=="NA")repairerTotal.repairName=repeatDisplay;
     repairerTotal.chassisSet.add(chassis);
     repairerTotal.ticketCount+=1;
-    repairerTotals.set(info.repairId,repairerTotal);
+    repairerTotals.set(repeatId,repairerTotal);
     const approvedCost=openPoRepairCostFromTicket(ticket);
     const approved=approvedCost>0;
     const unapproved=isUnapprovedRepairTicket(ticket);
     const record={
       chassis,
-      repairId:info.repairId,
-      repairName:info.repairName,
+      repairId:repeatId,
+      repairName:repairerTotal.repairName,
       created,
       approved,
       unapproved,
@@ -6833,14 +7163,15 @@ function computeChassisRepeatDistribution(){
       erpPo:clean(ticket.ERPPurchaseOrderID||ticket["ERP Purchase Order ID"]||ticket.ERPPO||ticket.sap_pos||""),
       cancelledErpPo:clean(ticket.sap_cancelled_pos||""),
     };
-    const groupKey=`${info.repairId}||${chassis}`;
-    const group=groupMap.get(groupKey)||{key:groupKey,chassis,repairId:info.repairId,repairName:info.repairName,tickets:[]};
+    const groupKey=`${repeatId}||${chassis}`;
+    const group=groupMap.get(groupKey)||{key:groupKey,chassis,repairId:repeatId,repairName:repairerTotal.repairName,tickets:[]};
+    if(repairerTotal.repairName)group.repairName=repairerTotal.repairName;
     group.tickets.push(record);
     groupMap.set(groupKey,group);
   });
   const categories=[
-    {key:"unapproved_until_approved",label:"Repeat Tickets : Partially Approved",rows:[],chassisSet:new Set(),approvedCost:0},
-    {key:"all_approved",label:"Repeat Tickets : ALL Approved",rows:[],chassisSet:new Set(),approvedCost:0},
+    {key:"unapproved_until_approved",label:"Repeat Tickets Partially Approved QTY",rows:[],chassisSet:new Set(),approvedCost:0},
+    {key:"all_approved",label:"Repeat Tickets ALL Approved QTY",rows:[],chassisSet:new Set(),approvedCost:0},
   ];
   const categoryByKey=Object.fromEntries(categories.map(cat=>[cat.key,cat]));
   const detailRows=[];
@@ -7029,8 +7360,15 @@ function renderChassisRepeatPanel(){
     viz.innerHTML=`<div class="chassisRepeatEmpty">${esc(message)}</div>`;
     return;
   }
+  const displayRows=rows.map(row=>({
+    ...row,
+    repairers:(Array.isArray(row.repairers)?row.repairers:[]).map(repairer=>({
+      ...repairer,
+      repairName:repairerDisplayNameFromRow(repairer)||repairer.repairName||"",
+    })),
+  }));
   viz.innerHTML=`<div class="chassisRepeatScenarioGrid">
-    ${rows.map(row=>`
+    ${displayRows.map(row=>`
       <section class="chassisRepeatScenarioCard">
         <h3 class="chassisRepeatScenarioTitle">${esc(row.label||"")}</h3>
         <div class="chassisRepeatScenarioMeta">
@@ -7099,7 +7437,7 @@ async function exportChassisRepeatExcel(){
       ["Scenario","Repair Shop","Repair Shop ID","Repeat Tickets","Total Repair Requests","Repeat Rate %","Repeated Chassis","Total Chassis","Approved Cost","Avg Approved Cost / Repeat Ticket","Repeated Groups"],
       ...w.categories.flatMap(row=>(Array.isArray(row.repairers)?row.repairers:[]).map(repairer=>[
         row.label||"",
-        repairer.repairName||"",
+        repairerDisplayNameFromRow(repairer)||repairer.repairName||"",
         repairer.repairId||"",
         Number(repairer.repeatedTickets||0),
         Number(repairer.totalTickets||0),
@@ -7116,7 +7454,7 @@ async function exportChassisRepeatExcel(){
       ...(Array.isArray(w.groups)?w.groups:[]).map(row=>[
         row.categoryLabel||"",
         row.chassis||"",
-        row.repairName||"",
+        repairerDisplayNameFromRow(row)||row.repairName||"",
         row.repairId||"",
         Number(row.requestCount||0),
         Number(row.approvedTicketCount||0),
@@ -7133,7 +7471,7 @@ async function exportChassisRepeatExcel(){
         return [
           row.categoryLabel||"",
           row.chassis||"",
-          row.repairName||"",
+          repairerDisplayNameFromRow(row)||row.repairName||"",
           row.repairId||"",
           Number(row.requestCount||0),
           Number(row.approvedTicketCount||0),
@@ -7260,6 +7598,7 @@ async function ensureRepairDetailsLoaded({renderAfter=true}={}){
 async function load(){
   const loadFailSafe=setTimeout(()=>hideCalcFloat(0),22000);
   let cacheVersion="";
+  repairerNameRuleMap=await loadRepairerNameRuleMap();
   try{
     cacheVersion=await withTimeoutPromise(repairPageVersion(),10000,"Repair page version");
   }catch(e){

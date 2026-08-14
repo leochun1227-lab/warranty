@@ -150,6 +150,22 @@ WITH obj AS (
     WHERE vbak."MANDT" = '{{mandt}}'
       AND vbak."VKORG" = '{sql_quote(SALES_ORG)}'
 ),
+vehicle_gr AS (
+    SELECT
+        obj."MANDT"                     AS "MANDT",
+        obj."Sales Order"               AS "Sales Order",
+        MIN(gr."BUDAT_MKPF")            AS "Good Receive Date"
+    FROM obj
+    INNER JOIN "SAPHANADB"."NSDM_V_MSEG" gr
+        ON gr."MANDT" = obj."MANDT"
+       AND gr."KDAUF" = obj."Sales Order"
+       AND LPAD(TO_VARCHAR(gr."KDPOS"), 6, '0') = '000010'
+       AND gr."WERKS" = '3111'
+       AND gr."BWART" IN ('101','103','105')
+    GROUP BY
+        obj."MANDT",
+        obj."Sales Order"
+),
 gi AS (
     SELECT DISTINCT
         obj."MANDT"                     AS "MANDT",
@@ -177,9 +193,13 @@ SELECT DISTINCT
     gi."Serial"                        AS "Serial",
     gi."VIN"                           AS "VIN",
     TO_VARCHAR(gi."PGI Date")          AS "PGI Date",
+    TO_VARCHAR(gr."Good Receive Date") AS "Good Receive Date",
     gi."PGI Material Doc"              AS "PGI Material Doc",
     LPAD(TO_VARCHAR(gi."PGI Item Raw"), 4, '0') AS "PGI Item"
 FROM gi
+LEFT JOIN vehicle_gr gr
+    ON gr."MANDT" = gi."MANDT"
+   AND gr."Sales Order" = gi."Sales Order"
 LEFT JOIN "SAPHANADB"."NSDM_V_MSEG" rev
     ON rev."MANDT" = gi."MANDT"
    AND rev."SMBLN" = gi."PGI Material Doc"
@@ -721,6 +741,8 @@ ANALYSIS_TICKET_CSV_HEADERS = [
     "Repairer Parts Claim Total Amount",
     "Changed On",
     "Posting Date",
+    "PGI Date",
+    "Good Receive Date",
 ]
 
 
@@ -803,6 +825,8 @@ def summarize_final_ticket_rows(final_df: pd.DataFrame) -> Dict[str, Dict[str, s
         "Sales Order",
         "SO Created Date",
         "AmountIncludingTax",
+        "First Issue Date",
+        "Good Receive Date",
     ]
     for ticket_id_raw, grp in final_df.groupby("TicketID", dropna=False):
         ticket_id = as_clean_str(ticket_id_raw) or ""
@@ -941,6 +965,8 @@ def write_analysis_ticket_base_csv(
                     )
                 ),
                 csv_date_value(first_clean_ticket_value(ticket, "PostingDate", "Posting Date", "CreatedOn", "Created On")),
+                csv_date_value(first_clean_ticket_value(ticket, "PGI Date", "PGIDate", "Vehicle Delivery Date")),
+                csv_date_value(summary.get("Good Receive Date") or first_clean_ticket_value(ticket, "Good Receive Date", "Goods Receipt Date", "GR Date")),
             ]
         )
 
@@ -1789,8 +1815,9 @@ WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
 
     # ---- Union chassis → (series, best PGI date, source) ----
     # Precedence: MSEG PGI > LIKP WADAT_IST > (in-stock/in-transit have no PGI).
-    chassis_map: Dict[str, Dict[str, str]] = {}   # SERNR -> {series, pgi, source, salesOrder, vin, material, description}
+    chassis_map: Dict[str, Dict[str, str]] = {}   # SERNR -> {series, pgi, goodReceive, source, salesOrder, vin, material, description}
     sales_order_pgi: Dict[str, str] = {}          # Sales Order -> pgi date
+    sales_order_good_receive: Dict[str, str] = {} # Sales Order -> good receive date
     series_by_chassis: Dict[str, str] = {}        # Serial / VIN aliases -> series
     series_by_sales_order: Dict[str, str] = {}    # Sales Order -> series
 
@@ -1808,15 +1835,17 @@ WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
 
     def _register(serial: str, series: str, pgi: str, source: str,
                   sales_order: str, vin: str, material: str, description: str,
-                  status: str) -> None:
+                  status: str, good_receive: str = "") -> None:
         if not serial:
             return
         norm_pgi = _norm_date(pgi)
+        norm_good_receive = _norm_date(good_receive)
         cur = chassis_map.get(serial)
         if cur is None:
             chassis_map[serial] = {
                 "series": series,
                 "pgi": norm_pgi,
+                "goodReceive": norm_good_receive,
                 "source": source if norm_pgi else "",
                 "salesOrder": sales_order,
                 "vin": vin,
@@ -1834,6 +1863,8 @@ WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
             elif norm_pgi and cur.get("source") == "likp" and source == "mseg":
                 cur["pgi"] = norm_pgi
                 cur["source"] = source
+            if norm_good_receive and not cur.get("goodReceive"):
+                cur["goodReceive"] = norm_good_receive
             # Prefer status "shipped" > "inStock" > "inTransit"
             rank = {"shipped": 3, "inStock": 2, "inTransit": 1, "": 0}
             if rank.get(status, 0) > rank.get(cur.get("status", ""), 0):
@@ -1845,6 +1876,9 @@ WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
         if sales_order and norm_pgi:
             for so_key in vehicle_lookup_aliases(sales_order):
                 sales_order_pgi.setdefault(so_key, norm_pgi)
+        if sales_order and norm_good_receive:
+            for so_key in vehicle_lookup_aliases(sales_order):
+                sales_order_good_receive.setdefault(so_key, norm_good_receive)
 
     def _series(row: dict) -> str:
         return extract_series_code(
@@ -1856,17 +1890,17 @@ WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
         r = row.to_dict()
         _register(r.get("Serial",""), _series(r), r.get("PGI Date",""), "mseg",
                   r.get("Sales Order",""), r.get("VIN",""), r.get("Material",""),
-                  r.get("Description",""), "shipped")
+                  r.get("Description",""), "shipped", r.get("Good Receive Date",""))
     for _, row in likp_df.iterrows():
         r = row.to_dict()
         _register(r.get("Serial",""), _series(r), r.get("PGI Date",""), "likp",
                   r.get("Sales Order",""), r.get("VIN",""), r.get("Material",""),
-                  r.get("Description",""), "shipped")
+                  r.get("Description",""), "shipped", r.get("Good Receive Date",""))
     for _, row in instock_df.iterrows():
         r = row.to_dict()
         _register(r.get("Serial",""), _series(r), "", "",
                   r.get("Sales Order",""), r.get("VIN",""), r.get("Material",""),
-                  r.get("Description",""), "inStock")
+                  r.get("Description",""), "inStock", r.get("First Movement",""))
     for _, row in intransit_df.iterrows():
         r = row.to_dict()
         _register(r.get("Serial",""), _series(r), "", "",
@@ -1886,6 +1920,7 @@ WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
     series_base_total: Dict[str, int] = {}
     series_sales_by_month: Dict[str, Dict[str, int]] = {}
     pgi_by_chassis: Dict[str, str] = {}
+    good_receive_by_chassis: Dict[str, str] = {}
     for serial, info in chassis_map.items():
         s = info.get("series", "UNKNOWN")
         status = info.get("status", "")
@@ -1903,6 +1938,9 @@ WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
         if info.get("pgi"):
             for key in vehicle_lookup_aliases(serial, info.get("vin")):
                 pgi_by_chassis[key] = info["pgi"]
+        if info.get("goodReceive"):
+            for key in vehicle_lookup_aliases(serial, info.get("vin")):
+                good_receive_by_chassis[key] = info["goodReceive"]
         if s and s != "UNKNOWN" and not is_excluded_series_code(s):
             for key in vehicle_lookup_aliases(serial, info.get("vin")):
                 series_by_chassis[key] = s
@@ -1950,6 +1988,7 @@ WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
         # timing can be computed for tickets whose LIKP-based dispatch date
         # was missing.
         "pgiByChassis": pgi_by_chassis,
+        "goodReceiveByChassis": good_receive_by_chassis,
         # Vehicle-series mappings derived from SAP sales-order / chassis joins.
         # The dashboard keeps ticket fields first and uses these only as a
         # fallback when the ticket itself does not expose a usable model code.
@@ -1957,6 +1996,7 @@ WHERE s2."MANDT" = '{sql_quote(SAP_CLIENT)}'
         "seriesBySalesOrder": dict(sorted(series_by_sales_order.items())),
         # Sales-order-level PGI dates (fallback when only the SO is known).
         "pgiBySalesOrder": dict(sorted(sales_order_pgi.items())),
+        "goodReceiveBySalesOrder": dict(sorted(sales_order_good_receive.items())),
         "totalVehicles": int(sum(series_base_total.values())),
         "totalShipped": int(sum(series_base_shipped.values())),
         "totalInStock": int(sum(series_base_in_stock.values())),
@@ -2160,6 +2200,24 @@ gi_summary AS (
         lips."VGBEL",
         lips."VGPOS"
 ),
+gr_summary AS (
+    SELECT
+        mseg."MANDT"                      AS "SAP Client",
+        mseg."KDAUF"                      AS "Sales Order",
+        LPAD(TO_VARCHAR(mseg."KDPOS"), 6, '0') AS "Sales Order Item",
+        MIN(mseg."BUDAT_MKPF")            AS "Good Receive Date"
+    FROM "SAPHANADB"."NSDM_V_MSEG" mseg
+    INNER JOIN so_base sb
+        ON sb."SAP Client" = mseg."MANDT"
+       AND sb."Sales Order" = mseg."KDAUF"
+    WHERE mseg."WERKS" = '3111'
+      AND mseg."BWART" IN ('101','103','105')
+      AND COALESCE(mseg."KDAUF", '') <> ''
+    GROUP BY
+        mseg."MANDT",
+        mseg."KDAUF",
+        LPAD(TO_VARCHAR(mseg."KDPOS"), 6, '0')
+),
 item_base AS (
     SELECT DISTINCT
         sb."TicketID",
@@ -2199,6 +2257,7 @@ final_ranked AS (
         ib."Net Value",
         COALESCE(gs."Delivery Count", 0) AS "Delivery Count",
         gs."First Issue Date"             AS "First Issue Date",
+        gr."Good Receive Date"            AS "Good Receive Date",
         ib."Rejection Reason",
         CASE
             WHEN ib."Rejection Reason" IS NOT NULL AND ib."Rejection Reason" <> ''
@@ -2222,6 +2281,10 @@ final_ranked AS (
         ON gs."SAP Client" = ib."SAP Client"
        AND gs."Sales Order" = ib."Sales Order"
        AND gs."Sales Order Item" = ib."Sales Order Item"
+    LEFT JOIN gr_summary gr
+        ON gr."SAP Client" = ib."SAP Client"
+       AND gr."Sales Order" = ib."Sales Order"
+       AND gr."Sales Order Item" = ib."Sales Order Item"
 )
 SELECT
     "TicketID",
@@ -2239,6 +2302,7 @@ SELECT
     "Net Value",
     "Delivery Count",
     "First Issue Date",
+    TO_VARCHAR("Good Receive Date") AS "Good Receive Date",
     "Rejection Reason",
     "Item Rejection Status"
 FROM final_ranked
@@ -2256,7 +2320,7 @@ def fetch_so_items(conn, ticket_df: pd.DataFrame) -> pd.DataFrame:
             "Sales Order", "SO Created Date", "Sales Order Item",
             "Purchaser", "Currency", "Material", "Description", "Order Qty", "Sales Unit",
             "Net Value",
-            "Delivery Count", "Rejection Reason", "Item Rejection Status"
+            "Delivery Count", "First Issue Date", "Good Receive Date", "Rejection Reason", "Item Rejection Status"
         ])
 
     pairs = []
@@ -2291,7 +2355,7 @@ def fetch_so_items(conn, ticket_df: pd.DataFrame) -> pd.DataFrame:
             "Sales Order", "SO Created Date", "Sales Order Item",
             "Purchaser", "Currency", "Material", "Description", "Order Qty", "Sales Unit",
             "Net Value",
-            "Delivery Count", "Rejection Reason", "Item Rejection Status"
+            "Delivery Count", "First Issue Date", "Good Receive Date", "Rejection Reason", "Item Rejection Status"
         ])
 
     df = pd.concat(frames, ignore_index=True)
@@ -2319,6 +2383,11 @@ def fetch_so_items(conn, ticket_df: pd.DataFrame) -> pd.DataFrame:
         dt = pd.to_datetime(df["First Issue Date"], errors="coerce")
         df["First Issue Date"] = dt.dt.strftime("%Y-%m-%d")
         df["First Issue Date"] = df["First Issue Date"].where(dt.notna(), "")
+
+    if "Good Receive Date" in df.columns:
+        dt = pd.to_datetime(df["Good Receive Date"], errors="coerce")
+        df["Good Receive Date"] = dt.dt.strftime("%Y-%m-%d")
+        df["Good Receive Date"] = df["Good Receive Date"].where(dt.notna(), "")
 
     return df
 
@@ -2395,6 +2464,7 @@ def dedupe_final_rows(df: pd.DataFrame) -> pd.DataFrame:
         "Sales Unit",
         "Delivery Count",
         "First Issue Date",
+        "Good Receive Date",
         "Rejection Reason",
         "Item Rejection Status",
         "Order Rejection Status",
@@ -2427,6 +2497,7 @@ def build_final_output(ticket_df: pd.DataFrame, so_item_df: pd.DataFrame) -> pd.
         "Net Value",
         "Delivery Count",
         "First Issue Date",
+        "Good Receive Date",
         "Rejection Reason",
         "Item Rejection Status",
         "Order Rejection Status",
@@ -2505,6 +2576,7 @@ def build_final_output(ticket_df: pd.DataFrame, so_item_df: pd.DataFrame) -> pd.
         not_found["Net Value"] = ""
         not_found["Delivery Count"] = ""
         not_found["First Issue Date"] = ""
+        not_found["Good Receive Date"] = ""
         not_found["Rejection Reason"] = ""
         not_found["Item Rejection Status"] = "Not Found"
         not_found["Order Rejection Status"] = "Not Found"
@@ -2657,6 +2729,7 @@ def build_clear_so_payload(ticket_ids: List[str], reason: str = "Not Found") -> 
         payload[f"{base}/SO Created Date"] = ""
         payload[f"{base}/First Issue Date"] = ""
         payload[f"{base}/Complete Issue Date"] = ""
+        payload[f"{base}/Good Receive Date"] = ""
         payload[f"{base}/Issue Status"] = reason
         payload[f"{base}/Order Rejection Status"] = reason
         payload[f"{base}/Sales Order Details"] = []
@@ -2772,7 +2845,7 @@ def build_ticket_fields_payload(
     text_cols = [
         "TicketID", "Sales Order", "SO Created Date", "Issue Status",
         "Sales Order Item", "Material", "Description", "Order Qty",
-        "Sales Unit", "First Issue Date", "Rejection Reason", "Item Rejection Status",
+        "Sales Unit", "First Issue Date", "Good Receive Date", "Rejection Reason", "Item Rejection Status",
         "Order Rejection Status", "Reservation_Created_By", "Reservation_Cost_Center"
     ]
     for col in text_cols:
@@ -2829,6 +2902,7 @@ def build_ticket_fields_payload(
         payload[f"{base}/Net Value"] = net_value if sales_order else ""
         payload[f"{base}/First Issue Date"] = ""
         payload[f"{base}/Complete Issue Date"] = ""
+        payload[f"{base}/Good Receive Date"] = ""
         payload[f"{base}/Issue Status"] = "Not Found" if not sales_order else issue_status
         payload[f"{base}/Order Rejection Status"] = (
             "Not Found" if not sales_order else order_rejection_status
@@ -2854,6 +2928,7 @@ def build_ticket_fields_payload(
             "AmountIncludingTax",
             "Delivery Count",
             "First Issue Date",
+            "Good Receive Date",
             "Rejection Reason",
             "Item Rejection Status",
         ]
@@ -2905,6 +2980,7 @@ def build_ticket_fields_payload(
                 "AmountIncludingTax": row.get("AmountIncludingTax", amount_including_tax),
                 "Delivery Count": int(row.get("Delivery Count", 0) or 0),
                 "First Issue Date": row.get("First Issue Date", ""),
+                "Good Receive Date": row.get("Good Receive Date", ""),
                 "Rejection Reason": row.get("Rejection Reason", ""),
                 "Item Rejection Status": row.get("Item Rejection Status", ""),
             })
@@ -2919,6 +2995,12 @@ def build_ticket_fields_payload(
         ]
         payload[f"{base}/First Issue Date"] = min(first_issue_dates) if first_issue_dates else ""
         payload[f"{base}/Complete Issue Date"] = max(first_issue_dates) if first_issue_dates else ""
+        good_receive_dates = [
+            as_clean_str(v.get("Good Receive Date"))
+            for v in details
+            if as_clean_str(v.get("Good Receive Date"))
+        ]
+        payload[f"{base}/Good Receive Date"] = min(good_receive_dates) if good_receive_dates else ""
         payload[f"{base}/soLastSyncAt"] = SERVER_TIMESTAMP
 
     return payload

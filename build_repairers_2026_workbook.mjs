@@ -53,7 +53,7 @@ function deriveAddressRows(details) {
   for (const row of details) {
     const cost = amountFromDetail(row);
     if (cost <= 0) continue;
-    const address = clean(row.top_address_group || row.top_dealer_name || row.repairer_name || row["Dealer Name"] || "Unknown");
+    const address = clean(row.top_address_group || row.top_dealer_name || row.repairer_name || "Unknown");
     const rec = groups.get(address) || { rows: [], ticket_count: 0, total_warranty_cost: 0, repairers: new Set() };
     rec.rows.push(row);
     rec.ticket_count += 1;
@@ -69,7 +69,7 @@ function deriveAddressRows(details) {
     unique_repairers: rec.repairers.size,
     top_state: mostCommon(rec.rows, row => row.state || row.State),
     top_repairer: mostCommon(rec.rows, row => row.repairer_name || row.RepairerName),
-    top_dealer_name: mostCommon(rec.rows, row => row.top_dealer_name || row["Dealer Name"] || row.DealerName),
+    top_dealer_name: mostCommon(rec.rows, row => row.top_dealer_name || row.repairer_name || row.RepairerName),
   })).sort((a, b) => b.ticket_count - a.ticket_count || b.total_warranty_cost - a.total_warranty_cost);
 }
 
@@ -82,8 +82,8 @@ function deriveVariantRows(details) {
       state: clean(row.state || row.State),
       state_source: clean(row.repairer_name_rule_source) ? "repairer_mapping" : clean(row.state_source || ""),
       address_group: clean(row.top_address_group || row.top_dealer_name || row.repairer_name),
-      dealer_name: clean(row.top_dealer_name || row["Dealer Name"] || row.DealerName),
-      dealer_code: clean(row.repairshop_id || row.RepairerBusinessNameID || row.Dealer),
+      dealer_name: clean(row.top_dealer_name || row.repairer_name || row.RepairerName),
+      dealer_code: clean(row.WarrantyHandlingDealerID || row.WarrantyHandlingDealerAssign || row["Warranty Handling Dealer(Assign)"] || row.Dealer),
       country_region: clean(row["Country/Region"]),
       postal_code: clean(row["Service Requester Postal Code"]),
       ticket_id: clean(row["Ticket ID"] || row.TicketID),

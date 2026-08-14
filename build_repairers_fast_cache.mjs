@@ -17,7 +17,9 @@ const LIGHT_DETAIL_FIELDS = [
   "Ticket ID", "TicketID", "C4C Ticket ID", "Ticket", "Created On", "Posting Date", "Changed On", "Approved Date",
   "C4C Claim Approved On", "c4c_claim_approved_on",
   "Ticket Type", "Status", "Service Technician", "repairer_name", "repairer_base_name",
-  "raw_repairer_name", "repairer_split_key", "repairshop_id", "RepairerBusinessNameID",
+  "raw_repairer_name", "repairer_split_key", "repairshop_id",
+  "WarrantyHandlingDealerID", "WarrantyHandlingDealerName", "WarrantyHandlingDealerAssign",
+  "Warranty Handling Dealer(Assign)", "Warranty Handling Dealer Name",
   "Dealer", "Dealer Name", "Country/Region", "Service Requester Postal Code", "state",
   "ERP Purchase Order ID", "Sales Order", "ClaimTotalAmount", "Factory Parts Claim Total Amount",
   "LabourHoursTotalAmount", "Repairer Parts Claim Total Amount", "invoice_status", "invoice_number",
@@ -85,10 +87,16 @@ function repairNameRuleKey(value) {
     .trim();
 }
 
+function repairDealerCodeKey(value) {
+  const text = clean(value).replace(/\D+/g, "");
+  return text ? text.replace(/^0+/, "") || "0" : "";
+}
+
 function buildRepairerRuleMap() {
   const payload = readJson(REPAIRER_NAME_RULE_MAPPING_JSON, {});
   const general = new Map();
   const snowyParts = new Map();
+  const snowyDealerCodes = new Map();
   const snowyPartEntries = [];
   const add = (map, key, value) => {
     const k = repairNameRuleKey(key);
@@ -105,15 +113,28 @@ function buildRepairerRuleMap() {
       if (entry.key && entry.value) snowyPartEntries.push(entry);
     }
   }
+  for (const row of Array.isArray(payload.snowyRiverDealerCodes) ? payload.snowyRiverDealerCodes : []) {
+    const dealership = clean(row.dealership || row.mappingName);
+    if (!dealership) continue;
+    for (const code of [
+      row.oldWarrantyHandlingDealerAssign,
+      row.newWarrantyHandlingDealerAssign,
+      row.warrantyHandlingDealerAssign,
+    ]) {
+      const key = repairDealerCodeKey(code);
+      if (key && !snowyDealerCodes.has(key)) snowyDealerCodes.set(key, dealership);
+    }
+  }
   snowyPartEntries.sort((a, b) => b.key.length - a.key.length);
-  return { general, snowyParts, snowyPartEntries };
+  return { general, snowyParts, snowyDealerCodes, snowyPartEntries };
 }
 
 const REPAIRER_RULE_MAP = buildRepairerRuleMap();
 
 function isSnowyRiverRvRepairerName(value) {
   const key = repairNameRuleKey(value);
-  return key.includes("SNOWY RIVER RV PTY LTD");
+  return key.includes("SNOWY RIVER RV PTY LTD") ||
+    key.includes("SNOWY RV PTY LTD");
 }
 
 function formatRepairerNameWithState(name, state) {
@@ -151,38 +172,66 @@ function snowyRiverPartMappingName(value) {
   return match?.value || "";
 }
 
+function snowyRiverDealerCodeMappingName(value) {
+  const key = repairDealerCodeKey(value);
+  return key ? (REPAIRER_RULE_MAP.snowyDealerCodes.get(key) || "") : "";
+}
+
+function firstWarrantyHandlingDealerCode(values) {
+  for (const value of values) {
+    const raw = clean(value);
+    const key = repairDealerCodeKey(raw);
+    if (key && raw !== "#") return { raw, key };
+  }
+  return { raw: "", key: "" };
+}
+
 function mappedRepairerBaseName(row, fallbackName) {
   const baseName = clean(fallbackName);
   const snowyTriggerFields = [
+    row.OriginalRepairerName,
+    row.originalRepairerName,
+    row.repairer_name_before_rule_mapping,
+    row.rawRepairerName,
     baseName,
     row.repairer_base_name,
     row.repairer_name,
     row.raw_repairer_name,
+    row["Repair Shop"],
+    row["Repair Shop Name"],
+    row.RepairShop,
+    row.repairShop,
     row.sap_repairer_name,
     row["Service Technician"],
     row.ServiceTechnician,
   ];
   if (snowyTriggerFields.some(isSnowyRiverRvRepairerName)) {
-    const snowyCandidates = [
-      row.c4c_compare_repairer,
-      row.c4c_service_technician,
-      row.RepairerBusinessNameID,
-      row["RepairerBusinessNameID"],
-      row["Repairer Business Name ID"],
-      row["Repairer Business Name"],
-      row.repairshop_id,
-      row.repairshopId,
+    const snowyDealerCodeCandidates = [
+      row.WarrantyHandlingDealerID,
+      row.WarrantyHandlingDealerAssign,
+      row["Warranty Handling Dealer(Assign)"],
+      row["Warranty Handling Dealer Assign"],
+      row["Warranty Handling Dealer ID"],
     ];
-    for (const candidate of snowyCandidates) {
-      const mapped = snowyRiverPartMappingName(candidate);
-      if (mapped) return { name: mapped, source: "snowyRiverParts" };
+    for (const candidate of snowyDealerCodeCandidates) {
+      const mapped = snowyRiverDealerCodeMappingName(candidate);
+      if (mapped) return { name: mapped, source: "snowyRiverDealerCodes" };
     }
+    const dealerCode = firstWarrantyHandlingDealerCode(snowyDealerCodeCandidates);
+    return {
+      name: dealerCode.key ? `Unmapped Warranty Handling Dealer ${dealerCode.raw}` : "Warranty Handling Dealer Not Assigned",
+      source: dealerCode.key ? "snowyRiverDealerCodeUnmapped" : "snowyRiverDealerCodeMissing",
+    };
   }
   const generalCandidates = [
     baseName,
     row.repairer_base_name,
     row.repairer_name,
     row.raw_repairer_name,
+    row["Repair Shop"],
+    row["Repair Shop Name"],
+    row.RepairShop,
+    row.repairShop,
     row["Service Technician"],
     row.ServiceTechnician,
   ];
@@ -372,6 +421,19 @@ function buildSourceEnrichment() {
       registeredProduct: clean(row["Registered Product"] || row.RegisteredProduct),
       product: clean(row.Product),
       salesOrder: clean(row["Sales Order"] || row.SalesOrder || row["ERP Free Order ID"]),
+      warrantyHandlingDealerId: clean(
+        row.WarrantyHandlingDealerID ||
+        row.WarrantyHandlingDealerAssign ||
+        row["Warranty Handling Dealer(Assign)"] ||
+        row["Warranty Handling Dealer Assign"] ||
+        row.Dealer
+      ),
+      warrantyHandlingDealerName: clean(
+        row.WarrantyHandlingDealerName ||
+        row["Warranty Handling Dealer Name"] ||
+        row.DealerName ||
+        row["Dealer Name"]
+      ),
     };
     addMapValue(map, sourceTicketKey(row), value);
     addMapValue(map, row.Ticket, value);
@@ -425,7 +487,26 @@ function enrichDetailRows(rows, sourceMap) {
     if (!clean(out["Registered Product"]) && !clean(out.RegisteredProduct)) out["Registered Product"] = source.registeredProduct || "";
     if (!clean(out.Product)) out.Product = source.product || "";
     if (!clean(out["Sales Order"]) && !clean(out.SalesOrder)) out["Sales Order"] = source.salesOrder || "";
-    const currentBase = clean(out.repairer_base_name || out.repairer_name || out.RepairerName || out["Service Technician"] || out.ServiceTechnician);
+    if (!clean(out.WarrantyHandlingDealerID) && !clean(out.WarrantyHandlingDealerAssign) && !clean(out["Warranty Handling Dealer(Assign)"])) {
+      out.WarrantyHandlingDealerID = source.warrantyHandlingDealerId || "";
+      out.WarrantyHandlingDealerAssign = source.warrantyHandlingDealerId || "";
+      out["Warranty Handling Dealer(Assign)"] = source.warrantyHandlingDealerId || "";
+    }
+    if (!clean(out.WarrantyHandlingDealerName) && !clean(out["Warranty Handling Dealer Name"])) {
+      out.WarrantyHandlingDealerName = source.warrantyHandlingDealerName || "";
+      out["Warranty Handling Dealer Name"] = source.warrantyHandlingDealerName || "";
+    }
+    const currentBase = clean(
+      out["Repair Shop"] ||
+      out["Repair Shop Name"] ||
+      out.RepairShop ||
+      out.repairShop ||
+      out.repairer_base_name ||
+      out.repairer_name ||
+      out.RepairerName ||
+      out["Service Technician"] ||
+      out.ServiceTechnician
+    );
     const mapped = mappedRepairerBaseName(out, currentBase);
     if (mapped.name) {
       const state = mappedRepairerStateOverride(mapped.name) || stateAbbr(out.state || out.State);
@@ -671,8 +752,7 @@ function analyzeRepair(rows) {
       c.costAmount += cost;
       rec._chassisRecords.set(chassis, c);
     }
-    const dealerName = clean(row["Dealer Name"] || row.DealerName || row.Dealer || "");
-    addCounter(rec._dealerCounter, dealerName);
+    addCounter(rec._dealerCounter, info.repairName);
     if (created) {
       if (!rec.first_created_on || created < rec.first_created_on) rec.first_created_on = created;
       if (!rec.last_created_on || created > rec.last_created_on) rec.last_created_on = created;
@@ -935,6 +1015,7 @@ function main() {
       repairer_name_rule_mapping_sha256: repairerMappingHash,
       repairer_name_rule_mapping_general_count: REPAIRER_RULE_MAP.general.size,
       repairer_name_rule_mapping_snowy_parts_count: REPAIRER_RULE_MAP.snowyParts.size,
+      repairer_name_rule_mapping_snowy_dealer_code_count: REPAIRER_RULE_MAP.snowyDealerCodes.size,
       repairer_name_rule_mapping_snowy_part_variant_count: REPAIRER_RULE_MAP.snowyPartEntries.length,
       cache_ticket_base_enrichment_rows: sourceMap.size,
       cost_rule: "approved decision-period tickets with approved repair cost > 0; includes invoiced and approved closed; excludes unapproved",

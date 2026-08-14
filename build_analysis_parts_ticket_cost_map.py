@@ -170,6 +170,8 @@ def main():
             "vehicleDispatchSource": clean(ticket.get("Vehicle Dispatch Source") or ticket.get("vehicleDispatchSource")),
             "vehicleDispatchSerial": clean(ticket.get("Vehicle Dispatch Serial") or ticket.get("vehicleDispatchSerial")),
             "vehicleDispatchSalesOrder": clean(ticket.get("Vehicle Dispatch Sales Order") or ticket.get("vehicleDispatchSalesOrder")),
+            "pgiDate": clean(ticket.get("PGI Date") or ticket.get("PGIDate") or ticket.get("Vehicle Delivery Date") or ticket.get("vehicleDeliveryDate")),
+            "goodReceiveDate": clean(ticket.get("Good Receive Date") or ticket.get("Goods Receipt Date") or ticket.get("GR Date") or ticket.get("goodReceiveDate")),
             "amountIncludingTax": parse_amount(ticket.get("AmountIncludingTax")),
             "preferredCost": cost if cost != "" else None,
         })

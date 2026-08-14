@@ -11,8 +11,11 @@ FETCH_SCRIPT = ROOT / "fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_F
 SAP_SOURCE_SCRIPT = ROOT / "sap_authoritative_repair_payments.py"
 SAP_WORKBOOK_SCRIPT = ROOT / "build_sap_authoritative_repair_payments.mjs"
 SAP_TO_REPAIRERS_SCRIPT = ROOT / "build_repairers_from_sap_authoritative.py"
+REPAIRER_NAME_RULE_MAPPING_SCRIPT = ROOT / "build_repairer_name_rule_mapping.py"
 FAST_CACHE_SCRIPT = ROOT / "build_repairers_fast_cache.mjs"
 WORKBOOK_SCRIPT = ROOT / "build_repairers_2026_workbook.mjs"
+TRIM_EMPTY_XLSX_COLUMNS_SCRIPT = ROOT / "trim_empty_xlsx_columns.py"
+REPAIRER_WORKBOOK = ROOT / "outputs" / "repairers_2026" / "repairers_2026_analysis_state.xlsx"
 
 
 def run_step(label: str, command: list[str]) -> None:
@@ -71,14 +74,23 @@ def main() -> None:
     )
 
     run_step(
-        "Step 5 - Rebuild repairer fast/light cache",
+        "Step 5 - Rebuild repairer name rule mapping",
+        [sys.executable, str(REPAIRER_NAME_RULE_MAPPING_SCRIPT)],
+    )
+
+    run_step(
+        "Step 6 - Rebuild repairer fast/light cache",
         [node, str(FAST_CACHE_SCRIPT)],
     )
 
     if not args.skip_workbook:
         run_step(
-            "Step 6 - Rebuild repairer workbook",
+            "Step 7 - Rebuild repairer workbook",
             [node, str(WORKBOOK_SCRIPT)],
+        )
+        run_step(
+            "Step 8 - Remove empty workbook columns",
+            [sys.executable, str(TRIM_EMPTY_XLSX_COLUMNS_SCRIPT), str(REPAIRER_WORKBOOK)],
         )
 
     print("\nRepairer page refresh completed.")
@@ -88,6 +100,7 @@ def main() -> None:
     print("- outputs/repairers_2026/sap_authoritative_repair_payments.xlsx")
     print("- outputs/repairers_2026/repairers_2026_data.json")
     print("- outputs/repairers_2026/repairers_2026_data.js")
+    print("- assets/repairer_name_rule_mapping.json")
     print("- outputs/repairers_2026/repairers_2026_fast.json")
     print("- outputs/repairers_2026/repairers_2026_light.json")
     if not args.skip_workbook:

@@ -168,6 +168,9 @@ a{color:inherit}
 }
 .seriesSelect:hover{border-color:#c7d3e3;background:#fbfcfe}
 .stickySeriesScroller .seriesSelect,.detailSwitchRow .seriesSelect{min-width:250px}
+.seriesSelectWrap{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.partsTicketBadge{height:28px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #dbe3ee;background:#f8fafc;color:#334155;border-radius:999px;padding:0 10px;font-size:11.5px;font-weight:760;white-space:nowrap}
+.partsTicketBadge b{color:#0f172a;font-weight:850;margin-left:5px}
 
 /* ---------- Layout ---------- */
 .section{margin-bottom:22px}
@@ -373,9 +376,7 @@ body.parts-page .compRows{display:none}
 .compRight{display:flex;flex-direction:column;align-items:flex-end;gap:1px;min-width:104px}
 .compTickets{font-weight:600;font-size:13px;color:#172033;letter-spacing:0;font-variant-numeric:tabular-nums;white-space:nowrap;line-height:1.1}
 .compCost{font-size:10px;color:#6b7788;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.1}
-/* Components: mode row + tooltip + totals */
-.compModeRow{display:inline-flex;gap:0;background:#f1f5f9;border-radius:999px;padding:3px;border:1px solid var(--line2)}
-.compModeRow .scopeBtn{padding:6px 12px;font-size:11.5px;border-radius:999px}
+/* Components: tooltip + totals */
 .compRow.clickable{cursor:pointer;transition:background .12s ease,border-color .12s ease}
 .compRow.clickable:hover{background:#f4f8f9;border-color:#c7d7dc}
 .compRow.active{background:#f5f7f9;border-color:#91c9d1;box-shadow:inset 0 0 0 1px rgba(45,145,163,.12)}
@@ -459,7 +460,8 @@ body.parts-page .compRows{display:none}
 .compTrendTipRow b{font-weight:700;color:#172033;font-variant-numeric:tabular-nums}
 .compTrendTipFoot{margin-top:9px;padding-top:8px;border-top:1px solid rgba(45,145,163,.16);color:#6b7788;font-size:11px;font-weight:600}
 .compTrendFoot{display:flex;justify-content:space-between;gap:8px;color:#64748b;font-size:9.5px;font-weight:600;line-height:1;white-space:nowrap}
-.compApprovedBadge{height:28px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #dbe3ee;background:#f8fafc;color:#334155;border-radius:999px;padding:0 12px;font-size:11.5px;font-weight:760;white-space:nowrap}
+.compBasisSwitch{display:inline-flex;align-items:center;gap:4px;padding:3px;border:1px solid #dbe3ee;background:#f8fafc;border-radius:999px}
+.compBasisSwitch .scopeBtn{height:24px;padding:0 10px;font-size:11px;border-radius:999px}
 .compDetailExportBtn{height:30px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #c7d7ff;background:#fff;color:#2457d6;border-radius:999px;padding:0 12px;font-size:11.5px;font-weight:800;white-space:nowrap;box-shadow:0 8px 18px rgba(37,87,214,.08);cursor:pointer}
 .compDetailExportBtn:hover{background:#f4f7ff;border-color:#9db7ff}
 .compDetailExportBtn svg{width:14px;height:14px;stroke-width:2}
@@ -856,6 +858,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   body.parts-page .seriesSelect{
     min-width:260px!important;
   }
+  body.parts-page .partsTicketBadge{
+    height:28px!important;
+    font-size:11.5px!important;
+  }
   body.parts-page .section{
     min-height:0!important;
     margin:0!important;
@@ -902,14 +908,12 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     white-space:nowrap!important;
     font-size:12px!important;
   }
-  body.parts-page .compModeSwitch,
-  body.parts-page .compDateBasisSwitch{
+  body.parts-page .compBasisSwitch{
     flex:0 0 auto!important;
     margin:0!important;
     align-self:center!important;
   }
-  body.parts-page .compModeSwitch .scopeBtn,
-  body.parts-page .compDateBasisSwitch .scopeBtn{
+  body.parts-page .compBasisSwitch .scopeBtn{
     height:28px!important;
     padding:0 10px!important;
   }
@@ -989,10 +993,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Repairs by Model</span></a>
     <a class="navLink active" href="parts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16"/><path d="M7 7v10"/><path d="M17 7v10"/><path d="M5 17h14"/><path d="M9 11h6"/></svg><span>Parts Failure Components</span></a>
     <a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket Timeline</span></a>
-    <div class="navDivider"></div>
-    <div class="navSection">Tools</div>
-    <button class="navBtn" id="reloadBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12a9 9 0 0 0-15.5-6.2"/><path d="M3 12a9 9 0 0 0 15.5 6.2"/><path d="M18.5 2.5v3.3h-3.3"/><path d="M5.5 21.5v-3.3h3.3"/></svg><span>Reload Data</span></button>
-    <button class="navBtn" id="exportBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 15v4h14v-4"/></svg><span>Export Excel</span></button>
   </aside>
 
   <main class="main">
@@ -1057,7 +1057,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         <div class="panel seriesDetailPanel">
           <div class="panelHead">
             <div>
-              <h2 class="panelTitle">Series Detail  -  <span id="selectedLabel">All Tickets by Caravans</span></h2>
+              <h2 class="panelTitle">Series Detail  -  <span id="selectedLabel">All Classified Parts Tickets</span></h2>
+              <p class="panelDesc">Counts unique tickets with at least one classified part.</p>
             </div>
           </div>
 
@@ -1096,17 +1097,16 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         <div class="panel">
           <div class="panelHead">
             <div>
-              <h2 class="panelTitle">Top Failure Components  -  <span id="compLabel">By Tickets</span></h2>
-              <p class="panelDesc">Trend % compares the latest 3 complete months of tickets or cost, depending on the selected mode, with the previous 3 complete months. The current partial month is excluded.</p>
+              <h2 class="panelTitle">Top 10 Failure Components  -  <span id="compLabel">By Tickets</span></h2>
+              <p class="panelDesc">Counts classified parts tickets only. Trend % compares the latest 3 complete ticket months with the previous 3 complete months. The current partial month is excluded.</p>
             </div>
-            <div class="compModeRow" role="tablist" aria-label="Sort mode">
-              <button class="scopeBtn active" type="button" data-comp-mode="parts">Tickets</button>
-              <button class="scopeBtn" type="button" data-comp-mode="cost">Cost</button>
+            <div class="compBasisSwitch" role="tablist" aria-label="Component date basis">
+              <button class="scopeBtn active" type="button" data-parts-date-basis="CREATED">Created On</button>
+              <button class="scopeBtn" type="button" data-parts-date-basis="APPROVED">Approved Date</button>
             </div>
-            <div class="compApprovedBadge" title="All component trends are bucketed by Ticket Approved Date">Approved Date</div>
-            <button class="compDetailExportBtn" id="compDetailExportBtn" type="button" title="Export ticket and parts line detail for the current filters">
+            <button class="compDetailExportBtn" id="compDetailExportBtn" type="button" title="Export all 2026 tickets as CSV using the selected date basis">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg>
-              <span>Export Detail</span>
+              <span>Export CSV</span>
             </button>
           </div>
           <div class="compSplit">
@@ -1216,7 +1216,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const PARTS_FAILURE_LIGHT_CACHE = "outputs/analysis_parts_failure_light.json";
   const PARTS_FAILURE_LIGHT_JS = "outputs/analysis_parts_failure_light.js";
   const PARTS_DERIVED_CACHE = "outputs/analysis_parts_derived_cache.json";
-  const PARTS_PRECOMPUTED_ASSET_VERSION = "20260810-light-summary-v1";
+  const PARTS_PRECOMPUTED_ASSET_VERSION = "20260814-pgi-month-batch-v1";
   // Meta lives at a stable path and points at the current dated CSV folder.
   // We read meta first so the CSV path stays fresh across fetch-driven rebuilds.
   const PARTS_CLASSIFIED_META = "outputs/parts_classified_meta.json";
@@ -1271,6 +1271,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     partsFailureSummary: null,
     warrantyMonthlyCounts: null,
     partsClassifiedRows: null,
+    partsClassifiedLoadingForChips: false,
     partsClassifiedTicketMap: null, // Map<TicketID, [classifiedRow,...]>
     partsIncludedTicketIds: null,   // Set<TicketID> aligned to outputs/analysis_parts_failure_summary.json
     partsTicketSeriesById: null,    // Map<TicketID, normalized series code>
@@ -1281,18 +1282,24 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     repairerSort: { key:"rejectionRate", dir:"desc" },
     repairers: [],
     seriesRej: [],
-    compMode: "parts",              // parts | cost
+    compMode: "tickets",
     partsMonth: PARTS_MONTH_CURRENT_YEAR,
     partsDateBasis: "APPROVED",
+    chassisGoodReceiveMap: {},
+    salesOrderGoodReceiveMap: {},
     compPreviewKey: "",
     compPreviewName: "",
     compPreviewCat: "",
     analysisCacheVersion: "",
     partsDerivedCache: null,
+    ticketTimingRowsCache: null,
+    legacyTicketRowsCache: null,
+    repairerAnalysisDetailsCache: null,
+    notInPartsStatsCache: new Map(),
   };
 
   const ANALYSIS_TIMEOUT_MS = 15000;
-  const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v16-unique-component-tickets";
+  const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v26-pgi-month-batch";
   const ANALYSIS_PAGE_CACHE_KEY = `analysis:parts-failure-components:${ANALYSIS_PAGE_CACHE_SCHEMA}`;
   const ANALYSIS_PAGE_CACHE_ENABLED = true;
   function mapEntries(map){ return map instanceof Map ? Array.from(map.entries()) : []; }
@@ -1314,6 +1321,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       "Posting Date":clean(row["Posting Date"]||row.PostingDate),
       "Date of Purchase":clean(row["Date of Purchase"]||row.DateOfPurchase),
       "PGI Date":clean(pgiDateValue(row)),
+      "Good Receive Date":clean(goodReceiveDateValue(row)),
       "Matched Chassis":normalizedChassis(row),
       "Serial ID":clean(row["Serial ID"]||row.SerialID||row.SerialId||row.serialId||row["Ticket Serial ID"]||row.ticketSerialId),
       "Chassis Number":clean(row["Chassis Number"]||row.ChassisNumber||row.chassisNumber||row["Ticket Chassis Number"]||row.ticketChassisNumber),
@@ -1394,6 +1402,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       vehicleBaseSummary:compactVehicleBaseSummary(state.vehicleBaseSummary),
       chassisPgiMap:{},
       salesOrderPgiMap:{},
+      chassisGoodReceiveMap:{},
+      salesOrderGoodReceiveMap:{},
       chassisSeriesMap:{},
       salesOrderSeriesMap:{},
       ticketCostRows:[],
@@ -1446,6 +1456,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       vehicleBaseSummary:cached.vehicleBaseSummary||null,
       chassisPgiMap:cached.chassisPgiMap||{},
       salesOrderPgiMap:cached.salesOrderPgiMap||{},
+      chassisGoodReceiveMap:cached.chassisGoodReceiveMap||{},
+      salesOrderGoodReceiveMap:cached.salesOrderGoodReceiveMap||{},
       chassisSeriesMap:cached.chassisSeriesMap||{},
       salesOrderSeriesMap:cached.salesOrderSeriesMap||{},
       ticketCostRows:cached.ticketCostRows||[],
@@ -1472,12 +1484,11 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     });
     const overlay=$("loadingOverlay");
     if(overlay)overlay.classList.add("show");
-    if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(version,"cached");
-    const refreshSummary=state.partsFailureSummary
-      ? Promise.resolve()
-      : loadPartsFailureSummary();
-    refreshSummary.then(async ()=>{
-      await loadPartsDerivedCache();
+    const refreshPartsCaches = Promise.all([
+      loadPartsFailureSummary(),
+      loadPartsDerivedCache()
+    ]);
+    refreshPartsCaches.then(()=>{
       render();
       if(overlay)overlay.classList.remove("show");
       scheduleAnalysisPageSave(version);
@@ -1630,6 +1641,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
   function pgiDateValue(row){
     return clean(row["PGI Date"] || row.PGIDate || row.pgiDate || row["Vehicle Delivery Date"] || row.vehicleDeliveryDate);
+  }
+  function goodReceiveDateValue(row){
+    return clean(
+      row["Good Receive Date"] || row.GoodReceiveDate || row.goodReceiveDate ||
+      row["Goods Receipt Date"] || row.GoodsReceiptDate || row.goodsReceiptDate ||
+      row["GR Date"] || row.GRDate || row.grDate
+    );
   }
   function hasWorkbookTicketTimingShape(row){
     return !!(matchedVehicleKeyValue(row) || matchedChassisValue(row) || pgiDateValue(row));
@@ -1827,6 +1845,24 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     return { date:null, source:"missing" };
   }
 
+  function getGoodReceiveDate(row){
+    const explicit = parseDmy(goodReceiveDateValue(row));
+    if (explicit) return { date:explicit, source:"goodReceive" };
+    for (const k of vehicleSeriesLookupKeys(row)) {
+      if (Object.prototype.hasOwnProperty.call(state.chassisGoodReceiveMap, k)) {
+        const d = parseDmy(state.chassisGoodReceiveMap[k]);
+        if (d) return { date:d, source:"goodReceive" };
+      }
+    }
+    for (const k of salesOrderLookupKeys(row)) {
+      if (Object.prototype.hasOwnProperty.call(state.salesOrderGoodReceiveMap, k)) {
+        const d = parseDmy(state.salesOrderGoodReceiveMap[k]);
+        if (d) return { date:d, source:"goodReceive" };
+      }
+    }
+    return { date:null, source:"missing" };
+  }
+
   function failureAgeDays(row){
     const created = parseDmy(row["Created On"] || row.CreatedOn);
     const delivery = getDeliveryDate(row);
@@ -1940,21 +1976,26 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   async function loadRepairerAnalysisDetails(){
+    if (Array.isArray(state.repairerAnalysisDetailsCache)) return state.repairerAnalysisDetailsCache;
     if (!IS_FILE_CONTEXT) {
       try {
         const r = await fetch(freshJsonUrl(REPAIRERS_ANALYSIS_JSON), { cache:"no-store" });
         if (r.ok) {
           const payload = await r.json();
-          if (Array.isArray(payload?.details)) return payload.details;
+          if (Array.isArray(payload?.details)) {
+            state.repairerAnalysisDetailsCache = payload.details;
+            return state.repairerAnalysisDetailsCache;
+          }
         }
       } catch (err) {
         console.warn("Repairers JSON load failed, using script fallback:", err);
       }
     }
     await ensureFallbackScript("REPAIRERS_2026_ANALYSIS", "outputs/repairers_2026/repairers_2026_data.js");
-    return Array.isArray(globalThis.REPAIRERS_2026_ANALYSIS?.details)
+    state.repairerAnalysisDetailsCache = Array.isArray(globalThis.REPAIRERS_2026_ANALYSIS?.details)
       ? globalThis.REPAIRERS_2026_ANALYSIS.details
       : [];
+    return state.repairerAnalysisDetailsCache;
   }
 
   function ticketValues(node){
@@ -2264,6 +2305,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const applyPayload = (payload, label) => {
       const pgiByChassis = (payload.pgiByChassis && typeof payload.pgiByChassis === "object") ? payload.pgiByChassis : {};
       const pgiBySalesOrder = (payload.pgiBySalesOrder && typeof payload.pgiBySalesOrder === "object") ? payload.pgiBySalesOrder : {};
+      const goodReceiveByChassis = (payload.goodReceiveByChassis && typeof payload.goodReceiveByChassis === "object") ? payload.goodReceiveByChassis : {};
+      const goodReceiveBySalesOrder = (payload.goodReceiveBySalesOrder && typeof payload.goodReceiveBySalesOrder === "object") ? payload.goodReceiveBySalesOrder : {};
       const seriesByChassis = (payload.seriesByChassis && typeof payload.seriesByChassis === "object") ? payload.seriesByChassis : {};
       const seriesBySalesOrder = (payload.seriesBySalesOrder && typeof payload.seriesBySalesOrder === "object") ? payload.seriesBySalesOrder : {};
       const salesBase =
@@ -2276,6 +2319,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       state.deliveredBaseBySeries = (payload.seriesBase && typeof payload.seriesBase === "object") ? payload.seriesBase : {};
       state.chassisPgiMap = pgiByChassis;
       state.salesOrderPgiMap = pgiBySalesOrder;
+      state.chassisGoodReceiveMap = goodReceiveByChassis;
+      state.salesOrderGoodReceiveMap = goodReceiveBySalesOrder;
       state.chassisSeriesMap = seriesByChassis;
       state.salesOrderSeriesMap = seriesBySalesOrder;
       console.log(`Vehicle base summary loaded from ${label}: ${payload.totalVehicles || 0} vehicles, ${Object.keys(state.chassisPgiMap).length} PGI dates, ${Object.keys(state.chassisSeriesMap).length} series keys`);
@@ -2653,13 +2698,11 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   function normalizeCompMode(mode){
-    if (mode === "cost") return "cost";
-    if (mode === "parts" || mode === "tickets") return "tickets";
     return "tickets";
   }
 
   function normalizePartsDateBasis(value){
-    return Object.prototype.hasOwnProperty.call(PARTS_DATE_BASIS, value) ? value : "APPROVED";
+    return Object.prototype.hasOwnProperty.call(PARTS_DATE_BASIS, value) ? value : "CREATED";
   }
 
   function partsDateBasis(){
@@ -2709,8 +2752,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   function partsMonthLabel(monthKey){
-    if (monthKey === PARTS_MONTH_CURRENT_YEAR) return `${currentPartsYear()} All Months Parts`;
-    if (/^\d{4}$/.test(String(monthKey || ""))) return `${monthKey} All Months Parts`;
+    if (monthKey === PARTS_MONTH_CURRENT_YEAR) return `${currentPartsYear()} All Months`;
+    if (/^\d{4}$/.test(String(monthKey || ""))) return `${monthKey} All Months`;
     if (monthKey === "ALL") return "All Months";
     const m = String(monthKey || "").match(/^(\d{4})-(\d{2})$/);
     if (!m) return "Latest month";
@@ -2742,7 +2785,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       tickets += Number(bucket.tickets) || 0;
       lineItems += Number(bucket.lineItems) || 0;
       cost += Number(bucket.cost) || 0;
-      (Array.isArray(bucket.topComponents) ? bucket.topComponents : []).forEach(row => {
+      (componentRowsFromBucket(bucket)).forEach(row => {
         const component = clean(row.component) || "Other";
         const category = clean(row.category) || "Other";
         const key = `${component.toLowerCase()}||${category.toLowerCase()}`;
@@ -2761,6 +2804,34 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       costShare:cost ? row.cost / cost : 0,
     })).sort((a,b) => componentTicketCount(b) - componentTicketCount(a) || componentLineItems(b) - componentLineItems(a) || (Number(b.cost)||0) - (Number(a.cost)||0) || String(a.component).localeCompare(String(b.component))).slice(0, 10);
     return { tickets, lineItems, cost:Number(cost.toFixed(3)), topComponents };
+  }
+
+  function componentRowsFromBucket(bucket){
+    if (!bucket || typeof bucket !== "object") return [];
+    const rows = Array.isArray(bucket.topComponentsByTickets)
+      ? bucket.topComponentsByTickets
+      : (Array.isArray(bucket.topComponents) ? bucket.topComponents : []);
+    return rows.map((row, index) => ({ ...row, globalRank:Number(row.globalRank) || index + 1 }));
+  }
+
+  function topComponentCoveragePayload(scope = componentScope(), month = selectedPartsMonth()){
+    const bucket = selectedMonthSummaryPayload(scope, month);
+    const coverage = bucket && typeof bucket.topComponentCoverage === "object" ? bucket.topComponentCoverage : null;
+    return coverage ? coverage.tickets : null;
+  }
+
+  function topComponentCoverageCount(series = state.selected, scope = componentScope(), month = selectedPartsMonth()){
+    const payload = topComponentCoveragePayload(scope, month);
+    const selected = normalizeSeriesCode(series || "ALL");
+    if (selected !== "ALL") {
+      const seriesMap = payload && typeof payload.series === "object" ? payload.series : {};
+      const direct = seriesMap[selected] || Object.entries(seriesMap)
+        .find(([key]) => normalizeSeriesCode(key) === selected)?.[1];
+      const seriesCount = Number(direct?.tickets);
+      return Number.isFinite(seriesCount) ? seriesCount : null;
+    }
+    const count = Number(payload?.tickets);
+    return Number.isFinite(count) ? count : null;
   }
 
   function summarySeriesBucket(bucket, series){
@@ -2843,7 +2914,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   function warrantyMonthlyCountMap(basis = partsDateBasis()){
     const counts = state.warrantyMonthlyCounts;
     if (!counts || typeof counts !== "object") return null;
-    return counts.approved;
+    return normalizePartsDateBasis(basis) === "APPROVED" ? counts.approved : counts.created;
   }
 
   function warrantyTicketCountForMonth(month = selectedPartsMonth(), scope = componentScope(), basis = partsDateBasis()){
@@ -2891,29 +2962,24 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   function partsMonthSelectionLabel(series = state.selected){
-    return normalizeSeriesCode(series) === "ALL" ? "All Months Parts" : `${normalizeSeriesCode(series)} Parts`;
+    return "All Months";
   }
 
   function partsMonthTitleText(){
     const month = selectedPartsMonth();
-    const parts = cachedPartsLineCount(state.selected, componentScope(), month);
     const basisLabel = partsDateBasisLabel();
     const selectionLabel = partsMonthSelectionLabel();
     if (month === PARTS_MONTH_CURRENT_YEAR) {
-      return parts == null
-        ? `${currentPartsYear()} ${selectionLabel} - ${basisLabel}`
-        : `${currentPartsYear()} ${selectionLabel} - ${formatPartsLineCount(parts)} - ${basisLabel}`;
+      return `${currentPartsYear()} ${selectionLabel} - ${basisLabel}`;
     }
     if (/^\d{4}$/.test(String(month || ""))) {
-      return parts == null
-        ? `${month} ${selectionLabel} - ${basisLabel}`
-        : `${month} ${selectionLabel} - ${formatPartsLineCount(parts)} - ${basisLabel}`;
+      return `${month} ${selectionLabel} - ${basisLabel}`;
     }
     if (month === "ALL") {
-      return parts == null ? `All Months - ${basisLabel}` : `All Months - ${formatPartsLineCount(parts)} - ${basisLabel}`;
+      return `All Months - ${basisLabel}`;
     }
     const bucket = partsMonthBuckets().find(item => item.key === month);
-    if (bucket) return `${bucket.label} - ${formatPartsLineCount(parts ?? bucket.lineItems ?? bucket.tickets)} - ${basisLabel}`;
+    if (bucket) return `${bucket.label} - ${basisLabel}`;
     return partsMonthLabel(month);
   }
 
@@ -3055,6 +3121,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         cost: scope === "ALL"
           ? Number(monthBucket?.cost) || 0
           : Number(monthBucket?.scopeCost?.[scope]) || 0,
+        failureAge: (monthBucket?.failureAge || {})[scope] || null,
       }));
     } else {
       const scopePayload = partsMonthScopePayload(scope);
@@ -3078,9 +3145,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           shortLabel:label.replace(/\s+\d{4}$/,""),
           year:parts ? parts.y : "",
           tickets:Number(rawTickets) || 0,
-          cost:Number(rawCost) || 0,
-          lineItems:Number(rawLineItems) || Number(rawTickets) || 0,
-        };
+      cost:Number(rawCost) || 0,
+      lineItems:Number(rawLineItems) || Number(rawTickets) || 0,
+      failureAge: point.failureAge || null,
+    };
       })
       .filter(point => point.month && selectedTrendMonthMatches(point.month))
       .sort((a,b) => a.month.localeCompare(b.month))
@@ -3099,11 +3167,12 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       tickets: scope === "ALL" ? Number(item?.tickets) || 0 : Number(item?.scope?.[scope]) || 0,
       lineItems: scope === "ALL" ? Number(item?.lineItems) || 0 : null,
       cost: scope === "ALL" ? Number(item?.cost) || 0 : Number(item?.scopeCost?.[scope]) || 0,
+      failureAge: (item?.failureAge || {})[scope] || null,
     }));
   }
 
   function componentPanelModeLabel(mode = state.compMode){
-    return normalizeCompMode(mode) === "cost" ? "By Cost" : "By Tickets";
+    return "By Tickets";
   }
 
   function componentPanelLabel(){
@@ -3112,29 +3181,64 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   function componentTrendMetricKey(){
-    return normalizeCompMode(state.compMode) === "cost" ? "cost" : "tickets";
+    return "tickets";
   }
 
   function componentTrendMetricValue(row, mode = state.compMode){
-    return normalizeCompMode(mode) === "cost"
-      ? Number(row?.cost) || 0
-      : componentTicketCount(row);
+    return componentTicketCount(row);
   }
 
   function componentTrendMetricLabel(value, mode = state.compMode){
     const numeric = Number(value) || 0;
-    return normalizeCompMode(mode) === "cost" ? moneyFmt.format(numeric) : numFmt.format(numeric);
+    return numFmt.format(numeric);
   }
 
   function componentTrendAxisLabel(value, mode = state.compMode){
     const numeric = Number(value) || 0;
-    return normalizeCompMode(mode) === "cost" ? moneyFmt.format(numeric) : numFmt.format(numeric);
+    return numFmt.format(numeric);
+  }
+
+  function failureAgeSummaryForRow(row){
+    return row && typeof row.failureAge === "object" ? row.failureAge : null;
+  }
+
+  function formatFailureDays(value){
+    const n = Number(value);
+    return Number.isFinite(n) ? `${numFmt.format(Math.round(n))} d` : "-";
+  }
+
+  function formatPgiBatchMonth(monthKey){
+    const match = String(monthKey || "").match(/^(\d{4})-(\d{2})$/);
+    if (!match) return clean(monthKey);
+    const d = new Date(Number(match[1]), Number(match[2]) - 1, 1);
+    return d.toLocaleString("en-AU", { month:"short", year:"numeric" });
+  }
+
+  function topShipmentBatch(summary){
+    const top = Array.isArray(summary?.topPgiMonths) ? summary.topPgiMonths[0] : null;
+    if (top) return {
+      month: clean(top.month),
+      label: formatPgiBatchMonth(top.month),
+      tickets: Number(top.tickets) || 0,
+      share: Number(top.share) || 0,
+    };
+    return null;
+  }
+
+  function topPgiDateLabel(summary){
+    const top = topShipmentBatch(summary);
+    if (!top) return "-";
+    return `${top.label} (${numFmt.format(Number(top.tickets) || 0)}, ${pctValue(Number(top.share) || 0) || "0.0%"})`;
   }
 
   function seriesChipCount(row){
     const partsTickets = cachedPartsTicketCount(row.series);
     if (partsTickets != null) return partsTickets;
     return Number(row.tickets) || 0;
+  }
+
+  function topComponentUnionTicketCount(series = "ALL", limit = 10){
+    return topComponentCoverageCount(series, componentScope(), selectedPartsMonth());
   }
 
   function availableSeriesChipKeys(){
@@ -3144,34 +3248,35 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       if (!series || series === "ALL" || !isTrackedSeries(series) || isExcludedSeries(series)) return;
       keys.add(series);
     };
-    const monthBucket = selectedMonthSummaryPayload(componentScope(), selectedPartsMonth());
-    const seriesMap = monthBucket && typeof monthBucket.series === "object"
-      ? monthBucket.series
-      : (state.partsFailureSummary && typeof state.partsFailureSummary.series === "object" ? state.partsFailureSummary.series : {});
+    const coverage = topComponentCoveragePayload(componentScope(), selectedPartsMonth());
+    const seriesMap = coverage && typeof coverage.series === "object" ? coverage.series : {};
     Object.keys(seriesMap || {}).forEach(addSeries);
-    (Array.isArray(state.summary) ? state.summary : []).forEach(row => addSeries(row && row.series));
-    addSeries(state.selected);
     return Array.from(keys).sort((a,b) => a.localeCompare(b));
   }
 
   function renderChips(){
     const month = selectedPartsMonth();
-    const totalPartsTickets = cachedPartsTicketCount("ALL", componentScope(), month)
-      ?? state.summary.reduce((sum, item) => sum + (Number(item.tickets) || 0), 0);
+    const totalPartsTickets = topComponentUnionTicketCount("ALL", 10);
     const seriesKeys = availableSeriesChipKeys();
-    const options = [{ series:"ALL", label:"All Tickets by Caravans", count:totalPartsTickets }]
+    if (state.selected !== "ALL" && !seriesKeys.includes(normalizeSeriesCode(state.selected))) {
+      state.selected = "ALL";
+    }
+    const partsTicketTotal = cachedPartsTicketCount(state.selected, componentScope(), month)
+      ?? summarySeriesBucket(selectedMonthSummaryPayload(componentScope(), month), state.selected)?.tickets
+      ?? 0;
+    const options = [{ series:"ALL", label:"Top 10 tickets QTY", count:totalPartsTickets }]
       .concat(seriesKeys.map(series => ({
         series,
-        label:`${series} Tickets`,
-        count:cachedPartsTicketCount(series, componentScope(), month)
+        label:series,
+        count:topComponentUnionTicketCount(series, 10)
       })));
-    const selectHtml = `<select class="seriesSelect" data-series-select aria-label="Parts failure tickets by caravan model" title="Parts failure tickets by caravan model">
+    const selectHtml = `<span class="seriesSelectWrap"><select class="seriesSelect" data-series-select aria-label="Top 10 component tickets by caravan model" title="Unique tickets in the current Top 10 components, split by caravan model">
       ${options.map(option => {
         const selected = state.selected === option.series ? " selected" : "";
-        const count = option.count == null ? "..." : numFmt.format(option.count);
-        return `<option value="${esc(option.series)}"${selected}>${esc(option.label)} (${count})</option>`;
+        const count = option.count == null ? "" : ` (${numFmt.format(option.count)})`;
+        return `<option value="${esc(option.series)}"${selected}>${esc(option.label)}${count}</option>`;
       }).join("")}
-    </select>`;
+    </select><span class="partsTicketBadge">All Tickets QTY with Parts <b>${numFmt.format(Number(partsTicketTotal) || 0)}</b></span></span>`;
     ["seriesChips","stickySeriesChips","timingSeriesChips"].forEach(id => {
       const el = $(id);
       if (el) el.innerHTML = selectHtml;
@@ -3197,25 +3302,17 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const selectedYear = selectedMonth === PARTS_MONTH_CURRENT_YEAR
       ? String(fallbackYear)
       : (/^\d{4}$/.test(String(selectedMonth || "")) ? String(selectedMonth) : String(fallbackYear));
-    const selectedTotal = cachedPartsLineCount(state.selected, componentScope(), selectedYear)
-      ?? summarySeriesBucket(currentYearSummaryPayload(componentScope(), selectedYear), state.selected)?.lineItems
-      ?? summarySeriesBucket(currentYearSummaryPayload(componentScope(), selectedYear), state.selected)?.tickets
-      ?? 0;
     const selectionLabel = partsMonthSelectionLabel();
     target.innerHTML = `<details class="monthDropdown" data-month-dropdown>
-      <summary class="monthDropdownButton" title="${esc(selectedYear)} parts view by ${esc(partsDateBasisLabel())}">
-        <span>${esc(`${selectedYear} ${selectionLabel}`)}</span><small>${numFmt.format(Number(selectedTotal) || 0)}</small>
+      <summary class="monthDropdownButton" title="${esc(`${selectedYear} ${selectionLabel}`)}">
+        <span>${esc(`${selectedYear} ${selectionLabel}`)}</span>
       </summary>
       <div class="monthMenu">
         ${yearOptions.map(year => {
           const key = String(year);
-          const total = cachedPartsLineCount(state.selected, componentScope(), key)
-            ?? summarySeriesBucket(currentYearSummaryPayload(componentScope(), key), state.selected)?.lineItems
-            ?? summarySeriesBucket(currentYearSummaryPayload(componentScope(), key), state.selected)?.tickets
-            ?? 0;
           const active = key === selectedYear ? " active" : "";
           return `<button class="monthOption${active}" type="button" data-parts-month="${esc(key)}">
-            <span>${esc(`${key} ${selectionLabel}`)}</span><small>${numFmt.format(Number(total) || 0)}</small>
+            <span>${esc(`${key} ${selectionLabel}`)}</span>
           </button>`;
         }).join("")}
       </div>
@@ -3371,7 +3468,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       });
       const ages = Array.from(firstAgeByVehicle.values()).filter(Number.isFinite);
       return {
-        series:"All Tickets by Caravans", tickets: totalTickets, vehicles: totalVehicles,
+        series:"All Classified Parts Tickets", tickets: totalTickets, vehicles: totalVehicles,
         cost: totalCost,
         avgRepairs: totalVehicles ? totalRepairedTickets/totalVehicles : null,
         costPerVehicle: totalVehicles ? totalCost/totalVehicles : null,
@@ -3384,11 +3481,11 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   function renderDetail(){
     const s = selectedSummaryData();
-    const label = state.selected==="ALL" ? "All Tickets by Caravans" : state.selected;
+    const label = state.selected==="ALL" ? "All Classified Parts Tickets" : state.selected;
     $("selectedLabel").textContent = label;
     $("compLabel").textContent = componentPanelLabel();
     const compTitle = $("compLabel")?.closest("h2");
-    if (compTitle && compTitle.firstChild) compTitle.firstChild.nodeValue = "Top Failure Components - ";
+    if (compTitle && compTitle.firstChild) compTitle.firstChild.nodeValue = "Top 10 Failure Components - ";
     if (!s) {
       ["dVehicles","dTickets","dRate","dAvg","dCost","dCostVeh"].forEach(id => $(id).textContent = "-");
       $("timingWrap").innerHTML = "";
@@ -3414,11 +3511,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const src = s.timingSources || {};
     const timingLabels = ["0 - 30 days","31 - 90 days","91 - 180 days","180+ days"];
     $("timingTotal").textContent = total
-      ? `${numFmt.format(total)} dated  -  ${numFmt.format(src.pgi||0)} PGI matched`
-      : "no PGI-dated tickets";
-    $("timingTotal").textContent = total
-      ? `${numFmt.format(total)} vehicles dated - ${numFmt.format(src.pgi||0)} PGI matched`
-      : "no PGI-dated vehicles";
+      ? `${numFmt.format(total)} dated vehicles`
+      : "no dated vehicles";
     const labels = ["0 - 30 days","31 - 90 days","91 - 180 days","180+ days"];
     const classes = ["b0","b1","b2","b3"];
     const max = Math.max(...buckets,1);
@@ -3455,17 +3549,16 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       return;
     }
 
-    // Sort by chosen mode
     state.compMode = normalizeCompMode(state.compMode);
-    if (state.compMode === "cost") {
-      rows.sort((a,b) => (Number(b.cost)||0) - (Number(a.cost)||0));
-    } else {
-      rows.sort((a,b) => componentDisplayTicketCount(b) - componentDisplayTicketCount(a) || componentLineItems(b) - componentLineItems(a));
-    }
+    rows.sort((a,b) => {
+      const ar = Number(a.globalRank);
+      const br = Number(b.globalRank);
+      if (Number.isFinite(ar) && Number.isFinite(br) && ar !== br) return ar - br;
+      return componentDisplayTicketCount(b) - componentDisplayTicketCount(a) || componentLineItems(b) - componentLineItems(a);
+    });
     rows = rows.slice(0, 10).map(normalizeComponentPreviewRow);
 
-    const modeIsCost = state.compMode === "cost";
-    const primaryValues = rows.map(r => modeIsCost ? (Number(r.cost)||0) : componentDisplayTicketCount(r));
+    const primaryValues = rows.map(r => componentDisplayTicketCount(r));
     const maxPrimary = Math.max(...primaryValues, 1);
     const activeRow = rows.find(r => r.key === state.compPreviewKey) || rows[0];
     if (activeRow) {
@@ -3483,14 +3576,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       const width = Math.max(4, (primary / maxPrimary) * 100);
       const name = r.component || "Other";
       const cat = r.category || "Other";
-      const share = modeIsCost ? (Number(r.costShare) || 0) : (Number(r.ticketShare) || 0);
+      const share = Number(r.ticketShare) || 0;
       const dominant = share >= 0.20 ? "dominant" : "";
-      const primaryLabel = modeIsCost
-        ? moneyFmt.format(cost)
-        : formatTicketCount(tickets);
-      const secondaryLabel = modeIsCost
-        ? formatTicketCount(tickets)
-        : moneyFmt.format(cost);
+      const primaryLabel = formatTicketCount(tickets);
+      const secondaryLabel = moneyFmt.format(cost);
       const activeCls = r.key === state.compPreviewKey ? " active" : "";
       return `<div class="compRow clickable ${dominant}${activeCls}" data-comp-key="${esc(r.key)}" data-comp-name="${esc(name)}" data-comp-cat="${esc(cat)}" data-comp-lines="${lineItems}" data-comp-tickets="${tickets}" data-comp-cost="${cost}" data-comp-share="${share}">
         <div>
@@ -3509,10 +3598,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
     target.innerHTML = rowsHtml;
 
-    // Update mode button active state
-    document.querySelectorAll("[data-comp-mode]").forEach(btn => {
-      btn.classList.toggle("active", btn.getAttribute("data-comp-mode") === state.compMode);
-    });
     renderDateBasisButtons();
 
     hideCompTooltip();
@@ -3535,6 +3620,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       ticketShare: Number(row.ticketShare) || 0,
       lineShare: Number(row.lineShare ?? row.partsLineShare) || 0,
       costShare: Number(row.costShare) || 0,
+      globalRank: Number(row.globalRank) || 0,
+      series: row.series && typeof row.series === "object" ? row.series : {},
     };
   }
 
@@ -3605,7 +3692,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   function sparklineSvg(rows){
     const mode = state.compMode;
-    const isCostMode = componentTrendMetricKey(mode) === "cost";
     const values = rows.map(row => componentTrendMetricValue(row, mode));
     const width = 220, height = 206, padLeft = 32, padRight = 10, padTop = 24, padBottom = 30;
     const chartRight = width - padRight;
@@ -3628,7 +3714,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       return { x, y, width:barWidth, height:barHeight, value };
     });
     const maxIndex = values.reduce((best, value, index) => value >= values[best] ? index : best, 0);
-    const labelIndexes = Array.from(new Set([maxIndex, values.length - 1])).sort((a, b) => a - b);
+    const labelIndexes = Array.from(new Set([maxIndex, values[values.length - 1] > 0 ? values.length - 1 : -1].filter(index => index >= 0))).sort((a, b) => a - b);
     const callouts = labelIndexes.map(index => {
       const bar = barRects[index];
       const x = bar.x + bar.width / 2;
@@ -3643,12 +3729,18 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         <text class="compTrendCalloutText" x="${(boxX + boxW / 2).toFixed(1)}" y="${(boxY + 12).toFixed(1)}" text-anchor="middle">${label}</text>
       </g>`;
     }).join("");
-    const mid = Math.round(max / 2);
-    const yTicks = [
+    const tickCandidates = [
       { value:max, y:padTop, anchor:"start" },
-      { value:mid, y:bottom - chartHeight / 2, anchor:"middle" },
+      { value:Math.round(max / 2), y:bottom - chartHeight / 2, anchor:"middle" },
       { value:0, y:bottom, anchor:"end" },
     ];
+    const seenTickLabels = new Set();
+    const yTicks = tickCandidates.filter(tick => {
+      const label = componentTrendAxisLabel(tick.value, mode);
+      if (seenTickLabels.has(label)) return false;
+      seenTickLabels.add(label);
+      return true;
+    });
     const yAxis = yTicks.map(tick => `
       <line class="compTrendTick" x1="${padLeft}" y1="${tick.y.toFixed(1)}" x2="${chartRight}" y2="${tick.y.toFixed(1)}"></line>
       <text class="compTrendTickLabel" x="${padLeft - 5}" y="${(tick.y + 3.5).toFixed(1)}" text-anchor="end">${componentTrendAxisLabel(tick.value, mode)}</text>
@@ -3657,17 +3749,24 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const last = rows[rows.length - 1];
     const xLabels = `<text class="compTrendTickLabel" x="${padLeft}" y="${height - 4}" text-anchor="start">${esc(compactTrendLabel(first))}</text>
       <text class="compTrendTickLabel" x="${chartRight}" y="${height - 4}" text-anchor="end">${esc(compactTrendLabel(last))}</text>`;
-    const bars = barRects.map(bar => `<rect class="compTrendBarFill${isCostMode ? " cost" : ""}" x="${bar.x.toFixed(1)}" y="${bar.y.toFixed(1)}" width="${bar.width.toFixed(1)}" height="${bar.height.toFixed(1)}" rx="4"></rect>`).join("");
+    const bars = barRects.map(bar => `<rect class="compTrendBarFill" x="${bar.x.toFixed(1)}" y="${bar.y.toFixed(1)}" width="${bar.width.toFixed(1)}" height="${bar.height.toFixed(1)}" rx="4"></rect>`).join("");
     // Full-height transparent columns so every month is hoverable, not just the bar itself.
     const metricKey = componentTrendMetricKey(mode);
     const totalMetric = rows.reduce((sum, row) => sum + componentTrendMetricValue(row, mode), 0);
     const hits = rows.map((row, index) => {
       const hitX = padLeft + index * slot;
       const share = totalMetric ? componentTrendMetricValue(row, mode) / totalMetric : 0;
+      const failure = failureAgeSummaryForRow(row);
+      const topPgi = topShipmentBatch(failure);
       return `<rect class="compTrendHit" x="${hitX.toFixed(1)}" y="${padTop}" width="${slot.toFixed(1)}" height="${(bottom - padTop).toFixed(1)}"`
         + ` data-tm-label="${esc(row.label || compactTrendLabel(row))}"`
         + ` data-tm-tickets="${Number(row.tickets) || 0}"`
         + ` data-tm-cost="${Number(row.cost) || 0}"`
+        + ` data-tm-avg-failure-days="${failure?.avgFailureDays ?? ""}"`
+        + ` data-tm-pgi-matched="${Number(failure?.pgiMatchedTickets) || 0}"`
+        + ` data-tm-top-pgi-month="${esc(topPgi?.label || "")}"`
+        + ` data-tm-top-pgi-tickets="${Number(topPgi?.tickets) || 0}"`
+        + ` data-tm-top-pgi-share="${Number(topPgi?.share) || 0}"`
         + ` data-tm-mode="${esc(metricKey)}"`
         + ` data-tm-share="${share}"></rect>`;
     }).join("");
@@ -3728,11 +3827,23 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const compName = nameEl ? nameEl.textContent.replace(/^\s*\d+\.\s*/, "") : "";
     const tickets = Number(hit.getAttribute("data-tm-tickets")) || 0;
     const cost = Number(hit.getAttribute("data-tm-cost")) || 0;
+    const avgFailureDays = hit.getAttribute("data-tm-avg-failure-days");
+    const topPgiMonth = hit.getAttribute("data-tm-top-pgi-month") || "";
+    const topPgiTickets = Number(hit.getAttribute("data-tm-top-pgi-tickets")) || 0;
+    const topPgiShare = Number(hit.getAttribute("data-tm-top-pgi-share")) || 0;
+    const timingRows = [];
+    if (avgFailureDays !== "") {
+      timingRows.push(`<div class="compTrendTipRow"><span>Avg Time to Repair Claim</span><b>${formatFailureDays(avgFailureDays)}</b></div>`);
+    }
+    if (topPgiMonth) {
+      timingRows.push(`<div class="compTrendTipRow"><span>Main Shipment Batch</span><b>${esc(topPgiMonth)} (${numFmt.format(topPgiTickets)}, ${pctValue(topPgiShare) || "0.0%"})</b></div>`);
+    }
     el.innerHTML = `
       <div class="compTrendTipTitle">${esc(hit.getAttribute("data-tm-label") || "")}</div>
       <div class="compTrendTipSub">${esc(compName)}</div>
       <div class="compTrendTipRow"><span>Tickets</span><b>${numFmt.format(tickets)}</b></div>
       <div class="compTrendTipRow"><span>Cost</span><b>${moneyFmt.format(cost)}</b></div>
+      ${timingRows.length ? timingRows.join("") : `<div class="compTrendTipFoot">Shipment timing unavailable</div>`}
     `;
     positionCompTrendTip(el, ev);
   }
@@ -3768,7 +3879,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         const trendRows = componentTrendRows(item.component, item.category);
         const values = trendRows.map(row => componentTrendMetricValue(row));
         const displayTickets = componentDisplayTicketCount(item);
-        const latest = values.length ? values[values.length - 1] : (state.compMode === "cost" ? (Number(item.cost) || 0) : displayTickets);
         const rate = componentTrendRate(trendRows);
         const rateClass = rate == null ? "" : rate > 0.5 ? " up" : rate < -0.5 ? " down" : "";
         const rateText = rate == null ? "n/a" : `${rate >= 0 ? "+" : ""}${rate.toFixed(1)}%`;
@@ -3776,7 +3886,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         const last = trendRows[trendRows.length - 1];
         const active = item.key === state.compPreviewKey ? " active" : "";
         const metaLabel = `${esc(item.category)} - ${formatTicketCount(displayTickets)}`;
-        const trendMetricLabel = normalizeCompMode(state.compMode) === "cost" ? "cost" : "tickets";
+        const trendMetricLabel = "tickets";
         const rateTip = rate == null
           ? `Trend % needs at least 6 complete months of ${trendMetricLabel} data`
           : `Trend: average ${trendMetricLabel} of the latest 3 complete months vs the previous 3 complete months. Current partial month excluded. (${rate >= 0 ? "+" : ""}${rate.toFixed(1)}%)`;
@@ -4067,6 +4177,40 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     });
   }
 
+  function componentSeriesStats(row, series){
+    const selected = normalizeSeriesCode(series || "ALL");
+    if (selected === "ALL") {
+      return {
+        tickets: componentTicketCount(row),
+        lineItems: componentLineItems(row),
+        cost: Number(row?.cost) || 0,
+      };
+    }
+    const seriesMap = row && typeof row.series === "object" ? row.series : {};
+    const direct = seriesMap[selected] || Object.entries(seriesMap)
+      .find(([key]) => normalizeSeriesCode(key) === selected)?.[1];
+    return {
+      tickets: Number(direct?.tickets) || 0,
+      lineItems: Number(direct?.lineItems) || 0,
+      cost: Number(direct?.cost) || 0,
+    };
+  }
+
+  function componentRowsForSeriesWithinTopComponents(bucket, selected){
+    const series = normalizeSeriesCode(selected || "ALL");
+    const rows = componentRowsFromBucket(bucket);
+    if (series === "ALL") return rows;
+    return rows.map(row => {
+      const stats = componentSeriesStats(row, series);
+      return {
+        ...row,
+        tickets: stats.tickets,
+        lineItems: stats.lineItems || stats.tickets,
+        cost: stats.cost,
+      };
+    }).filter(row => componentTicketCount(row) > 0);
+  }
+
   function componentRowsForSelection(summary, selected){
     const applyClassifiedStats = rows => {
       if (!Array.isArray(rows)) return [];
@@ -4089,21 +4233,17 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const month = selectedPartsMonth();
     const scopedBucket = selectedMonthSummaryPayload(componentScope(), month);
     if (scopedBucket) {
-      const bucket = summarySeriesBucket(scopedBucket, selected);
-      return applyClassifiedStats(Array.isArray(bucket?.topComponents) ? bucket.topComponents.slice() : []);
+      return applyClassifiedStats(componentRowsForSeriesWithinTopComponents(scopedBucket, selected));
     }
     if (selected === "ALL") {
-      return applyClassifiedStats(Array.isArray(summary.all?.topComponents) ? summary.all.topComponents.slice() : []);
+      return applyClassifiedStats(componentRowsFromBucket(summary.all));
     }
+    if (summary.all) return applyClassifiedStats(componentRowsForSeriesWithinTopComponents(summary.all, selected));
     const seriesMap = summary.series || {};
-    const direct = seriesMap[selected];
-    if (direct && Array.isArray(direct.topComponents)) {
-      return applyClassifiedStats(direct.topComponents.slice());
-    }
     const keys = Object.keys(seriesMap).filter(k => normalizeSeriesCode(k) === selected && !isExcludedSeries(k));
     const grouped = new Map();
     keys.forEach(k => {
-      const rows = Array.isArray(seriesMap[k]?.topComponents) ? seriesMap[k].topComponents : [];
+      const rows = componentRowsFromBucket(seriesMap[k]);
       rows.forEach(row => {
         const name = row.component || "Other";
         const cat = row.category || "Other";
@@ -4123,6 +4263,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const bucket = getDerivedSeriesBucket(compKey, partsDateBasis(), state.selected);
     if (bucket) {
       const monthSelection = selectedPartsMonth();
+      const scope = componentScope();
       let total = 0;
       let bucketMaterialQty = 0;
       let pre = 0;
@@ -4131,15 +4272,74 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       const monthEntries = bucket.months instanceof Map ? bucket.months.entries() : Object.entries(bucket.months || {});
       for (const [monthKey, monthBucket] of monthEntries) {
         if (!partsMonthSelectionMatchesKey(monthKey, monthSelection)) continue;
-        total += Number(monthBucket.tickets) || 0;
+        const preCount = Number(monthBucket.scope?.PRE) || 0;
+        const fieldCount = Number(monthBucket.scope?.FIELD) || 0;
+        const otherCount = Number(monthBucket.scope?.OTHER) || 0;
+        total += scope === "PRE"
+          ? preCount
+          : scope === "FIELD"
+            ? fieldCount
+            : scope === "OTHER"
+              ? otherCount
+              : Number(monthBucket.tickets) || 0;
         bucketMaterialQty += Number(monthBucket.materialQty) || 0;
-        pre += Number(monthBucket.scope?.PRE) || 0;
-        field += Number(monthBucket.scope?.FIELD) || 0;
-        other += Number(monthBucket.scope?.OTHER) || 0;
+        pre += preCount;
+        field += fieldCount;
+        other += otherCount;
       }
       return { total, materialQty: bucketMaterialQty, pre, field, other };
     }
     return { total:0, materialQty:0, pre:0, field:0, other:0 };
+  }
+
+  function componentFailureSummary(compKey, scope = componentScope()){
+    const bucket = getDerivedSeriesBucket(compKey, partsDateBasis(), state.selected);
+    if (!bucket) return null;
+    const scopeKey = scope === "PRE" || scope === "FIELD" || scope === "OTHER" ? scope : "ALL";
+    let weightedDays = 0;
+    let matchedTickets = 0;
+    const pgiMonthCounts = new Map();
+    const monthEntries = bucket.months instanceof Map ? bucket.months.entries() : Object.entries(bucket.months || {});
+    for (const [monthKey, monthBucket] of monthEntries) {
+      if (!partsMonthSelectionMatchesKey(monthKey, selectedPartsMonth())) continue;
+      const summary = (monthBucket?.failureAge || {})[scopeKey];
+      const matched = Number(summary?.pgiMatchedTickets) || 0;
+      const avg = Number(summary?.avgFailureDays);
+      if (matched && Number.isFinite(avg)) {
+        weightedDays += avg * matched;
+        matchedTickets += matched;
+      }
+      if (summary?.pgiMonthCounts && typeof summary.pgiMonthCounts === "object" && !Array.isArray(summary.pgiMonthCounts)) {
+        Object.entries(summary.pgiMonthCounts).forEach(([month, count]) => {
+          const monthKey = clean(month);
+          if (!monthKey) return;
+          pgiMonthCounts.set(monthKey, (pgiMonthCounts.get(monthKey) || 0) + (Number(count) || 0));
+        });
+      } else {
+        const monthRows = Array.isArray(summary?.pgiMonthCounts)
+          ? summary.pgiMonthCounts
+          : (Array.isArray(summary?.topPgiMonths) ? summary.topPgiMonths : []);
+        monthRows.forEach(item => {
+          const month = clean(item.month);
+          if (!month) return;
+          pgiMonthCounts.set(month, (pgiMonthCounts.get(month) || 0) + (Number(item.tickets) || 0));
+        });
+      }
+    }
+    const topPgiMonths = Array.from(pgiMonthCounts.entries())
+      .sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .slice(0, 5)
+      .map(([month, tickets]) => ({
+        month,
+        tickets,
+        share: matchedTickets ? tickets / matchedTickets : 0,
+      }));
+    return {
+      pgiMatchedTickets: matchedTickets,
+      avgFailureDays: matchedTickets ? weightedDays / matchedTickets : null,
+      topPgiMonths,
+      pgiMonthCounts: topPgiMonths,
+    };
   }
 
   // ============ RENDER: Repairer table ============
@@ -4210,7 +4410,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       return;
     }
 
-    const seriesLabel = state.selected === "ALL" ? "All Tickets by Caravans" : state.selected;
+    const seriesLabel = state.selected === "ALL" ? "All Classified Parts Tickets" : state.selected;
     const scopeLabel = monthlyTicketScopeLabel();
     const basisLabel = partsDateBasisLabel();
     const first = buckets[0];
@@ -4360,10 +4560,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const bucketIndex = new Map();
     buckets.forEach((bucket, index) => bucketIndex.set(`${bucket.y}-${bucket.m}`, index));
     const scope = monthlyScopeFromGlobal();
-    const selected = state.selected === "ALL" ? "All Tickets by Cars" : state.selected;
+    const selected = state.selected === "ALL" ? "All Classified Parts Tickets" : state.selected;
     const lineRows = [];
     const ticketIds = new Set();
-    const scopedTicketIds = currentPartsTicketIdSet();
     const monthSummary = buckets.map(bucket => ({
       label:`${bucket.label} ${bucket.y}`,
       pre:0,
@@ -4381,7 +4580,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       if (bucketPos == null) continue;
       const ticketId = clean(line["Ticket ID"]);
       if (!ticketId) continue;
-      if (!scopedTicketIds.has(ticketId)) continue;
       const series = classifiedRowSeries(line) || "";
       if (state.selected !== "ALL" && series !== state.selected) continue;
       const claim = classifiedRowScope(line);
@@ -4427,6 +4625,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const line = row.line || {};
     const ticket = state.ticketRowById && state.ticketRowById.get(row.ticketId) || {};
     const component = normalizeComponentLabel(line["Matched Keyword"] || line["Part Category"] || "Other", line["Part Category"] || "Other");
+    const delivery = getDeliveryDate(ticket);
+    const goodReceive = getGoodReceiveDate(ticket);
     return [
       row.month,
       dateKeyFromDate(row.date),
@@ -4443,6 +4643,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       ticket["Repair Shop"] || ticket["Service Technician"] || "",
       ticket["Ticket Type"] || "",
       ticket["Created On"] || ticket.CreatedOn || dateKeyFromDate(row.date),
+      delivery.date ? dateKeyFromDate(delivery.date) : "",
+      goodReceive.date ? dateKeyFromDate(goodReceive.date) : "",
       ticket["Posting Date"] || "",
       ticket["Date of Purchase"] || "",
       line.Material || "",
@@ -4520,7 +4722,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         {
           name:"Parts Detail",
           rows:[
-            ["Basis Month","Basis Date","Monthly Claim Scope","Component","Part Category","Ticket ID","Series","Chassis","Serial ID","Registered Product","Product","Dealer","Repairer","Ticket Type","Ticket Created On","Posting Date","Date of Purchase","Material","Description","Order Qty","Sales Unit","Preferred Line Cost AUD","Amount Including Tax","3110 PO Date","First Issue Date","Item Rejection Status"],
+            ["Basis Month","Basis Date","Monthly Claim Scope","Component","Part Category","Ticket ID","Series","Chassis","Serial ID","Registered Product","Product","Dealer","Repairer","Ticket Type","Ticket Created On","PGI Date","Good Receive Date","Posting Date","Date of Purchase","Material","Description","Order Qty","Sales Unit","Preferred Line Cost AUD","Amount Including Tax","3110 PO Date","First Issue Date","Item Rejection Status"],
             ...data.lineRows.map(monthlyCreatedOnLineDetailRow),
           ],
         },
@@ -5005,16 +5207,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       document.querySelectorAll("[data-month-dropdown][open]").forEach(details => {
         if (!details.contains(ev.target)) details.open = false;
       });
-      const compModeEl = ev.target.closest("[data-comp-mode]");
-      if (compModeEl) {
-        const mode = normalizeCompMode(compModeEl.getAttribute("data-comp-mode"));
-        if (mode && mode !== state.compMode) {
-          state.compMode = mode;
-          renderComponents();
-          scheduleAnalysisPageSave();
-        }
-        return;
-      }
       const dateBasisEl = ev.target.closest("[data-parts-date-basis]");
       if (dateBasisEl) {
         const basis = normalizePartsDateBasis(dateBasisEl.getAttribute("data-parts-date-basis"));
@@ -5128,8 +5320,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       render();
     });
 
-    $("reloadBtn").addEventListener("click", () => loadAll(true));
-    $("exportBtn").addEventListener("click", exportExcel);
+    const reloadBtn = $("reloadBtn");
+    if (reloadBtn) reloadBtn.addEventListener("click", () => loadAll(true));
+    const exportBtn = $("exportBtn");
+    if (exportBtn) exportBtn.addEventListener("click", exportExcel);
     const compDetailExportBtn = $("compDetailExportBtn");
     if (compDetailExportBtn) compDetailExportBtn.addEventListener("click", exportComponentDetailExcel);
   }
@@ -5137,6 +5331,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   async function exportExcel(){
     const overlay = $("loadingOverlay");
     if (overlay) overlay.classList.add("show");
+    const overlayTitle = $("loadingOverlayTitle");
+    const overlaySub = $("loadingOverlaySub");
+    if (overlayTitle) overlayTitle.textContent = "Preparing export...";
+    if (overlaySub) overlaySub.textContent = "Building the workbook from cached analysis data.";
     try {
       await loadPartsClassifiedRows();
       await loadPartsDerivedCache();
@@ -5150,7 +5348,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   async function loadPartsDerivedCache(){
     const fallbackScriptName = "ANALYSIS_PARTS_DERIVED_CACHE";
     let fallback = globalThis[fallbackScriptName];
-    const localCacheSource = { url: versionedAssetUrl(PARTS_DERIVED_CACHE), label: "render cache", cache:"force-cache" };
+    const localCacheSource = { url: freshJsonUrl(PARTS_DERIVED_CACHE), label: "render cache", cache:"no-store" };
     const remoteCacheSource = { url: FB_PARTS_DERIVED_CACHE, label: "firebase pageAssets", cache:"no-store" };
     const sources = IS_FILE_CONTEXT
       ? []
@@ -5186,7 +5384,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   function exportExcelWorkbook(){
     const exportedAt = new Date().toISOString().slice(0,19).replace("T"," ");
     const scope = CLAIM_SCOPES[state.scope]?.label || "All Serial";
-    const selected = state.selected === "ALL" ? "All Tickets by Caravans" : state.selected;
+        const selected = state.selected === "ALL" ? "All Classified Parts Tickets" : state.selected;
     const metricRows = sortRows(state.summary, state.seriesSort);
     const leaderboardRows = sortRows(state.summary, { key:"ticketShare", dir:"desc" });
     const selectedRows = rowsForSelectedSeries();
@@ -5196,6 +5394,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     });
     const exportTicketRows = Array.from(selectedTicketMap.values());
     const selectedTicketIds = new Set(selectedTicketMap.keys());
+    const notInPartsRows = ticketsNotInPartsStatsRows();
     const detail = selectedSummaryData();
     const timingLabels = ["0 - 30 days","31 - 90 days","91 - 180 days","180+ days"];
     const timingBuckets = detail?.buckets || [0,0,0,0];
@@ -5230,6 +5429,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           ["Claim Scope", scope],
           ["Selected Series", selected],
           ["Tickets In Scope", state.viewRows.length],
+          ["Tickets Not In Parts Stats", notInPartsRows.length],
           ["Series In Scope", state.summary.length],
           ["Repairers In Scope", state.repairers.filter(r=>r.tickets>=5).length],
           ["Parts Summary Source", PARTS_FAILURE_SUMMARY_CACHE],
@@ -5272,6 +5472,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         ],
       },
       {
+        name:"Tickets Not In Parts Stats",
+        rows:[
+          notInPartsStatsHeader(),
+          ...notInPartsRows.map(notInPartsStatsRow),
+        ],
+      },
+      {
         name:"Failure Timing",
         rows:[
           ["Selected Series", selected],
@@ -5296,11 +5503,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         rows:[
           ["Selected Series", selected],
           [],
-          ["Component","Category","Parts","Part Share","Unique Tickets","Ticket Share","Pre-Delivery Unique Tickets","In-Field Unique Tickets","Other Unique Tickets","Cost AUD"],
+          ["Component","Category","Parts","Part Share","Unique Tickets","Ticket Share","Pre-Delivery Unique Tickets","In-Field Unique Tickets","Other Unique Tickets","Cost AUD","Avg Time to Repair Claim Days","Main Shipment Batch","Main Shipment Batch Tickets","Main Shipment Batch Share"],
           ...componentRows.map(r => {
             const stats = computeComponentStatic(componentKey(r.component, r.category));
+            const failure = componentFailureSummary(componentKey(r.component, r.category));
+            const topPgi = topShipmentBatch(failure);
             const lineItems = componentLineItems(r);
-            const tickets = componentDisplayTicketCount(r) || Number(stats.total) || 0;
+            const tickets = Number(stats.total) || componentDisplayTicketCount(r) || 0;
             return [
               r.component || "Other",
               r.category || "Other",
@@ -5312,6 +5521,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
               Number(stats.field) || 0,
               Number(stats.other) || 0,
               round(Number(r.cost)||0, 2),
+              failure?.avgFailureDays == null ? "" : round(Number(failure.avgFailureDays), 1),
+              topPgi?.label || "",
+              Number(topPgi?.tickets) || 0,
+              topPgi ? pctValue(Number(topPgi.share) || 0) : "",
             ];
           }),
         ],
@@ -5430,16 +5643,17 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     setTimeout(()=>URL.revokeObjectURL(url), 1000);
   }
 
-  function currentTopComponentRows(limit = 10){
+  function currentTopComponentRows(limit = 10, selected = state.selected){
     const summary = state.partsFailureSummary;
     if (!summary) return [];
-    let rows = componentRowsForSelection(summary, state.selected).slice();
+    let rows = componentRowsForSelection(summary, selected).slice();
     state.compMode = normalizeCompMode(state.compMode);
-    if (state.compMode === "cost") {
-      rows.sort((a,b) => (Number(b.cost)||0) - (Number(a.cost)||0));
-    } else {
-      rows.sort((a,b) => componentDisplayTicketCount(b) - componentDisplayTicketCount(a) || componentLineItems(b) - componentLineItems(a));
-    }
+    rows.sort((a,b) => {
+      const ar = Number(a.globalRank);
+      const br = Number(b.globalRank);
+      if (Number.isFinite(ar) && Number.isFinite(br) && ar !== br) return ar - br;
+      return componentDisplayTicketCount(b) - componentDisplayTicketCount(a) || componentLineItems(b) - componentLineItems(a);
+    });
     return rows.slice(0, limit).map(normalizeComponentPreviewRow).filter(Boolean);
   }
 
@@ -5459,7 +5673,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     return (state.ticketRowById && state.ticketRowById.get(id)) || {};
   }
 
-  async function ensureTicketRowLookupForExport(){
+  async function ensureTicketRowLookupForExport(options = {}){
+    const includeRepairers = !!options.includeRepairers;
     if (state.ticketRowById instanceof Map && state.ticketRowById.size) return state.ticketRowById;
     const rows = [];
     const add = list => {
@@ -5470,7 +5685,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     add(state.sourceRowPool);
     add(await loadTicketTimingRows());
     add(await loadLegacyTicketRows());
-    add(await loadRepairerAnalysisDetails());
+    if (includeRepairers) add(await loadRepairerAnalysisDetails());
     add(Array.isArray(state.ticketCostRows) ? state.ticketCostRows : []);
     const map = new Map();
     rows.forEach(row => {
@@ -5501,6 +5716,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const categories = Array.from(new Set(lines.map(line => clean(line["Part Category"] || "Other")).filter(Boolean))).join(", ");
     const poValues = Array.from(new Set(lines.map(line => normalizePoForDisplay(line["ERP Purchase Order"] || line["ERP Purchase Order ID"] || line["Purchase Order"] || "")).filter(Boolean))).join(", ");
     const lineCost = lines.reduce((sum, line) => sum + (asNumber(line["Preferred Line Cost (AUD)"]) || 0), 0);
+    const delivery = getDeliveryDate(ticket);
+    const goodReceive = getGoodReceiveDate(ticket);
+    const timing = failureAgeDays(ticket);
     return [
       ticketId,
       ticket.Status || ticket["Status"] || "",
@@ -5511,6 +5729,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       ticket["Created On"] || ticket.CreatedOn || firstLine["Created On"] || "",
       ticket["Claim Approved On"] || ticket["Claim Approved Date"] || ticket["Approved On"] || firstLine["Claim Approved On"] || "",
       ticket["Changed On"] || ticket.ChangedOn || "",
+      delivery.date ? dateKeyFromDate(delivery.date) : "",
+      goodReceive.date ? dateKeyFromDate(goodReceive.date) : "",
+      timing.age ?? "",
       ticket["Posting Date"] || firstLine["Posting Date"] || "",
       ticket["Date of Purchase"] || firstLine["Date of Purchase"] || "",
       poValues,
@@ -5524,15 +5745,196 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     ];
   }
 
-  async function exportComponentDetailExcel(){
+  function csvCell(value){
+    let text = value == null ? "" : String(value);
+    if (/^[=+\-@]/.test(text)) text = `\t${text}`;
+    return `"${text.replace(/"/g, '""')}"`;
+  }
+
+  function downloadCsv(filename, rows){
+    const csv = "\ufeff" + rows.map(row => row.map(csvCell).join(",")).join("\r\n");
+    const blob = new Blob([csv], { type:"text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  }
+
+  function uniqueJoin(values, limit = 0){
+    const seen = new Set();
+    const output = [];
+    (Array.isArray(values) ? values : []).forEach(value => {
+      const text = clean(value);
+      if (!text || seen.has(text)) return;
+      seen.add(text);
+      output.push(text);
+    });
+    const clipped = limit > 0 ? output.slice(0, limit) : output;
+    const suffix = limit > 0 && output.length > limit ? `; +${output.length - limit} more` : "";
+    return clipped.join("; ") + suffix;
+  }
+
+  function ticketExportKeys(row, fallbackId = ""){
+    return [
+      fallbackId,
+      ticketExportId(row),
+      numericTicketIdValue(row),
+      rawTicketIdValue(row),
+      ticketIdentity(row),
+    ].map(clean).filter(Boolean);
+  }
+
+  function buildClassifiedLinesByTicket(){
+    const map = new Map();
+    for (const line of (state.partsClassifiedRows || [])) {
+      const ticketId = clean(line["Ticket ID"]);
+      if (!ticketId) continue;
+      if (!map.has(ticketId)) map.set(ticketId, []);
+      map.get(ticketId).push(line);
+    }
+    return map;
+  }
+
+  function classifiedLinesForTicket(ticket, fallbackId, linesByTicket){
+    const lines = [];
+    const seen = new Set();
+    ticketExportKeys(ticket, fallbackId).forEach(key => {
+      (linesByTicket.get(key) || []).forEach(line => {
+        if (seen.has(line)) return;
+        seen.add(line);
+        lines.push(line);
+      });
+    });
+    return lines;
+  }
+
+  function fastExportTicketRows(year, scope, selected, basis){
+    const rows = [];
+    const seen = new Set();
+    const add = row => {
+      if (!row || typeof row !== "object") return;
+      const id = ticketExportId(row);
+      if (!id || seen.has(id)) return;
+      if (!partsMonthMatchesTicket(row, String(year), basis)) return;
+      const series = extractSeries(row);
+      if (selected !== "ALL" && series !== selected) return;
+      if (scope !== "ALL" && claimScope(row) !== scope) return;
+      seen.add(id);
+      rows.push(row);
+    };
+    if (state.ticketRowById instanceof Map) state.ticketRowById.forEach(add);
+    [state.rows, state.viewRows, state.sourceRowPool, state.ticketTimingRowsCache, state.legacyTicketRowsCache, state.ticketCostRows]
+      .forEach(list => Array.isArray(list) && list.forEach(add));
+    rows.sort((a,b) => {
+      const ad = ticketPartsBasisDate(a, basis)?.getTime() || 0;
+      const bd = ticketPartsBasisDate(b, basis)?.getTime() || 0;
+      return ad - bd || String(ticketExportId(a)).localeCompare(String(ticketExportId(b)), undefined, { numeric:true });
+    });
+    return rows;
+  }
+
+  function fastTicketCsvRow(ticket, linesByTicket){
+    const ticketId = ticketExportId(ticket);
+    const lines = classifiedLinesForTicket(ticket, ticketId, linesByTicket);
+    const firstLine = lines[0] || {};
+    const delivery = getDeliveryDate(ticket);
+    const goodReceive = getGoodReceiveDate(ticket);
+    const timing = failureAgeDays(ticket);
+    const lineCost = lines.reduce((sum, line) => sum + (asNumber(line["Preferred Line Cost (AUD)"]) || 0), 0);
+    const orderQty = lines.reduce((sum, line) => sum + (asNumber(line["Order Qty"]) || 0), 0);
+    return [
+      ticketId,
+      extractSeries(ticket),
+      claimScope(ticket),
+      ticket.Status || ticket["Status"] || firstLine["Ticket Status Text"] || firstLine["Ticket Status"] || "",
+      ticket["Ticket Type"] || firstLine["Ticket Type"] || "",
+      ticket["Created On"] || ticket.CreatedOn || "",
+      ticket["Claim Approved On"] || ticket["Claim Approved Date"] || ticket["Approved On"] || "",
+      ticket["Changed On"] || ticket.ChangedOn || "",
+      delivery.date ? dateKeyFromDate(delivery.date) : "",
+      goodReceive.date ? dateKeyFromDate(goodReceive.date) : "",
+      timing.age ?? "",
+      ticket["Posting Date"] || "",
+      ticket["Date of Purchase"] || "",
+      round(getWarrantyCost(ticket), 2),
+      normalizedChassis(ticket),
+      ticket["Serial ID"] || ticket.SerialID || "",
+      ticket["Dealer Name"] || firstLine["Dealer Name"] || "",
+      ticket["Repair Shop"] || ticket["Repair Shop Name"] || ticket["Service Technician"] || "",
+      lines.length ? "Y" : "N",
+      lines.length,
+      uniqueJoin(lines.map(line => clean(line["Part Category"] || "Other"))),
+      uniqueJoin(lines.map(line => normalizeComponentLabel(line["Matched Keyword"] || line["Part Category"] || "Other", line["Part Category"] || "Other"))),
+      uniqueJoin(lines.map(line => line.Material)),
+      uniqueJoin(lines.map(line => line.Description), 12),
+      uniqueJoin(lines.map(line => normalizePoForDisplay(line["ERP Purchase Order"] || line["ERP Purchase Order ID"] || line["Purchase Order"] || ""))),
+      uniqueJoin(lines.map(line => line["Sales Order"])),
+      round(orderQty, 2),
+      round(lineCost, 2),
+      uniqueJoin(lines.map(line => line["Item Rejection Status"] || line["Rejection Reason"])),
+    ];
+  }
+
+  async function exportPartsTicketCsv(){
     const overlay = $("loadingOverlay");
     if (overlay) overlay.classList.add("show");
+    const overlayTitle = $("loadingOverlayTitle");
+    const overlaySub = $("loadingOverlaySub");
+    if (overlayTitle) overlayTitle.textContent = "Preparing CSV...";
+    const basis = partsDateBasis();
+    const basisText = normalizePartsDateBasis(basis) === "APPROVED" ? "approved in" : "created in";
+    if (overlaySub) overlaySub.textContent = `Exporting tickets ${basisText} 2026 only, without Top 10 workbook calculations.`;
+    try {
+      await loadPartsClassifiedRows();
+      if (!(state.ticketRowById instanceof Map) || !state.ticketRowById.size) {
+        await ensureTicketRowLookupForExport();
+      }
+      const scope = "ALL";
+      const selected = "ALL";
+      const year = 2026;
+      const linesByTicket = buildClassifiedLinesByTicket();
+      const tickets = fastExportTicketRows(year, scope, selected, basis);
+      if (!tickets.length) {
+        alert(`No tickets ${basisText} ${year} were available to export.`);
+        return;
+      }
+      const rows = [
+        [
+          "Ticket ID","Series","Claim Scope","Status","Claim Type","Created On","Claim Approved On","Changed On",
+          "PGI Date","Good Receive Date","Created-PGI Days","Posting Date","Date of Purchase","Warranty Cost AUD",
+          "Chassis","Serial ID","Dealer","Repairer","Has Classified Part","Classified Part Lines",
+          "Part Categories","Components","Materials","Descriptions","Purchase Orders","Sales Orders",
+          "Order Qty","Preferred Line Cost AUD","Item Rejection Status",
+        ],
+        ...tickets.map(ticket => fastTicketCsvRow(ticket, linesByTicket)),
+      ];
+      const stamp = new Date().toISOString().slice(0,10).replace(/-/g,"");
+      const basisName = normalizePartsDateBasis(basis).toLowerCase();
+      downloadCsv(`parts_tickets_${basisName}_${year}_all_${stamp}.csv`, rows);
+    } finally {
+      if (overlay) overlay.classList.remove("show");
+    }
+  }
+
+  async function exportComponentDetailExcel(){
+    return exportPartsTicketCsv();
+  }
+
+  async function exportLegacyComponentDetailExcel(){
+    const overlay = $("loadingOverlay");
+    if (overlay) overlay.classList.add("show");
+    const overlayTitle = $("loadingOverlayTitle");
+    const overlaySub = $("loadingOverlaySub");
+    if (overlayTitle) overlayTitle.textContent = "Preparing export...";
+    if (overlaySub) overlaySub.textContent = "Building the current parts workbook from cached ticket data.";
     try {
       await loadPartsClassifiedRows();
       await loadPartsDerivedCache();
       await ensureTicketRowLookupForExport();
       const scope = componentScope();
-      const selected = state.selected === "ALL" ? "All Tickets by Caravans" : state.selected;
+      const selected = state.selected === "ALL" ? "All Classified Parts Tickets" : state.selected;
       const month = selectedPartsMonth();
       const topComponents = currentTopComponentRows(10);
       const componentKeys = new Set();
@@ -5540,10 +5942,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         componentKeys.add(row.key);
         componentExportMatchKeys(row.component, row.category).forEach(key => componentKeys.add(key));
       });
-      const componentRowsByKey = new Map(topComponents.map(row => [row.key, row]));
       const lineRows = [];
       const ticketLines = new Map();
-      const scopedTicketIds = currentPartsTicketIdSet();
 
       for (const line of (state.partsClassifiedRows || [])) {
         if (!partsMonthMatchesLine(line, month)) continue;
@@ -5557,14 +5957,15 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         if (componentKeys.size && !componentKeys.has(key) && !keyMatched) continue;
         const ticketId = clean(line["Ticket ID"]);
         if (!ticketId) continue;
-        if (!scopedTicketIds.has(ticketId)) continue;
         const normalized = { ...line, _component:component, _category:category, _componentKey:key, _series:series };
         lineRows.push(normalized);
         if (!ticketLines.has(ticketId)) ticketLines.set(ticketId, []);
         ticketLines.get(ticketId).push(normalized);
       }
 
-      if (!lineRows.length) {
+      const notInPartsRows = ticketsNotInPartsStatsRows();
+
+      if (!lineRows.length && !notInPartsRows.length) {
         alert("No ticket detail matched the current Top Failure Components filters.");
         return;
       }
@@ -5574,12 +5975,18 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         .sort((a,b) => String(a[0]).localeCompare(String(b[0]), undefined, { numeric:true }))
         .map(([ticketId, lines]) => componentExportTicketRow(ticketId, lines));
       const componentSummaryRows = topComponents.map(row => {
+        const failure = componentFailureSummary(componentKey(row.component, row.category), scope);
+        const topPgi = topShipmentBatch(failure);
         return [
           row.component,
           row.category,
           componentDisplayTicketCount(row),
           componentLineItems(row),
           round(Number(row.cost) || 0, 2),
+          failure?.avgFailureDays == null ? "" : round(Number(failure.avgFailureDays), 1),
+          topPgi?.label || "",
+          Number(topPgi?.tickets) || 0,
+          topPgi ? pctValue(Number(topPgi.share) || 0) : "",
         ];
       });
 
@@ -5593,25 +6000,36 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
             ["Claim Scope", componentScopeLabel(scope)],
             ["Selected Month", partsMonthLabel(month)],
             ["Date Basis", partsDateBasisLabel()],
-            ["Sort Mode", state.compMode === "cost" ? "Cost" : "Tickets"],
-            ["Top Components", topComponents.length],
-            ["Unique Tickets Exported", ticketDetailRows.length],
+            ["Component Ranking", "Tickets"],
+            ["Displayed Top Components", topComponents.length],
+            ["Top Components Exported", topComponents.length],
+            ["Top 10 Unique Tickets Exported", ticketDetailRows.length],
             ["Component Lines Exported", lineRows.length],
+            ["Tickets Not In Parts Stats", notInPartsRows.length],
           ],
         },
         {
           name:"Ticket Detail",
           rows:[
-            ["Ticket ID","Status","Series","Field","Part Category","Claim Type","Created On","Claim Approved On","Changed On","Posting Date","Date of Purchase","PO","PO Line Price AUD","Approved PO Price AUD","Chassis","Serial ID","Dealer","Repairer","Matched Lines"],
+            ["Ticket ID","Status","Series","Field","Part Category","Claim Type","Created On","Claim Approved On","Changed On","PGI Date","Good Receive Date","Created-PGI Days","Posting Date","Date of Purchase","PO","PO Line Price AUD","Approved PO Price AUD","Chassis","Serial ID","Dealer","Repairer","Matched Lines"],
             ...ticketDetailRows,
+          ],
+        },
+        {
+          name:"Tickets Not In Parts Stats",
+          rows:[
+            notInPartsStatsHeader(),
+            ...notInPartsRows.map(notInPartsStatsRow),
           ],
         },
         {
           name:"Component Line Detail",
           rows:[
-            ["Ticket ID","Status","Series","Field","Part Category","Claim Type","Created On","Claim Approved On","Posting Date","PO","PO Line Price AUD","3110 PO Date","First Issue Date","Material","Description","Order Qty","Sales Unit","Chassis","Serial ID","Dealer","Repairer"],
+            ["Ticket ID","Status","Series","Field","Part Category","Claim Type","Created On","Claim Approved On","PGI Date","Good Receive Date","Posting Date","PO","PO Line Price AUD","3110 PO Date","First Issue Date","Material","Description","Order Qty","Sales Unit","Chassis","Serial ID","Dealer","Repairer"],
             ...lineRows.map(line => {
               const ticket = ticketLookupForExport(line["Ticket ID"]);
+              const delivery = getDeliveryDate(ticket);
+              const goodReceive = getGoodReceiveDate(ticket);
               return [
                 clean(line["Ticket ID"]),
                 ticket.Status || ticket["Status"] || "",
@@ -5621,6 +6039,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
                 ticket["Ticket Type"] || line["Ticket Type"] || "",
                 ticket["Created On"] || ticket.CreatedOn || line["Created On"] || "",
                 ticket["Claim Approved On"] || ticket["Claim Approved Date"] || ticket["Approved On"] || line["Claim Approved On"] || "",
+                delivery.date ? dateKeyFromDate(delivery.date) : "",
+                goodReceive.date ? dateKeyFromDate(goodReceive.date) : "",
                 ticket["Posting Date"] || line["Posting Date"] || "",
                 normalizePoForDisplay(line["ERP Purchase Order"] || line["ERP Purchase Order ID"] || line["Purchase Order"] || ""),
                 asNumber(line["Preferred Line Cost (AUD)"]) || "",
@@ -5641,7 +6061,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         {
           name:"Top Components",
           rows:[
-            ["Field","Part Category","Unique Tickets","Component Lines","PO Line Price AUD"],
+            ["Field","Part Category","Unique Tickets","Component Lines","PO Line Price AUD","Avg Time to Repair Claim Days","Main Shipment Batch","Main Shipment Batch Tickets","Main Shipment Batch Share"],
             ...componentSummaryRows,
           ],
         },
@@ -5749,13 +6169,11 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   function currentPartsScopedTicketMap(){
     const map = new Map();
     const scope = componentScope();
-    const scopedTicketIds = currentPartsTicketIdSet();
     for (const line of (state.partsClassifiedRows || [])) {
       if (!partsMonthMatchesLine(line)) continue;
       if (scope !== "ALL" && classifiedRowScope(line) !== scope) continue;
       const ticketId = clean(line["Ticket ID"]);
       if (!ticketId || map.has(ticketId)) continue;
-      if (!scopedTicketIds.has(ticketId)) continue;
       const series = classifiedRowSeries(line) || "";
       if (state.selected !== "ALL" && series !== state.selected) continue;
       const ticket = state.ticketRowById && state.ticketRowById.get(ticketId);
@@ -5769,6 +6187,127 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     return map;
   }
 
+  function ticketPartsBasisDate(row, basis = partsDateBasis()){
+    if (normalizePartsDateBasis(basis) === "APPROVED") {
+      return parseDmy(row["Claim Approved On"] || row["Claim Approved Date"] || row["Approved On"] || row["Approved Date"]);
+    }
+    return parseDmy(row["Created On"] || row.CreatedOn || row["Created Date"] || row.CreatedDate);
+  }
+
+  function partsMonthMatchesTicket(row, month = selectedPartsMonth(), basis = partsDateBasis()){
+    if (month === "ALL") return true;
+    const date = ticketPartsBasisDate(row, basis);
+    if (month === PARTS_MONTH_CURRENT_YEAR) return date && date.getFullYear() === currentPartsYear();
+    if (/^\d{4}$/.test(String(month || ""))) return date && date.getFullYear() === Number(month);
+    return partsMonthKeyFromDate(date) === month;
+  }
+
+  function ticketExportId(row){
+    return numericTicketIdValue(row) || rawTicketIdValue(row) || ticketIdentity(row);
+  }
+
+  function ticketMatchesCurrentPartsScope(row, month = selectedPartsMonth(), scope = componentScope(), basis = partsDateBasis()){
+    if (!row || typeof row !== "object") return false;
+    const id = ticketExportId(row);
+    if (!id) return false;
+    if (!partsMonthMatchesTicket(row, month, basis)) return false;
+    if (scope !== "ALL" && claimScope(row) !== scope) return false;
+    const series = extractSeries(row);
+    if (state.selected !== "ALL" && series !== state.selected) return false;
+    return true;
+  }
+
+  function allTicketRowsForCurrentPartsScope(){
+    const map = new Map();
+    const add = row => {
+      if (!ticketMatchesCurrentPartsScope(row)) return;
+      const id = ticketExportId(row);
+      if (!id) return;
+      const existing = map.get(id);
+      if (!existing || Object.keys(row).length > Object.keys(existing).length) map.set(id, row);
+    };
+    const addList = list => Array.isArray(list) && list.forEach(add);
+    addList(state.rows);
+    addList(state.viewRows);
+    addList(state.sourceRowPool);
+    addList(Array.isArray(state.ticketCostRows) ? state.ticketCostRows : []);
+    if (state.ticketRowById instanceof Map) {
+      state.ticketRowById.forEach(add);
+    }
+    return map;
+  }
+
+  function classifiedTicketIdsForCurrentPartsScope(){
+    const ids = new Set();
+    const addIdVariants = value => {
+      const direct = clean(value);
+      if (direct) ids.add(direct);
+      const ticket = ticketLookupForExport(direct);
+      if (ticket && Object.keys(ticket).length) {
+        [ticketExportId(ticket), rawTicketIdValue(ticket), numericTicketIdValue(ticket), ticketIdentity(ticket)]
+          .map(clean)
+          .filter(Boolean)
+          .forEach(id => ids.add(id));
+      }
+    };
+    const scope = componentScope();
+    const month = selectedPartsMonth();
+    for (const line of (state.partsClassifiedRows || [])) {
+      if (!partsMonthMatchesLine(line, month)) continue;
+      if (scope !== "ALL" && classifiedRowScope(line) !== scope) continue;
+      const series = classifiedRowSeries(line) || "";
+      if (state.selected !== "ALL" && series !== state.selected) continue;
+      const ticketId = clean(line["Ticket ID"]);
+      if (ticketId) addIdVariants(ticketId);
+    }
+    return ids;
+  }
+
+  function notInPartsStatsReason(row){
+    const series = extractSeries(row);
+    if (isExcludedSeries(series)) return "Series excluded from parts stats";
+    if (!isTrackedSeries(series)) return "Series not tracked in parts stats";
+    return "No classified part line in current parts filters";
+  }
+
+  function ticketsNotInPartsStatsRows(){
+    const cacheKey = [
+      state.selected || "ALL",
+      componentScope(),
+      selectedPartsMonth(),
+      partsDateBasis(),
+      state.ticketRowById instanceof Map ? state.ticketRowById.size : 0,
+      Array.isArray(state.partsClassifiedRows) ? state.partsClassifiedRows.length : 0,
+    ].join("|");
+    if (state.notInPartsStatsCache instanceof Map && state.notInPartsStatsCache.has(cacheKey)) {
+      return state.notInPartsStatsCache.get(cacheKey);
+    }
+    const allTickets = allTicketRowsForCurrentPartsScope();
+    const classifiedIds = classifiedTicketIdsForCurrentPartsScope();
+    const rows = [];
+    allTickets.forEach((row, id) => {
+      const rawId = rawTicketIdValue(row);
+      const numericId = numericTicketIdValue(row);
+      if ((rawId && classifiedIds.has(rawId)) || (numericId && classifiedIds.has(numericId)) || classifiedIds.has(id)) return;
+      rows.push(row);
+    });
+    rows.sort((a,b) => {
+      const ad = ticketPartsBasisDate(a)?.getTime() || 0;
+      const bd = ticketPartsBasisDate(b)?.getTime() || 0;
+      return ad - bd || String(ticketExportId(a)).localeCompare(String(ticketExportId(b)), undefined, { numeric:true });
+    });
+    if (state.notInPartsStatsCache instanceof Map) state.notInPartsStatsCache.set(cacheKey, rows);
+    return rows;
+  }
+
+  function notInPartsStatsHeader(){
+    return [...ticketDetailHeader(), "Parts Stats Exclusion Reason"];
+  }
+
+  function notInPartsStatsRow(row){
+    return [...ticketDetailRow(row), notInPartsStatsReason(row)];
+  }
+
   function ticketMapForRows(rows){
     const map = new Map();
     rows.forEach(row => {
@@ -5779,12 +6318,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   function ticketDetailHeader(){
-    return ["Ticket ID","Series","Chassis","Serial ID","Registered Product","Product","Dealer","Repairer","Ticket Type","Status","Created On","PGI Date","Posting Date","Date of Purchase","Warranty Cost AUD","Repair Rejection","Failure Days","Timing Date Source"];
+    return ["Ticket ID","Series","Chassis","Serial ID","Registered Product","Product","Dealer","Repairer","Ticket Type","Status","Created On","PGI Date","Good Receive Date","Posting Date","Date of Purchase","Warranty Cost AUD","Repair Rejection","Failure Days","Timing Date Source"];
   }
 
   function ticketDetailRow(row){
     const timing = failureAgeDays(row);
     const delivery = getDeliveryDate(row);
+    const goodReceive = getGoodReceiveDate(row);
     return [
       row["Ticket ID"] || row.TicketID || "",
       extractSeries(row),
@@ -5798,6 +6338,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       row.Status || row["Status"] || "",
       row["Created On"] || row.CreatedOn || "",
       delivery.date ? dateKeyFromDate(delivery.date) : "",
+      goodReceive.date ? dateKeyFromDate(goodReceive.date) : "",
       row["Posting Date"] || "",
       row["Date of Purchase"] || "",
       round(getWarrantyCost(row), 2),
@@ -5982,33 +6523,40 @@ ${worksheets}
   }
 
   async function loadTicketTimingRows(){
+    if (Array.isArray(state.ticketTimingRowsCache)) return state.ticketTimingRowsCache;
     const scriptCsvText = typeof globalThis.ANALYSIS_TICKET_FAILURE_TIMING_CSV_TEXT === "string"
       ? globalThis.ANALYSIS_TICKET_FAILURE_TIMING_CSV_TEXT
       : "";
     if (IS_FILE_CONTEXT && scriptCsvText) {
-      return rowsToObjects(parseCSV(scriptCsvText));
+      state.ticketTimingRowsCache = rowsToObjects(parseCSV(scriptCsvText));
+      return state.ticketTimingRowsCache;
     }
     try {
       const csvText = await fetch(TICKET_FAILURE_TIMING_CSV, { cache:"no-store" }).then(r => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.text();
       });
-      return rowsToObjects(parseCSV(csvText));
+      state.ticketTimingRowsCache = rowsToObjects(parseCSV(csvText));
+      return state.ticketTimingRowsCache;
     } catch (err) {
       if (scriptCsvText) {
         console.warn("Ticket failure timing CSV fetch failed, using script fallback:", err);
-        return rowsToObjects(parseCSV(scriptCsvText));
+        state.ticketTimingRowsCache = rowsToObjects(parseCSV(scriptCsvText));
+        return state.ticketTimingRowsCache;
       }
       console.warn("Ticket failure timing CSV load failed:", err);
-      return [];
+      state.ticketTimingRowsCache = [];
+      return state.ticketTimingRowsCache;
     }
   }
 
   async function loadLegacyTicketRows(){
+    if (Array.isArray(state.legacyTicketRowsCache)) return state.legacyTicketRowsCache;
     const candidates = [TICKET_BASE_CSV, LEGACY_TICKET_CSV_URL];
     try {
       if (IS_FILE_CONTEXT && typeof globalThis.ANALYSIS_TICKET_CSV_TEXT === "string") {
-        return rowsToObjects(parseCSV(globalThis.ANALYSIS_TICKET_CSV_TEXT));
+        state.legacyTicketRowsCache = rowsToObjects(parseCSV(globalThis.ANALYSIS_TICKET_CSV_TEXT));
+        return state.legacyTicketRowsCache;
       }
       let csvText = "";
       for (const url of candidates) {
@@ -6020,14 +6568,17 @@ ${worksheets}
         }
       }
       if (!csvText) throw new Error("No ticket base CSV available");
-      return rowsToObjects(parseCSV(csvText));
+      state.legacyTicketRowsCache = rowsToObjects(parseCSV(csvText));
+      return state.legacyTicketRowsCache;
     } catch (e) {
       if (typeof globalThis.ANALYSIS_TICKET_CSV_TEXT === "string") {
         console.warn("Legacy CSV load failed, using script fallback:", e);
-        return rowsToObjects(parseCSV(globalThis.ANALYSIS_TICKET_CSV_TEXT));
+        state.legacyTicketRowsCache = rowsToObjects(parseCSV(globalThis.ANALYSIS_TICKET_CSV_TEXT));
+        return state.legacyTicketRowsCache;
       }
       console.warn("Legacy CSV load failed:", e);
-      return [];
+      state.legacyTicketRowsCache = [];
+      return state.legacyTicketRowsCache;
     }
   }
 

@@ -4,7 +4,8 @@
     "source_sheets": [
       "General Mapping",
       "SNOWY RIVER RV PTY LTD (Parts)"
-    ]
+    ],
+    "mapping_rule": "For repairer SNOWY RV PTY LTD / SNOWY RIVER RV PTY LTD, map Warranty Handling Dealer(Assign) old/new code to Dealership."
   },
   "general": [
     {
@@ -28,7 +29,7 @@
       "mappingName": "Destiny RV"
     },
     {
-      "repairShopC4C": "GREAT OCEAN ROAD RV AND CARAVANS PTY LTD Repairs",
+      "repairShopC4C": "GREAT OCEAN ROAD RV AND CARAVANS PTY LTD   Repairs",
       "mappingName": "Great Ocean Road RV and Caravans Pty Ltd"
     },
     {
@@ -48,7 +49,7 @@
       "mappingName": "Max Caravan Repairs"
     },
     {
-      "repairShopC4C": "New Age Caravans Newcastle Pty Ltd Repairs",
+      "repairShopC4C": "New Age Caravans Newcastle Pty Ltd   Repairs",
       "mappingName": "New Age Caravans Newcastle Pty Ltd"
     },
     {
@@ -56,7 +57,7 @@
       "mappingName": "Newcastle Caravans & RV's"
     },
     {
-      "repairShopC4C": "SNOWY RIVER PERTH(SERVICE CENTRE) As Repairer",
+      "repairShopC4C": "SNOWY RIVER PERTH(SERVICE CENTRE) As   Repairer",
       "mappingName": "Snowy River Perth (Service Centre)"
     },
     {
@@ -72,7 +73,7 @@
       "mappingName": "The Caravan Hub"
     },
     {
-      "repairShopC4C": "ULLADULLA RV REPAIR CENTRE PTY LTD Repairs",
+      "repairShopC4C": "ULLADULLA RV REPAIR CENTRE PTY LTD   Repairs",
       "mappingName": "Ulladulla RV Repair Centre Pty Ltd"
     },
     {
@@ -88,341 +89,210 @@
       "mappingName": "Vanari Christchurch"
     }
   ],
-  "snowyRiverParts": [
+  "snowyRiverDealerCodes": [
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "A1 CARAVAN REPAIRS",
-        "A1 Caravan Repairs",
-        "A1 caravan repairs",
-        "A1 Caravan Service Perth",
-        "A1 CARAVAN SERVICE PERTH",
-        "A1 Caravan servicing and repairsA1 Caravans",
-        "A1 CARAVANS"
-      ],
-      "mappingName": "A1 Caravan Service Perth"
+      "oldWarrantyHandlingDealerAssign": "204642",
+      "newWarrantyHandlingDealerAssign": "204642",
+      "dealership": "Green RV - Forest Glen"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Albany Caravan & RV Centre"
-      ],
-      "mappingName": "Albany Caravan & RV Centre"
+      "oldWarrantyHandlingDealerAssign": "204670",
+      "newWarrantyHandlingDealerAssign": "204670",
+      "dealership": "Green RV - Slacks Creek"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "BKM Plumbing"
-      ],
-      "mappingName": "BKM Plumbing"
+      "oldWarrantyHandlingDealerAssign": "204644",
+      "newWarrantyHandlingDealerAssign": "3137",
+      "dealership": "QCCC - Gympie"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "BM POWERED ELECTRICAL"
-      ],
-      "mappingName": "BM POWERED ELECTRICAL"
+      "oldWarrantyHandlingDealerAssign": "204647",
+      "newWarrantyHandlingDealerAssign": "3133",
+      "dealership": "NEWGEN Caravan- Morisset"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "caravan and camper servicing wa",
-        "Caravan and camper servicing wa"
-      ],
-      "mappingName": "Caravan and camper servicing WA"
+      "oldWarrantyHandlingDealerAssign": "204052",
+      "newWarrantyHandlingDealerAssign": "3135",
+      "dealership": "Regent RV - Toowoomba"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Caravan Hub Townsville"
-      ],
-      "mappingName": "Caravan Hub Townsville"
+      "oldWarrantyHandlingDealerAssign": "204675",
+      "newWarrantyHandlingDealerAssign": "204675",
+      "dealership": "Springvale Caravan Centre - Keysborough"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Caravans WA",
-        "CARAVANS WA"
-      ],
-      "mappingName": "Caravans WA"
+      "oldWarrantyHandlingDealerAssign": "204669",
+      "newWarrantyHandlingDealerAssign": "204669",
+      "dealership": "Auswide Caravans - South Nowra"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Dans caravan repairs"
-      ],
-      "mappingName": "Dans caravan repairs"
+      "oldWarrantyHandlingDealerAssign": "204643",
+      "newWarrantyHandlingDealerAssign": "204643",
+      "dealership": "Dario Caravans -St.Marys"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "DJM caravan & RV repairs",
-        "DJM CARAVANS AND RV REPAIRS"
-      ],
-      "mappingName": "DJM Caravan & RV Repairs"
+      "oldWarrantyHandlingDealerAssign": "204676",
+      "newWarrantyHandlingDealerAssign": "204676",
+      "dealership": "Dario Caravans - Pooraka"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Esperance caravan repair centre"
-      ],
-      "mappingName": "Esperance caravan repair centre"
+      "oldWarrantyHandlingDealerAssign": "204679",
+      "newWarrantyHandlingDealerAssign": "204679",
+      "dealership": "Vanari Caravans - Marden Point"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "GEELONG CARAVAN AND RV",
-        "SNOWY RIVER CARAVANS GEELONG"
-      ],
-      "mappingName": "GEELONG CARAVAN AND RV / SNOWY RIVER CARAVANS GEELONG"
+      "oldWarrantyHandlingDealerAssign": "204680",
+      "newWarrantyHandlingDealerAssign": "204680",
+      "dealership": "CMG Campers - Christchurch"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Harleys Complete Plumbing",
-        "Harleys Complete Plumbing Services",
-        "Harleys Plumbing",
-        "Harleys Plumbing Services"
-      ],
-      "mappingName": "Harleys Complete Plumbing Services"
+      "oldWarrantyHandlingDealerAssign": "204671",
+      "newWarrantyHandlingDealerAssign": "204671",
+      "dealership": "Sherrif Caravans & Traliers - Prospect Vale"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "JOLLY GOOD AUTO ELECTRICS"
-      ],
-      "mappingName": "JOLLY GOOD AUTO ELECTRICS"
+      "oldWarrantyHandlingDealerAssign": "204673",
+      "newWarrantyHandlingDealerAssign": "204673",
+      "dealership": "ABCO Caravans - Boambee Valley"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Mandurah caravan repair centre"
-      ],
-      "mappingName": "Mandurah caravan repair centre"
+      "oldWarrantyHandlingDealerAssign": "204645",
+      "newWarrantyHandlingDealerAssign": "3121",
+      "dealership": "Regent RV - Perth"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Martin Meupelenberg"
-      ],
-      "mappingName": "Martin Meupelenberg"
+      "oldWarrantyHandlingDealerAssign": "204672",
+      "newWarrantyHandlingDealerAssign": "3123",
+      "dealership": "Regent RV - Traralgon"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Mercury Caravan Repairs"
-      ],
-      "mappingName": "Mercury Caravan Repairs"
+      "oldWarrantyHandlingDealerAssign": "204678",
+      "newWarrantyHandlingDealerAssign": "3141",
+      "dealership": "Regent RV - Frankston"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Mike's Caravan Repairs & Service"
-      ],
-      "mappingName": "Mike's Caravan Repairs & Service"
+      "oldWarrantyHandlingDealerAssign": "204646",
+      "newWarrantyHandlingDealerAssign": "204646",
+      "dealership": "Newcastle RV Super Centre - Berefield"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "OMNIBUS"
-      ],
-      "mappingName": "OMNIBUS"
+      "oldWarrantyHandlingDealerAssign": "204677",
+      "newWarrantyHandlingDealerAssign": "204677",
+      "dealership": "Regent RV - Townsville"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Owner to fit"
-      ],
-      "mappingName": "Owner to fit"
+      "oldWarrantyHandlingDealerAssign": "200035",
+      "newWarrantyHandlingDealerAssign": "200035",
+      "dealership": "The Caravan Hub - Townsville"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Perth Caravan Repair Centre"
-      ],
-      "mappingName": "Perth Caravan Repair Centre"
+      "oldWarrantyHandlingDealerAssign": "201223",
+      "newWarrantyHandlingDealerAssign": "201223",
+      "dealership": "Bendigo Caravan Group - Bendigo"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Regent RV - Frankston",
-        "REGENT RV Frankston"
-      ],
-      "mappingName": "Regent RV Frankston"
+      "oldWarrantyHandlingDealerAssign": "204025",
+      "newWarrantyHandlingDealerAssign": "204025",
+      "dealership": "Great Ocean Road RV & Caravans - Warrnambool"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Regent RV Perth 1739 Albany Hwy Kenwick WA"
-      ],
-      "mappingName": "Regent RV Perth 1739 Albany Hwy Kenwick WA"
+      "oldWarrantyHandlingDealerAssign": "3110",
+      "newWarrantyHandlingDealerAssign": "3110",
+      "dealership": "Regent RV Pty Ltd"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "RM Autos"
-      ],
-      "mappingName": "RM Autos"
+      "oldWarrantyHandlingDealerAssign": "200994",
+      "newWarrantyHandlingDealerAssign": "200994",
+      "dealership": "Mandurah Caravan & RV Centre"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Rockingham RV"
-      ],
-      "mappingName": "Rockingham RV"
+      "oldWarrantyHandlingDealerAssign": "3126",
+      "newWarrantyHandlingDealerAssign": "3126",
+      "dealership": "Snowy River Launceston"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Signature Caravan Repair Perth"
-      ],
-      "mappingName": "Signature Caravan Repair Perth"
+      "oldWarrantyHandlingDealerAssign": "3133",
+      "newWarrantyHandlingDealerAssign": "3133",
+      "dealership": "Lesiure Lion - New Castle"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Signature Caravan Repairs"
-      ],
-      "mappingName": "Signature Caravan Repairs"
+      "oldWarrantyHandlingDealerAssign": "3128",
+      "newWarrantyHandlingDealerAssign": "3128",
+      "dealership": "Snowy River Geelong"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River"
-      ],
-      "mappingName": "Snowy River"
+      "oldWarrantyHandlingDealerAssign": "503201",
+      "newWarrantyHandlingDealerAssign": "503201",
+      "dealership": "NEWCASTLE CARAVANS & RVS"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River Caravans"
-      ],
-      "mappingName": "Snowy River Caravans"
+      "oldWarrantyHandlingDealerAssign": "503257",
+      "newWarrantyHandlingDealerAssign": "503257",
+      "dealership": "Destiny RV(Snowy River Adelaide)"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River Caravans Frankston"
-      ],
-      "mappingName": "Snowy River Caravans Frankston"
+      "oldWarrantyHandlingDealerAssign": "3138",
+      "newWarrantyHandlingDealerAssign": "3138",
+      "dealership": "Leisure Lion - Bundaberg"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River Caravans Geelong"
-      ],
-      "mappingName": "Snowy River Caravans Geelong"
+      "oldWarrantyHandlingDealerAssign": "504620",
+      "newWarrantyHandlingDealerAssign": "504620",
+      "dealership": "Snowy River Wangaratta"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River caravans perth",
-        "Snowy River Caravans Perth"
-      ],
-      "mappingName": "Snowy River Caravans Perth"
+      "oldWarrantyHandlingDealerAssign": "505014",
+      "newWarrantyHandlingDealerAssign": "505014",
+      "dealership": "Caravans WA"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River Caravans Traralgon",
-        "Snowy river caravans Traralgon"
-      ],
-      "mappingName": "Snowy River Caravans Traralgon"
+      "oldWarrantyHandlingDealerAssign": "505491",
+      "newWarrantyHandlingDealerAssign": "505491",
+      "dealership": "Motorhub Ltd"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River Frankston"
-      ],
-      "mappingName": "Snowy River Frankston"
+      "oldWarrantyHandlingDealerAssign": "506060",
+      "newWarrantyHandlingDealerAssign": "506060",
+      "dealership": "Vanari Caravans - Christchurch"
     },
     {
       "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River Geelong",
-        "SNOWY RIVER GEELONG"
-      ],
-      "mappingName": "Snowy River Geelong"
-    },
-    {
-      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River Launceston",
-        "Snowyriver Launceston",
-        "SRC Launceston"
-      ],
-      "mappingName": "Snowy River Launceston"
-    },
-    {
-      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "SNNOWY RIVER PERTH",
-        "Snow River Perth",
-        "Snowy Rive Perth",
-        "Snowy River Pert",
-        "Snowy River Perth",
-        "SNOWY RIVER PERTH",
-        "Snowy river perth",
-        "Snowy River perth",
-        "Snowy river Perth",
-        "Snowy RIVER pERTH",
-        "snowy river perth",
-        "SRC PERTH",
-        "SRC perth",
-        "SRC Perth"
-      ],
-      "mappingName": "Snowy River Perth"
-    },
-    {
-      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River Service"
-      ],
-      "mappingName": "Snowy River Service"
-    },
-    {
-      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River Somerton"
-      ],
-      "mappingName": "Snowy River Somerton"
-    },
-    {
-      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River Toowoomba"
-      ],
-      "mappingName": "Snowy River Toowoomba"
-    },
-    {
-      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River Traralgon",
-        "Snowy river Traralgon"
-      ],
-      "mappingName": "Snowy River Traralgon"
-    },
-    {
-      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River Wangaratta",
-        "SNOWY RIVER WANGARATTA"
-      ],
-      "mappingName": "Snowy River Wangaratta"
-    },
-    {
-      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "Snowy River Western Junction Tasmania 7212"
-      ],
-      "mappingName": "Snowy River Western Junction Tasmania 7212"
-    },
-    {
-      "repairShopC4C": "SNOWY RIVER RV PTY LTD Repairs",
-      "repairerBusinessNameVariants": [
-        "The RV Repair Centre"
-      ],
-      "mappingName": "The RV Repair Centre"
+      "oldWarrantyHandlingDealerAssign": "3151",
+      "newWarrantyHandlingDealerAssign": "3151",
+      "dealership": "Regent RV - Frankston"
     }
   ]
 }

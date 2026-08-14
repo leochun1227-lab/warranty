@@ -3778,8 +3778,29 @@ body{
 
 /* Clean executive layout: one full-width flow, seven KPI cards, neutral business styling */
 .dashboardFullFlow{display:block!important;grid-template-columns:1fr!important;gap:0!important;margin-bottom:18px!important}
-.main>.pageTop{justify-content:flex-end!important;margin-bottom:14px!important}
-.main>.pageTop .pageTitleWrap{display:none!important}
+.main>.pageTop{
+  justify-content:space-between!important;
+  align-items:flex-start!important;
+  gap:18px!important;
+  margin-bottom:18px!important;
+  padding:2px 0 4px!important;
+}
+.main>.pageTop .pageTitleWrap{
+  display:flex!important;
+  max-width:720px!important;
+}
+.main>.pageTop .pageTitle{
+  font-size:31px!important;
+  line-height:1.08!important;
+  font-weight:700!important;
+  color:#0f172a!important;
+  letter-spacing:0!important;
+  margin:0!important;
+}
+.main>.pageTop .topActions{
+  flex:0 1 auto!important;
+  min-width:0!important;
+}
 .dashboardFullFlow .dashboardMain{display:flex!important;flex-direction:column!important;gap:16px!important;min-width:0!important}
 .dashboardFullFlow .teamKpiGrid{display:grid!important;grid-template-columns:repeat(6,minmax(126px,1fr))!important;gap:10px!important;margin:0!important;align-items:stretch!important}
 .dashboardFullFlow .teamKpiGrid .kpi,.dashboardFullFlow .teamKpiGrid .kpi:nth-child(n+5){grid-column:auto!important;min-height:128px!important;padding:12px 12px 10px!important;border-radius:10px!important;border:1px solid #d9e1ea!important;background:#fff!important;background-image:none!important;box-shadow:0 8px 18px rgba(15,23,42,.045)!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;gap:4px!important;text-align:center!important}
@@ -3821,7 +3842,14 @@ body{
 .dashboardFullFlow .panel,.dashboardFullFlow .dealerRankPanel,.dashboardFullFlow .teamAssignPanel{border-radius:12px!important;border-color:#d9e1ea!important;background:#fff!important;box-shadow:0 10px 24px rgba(15,23,42,.045)!important}
 .dashboardFullFlow .trendLogGrid{display:grid!important;grid-template-columns:minmax(0,1.22fr) minmax(430px,.88fr)!important;gap:16px!important;margin:0!important;align-items:stretch!important}
 .dashboardFullFlow .trendPanel,.dashboardFullFlow .repairCostPanel{margin:0!important;min-height:0!important}
-.dashboardFullFlow .trendPanel .chartWrap{height:300px!important}
+.dashboardFullFlow .trendPanel{
+  overflow:visible!important;
+}
+.dashboardFullFlow .trendPanel .chartWrap{
+  height:340px!important;
+  min-height:340px!important;
+  overflow:visible!important;
+}
 .dashboardFullFlow .trendSupportGrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important;margin:0!important}
 .dashboardFullFlow .trendSupportGrid .panel{min-height:260px!important;margin:0!important;display:flex!important;flex-direction:column!important}
 .dashboardFullFlow .trendSupportGrid .speedRows,.dashboardFullFlow .trendSupportGrid #statusMix{flex:1!important}
@@ -3930,7 +3958,7 @@ body{
 .teamAssignPanel .employeeWorkloadBody{padding:0 20px 20px!important}
 .employeeToggleHint{display:none!important}
 @media(max-width:1100px){.dashboardFullFlow .teamKpiGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.dashboardFullFlow .dealerCriticalList{grid-template-columns:repeat(2,minmax(0,1fr))!important}.dashboardFullFlow .trendSupportGrid{grid-template-columns:1fr!important}}
-@media(max-width:900px){.dashboardFullFlow .teamKpiGrid,.dashboardFullFlow .trendLogGrid,.dashboardFullFlow .trendSupportGrid,.dashboardFullFlow .dealerCriticalList{grid-template-columns:1fr!important}.dashboardFullFlow .trendSupportGrid .repairCostDistributionPanel .repairCostPie,.dashboardFullFlow .trendSupportGrid .statusMixPanel .statusPieLayout{flex-wrap:wrap!important}.dashboardFullFlow .trendSupportGrid .repairCostDistributionPanel .statusPieWrap,.dashboardFullFlow .trendSupportGrid .statusMixPanel .statusPieWrap{margin:0 auto!important}.dashboardFullFlow .trendSupportGrid .repairCostDistributionPanel .statusPieLegend,.dashboardFullFlow .trendSupportGrid .statusMixPanel .statusPieLegend{max-width:100%!important}}
+@media(max-width:900px){.main>.pageTop{display:grid!important;grid-template-columns:1fr!important}.dashboardFullFlow .teamKpiGrid,.dashboardFullFlow .trendLogGrid,.dashboardFullFlow .trendSupportGrid,.dashboardFullFlow .dealerCriticalList{grid-template-columns:1fr!important}.dashboardFullFlow .trendPanel .chartWrap{height:360px!important}.dashboardFullFlow .trendSupportGrid .repairCostDistributionPanel .repairCostPie,.dashboardFullFlow .trendSupportGrid .statusMixPanel .statusPieLayout{flex-wrap:wrap!important}.dashboardFullFlow .trendSupportGrid .repairCostDistributionPanel .statusPieWrap,.dashboardFullFlow .trendSupportGrid .statusMixPanel .statusPieWrap{margin:0 auto!important}.dashboardFullFlow .trendSupportGrid .repairCostDistributionPanel .statusPieLegend,.dashboardFullFlow .trendSupportGrid .statusMixPanel .statusPieLegend{max-width:100%!important}}
 
 /* Screenshot tuning: keep the same layout, but tighten cards and lift small labels. */
 .dashboardFullFlow .dashboardMain{
@@ -4076,7 +4104,7 @@ body{
   </aside>
   <main class="main">
     <div class="pageTop">
-      <div class="pageTitleWrap"><h1 class="pageTitle">Warranty Team (Month to Month)</h1><span class="pageTitleNote" id="pageTitleNote">--</span></div>
+      <div class="pageTitleWrap"><h1 class="pageTitle">Warranty Team Dashboard</h1><span class="pageTitleNote" id="pageTitleNote">--</span></div>
       <div class="topActions"><input id="dateFrom" type="hidden"><input id="dateTo" type="hidden"><div id="claimSwitch" class="sidebarFilters"></div></div>
     </div>
     <div id="loadError" class="error"></div>

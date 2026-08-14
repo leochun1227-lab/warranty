@@ -189,7 +189,16 @@ def load_ticket_month_scope():
                     or parse_date(row.get("Approved Date"))
                 )
                 scope = ticket_claim_scope(row)
-                existing = attrs.setdefault(ticket_id, {"month": "", "approvedMonth": "", "scope": "OTHER", "hasPgi": False})
+                existing = attrs.setdefault(ticket_id, {
+                    "month": "",
+                    "approvedMonth": "",
+                    "createdDate": "",
+                    "approvedDate": "",
+                    "scope": "OTHER",
+                    "hasPgi": False,
+                    "pgiDate": "",
+                    "goodReceiveDate": "",
+                })
                 created_month = month_key_for_date(created)
                 approved_month = month_key_for_date(approved)
                 pgi_date = (
@@ -197,14 +206,27 @@ def load_ticket_month_scope():
                     or parse_date(row.get("Delivery Date"))
                     or parse_date(row.get("Dispatch Date"))
                 )
+                good_receive_date = (
+                    parse_date(row.get("Good Receive Date"))
+                    or parse_date(row.get("Goods Receipt Date"))
+                    or parse_date(row.get("GR Date"))
+                )
                 if created_month and not existing.get("month"):
                     existing["month"] = created_month
+                if created and not existing.get("createdDate"):
+                    existing["createdDate"] = created.isoformat()
                 if approved_month and not existing.get("approvedMonth"):
                     existing["approvedMonth"] = approved_month
+                if approved and not existing.get("approvedDate"):
+                    existing["approvedDate"] = approved.isoformat()
                 if existing.get("scope") == "OTHER" and scope != "OTHER":
                     existing["scope"] = scope
                 if pgi_date:
                     existing["hasPgi"] = True
+                    if not existing.get("pgiDate"):
+                        existing["pgiDate"] = pgi_date.isoformat()
+                if good_receive_date and not existing.get("goodReceiveDate"):
+                    existing["goodReceiveDate"] = good_receive_date.isoformat()
     return attrs, source_paths[0] if source_paths else None
 
 
@@ -449,27 +471,40 @@ def get_value(row, index_map, key):
     return row[idx]
 
 
-def add_component(bucket, ticket_id, category, cost):
+def add_component(bucket, ticket_id, category, cost, series=""):
     bucket["lineItems"] += 1
     bucket["tickets"].add(ticket_id)
     bucket["cost"] += cost
     if category:
         bucket["categories"][category] += 1
+    series_key = normalize_series_code(series or "")
+    if series_key:
+        bucket["seriesTickets"][series_key].add(ticket_id)
+        bucket["seriesLineItems"][series_key] += 1
+        bucket["seriesCost"][series_key] += cost
 
 
 def component_bucket():
-    return {"lineItems": 0, "tickets": set(), "cost": 0.0, "categories": Counter()}
+    return {
+        "lineItems": 0,
+        "tickets": set(),
+        "cost": 0.0,
+        "categories": Counter(),
+        "seriesTickets": defaultdict(set),
+        "seriesLineItems": Counter(),
+        "seriesCost": Counter(),
+    }
 
 
 def aggregate_bucket():
     return {"lineItems": 0, "tickets": set(), "cost": 0.0, "components": defaultdict(component_bucket)}
 
 
-def add_to_aggregate(bucket, component_label, ticket_id, category, cost):
+def add_to_aggregate(bucket, component_label, ticket_id, category, cost, series=""):
     bucket["lineItems"] += 1
     bucket["tickets"].add(ticket_id)
     bucket["cost"] += cost
-    add_component(bucket["components"][component_label], ticket_id, category, cost)
+    add_component(bucket["components"][component_label], ticket_id, category, cost, series)
 
 
 def finalize_bucket(bucket, total_tickets, total_cost, total_line_items=None):
@@ -488,9 +523,53 @@ def finalize_bucket(bucket, total_tickets, total_cost, total_line_items=None):
             "ticketShare": round(len(stat["tickets"]) / total_tickets, 6) if total_tickets else 0,
             "lineShare": round(stat["lineItems"] / total_line_items, 6) if total_line_items else 0,
             "costShare": round(stat["cost"] / total_cost, 6) if total_cost else 0,
+            "series": {
+                series: {
+                    "tickets": len(tickets),
+                    "lineItems": int(stat.get("seriesLineItems", {}).get(series) or 0),
+                    "cost": round(float(stat.get("seriesCost", {}).get(series) or 0.0), 3),
+                }
+                for series, tickets in sorted((stat.get("seriesTickets") or {}).items(), key=lambda item: series_sort_key(item[0]))
+            },
         })
     items.sort(key=lambda item: (-item["tickets"], -item["lineItems"], -item["cost"], item["component"]))
     return items[:10]
+
+
+def top_component_coverage(components, top_items):
+    ticket_ids = set()
+    line_items = 0
+    cost = 0.0
+    series_ticket_ids = defaultdict(set)
+    series_line_items = Counter()
+    series_cost = Counter()
+    for item in top_items:
+        stat = components.get(item.get("component")) if components else None
+        if not stat:
+            continue
+        ticket_ids.update(stat.get("tickets") or set())
+        line_items += int(stat.get("lineItems") or 0)
+        cost += float(stat.get("cost") or 0.0)
+        for series, tickets in (stat.get("seriesTickets") or {}).items():
+            series_ticket_ids[series].update(tickets or set())
+        for series, count in (stat.get("seriesLineItems") or {}).items():
+            series_line_items[series] += int(count or 0)
+        for series, value in (stat.get("seriesCost") or {}).items():
+            series_cost[series] += float(value or 0.0)
+    return {
+        "components": len(top_items),
+        "tickets": len(ticket_ids),
+        "lineItems": line_items,
+        "cost": round(cost, 3),
+        "series": {
+            series: {
+                "tickets": len(tickets),
+                "lineItems": int(series_line_items.get(series) or 0),
+                "cost": round(float(series_cost.get(series) or 0.0), 3),
+            }
+            for series, tickets in sorted(series_ticket_ids.items(), key=lambda item: series_sort_key(item[0]))
+        },
+    }
 
 
 def finalize_aggregate(bucket):
@@ -499,11 +578,17 @@ def finalize_aggregate(bucket):
     total_tickets = len(bucket["tickets"])
     total_line_items = bucket["lineItems"]
     total_cost = bucket["cost"]
+    components = bucket["components"]
+    top_by_tickets = finalize_bucket(components, total_tickets, total_cost, total_line_items)
     return {
         "lineItems": total_line_items,
         "tickets": total_tickets,
         "cost": round(total_cost, 3),
-        "topComponents": finalize_bucket(bucket["components"], total_tickets, total_cost, total_line_items),
+        "topComponents": top_by_tickets,
+        "topComponentsByTickets": top_by_tickets,
+        "topComponentCoverage": {
+            "tickets": top_component_coverage(components, top_by_tickets),
+        },
     }
 
 
@@ -527,6 +612,7 @@ def make_derived_month_bucket():
         "scopeCost": {"PRE": 0.0, "FIELD": 0.0, "OTHER": 0.0},
         "_ticketIds": set(),
         "_scopeIds": {"PRE": set(), "FIELD": set(), "OTHER": set()},
+        "_failureTickets": {"ALL": {}, "PRE": {}, "FIELD": {}, "OTHER": {}},
     }
 
 
@@ -560,6 +646,35 @@ def finalize_derived_month_bucket(bucket):
         "FIELD": round(float(scope_cost.get("FIELD") or 0.0), 3),
         "OTHER": round(float(scope_cost.get("OTHER") or 0.0), 3),
     }
+    failure_tickets = bucket.pop("_failureTickets", {}) or {}
+    failure_payload = {}
+    for scope in ("ALL", "PRE", "FIELD", "OTHER"):
+        rows = list((failure_tickets.get(scope) or {}).values())
+        ages = [float(row.get("ageDays")) for row in rows if row.get("ageDays") is not None]
+        pgi_counts = Counter(clean(row.get("pgiDate")) for row in rows if clean(row.get("pgiDate")))
+        pgi_month_counts = Counter(date_key[:7] for date_key in pgi_counts.elements() if len(date_key) >= 7)
+        matched = sum(pgi_counts.values())
+        pgi_months = [
+            {
+                "month": month_key,
+                "tickets": count,
+                "share": round(count / matched, 6) if matched else 0,
+            }
+            for month_key, count in sorted(pgi_month_counts.items(), key=lambda item: (-item[1], item[0]))
+        ]
+        failure_payload[scope] = {
+            "tickets": len(rows),
+            "pgiMatchedTickets": matched,
+            "avgFailureDays": round(sum(ages) / len(ages), 1) if ages else None,
+            "minFailureDays": round(min(ages), 1) if ages else None,
+            "maxFailureDays": round(max(ages), 1) if ages else None,
+            "topPgiMonths": pgi_months[:5],
+            "pgiMonthCounts": {
+                month_key: count
+                for month_key, count in sorted(pgi_month_counts.items())
+            },
+        }
+    bucket["failureAge"] = failure_payload
     return bucket
 
 
@@ -778,6 +893,7 @@ def main():
     monthly_rows = 0
     approved_monthly_rows = 0
     monthly_missing_ticket_attrs = 0
+    missing_pgi_rows = 0
 
     parts_headers = None
     parts_index = {}
@@ -804,9 +920,11 @@ def main():
             excluded_rows += 1
             continue
         attrs = ticket_month_scope.get(ticket_id)
-        if not attrs or not attrs.get("hasPgi"):
+        if not attrs:
             excluded_rows += 1
             continue
+        if not attrs.get("hasPgi"):
+            missing_pgi_rows += 1
         included_rows += 1
 
         keyword = clean(get_value(row, parts_index, "Matched Keyword"))
@@ -817,8 +935,8 @@ def main():
         material_qty = parse_amount(get_value(row, parts_index, "Order Qty"))
         total_cost += cost
 
-        add_component(parts_stats_all[component_label], ticket_id, category, cost)
-        add_component(parts_stats_by_series[series][component_label], ticket_id, category, cost)
+        add_component(parts_stats_all[component_label], ticket_id, category, cost, series)
+        add_component(parts_stats_by_series[series][component_label], ticket_id, category, cost, series)
 
         month_by_basis = {
             "CREATED": attrs.get("month") if attrs else "",
@@ -847,6 +965,16 @@ def main():
                 if ticket_id:
                     month_bucket["_ticketIds"].add(ticket_id)
                     month_bucket["_scopeIds"].setdefault(claim_scope, set()).add(ticket_id)
+                    created_date = parse_date(attrs.get("createdDate") if attrs else "")
+                    pgi_date = parse_date(attrs.get("pgiDate") if attrs else "")
+                    if created_date and pgi_date:
+                        failure_row = {
+                            "ageDays": (created_date - pgi_date).days,
+                            "pgiDate": pgi_date.isoformat(),
+                        }
+                        scope_for_failure = claim_scope if claim_scope in {"PRE", "FIELD", "OTHER"} else "OTHER"
+                        month_bucket["_failureTickets"].setdefault("ALL", {})[ticket_id] = failure_row
+                        month_bucket["_failureTickets"].setdefault(scope_for_failure, {})[ticket_id] = failure_row
         for basis, month in month_by_basis.items():
             if not month:
                 continue
@@ -858,19 +986,24 @@ def main():
             aggs = date_basis_aggs[basis]
             scope_keys = ["ALL", claim_scope if claim_scope in {"PRE", "FIELD", "OTHER"} else "OTHER"]
             for scope_key in dict.fromkeys(scope_keys):
-                add_to_aggregate(aggs["scope_totals"][scope_key], component_label, ticket_id, category, cost)
-                add_to_aggregate(aggs["scope_series_totals"][scope_key][series], component_label, ticket_id, category, cost)
-                add_to_aggregate(aggs["month_totals"][(scope_key, month)], component_label, ticket_id, category, cost)
-                add_to_aggregate(aggs["month_series_totals"][(scope_key, month)][series], component_label, ticket_id, category, cost)
-                add_to_aggregate(aggs["year_totals"][(scope_key, year)], component_label, ticket_id, category, cost)
-                add_to_aggregate(aggs["year_series_totals"][(scope_key, year)][series], component_label, ticket_id, category, cost)
+                add_to_aggregate(aggs["scope_totals"][scope_key], component_label, ticket_id, category, cost, series)
+                add_to_aggregate(aggs["scope_series_totals"][scope_key][series], component_label, ticket_id, category, cost, series)
+                add_to_aggregate(aggs["month_totals"][(scope_key, month)], component_label, ticket_id, category, cost, series)
+                add_to_aggregate(aggs["month_series_totals"][(scope_key, month)][series], component_label, ticket_id, category, cost, series)
+                add_to_aggregate(aggs["year_totals"][(scope_key, year)], component_label, ticket_id, category, cost, series)
+                add_to_aggregate(aggs["year_series_totals"][(scope_key, year)][series], component_label, ticket_id, category, cost, series)
 
     total_tickets_all = len({ticket for stat in parts_stats_all.values() for ticket in stat["tickets"]})
+    overall_top_by_tickets = finalize_bucket(parts_stats_all, total_tickets_all, total_cost, included_rows)
     overall = {
         "lineItems": included_rows,
         "tickets": total_tickets_all,
         "cost": round(total_cost, 3),
-        "topComponents": finalize_bucket(parts_stats_all, total_tickets_all, total_cost, included_rows),
+        "topComponents": overall_top_by_tickets,
+        "topComponentsByTickets": overall_top_by_tickets,
+        "topComponentCoverage": {
+            "tickets": top_component_coverage(parts_stats_all, overall_top_by_tickets),
+        },
     }
 
     series_payload = {}
@@ -883,11 +1016,16 @@ def main():
         ticket_total = len({ticket for stat in bucket.values() for ticket in stat["tickets"]})
         series_cost = sum(stat["cost"] for stat in bucket.values())
         series_line_items = sum(stat["lineItems"] for stat in bucket.values())
+        series_top_by_tickets = finalize_bucket(bucket, ticket_total, series_cost, series_line_items)
         series_payload[series] = {
             "lineItems": series_line_items,
             "tickets": ticket_total,
             "cost": round(series_cost, 3),
-            "topComponents": finalize_bucket(bucket, ticket_total, series_cost, series_line_items),
+            "topComponents": series_top_by_tickets,
+            "topComponentsByTickets": series_top_by_tickets,
+            "topComponentCoverage": {
+                "tickets": top_component_coverage(bucket, series_top_by_tickets),
+            },
         }
 
     date_basis_scopes = {
@@ -915,6 +1053,7 @@ def main():
             "seriesCount": len(series_payload),
             "unmatchedRows": unmatched_rows,
             "excludedRows": excluded_rows,
+            "missingPgiRows": missing_pgi_rows,
             "partsSource": relative_path(parts_csv_path),
             "ticketMapSource": relative_path(PARTS_TICKET_MAP),
             "vehicleBaseSource": relative_path(VEHICLE_BASE_SUMMARY) if VEHICLE_BASE_SUMMARY.exists() else "",
@@ -937,6 +1076,7 @@ def main():
         "includedPartsRows": included_rows,
         "mappedTickets": total_tickets_all,
         "seriesCount": len(series_payload),
+        "missingPgiRows": missing_pgi_rows,
         "partsSource": relative_path(parts_csv_path),
         "ticketMapSource": relative_path(PARTS_TICKET_MAP),
         "vehicleBaseSource": relative_path(VEHICLE_BASE_SUMMARY) if VEHICLE_BASE_SUMMARY.exists() else "",
