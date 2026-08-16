@@ -3196,7 +3196,7 @@
 }
 .pageTop .sidebarFilters{
   display:grid!important;
-  grid-template-columns:132px 190px auto!important;
+  grid-template-columns:160px 220px auto!important;
   align-items:end!important;
   gap:9px!important;
   padding:9px 11px!important;
@@ -3347,7 +3347,7 @@
   }
   .pageTop .sidebarFilters{
     display:grid!important;
-    grid-template-columns:minmax(120px,1fr) minmax(150px,1.2fr) auto!important;
+    grid-template-columns:minmax(160px,1fr) minmax(190px,1.2fr) auto!important;
   }
 }
 @media(max-width:760px){
@@ -3843,12 +3843,12 @@ body{
 .dashboardFullFlow .trendLogGrid{display:grid!important;grid-template-columns:minmax(0,1.22fr) minmax(430px,.88fr)!important;gap:16px!important;margin:0!important;align-items:stretch!important}
 .dashboardFullFlow .trendPanel,.dashboardFullFlow .repairCostPanel{margin:0!important;min-height:0!important}
 .dashboardFullFlow .trendPanel{
-  overflow:visible!important;
+  overflow:hidden!important;
 }
 .dashboardFullFlow .trendPanel .chartWrap{
-  height:340px!important;
-  min-height:340px!important;
-  overflow:visible!important;
+  height:400px!important;
+  min-height:400px!important;
+  overflow:hidden!important;
 }
 .dashboardFullFlow .trendSupportGrid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important;margin:0!important}
 .dashboardFullFlow .trendSupportGrid .panel{min-height:260px!important;margin:0!important;display:flex!important;flex-direction:column!important}
@@ -3958,7 +3958,7 @@ body{
 .teamAssignPanel .employeeWorkloadBody{padding:0 20px 20px!important}
 .employeeToggleHint{display:none!important}
 @media(max-width:1100px){.dashboardFullFlow .teamKpiGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.dashboardFullFlow .dealerCriticalList{grid-template-columns:repeat(2,minmax(0,1fr))!important}.dashboardFullFlow .trendSupportGrid{grid-template-columns:1fr!important}}
-@media(max-width:900px){.main>.pageTop{display:grid!important;grid-template-columns:1fr!important}.dashboardFullFlow .teamKpiGrid,.dashboardFullFlow .trendLogGrid,.dashboardFullFlow .trendSupportGrid,.dashboardFullFlow .dealerCriticalList{grid-template-columns:1fr!important}.dashboardFullFlow .trendPanel .chartWrap{height:360px!important}.dashboardFullFlow .trendSupportGrid .repairCostDistributionPanel .repairCostPie,.dashboardFullFlow .trendSupportGrid .statusMixPanel .statusPieLayout{flex-wrap:wrap!important}.dashboardFullFlow .trendSupportGrid .repairCostDistributionPanel .statusPieWrap,.dashboardFullFlow .trendSupportGrid .statusMixPanel .statusPieWrap{margin:0 auto!important}.dashboardFullFlow .trendSupportGrid .repairCostDistributionPanel .statusPieLegend,.dashboardFullFlow .trendSupportGrid .statusMixPanel .statusPieLegend{max-width:100%!important}}
+@media(max-width:900px){.main>.pageTop{display:grid!important;grid-template-columns:1fr!important}.dashboardFullFlow .teamKpiGrid,.dashboardFullFlow .trendLogGrid,.dashboardFullFlow .trendSupportGrid,.dashboardFullFlow .dealerCriticalList{grid-template-columns:1fr!important}.dashboardFullFlow .trendPanel .chartWrap{height:410px!important;min-height:410px!important}.dashboardFullFlow .trendSupportGrid .repairCostDistributionPanel .repairCostPie,.dashboardFullFlow .trendSupportGrid .statusMixPanel .statusPieLayout{flex-wrap:wrap!important}.dashboardFullFlow .trendSupportGrid .repairCostDistributionPanel .statusPieWrap,.dashboardFullFlow .trendSupportGrid .statusMixPanel .statusPieWrap{margin:0 auto!important}.dashboardFullFlow .trendSupportGrid .repairCostDistributionPanel .statusPieLegend,.dashboardFullFlow .trendSupportGrid .statusMixPanel .statusPieLegend{max-width:100%!important}}
 
 /* Screenshot tuning: keep the same layout, but tighten cards and lift small labels. */
 .dashboardFullFlow .dashboardMain{
@@ -5604,9 +5604,56 @@ function renderClaimButtons(){
 }
 function currentView(){const key=canonicalClaimKey(activeClaim);return (team.views&&team.views[key]) || (team.views&&team.views[activeClaim]) || team.views?.all || team;}
 function pythonDashboardKpis(){const view=currentView()||{};return view.dashboardKpis||(view.summary&&view.summary.dashboardKpis)||{}}
+function ticketMovementBridgeTrendPoints(start,end){
+  if(!start||!end||end<start)return [];
+  const fullBridge=ticketMovementBridge(start,end);
+  const openingDate=fullBridge.openingDate||addDaysISO(start,-1);
+  const rows=[{
+    date:openingDate,
+    periodStart:start,
+    periodEnd:openingDate,
+    displayLabel:"Opening",
+    criticalTotal:Number(fullBridge.opening||0),
+    enteredCritical:0,
+    exitedCritical:0,
+    newCreatedTickets:0,
+    reenteredTickets:0,
+    approvedRemoved:0,
+    unapprovedRemoved:0,
+    otherReview:0,
+    formulaDifference:0,
+    isOpeningPoint:true,
+    bridgeCumulative:true,
+    granularity:"daily"
+  }];
+  for(let d=start;d&&d<=end;d=addDaysISO(d,1)){
+    const bridge=ticketMovementBridge(start,d);
+    rows.push({
+      date:d,
+      periodStart:start,
+      periodEnd:d,
+      criticalTotal:Number(bridge.ending||0),
+      enteredCritical:Number(bridge.addedToWaiting||0),
+      exitedCritical:Number(bridge.removed||0),
+      newCreatedTickets:Number(bridge.newClaims||0),
+      reenteredTickets:Number(bridge.reentered||0),
+      approvedRemoved:Number(bridge.approvedRemoved||0),
+      unapprovedRemoved:Number(bridge.unapprovedRemoved||0),
+      otherReview:Number(bridge.otherReview||0),
+      formulaDifference:Number(bridge.formulaDifference||0),
+      bridgeCumulative:true,
+      granularity:"daily"
+    });
+  }
+  return rows;
+}
 function selectedTrend(){
   const view=currentView();
   const from=$("dateFrom").value,to=$("dateTo").value;
+  if(activePeriod!=="day"&&ticketMovementFallbackDetailsReady()){
+    const bounds=periodBounds();
+    return ticketMovementBridgeTrendPoints(bounds.start,bounds.end);
+  }
   const granularity=avgCostGranularity(from||earliestDateForView(),to||latestDateForView());
   const source=granularity==="monthly"?(view.ticketVolumeTrendMonthly||view.trendMonthly):(granularity==="weekly"?(view.ticketVolumeTrendWeekly||view.trendWeekly):(view.ticketVolumeTrendDaily||view.trendDaily||view.trend));
   const bridgeStart=from||periodStartDate(periodEndDate());
@@ -5728,7 +5775,7 @@ function drawTrend(){
     ctx.fillText("No trend data found for this date range.",w/2,h/2);
     return;
   }
-  const left=46,right=56,top=40,bottom=54,plotW=w-left-right,plotH=h-top-bottom;
+  const left=46,right=56,top=40,bottom=88,plotW=w-left-right,plotH=h-top-bottom;
   const cumulativeMax=niceMax(Math.max(1,...pts.flatMap(p=>[p.cumulativeEnteredCritical,p.cumulativeExitedCritical])));
   const criticalMax=niceMax(Math.max(1,...pts.map(p=>p.criticalTotal)));
   const xFor=i=>left+(pts.length<=1?plotW/2:plotW*i/(pts.length-1));
