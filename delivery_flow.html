@@ -1312,7 +1312,7 @@
     currentSummary: null,
   };
 
-  const DELIVERY_PAGE_CACHE_KEY = "delivery-flow-v10";
+  const DELIVERY_PAGE_CACHE_KEY = "delivery-flow-v11";
   const DELIVERY_SYNC_VERSION_URL = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/ticketSoSyncAt.json";
   async function deliveryPageVersion(){
     try{
@@ -1364,10 +1364,7 @@
       state.currentSummary = mergeCurrentSummary(state.currentSummary, liveSummary);
       render();
       saveDeliveryPageState(cacheVersion);
-      if (!hasMeaningfulLeadSeries(buildEffectiveMonthlyLeadSeries(latestHistory, state.currentSummary, state.currentTickets))){
-        return rebuildLeadSeriesFromLocalClassified(cacheVersion);
-      }
-      return true;
+      return rebuildLeadSeriesFromLocalClassified(cacheVersion);
     }).catch(err => {
       console.warn("Background current ticket load failed", err);
       return rebuildLeadSeriesFromLocalClassified(cacheVersion);
@@ -1379,7 +1376,9 @@
       const latestHistory = state.history[state.history.length - 1];
       const localSummary = buildCurrentTicketsSummary(rows, latestHistory);
       state.currentSummary = mergeCurrentSummary(state.currentSummary, localSummary);
-      if (!hasUsableTicketDetails(state.currentTickets)) state.currentTickets = rows;
+      if (!hasUsableTicketDetails(state.currentTickets) || currentDetailSeriesIsBetter(state.currentTickets, rows, latestHistory, "partsIssued")){
+        state.currentTickets = rows;
+      }
       render();
       saveDeliveryPageState(cacheVersion);
       return true;
@@ -2741,7 +2740,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         month: pickBetterSeries(baseSummary.seriesByGranularity?.month, liveSummary.seriesByGranularity?.month, "partsSelected"),
         year: pickBetterSeries(baseSummary.seriesByGranularity?.year, liveSummary.seriesByGranularity?.year, "partsSelected"),
       },
-      issuedSeriesMonth: pickBetterSeries(baseSummary.issuedSeriesMonth, liveSummary.issuedSeriesMonth, "partsIssued"),
+      issuedSeriesMonth: pickCurrentDetailSeries(baseSummary.issuedSeriesMonth, liveSummary.issuedSeriesMonth, "partsIssued"),
       issuedLeadSeriesMonth: pickBetterLeadSeries(baseSummary.issuedLeadSeriesMonth, liveSummary.issuedLeadSeriesMonth),
     };
   }
@@ -2790,6 +2789,18 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     const baseNonZero = countNonZeroSeries(base, key);
     const liveNonZero = countNonZeroSeries(live, key);
     return liveNonZero > baseNonZero ? live : base;
+  }
+  function pickCurrentDetailSeries(baseSeries, liveSeries, key){
+    const base = Array.isArray(baseSeries) ? baseSeries : [];
+    const live = Array.isArray(liveSeries) ? liveSeries : [];
+    if (!base.length) return live;
+    if (!live.length) return base;
+    return sumSeriesValues(live, key) > 0 ? live : base;
+  }
+  function currentDetailSeriesIsBetter(currentRows, candidateRows, latestHistory, key){
+    const currentSummary = buildCurrentTicketsSummary(currentRows, latestHistory);
+    const candidateSummary = buildCurrentTicketsSummary(candidateRows, latestHistory);
+    return sumSeriesValues(candidateSummary?.issuedSeriesMonth, key) > sumSeriesValues(currentSummary?.issuedSeriesMonth, key);
   }
   function pickBetterLeadSeries(baseSeries, liveSeries){
     const base = Array.isArray(baseSeries) ? baseSeries : [];
