@@ -567,7 +567,11 @@ function monthLong(m){const [y,mm]=clean(m).split("-").map(Number);if(!y||!mm)re
 function addMonths(m,delta){const [y,mm]=clean(m).split("-").map(Number);const d=new Date(Date.UTC(y||2025,(mm||1)-1,1));d.setUTCMonth(d.getUTCMonth()+delta);return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}`}
 function iterMonths(start,end){const out=[];let cur=start;if(!cur||!end||cur>end)return out;while(cur<=end){out.push(cur);cur=addMonths(cur,1)}return out}
 function currentMonthKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`}
-function latestCompleteMonth(){return addMonths(currentMonthKey(),-1)}
+function currentMonthHasSevenDaysOrLessRemaining(date=new Date()){
+  const daysInMonth=new Date(date.getFullYear(),date.getMonth()+1,0).getDate();
+  return daysInMonth-date.getDate()<=7;
+}
+function latestVisibleMonth(date=new Date()){return currentMonthHasSevenDaysOrLessRemaining(date)?currentMonthKey(date):addMonths(currentMonthKey(date),-1)}
 function moneyShort(v){const n=Number(v||0),abs=Math.abs(n);if(abs>=1_000_000)return `$${(n/1_000_000).toFixed(abs>=10_000_000?0:1)}m`;if(abs>=1_000)return `$${(n/1_000).toFixed(abs>=100_000?0:1)}k`;return moneyNum(n)}
 function niceCurrencyMax(maxRaw){
   if(!(maxRaw>0))return 1000;
@@ -669,7 +673,7 @@ function buildMonthly(view){
 function dataBounds(){
   const rawMonths=MONTHLY.map(r=>r.month);
   const rawMax=rawMonths[rawMonths.length-1]||HARD_MIN;
-  const max=rawMax>latestCompleteMonth()?latestCompleteMonth():rawMax;
+  const max=rawMax>latestVisibleMonth()?latestVisibleMonth():rawMax;
   const months=rawMonths.filter(m=>m<=max);
   return {min:months[0]||HARD_MIN,max:months[months.length-1]||HARD_MIN,years:[...new Set(months.map(m=>m.slice(0,4)))].sort()}
 }
@@ -1932,7 +1936,7 @@ function setupNav(){
 setupNav();
 window.addEventListener("load",()=>{const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);});
 
-const CLAIM_TREND_PAGE_CACHE_KEY="claim-trend-overview:approved-cost-v3-claimclosed-hidden";
+const CLAIM_TREND_PAGE_CACHE_KEY="claim-trend-overview:approved-cost-v6-current-month-last-seven-days";
 function finishInitialScroll(){const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);}
 (async()=>{
   let cacheVersion="";

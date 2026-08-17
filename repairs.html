@@ -4655,6 +4655,7 @@ let topRepairSort="ticket_count";
 // Client-side working copies (recomputed from details when rate changes)
 let workingSummary=null, workingRepairers=[], workingStates=[], workingWeekly=[], workingChassis=null;
 const REPAIR_COST_RULE_CACHE_SCHEMA="c4c-eligible-sap-po-authoritative-repairer-name-map-v12";
+const REPAIR_STATIC_ASSET_VERSION=`${REPAIR_COST_RULE_CACHE_SCHEMA}:${Date.now()}`;
 const REPAIR_PAGE_CACHE_KEY=`repairs:${selectedRepairYear}:${REPAIR_COST_RULE_CACHE_SCHEMA}`;
 const REPAIR_PAGE_CACHE_ENABLED=false;
 const REPAIR_COST_SANITY_MIN_AUD=50000;
@@ -4663,7 +4664,7 @@ let repairPageVersionPromise=null;
 let repairAnalysisFetchPromise=null;
 function repairStaticJsonUrl(path){
   const sep=String(path).includes("?")?"&":"?";
-  return `${path}${sep}v=${encodeURIComponent(REPAIR_COST_RULE_CACHE_SCHEMA)}`;
+  return `${path}${sep}v=${encodeURIComponent(REPAIR_STATIC_ASSET_VERSION)}`;
 }
 function loadRepairAnalysisJson(){
   if(!repairAnalysisFetchPromise){
