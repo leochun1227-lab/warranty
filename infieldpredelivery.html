@@ -315,11 +315,6 @@ body{
             <button id="singleModeBtn" class="modeBtn active" type="button">Single / Range</button>
             <button id="compareModeBtn" class="modeBtn" type="button">Year Compare</button>
           </div>
-          <div id="fieldSwitch" class="fieldSwitch" aria-label="Claim field filter">
-            <button id="fieldAllBtn" class="miniBtn active" type="button">All Fields</button>
-            <button id="fieldInBtn" class="miniBtn" type="button">In Field</button>
-            <button id="fieldPreBtn" class="miniBtn" type="button">Pre Delivery</button>
-          </div>
         </div>
         <div id="viewNote" class="viewNote"></div>
       </div>
@@ -1919,9 +1914,6 @@ function init(view,useCached=false,claimClosedIndex=null){
   $("clearRange").onclick=()=>{customRange=false;applyYear("");$("yearSelect").value="";syncControls();renderWithPageLoading(true,"Loading dashboard...")};
   $("singleModeBtn").onclick=()=>{viewMode="single";toggleModeButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
   $("compareModeBtn").onclick=()=>{viewMode="compare";toggleModeButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
-  $("fieldAllBtn").onclick=()=>{fieldMode="all";syncFieldButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
-  $("fieldInBtn").onclick=()=>{fieldMode="in";syncFieldButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
-  $("fieldPreBtn").onclick=()=>{fieldMode="pre";syncFieldButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
   $("applyCompare").onclick=()=>{
     compareYearA=$("compareYearA").value||compareYearA;
     compareYearB=$("compareYearB").value||compareYearB;
