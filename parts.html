@@ -1097,7 +1097,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         <div class="panel">
           <div class="panelHead">
             <div>
-              <h2 class="panelTitle">Top 10 Failure Components  -  <span id="compLabel">By Tickets</span></h2>
+              <h2 class="panelTitle">Top 10 Failure Components  -  <span id="compLabel">By Tickets CreatedOn</span></h2>
               <p class="panelDesc">Counts classified parts tickets only. Trend % compares the latest 3 complete ticket months with the previous 3 complete months. The current partial month is excluded.</p>
             </div>
             <button class="compDetailExportBtn" id="compDetailExportBtn" type="button" title="Export all 2026 tickets as CSV using Created On">
@@ -1226,6 +1226,26 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const TRACKED_SERIES = new Set(SERIES_ORDER.map(code => code.toUpperCase()));
   const EXCLUDED_SERIES = new Set(["UNKNOWN","RO","SR","SCR","STR","RVV","RR","SPV","SRO","SEV","RRC","VRV"]);
   const PARTS_REPORT_START_YEAR = 2025;
+  const LIVE_CREATED_START = "2026-01";
+  const CREATED_HISTORICAL = {
+    "2025-01":{FIELD:765,PRE:148},
+    "2025-02":{FIELD:740,PRE:119},
+    "2025-03":{FIELD:807,PRE:122},
+    "2025-04":{FIELD:709,PRE:161},
+    "2025-05":{FIELD:873,PRE:133},
+    "2025-06":{FIELD:864,PRE:154},
+    "2025-07":{FIELD:794,PRE:153},
+    "2025-08":{FIELD:784,PRE:179},
+    "2025-09":{FIELD:739,PRE:254},
+    "2025-10":{FIELD:870,PRE:193},
+    "2025-11":{FIELD:740,PRE:158},
+    "2025-12":{FIELD:672,PRE:164},
+    "2026-01":{FIELD:586,PRE:123},
+    "2026-02":{FIELD:885,PRE:169},
+    "2026-03":{FIELD:757,PRE:197},
+    "2026-04":{FIELD:790,PRE:177},
+    "2026-05":{FIELD:782,PRE:208}
+  };
   const CLAIM_SCOPES = {
     ALL: { label:"All Serial", key:"ALL" },
     PRE: { label:"Pre Delivery", key:"PRE" },
@@ -1271,6 +1291,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     partsIncludedTicketIds: null,   // Set<TicketID> aligned to outputs/analysis_parts_failure_summary.json
     partsTicketSeriesById: null,    // Map<TicketID, normalized series code>
     ticketRowById: null,            // Map<TicketID, ticket row from the full merged ticket pool>
+    ticketRowByIdSource: "",
+    firebaseTicketRowsCache: null,
     sourceRows: 0,
     sourceRowPool: [],
     seriesSort: { key:"vehicles", dir:"desc" },
@@ -1294,7 +1316,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   };
 
   const ANALYSIS_TIMEOUT_MS = 15000;
-  const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v27-created-on-only";
+  const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v28-created-on-raw-ticket-no-pdi";
   const ANALYSIS_PAGE_CACHE_KEY = `analysis:parts-failure-components:${ANALYSIS_PAGE_CACHE_SCHEMA}`;
   const ANALYSIS_PAGE_CACHE_ENABLED = true;
   function mapEntries(map){ return map instanceof Map ? Array.from(map.entries()) : []; }
@@ -1481,7 +1503,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if(overlay)overlay.classList.add("show");
     const refreshPartsCaches = Promise.all([
       loadPartsFailureSummary(),
-      loadPartsDerivedCache()
+      loadPartsDerivedCache(),
+      loadWarrantyMonthlyCounts()
     ]);
     refreshPartsCaches.then(()=>{
       render();
@@ -1872,9 +1895,20 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       row["Ticket Type"], row.TicketType, row.TicketTypeText,
       row["Ticket Type Text"], row.WarrantyClaimType, row["Warranty Claim Type"],
     ].map(clean).join(" ").toLowerCase();
-    if (text.includes("pre delivery") || text.includes("pre-delivery") || text.includes("predelivery") || text.includes("pdi")) return "PRE";
+    if (text.includes("pre delivery") || text.includes("pre-delivery") || text.includes("predelivery")) return "PRE";
     if (text.includes("in field") || text.includes("in-field") || text.includes("infield") || text.includes("field warranty")) return "FIELD";
     return "OTHER";
+  }
+
+  function isPdiClaim(row){
+    const code = clean(row?.TicketType || row?.["Ticket Type"]).toUpperCase();
+    const text = [
+      row?.["Claim Scope"], row?.ClaimScope, row?.claimScope,
+      row?.claimType, row?.ClaimType, row?.["Claim Type"],
+      row?.["Ticket Type"], row?.TicketType, row?.TicketTypeText,
+      row?.["Ticket Type Text"], row?.WarrantyClaimType, row?.["Warranty Claim Type"],
+    ].map(clean).join(" ").toLowerCase();
+    return code === "Z010" || text.includes("pdi");
   }
 
   function isExportableClaimScope(scope){
@@ -1882,6 +1916,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   function rowMatchesScope(row, scope = state.scope){
+    if (isPdiClaim(row)) return false;
     const series = extractSeries(row);
     if (isExcludedSeries(series)) return false;
     if (!isTrackedSeries(series)) return false;
@@ -2262,6 +2297,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   function buildWarrantyMonthlyCounts(approvalRows, createdRows){
     const approved = {};
     const created = {};
+    Object.entries(CREATED_HISTORICAL).forEach(([month, row]) => {
+      created[month] = monthCountBucket(row.FIELD, row.PRE);
+    });
     (Array.isArray(approvalRows) ? approvalRows : []).forEach(row => {
       const month = clean(row && row.month);
       if (!month) return;
@@ -2269,10 +2307,37 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     });
     (Array.isArray(createdRows) ? createdRows : []).forEach(row => {
       const month = clean(row && row.month);
-      if (!month) return;
+      if (!month || month < LIVE_CREATED_START) return;
       created[month] = monthCountBucket(row.inField, row.preDelivery);
     });
     return { approved, created };
+  }
+
+  function createdMonthlyRowsFromTickets(ticketRows){
+    const buckets = {};
+    const seen = new Set();
+    (Array.isArray(ticketRows) ? ticketRows : []).forEach(row => {
+      if (!row || typeof row !== "object") return;
+      if (isPdiClaim(row)) return;
+      const rowScope = claimScope(row);
+      if (rowScope !== "FIELD" && rowScope !== "PRE") return;
+      const created = parseDmy(
+        row["Created On"] || row.CreatedOn || row.createdOn ||
+        row["Ticket Created On"] || row.TicketCreatedOn ||
+        row.CreationDate || row.CreatedDate || row["Created Date"]
+      );
+      const month = partsMonthKeyFromDate(created);
+      if (!month) return;
+      const id = ticketExportId(row);
+      if (!id) return;
+      const key = `${month}|${id}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      if (!buckets[month]) buckets[month] = { month, inField:0, preDelivery:0 };
+      if (rowScope === "PRE") buckets[month].preDelivery += 1;
+      else buckets[month].inField += 1;
+    });
+    return Object.values(buckets).sort((a, b) => a.month.localeCompare(b.month));
   }
 
   async function loadWarrantyMonthlyCounts(){
@@ -2284,10 +2349,14 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       return Array.isArray(payload) ? payload : Object.values(payload || {});
     };
     try{
-      const [approvalRows, createdRows] = await Promise.all([
-        readMonthly("approvalClosedMonthly"),
-        readMonthly("claimCreatedMonthly"),
-      ]);
+      const approvalRows = await readMonthly("approvalClosedMonthly");
+      let createdRows = [];
+      if (!IS_FILE_CONTEXT) {
+        createdRows = createdMonthlyRowsFromTickets(await loadFirebaseTicketRowsForExport());
+      }
+      if (!createdRows.length) {
+        createdRows = await readMonthly("claimCreatedMonthly");
+      }
       state.warrantyMonthlyCounts = buildWarrantyMonthlyCounts(approvalRows, createdRows);
       return state.warrantyMonthlyCounts;
     }catch(err){
@@ -2750,6 +2819,22 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     return date ? `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}` : "";
   }
 
+  function currentMonthKey(date = new Date()){
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+  }
+
+  function addPartsMonths(monthKey, delta){
+    const parts = monthKeyParts(monthKey);
+    if (!parts) return monthKey;
+    const d = new Date(parts.y, parts.m, 1);
+    d.setMonth(d.getMonth() + delta);
+    return partsMonthKeyFromDate(d);
+  }
+
+  function latestCreatedVisibleMonth(date = new Date()){
+    return currentMonthKey(date);
+  }
+
   function partsMonthLabel(monthKey){
     if (monthKey === PARTS_MONTH_CURRENT_YEAR) return `${currentPartsYear()} All Months`;
     if (/^\d{4}$/.test(String(monthKey || ""))) return `${monthKey} All Months`;
@@ -2896,6 +2981,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     return state.partsMonth;
   }
 
+  function selectedPartsYear(month = selectedPartsMonth(), scope = componentScope()){
+    if (month === PARTS_MONTH_CURRENT_YEAR) return currentPartsYear(scope);
+    if (/^\d{4}$/.test(String(month || ""))) return Number(month);
+    const parts = monthKeyParts(month);
+    return parts ? parts.y : currentPartsYear(scope);
+  }
+
   function partsMonthMatchesLine(line, month = selectedPartsMonth()){
     if (month === "ALL") return true;
     const date = classifiedRowDate(line);
@@ -2928,15 +3020,17 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     };
     if (month === PARTS_MONTH_CURRENT_YEAR) {
       const year = String(currentPartsYear());
+      const latestVisible = latestCreatedVisibleMonth();
       const total = Object.keys(byMonth)
-        .filter(key => key.slice(0,4) === year)
+        .filter(key => key.slice(0,4) === year && key <= latestVisible)
         .reduce((sum, key) => sum + (valueFor(key) || 0), 0);
       return total || null;
     }
     if (/^\d{4}$/.test(String(month || ""))) {
       const year = String(month);
+      const latestVisible = Number(year) === new Date().getFullYear() ? latestCreatedVisibleMonth() : `${year}-12`;
       const total = Object.keys(byMonth)
-        .filter(key => key.slice(0,4) === year)
+        .filter(key => key.slice(0,4) === year && key <= latestVisible)
         .reduce((sum, key) => sum + (valueFor(key) || 0), 0);
       return total || null;
     }
@@ -2945,6 +3039,33 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       return total || null;
     }
     return valueFor(month);
+  }
+
+  function fallbackCreatedTicketCountForYear(year = selectedPartsYear(), scope = componentScope()){
+    const seen = new Set();
+    const latestVisible = Number(year) === new Date().getFullYear() ? latestCreatedVisibleMonth() : `${year}-12`;
+    const add = row => {
+      if (!row || typeof row !== "object") return;
+      if (isPdiClaim(row)) return;
+      const created = parseDmy(row["Created On"] || row.CreatedOn || row.createdOn || row["Ticket Created On"] || row.TicketCreatedOn);
+      if (!created || created.getFullYear() !== Number(year)) return;
+      if (partsMonthKeyFromDate(created) > latestVisible) return;
+      const rowScope = claimScope(row);
+      if (scope === "PRE" && rowScope !== "PRE") return;
+      if (scope === "FIELD" && rowScope !== "FIELD") return;
+      const key = numericTicketIdValue(row) || ticketIdentity(row);
+      if (key) seen.add(key);
+    };
+    if (state.ticketRowById instanceof Map && state.ticketRowById.size) {
+      state.ticketRowById.forEach(add);
+    } else {
+      [state.sourceRowPool, state.rows, state.viewRows].forEach(list => (Array.isArray(list) ? list : []).forEach(add));
+    }
+    return seen.size || null;
+  }
+
+  function selectedCreatedTicketCount(scope = componentScope(), month = selectedPartsMonth()){
+    return warrantyTicketCountForMonth(month, scope) ?? fallbackCreatedTicketCountForYear(selectedPartsYear(month, scope), scope);
   }
 
   function partsMonthTicketText(partsTickets, month = selectedPartsMonth()){
@@ -3169,7 +3290,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   function componentPanelModeLabel(mode = state.compMode){
-    return "By Tickets";
+    return "By Tickets CreatedOn";
   }
 
   function componentPanelLabel(){
@@ -3258,7 +3379,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (state.selected !== "ALL" && !seriesKeys.includes(normalizeSeriesCode(state.selected))) {
       state.selected = "ALL";
     }
-    const partsTicketTotal = cachedPartsTicketCount(state.selected, componentScope(), month)
+    const createdTicketTotal = selectedCreatedTicketCount(componentScope(), month)
+      ?? cachedPartsTicketCount(state.selected, componentScope(), month)
       ?? summarySeriesBucket(selectedMonthSummaryPayload(componentScope(), month), state.selected)?.tickets
       ?? 0;
     const options = [{ series:"ALL", label:"Top 10 tickets QTY", count:totalPartsTickets }]
@@ -3273,7 +3395,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         const count = option.count == null ? "" : ` (${numFmt.format(option.count)})`;
         return `<option value="${esc(option.series)}"${selected}>${esc(option.label)}${count}</option>`;
       }).join("")}
-    </select><span class="partsTicketBadge">All Tickets QTY with Parts <b>${numFmt.format(Number(partsTicketTotal) || 0)}</b></span></span>`;
+    </select><span class="partsTicketBadge">All Tickets QTY <b>${numFmt.format(Number(createdTicketTotal) || 0)}</b></span></span>`;
     ["seriesChips","stickySeriesChips","timingSeriesChips"].forEach(id => {
       const el = $(id);
       if (el) el.innerHTML = selectHtml;
@@ -3299,17 +3421,16 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const selectedYear = selectedMonth === PARTS_MONTH_CURRENT_YEAR
       ? String(fallbackYear)
       : (/^\d{4}$/.test(String(selectedMonth || "")) ? String(selectedMonth) : String(fallbackYear));
-    const selectionLabel = partsMonthSelectionLabel();
     target.innerHTML = `<details class="monthDropdown" data-month-dropdown>
-      <summary class="monthDropdownButton" title="${esc(`${selectedYear} ${selectionLabel}`)}">
-        <span>${esc(`${selectedYear} ${selectionLabel}`)}</span>
+      <summary class="monthDropdownButton" title="${esc(selectedYear)}">
+        <span>${esc(selectedYear)}</span>
       </summary>
       <div class="monthMenu">
         ${yearOptions.map(year => {
           const key = String(year);
           const active = key === selectedYear ? " active" : "";
           return `<button class="monthOption${active}" type="button" data-parts-month="${esc(key)}">
-            <span>${esc(`${key} ${selectionLabel}`)}</span>
+            <span>${esc(key)}</span>
           </button>`;
         }).join("")}
       </div>
@@ -3995,6 +4116,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const tid = clean(cr["Ticket ID"]);
     if (!tid) return "OTHER";
     const t = state.ticketRowById && state.ticketRowById.get(tid);
+    if (isPdiClaim(t || cr)) return "OTHER";
     if (!t) return "OTHER";
     return claimScope(t);
   }
@@ -4563,6 +4685,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       if (bucketPos == null) continue;
       const ticketId = clean(line["Ticket ID"]);
       if (!ticketId) continue;
+      const ticket = state.ticketRowById && state.ticketRowById.get(ticketId);
+      if (isPdiClaim(ticket || line)) continue;
       const series = classifiedRowSeries(line) || "";
       if (state.selected !== "ALL" && series !== state.selected) continue;
       const claim = classifiedRowScope(line);
@@ -4949,7 +5073,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           insights.push({
             severity:"warning", target:s.series, category:"EARLY FAILURE",
             headline:`${s.series} fails within 30 days of delivery`,
-            detail:`${(earlyShare*100).toFixed(0)}% of dated tickets are in the first 30 days (${s.buckets[0]} of ${totalDated}). Suggests PDI, install, or transit-damage issue rather than durability.`,
+            detail:`${(earlyShare*100).toFixed(0)}% of dated tickets are in the first 30 days (${s.buckets[0]} of ${totalDated}). Suggests install or transit-damage issue rather than durability.`,
           });
         }
         // R5b: late failure - durability
@@ -5642,11 +5766,17 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   async function ensureTicketRowLookupForExport(options = {}){
     const includeRepairers = !!options.includeRepairers;
-    if (state.ticketRowById instanceof Map && state.ticketRowById.size) return state.ticketRowById;
+    const preferFirebase = options.preferFirebase !== false && !IS_FILE_CONTEXT;
+    if (
+      state.ticketRowById instanceof Map &&
+      state.ticketRowById.size &&
+      (!preferFirebase || state.ticketRowByIdSource === "firebase-current")
+    ) return state.ticketRowById;
     const rows = [];
     const add = list => {
       if (Array.isArray(list)) rows.push(...list);
     };
+    if (preferFirebase) add(await loadFirebaseTicketRowsForExport());
     add(state.rows);
     add(state.viewRows);
     add(state.sourceRowPool);
@@ -5667,7 +5797,27 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       });
     });
     state.ticketRowById = map;
+    state.ticketRowByIdSource = preferFirebase && Array.isArray(state.firebaseTicketRowsCache) && state.firebaseTicketRowsCache.length
+      ? "firebase-current"
+      : "local-cache";
     return map;
+  }
+
+  async function loadFirebaseTicketRowsForExport(){
+    if (Array.isArray(state.firebaseTicketRowsCache)) return state.firebaseTicketRowsCache;
+    try {
+      const r = await fetch(freshJsonUrl(FB_TICKETS), { cache:"no-store" });
+      if (!r.ok) throw new Error(`Firebase tickets HTTP ${r.status}`);
+      const payload = await r.json();
+      state.firebaseTicketRowsCache = ticketValues(payload).map(([, raw]) => (
+        raw && raw.ticket && typeof raw.ticket === "object" ? raw.ticket : raw
+      )).filter(row => row && typeof row === "object");
+      return state.firebaseTicketRowsCache;
+    } catch (err) {
+      console.warn("Firebase ticket export lookup failed; falling back to local CSV", err);
+      state.firebaseTicketRowsCache = [];
+      return state.firebaseTicketRowsCache;
+    }
   }
 
   function normalizePoForDisplay(value){
@@ -5782,6 +5932,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const seen = new Set();
     const add = row => {
       if (!row || typeof row !== "object") return;
+      if (isPdiClaim(row)) return;
       const id = ticketExportId(row);
       if (!id || seen.has(id)) return;
       if (!partsMonthMatchesTicket(row, String(year), basis)) return;
@@ -5857,9 +6008,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (overlaySub) overlaySub.textContent = `Exporting tickets ${basisText} 2026 only, without Top 10 workbook calculations.`;
     try {
       await loadPartsClassifiedRows();
-      if (!(state.ticketRowById instanceof Map) || !state.ticketRowById.size) {
-        await ensureTicketRowLookupForExport();
-      }
+      await ensureTicketRowLookupForExport({ preferFirebase:true });
       const scope = "ALL";
       const selected = "ALL";
       const year = 2026;
@@ -6140,12 +6289,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const scope = componentScope();
     for (const line of (state.partsClassifiedRows || [])) {
       if (!partsMonthMatchesLine(line)) continue;
-      if (scope !== "ALL" && classifiedRowScope(line) !== scope) continue;
       const ticketId = clean(line["Ticket ID"]);
       if (!ticketId || map.has(ticketId)) continue;
+      const ticket = state.ticketRowById && state.ticketRowById.get(ticketId);
+      if (isPdiClaim(ticket || line)) continue;
+      if (scope !== "ALL" && classifiedRowScope(line) !== scope) continue;
       const series = classifiedRowSeries(line) || "";
       if (state.selected !== "ALL" && series !== state.selected) continue;
-      const ticket = state.ticketRowById && state.ticketRowById.get(ticketId);
       map.set(ticketId, ticket || {
         "Ticket ID": ticketId,
         "Created On": clean(line["Created On"] || line.CreatedOn),
@@ -6174,6 +6324,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   function ticketMatchesCurrentPartsScope(row, month = selectedPartsMonth(), scope = componentScope(), basis = partsDateBasis()){
     if (!row || typeof row !== "object") return false;
+    if (isPdiClaim(row)) return false;
     const id = ticketExportId(row);
     if (!id) return false;
     if (!partsMonthMatchesTicket(row, month, basis)) return false;
@@ -6579,9 +6730,11 @@ ${worksheets}
       loadSold();
       const partsSummaryPromise = loadPartsFailureSummary();
       const partsDerivedPromise = loadPartsDerivedCache();
+      const warrantyMonthlyPromise = loadWarrantyMonthlyCounts();
       const approvedCostPromise = loadApprovedTicketCosts();
       const partsCostPromise = loadPartsTicketCosts();
       await partsSummaryPromise;
+      await warrantyMonthlyPromise;
       if (overlayFailSafe) {
         clearTimeout(overlayFailSafe);
         overlayFailSafe = null;
@@ -6634,6 +6787,7 @@ ${worksheets}
         if (id && !tById.has(id)) tById.set(id, r);
       }
       state.ticketRowById = tById;
+      state.ticketRowByIdSource = "local-cache";
       await partsDerivedPromise;
 
       // pick initial series

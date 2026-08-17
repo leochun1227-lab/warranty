@@ -97,9 +97,13 @@ body.calculating .app{filter:blur(1.6px);opacity:.68;pointer-events:none;user-se
 .calcSpinner{width:64px;height:64px;border-radius:999px;border:6px solid #dbeafe;border-top-color:#2563eb;border-right-color:#60a5fa;animation:calcSpin .78s linear infinite;flex:0 0 auto;box-shadow:0 10px 28px rgba(37,99,235,.16)}
 .calcFloatText{margin-top:18px;display:block;white-space:nowrap;font-size:16px;font-weight:650;color:#155e9f}
 @keyframes calcSpin{to{transform:rotate(360deg)}}
-.chartWrap{height:220px}
+.chartWrap{height:220px;position:relative;overflow:hidden;border-radius:10px}
 .chartWrapTall{height:270px}
-.chartWrap canvas{width:100%;height:100%;display:block}
+.chartWrap canvas{width:100%;height:100%;display:block;transition:opacity .18s ease,filter .18s ease}
+body.charts-loading .chartWrap canvas,.chartWrap:not(.chart-rendered) canvas{opacity:.22;filter:blur(3px)}
+body.charts-loading .chartWrap::before,.chartWrap:not(.chart-rendered)::before{content:"";position:absolute;inset:0;z-index:2;border-radius:inherit;background:rgba(248,251,255,.72);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);pointer-events:none}
+body.charts-loading .chartWrap::after,.chartWrap:not(.chart-rendered)::after{content:"";position:absolute;inset:26px 14px 32px;z-index:3;border-radius:10px;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,255,255,.86),transparent) -140px 0/140px 100% no-repeat,linear-gradient(#dfe8f4,#dfe8f4) 0 18%/100% 1px no-repeat,linear-gradient(#dfe8f4,#dfe8f4) 0 50%/100% 1px no-repeat,linear-gradient(#dfe8f4,#dfe8f4) 0 82%/100% 1px no-repeat,linear-gradient(180deg,#8ed8e8,#2a9ab7) 8% 78%/6% 42% no-repeat,linear-gradient(180deg,#8ed8e8,#2a9ab7) 20% 64%/6% 56% no-repeat,linear-gradient(180deg,#8ed8e8,#2a9ab7) 32% 44%/6% 76% no-repeat,linear-gradient(180deg,#8ed8e8,#2a9ab7) 44% 58%/6% 62% no-repeat,linear-gradient(180deg,#f5b989,#e97132) 56% 70%/6% 50% no-repeat,linear-gradient(180deg,#f5b989,#e97132) 68% 52%/6% 68% no-repeat,linear-gradient(180deg,#f5b989,#e97132) 80% 74%/6% 46% no-repeat,linear-gradient(180deg,#f5b989,#e97132) 92% 62%/6% 58% no-repeat;opacity:.86;animation:chartSkeletonSweep 1.1s ease-in-out infinite}
+@keyframes chartSkeletonSweep{to{background-position:calc(100% + 140px) 0,0 18%,0 50%,0 82%,8% 78%,20% 64%,32% 44%,44% 58%,56% 70%,68% 52%,80% 74%,92% 62%}}
 .legend{display:flex;gap:12px;align-items:center;justify-content:flex-start;font-size:11px;color:#475569;margin-top:6px;flex-wrap:wrap}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:18px;height:3px;display:inline-block;border-radius:2px}
@@ -287,7 +291,7 @@ body{
 </style>
 <link rel="stylesheet" href="sidebar-light.css?v=20260806-compact-sidebar">
 </head>
-<body>
+<body class="charts-loading">
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Loading dashboard...</span></div>
 <div class="app">
   <aside class="sidebar">
@@ -568,11 +572,7 @@ function monthLong(m){const [y,mm]=clean(m).split("-").map(Number);if(!y||!mm)re
 function addMonths(m,delta){const [y,mm]=clean(m).split("-").map(Number);const d=new Date(Date.UTC(y||2025,(mm||1)-1,1));d.setUTCMonth(d.getUTCMonth()+delta);return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,"0")}`}
 function iterMonths(start,end){const out=[];let cur=start;if(!cur||!end||cur>end)return out;while(cur<=end){out.push(cur);cur=addMonths(cur,1)}return out}
 function currentMonthKey(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}`}
-function currentMonthHasSevenDaysOrLessRemaining(date=new Date()){
-  const daysInMonth=new Date(date.getFullYear(),date.getMonth()+1,0).getDate();
-  return daysInMonth-date.getDate()<=7;
-}
-function latestVisibleMonth(date=new Date()){return currentMonthHasSevenDaysOrLessRemaining(date)?currentMonthKey(date):addMonths(currentMonthKey(date),-1)}
+function latestVisibleMonth(date=new Date()){return currentMonthKey(date)}
 function moneyShort(v){const n=Number(v||0),abs=Math.abs(n);if(abs>=1_000_000)return `$${(n/1_000_000).toFixed(abs>=10_000_000?0:1)}m`;if(abs>=1_000)return `$${(n/1_000).toFixed(abs>=100_000?0:1)}k`;return moneyNum(n)}
 function niceCurrencyMax(maxRaw){
   if(!(maxRaw>0))return 1000;
@@ -611,6 +611,20 @@ function ticketIsPreDelivery(ticket){
   return text.includes("pre delivery")||text.includes("pre-delivery")||text.includes("predelivery");
 }
 
+function ticketIsInField(ticket){
+  const text=ticketClaimText(ticket);
+  return text.includes("in field")||text.includes("in-field")||text.includes("infield")||text.includes("field warranty");
+}
+
+function ticketIsPdi(ticket){
+  const code=clean(ticket?.TicketType||ticket?.["Ticket Type"]).toUpperCase();
+  return code==="Z010"||ticketClaimText(ticket).includes("pdi");
+}
+
+function nonPdiTicketNodes(tickets){
+  return arr(tickets).filter(node=>!ticketIsPdi(ticketPayload(node)||{}));
+}
+
 function ticketApprovedActiveNow(ticket){
   const code=clean(ticket?.TicketStatus||ticket?.statusCode||ticket?.Status||ticket?.TicketStatusCode||ticket?.StatusCode).toUpperCase();
   const text=clean(ticket?.TicketStatusText||ticket?.ticketStatusText||ticket?.statusText||ticket?.StatusText||ticket?.Status||ticket?.status).toLowerCase();
@@ -647,6 +661,7 @@ function buildMonthly(view){
   const out={};
   Object.entries(HISTORICAL).forEach(([m,v])=>{out[m]={month:m,...v}});
   arr(view.claimCreatedMonthly).forEach(r=>{const m=clean(r.month);if(m>=LIVE_CREATED_START){if(!out[m])out[m]=emptyMonth(m);out[m].createdIn=Number(r.inField||0);out[m].createdPre=Number(r.preDelivery||0)}});
+  rawCreatedMonthlyRows().forEach(r=>{const m=clean(r.month);if(m>=LIVE_CREATED_START){if(!out[m])out[m]=emptyMonth(m);out[m].createdIn=Number(r.inField||0);out[m].createdPre=Number(r.preDelivery||0)}});
   arr(view.approvalClosedMonthly).forEach(r=>{const m=clean(r.month);if(m>=LIVE_APPROVAL_CLOSED_START){if(!out[m])out[m]=emptyMonth(m);out[m].approvedIn=Number(r.inFieldApproved||0);out[m].approvedPre=Number(r.preDeliveryApproved||0);out[m].unapprovedIn=Number(r.inFieldUnapproved||0);out[m].unapprovedPre=Number(r.preDeliveryUnapproved||0)}});
   const approvedAmountMonthly=arr(view.approvedAmountMonthly);
   if(approvedAmountMonthly.length){
@@ -669,6 +684,26 @@ function buildMonthly(view){
     });
   }
   return Object.values(out).filter(r=>r.month>=HARD_MIN).sort((a,b)=>a.month.localeCompare(b.month));
+}
+
+function rawCreatedMonthlyRows(){
+  const buckets={};
+  const seen=new Set();
+  arr(RAW_TICKETS).forEach(node=>{
+    const ticket=ticketPayload(node)||{};
+    if(ticketIsPdi(ticket))return;
+    const id=ticketId(ticket)||clean(ticket?.TicketID)||clean(ticket?.["Ticket ID"]);
+    const month=ticketCreatedMonth(ticket);
+    if(!id||!month)return;
+    if(!ticketIsPreDelivery(ticket)&&!ticketIsInField(ticket))return;
+    const key=`${month}|${id}`;
+    if(seen.has(key))return;
+    seen.add(key);
+    if(!buckets[month])buckets[month]={month,inField:0,preDelivery:0};
+    if(ticketIsPreDelivery(ticket))buckets[month].preDelivery+=1;
+    else buckets[month].inField+=1;
+  });
+  return Object.values(buckets).sort((a,b)=>a.month.localeCompare(b.month));
 }
 
 function dataBounds(){
@@ -889,6 +924,7 @@ function ticketPoPriceSource(ticket){
 }
 
 function ticketFieldLabel(ticket){
+  if(ticketIsPdi(ticket))return "";
   return ticketIsPreDelivery(ticket)?"Pre Delivery":"In Field";
 }
 
@@ -903,9 +939,10 @@ function monthWithinRange(month,start,end){
 }
 
 function selectedFieldMatches(ticket){
+  if(ticketIsPdi(ticket))return false;
   if(fieldMode==="pre")return ticketIsPreDelivery(ticket);
-  if(fieldMode==="in")return !ticketIsPreDelivery(ticket);
-  return true;
+  if(fieldMode==="in")return ticketIsInField(ticket);
+  return ticketIsPreDelivery(ticket)||ticketIsInField(ticket);
 }
 
 function exportTicketMatchFlags(ticket,start,end){
@@ -1051,7 +1088,7 @@ async function ensureRawTicketsLoaded(){
   if(arr(RAW_TICKETS).length)return RAW_TICKETS;
   if(!rawTicketsPromise){
     rawTicketsPromise=readJson(TICKETS_PATH).catch(()=>[]).then(tickets=>{
-      RAW_TICKETS=arr(tickets);
+      RAW_TICKETS=nonPdiTicketNodes(tickets);
       return RAW_TICKETS;
     }).finally(()=>{
       rawTicketsPromise=null;
@@ -1174,6 +1211,7 @@ function claimClosedIgnoreForMarch2026(ticket){
 function buildClaimClosedIndex(tickets){
   const counts={};
   arr(tickets).forEach(ticket=>{
+    if(ticketIsPdi(ticketPayload(ticket)||{}))return;
     const month=resolvedMonth(ticket);
     const decision=claimClosedDecision(ticket);
     if(!month||!decision||claimClosedIgnoreForMarch2026(ticket))return;
@@ -1352,6 +1390,16 @@ function showPageLoading(active,label="Loading dashboard..."){
   if(text)text.textContent=label;
   el.classList.toggle("active",!!active);
   document.body.classList.toggle("calculating",!!active);
+  setChartsLoading(active);
+}
+
+function setChartsLoading(active){
+  document.body.classList.toggle("charts-loading",!!active);
+  if(active)document.querySelectorAll(".chartWrap").forEach(w=>w.classList.remove("chart-rendered"));
+}
+
+function finishChartRender(canvas){
+  canvas?.closest(".chartWrap")?.classList.add("chart-rendered");
 }
 
 function drawCompareBarChart(canvasId,rows,opts={}){
@@ -1361,7 +1409,7 @@ function drawCompareBarChart(canvasId,rows,opts={}){
   const ctx=c.getContext("2d");
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,w,h);
-  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
+  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);finishChartRender(c);return}
   const left=18,right=18,top=26,bottom=74,plotW=w-left-right,plotH=h-top-bottom;
   const values=rows.flatMap(r=>[r.firstValue,r.secondValue]).filter(v=>v!==null&&v!==undefined);
   const maxRaw=values.length?Math.max(10,...values.map(v=>Number(v||0))):10;
@@ -1428,6 +1476,7 @@ function drawCompareBarChart(canvasId,rows,opts={}){
   ctx.font="500 12px Segoe UI Variable,Aptos,Segoe UI,Arial";
   ctx.textAlign="center";
   ctx.fillText(`${rows[0]?.firstYear||""} vs ${rows[0]?.secondYear||""}`,left+plotW/2,h-14);
+  finishChartRender(c);
 }
 
 function drawSplitCompareChart(canvasId,rows,opts={}){
@@ -1437,7 +1486,7 @@ function drawSplitCompareChart(canvasId,rows,opts={}){
   const ctx=c.getContext("2d");
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,w,h);
-  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
+  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);finishChartRender(c);return}
   const left=18,right=18,top=20,bottom=78,plotW=w-left-right,plotH=h-top-bottom;
   const maxRaw=Math.max(10,...rows.flatMap(r=>[Number(r.firstIn||0),Number(r.secondIn||0),Number(r.firstPre||0),Number(r.secondPre||0)]));
   const yMax=typeof opts.yMax==="function"?opts.yMax(maxRaw):Math.ceil(maxRaw/100)*100;
@@ -1479,6 +1528,7 @@ function drawSplitCompareChart(canvasId,rows,opts={}){
   ctx.font="500 12px Segoe UI Variable,Aptos,Segoe UI,Arial";
   ctx.textAlign="center";
   ctx.fillText(`${rows[0]?.firstYear||""} vs ${rows[0]?.secondYear||""}`,left+plotW/2,h-14);
+  finishChartRender(c);
 }
 
 function drawSingleLineChart(canvasId,rows,key,opts={}){
@@ -1488,7 +1538,7 @@ function drawSingleLineChart(canvasId,rows,key,opts={}){
   const ctx=c.getContext("2d");
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,w,h);
-  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
+  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);finishChartRender(c);return}
   const left=18,right=18,top=20,bottom=84,plotW=w-left-right,plotH=h-top-bottom;
   const maxRaw=Math.max(10,...rows.map(r=>Number(r[key]||0)));
   const yMax=typeof opts.yMax==="function"?opts.yMax(maxRaw):Math.ceil(maxRaw/100)*100;
@@ -1536,13 +1586,14 @@ function drawSingleLineChart(canvasId,rows,key,opts={}){
     ctx.fillText(rows[start].year,(x(start)+x(end))/2,h-4);
     start=end+1;
   }
+  finishChartRender(c);
 }
 
 function drawChart(canvasId,rows,inKey,preKey,opts={}){
   const c=$(canvasId);if(!c)return;
   const rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1,w=Math.max(1,rect.width),h=Math.max(1,rect.height);
   c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
-  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);return}
+  if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);finishChartRender(c);return}
   const left=18,right=18,top=20,bottom=84,plotW=w-left-right,plotH=h-top-bottom;
   const maxRaw=Math.max(100,...rows.flatMap(r=>[Number(r[inKey]||0),Number(r[preKey]||0)]));
   const yMax=typeof opts.yMax==="function"?opts.yMax(maxRaw):Math.ceil(maxRaw/100)*100;
@@ -1578,6 +1629,7 @@ function drawChart(canvasId,rows,inKey,preKey,opts={}){
   ctx.beginPath();ctx.moveTo(w-right,h-30);ctx.lineTo(w-right,h-16);ctx.stroke();
   ctx.font="500 12px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillStyle="#475569";
   let s=0;while(s<rows.length){let e=s;while(e+1<rows.length&&rows[e+1].year===rows[s].year)e++;ctx.fillText(rows[s].year,(x(s)+x(e))/2,h-4);s=e+1}
+  finishChartRender(c);
 }
 
 function render(){
@@ -1787,7 +1839,11 @@ function renderWithPageLoading(showLoading=false,label="Calculating dashboard...
   }
   const runId=++pageLoadingRunId;
   if(!showLoading){
-    render();
+    try{
+      render();
+    }finally{
+      setChartsLoading(false);
+    }
     return;
   }
   showPageLoading(true,label);
@@ -1937,7 +1993,7 @@ function setupNav(){
 setupNav();
 window.addEventListener("load",()=>{const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);});
 
-const CLAIM_TREND_PAGE_CACHE_KEY="claim-trend-overview:approved-cost-v9-live-created-2026-no-pdi-current-month-last-seven-days";
+const CLAIM_TREND_PAGE_CACHE_KEY="claim-trend-overview:approved-cost-v12-live-created-2026-raw-ticket-no-pdi-current-month-visible";
 function finishInitialScroll(){const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);}
 (async()=>{
   let cacheVersion="";
@@ -1945,7 +2001,7 @@ function finishInitialScroll(){const id=(location.hash||"").slice(1);if(SECTION_
   try{
     const cached=await withTimeout(window.WarrantyPageCache.getPage(CLAIM_TREND_PAGE_CACHE_KEY,cacheVersion),5000,"Claim trend page cache restore");
     if(cached&&cached.view){
-      ensureRawTicketsLoaded().catch(()=>[]);
+      await ensureRawTicketsLoaded().catch(()=>[]);
       init(cached.view,true,cached.claimClosedIndex);
       if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"cached");
       finishInitialScroll();
@@ -1954,7 +2010,7 @@ function finishInitialScroll(){const id=(location.hash||"").slice(1);if(SECTION_
   }catch(e){console.warn("In-field page cache restore failed",e);}
   Promise.all([readJson(`${ROOT}/analytics/teamDashboard`),readJson(TICKETS_PATH).catch(()=>[])]).then(([data,tickets])=>{
     const view=(data&&data.views&&data.views.all)||data||{};
-    RAW_TICKETS=arr(tickets);
+    RAW_TICKETS=nonPdiTicketNodes(tickets);
     init(view);
     if(cacheVersion&&window.WarrantyPageCache){
       window.WarrantyPageCache.setPage(CLAIM_TREND_PAGE_CACHE_KEY,cacheVersion,{view,claimClosedIndex:CLAIM_CLOSED_INDEX});

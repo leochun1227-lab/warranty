@@ -121,11 +121,30 @@ def ticket_claim_scope(row):
         "WarrantyClaimType",
         "Warranty Claim Type",
     )).lower()
-    if "pre delivery" in text or "pre-delivery" in text or "predelivery" in text or "pdi" in text:
+    if "pre delivery" in text or "pre-delivery" in text or "predelivery" in text:
         return "PRE"
     if "in field" in text or "in-field" in text or "infield" in text or "field warranty" in text:
         return "FIELD"
     return "OTHER"
+
+
+def ticket_is_pdi(row):
+    code = clean(row.get("TicketType") or row.get("Ticket Type")).upper()
+    text = " ".join(clean(row.get(key)) for key in (
+        "Claim Scope",
+        "ClaimScope",
+        "claimScope",
+        "claimType",
+        "ClaimType",
+        "Claim Type",
+        "Ticket Type",
+        "TicketType",
+        "TicketTypeText",
+        "Ticket Type Text",
+        "WarrantyClaimType",
+        "Warranty Claim Type",
+    )).lower()
+    return code == "Z010" or "pdi" in text
 
 
 def ticket_id_from_row(row):
@@ -199,16 +218,21 @@ def load_ticket_month_scope():
                     or parse_date(row.get("Approved Date"))
                 )
                 scope = ticket_claim_scope(row)
+                is_pdi = ticket_is_pdi(row)
                 existing = attrs.setdefault(ticket_id, {
                     "month": "",
                     "approvedMonth": "",
                     "createdDate": "",
                     "approvedDate": "",
                     "scope": "OTHER",
+                    "isPdi": False,
                     "hasPgi": False,
                     "pgiDate": "",
                     "goodReceiveDate": "",
                 })
+                if is_pdi:
+                    existing["isPdi"] = True
+                    existing["scope"] = "PDI"
                 created_month = month_key_for_date(created)
                 approved_month = month_key_for_date(approved)
                 pgi_date = (
@@ -231,7 +255,7 @@ def load_ticket_month_scope():
                     existing["approvedMonth"] = approved_month
                 if approved and not existing.get("approvedDate"):
                     existing["approvedDate"] = approved.isoformat()
-                if existing.get("scope") == "OTHER" and scope != "OTHER":
+                if not existing.get("isPdi") and existing.get("scope") == "OTHER" and scope != "OTHER":
                     existing["scope"] = scope
                 if pgi_date:
                     existing["hasPgi"] = True
@@ -937,6 +961,9 @@ def main():
             continue
         attrs = ticket_month_scope.get(ticket_id)
         if not attrs:
+            excluded_rows += 1
+            continue
+        if attrs.get("isPdi") or attrs.get("scope") == "PDI":
             excluded_rows += 1
             continue
         if not attrs.get("hasPgi"):

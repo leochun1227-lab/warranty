@@ -49,3 +49,5 @@ outputs/tickets_in_progress_month_mismatch_*/
 outputs/repairers_2026/c4c_sap_po_repairer_compare*
 outputs/repairers_2026/ekbe_invoice_ticket_audit*
 outputs/repairers_2026/sap_authoritative_repair_payments*
+outputs/parts-created-on-before-july-no-pdi.png
+outputs/parts-created-on-ticket-count-2026.png

@@ -3343,6 +3343,8 @@ def _build_team_view(
         if created_day and DASHBOARD_MIN_DATE <= created_day <= generated_day:
             new_ticket_daily[created_day] = new_ticket_daily.get(created_day, 0) + 1
         if created_day and CLAIM_MONTHLY_MIN_DATE <= created_day <= generated_day:
+            if ticket_has_pdi_claim(t):
+                continue
             month_key = created_day[:7]
             claim_bucket = claim_created_monthly.setdefault(month_key, {"inField": 0, "preDelivery": 0})
             claim_type = ticket_claim_type(t)

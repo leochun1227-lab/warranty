@@ -467,12 +467,24 @@ function claimScope(row) {
     row["Ticket Type"], row.TicketType, row.TicketTypeText,
     row["Ticket Type Text"], row.WarrantyClaimType, row["Warranty Claim Type"],
   ].map(clean).join(" ").toLowerCase();
-  if (text.includes("pre delivery") || text.includes("pre-delivery") || text.includes("predelivery") || text.includes("pdi")) return "PRE";
+  if (text.includes("pre delivery") || text.includes("pre-delivery") || text.includes("predelivery")) return "PRE";
   if (text.includes("in field") || text.includes("in-field") || text.includes("infield") || text.includes("field warranty")) return "FIELD";
   return "OTHER";
 }
 
+function isPdiClaim(row) {
+  const code = clean(row.TicketType || row["Ticket Type"]).toUpperCase();
+  const text = [
+    row["Claim Scope"], row.ClaimScope, row.claimScope,
+    row.claimType, row.ClaimType, row["Claim Type"],
+    row["Ticket Type"], row.TicketType, row.TicketTypeText,
+    row["Ticket Type Text"], row.WarrantyClaimType, row["Warranty Claim Type"],
+  ].map(clean).join(" ").toLowerCase();
+  return code === "Z010" || text.includes("pdi");
+}
+
 function rowMatchesScope(row, scope) {
+  if (isPdiClaim(row)) return false;
   const series = extractSeries(row);
   if (isExcludedSeries(series) || !isTrackedSeries(series)) return false;
   if (scope === "PRE") return claimScope(row) === "PRE";

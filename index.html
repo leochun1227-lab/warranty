@@ -5474,12 +5474,35 @@ function monthShortLabel(month){
   if(isNaN(d))return month;
   return d.toLocaleDateString("en-GB",{month:"short",year:"numeric",timeZone:"UTC"});
 }
+function compactDateRangeLabel(start,end){
+  if(!start||!end)return "";
+  const a=new Date(start+"T00:00:00Z"),b=new Date(end+"T00:00:00Z");
+  if(isNaN(a)||isNaN(b))return start===end?shortDateLabel(end):`${shortDateLabel(start)} to ${shortDateLabel(end)}`;
+  const dayA=a.getUTCDate(),dayB=b.getUTCDate();
+  const sameMonth=a.getUTCFullYear()===b.getUTCFullYear()&&a.getUTCMonth()===b.getUTCMonth();
+  const sameYear=a.getUTCFullYear()===b.getUTCFullYear();
+  if(sameMonth){
+    const monthYear=b.toLocaleDateString("en-GB",{month:"short",year:"numeric",timeZone:"UTC"});
+    return dayA===dayB?`${dayB} ${monthYear}`:`${dayA}-${dayB} ${monthYear}`;
+  }
+  if(sameYear){
+    const left=a.toLocaleDateString("en-GB",{day:"numeric",month:"short",timeZone:"UTC"});
+    const right=b.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"});
+    return `${left} to ${right}`;
+  }
+  return `${shortDateLabel(start)} to ${shortDateLabel(end)}`;
+}
 function selectedMonthPeriodLabel(){
   const month=selectedDashboardMonth();
   const end=periodEndDate();
+  const start=periodStartDate(end);
   const latest=latestDateForView();
   const prefix=monthShortLabel(month)||monthDisplayLabel(month)||selectedRangePlainLabel();
-  return clean(end)===clean(latest)?`${prefix} to Date`:`Full ${prefix}`;
+  const fullMonth=start===monthStartISO(month)&&end===monthEndISO(month);
+  const monthToDate=start===monthStartISO(month)&&clean(end)===clean(latest);
+  if(fullMonth)return `Full ${prefix}`;
+  if(monthToDate)return `${prefix} to Date`;
+  return compactDateRangeLabel(start,end)||prefix;
 }
 function selectedPeriodText(){
   const end=periodEndDate();

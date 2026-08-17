@@ -2046,14 +2046,34 @@ body.repair-analysis-page :is(.kpiValue,.rateStatValue,.weekMetric b){
   color:#1d2a3d!important;
 }
 body.repair-analysis-page .calcFloat{
-  pointer-events:none!important;
+  pointer-events:auto!important;
+  background:rgba(255,255,255,.68)!important;
+  backdrop-filter:blur(5px)!important;
+  -webkit-backdrop-filter:blur(5px)!important;
+  flex-direction:column!important;
+}
+body.repair-analysis-page .calcFloat .calcSpinner{
+  width:64px!important;
+  height:64px!important;
+  border-width:6px!important;
+  border-style:solid!important;
+  border-color:#dbeafe!important;
+  border-top-color:#2563eb!important;
+  border-right-color:#60a5fa!important;
+  box-shadow:0 10px 28px rgba(37,99,235,.16)!important;
+}
+body.repair-analysis-page .calcFloat .calcFloatText{
+  margin-top:18px!important;
+  font-size:16px!important;
+  font-weight:650!important;
+  color:#155e9f!important;
 }
 body.repair-analysis-page .calcFloat.active~.app,
 body.repair-analysis-page .calcFloat.active~main{
-  filter:none!important;
-  opacity:1!important;
-  pointer-events:auto!important;
-  user-select:auto!important;
+  filter:blur(1.2px)!important;
+  opacity:.72!important;
+  pointer-events:none!important;
+  user-select:none!important;
 }
 body.repair-analysis-page .weekPanel.weekOverview{
   margin-bottom:14px!important;
@@ -4596,6 +4616,11 @@ body.repair-analysis-page #repairRepeatScenarios .repeatShopGridCell small{
 <script src="browser-page-cache.js?v=repairer-name-map-v12"></script>
 <script>
 
+const REPAIR_LOADING_MIN_MS=450;
+const REPAIR_LOADING_MAX_MS=20000;
+let repairCalcFloatShownAt=0;
+let repairCalcFloatHideTimer=0;
+let repairInitialLoading=false;
 function showCalcFloat(active,text){
   const el=document.getElementById('calcFloat');
   if(!el)return;
@@ -4605,20 +4630,44 @@ function showCalcFloat(active,text){
     clearTimeout(window.__repairCalcFloatTimer);
     window.__repairCalcFloatTimer=0;
   }
+  if(repairCalcFloatHideTimer){
+    clearTimeout(repairCalcFloatHideTimer);
+    repairCalcFloatHideTimer=0;
+  }
   el.classList.toggle('active',!!active);
   if(active){
+    repairCalcFloatShownAt=performance.now();
     window.__repairCalcFloatTimer=setTimeout(()=>{
       const overlay=document.getElementById('calcFloat');
       if(overlay&&overlay.classList.contains('active')){
         console.warn("Repair calc overlay auto-hidden after timeout");
         overlay.classList.remove('active');
       }
-    },12000);
+    },REPAIR_LOADING_MAX_MS);
   }
 }
-function hideCalcFloat(delay=250){setTimeout(()=>showCalcFloat(false),delay)}
+function hideCalcFloat(delay=250){
+  const elapsed=repairCalcFloatShownAt?performance.now()-repairCalcFloatShownAt:REPAIR_LOADING_MIN_MS;
+  const budget=Math.max(delay,REPAIR_LOADING_MIN_MS-elapsed,0);
+  if(repairCalcFloatHideTimer)clearTimeout(repairCalcFloatHideTimer);
+  repairCalcFloatHideTimer=setTimeout(()=>{
+    repairCalcFloatHideTimer=0;
+    showCalcFloat(false);
+  },budget);
+}
+function renderAllWithLoading(text="Calculating repairer analysis..."){
+  showCalcFloat(true,text);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    try{
+      renderAll();
+      renderAll_v2();
+    }finally{
+      hideCalcFloat(120);
+    }
+  }));
+}
 window.addEventListener("pageshow",()=>hideCalcFloat(0));
-window.addEventListener("load",()=>hideCalcFloat(0));
+window.addEventListener("load",()=>{if(!repairInitialLoading)hideCalcFloat(0)});
 function withTimeoutPromise(promise,timeoutMs,label){
   let timer=null;
   const timeout=new Promise((_,reject)=>{
@@ -6384,7 +6433,7 @@ function clearRepairFilters(){
   if(select)select.value="all";
   const searchInput=$("searchBox");
   if(searchInput)searchInput.value="";
-  renderAll();
+  renderAllWithLoading("Clearing repairer filters...");
 }
 function valueForSort(r,k){if(k==="lowCost")return r.costRanges.low;if(k==="mediumCost")return r.costRanges.medium;if(k==="highCost")return r.costRanges.high;if(k==="openCases")return r.openCases;if(k==="closedCases")return r.closedCases;return r[k]??""}
 function compareRepairRows(a,b,k,dir){
@@ -6898,7 +6947,7 @@ function bindOverviewInteractions(rows,{svgId,cardId,tipId,stateId}){
       path.style.cursor="pointer";
       path.addEventListener("mouseenter",()=>{overviewHoverStateCode=code;const row=rows.find(r=>r.state===code);if(row)renderCardTooltip({tipId,svgId,cardId,stateId,code,row});});
       path.addEventListener("mouseleave",()=>{overviewHoverStateCode="";const tip=$(tipId);hideOverviewTooltip(tip);});
-      path.addEventListener("click",()=>{selectedRegionCode=code;overviewHoverStateCode="";renderWeekPanel();});
+      path.addEventListener("click",()=>{selectedRegionCode=code;overviewHoverStateCode="";showCalcFloat(true,"Updating state analysis...");requestAnimationFrame(()=>{try{renderWeekPanel()}finally{hideCalcFloat(120)}});});
     });
   }
   if(svgId==="ausMap"){
@@ -6906,7 +6955,7 @@ function bindOverviewInteractions(rows,{svgId,cardId,tipId,stateId}){
       const code=rowEl.dataset.state||"";
       rowEl.addEventListener("mouseenter",()=>{overviewHoverStateCode=code;const row=rows.find(r=>r.state===code);if(row)renderCardTooltip({tipId,svgId,cardId,stateId,code,row});});
       rowEl.addEventListener("mouseleave",()=>{overviewHoverStateCode="";const tip=$(tipId);hideOverviewTooltip(tip);});
-      rowEl.addEventListener("click",()=>{selectedRegionCode=code;overviewHoverStateCode="";renderWeekPanel();});
+      rowEl.addEventListener("click",()=>{selectedRegionCode=code;overviewHoverStateCode="";showCalcFloat(true,"Updating state analysis...");requestAnimationFrame(()=>{try{renderWeekPanel()}finally{hideCalcFloat(120)}});});
     });
   }
 }
@@ -7063,7 +7112,7 @@ function renderTop20Panel(){
       const select=$("repairSelect");
       if(select)select.value=selectedRepairId;
       page=1;
-      renderAll();
+      renderAllWithLoading("Opening repairer summary...");
       $("repair-details")?.scrollIntoView({behavior:"smooth",block:"start"});
     };
     rowEl.onclick=go;
@@ -7597,6 +7646,8 @@ async function ensureRepairDetailsLoaded({renderAfter=true}={}){
   return repairDetailsPromise;
 }
 async function load(){
+  repairInitialLoading=true;
+  showCalcFloat(true,"Loading repairer analysis...");
   const loadFailSafe=setTimeout(()=>hideCalcFloat(0),22000);
   let cacheVersion="";
   repairerNameRuleMap=await loadRepairerNameRuleMap();
@@ -7614,6 +7665,7 @@ async function load(){
     );
     if(restoreRepairPageState(cached,cacheVersion)){
       clearTimeout(loadFailSafe);
+      repairInitialLoading=false;
       return;
     }
   }catch(e){console.warn("Repair page cache restore failed",e);}
@@ -7631,6 +7683,7 @@ async function load(){
       saveRepairPageState(cacheVersion);
       if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(repairPageBadgeVersion(cacheVersion),"fresh");
       clearTimeout(loadFailSafe);
+      repairInitialLoading=false;
       hideCalcFloat(0);
       return;
     }else{
@@ -7643,44 +7696,47 @@ async function load(){
     saveRepairPageState(cacheVersion);
     if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(repairPageBadgeVersion(cacheVersion),"fresh");
     clearTimeout(loadFailSafe);
+    repairInitialLoading=false;
     hideCalcFloat(0);
   }
   catch(e){
     clearTimeout(loadFailSafe);
+    repairInitialLoading=false;
     hideCalcFloat(0);
     $("loadError").textContent="Failed to load repair data: "+(e.message||e);
     $("loadError").style.display="block"
   }
 }
-if($("repairSelect"))$("repairSelect").onchange=()=>{selectedRepairId=$("repairSelect").value;page=1;renderAll()};
+if($("repairSelect"))$("repairSelect").onchange=()=>{selectedRepairId=$("repairSelect").value;page=1;renderAllWithLoading()};
 $("repairPeriodSelect").onchange=()=>{
   selectedRepairPeriod=$("repairPeriodSelect").value||"total";
   sortKey="repeatChassisOver2Count";
   sortDir="desc";
   applySelectedRepairPeriod();
-  renderAll();
-  renderAll_v2();
+  renderAllWithLoading("Calculating repairer analysis...");
   repairPageVersion().then(v=>saveRepairPageState(v)).catch(()=>{});
 };
-$("searchBox")&&($("searchBox").oninput=()=>{search=$("searchBox").value;page=1;renderAll()});
+$("searchBox")&&($("searchBox").oninput=()=>{search=$("searchBox").value;page=1;renderAllWithLoading("Filtering repairers...")});
 $("clearRepairFiltersBtn")&&($("clearRepairFiltersBtn").onclick=clearRepairFilters);
-$("prevPage")&&($("prevPage").onclick=()=>{if(page>1){page--;renderAll()}});
-$("nextPage")&&($("nextPage").onclick=()=>{const pages=Math.max(1,Math.ceil(currentChassisCheckRows(filtered).length/PAGE_SIZE));if(page<pages){page++;renderAll()}}); 
+$("prevPage")&&($("prevPage").onclick=()=>{if(page>1){page--;renderAllWithLoading("Updating repairer table...")}});
+$("nextPage")&&($("nextPage").onclick=()=>{const pages=Math.max(1,Math.ceil(currentChassisCheckRows(filtered).length/PAGE_SIZE));if(page<pages){page++;renderAllWithLoading("Updating repairer table...")}}); 
 $("repairExportBtn")&&($("repairExportBtn").onclick=()=>exportAllRepairersExcel());
 document.querySelectorAll(".stateMetricBtn[data-metric]").forEach(btn=>{
-  btn.onclick=()=>{weeklyMetric=btn.dataset.metric;renderWeekPanel()};
+  btn.onclick=()=>{weeklyMetric=btn.dataset.metric;showCalcFloat(true,"Updating map analysis...");requestAnimationFrame(()=>{try{renderWeekPanel()}finally{hideCalcFloat(120)}})};
 });
 document.querySelectorAll(".stateMetricBtn[data-rank-view]").forEach(btn=>{
   btn.onclick=()=>{
     overviewRankView=btn.dataset.rankView==="top"?"top":"state";
-    syncRankView();
+    showCalcFloat(true,"Updating ranking view...");
+    requestAnimationFrame(()=>{try{syncRankView()}finally{hideCalcFloat(120)}});
   };
 });
 if($("topRepairSort")){
   $("topRepairSort").value=topRepairSort;
   $("topRepairSort").onchange=()=>{
     topRepairSort=$("topRepairSort").value;
-    renderTop20Panel();
+    showCalcFloat(true,"Sorting repairers...");
+    requestAnimationFrame(()=>{try{renderTop20Panel()}finally{hideCalcFloat(120)}});
   };
 }
 if($("chassisRepeatExport")){

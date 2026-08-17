@@ -119,7 +119,9 @@ def classify_claim_scope(*values: Any) -> str:
     text = " ".join(clean(value).lower() for value in values if clean(value))
     if not text:
         return ""
-    if any(token in text for token in ("pre delivery", "pre-delivery", "predelivery", "pdi")):
+    if "pdi" in text:
+        return "PDI"
+    if any(token in text for token in ("pre delivery", "pre-delivery", "predelivery")):
         return "Pre Delivery"
     if any(token in text for token in ("in field", "in-field", "infield", "field warranty")):
         return "In Field"
