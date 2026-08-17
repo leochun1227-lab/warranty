@@ -4613,7 +4613,7 @@ body.repair-analysis-page #repairRepeatScenarios .repeatShopGridCell small{
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
 <script src="assets/geo/australia-states.js?v=20260706a"></script>
 <script src="assets/geo/new-zealand.js?v=20260706a"></script>
-<script src="browser-page-cache.js?v=repairer-name-map-v12"></script>
+<script src="browser-page-cache.js?v=repairer-name-map-v16"></script>
 <script>
 
 const REPAIR_LOADING_MIN_MS=450;
@@ -4703,14 +4703,35 @@ let ausGeo=null, nzGeo=null;
 let topRepairSort="ticket_count";
 // Client-side working copies (recomputed from details when rate changes)
 let workingSummary=null, workingRepairers=[], workingStates=[], workingWeekly=[], workingChassis=null;
-const REPAIR_COST_RULE_CACHE_SCHEMA="c4c-eligible-sap-po-authoritative-repairer-name-map-v12";
+const REPAIR_COST_RULE_CACHE_SCHEMA="c4c-eligible-sap-po-authoritative-repairer-name-map-v16";
 const REPAIR_STATIC_ASSET_VERSION=`${REPAIR_COST_RULE_CACHE_SCHEMA}:${Date.now()}`;
 const REPAIR_PAGE_CACHE_KEY=`repairs:${selectedRepairYear}:${REPAIR_COST_RULE_CACHE_SCHEMA}`;
 const REPAIR_PAGE_CACHE_ENABLED=false;
 const REPAIR_COST_SANITY_MIN_AUD=50000;
 const REPAIR_COST_SANITY_RATIO=10;
+const REPAIR_CLAIM_TREND_LIVE_APPROVAL_CLOSED_START="2026-06";
+const REPAIR_CLAIM_TREND_HISTORICAL_UNAPPROVED={
+  "2025-01":{inField:101,preDelivery:10},
+  "2025-02":{inField:52,preDelivery:20},
+  "2025-03":{inField:68,preDelivery:7},
+  "2025-04":{inField:124,preDelivery:9},
+  "2025-05":{inField:65,preDelivery:7},
+  "2025-06":{inField:128,preDelivery:4},
+  "2025-07":{inField:62,preDelivery:10},
+  "2025-08":{inField:56,preDelivery:9},
+  "2025-09":{inField:53,preDelivery:2},
+  "2025-10":{inField:41,preDelivery:1},
+  "2025-11":{inField:76,preDelivery:3},
+  "2025-12":{inField:358,preDelivery:21},
+  "2026-01":{inField:517,preDelivery:67},
+  "2026-02":{inField:269,preDelivery:18},
+  "2026-03":{inField:422,preDelivery:27},
+  "2026-04":{inField:268,preDelivery:15},
+  "2026-05":{inField:235,preDelivery:22},
+};
 let repairPageVersionPromise=null;
 let repairAnalysisFetchPromise=null;
+let claimTrendUnapprovedCounts={loaded:false,monthly:[]};
 function repairStaticJsonUrl(path){
   const sep=String(path).includes("?")?"&":"?";
   return `${path}${sep}v=${encodeURIComponent(REPAIR_STATIC_ASSET_VERSION)}`;
@@ -4906,6 +4927,20 @@ async function readJson(path,timeoutMs=15000){
 }
 async function readStaticJson(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
 async function readStaticText(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.text()}
+async function loadClaimTrendUnapprovedCounts(){
+  if(claimTrendUnapprovedCounts.loaded)return claimTrendUnapprovedCounts;
+  try{
+    const rows=await readJson("ctmTicketStatusMonitorV44/analytics/teamDashboard/views/all/approvalClosedMonthly",12000);
+    claimTrendUnapprovedCounts={
+      loaded:true,
+      monthly:Array.isArray(rows)?rows:Object.values(rows||{}),
+    };
+  }catch(e){
+    console.warn("Claim Trend unapproved counts unavailable",e);
+    claimTrendUnapprovedCounts={loaded:true,monthly:[]};
+  }
+  return claimTrendUnapprovedCounts;
+}
 let repairerNameRuleMapPromise=null;
 function repairNameRuleKey(value){
   return clean(value)
@@ -5853,6 +5888,39 @@ function repairScopeTicketEntries(){
 function repairCostTicketEntries(){
   return repairScopeTicketEntries().filter(entry=>hasRepairCost(entry?.ticket));
 }
+function repairApprovedCostTicketTotal(){
+  const detailCount=repairCostTicketEntries().length;
+  if(detailCount>0)return detailCount;
+  const summaryTotal=Number(
+    workingSummary?.total_tickets||
+    precomputedRepairPeriods?.[selectedRepairPeriod]?.summary?.total_tickets||
+    precomputedRepairPeriods?.total?.summary?.total_tickets||
+    0
+  );
+  if(summaryTotal>0)return summaryTotal;
+  return repairOverviewStateRows().reduce((sum,row)=>sum+Number(row?.ticket_count||row?.ticketCount||0),0);
+}
+function claimTrendUnapprovedTicketTotal(){
+  const bounds=repairPeriodBounds();
+  const startMonth=clean(bounds.start).slice(0,7);
+  const endMonth=clean(bounds.end).slice(0,7);
+  const byMonth=new Map();
+  Object.entries(REPAIR_CLAIM_TREND_HISTORICAL_UNAPPROVED).forEach(([month,row])=>{
+    byMonth.set(month,Number(row.inField||0)+Number(row.preDelivery||0));
+  });
+  (Array.isArray(claimTrendUnapprovedCounts.monthly)?claimTrendUnapprovedCounts.monthly:[]).forEach(row=>{
+    const month=clean(row&&row.month);
+    if(month>=REPAIR_CLAIM_TREND_LIVE_APPROVAL_CLOSED_START){
+      byMonth.set(month,Number(row.inFieldUnapproved||0)+Number(row.preDeliveryUnapproved||0));
+    }
+  });
+  return [...byMonth.entries()].filter(([month])=>{
+    return month && month>=startMonth && month<=endMonth && month.slice(0,4)===String(selectedRepairYear);
+  }).reduce((sum,[,value])=>sum+Number(value||0),0);
+}
+function repairApprovedPlusUnapprovedTicketTotal(){
+  return repairApprovedCostTicketTotal()+claimTrendUnapprovedTicketTotal();
+}
 function buildOverviewStateExportRows(list){
   const rows=Array.isArray(list)?list:[];
   const totalCost=rows.reduce((sum,r)=>sum+Number(r?.confirmed_cost||0),0);
@@ -5940,7 +6008,7 @@ async function exportOverviewExcel(){
       return;
     }
     const totalCost=overviewStates.reduce((sum,row)=>sum+Number(row.confirmed_cost||0),0);
-    const totalTickets=overviewStates.reduce((sum,row)=>sum+Number(row.ticket_count||0),0);
+    const totalTickets=repairApprovedCostTicketTotal();
     const summaryRows=[
       ["Metric","Value"],
       ["Selected Period",period],
@@ -6065,8 +6133,8 @@ function normalizedChassis(entry){
     entry?.["Chassis Number"],
   ].map(chassisTokenFromText).find(Boolean)||"";
 }
-const STATE_LABELS={QLD:"Queensland",NSW:"New South Wales",VIC:"Victoria",WA:"Western Australia",SA:"South Australia",TAS:"Tasmania",ACT:"Australian Capital Territory",NT:"Northern Territory",NZ:"New Zealand"};
-const STATE_ABBR_LABELS={QLD:"QLD",NSW:"NSW",VIC:"VIC",WA:"WA",SA:"SA",TAS:"TAS",ACT:"ACT",NT:"NT",NZ:"NZ"};
+const STATE_LABELS={QLD:"Queensland",NSW:"New South Wales",VIC:"Victoria",WA:"Western Australia",SA:"South Australia",TAS:"Tasmania",ACT:"Australian Capital Territory",NT:"Northern Territory",NZ:"New Zealand",AU:"Australia / Unknown State"};
+const STATE_ABBR_LABELS={QLD:"QLD",NSW:"NSW",VIC:"VIC",WA:"WA",SA:"SA",TAS:"TAS",ACT:"ACT",NT:"NT",NZ:"NZ",AU:"AU"};
 const AUS_STATE_ORDER=["WA","NT","QLD","SA","NSW","ACT","VIC","TAS"];
 function fmtWeekLabel(week){if(!week)return"-";const d=parseDate(week);if(!d)return week;const e=new Date(d);e.setDate(e.getDate()+6);return `${d.toISOString().slice(0,10)} to ${e.toISOString().slice(0,10)}`;}
 function metricValue(row){
@@ -6739,10 +6807,13 @@ function weekDataAt(index){return weeklyWeeks[Math.max(0,Math.min(weeklyWeeks.le
 function weekStateMetric(row){return metricValue(row)}
 function orderedAustraliaStates(states){
   const map=new Map((states||[]).filter(r=>r&&r.state).map(r=>[r.state,r]));
-  return [...AUS_STATE_ORDER,"NZ"].filter(code=>map.has(code)).map(code=>map.get(code));
+  const known=[...AUS_STATE_ORDER,"NZ","AU"].filter(code=>map.has(code)).map(code=>map.get(code));
+  const knownCodes=new Set(known.map(r=>r.state));
+  const extra=[...map.values()].filter(r=>!knownCodes.has(r.state)).sort((a,b)=>String(a.state||"").localeCompare(String(b.state||"")));
+  return [...known,...extra];
 }
 function sortAustraliaStates(states){
-  const orderIndex=new Map([...AUS_STATE_ORDER,"NZ"].map((code,i)=>[code,i]));
+  const orderIndex=new Map([...AUS_STATE_ORDER,"NZ","AU"].map((code,i)=>[code,i]));
   return (states||[]).slice().sort((a,b)=>{
     const av=metricValue(a), bv=metricValue(b);
     if(bv!==av)return bv-av;
@@ -6860,9 +6931,10 @@ function snowyTooltipLine(summary,row){
 }
 function repairOverviewStateRows(){
   const candidates=[
+    repairDetailsLoaded?workingStates:null,
     precomputedRepairPeriods?.[selectedRepairPeriod]?.states,
     precomputedRepairPeriods?.total?.states,
-    workingStates,
+    repairDetailsLoaded?null:workingStates,
     weeklyAnalysis?.states,
   ];
   for(const rows of candidates){
@@ -7000,7 +7072,7 @@ function renderWeekPanel(){
     if(rangeEl)rangeEl.textContent=`(${selectedRepairYear}, 0 tickets)`;
     return;
   }
-  const overviewTickets=overviewStates.reduce((sum,s)=>sum+Number(s.ticket_count||0),0);
+  const overviewTickets=repairApprovedCostTicketTotal();
   if(rangeEl)rangeEl.textContent=`(${repairPeriodText()}, ${num(overviewTickets)} tickets with approved repair cost)`;
   if(!overviewStates.some(r=>r.state===selectedRegionCode))selectedRegionCode=overviewStates.some(r=>r.state==="QLD")?"QLD":overviewStates[0].state;
   const selected=selectedOverviewState(overviewStates);
@@ -7360,26 +7432,20 @@ function requestChassisRepeatDetailRefresh(){
   }).catch(err=>console.warn("Chassis repeat detail refresh failed",err));
 }
 function chassisRepeatTotalTicketDenominator(w=workingChassis){
-  const explicit=Number(w?.totalTicketCount||0);
-  if(explicit>0)return explicit;
-  if(Array.isArray(allRepairTickets)&&allRepairTickets.length)return allRepairTickets.length;
-  return Number(workingSummary?.detail_rows||workingSummary?.total_tickets||0);
+  return repairApprovedPlusUnapprovedTicketTotal();
 }
 function chassisRepeatApprovedTicketCount(w=workingChassis){
-  const currentEntries=Array.isArray(tickets)&&tickets.length?tickets:(Array.isArray(allRepairTickets)?allRepairTickets:[]);
-  const approvedFromDetails=currentEntries.filter(entry=>hasRepairCost(entry?.ticket)).length;
-  if(approvedFromDetails>0)return approvedFromDetails;
-  return Number(
-    workingSummary?.total_tickets||
-    precomputedRepairPeriods?.[selectedRepairPeriod]?.summary?.total_tickets||
-    precomputedRepairPeriods?.total?.summary?.total_tickets||
-    0
-  );
+  return repairApprovedCostTicketTotal();
+}
+function chassisRepeatCategoryDenominator(row,w=workingChassis){
+  const key=`${clean(row?.key||"")} ${clean(row?.label||"")}`.toLowerCase();
+  if(key==="all"||key.includes("all approved")||key.includes("allapproved"))return chassisRepeatApprovedTicketCount(w);
+  return chassisRepeatTotalTicketDenominator(w);
 }
 function chassisRepeatCategoryTotals(row,w=workingChassis){
   const repairers=Array.isArray(row?.repairers)?row.repairers:[];
   const repeatTickets=repairers.reduce((sum,repairer)=>sum+Number(repairer.repeatedTickets||0),0);
-  const totalTickets=chassisRepeatTotalTicketDenominator(w);
+  const totalTickets=chassisRepeatCategoryDenominator(row,w);
   return {
     repeatTickets,
     totalTickets,
@@ -7418,19 +7484,22 @@ function renderChassisRepeatPanel(){
     })),
   }));
   viz.innerHTML=`<div class="chassisRepeatScenarioGrid">
-    ${displayRows.map(row=>`
-      <section class="chassisRepeatScenarioCard">
+    ${displayRows.map(row=>{
+      const totals=chassisRepeatCategoryTotals(row,w);
+      const isAllApproved=chassisRepeatCategoryDenominator(row,w)===approvedTicketCount;
+      const denominatorLabel=isAllApproved?"Tickets with Approved Repair Cost":"Total tickets QTY (approved+unapproved)";
+      return `<section class="chassisRepeatScenarioCard">
         <h3 class="chassisRepeatScenarioTitle">${esc(row.label||"")}</h3>
         <div class="chassisRepeatScenarioMeta">
-          <span>Repeat Tickets <b>${num(chassisRepeatCategoryTotals(row,w).repeatTickets)}</b></span>
-          <span>Total Repair Requests <small>(Approved Tickets ${num(approvedTicketCount)})</small> <b>${num(chassisRepeatCategoryTotals(row,w).totalTickets)}</b></span>
-          <span>Rate <b>${num(chassisRepeatCategoryTotals(row,w).rate,1)}%</b></span>
+          <span>Repeat Tickets <b>${num(totals.repeatTickets)}</b></span>
+          <span>${esc(denominatorLabel)} <b>${num(totals.totalTickets)}</b></span>
+          <span>Rate <b>${num(totals.rate,1)}%</b></span>
         </div>
         <div class="repeatShopGrid">
           <div class="repeatShopGridRow repeatShopGridHead">
             <div class="repeatShopGridCell">Repair Shop</div>
             <div class="repeatShopGridCell num">Repeat Tickets<small>(Caravans)</small></div>
-            <div class="repeatShopGridCell num">Total Repair Requests</div>
+            <div class="repeatShopGridCell num">Repairer Requests</div>
             <div class="repeatShopGridCell num">Rate</div>
           </div>
           ${(Array.isArray(row.repairers)?row.repairers:[]).slice(0,20).map(repairer=>`
@@ -7441,42 +7510,46 @@ function renderChassisRepeatPanel(){
               <div class="repeatShopGridCell num">${num(repairer.repeatRate||0,1)}%</div>
             </div>`).join("")||`<div class="empty">No repair shops match this scenario.</div>`}
         </div>
-      </section>`).join("")}
+      </section>`;
+    }).join("")}
   </div>`;
 }
 async function exportChassisRepeatExcel(){
   return withDownloadFloat(async()=>{
+    await loadClaimTrendUnapprovedCounts();
     await ensureRepairDetailsLoaded();
     const w=workingChassis||{};
     if(!w||!Array.isArray(w.categories)||!w.categories.length){alert("No repeated chassis data available to export.");return}
     const categoryTicketTotals=row=>chassisRepeatCategoryTotals(row,w);
     const approvedTicketCount=chassisRepeatApprovedTicketCount(w);
+    const unapprovedTicketCount=claimTrendUnapprovedTicketTotal();
     const summaryRows=[
       ["Metric","Value"],
       ["Caravans QTY (Total Repairs)",Number(w.totalUniqueChassis||0)],
       ["Caravans QTY (Repeat Repairs)",Number(w.repeatedClaimsOnSameChassis||0)],
       ["Tickets QTY (Repeat Requests)",Number(w.repeatedTicketCount||0)],
-      ["Total Repair Requests",Number(chassisRepeatTotalTicketDenominator(w)||0)],
-      ["Approved Tickets inside Total Repair Requests",Number(approvedTicketCount||0)],
+      ["Tickets with Approved Repair Cost",Number(approvedTicketCount||0)],
+      ["Unapproved Tickets",Number(unapprovedTicketCount||0)],
+      ["Total tickets QTY (approved+unapproved)",Number(chassisRepeatTotalTicketDenominator(w)||0)],
       ["Repeat Repair Rate %",Number(w.repeatRate||0)],
       ...w.categories.flatMap(row=>[
+        (()=>{const totals=categoryTicketTotals(row);return [`${row.label} - Repeat Rate %`,Number(totals.rate||0)]})(),
         [`${row.label} - Repeat Tickets`,Number(categoryTicketTotals(row).repeatTickets||0)],
-        [`${row.label} - Total Repair Requests`,Number(categoryTicketTotals(row).totalTickets||0)],
-        [`${row.label} - Approved Tickets inside Total Repair Requests`,Number(approvedTicketCount||0)],
-        [`${row.label} - Repeat Rate %`,Number(categoryTicketTotals(row).rate||0)],
+        [`${row.label} - Denominator`,Number(categoryTicketTotals(row).totalTickets||0)],
         [`${row.label} - Caravan QTY`,Number(row.chassisCount||0)],
         [`${row.label} - Approved Cost`,Number(row.approvedCost||0)],
       ]),
     ];
     const scenarioRows=[
-      ["Scenario","Repeat Tickets","Total Repair Requests","Approved Tickets inside Total Repair Requests","Repeat Rate %","Caravan QTY","Approved Cost"],
+      ["Scenario","Repeat Tickets","Tickets with Approved Repair Cost","Total tickets QTY (approved+unapproved)","Repeat Rate %","Caravan QTY","Approved Cost"],
       ...w.categories.map(row=>{
         const totals=categoryTicketTotals(row);
+        const isAllApproved=chassisRepeatCategoryDenominator(row,w)===approvedTicketCount;
         return [
           row.label||"",
           Number(totals.repeatTickets||0),
-          Number(totals.totalTickets||0),
-          Number(approvedTicketCount||0),
+          isAllApproved?Number(approvedTicketCount||0):"",
+          isAllApproved?"":Number(totals.totalTickets||0),
           Number(totals.rate||0),
           Number(row.chassisCount||0),
           Number(row.approvedCost||0),
@@ -7484,7 +7557,7 @@ async function exportChassisRepeatExcel(){
       }),
     ];
     const repairerRows=[
-      ["Scenario","Repair Shop","Repair Shop ID","Repeat Tickets","Total Repair Requests","Repeat Rate %","Repeated Chassis","Total Chassis","Approved Cost","Avg Approved Cost / Repeat Ticket","Repeated Groups"],
+      ["Scenario","Repair Shop","Repair Shop ID","Repeat Tickets","Repairer Requests","Repeat Rate %","Repeated Chassis","Total Chassis","Approved Cost","Avg Approved Cost / Repeat Ticket","Repeated Groups"],
       ...w.categories.flatMap(row=>(Array.isArray(row.repairers)?row.repairers:[]).map(repairer=>[
         row.label||"",
         repairerDisplayNameFromRow(repairer)||repairer.repairName||"",
@@ -7651,6 +7724,7 @@ async function load(){
   const loadFailSafe=setTimeout(()=>hideCalcFloat(0),22000);
   let cacheVersion="";
   repairerNameRuleMap=await loadRepairerNameRuleMap();
+  await loadClaimTrendUnapprovedCounts();
   try{
     cacheVersion=await withTimeoutPromise(repairPageVersion(),10000,"Repair page version");
   }catch(e){

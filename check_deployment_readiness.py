@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import json
 import os
 import shutil
 import sys
@@ -18,6 +19,8 @@ REQUIRED_FILES = [
     "export_ticket_timeline_segments_2025_2026.py",
     "sync_dashboard_assets_to_firebase.py",
     "build_parts_classification.mjs",
+    "repairs.html",
+    "infieldpredelivery.html",
     "firebase-service-account.json",
     "outputs/parts_classified_meta.json",
     "outputs/analysis_parts_failure_light.json",
@@ -55,6 +58,72 @@ def check_writable_dir(path: Path) -> tuple[bool, str]:
         return True, ""
     except Exception as exc:
         return False, str(exc)
+
+
+def read_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8", errors="replace")
+
+
+def check_repair_page_contract(failures: list[str]) -> None:
+    path = ROOT / "repairs.html"
+    if not path.exists():
+        return
+    text = read_text(path)
+    required_snippets = [
+        'browser-page-cache.js?v=repairer-name-map-v16',
+        'c4c-eligible-sap-po-authoritative-repairer-name-map-v16',
+        'REPAIR_CLAIM_TREND_LIVE_APPROVAL_CLOSED_START="2026-06"',
+        'REPAIR_CLAIM_TREND_HISTORICAL_UNAPPROVED',
+        '"2026-01":{inField:517,preDelivery:67}',
+        '"2026-05":{inField:235,preDelivery:22}',
+        "repairApprovedPlusUnapprovedTicketTotal",
+        "Total tickets QTY (approved+unapproved)",
+    ]
+    missing = [snippet for snippet in required_snippets if snippet not in text]
+    if missing:
+        failures.append("repairs.html is missing the latest repeated-repair denominator contract: " + ", ".join(missing))
+        print("FAIL repairs.html repeated-repair denominator contract")
+    else:
+        print("PASS repairs.html repeated-repair denominator contract")
+
+
+def check_claim_trend_contract(failures: list[str]) -> None:
+    path = ROOT / "infieldpredelivery.html"
+    if not path.exists():
+        return
+    text = read_text(path)
+    required_snippets = [
+        'const LIVE_APPROVAL_CLOSED_START="2026-06"',
+        '"2026-01":{createdIn:586,createdPre:123,approvedIn:340,approvedPre:100,unapprovedIn:517,unapprovedPre:67}',
+        '"2026-05":{createdIn:782,createdPre:208,approvedIn:1080,approvedPre:245,unapprovedIn:235,unapprovedPre:22}',
+        'arr(view.approvalClosedMonthly).forEach',
+    ]
+    missing = [snippet for snippet in required_snippets if snippet not in text]
+    if missing:
+        failures.append("infieldpredelivery.html Claim Trend historical/live unapproved contract changed or is missing: " + ", ".join(missing))
+        print("FAIL Claim Trend unapproved contract")
+    else:
+        print("PASS Claim Trend unapproved contract")
+
+
+def check_repairer_output_consistency(failures: list[str], warnings: list[str]) -> None:
+    path = ROOT / "outputs" / "repairers_2026" / "repairers_2026_fast.json"
+    if not path.exists():
+        warnings.append("repairers_2026_fast.json not found; skipping repairer output consistency check.")
+        return
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as exc:
+        failures.append(f"Could not parse repairers_2026_fast.json: {exc}")
+        print(f"FAIL repairer output consistency: {exc}")
+        return
+    summary_total = int((payload.get("summary") or {}).get("total_tickets") or 0)
+    state_sum = sum(int((row or {}).get("ticket_count") or 0) for row in payload.get("states") or [])
+    if summary_total and state_sum and summary_total != state_sum:
+        failures.append(f"Repairer approved-cost total mismatch: summary.total_tickets={summary_total}, states sum={state_sum}.")
+        print("FAIL repairer output consistency")
+    else:
+        print(f"PASS repairer output consistency: approved-cost tickets {summary_total or state_sum}")
 
 
 def main() -> int:
@@ -101,6 +170,10 @@ def main() -> int:
         except Exception as exc:
             failures.append(f"Could not inspect ODBC drivers: {exc}")
             print(f"FAIL ODBC: {exc}")
+
+    check_repair_page_contract(failures)
+    check_claim_trend_contract(failures)
+    check_repairer_output_consistency(failures, warnings)
 
     for rel_dir in ("logs", "outputs", "generated_exports"):
         ok, err = check_writable_dir(ROOT / rel_dir)
