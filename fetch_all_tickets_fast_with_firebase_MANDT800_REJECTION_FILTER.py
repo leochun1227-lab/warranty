@@ -41,6 +41,8 @@ API_TOP = 1000
 API_SKIP_START = 0
 API_EXTRA_TAIL_PAGES = int(os.getenv("API_EXTRA_TAIL_PAGES", "3"))
 TIMEOUT = 60
+C4C_PAGE_RETRIES = max(1, int(os.getenv("C4C_PAGE_RETRIES", "4")))
+C4C_PAGE_RETRY_SLEEP_SECONDS = max(0.0, float(os.getenv("C4C_PAGE_RETRY_SLEEP_SECONDS", "4")))
 VERIFY_SSL = True
 
 MAX_WORKERS = 12
@@ -1131,34 +1133,77 @@ def build_url(role_code: str, top: int, skip: int) -> str:
 
 
 def fetch_role_page(role_code: str, top: int, skip: int) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-    session = get_thread_session()
     url = build_url(role_code, top, skip)
+    last_err: BaseException | None = None
 
-    r = session.get(
-        url,
-        auth=HTTPBasicAuth(USERNAME, PASSWORD),
-        headers={"Accept": "application/json"},
-        timeout=TIMEOUT,
-        verify=VERIFY_SSL,
+    for attempt in range(1, C4C_PAGE_RETRIES + 1):
+        try:
+            session = get_thread_session()
+            r = session.get(
+                url,
+                auth=HTTPBasicAuth(USERNAME, PASSWORD),
+                headers={"Accept": "application/json"},
+                timeout=TIMEOUT,
+                verify=VERIFY_SSL,
+            )
+
+            if r.status_code != 200:
+                raise RuntimeError(
+                    f"[API] role={role_code} skip={skip} top={top} HTTP {r.status_code} BODY={r.text[:500]}"
+                )
+
+            payload = r.json()
+            rows = list(payload.get("data", []))
+            for rr in rows:
+                rr["requested_skip"] = skip
+
+            meta = {
+                "pageSize": payload.get("pageSize"),
+                "pageNumber": payload.get("pageNumber"),
+                "count": payload.get("count"),
+                "totalCount": payload.get("totalCount"),
+            }
+            return rows, meta
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as exc:
+            last_err = exc
+            close_thread_session()
+            if attempt >= C4C_PAGE_RETRIES:
+                break
+            wait = C4C_PAGE_RETRY_SLEEP_SECONDS * attempt
+            logger.warning(
+                "[API] role=%s skip=%s top=%s read/connect failed (try %s/%s), wait %.1fs: %s",
+                role_code,
+                skip,
+                top,
+                attempt,
+                C4C_PAGE_RETRIES,
+                wait,
+                exc,
+            )
+            if wait:
+                time.sleep(wait)
+        except ValueError as exc:
+            last_err = exc
+            close_thread_session()
+            if attempt >= C4C_PAGE_RETRIES:
+                break
+            wait = C4C_PAGE_RETRY_SLEEP_SECONDS * attempt
+            logger.warning(
+                "[API] role=%s skip=%s top=%s invalid JSON (try %s/%s), wait %.1fs: %s",
+                role_code,
+                skip,
+                top,
+                attempt,
+                C4C_PAGE_RETRIES,
+                wait,
+                exc,
+            )
+            if wait:
+                time.sleep(wait)
+
+    raise RuntimeError(
+        f"[API] role={role_code} skip={skip} top={top} failed after {C4C_PAGE_RETRIES} tries: {last_err}"
     )
-
-    if r.status_code != 200:
-        raise RuntimeError(
-            f"[API] role={role_code} skip={skip} top={top} HTTP {r.status_code} BODY={r.text[:500]}"
-        )
-
-    payload = r.json()
-    rows = list(payload.get("data", []))
-    for rr in rows:
-        rr["requested_skip"] = skip
-
-    meta = {
-        "pageSize": payload.get("pageSize"),
-        "pageNumber": payload.get("pageNumber"),
-        "count": payload.get("count"),
-        "totalCount": payload.get("totalCount"),
-    }
-    return rows, meta
 
 
 def fetch_role_page_task(role_code: str, top: int, skip: int):
