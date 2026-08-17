@@ -475,7 +475,8 @@ const FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedat
 const ROOT="ctmTicketStatusMonitorV44";
 const TICKETS_PATH="c4cTickets_test/tickets";
 const HARD_MIN="2025-01";          // first hardcoded month
-const LIVE_START="2026-06";        // live dashboard values take over from this month
+const LIVE_CREATED_START="2026-01"; // live created-ticket monthly values take over from this month
+const LIVE_APPROVAL_CLOSED_START="2026-06"; // approved/unapproved monthly values take over from this month
 
 /* Hardcoded baseline from the SAP report screenshots (Jan 2025 - May 2026).
    createdIn/createdPre  = "In Field & Pre Delivery tickets created by month"
@@ -607,7 +608,7 @@ function ticketClaimText(ticket){
 
 function ticketIsPreDelivery(ticket){
   const text=ticketClaimText(ticket);
-  return text.includes("pre delivery")||text.includes("pre-delivery")||text.includes("predelivery")||text.includes("pdi");
+  return text.includes("pre delivery")||text.includes("pre-delivery")||text.includes("predelivery");
 }
 
 function ticketApprovedActiveNow(ticket){
@@ -645,8 +646,8 @@ function approvedAmountValue(ticket){
 function buildMonthly(view){
   const out={};
   Object.entries(HISTORICAL).forEach(([m,v])=>{out[m]={month:m,...v}});
-  arr(view.claimCreatedMonthly).forEach(r=>{const m=clean(r.month);if(m>=LIVE_START){if(!out[m])out[m]=emptyMonth(m);out[m].createdIn=Number(r.inField||0);out[m].createdPre=Number(r.preDelivery||0)}});
-  arr(view.approvalClosedMonthly).forEach(r=>{const m=clean(r.month);if(m>=LIVE_START){if(!out[m])out[m]=emptyMonth(m);out[m].approvedIn=Number(r.inFieldApproved||0);out[m].approvedPre=Number(r.preDeliveryApproved||0);out[m].unapprovedIn=Number(r.inFieldUnapproved||0);out[m].unapprovedPre=Number(r.preDeliveryUnapproved||0)}});
+  arr(view.claimCreatedMonthly).forEach(r=>{const m=clean(r.month);if(m>=LIVE_CREATED_START){if(!out[m])out[m]=emptyMonth(m);out[m].createdIn=Number(r.inField||0);out[m].createdPre=Number(r.preDelivery||0)}});
+  arr(view.approvalClosedMonthly).forEach(r=>{const m=clean(r.month);if(m>=LIVE_APPROVAL_CLOSED_START){if(!out[m])out[m]=emptyMonth(m);out[m].approvedIn=Number(r.inFieldApproved||0);out[m].approvedPre=Number(r.preDeliveryApproved||0);out[m].unapprovedIn=Number(r.inFieldUnapproved||0);out[m].unapprovedPre=Number(r.preDeliveryUnapproved||0)}});
   const approvedAmountMonthly=arr(view.approvedAmountMonthly);
   if(approvedAmountMonthly.length){
     approvedAmountMonthly.forEach(r=>{
@@ -1936,7 +1937,7 @@ function setupNav(){
 setupNav();
 window.addEventListener("load",()=>{const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);});
 
-const CLAIM_TREND_PAGE_CACHE_KEY="claim-trend-overview:approved-cost-v6-current-month-last-seven-days";
+const CLAIM_TREND_PAGE_CACHE_KEY="claim-trend-overview:approved-cost-v9-live-created-2026-no-pdi-current-month-last-seven-days";
 function finishInitialScroll(){const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);}
 (async()=>{
   let cacheVersion="";

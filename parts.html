@@ -1100,11 +1100,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
               <h2 class="panelTitle">Top 10 Failure Components  -  <span id="compLabel">By Tickets</span></h2>
               <p class="panelDesc">Counts classified parts tickets only. Trend % compares the latest 3 complete ticket months with the previous 3 complete months. The current partial month is excluded.</p>
             </div>
-            <div class="compBasisSwitch" role="tablist" aria-label="Component date basis">
-              <button class="scopeBtn active" type="button" data-parts-date-basis="CREATED">Created On</button>
-              <button class="scopeBtn" type="button" data-parts-date-basis="APPROVED">Approved Date</button>
-            </div>
-            <button class="compDetailExportBtn" id="compDetailExportBtn" type="button" title="Export all 2026 tickets as CSV using the selected date basis">
+            <button class="compDetailExportBtn" id="compDetailExportBtn" type="button" title="Export all 2026 tickets as CSV using Created On">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg>
               <span>Export CSV</span>
             </button>
@@ -1239,7 +1235,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const PARTS_MONTH_CURRENT_YEAR = "CURRENT_YEAR";
   const PARTS_DATE_BASIS = {
     CREATED: { label:"Ticket Created On", short:"Created" },
-    APPROVED: { label:"Ticket Approved Date", short:"Approved" },
   };
 
   const $ = (id) => document.getElementById(id);
@@ -1284,7 +1279,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     seriesRej: [],
     compMode: "tickets",
     partsMonth: PARTS_MONTH_CURRENT_YEAR,
-    partsDateBasis: "APPROVED",
+    partsDateBasis: "CREATED",
     chassisGoodReceiveMap: {},
     salesOrderGoodReceiveMap: {},
     compPreviewKey: "",
@@ -1299,7 +1294,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   };
 
   const ANALYSIS_TIMEOUT_MS = 15000;
-  const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v26-pgi-month-batch";
+  const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v27-created-on-only";
   const ANALYSIS_PAGE_CACHE_KEY = `analysis:parts-failure-components:${ANALYSIS_PAGE_CACHE_SCHEMA}`;
   const ANALYSIS_PAGE_CACHE_ENABLED = true;
   function mapEntries(map){ return map instanceof Map ? Array.from(map.entries()) : []; }
@@ -1418,7 +1413,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       repairerSort:state.repairerSort,
       compMode:state.compMode,
       partsMonth:state.partsMonth,
-      partsDateBasis:state.partsDateBasis,
+      partsDateBasis:"CREATED",
       partsIncludedTicketIds:setValues(state.partsIncludedTicketIds),
       partsTicketSeriesByIdEntries:mapEntries(state.partsTicketSeriesById)
     });
@@ -1472,7 +1467,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       repairerSort:cached.repairerSort||{key:"rejectionRate",dir:"desc"},
       compMode:normalizeCompMode(cached.compMode),
       partsMonth:normalizePartsMonthSelection(cached.partsMonth),
-      partsDateBasis:"APPROVED",
+      partsDateBasis:"CREATED",
       ticketCostMemo:new WeakMap(),
       ticketRowById:rebuildCachedTicketRowById(cached.rows,cached.sourceRowPool,cached.ticketRowByIdEntries),
       partsIncludedTicketIds:new Set(cached.partsIncludedTicketIds||[]),
@@ -1880,6 +1875,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (text.includes("pre delivery") || text.includes("pre-delivery") || text.includes("predelivery") || text.includes("pdi")) return "PRE";
     if (text.includes("in field") || text.includes("in-field") || text.includes("infield") || text.includes("field warranty")) return "FIELD";
     return "OTHER";
+  }
+
+  function isExportableClaimScope(scope){
+    return scope === "FIELD" || scope === "PRE";
   }
 
   function rowMatchesScope(row, scope = state.scope){
@@ -2702,12 +2701,12 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   function normalizePartsDateBasis(value){
-    return Object.prototype.hasOwnProperty.call(PARTS_DATE_BASIS, value) ? value : "CREATED";
+    return "CREATED";
   }
 
   function partsDateBasis(){
-    state.partsDateBasis = normalizePartsDateBasis(state.partsDateBasis);
-    return state.partsDateBasis;
+    state.partsDateBasis = "CREATED";
+    return "CREATED";
   }
 
   function partsDateBasisLabel(basis = partsDateBasis()){
@@ -2914,7 +2913,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   function warrantyMonthlyCountMap(basis = partsDateBasis()){
     const counts = state.warrantyMonthlyCounts;
     if (!counts || typeof counts !== "object") return null;
-    return normalizePartsDateBasis(basis) === "APPROVED" ? counts.approved : counts.created;
+    return counts.created;
   }
 
   function warrantyTicketCountForMonth(month = selectedPartsMonth(), scope = componentScope(), basis = partsDateBasis()){
@@ -2953,9 +2952,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (!Number.isFinite(count)) return "";
     const warrantyTickets = warrantyTicketCountForMonth(month);
     if (warrantyTickets != null && warrantyTickets >= count) {
-      const noun = partsDateBasis() === "APPROVED"
-        ? "approved warranty tickets with classified parts"
-        : "warranty tickets with classified parts";
+      const noun = "warranty tickets with classified parts";
       return `${numFmt.format(count)} / ${numFmt.format(warrantyTickets)} ${noun}`;
     }
     return formatTicketCount(count);
@@ -3326,13 +3323,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     });
   }
 
-  function renderDateBasisButtons(){
-    const basis = partsDateBasis();
-    document.querySelectorAll("[data-parts-date-basis]").forEach(btn => {
-      btn.classList.toggle("active", btn.getAttribute("data-parts-date-basis") === basis);
-    });
-  }
-
   // ============ RENDER: series table ============
   function renderSeriesTable(){
     const rows = sortRows(state.summary, state.seriesSort);
@@ -3597,8 +3587,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     }).join("");
 
     target.innerHTML = rowsHtml;
-
-    renderDateBasisButtons();
 
     hideCompTooltip();
     applyActiveComponentRowState();
@@ -3995,14 +3983,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (tid && state.ticketRowById) {
       const t = state.ticketRowById.get(tid);
       if (t) {
-        const d = normalizePartsDateBasis(basis) === "APPROVED"
-          ? parseDmy(t["Claim Approved On"] || t["Claim Approved Date"] || t["Approved On"] || t["Approved Date"])
-          : parseDmy(t["Created On"] || t.CreatedOn);
+        const d = parseDmy(t["Created On"] || t.CreatedOn);
         if (d) return d;
       }
-    }
-    if (normalizePartsDateBasis(basis) === "APPROVED") {
-      return parseDmy(cr["Claim Approved On"] || cr["Claim Approved Date"] || cr["Approved On"] || cr["Approved Date"]);
     }
     return parseDmy(cr["Created On"] || cr.CreatedOn);
   }
@@ -5207,22 +5190,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       document.querySelectorAll("[data-month-dropdown][open]").forEach(details => {
         if (!details.contains(ev.target)) details.open = false;
       });
-      const dateBasisEl = ev.target.closest("[data-parts-date-basis]");
-      if (dateBasisEl) {
-        const basis = normalizePartsDateBasis(dateBasisEl.getAttribute("data-parts-date-basis"));
-        if (basis !== state.partsDateBasis) {
-          state.partsDateBasis = basis;
-          state.partsMonth = PARTS_MONTH_CURRENT_YEAR;
-          hideCompTooltip();
-          hideMonthlyTrendTip();
-          renderMonthButtons();
-          renderInsights();
-          renderChips();
-          renderComponents();
-          scheduleAnalysisPageSave();
-        }
-        return;
-      }
       const monthEl = ev.target.closest("[data-parts-month]");
       if (monthEl) {
         const dropdown = monthEl.closest("[data-month-dropdown]");
@@ -5820,7 +5787,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       if (!partsMonthMatchesTicket(row, String(year), basis)) return;
       const series = extractSeries(row);
       if (selected !== "ALL" && series !== selected) return;
-      if (scope !== "ALL" && claimScope(row) !== scope) return;
+      const rowScope = claimScope(row);
+      if (!isExportableClaimScope(rowScope)) return;
+      if (scope !== "ALL" && rowScope !== scope) return;
       seen.add(id);
       rows.push(row);
     };
@@ -5884,7 +5853,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const overlaySub = $("loadingOverlaySub");
     if (overlayTitle) overlayTitle.textContent = "Preparing CSV...";
     const basis = partsDateBasis();
-    const basisText = normalizePartsDateBasis(basis) === "APPROVED" ? "approved in" : "created in";
+    const basisText = "created in";
     if (overlaySub) overlaySub.textContent = `Exporting tickets ${basisText} 2026 only, without Top 10 workbook calculations.`;
     try {
       await loadPartsClassifiedRows();
@@ -5911,7 +5880,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         ...tickets.map(ticket => fastTicketCsvRow(ticket, linesByTicket)),
       ];
       const stamp = new Date().toISOString().slice(0,10).replace(/-/g,"");
-      const basisName = normalizePartsDateBasis(basis).toLowerCase();
+      const basisName = "created";
       downloadCsv(`parts_tickets_${basisName}_${year}_all_${stamp}.csv`, rows);
     } finally {
       if (overlay) overlay.classList.remove("show");
@@ -6188,9 +6157,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   function ticketPartsBasisDate(row, basis = partsDateBasis()){
-    if (normalizePartsDateBasis(basis) === "APPROVED") {
-      return parseDmy(row["Claim Approved On"] || row["Claim Approved Date"] || row["Approved On"] || row["Approved Date"]);
-    }
     return parseDmy(row["Created On"] || row.CreatedOn || row["Created Date"] || row.CreatedDate);
   }
 
@@ -6211,7 +6177,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const id = ticketExportId(row);
     if (!id) return false;
     if (!partsMonthMatchesTicket(row, month, basis)) return false;
-    if (scope !== "ALL" && claimScope(row) !== scope) return false;
+    const rowScope = claimScope(row);
+    if (!isExportableClaimScope(rowScope)) return false;
+    if (scope !== "ALL" && rowScope !== scope) return false;
     const series = extractSeries(row);
     if (state.selected !== "ALL" && series !== state.selected) return false;
     return true;

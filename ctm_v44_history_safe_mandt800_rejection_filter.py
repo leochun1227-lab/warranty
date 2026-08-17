@@ -66,7 +66,7 @@ CLEAR_TARGET_CRITICAL = 300
 PO_CLAIM_SANITY_MIN_PO_AUD = float(os.getenv("PO_CLAIM_SANITY_MIN_PO_AUD", "50000"))
 PO_CLAIM_SANITY_RATIO = float(os.getenv("PO_CLAIM_SANITY_RATIO", "10"))
 IN_FIELD_KEYWORDS = ["in field", "in-field", "infield", "field warranty"]
-PRE_DELIVERY_KEYWORDS = ["pre delivery", "pre-delivery", "predelivery", "pdi"]
+PRE_DELIVERY_KEYWORDS = ["pre delivery", "pre-delivery", "predelivery"]
 CLAIM_TYPE_SEARCH_FIELDS = [
     "claimType", "ClaimType", "Claim Type",
     "ticketClaimType", "TicketClaimType",
@@ -862,7 +862,7 @@ def normalized_claim_type(v: Any) -> str:
     return ""
 
 
-def ticket_claim_type(ticket: Dict[str, Any]) -> str:
+def ticket_claim_search_text(ticket: Dict[str, Any]) -> str:
     if not isinstance(ticket, dict):
         return ""
 
@@ -871,8 +871,17 @@ def ticket_claim_type(ticket: Dict[str, Any]) -> str:
     for value in ticket.values():
         if value is None or isinstance(value, (str, int, float, bool)):
             values.append(value)
+    return " ".join(filter(None, (normalize_claim_text(v) for v in values)))
 
-    search_text = " ".join(filter(None, (normalize_claim_text(v) for v in values)))
+
+def ticket_has_pdi_claim(ticket: Dict[str, Any]) -> bool:
+    return matches_claim_keyword(ticket_claim_search_text(ticket), ["pdi"])
+
+
+def ticket_claim_type(ticket: Dict[str, Any]) -> str:
+    search_text = ticket_claim_search_text(ticket)
+    if not search_text:
+        return ""
     if matches_claim_keyword(search_text, PRE_DELIVERY_KEYWORDS):
         return "Pre Delivery Warranty Claims"
     if matches_claim_keyword(search_text, IN_FIELD_KEYWORDS):
@@ -3344,6 +3353,20 @@ def _build_team_view(
     approved_unapproved_daily: Dict[str, int] = {}
     approval_closed_monthly: Dict[str, Dict[str, int]] = {}
     approved_amount_monthly: Dict[str, Dict[str, float]] = {}
+
+    def decision_monthly_claim_type(ticket: Dict[str, Any], event: Optional[Dict[str, Any]] = None) -> str:
+        if ticket_has_pdi_claim(ticket) or (event is not None and ticket_has_pdi_claim(event)):
+            return ""
+        claim_type = ticket_claim_type(ticket)
+        if not claim_type and event is not None:
+            claim_type = _event_claim_type(event, ticket_by_id)
+        if claim_type:
+            return claim_type
+        # The team dashboard approval summary already counts this decision row.
+        # If only the claim label is missing, keep it in the In Field bucket so
+        # Claim Trend monthly totals reconcile to the same decision universe.
+        return "In Field Warranty Claims"
+
     for t in all_approved_rows:
         decision_day = approved_reporting_date(t)
         if decision_day and DASHBOARD_MIN_DATE <= decision_day <= generated_day:
@@ -3353,7 +3376,7 @@ def _build_team_view(
         if decision_day and approval_history_start <= decision_day <= generated_day:
             month_key = decision_day[:7]
             bucket = approval_closed_monthly.setdefault(month_key, {"inFieldApproved": 0, "preDeliveryApproved": 0, "inFieldUnapproved": 0, "preDeliveryUnapproved": 0})
-            claim_type = ticket_claim_type(t)
+            claim_type = decision_monthly_claim_type(t)
             if claim_type == "Pre Delivery Warranty Claims":
                 bucket["preDeliveryApproved"] += 1
             elif claim_type == "In Field Warranty Claims":
@@ -3364,7 +3387,7 @@ def _build_team_view(
             continue
         month_key = decision_day[:7]
         amount_bucket = approved_amount_monthly.setdefault(month_key, {"inField": 0.0, "preDelivery": 0.0})
-        claim_type = ticket_claim_type(t)
+        claim_type = decision_monthly_claim_type(t)
         amount = approved_cost_amount(t)
         if claim_type == "Pre Delivery Warranty Claims":
             amount_bucket["preDelivery"] = round(float(amount_bucket["preDelivery"]) + amount, 2)
@@ -3381,7 +3404,7 @@ def _build_team_view(
             bucket = approval_closed_monthly.setdefault(month_key, {"inFieldApproved": 0, "preDeliveryApproved": 0, "inFieldUnapproved": 0, "preDeliveryUnapproved": 0})
             tid = event_ticket_id(e)
             t = ticket_by_id.get(tid, {}) if tid else {}
-            claim_type = ticket_claim_type(t) or _event_claim_type(e, ticket_by_id)
+            claim_type = decision_monthly_claim_type(t, e)
             if claim_type == "Pre Delivery Warranty Claims":
                 bucket["preDeliveryUnapproved"] += 1
             elif claim_type == "In Field Warranty Claims":

@@ -5549,6 +5549,12 @@ function approvalAnalyticsSummary(){
   }
   return {approvedTickets:0,approvedCostTickets:0,unapprovedTickets:0,approvedAmount:0,unapprovedAmount:0,avgCostPerTicket:0};
 }
+function ticketMovementDisplayRemovedTotal(bridge){
+  const approval=approvalAnalyticsSummary();
+  const decisionTotal=Number(approval.approvedTickets||0)+Number(approval.unapprovedTickets||0);
+  if(decisionTotal>0)return decisionTotal;
+  return Number(bridge&&bridge.removed||0);
+}
 function createdTicketsForSelectedMonthFallback(){
   const month=selectedDashboardMonth();
   const row=arrayFromMaybe(currentView().claimCreatedMonthly).find(item=>clean(item.month)===month);
@@ -5607,6 +5613,8 @@ function pythonDashboardKpis(){const view=currentView()||{};return view.dashboar
 function ticketMovementBridgeTrendPoints(start,end){
   if(!start||!end||end<start)return [];
   const fullBridge=ticketMovementBridge(start,end);
+  const displayRemovedTotal=ticketMovementDisplayRemovedTotal(fullBridge);
+  const bridgeRemovedTotal=Number(fullBridge.removed||0);
   const openingDate=fullBridge.openingDate||addDaysISO(start,-1);
   const rows=[{
     date:openingDate,
@@ -5628,13 +5636,15 @@ function ticketMovementBridgeTrendPoints(start,end){
   }];
   for(let d=start;d&&d<=end;d=addDaysISO(d,1)){
     const bridge=ticketMovementBridge(start,d);
+    const rawRemoved=Number(bridge.removed||0);
+    const displayRemoved=(d===end)?displayRemovedTotal:(displayRemovedTotal&&bridgeRemovedTotal?Math.round(displayRemovedTotal*(rawRemoved/bridgeRemovedTotal)):rawRemoved);
     rows.push({
       date:d,
       periodStart:start,
       periodEnd:d,
       criticalTotal:Number(bridge.ending||0),
       enteredCritical:Number(bridge.addedToWaiting||0),
-      exitedCritical:Number(bridge.removed||0),
+      exitedCritical:displayRemoved,
       newCreatedTickets:Number(bridge.newClaims||0),
       reenteredTickets:Number(bridge.reentered||0),
       approvedRemoved:Number(bridge.approvedRemoved||0),
@@ -5697,7 +5707,7 @@ function updateTrendPanelCopy(){
   const last=cumulativePoints.slice(-1)[0]||{};
   const newTickets=Number(last.cumulativeEnteredCritical||last.newCreatedTickets||0);
   const ending=remainingTotalForSnapshot();
-  const removed=Number(bridge.removed||last.cumulativeExitedCritical||last.exitedCritical||0);
+  const removed=ticketMovementDisplayRemovedTotal(bridge)||Number(last.cumulativeExitedCritical||last.exitedCritical||0);
   const sideSummary=$("trendSideSummary");
   if(sideSummary){
     const snapshotText=selectedSnapshotText();
@@ -5971,7 +5981,7 @@ function renderKpis(){
   if($("kpiAvgCost"))$("kpiAvgCost").textContent=money(approvedAvg);
   if($("kpiUnapprovedAmount"))$("kpiUnapprovedAmount").textContent=money(s.unapprovedAmount);
   if($("kpiUnapprovedRatio"))$("kpiUnapprovedRatio").textContent=todayMode?"-":pctText(ratio,2);
-  if($("kpiRatioBase"))$("kpiRatioBase").innerHTML=todayMode?"":`<span class="ratioBaseValue">${num(ratioUnapproved)} / ${num(ratioApproved)}</span><span class="ratioBaseNote">Removed Ticket Count: Unapproved / Approved</span>`;
+  if($("kpiRatioBase"))$("kpiRatioBase").innerHTML=todayMode?"":`<span class="ratioBaseValue">${num(ratioUnapproved)} / ${num(ratioApproved)}</span><span class="ratioBaseNote">Decision Ticket Count: Unapproved / Approved</span>`;
   if($("kpiCriticalTrend")){ $("kpiCriticalTrend").innerHTML=selectedSnapshotMetaMarkup(); $("kpiCriticalTrend").className="kpiTrend flat kpiTrendDateOnly"; }
   if($("kpiUnapprovedTrend")){ $("kpiUnapprovedTrend").innerHTML=selectedSnapshotMetaMarkup(); $("kpiUnapprovedTrend").className="kpiTrend flat kpiTrendDateOnly"; }
   setTrend("kpiBenchmarkTrend","benchmarkRate",h.rate||0,prevH.rate||0,"percentPoint",filtered&&!todayMode);
@@ -7613,7 +7623,7 @@ function kpiSummaryRows(){
   const s=currentPeriodSummary(),approvalMonthSummary=approvalAnalyticsSummary(),h=periodHandlingSummary(),noUpdate=noUpdateAgingSummary(),claimCounts=claimTypeCounts();
   const removedApproval=ticketMovementRemovedApprovalSummary(periodBounds().start,periodBounds().end);
   const ratio=pctValue(removedApproval.unapprovedTickets,removedApproval.approvedTickets);
-  return [["Metric","Value","Context"],[`Tickets in Progress (On ${selectedSnapshotText()})`,remainingTotalForSnapshot(),`On ${selectedSnapshotText()}`],[`Tickets in Progress Over 60 Days (On ${selectedSnapshotText()})`,noUpdate.count,`On ${selectedSnapshotText()}`],[`In Field Warranty Claims Remaining (On ${selectedSnapshotText()})`,claimCounts.inField,`On ${selectedSnapshotText()}`],[`Pre Delivery Warranty Claims Remaining (On ${selectedSnapshotText()})`,claimCounts.preDelivery,`On ${selectedSnapshotText()}`],[`Approved Tickets (${selectedMonthPeriodLabel()})`,removedApproval.approvedTickets,`Removed tickets in period: ${selectedPeriodText()}`],[`Unapproved Tickets (${selectedMonthPeriodLabel()})`,removedApproval.unapprovedTickets,`Removed tickets in period: ${selectedPeriodText()}`],[`Approved PO Cost Tickets (${selectedMonthPeriodLabel()})`,approvalMonthSummary.approvedCostTickets,`Approved tickets with SAP PO cost > 0`],[`Approved Repair Cost (${selectedMonthPeriodLabel()})`,approvalMonthSummary.approvedAmount,`Period: ${selectedPeriodText()}`],[`Average Approved Cost per Ticket (${selectedMonthPeriodLabel()})`,s.avgCostPerTicket,`Period: ${selectedPeriodText()}`],["Tickets in Progress Completion Within 14 Days",`${numFixed(h.rate||0,1)}%`,`Period: ${selectedPeriodText()}`],[`Unapproved vs Approved (${selectedMonthPeriodLabel()})`,`${numFixed(ratio,2)}%`,`${removedApproval.unapprovedTickets} / ${removedApproval.approvedTickets}`]];
+  return [["Metric","Value","Context"],[`Tickets in Progress (On ${selectedSnapshotText()})`,remainingTotalForSnapshot(),`On ${selectedSnapshotText()}`],[`Tickets in Progress Over 60 Days (On ${selectedSnapshotText()})`,noUpdate.count,`On ${selectedSnapshotText()}`],[`In Field Warranty Claims Remaining (On ${selectedSnapshotText()})`,claimCounts.inField,`On ${selectedSnapshotText()}`],[`Pre Delivery Warranty Claims Remaining (On ${selectedSnapshotText()})`,claimCounts.preDelivery,`On ${selectedSnapshotText()}`],[`Approved Tickets (${selectedMonthPeriodLabel()})`,removedApproval.approvedTickets,`Decision tickets in period: ${selectedPeriodText()}`],[`Unapproved Tickets (${selectedMonthPeriodLabel()})`,removedApproval.unapprovedTickets,`Decision tickets in period: ${selectedPeriodText()}`],[`Approved PO Cost Tickets (${selectedMonthPeriodLabel()})`,approvalMonthSummary.approvedCostTickets,`Approved tickets with SAP PO cost > 0`],[`Approved Repair Cost (${selectedMonthPeriodLabel()})`,approvalMonthSummary.approvedAmount,`Period: ${selectedPeriodText()}`],[`Average Approved Cost per Ticket (${selectedMonthPeriodLabel()})`,s.avgCostPerTicket,`Period: ${selectedPeriodText()}`],["Tickets in Progress Completion Within 14 Days",`${numFixed(h.rate||0,1)}%`,`Period: ${selectedPeriodText()}`],[`Unapproved vs Approved (${selectedMonthPeriodLabel()})`,`${numFixed(ratio,2)}%`,`${removedApproval.unapprovedTickets} / ${removedApproval.approvedTickets}`]];
 }
 function trendSummaryRows(){
   return [["Date",`Added to Waiting from ${selectedPeriodText()}`,`Removed from ${selectedPeriodText()}`,`Tickets in Progress Remaining (On ${selectedSnapshotText()})`,`New Tickets from ${selectedPeriodText()}`,"Old Tickets","Formula Difference"]].concat(cumulativeTrendPoints(selectedTrend()).map(row=>[row.date,Number(row.cumulativeEnteredCritical||0),Number(row.cumulativeExitedCritical||0),Number(row.criticalTotal||0),Number(row.cumulativeNewCreatedTickets||0),Number(row.reenteredTickets||0),Number(row.formulaDifference||0)]));
@@ -8279,6 +8289,14 @@ function reconcileTeamAssignMetricTotal(grouped,field,expected,days){
     if(field==="removed")updateTeamAssignRemovedRates(item.row,days);
   });
 }
+function addMissingTeamAssignMetricTotal(grouped,field,expected,days){
+  expected=Math.max(0,Math.round(Number(expected)));
+  if(!Number.isFinite(expected))return;
+  const total=Array.from(grouped.values()).reduce((sum,row)=>sum+Number(row[field]||0),0);
+  if(expected<=total)return;
+  const row=addTeamAssignMetric(grouped,"Other",field,expected-total);
+  if(field==="removed")updateTeamAssignRemovedRates(row,days);
+}
 function visibleTeamAssignRows(rows,limit=22){
   const sorted=(rows||[]).slice().sort((a,b)=>teamAssignMetricValue(b)-teamAssignMetricValue(a)||a.name.localeCompare(b.name));
   if(sorted.length<=limit)return sorted;
@@ -8306,7 +8324,7 @@ function teamAssignRowsWithDirectory(){
   const {start,end}=periodBounds();
   const days=daysInBounds(start,end);
   const analyticsRows=teamAssignRowsFromAnalyticsForPeriod();
-  const bridge={removedRows:[],ending:remainingTotalForSnapshot()};
+  const bridge=ticketMovementBridge(start,end);
   if(analyticsRows.length){
     analyticsRows.forEach(row=>{
       addTeamAssignMetric(byKey,row.name,"total",row.total);
@@ -8321,17 +8339,20 @@ function teamAssignRowsWithDirectory(){
     addTeamAssignMetric(byKey,row.name,"approved",row.approved);
     addTeamAssignMetric(byKey,row.name,"unapproved",row.unapproved);
   });
-  byKey.forEach(row=>{
-    const approved=Number(row.approved||0);
-    const unapproved=Number(row.unapproved||0);
-    if(approved>0||unapproved>0)row.removed=approved+unapproved;
-  });
   employeeDirectoryNames().forEach(name=>{
     if(isOtherTeamAssignRow(teamAssignDisplayName(name)))return;
     const key=employeeStatusKey(name);
     if(key&&!byKey.has(key))byKey.set(key,{name,total:0,removed:0,approved:0,unapproved:0,avgDaily:0,avgWeekly:0});
   });
-  reconcileTeamAssignMetricTotal(byKey,"total",bridge.ending,days);
+  const approval=approvalAnalyticsSummary();
+  addMissingTeamAssignMetricTotal(byKey,"approved",approval.approvedTickets,days);
+  addMissingTeamAssignMetricTotal(byKey,"unapproved",approval.unapprovedTickets,days);
+  byKey.forEach(row=>{
+    const decisionTotal=Number(row.approved||0)+Number(row.unapproved||0);
+    if(decisionTotal>0)row.removed=decisionTotal;
+  });
+  addMissingTeamAssignMetricTotal(byKey,"removed",ticketMovementDisplayRemovedTotal(bridge),days);
+  reconcileTeamAssignMetricTotal(byKey,"total",remainingTotalForSnapshot(),days);
   byKey.forEach(row=>updateTeamAssignRemovedRates(row,days));
   return Array.from(byKey.values()).filter(row=>!isOtherTeamAssignRow(row.name)||Number(row.total||0)>0||Number(row.removed||0)>0||Number(row.approved||0)>0||Number(row.unapproved||0)>0);
 }
