@@ -1528,6 +1528,24 @@
         : monthStartFromRow(last);
     return fmtDateRangeShort(start, end);
   }
+  function monthSeriesRangeAsOf(series, latest=null){
+    const rows = Array.isArray(series) ? series.filter(Boolean) : [];
+    if (!rows.length) return "";
+    const first = rows[0];
+    const last = rows[rows.length - 1];
+    const start = monthStartFromRow(first);
+    let end = last.end instanceof Date
+      ? last.end
+      : last.start instanceof Date
+        ? addDaysUTC(addMonthsUTC(last.start, 1), -1)
+        : monthStartFromRow(last);
+    const latestDate = parseLooseDate(latest?.asOf) || parseDate(latest?.asOf);
+    const lastStart = monthStartFromRow(last);
+    if (latestDate && lastStart && latestDate >= lastStart && latestDate < end){
+      end = latestDate;
+    }
+    return fmtDateRangeShort(start, end);
+  }
   function currentYearMonthlySeries(series, latest=null){
     const rows = Array.isArray(series) ? series.filter(Boolean) : [];
     if (!rows.length) return [];
@@ -4079,7 +4097,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     }
     els.flowFoot.textContent = `Parts selected ${state.granularity.toUpperCase()} table by unique SO - ${visible.length} visible rows - latest period ${visible[visible.length - 1].tooltip}.`;
     const issuedVisible = issuedSeries;
-    els.issuedFoot.textContent = `${issuedVisible.length} visible points - ${monthSeriesRange(issuedVisible)}`;
+    els.issuedFoot.textContent = `${issuedVisible.length} visible points - ${monthSeriesRangeAsOf(issuedVisible, latest)}`;
     els.leadFoot.textContent = "";
   }
 
@@ -4138,8 +4156,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
 
     els.snapshotPill.innerHTML = `<strong>Latest</strong> ${fmtDate(parseDate(latest.asOf))}`;
     els.flowBadge.textContent = state.granularity === "week" ? "Weekly" : state.granularity === "month" ? "Monthly" : "Yearly";
-    els.leadBadge.textContent = monthSeriesRange(leadSeries);
-    els.issuedBadge.textContent = monthSeriesRange(normalizedIssuedSeries);
+    els.leadBadge.textContent = monthSeriesRangeAsOf(leadSeries, latest);
+    els.issuedBadge.textContent = monthSeriesRangeAsOf(normalizedIssuedSeries, latest);
     els.costBadge.textContent = `Since ${dateKey(currentYearStartDate(latest)).slice(0, 7)}`;
 
     const costReport = latest.costReport || state.costReport;
