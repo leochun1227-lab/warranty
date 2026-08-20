@@ -1,0 +1,14 @@
+{"kind":"slide","id":"sl/3slza9","slide":1,"title":"SAP invoice date basis | 2025-09-01 to 2026-08-20","textShapes":10}
+{"kind":"textbox","id":"sh/0jih0n2l","slide":1,"name":"eyebrow","text":"SAP invoice date basis | 2025-09-01 to 2026-08-20","textPreview":"SAP invoice date basis | 2025-09-01 to 2026-08-20","textChars":49,"textLines":1,"bbox":[72,48,760,30]}
+{"kind":"textbox","id":"sh/zi907i10","slide":1,"name":"title","text":"C4C item rows peaked in the latest invoice months","textPreview":"C4C item rows peaked in the latest invoice months","textChars":49,"textLines":1,"bbox":[72,92,840,110]}
+{"kind":"textbox","id":"sh/eh0zydkv","slide":1,"name":"subtitle","text":"Each ticket is allocated to the month of its latest non-reversed SAP EKBE BEWTP='Q' posting date; the line tracks how many C4C item rows sit under those tickets.","textPreview":"Each ticket is allocated to the month of its latest non-reversed SAP EKBE BEWTP='Q' posting date; the line tracks how many C4C item rows ...","textChars":161,"textLines":1,"bbox":[72,202,910,58]}
+{"kind":"shape","id":"sh/dg7i5sja","slide":1,"name":"rule","bbox":[72,282,1136,1]}
+{"kind":"textbox","id":"sh/rep03i14","slide":1,"name":"metric-label-0","text":"Total item rows","textPreview":"Total item rows","textChars":15,"textLines":1,"bbox":[900,330,250,26]}
+{"kind":"textbox","id":"sh/qdgzudkj","slide":1,"name":"metric-value-0","text":"10,604","textPreview":"10,604","textChars":6,"textLines":1,"bbox":[900,358,300,44]}
+{"kind":"textbox","id":"sh/xcbihcje","slide":1,"name":"metric-label-1","text":"Tickets invoiced","textPreview":"Tickets invoiced","textChars":16,"textLines":1,"bbox":[900,422,250,26]}
+{"kind":"textbox","id":"sh/wb2h87it","slide":1,"name":"metric-value-1","text":"7,312","textPreview":"7,312","textChars":5,"textLines":1,"bbox":[900,450,300,44]}
+{"kind":"textbox","id":"sh/ydgz6dgn","slide":1,"name":"metric-label-2","text":"Peak month","textPreview":"Peak month","textChars":10,"textLines":1,"bbox":[900,514,250,26]}
+{"kind":"textbox","id":"sh/jepgzih8","slide":1,"name":"metric-value-2","text":"2026-06 (1,539)","textPreview":"2026-06 (1,539)","textChars":15,"textLines":1,"bbox":[900,542,300,44]}
+{"kind":"textbox","id":"sh/kfyh8nyd","slide":1,"name":"source-note","text":"Source: C4C parts_classified.csv joined to SAP HANA EKBE/RBKP invoice PO-item aggregates; RBKP reversal docs excluded.","textPreview":"Source: C4C parts_classified.csv joined to SAP HANA EKBE/RBKP invoice PO-item aggregates; RBKP reversal docs excluded.","textChars":118,"textLines":1,"bbox":[72,666,1030,26]}
+{"kind":"chart","id":"ch/o76h4fet","slide":1,"name":"","chartType":"line","bbox":[72,318,770,320]}
+{"kind":"notes","id":"nt/3slza9","slide":1,"text":""}

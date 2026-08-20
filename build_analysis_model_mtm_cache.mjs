@@ -6,11 +6,13 @@ const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = path.join(ROOT, "outputs");
 
 const MODEL_ANALYSIS_YEAR = 2026;
+const CLAIM_TREND_APPROVED_TICKETS_2026 = 7833;
 const CUTOFF = new Date(2025, 0, 1);
 const APPROVED_COST_SANITY_MIN_AUD = Number(process.env.APPROVED_COST_SANITY_MIN_AUD || "50000");
 const APPROVED_COST_SANITY_RATIO = Number(process.env.APPROVED_COST_SANITY_RATIO || "10");
 const OTHERS_SERIES = "Others";
-const SERIES_ORDER = ["SRC", "SRH", "SRT", "SRM", "SRP", "SRL", "SRV", "SRS", "NG", OTHERS_SERIES];
+const HISTORICAL_GAP_SERIES = "Historical Gap";
+const SERIES_ORDER = ["SRC", "SRH", "SRT", "SRM", "SRP", "SRL", "SRV", "SRS", "NG", OTHERS_SERIES, HISTORICAL_GAP_SERIES];
 const TRACKED_SERIES = new Set(SERIES_ORDER);
 const EXCLUDED_SERIES = new Set(["UNKNOWN", "RO", "SR", "SCR", "STR", "RVV", "RR", "SPV", "SRO", "SEV", "RRC", "VRV"]);
 const MODEL_SERIES_PREFIXES = [
@@ -19,6 +21,13 @@ const MODEL_SERIES_PREFIXES = [
   "LRV", "LRT", "LRH", "LRM", "LRP", "LRL", "LRS", "LRC", "LTR", "LVR", "LPV", "LEP",
   "RRV", "RV",
 ];
+const CLAIM_TREND_HISTORICAL_APPROVED_2026 = {
+  "2026-01": { FIELD: 340, PRE: 100 },
+  "2026-02": { FIELD: 823, PRE: 221 },
+  "2026-03": { FIELD: 1059, PRE: 145 },
+  "2026-04": { FIELD: 888, PRE: 268 },
+  "2026-05": { FIELD: 1080, PRE: 245 },
+};
 
 const paths = {
   ticketTimingCsv: path.join(OUTPUT_DIR, "analysis_ticket_failure_timing.csv"),
@@ -193,6 +202,7 @@ function normalizeSeriesCode(code) {
   const raw = clean(code).toUpperCase();
   if (!raw) return "UNKNOWN";
   if (raw === "OTHERS" || raw === "OTHER") return OTHERS_SERIES;
+  if (["HISTORICAL GAP", "HISTORICALGAP", "UNCLASSIFIED", "UNCLASSIFIED HISTORICAL"].includes(raw)) return HISTORICAL_GAP_SERIES;
   if (raw.startsWith("NG")) return "NG";
   if (raw === "RRV" || raw.startsWith("RRV")) return "SRL";
   if (raw === "LRV" || raw.startsWith("LRV")) return "SRC";
@@ -210,6 +220,12 @@ function isTrackedSeries(series) {
 
 function isDisplaySeries(series) {
   return normalizeSeriesCode(series) !== OTHERS_SERIES;
+}
+
+function isHistoricalGapRow(row) {
+  return normalizeSeriesCode(row?.ModelSeries || row?.modelSeries || row?.["Model Series"]) === HISTORICAL_GAP_SERIES ||
+    clean(row?.ModelBucket || row?.modelBucket || row?.["Model Bucket"]) === HISTORICAL_GAP_SERIES ||
+    clean(row?.ModelSyntheticSource || row?.modelSyntheticSource || row?.["Model Synthetic Source"]) === "Claim Trend historical approved gap";
 }
 
 function seriesCodeFromVehicleToken(token) {
@@ -741,11 +757,12 @@ function summaryBySeries(rows, activeBase) {
     const rej = getRejection(row);
     if (!map.has(series)) map.set(series, createSeriesBucket(series));
     const bucket = map.get(series);
+    const historicalGap = isHistoricalGapRow(row);
     bucket.tickets += 1;
     bucket.cost += cost;
     if (cost > 0) bucket.costTickets += 1;
     if (key) bucket.vehicles.add(key);
-    bucket.repairedTickets += 1;
+    if (!historicalGap) bucket.repairedTickets += 1;
     if (isFullyRejected(rej)) {
       bucket.fullyRej += 1;
       bucket.anyRej += 1;
@@ -947,6 +964,10 @@ function compactModelDetailRow(row) {
     ModelBucket: bucket,
     "Model Others Reason": othersReason,
     ModelOthersReason: othersReason,
+    ModelSyntheticSource: sourceValue(row, "Model Synthetic Source", "ModelSyntheticSource", "modelSyntheticSource"),
+    "Model Synthetic Source": sourceValue(row, "Model Synthetic Source", "ModelSyntheticSource", "modelSyntheticSource"),
+    SyntheticHistoricalGap: isHistoricalGapRow(row),
+    "Synthetic Historical Gap": isHistoricalGapRow(row) ? "Yes" : "",
     "Model Approved Cost": amount,
     ModelApprovedCost: amount,
     "Page1 Amount": amount,
@@ -1380,6 +1401,68 @@ async function buildPage1AlignedModelRows(allRaw) {
   return aligned.sort((a, b) => String(modelMonthKey(a)).localeCompare(String(modelMonthKey(b))) || rawTicketIdValue(a).localeCompare(rawTicketIdValue(b), undefined, { numeric: true }));
 }
 
+function scopeLabel(scope) {
+  return scope === "PRE" ? "Pre Delivery Warranty Claims" : "In Field Warranty Claims";
+}
+
+function createHistoricalGapRow(monthKey, scope, index) {
+  const ticketId = `HIST-GAP-${monthKey}-${scope}-${String(index).padStart(3, "0")}`;
+  return {
+    "Ticket ID": ticketId,
+    TicketID: ticketId,
+    TicketId: ticketId,
+    ticketId,
+    "Ticket Name": `Claim Trend historical approved gap ${monthKey} ${scope}`,
+    TicketName: `Claim Trend historical approved gap ${monthKey} ${scope}`,
+    "Created On": `${monthKey}-01`,
+    CreatedOn: `${monthKey}-01`,
+    "Claim Approved On": `${monthKey}-01`,
+    ClaimApprovedOnDateTime: `${monthKey}-01`,
+    "Ticket Type": scopeLabel(scope),
+    TicketTypeText: scopeLabel(scope),
+    "Claim Scope": scopeLabel(scope),
+    Status: "Approved Claims Closed (Historical aggregate)",
+    "Status": "Approved Claims Closed (Historical aggregate)",
+    TicketStatusText: "Approved Claims Closed (Historical aggregate)",
+    ModelSeries: HISTORICAL_GAP_SERIES,
+    "Model Series": HISTORICAL_GAP_SERIES,
+    ModelChassis: "",
+    "Model Chassis": "",
+    ModelMatchSource: "Claim Trend historical pivot",
+    "Model Match Source": "Claim Trend historical pivot",
+    ModelBucket: HISTORICAL_GAP_SERIES,
+    "Model Bucket": HISTORICAL_GAP_SERIES,
+    ModelOthersReason: "Approved ticket counted in Claim Trend historical pivot but absent from Page1 ticket-level model rows",
+    "Model Others Reason": "Approved ticket counted in Claim Trend historical pivot but absent from Page1 ticket-level model rows",
+    ModelSyntheticSource: "Claim Trend historical approved gap",
+    "Model Synthetic Source": "Claim Trend historical approved gap",
+    ModelApprovedCost: 0,
+    "Model Approved Cost": 0,
+    "Page1 Amount": 0,
+    page1Amount: 0,
+    page1CostGt0: false,
+    "Page1 Decision Date": `${monthKey}-01`,
+    "Page1 Customer": "",
+    "Page1 Employee": "",
+    "Model Period Month": monthKey,
+    ModelPeriodMonth: monthKey,
+    SyntheticHistoricalGap: true,
+    "Synthetic Historical Gap": "Yes",
+  };
+}
+
+function historicalApprovedGapRows(modelRows) {
+  const gaps = [];
+  for (const [monthKey, target] of Object.entries(CLAIM_TREND_HISTORICAL_APPROVED_2026)) {
+    for (const scope of ["FIELD", "PRE"]) {
+      const actual = modelRows.filter((row) => modelMonthKey(row) === monthKey && rowMatchesScope(row, scope)).length;
+      const gap = Math.max(0, (Number(target[scope]) || 0) - actual);
+      for (let i = 1; i <= gap; i += 1) gaps.push(createHistoricalGapRow(monthKey, scope, i));
+    }
+  }
+  return gaps;
+}
+
 function buildSlice(rows, periodKey, scope) {
   const activeBase = activeBaseMap(periodKey);
   const summary = summaryBySeries(rows, activeBase);
@@ -1409,7 +1492,7 @@ function buildSlice(rows, periodKey, scope) {
   };
 }
 
-function buildCache(modelRows) {
+function buildCache(modelRows, metadata = {}) {
   state.autoBaseBySeries = traceBaseBySeries(modelRows);
   const months = Array.from(new Set(modelRows.map(modelMonthKey).filter(Boolean))).sort();
   const periods = {};
@@ -1430,7 +1513,7 @@ function buildCache(modelRows) {
     schema: "model-mtm-page1-approved-v4",
     generatedAt: new Date().toISOString(),
     modelAnalysisYear: MODEL_ANALYSIS_YEAR,
-    ticketPoolRule: "Page1 approved tickets by approved/decision month; Salesforce/live ticket and vehicle base enrich chassis/model; unmatched stable-series rows remain in Others.",
+    ticketPoolRule: "Page1 approved tickets by approved/decision month, plus Claim Trend historical approved gap rows where Jan-May historical pivot exceeds Page1 ticket-level rows; Salesforce/live ticket and vehicle base enrich chassis/model; unmatched stable-series rows remain in Others.",
     costRule: "Page1 approved approvalTicketRows cost aligned to Claim Trend Overview approvedAmountMonthly, with a stale SAP PO sanity guard; Cost/Ticket denominator is cost > 0 tickets.",
     monthOptions: months,
     autoBaseBySeries: state.autoBaseBySeries,
@@ -1448,8 +1531,11 @@ function buildCache(modelRows) {
       seriesSalesCumulativeByMonth: state.vehicleBaseSummary?.seriesSalesCumulativeByMonth || {},
     },
     totals: {
-      modelRows: modelRows.length,
+      modelRows: Number(metadata.page1ModelRows || modelRows.length),
+      analysisRows: modelRows.length,
       uniqueTickets: uniqueTicketCount(modelRows),
+      claimTrendApprovedTickets: modelRows.length,
+      historicalGapRows: Number(metadata.historicalGapRows || 0),
       costTickets: modelRows.filter((row) => getApprovedWarrantyCost(row) > 0).length,
       repairCars: new Set(modelRows.map(normalizedChassis).filter(Boolean)).size,
       periods: periodKeys.length,
@@ -1470,12 +1556,15 @@ async function main() {
   const processedRows = Array.isArray(processedPayload?.details) ? processedPayload.details : [];
   const sourceRows = ticketTimingRows.length ? ticketTimingRows : legacyRows;
   const allRaw = mergeRows({ sourceRows, legacyRows, processedRows, dispatchRows });
-  const modelRows = await buildPage1AlignedModelRows(allRaw);
-  const cache = buildCache(modelRows);
+  const page1ModelRows = await buildPage1AlignedModelRows(allRaw);
+  const gapRows = historicalApprovedGapRows(page1ModelRows);
+  const modelRows = page1ModelRows.concat(gapRows)
+    .sort((a, b) => String(modelMonthKey(a)).localeCompare(String(modelMonthKey(b))) || rawTicketIdValue(a).localeCompare(rawTicketIdValue(b), undefined, { numeric: true }));
+  const cache = buildCache(modelRows, { page1ModelRows: page1ModelRows.length, historicalGapRows: gapRows.length });
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   fs.writeFileSync(paths.outJson, JSON.stringify(cache, null, 2), "utf8");
   writeJsGlobal(paths.outJs, "ANALYSIS_MODEL_MTM_CACHE", cache);
-  console.log(`Wrote ${path.relative(ROOT, paths.outJson)} (${modelRows.length} Page1-approved model tickets, ${cache.monthOptions.length} months).`);
+  console.log(`Wrote ${path.relative(ROOT, paths.outJson)} (${page1ModelRows.length} Page1-approved model tickets + ${gapRows.length} historical gap rows, ${cache.monthOptions.length} months).`);
   console.timeEnd("model-mtm-cache");
 }
 

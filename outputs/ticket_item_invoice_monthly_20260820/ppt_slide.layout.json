@@ -1,0 +1,719 @@
+{
+  "schema": "openai.presentation.layout/v4",
+  "unit": "px",
+  "slide": {
+    "aid": "sl/3slza9",
+    "id": "3slza9",
+    "slide": 1,
+    "layoutId": "74e9c6ee-45ab-4b24-a15c-1c8c4c7f2907",
+    "layoutName": "Title Slide",
+    "layoutType": "title",
+    "masterLayoutId": "16bc222b-190f-499b-b392-b4a29e7628ae",
+    "masterLayoutName": "Master",
+    "backgroundColor": "#FFFFFF",
+    "frame": {
+      "left": 0,
+      "top": 0,
+      "width": 1280,
+      "height": 720
+    }
+  },
+  "theme": {
+    "colorSchemeName": "ChatGPT",
+    "colors": {
+      "accent1": "#156082",
+      "accent2": "#E97132",
+      "accent3": "#196B24",
+      "accent4": "#0F9ED5",
+      "accent5": "#A02B93",
+      "accent6": "#4EA72E",
+      "bg1": "#FFFFFF",
+      "bg2": "#000000",
+      "tx1": "#1F1F1F",
+      "tx2": "#FFFFFF",
+      "dk1": "#000000",
+      "lt1": "#FFFFFF",
+      "dk2": "#0E2841",
+      "lt2": "#E8E8E8",
+      "hlink": "#467886",
+      "folHlink": "#96607D"
+    },
+    "typefaces": [
+      "+mn-lt"
+    ]
+  },
+  "inheritedLayers": [
+    {
+      "scope": "layout",
+      "id": "74e9c6ee-45ab-4b24-a15c-1c8c4c7f2907",
+      "name": "Title Slide",
+      "type": "title",
+      "parentLayoutId": "16bc222b-190f-499b-b392-b4a29e7628ae",
+      "elements": []
+    },
+    {
+      "scope": "master",
+      "id": "16bc222b-190f-499b-b392-b4a29e7628ae",
+      "name": "Master",
+      "type": "master",
+      "elements": []
+    }
+  ],
+  "elements": [
+    {
+      "order": 1,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/0jih0n2l",
+      "id": "1",
+      "name": "eyebrow",
+      "bbox": [
+        72,
+        48,
+        760,
+        30
+      ],
+      "geometry": "rect",
+      "text": "SAP invoice date basis | 2025-09-01 to 2026-08-20",
+      "textPreview": "SAP invoice date basis | 2025-09-01 to 2026-08-20",
+      "resolvedFontSize": 16,
+      "resolvedTextStyle": {
+        "fontSize": 16,
+        "typeface": "+mn-lt",
+        "color": "#5B6472",
+        "bold": true,
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "SAP invoice date basis | 2025-09-01 to 2026-08-20"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "SAP invoice date basis | 2025-09-01 to 2026-08-20",
+          "resolvedTextStyle": {
+            "fontSize": 16,
+            "color": "#5B6472",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "SAP invoice date basis | 2025-09-01 to 2026-08-20",
+              "fontSize": 16,
+              "color": "#5B6472",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 2,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/zi907i10",
+      "id": "2",
+      "name": "title",
+      "bbox": [
+        72,
+        92,
+        840,
+        110
+      ],
+      "geometry": "rect",
+      "text": "C4C item rows peaked in the latest invoice months",
+      "textPreview": "C4C item rows peaked in the latest invoice months",
+      "resolvedFontSize": 50,
+      "resolvedTextStyle": {
+        "fontSize": 50,
+        "typeface": "+mn-lt",
+        "color": "#000000",
+        "bold": true,
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "C4C item rows peaked in the latest"
+          },
+          {
+            "index": 2,
+            "text": "invoice months"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "C4C item rows peaked in the latest invoice months",
+          "resolvedTextStyle": {
+            "fontSize": 50,
+            "color": "#000000",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "C4C item rows peaked in the latest invoice months",
+              "fontSize": 50,
+              "color": "#000000",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 3,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/eh0zydkv",
+      "id": "3",
+      "name": "subtitle",
+      "bbox": [
+        72,
+        202,
+        910,
+        58
+      ],
+      "geometry": "rect",
+      "text": "Each ticket is allocated to the month of its latest non-reversed SAP EKBE BEWTP='Q' posting date; the line tracks how many C4C item rows sit under those tickets.",
+      "textPreview": "Each ticket is allocated to the month of its latest non-reversed SAP EKBE BEWTP='Q' posting date; the line tracks how many C4C item rows ...",
+      "resolvedFontSize": 20,
+      "resolvedTextStyle": {
+        "fontSize": 20,
+        "typeface": "+mn-lt",
+        "color": "#303743",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 2,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Each ticket is allocated to the month of its latest non-reversed SAP EKBE BEWTP='Q' posting date; the line"
+          },
+          {
+            "index": 2,
+            "text": "tracks how many C4C item rows sit under those tickets."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Each ticket is allocated to the month of its latest non-reversed SAP EKBE BEWTP='Q' posting date; the line tracks how many C4C item rows sit under those tickets.",
+          "resolvedTextStyle": {
+            "fontSize": 20,
+            "color": "#303743"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Each ticket is allocated to the month of its latest non-reversed SAP EKBE BEWTP='Q' posting date; the line tracks how many C4C item rows sit under those tickets.",
+              "fontSize": 20,
+              "color": "#303743"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 4,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/dg7i5sja",
+      "id": "4",
+      "name": "rule",
+      "bbox": [
+        72,
+        282,
+        1136,
+        1
+      ],
+      "geometry": "rect",
+      "fillColor": "#B8BCC4",
+      "lineColor": "#B8BCC4",
+      "lineWidth": 0
+    },
+    {
+      "order": 5,
+      "kind": "chart",
+      "scope": "slide",
+      "aid": "ch/o76h4fet",
+      "id": "5",
+      "bbox": [
+        72,
+        318,
+        770,
+        320
+      ],
+      "chartType": "line"
+    },
+    {
+      "order": 6,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/rep03i14",
+      "id": "6",
+      "name": "metric-label-0",
+      "bbox": [
+        900,
+        330,
+        250,
+        26
+      ],
+      "geometry": "rect",
+      "text": "Total item rows",
+      "textPreview": "Total item rows",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "fontSize": 18,
+        "typeface": "+mn-lt",
+        "color": "#5B6472",
+        "bold": true,
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Total item rows"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Total item rows",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "color": "#5B6472",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Total item rows",
+              "fontSize": 18,
+              "color": "#5B6472",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 7,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/qdgzudkj",
+      "id": "7",
+      "name": "metric-value-0",
+      "bbox": [
+        900,
+        358,
+        300,
+        44
+      ],
+      "geometry": "rect",
+      "text": "10,604",
+      "textPreview": "10,604",
+      "resolvedFontSize": 35,
+      "resolvedTextStyle": {
+        "fontSize": 35,
+        "typeface": "+mn-lt",
+        "color": "#000000",
+        "bold": true,
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "10,604"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "10,604",
+          "resolvedTextStyle": {
+            "fontSize": 35,
+            "color": "#000000",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "10,604",
+              "fontSize": 35,
+              "color": "#000000",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 8,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/xcbihcje",
+      "id": "8",
+      "name": "metric-label-1",
+      "bbox": [
+        900,
+        422,
+        250,
+        26
+      ],
+      "geometry": "rect",
+      "text": "Tickets invoiced",
+      "textPreview": "Tickets invoiced",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "fontSize": 18,
+        "typeface": "+mn-lt",
+        "color": "#5B6472",
+        "bold": true,
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Tickets invoiced"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Tickets invoiced",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "color": "#5B6472",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Tickets invoiced",
+              "fontSize": 18,
+              "color": "#5B6472",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 9,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/wb2h87it",
+      "id": "9",
+      "name": "metric-value-1",
+      "bbox": [
+        900,
+        450,
+        300,
+        44
+      ],
+      "geometry": "rect",
+      "text": "7,312",
+      "textPreview": "7,312",
+      "resolvedFontSize": 35,
+      "resolvedTextStyle": {
+        "fontSize": 35,
+        "typeface": "+mn-lt",
+        "color": "#000000",
+        "bold": true,
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "7,312"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "7,312",
+          "resolvedTextStyle": {
+            "fontSize": 35,
+            "color": "#000000",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "7,312",
+              "fontSize": 35,
+              "color": "#000000",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 10,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/ydgz6dgn",
+      "id": "10",
+      "name": "metric-label-2",
+      "bbox": [
+        900,
+        514,
+        250,
+        26
+      ],
+      "geometry": "rect",
+      "text": "Peak month",
+      "textPreview": "Peak month",
+      "resolvedFontSize": 18,
+      "resolvedTextStyle": {
+        "fontSize": 18,
+        "typeface": "+mn-lt",
+        "color": "#5B6472",
+        "bold": true,
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Peak month"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Peak month",
+          "resolvedTextStyle": {
+            "fontSize": 18,
+            "color": "#5B6472",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Peak month",
+              "fontSize": 18,
+              "color": "#5B6472",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 11,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/jepgzih8",
+      "id": "11",
+      "name": "metric-value-2",
+      "bbox": [
+        900,
+        542,
+        300,
+        44
+      ],
+      "geometry": "rect",
+      "text": "2026-06 (1,539)",
+      "textPreview": "2026-06 (1,539)",
+      "resolvedFontSize": 35,
+      "resolvedTextStyle": {
+        "fontSize": 35,
+        "typeface": "+mn-lt",
+        "color": "#000000",
+        "bold": true,
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "2026-06 (1,539)"
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "2026-06 (1,539)",
+          "resolvedTextStyle": {
+            "fontSize": 35,
+            "color": "#000000",
+            "bold": true
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "2026-06 (1,539)",
+              "fontSize": 35,
+              "color": "#000000",
+              "bold": true
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    },
+    {
+      "order": 12,
+      "kind": "shape",
+      "scope": "slide",
+      "aid": "sh/kfyh8nyd",
+      "id": "12",
+      "name": "source-note",
+      "bbox": [
+        72,
+        666,
+        1030,
+        26
+      ],
+      "geometry": "rect",
+      "text": "Source: C4C parts_classified.csv joined to SAP HANA EKBE/RBKP invoice PO-item aggregates; RBKP reversal docs excluded.",
+      "textPreview": "Source: C4C parts_classified.csv joined to SAP HANA EKBE/RBKP invoice PO-item aggregates; RBKP reversal docs excluded.",
+      "resolvedFontSize": 13,
+      "resolvedTextStyle": {
+        "fontSize": 13,
+        "typeface": "+mn-lt",
+        "color": "#5B6472",
+        "alignment": "left",
+        "insets": {
+          "top": 4.8,
+          "right": 9.6,
+          "bottom": 4.8,
+          "left": 9.6
+        }
+      },
+      "textLayout": {
+        "lineCount": 1,
+        "lines": [
+          {
+            "index": 1,
+            "text": "Source: C4C parts_classified.csv joined to SAP HANA EKBE/RBKP invoice PO-item aggregates; RBKP reversal docs excluded."
+          }
+        ]
+      },
+      "paragraphs": [
+        {
+          "index": 1,
+          "text": "Source: C4C parts_classified.csv joined to SAP HANA EKBE/RBKP invoice PO-item aggregates; RBKP reversal docs excluded.",
+          "resolvedTextStyle": {
+            "fontSize": 13,
+            "color": "#5B6472"
+          },
+          "runs": [
+            {
+              "index": 1,
+              "text": "Source: C4C parts_classified.csv joined to SAP HANA EKBE/RBKP invoice PO-item aggregates; RBKP reversal docs excluded.",
+              "fontSize": 13,
+              "color": "#5B6472"
+            }
+          ],
+          "marginLeft": 0
+        }
+      ],
+      "lineWidth": 0
+    }
+  ],
+  "composeRuns": []
+}

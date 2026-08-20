@@ -3,6 +3,7 @@ import json
 import calendar
 import os
 import re
+import time
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -63,7 +64,15 @@ def write_text_atomic(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(f"{path.name}.tmp")
     tmp.write_text(text, encoding="utf-8")
-    os.replace(tmp, path)
+    last_error = None
+    for attempt in range(8):
+        try:
+            os.replace(tmp, path)
+            return
+        except PermissionError as err:
+            last_error = err
+            time.sleep(0.25 * (attempt + 1))
+    raise last_error
 
 
 def parse_date(value):
@@ -511,10 +520,67 @@ def get_value(row, index_map, key):
     return row[idx]
 
 
-def add_component(bucket, ticket_id, category, cost, series=""):
+def make_failure_row(attrs):
+    created_date = parse_date((attrs or {}).get("createdDate"))
+    pgi_date = parse_date((attrs or {}).get("pgiDate"))
+    if not (created_date and pgi_date):
+        return None
+    return {
+        "ageDays": (created_date - pgi_date).days,
+        "pgiDate": pgi_date.isoformat(),
+    }
+
+
+def add_failure_ticket(bucket, ticket_id, claim_scope, failure_row):
+    if not (ticket_id and failure_row):
+        return
+    scope_for_failure = claim_scope if claim_scope in {"PRE", "FIELD", "OTHER"} else "OTHER"
+    bucket.setdefault("_failureTickets", {"ALL": {}, "PRE": {}, "FIELD": {}, "OTHER": {}})
+    bucket["_failureTickets"].setdefault("ALL", {})[ticket_id] = failure_row
+    bucket["_failureTickets"].setdefault(scope_for_failure, {})[ticket_id] = failure_row
+
+
+def failure_age_payload_from_rows(rows):
+    rows = list(rows or [])
+    ages = [float(row.get("ageDays")) for row in rows if row.get("ageDays") is not None]
+    pgi_counts = Counter(clean(row.get("pgiDate")) for row in rows if clean(row.get("pgiDate")))
+    pgi_month_counts = Counter(date_key[:7] for date_key in pgi_counts.elements() if len(date_key) >= 7)
+    matched = sum(pgi_counts.values())
+    pgi_months = [
+        {
+            "month": month_key,
+            "tickets": count,
+            "share": round(count / matched, 6) if matched else 0,
+        }
+        for month_key, count in sorted(pgi_month_counts.items(), key=lambda item: (-item[1], item[0]))
+    ]
+    return {
+        "tickets": len(rows),
+        "pgiMatchedTickets": matched,
+        "avgFailureDays": round(sum(ages) / len(ages), 1) if ages else None,
+        "minFailureDays": round(min(ages), 1) if ages else None,
+        "maxFailureDays": round(max(ages), 1) if ages else None,
+        "topPgiMonths": pgi_months[:5],
+        "pgiMonthCounts": {
+            month_key: count
+            for month_key, count in sorted(pgi_month_counts.items())
+        },
+    }
+
+
+def finalize_failure_tickets(failure_tickets):
+    failure_tickets = failure_tickets or {}
+    return {
+        scope: failure_age_payload_from_rows((failure_tickets.get(scope) or {}).values())
+        for scope in ("ALL", "PRE", "FIELD", "OTHER")
+    }
+
+
+def add_component(bucket, ticket_id, category, cost, series="", claim_scope="OTHER", failure_row=None):
     bucket["lineItems"] += 1
     bucket["tickets"].add(ticket_id)
     bucket["cost"] += cost
+    add_failure_ticket(bucket, ticket_id, claim_scope, failure_row)
     if category:
         bucket["categories"][category] += 1
     series_key = normalize_series_code(series or "")
@@ -533,6 +599,7 @@ def component_bucket():
         "seriesTickets": defaultdict(set),
         "seriesLineItems": Counter(),
         "seriesCost": Counter(),
+        "_failureTickets": {"ALL": {}, "PRE": {}, "FIELD": {}, "OTHER": {}},
     }
 
 
@@ -540,11 +607,11 @@ def aggregate_bucket():
     return {"lineItems": 0, "tickets": set(), "cost": 0.0, "components": defaultdict(component_bucket)}
 
 
-def add_to_aggregate(bucket, component_label, ticket_id, category, cost, series=""):
+def add_to_aggregate(bucket, component_label, ticket_id, category, cost, series="", claim_scope="OTHER", failure_row=None):
     bucket["lineItems"] += 1
     bucket["tickets"].add(ticket_id)
     bucket["cost"] += cost
-    add_component(bucket["components"][component_label], ticket_id, category, cost, series)
+    add_component(bucket["components"][component_label], ticket_id, category, cost, series, claim_scope, failure_row)
 
 
 def finalize_bucket(bucket, total_tickets, total_cost, total_line_items=None):
@@ -560,6 +627,7 @@ def finalize_bucket(bucket, total_tickets, total_cost, total_line_items=None):
             "tickets": len(stat["tickets"]),
             "lineItems": stat["lineItems"],
             "cost": round(stat["cost"], 3),
+            "failureAge": finalize_failure_tickets(stat.get("_failureTickets")),
             "ticketShare": round(len(stat["tickets"]) / total_tickets, 6) if total_tickets else 0,
             "lineShare": round(stat["lineItems"] / total_line_items, 6) if total_line_items else 0,
             "costShare": round(stat["cost"] / total_cost, 6) if total_cost else 0,
@@ -806,16 +874,46 @@ def build_scope_payload(scope, scope_totals, scope_series_totals, month_totals, 
     return payload
 
 
-def compact_for_initial_render(value):
+def compact_failure_age_summary(value):
+    """Keep enough timing data for first paint without large PGI month maps."""
+    if not isinstance(value, dict):
+        return value
+    top_months = []
+    for item in value.get("topPgiMonths") or []:
+        if not isinstance(item, dict):
+            continue
+        top_months.append({
+            "month": item.get("month") or "",
+            "tickets": int(item.get("tickets") or 0),
+            "share": round(float(item.get("share") or 0), 6),
+        })
+    return {
+        "tickets": int(value.get("tickets") or 0),
+        "pgiMatchedTickets": int(value.get("pgiMatchedTickets") or 0),
+        "avgFailureDays": value.get("avgFailureDays"),
+        "topPgiMonths": top_months[:5],
+    }
+
+
+def compact_for_initial_render(value, path=()):
     """Keep the component leaderboard payload small enough for first paint."""
     if isinstance(value, dict):
+        if "avgFailureDays" in value and "pgiMatchedTickets" in value:
+            return compact_failure_age_summary(value)
+        is_component_row = (
+            "component" in value
+            and "category" in value
+            and ("tickets" in value or "lineItems" in value)
+        )
         return {
-            key: compact_for_initial_render(item)
+            key: compact_for_initial_render(item, path + (str(key),))
             for key, item in value.items()
-            if key != "componentTrends"
+            if key not in {"componentTrends", "pgiMonthCounts", "minFailureDays", "maxFailureDays"}
+            and not (is_component_row and key == "series")
+            and not (key == "series" and ("months" in path or "years" in path))
         }
     if isinstance(value, list):
-        return [compact_for_initial_render(item) for item in value]
+        return [compact_for_initial_render(item, path) for item in value]
     return value
 
 
@@ -978,14 +1076,15 @@ def main():
         material_qty = parse_amount(get_value(row, parts_index, "Order Qty"))
         total_cost += cost
 
-        add_component(parts_stats_all[component_label], ticket_id, category, cost, series)
-        add_component(parts_stats_by_series[series][component_label], ticket_id, category, cost, series)
-
         month_by_basis = {
             "CREATED": attrs.get("month") if attrs else "",
             "APPROVED": attrs.get("approvedMonth") if attrs else "",
         }
         claim_scope = attrs.get("scope") if attrs else "OTHER"
+        failure_row = make_failure_row(attrs)
+
+        add_component(parts_stats_all[component_label], ticket_id, category, cost, series, claim_scope, failure_row)
+        add_component(parts_stats_by_series[series][component_label], ticket_id, category, cost, series, claim_scope, failure_row)
 
         comp_key = f"{component_label.lower()}||{category.lower()}"
         if comp_key not in derived_by_key:
@@ -1008,13 +1107,7 @@ def main():
                 if ticket_id:
                     month_bucket["_ticketIds"].add(ticket_id)
                     month_bucket["_scopeIds"].setdefault(claim_scope, set()).add(ticket_id)
-                    created_date = parse_date(attrs.get("createdDate") if attrs else "")
-                    pgi_date = parse_date(attrs.get("pgiDate") if attrs else "")
-                    if created_date and pgi_date:
-                        failure_row = {
-                            "ageDays": (created_date - pgi_date).days,
-                            "pgiDate": pgi_date.isoformat(),
-                        }
+                    if failure_row:
                         scope_for_failure = claim_scope if claim_scope in {"PRE", "FIELD", "OTHER"} else "OTHER"
                         month_bucket["_failureTickets"].setdefault("ALL", {})[ticket_id] = failure_row
                         month_bucket["_failureTickets"].setdefault(scope_for_failure, {})[ticket_id] = failure_row
@@ -1029,12 +1122,12 @@ def main():
             aggs = date_basis_aggs[basis]
             scope_keys = ["ALL", claim_scope if claim_scope in {"PRE", "FIELD", "OTHER"} else "OTHER"]
             for scope_key in dict.fromkeys(scope_keys):
-                add_to_aggregate(aggs["scope_totals"][scope_key], component_label, ticket_id, category, cost, series)
-                add_to_aggregate(aggs["scope_series_totals"][scope_key][series], component_label, ticket_id, category, cost, series)
-                add_to_aggregate(aggs["month_totals"][(scope_key, month)], component_label, ticket_id, category, cost, series)
-                add_to_aggregate(aggs["month_series_totals"][(scope_key, month)][series], component_label, ticket_id, category, cost, series)
-                add_to_aggregate(aggs["year_totals"][(scope_key, year)], component_label, ticket_id, category, cost, series)
-                add_to_aggregate(aggs["year_series_totals"][(scope_key, year)][series], component_label, ticket_id, category, cost, series)
+                add_to_aggregate(aggs["scope_totals"][scope_key], component_label, ticket_id, category, cost, series, claim_scope, failure_row)
+                add_to_aggregate(aggs["scope_series_totals"][scope_key][series], component_label, ticket_id, category, cost, series, claim_scope, failure_row)
+                add_to_aggregate(aggs["month_totals"][(scope_key, month)], component_label, ticket_id, category, cost, series, claim_scope, failure_row)
+                add_to_aggregate(aggs["month_series_totals"][(scope_key, month)][series], component_label, ticket_id, category, cost, series, claim_scope, failure_row)
+                add_to_aggregate(aggs["year_totals"][(scope_key, year)], component_label, ticket_id, category, cost, series, claim_scope, failure_row)
+                add_to_aggregate(aggs["year_series_totals"][(scope_key, year)][series], component_label, ticket_id, category, cost, series, claim_scope, failure_row)
 
     total_tickets_all = len({ticket for stat in parts_stats_all.values() for ticket in stat["tickets"]})
     overall_top_by_tickets = finalize_bucket(parts_stats_all, total_tickets_all, total_cost, included_rows)

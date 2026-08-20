@@ -7886,31 +7886,41 @@ function exportTicketMovementDetails(e){
   if(e){e.preventDefault();e.stopPropagation();}
   (async()=>{
     const spinner=$("ticketMovementExportSpinner");
+    const btn=(e&&e.currentTarget)||$("ticketMovementExportBtn");
+    if(btn&&btn.dataset.exporting==="1")return;
+    if(btn){btn.dataset.exporting="1";btn.disabled=true;}
     if(spinner)spinner.classList.add("active");
     try{
-      await ensureExportDetailsLoaded();
-      await new Promise(resolve=>setTimeout(resolve,50));
       const {start,end}=periodBounds();
       const label=selectedMonthPeriodLabel();
-      const bridge=ticketMovementBridge(start,end);
-      const abnormal=ticketMovementAbnormalExportRows(start,end);
-      const addedRows=bridge.newClaimRows.concat(bridge.reenteredRows).sort((a,b)=>clean(a.movementSource).localeCompare(clean(b.movementSource))||clean(a.created).localeCompare(clean(b.created))||clean(a.id).localeCompare(clean(b.id)));
-      const removedRows=bridge.removedRows.sort((a,b)=>clean(a.removedBucket).localeCompare(clean(b.removedBucket))||clean(a.id).localeCompare(clean(b.id)));
-      const remainingRows=bridge.endingRows;
-      if(!addedRows.length&&!removedRows.length&&!remainingRows.length){
-        alert("No Ticket Movement detail found for the selected period.");
-        return;
+      let bridge=ticketMovementBridge(start,end);
+      let addedRows=arrayFromMaybe(bridge&&bridge.newClaimRows).concat(arrayFromMaybe(bridge&&bridge.reenteredRows));
+      let removedRows=arrayFromMaybe(bridge&&bridge.removedRows);
+      let remainingRows=arrayFromMaybe(bridge&&bridge.endingRows);
+      if(!addedRows.length&&!removedRows.length&&!remainingRows.length&&needsTicketMovementFallbackDetails(start,end)){
+        try{
+          await withTimeout(ensureExportDetailsLoaded(),8000,"Ticket Movement export detail load");
+          bridge=ticketMovementBridge(start,end);
+          addedRows=arrayFromMaybe(bridge&&bridge.newClaimRows).concat(arrayFromMaybe(bridge&&bridge.reenteredRows));
+          removedRows=arrayFromMaybe(bridge&&bridge.removedRows);
+          remainingRows=arrayFromMaybe(bridge&&bridge.endingRows);
+        }catch(detailErr){
+          console.warn("Ticket Movement export detail load failed; exporting trend only.",detailErr);
+        }
       }
-      const sheets=[
-        ticketExportSheet("Added to Waiting",addedRows,["Period","Period Start","Period End","Added Source","Created On"],row=>[label,start,end,row.movementSource,row.created||""]),
-        ticketExportSheet("Removed",removedRows,["Other Flag","Period","Period Start","Period End","Removed Bucket","Other Reason","Exit Date","Exit From","Exit To","Re-enter Date","Re-enter To","Formula Role"],row=>[row.flag||"",label,start,end,row.removedBucket||"Other",row.reason||"",row.exitDate||"",row.exitFrom||"",row.exitTo||"",row.reenterDate||"",row.reenterTo||"","Removed"]),
-        ticketExportSheet("In Progress Remaining",remainingRows,["Period","Snapshot Date","Boundary Grace"],row=>[label,end,row.boundaryGrace||""]),
-        {name:"Trend",rows:trendSummaryRows()}
-      ];
-      if(abnormal.count>0)sheets.push({name:"Abnormal Tickets",rows:abnormal.rows});
+      addedRows=addedRows.sort((a,b)=>clean(a.movementSource).localeCompare(clean(b.movementSource))||clean(a.created).localeCompare(clean(b.created))||clean(a.id).localeCompare(clean(b.id)));
+      removedRows=removedRows.sort((a,b)=>clean(a.removedBucket).localeCompare(clean(b.removedBucket))||clean(a.id).localeCompare(clean(b.id)));
+      const sheets=[{name:"Trend",rows:trendSummaryRows()}];
+      if(addedRows.length)sheets.push(ticketExportSheet("Added to Waiting",addedRows,["Period","Period Start","Period End","Added Source","Created On"],row=>[label,start,end,row.movementSource,row.created||""]));
+      if(removedRows.length)sheets.push(ticketExportSheet("Removed",removedRows,["Other Flag","Period","Period Start","Period End","Removed Bucket","Other Reason","Exit Date","Exit From","Exit To","Re-enter Date","Re-enter To","Formula Role"],row=>[row.flag||"",label,start,end,row.removedBucket||"Other",row.reason||"",row.exitDate||"",row.exitFrom||"",row.exitTo||"",row.reenterDate||"",row.reenterTo||"","Removed"]));
+      if(remainingRows.length)sheets.push(ticketExportSheet("In Progress Remaining",remainingRows,["Period","Snapshot Date","Boundary Grace"],row=>[label,end,row.boundaryGrace||""]));
       exportWorkbook(sheets,`ticket-movement-detail-${selectedDashboardMonth()}-${exportDateSuffix()}.xls`);
+    }catch(err){
+      console.error("Ticket Movement export failed",err);
+      alert(`Ticket Movement export failed: ${err&&err.message?err.message:err}`);
     }finally{
       if(spinner)spinner.classList.remove("active");
+      if(btn){btn.disabled=false;delete btn.dataset.exporting;}
     }
   })();
 }

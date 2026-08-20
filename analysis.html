@@ -850,8 +850,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           <h1 class="title">Repairs by Model</h1>
           <div style="margin-top:4px;color:var(--muted);font-size:12.5px;font-weight:600">Use this page to compare repair tickets, failure timing, rejection rate and warranty cost by caravan model.</div>
         </div>
-        <div class="statusRow">
-          <div class="pill blue"><strong id="sourceCount">...</strong> ticket rows</div>
+        <div class="statusRow" style="display:none" aria-hidden="true">
+          <div class="pill blue" style="display:none" aria-hidden="true"><strong id="sourceCount">...</strong> ticket rows</div>
           <div class="pill"><strong id="ticketCount">-</strong> tickets</div>
           <div class="pill green"><strong id="seriesCount">-</strong> model series</div>
           <div class="pill amber"><strong id="repairerCount">-</strong> repairers</div>
@@ -1051,9 +1051,11 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const IS_FILE_CONTEXT = location.protocol === "file:";
   const IS_LOCAL_CONTEXT = ["127.0.0.1", "localhost", ""].includes(location.hostname);
   const OTHERS_SERIES = "Others";
-  const SERIES_ORDER = ["SRC","SRH","SRT","SRM","SRP","SRL","SRV","SRS","NG",OTHERS_SERIES];
-  const TRACKED_SERIES = new Set(SERIES_ORDER.map(code => code === OTHERS_SERIES ? OTHERS_SERIES : code.toUpperCase()));
+  const HISTORICAL_GAP_SERIES = "Historical Gap";
+  const SERIES_ORDER = ["SRC","SRH","SRT","SRM","SRP","SRL","SRV","SRS","NG",OTHERS_SERIES,HISTORICAL_GAP_SERIES];
+  const TRACKED_SERIES = new Set(SERIES_ORDER.map(code => (code === OTHERS_SERIES || code === HISTORICAL_GAP_SERIES) ? code : code.toUpperCase()));
   const EXCLUDED_SERIES = new Set(["UNKNOWN","RO","SR","SCR","STR","RVV","RR","SPV","SRO","SEV","RRC","VRV"]);
+  const CLAIM_TREND_APPROVED_TICKETS_2026 = 0;
   const CLAIM_SCOPES = {
     ALL: { label:"Total", key:"ALL" },
     PRE: { label:"Pre Delivery", key:"PRE" },
@@ -1363,6 +1365,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const raw = clean(code).toUpperCase();
     if (!raw) return "UNKNOWN";
     if (raw === "OTHERS" || raw === "OTHER") return OTHERS_SERIES;
+    if (["HISTORICAL GAP","HISTORICALGAP","UNCLASSIFIED","UNCLASSIFIED HISTORICAL"].includes(raw)) return HISTORICAL_GAP_SERIES;
     if (raw.startsWith("NG")) return "NG";
     if (raw === "RRV" || raw.startsWith("RRV")) return "SRL";
     if (raw === "LRV" || raw.startsWith("LRV")) return "SRC";
@@ -1376,6 +1379,12 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   function isTrackedSeries(series){
     return TRACKED_SERIES.has(normalizeSeriesCode(series));
+  }
+
+  function isHistoricalGapRow(row){
+    return normalizeSeriesCode(row?.ModelSeries || row?.modelSeries || row?.["Model Series"]) === HISTORICAL_GAP_SERIES ||
+      clean(row?.ModelBucket || row?.modelBucket || row?.["Model Bucket"]) === HISTORICAL_GAP_SERIES ||
+      clean(row?.ModelSyntheticSource || row?.modelSyntheticSource || row?.["Model Synthetic Source"]) === "Claim Trend historical approved gap";
   }
 
   const vehicleLookupKey = (v) => clean(v).replace(/[^A-Za-z0-9]/g, "").toUpperCase();
@@ -1815,6 +1824,25 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     return state.modelMtmCache.periods?.[periodKey]?.scopes?.[state.scope] || null;
   }
 
+  function claimTrendApprovedTicketCountForCurrentView(){
+    if (IS_PARTS_PAGE) return null;
+    if (state.scope !== "ALL") return null;
+    if (activeModelCachePeriodKey() !== "total") return null;
+    const cacheValue = Number(state.modelMtmCache?.totals?.claimTrendApprovedTickets);
+    if (Number.isFinite(cacheValue) && cacheValue > 0) return cacheValue;
+    const fallback = Number(CLAIM_TREND_APPROVED_TICKETS_2026);
+    return Number.isFinite(fallback) && fallback > 0 ? fallback : null;
+  }
+
+  function displayedTicketCountForCurrentView(fallback){
+    const claimTrendTotal = claimTrendApprovedTicketCountForCurrentView();
+    return claimTrendTotal == null ? fallback : claimTrendTotal;
+  }
+
+  function currentHistoricalGapRows(){
+    return state.viewRows.filter(isHistoricalGapRow).length;
+  }
+
   function applyModelMtmCacheState(cache){
     if (IS_PARTS_PAGE || !cache || typeof cache !== "object" || !cache.periods) return false;
     state.modelMtmCache = cache;
@@ -1823,7 +1851,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     state.rows = [];
     state.viewRows = [];
     state.sourceRowPool = [];
-    state.sourceRows = Number(cache.totals?.modelRows || 0);
+    state.sourceRows = Number(cache.totals?.analysisRows || cache.totals?.modelRows || 0);
     state.autoBaseBySeries = cache.autoBaseBySeries || {};
     state.salesBaseBySeries = cache.salesBaseBySeries || {};
     state.deliveredBaseBySeries = cache.deliveredBaseBySeries || {};
@@ -1866,8 +1894,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       itemBuckets.forEach((count, index) => { buckets[index] += Number(count) || 0; });
       timingSources.pgi += Number(item.pgiMatchedVehicles ?? item.timingSources?.pgi) || 0;
     });
+    const displayTickets = displayedTicketCountForCurrentView(totalTickets);
     return {
-      series:"All Series", tickets:totalTickets, costTickets:totalCostTickets, vehicles:totalVehicles, cost:totalCost,
+      series:"All Series", tickets:displayTickets, modelTickets:totalTickets, costTickets:totalCostTickets, vehicles:totalVehicles, cost:totalCost,
       repairedTickets:totalRepairedTickets,
       avgRepairs:totalVehicles ? totalRepairedTickets/totalVehicles : null,
       costPerVehicle:totalVehicles ? totalCost/totalVehicles : null,
@@ -2500,12 +2529,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       if (!map.has(series)) {
         map.set(series, createSeriesBucket(series));
       }
+      const historicalGap = isHistoricalGapRow(row);
       const b = map.get(series);
       b.tickets++;
       b.cost += cost;
       if (cost > 0) b.costTickets++;
       if (key) b.vehicles.add(key);
-      b.repairedTickets++;
+      if (!historicalGap) b.repairedTickets++;
       if (isFullyRejected(rej)) { b.fullyRej++; b.anyRej++; }
       else if (isPartiallyRejected(rej)) { b.partRej++; b.anyRej++; }
       else if (isRejectedStatus(rej)) b.anyRej++;
@@ -2649,6 +2679,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   function renderKpis(){
     const rows = state.viewRows;
     const totalTickets = rows.length;
+    const displayTickets = displayedTicketCountForCurrentView(totalTickets);
     const totalCostTickets = rows.filter(r => getWarrantyCost(r) > 0).length;
     const totalVehicles = new Set(rows.map(normalizedChassis).filter(Boolean)).size;
     const totalCost = rows.reduce((s,r)=>s+getWarrantyCost(r),0);
@@ -2663,14 +2694,19 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const rate = totalBase ? totalVehicles/totalBase : null;
     const perVeh = totalBase ? totalCost/totalBase : null;
 
-    $("kpiTickets").textContent = numFmt.format(totalTickets);
+    $("kpiTickets").textContent = numFmt.format(displayTickets);
     $("kpiVehicles").textContent = numFmt.format(totalVehicles);
     $("kpiSold").textContent = totalBase ? numFmt.format(totalBase) : "N/A";
     $("kpiRate").textContent = rate==null ? "N/A" : `${(rate*100).toFixed(1)}%`;
     $("kpiCost").textContent = moneyFmt.format(totalCost);
     $("kpiAvgCost").textContent = perVeh==null ? "N/A" : moneyFmt2.format(perVeh);
 
-    $("kpiTicketsSub").textContent = `${displaySummaryRows().length} model series`;
+    const historicalGapRows = currentHistoricalGapRows();
+    $("kpiTicketsSub").textContent = historicalGapRows
+      ? `${numFmt.format(Math.max(0,totalTickets-historicalGapRows))} Page1 model tickets + ${numFmt.format(historicalGapRows)} historical gap`
+      : (displayTickets === totalTickets
+        ? `${displaySummaryRows().length} model series`
+        : `${numFmt.format(totalTickets)} model tickets in ${displaySummaryRows().length} series`);
     $("kpiVehiclesSub").textContent = `across ${combinedKeys.size} series`;
     $("kpiSoldSub").textContent = totalBase ? `${Object.keys(state.soldBySeries).length} overridden` : "waiting for trace";
     $("kpiRateSub").textContent = rate==null ? "waiting for base" : `${(rate*100).toFixed(1)}% of base`;
@@ -2870,6 +2906,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       const rows = pgiMatchedRows(state.viewRows);
       const summaryRows = displaySummaryRows();
       const totalTickets = summaryRows.reduce((sum, item) => sum + (Number(item.tickets) || 0), 0);
+      const displayTickets = displayedTicketCountForCurrentView(totalTickets);
       const totalCostTickets = summaryRows.reduce((sum, item) => sum + (Number(item.costTickets) || 0), 0);
       const totalVehicles = summaryRows.reduce((sum, item) => sum + (Number(item.vehicles) || 0), 0);
       const totalCost = summaryRows.reduce((sum, item) => sum + (Number(item.cost) || 0), 0);
@@ -2892,7 +2929,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       });
       const ages = Array.from(firstAgeByVehicle.values()).filter(Number.isFinite);
       return {
-        series:"All Series", tickets: totalTickets, costTickets: totalCostTickets, vehicles: totalVehicles,
+        series:"All Series", tickets: displayTickets, modelTickets: totalTickets, costTickets: totalCostTickets, vehicles: totalVehicles,
         cost: totalCost,
         avgRepairs: totalVehicles ? totalRepairedTickets/totalVehicles : null,
         costPerVehicle: totalVehicles ? totalCost/totalVehicles : null,
@@ -4650,7 +4687,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     // status pills
     const cacheTotals = cacheSlice?.totals || null;
     $("sourceCount").textContent = numFmt.format(cacheTotals ? Number(cacheTotals.sourceRows || 0) : sourceRowsInScope().length);
-    $("ticketCount").textContent = numFmt.format(cacheTotals ? Number(cacheTotals.ticketCount || 0) : uniqueTicketCount(state.viewRows));
+    const rawTicketCount = cacheTotals ? Number(cacheTotals.ticketCount || 0) : uniqueTicketCount(state.viewRows);
+    $("ticketCount").textContent = numFmt.format(displayedTicketCountForCurrentView(rawTicketCount));
     $("seriesCount").textContent = numFmt.format(displaySummaryRows().length);
     $("repairerCount").textContent = numFmt.format(cacheTotals ? Number(cacheTotals.repairerCount || 0) : state.repairers.filter(r=>r.tickets>=5).length);
   }
@@ -4895,7 +4933,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   function modelTicketDetailHeader(){
     return [
-      "Ticket ID","Model","Model Source","Model Bucket","Others Reason","Vehicle Key","Vehicle Source",
+      "Ticket ID","Model","Model Source","Model Bucket","Others Reason","Synthetic Source","Synthetic Historical Gap","Vehicle Key","Vehicle Source",
       "Ticket Name","Ticket Serial ID","Ticket Chassis Number","Serial ID","Chassis Number","Vehicle Dispatch Serial",
       "Matched Vehicle Key","Matched Serial","Matched Chassis","Matched Sales Order","Match Source",
       "Registered Product","Product","Claim Scope","Ticket Type","Status","Approved Flow","Claim Approved On",
@@ -4919,6 +4957,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       modelSeriesSource(row),
       firstCleanValue(row["Model Bucket"], row.ModelBucket),
       firstCleanValue(row["Model Others Reason"], row.ModelOthersReason),
+      firstCleanValue(row["Model Synthetic Source"], row.ModelSyntheticSource, row.modelSyntheticSource),
+      isHistoricalGapRow(row) ? "Yes" : "",
       normalizedChassis(row),
       ticketVehicleSource(row),
       firstCleanValue(row["Ticket Name"], row.TicketName, row.ticketName, row["Ticket"], row.Ticket),
@@ -4982,6 +5022,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         extractSeries(row),
         firstCleanValue(row["Model Bucket"], row.ModelBucket),
         firstCleanValue(row["Model Others Reason"], row.ModelOthersReason),
+        firstCleanValue(row["Model Synthetic Source"], row.ModelSyntheticSource, row.modelSyntheticSource),
+        isHistoricalGapRow(row) ? "Yes" : "",
         normalizedChassis(row),
         ticketStatusText(row),
         firstCleanValue(row["Page1 Decision Date"], row.Page1DecisionDate),
@@ -5043,6 +5085,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       const approvedCost = rows.reduce((sum,row) => sum + getApprovedWarrantyCost(row), 0);
       const costTickets = rows.filter(row => getApprovedWarrantyCost(row) > 0).length;
       const costMatched = rows.filter(row => approvedCostMatchKey(row)).length;
+      const historicalGapRows = rows.filter(isHistoricalGapRow).length;
       const seriesRows = summaryBySeries(rows).filter(row => row.tickets > 0);
       const sheets = [
       {
@@ -5056,12 +5099,14 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           ["Leaderboard Mode", leaderboardPeriodModeLabel()],
           ["Leaderboard Period", leaderboardPeriodLabel()],
           ["Ticket Rows Exported", rows.length],
+          ["Page1 Model Tickets Exported", rows.length - historicalGapRows],
+          ["Historical Gap Rows Exported", historicalGapRows],
           ["Unique Ticket Count", uniqueTicketCount(rows)],
           ["Unique Ticket-Derived Vehicles", uniqueVehicles],
           ["Approved Cost AUD", round(approvedCost, 2)],
           ["Tickets With Approved Cost", costMatched],
           ["Tickets With Cost > 0", costTickets],
-          ["Ticket Pool Rule", "Page1 approved tickets by approved/decision month; Salesforce/live ticket and vehicle base enrich chassis/model; unmatched stable-series rows remain in Others"],
+          ["Ticket Pool Rule", "Page1 approved tickets by approved/decision month, plus Claim Trend historical approved gap rows where Jan-May historical pivot exceeds Page1 ticket-level rows; Salesforce/live ticket and vehicle base enrich chassis/model; unmatched stable-series rows remain in Others"],
           ["Cost Rule", "Page1 approved SAP PO Short Text cost; Cost/Ticket denominator is cost > 0 tickets"],
         ],
       },
@@ -5075,7 +5120,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       {
         name:"Cost Audit",
         rows:[
-          ["Ticket ID","Model","Model Bucket","Others Reason","Vehicle Key","Status","Page1 Decision Date","Approved Cost AUD","Approved Cost Match Key","Has Approved PO Cost","Cost > 0 Denominator","ERP Purchase Order ID","Sales Order"],
+          ["Ticket ID","Model","Model Bucket","Others Reason","Synthetic Source","Synthetic Historical Gap","Vehicle Key","Status","Page1 Decision Date","Approved Cost AUD","Approved Cost Match Key","Has Approved PO Cost","Cost > 0 Denominator","ERP Purchase Order ID","Sales Order"],
           ...modelCostAuditRows(rows),
         ],
       },
@@ -5126,6 +5171,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const metricRows = sortRows(displaySummaryRows(), state.seriesSort);
     const leaderboardRows = sortRows(displaySummaryRows(), { key:"ticketShare", dir:"desc" });
     const selectedRows = rowsForSelectedSeries();
+    const modelTicketsInScope = state.viewRows.length;
+    const historicalGapRowsInScope = currentHistoricalGapRows();
+    const page1ModelTicketsInScope = Math.max(0, modelTicketsInScope - historicalGapRowsInScope);
+    const claimTrendTicketsInScope = displayedTicketCountForCurrentView(modelTicketsInScope);
     const selectedCostTickets = selectedRows.filter(row => getWarrantyCost(row) > 0).length;
     const selectedTicketMap = ticketMapForRows(selectedRows);
     const selectedTicketIds = new Set(selectedTicketMap.keys());
@@ -5156,11 +5205,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           ["Selected Series", selected],
           ["Leaderboard Mode", leaderboardPeriodModeLabel()],
           ["Leaderboard Period", leaderboardPeriodLabel()],
-          ["Tickets In Scope", state.viewRows.length],
+          ["Tickets In Scope", claimTrendTicketsInScope],
+          ["Page1 Model Tickets In Scope", page1ModelTicketsInScope],
+          ["Historical Gap Rows In Scope", historicalGapRowsInScope],
           ["Tickets With Cost > 0", selectedCostTickets],
           ["Series In Scope", state.summary.length],
           ["Repairers In Scope", state.repairers.filter(r=>r.tickets>=5).length],
-          ["Ticket Pool Rule", "Page1 approved tickets by approved/decision month; Salesforce/live ticket and vehicle base enrich chassis/model; unmatched stable-series rows remain in Others"],
+          ["Ticket Pool Rule", "Page1 approved tickets by approved/decision month, plus Claim Trend historical approved gap rows where Jan-May historical pivot exceeds Page1 ticket-level rows; Salesforce/live ticket and vehicle base enrich chassis/model; unmatched stable-series rows remain in Others"],
           ["Cost Rule", "Page1 approved SAP PO Short Text cost; Cost/Ticket denominator is cost > 0 tickets"],
           ["Approved Cost Source", cacheOnlyModelView() ? "Page1 approved snapshot/model cache" : PARTS_COST_CACHE],
         ],
@@ -5382,7 +5433,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   function ticketDetailHeader(){
-    return ["Ticket ID","Series","Model Bucket","Model Source","Others Reason","Chassis","Serial ID","Registered Product","Product","Dealer","Repairer","Ticket Type","Status","Created On","Page1 Decision Date","PGI Date","Posting Date","Date of Purchase","Warranty Cost AUD","Cost > 0 Denominator","Repair Rejection","Failure Days","Timing Date Source"];
+    return ["Ticket ID","Series","Model Bucket","Model Source","Others Reason","Synthetic Source","Synthetic Historical Gap","Chassis","Serial ID","Registered Product","Product","Dealer","Repairer","Ticket Type","Status","Created On","Page1 Decision Date","PGI Date","Posting Date","Date of Purchase","Warranty Cost AUD","Cost > 0 Denominator","Repair Rejection","Failure Days","Timing Date Source"];
   }
 
   function ticketDetailRow(row){
@@ -5395,6 +5446,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       firstCleanValue(row["Model Bucket"], row.ModelBucket),
       modelSeriesSource(row),
       firstCleanValue(row["Model Others Reason"], row.ModelOthersReason),
+      firstCleanValue(row["Model Synthetic Source"], row.ModelSyntheticSource, row.modelSyntheticSource),
+      isHistoricalGapRow(row) ? "Yes" : "",
       normalizedChassis(row),
       row["Serial ID"] || row.SerialID || "",
       row["Registered Product"] || "",

@@ -4710,6 +4710,25 @@ const REPAIR_PAGE_CACHE_ENABLED=false;
 const REPAIR_COST_SANITY_MIN_AUD=50000;
 const REPAIR_COST_SANITY_RATIO=10;
 const REPAIR_CLAIM_TREND_LIVE_APPROVAL_CLOSED_START="2026-06";
+const REPAIR_CLAIM_TREND_HISTORICAL_APPROVED={
+  "2025-01":{inField:504,preDelivery:133},
+  "2025-02":{inField:558,preDelivery:117},
+  "2025-03":{inField:681,preDelivery:121},
+  "2025-04":{inField:654,preDelivery:140},
+  "2025-05":{inField:729,preDelivery:134},
+  "2025-06":{inField:738,preDelivery:146},
+  "2025-07":{inField:655,preDelivery:116},
+  "2025-08":{inField:557,preDelivery:124},
+  "2025-09":{inField:613,preDelivery:112},
+  "2025-10":{inField:377,preDelivery:126},
+  "2025-11":{inField:450,preDelivery:120},
+  "2025-12":{inField:424,preDelivery:99},
+  "2026-01":{inField:340,preDelivery:100},
+  "2026-02":{inField:823,preDelivery:221},
+  "2026-03":{inField:1059,preDelivery:145},
+  "2026-04":{inField:888,preDelivery:268},
+  "2026-05":{inField:1080,preDelivery:245},
+};
 const REPAIR_CLAIM_TREND_HISTORICAL_UNAPPROVED={
   "2025-01":{inField:101,preDelivery:10},
   "2025-02":{inField:52,preDelivery:20},
@@ -5171,6 +5190,42 @@ function repairerDisplayNameFromRow(row){
     row.raw_repairer_name||
     ""
   ));
+}
+function repairerPersonBaseName(value){
+  return clean(value)
+    .replace(/\s*\((?:QLD|NSW|VIC|WA|SA|TAS|ACT|NT|NZ|AU)\s*\)\s*$/i,"")
+    .replace(/\s+/g," ")
+    .trim();
+}
+const REPAIRER_BUSINESS_WORD_RE=/\b(PTY|LTD|LIMITED|TRUST|TRADING|CARAVAN|CARAVANS|RV|RVS|REPAIR|REPAIRS|SERVICE|SERVICES|CENTRE|CENTER|AUTO|AUTOMOTIVE|ELECTRIC|ELECTRICAL|PLUMBING|CAMPER|CAMPERS|MOTORHOME|MOTORHOMES|GROUP|HUB|SHOP|WORKSHOP|MECHANICAL|MOBILE|SPARES|HIRE|WARRANTY|DEALER|MOTORS|GARAGE|TRAILER|TRAILERS|COAST|ROAD|BAY|KING|SUPER|EQUIPMENT|FACTORS|BOSS|TOWING|WIDE|SNOWY|RIVER|GREEN|DARIO|VANARI|NEWGEN|NEWCASTLE|REGENT|LEISURE|LION|ABCO|UNITED|ULLADULLA|DESTINY|CARCARE|VANTECH)\b/i;
+function isCustomerOrPersonRepairerName(value){
+  const base=repairerPersonBaseName(value);
+  if(!base)return false;
+  const upper=base.toUpperCase();
+  if(upper.includes("CUSTOMER")&&(upper.includes("REPAIR")||upper.includes("REPAIRER")||upper.includes("TO FIT")))return true;
+  if(REPAIRER_BUSINESS_WORD_RE.test(base))return false;
+  const tokens=(base.match(/[A-Za-z][A-Za-z'\-]*/g)||[]).map(t=>t.toUpperCase());
+  if(tokens.length<2||tokens.length>5)return false;
+  if(tokens.length%2===0&&tokens.slice(0,tokens.length/2).join(" ")===tokens.slice(tokens.length/2).join(" "))return true;
+  if(/\b(and|&)\b/i.test(base))return true;
+  return tokens.length<=4;
+}
+function repairerNameCandidatesForExclusion(ticket={},name="",legacyName=""){
+  return [
+    name,
+    legacyName,
+    ticket?.repairer_name,
+    ticket?.repairer_base_name,
+    ticket?.raw_repairer_name,
+    ticket?.repairer_name_before_rule_mapping,
+    ticket?.RepairerName,
+    ticket?.ServiceTechnician,
+    ticket?.["Service Technician"],
+    ticket?.sap_repairer_name,
+  ].filter(Boolean);
+}
+function isExcludedRepairerName(ticket={},name="",legacyName=""){
+  return repairerNameCandidatesForExclusion(ticket,name,legacyName).some(isCustomerOrPersonRepairerName);
 }
 function parseCsvRows(text){
   if(!text)return[];
@@ -5706,6 +5761,7 @@ function repairInfo(entry){
       ? `${name}|${state||"NA"}`
       : (clean(r.InvolvedPartyBusinessPartnerID)||"no-repair"));
     const legacyRepairName=clean(r.InvolvedPartyName||ticket.RepairerName||ticket.repairer_name||ticket.ServiceTechnician||ticket["Service Technician"]||ticket.DealerName||ticket["Dealer Name"]);
+    if(isExcludedRepairerName(ticket,name,legacyRepairName))return {repairId:"no-repair",repairName:"No Repair Shop Assigned",legacyRepairName};
     return {repairId:id,repairName:repairDisplayName(ticket,name,state),legacyRepairName};
   }
   const t=entry.ticket||{};
@@ -5715,6 +5771,7 @@ function repairInfo(entry){
   const repairId=(repairIdMatchesDisplayName(existingId,repairerName)?existingId:"")||(repairerName?`${repairerName}|${state||"NA"}`:"no-repair");
   const repairName=repairDisplayName(t,repairerName,state);
   const legacyRepairName=clean(t.RepairerName||t.repairer_name||t.ServiceTechnician||t["Service Technician"]||t.DealerName||t["Dealer Name"]);
+  if(isExcludedRepairerName(t,repairName,legacyRepairName))return {repairId:"no-repair",repairName:"No Repair Shop Assigned",legacyRepairName};
   return {repairId,repairName,legacyRepairName};
 }
 function isRepairScopeDate(value){
@@ -5900,6 +5957,27 @@ function repairApprovedCostTicketTotal(){
   if(summaryTotal>0)return summaryTotal;
   return repairOverviewStateRows().reduce((sum,row)=>sum+Number(row?.ticket_count||row?.ticketCount||0),0);
 }
+function claimTrendApprovedTicketTotal(){
+  const bounds=repairPeriodBounds();
+  const startMonth=clean(bounds.start).slice(0,7);
+  const endMonth=clean(bounds.end).slice(0,7);
+  const byMonth=new Map();
+  Object.entries(REPAIR_CLAIM_TREND_HISTORICAL_APPROVED).forEach(([month,row])=>{
+    byMonth.set(month,Number(row.inField||0)+Number(row.preDelivery||0));
+  });
+  (Array.isArray(claimTrendUnapprovedCounts.monthly)?claimTrendUnapprovedCounts.monthly:[]).forEach(row=>{
+    const month=clean(row&&row.month);
+    if(month>=REPAIR_CLAIM_TREND_LIVE_APPROVAL_CLOSED_START){
+      byMonth.set(month,Number(row.inFieldApproved||0)+Number(row.preDeliveryApproved||0));
+    }
+  });
+  return [...byMonth.entries()].filter(([month])=>{
+    return month && month>=startMonth && month<=endMonth && month.slice(0,4)===String(selectedRepairYear);
+  }).reduce((sum,[,value])=>sum+Number(value||0),0);
+}
+function repairOverviewApprovedTicketTotal(){
+  return claimTrendApprovedTicketTotal()||repairApprovedCostTicketTotal();
+}
 function claimTrendUnapprovedTicketTotal(){
   const bounds=repairPeriodBounds();
   const startMonth=clean(bounds.start).slice(0,7);
@@ -5919,7 +5997,7 @@ function claimTrendUnapprovedTicketTotal(){
   }).reduce((sum,[,value])=>sum+Number(value||0),0);
 }
 function repairApprovedPlusUnapprovedTicketTotal(){
-  return repairApprovedCostTicketTotal()+claimTrendUnapprovedTicketTotal();
+  return repairOverviewApprovedTicketTotal()+claimTrendUnapprovedTicketTotal();
 }
 function buildOverviewStateExportRows(list){
   const rows=Array.isArray(list)?list:[];
@@ -5989,6 +6067,7 @@ async function exportRankViewExcel(){
         ["Selected Period",repairPeriodLabel()],
         ["Selected Date Range",repairPeriodText()],
         ["States Exported",Number(overviewStates.length||0)],
+        ["Approved Tickets (Claim Trend Overview)",Number(repairOverviewApprovedTicketTotal()||allCostTickets.length||0)],
         ["Ticket Details Exported",Number(allCostTickets.length||0)],
       ]},
       {name:"States",rows:buildOverviewStateExportRows(overviewStates)},
@@ -6008,15 +6087,15 @@ async function exportOverviewExcel(){
       return;
     }
     const totalCost=overviewStates.reduce((sum,row)=>sum+Number(row.confirmed_cost||0),0);
-    const totalTickets=repairApprovedCostTicketTotal();
+    const totalTickets=repairOverviewApprovedTicketTotal();
     const summaryRows=[
       ["Metric","Value"],
       ["Selected Period",period],
       ["Selected Date Range",repairPeriodText()],
       ["Ticket Date Source","Approved/Decision Date"],
-      ["Tickets with Approved Repair Cost",Number(totalTickets||costTickets.length||0)],
+      ["Approved Tickets (Claim Trend Overview)",Number(totalTickets||costTickets.length||0)],
       ["Total Approved Repair Cost",Number(totalCost||allRepairers.reduce((s,r)=>s+Number(r.totalCost||0),0))],
-      ["Average Approved Repair Cost per Approved Cost Ticket",Number((totalTickets||costTickets.length)?(totalCost||allRepairers.reduce((s,r)=>s+Number(r.totalCost||0),0))/(totalTickets||costTickets.length):0)],
+      ["Average Approved Repair Cost per Claim Trend Approved Ticket",Number((totalTickets||costTickets.length)?(totalCost||allRepairers.reduce((s,r)=>s+Number(r.totalCost||0),0))/(totalTickets||costTickets.length):0)],
       ["Ticket Count Rule","Approved cost tickets are counted when approved repair cost > 0; invoiced and approved closed tickets are included; unapproved tickets are excluded."],
       ["Cost Rule","Approved repair cost > 0 is included. Invoiced and approved closed tickets are included; unapproved ticket amounts are excluded."],
       ["Cost Source","confirmed_cost_aud -> confirmed_cost -> invoice_amount_aud -> invoice_amount -> po_amount_aud -> po_amount"],
@@ -6154,6 +6233,11 @@ function stateAbbr(code){
   if(!raw)return"";
   const normalized=STATE_ABBR_LABELS[raw]?raw:(stateNameToCode(raw)||raw);
   return STATE_ABBR_LABELS[normalized]||normalized||raw;
+}
+function isVisibleRepairState(code){
+  const raw=clean(code);
+  const normalized=STATE_ABBR_LABELS[raw]?raw:(stateNameToCode(raw)||raw);
+  return !!normalized && normalized!=="AU" && raw!=="Australia / Unknown State";
 }
 function formatRepairDisplayName(name,state){
   const base=clean(name);
@@ -6310,7 +6394,7 @@ function analyzeStateRows(rows){
   (Array.isArray(rows)?rows:[]).forEach(entry=>{
     const ticket=entry?.ticket&&typeof entry.ticket==="object"?entry.ticket:{};
     const state=stateAbbr(ticket.state||ticket.State);
-    if(!state)return;
+    if(!isVisibleRepairState(state))return;
     const info=repairInfo(entry);
     if(info.repairId==="no-repair"||info.repairName==="No Repair Shop Assigned")return;
     const row=map.get(state)||{
@@ -6373,7 +6457,7 @@ function repairersToWorkingRows(rows){
       split_key:r.repairId||r.repairer_split_key||r.split_key||"",
       repairer_split_key:r.repairId||r.repairer_split_key||r.split_key||"",
     };
-  });
+  }).filter(row=>row.repairId&&row.repairName&&!isExcludedRepairerName(row,row.repairName,row.repairLegacyName));
 }
 function emptyChassisWorkingData(){
   return {distribution:[],totals:{unique:0,repeat23:0,repeat4:0,ticketsMatched:0,costTicketsMatched:0},bucketDetails:{},repeatLabels:{},costLabels:{},chassisRows:[],costBuckets:[],uniqueChassis:0};
@@ -6411,7 +6495,29 @@ function cachedRepairRowsFromPeriod(periodPayload){
       first_created_on:clean(row.first_created_on||""),
       last_created_on:clean(row.last_created_on||""),
     };
-  }).filter(row=>row.repairId&&row.repairName);
+  }).filter(row=>row.repairId&&row.repairName&&!isExcludedRepairerName(row,row.repairName,row.repairLegacyName));
+}
+function stateRowsFromRepairRows(rows){
+  const map=new Map();
+  (Array.isArray(rows)?rows:[]).forEach(row=>{
+    const state=stateAbbr(row.state||clean(row.repairId).split("|")[1]||"");
+    if(!isVisibleRepairState(state))return;
+    const item=map.get(state)||{state,ticket_count:0,confirmed_cost:0,invoiced_tickets:0,open_tickets:0,_repairers:new Set()};
+    const tickets=Number(row.ticketCount??row.ticket_count??0);
+    const cost=Number(row.totalCost??row.confirmed_cost??0);
+    item.ticket_count+=tickets;
+    item.confirmed_cost+=cost;
+    item.open_tickets+=Number(row.openCases??row.open_tickets??tickets);
+    item.invoiced_tickets+=Number(row.closedCases??row.invoiced_tickets??0);
+    if(row.repairId)item._repairers.add(row.repairId);
+    map.set(state,item);
+  });
+  return Array.from(map.values()).map(row=>{
+    row.unique_repairers=row._repairers.size;
+    row.avg_confirmed_cost=row.ticket_count?row.confirmed_cost/row.ticket_count:0;
+    delete row._repairers;
+    return row;
+  });
 }
 function rebuildRepairWorkingData(){
   const canUseLoadedDetails=repairDetailsLoaded&&Array.isArray(allRepairTickets)&&allRepairTickets.length;
@@ -6425,14 +6531,14 @@ function rebuildRepairWorkingData(){
     tickets=[];
     repairs=cachedRepairRowsFromPeriod(p);
     workingRepairers=repairersToWorkingRows(repairs);
-    workingStates=Array.isArray(p.states)?p.states:[];
+    workingStates=stateRowsFromRepairRows(repairs);
     workingSummary=p.summary||{};
     workingChassis=p.chassis||emptyChassisWorkingData();
     if((!repairs.length||!workingStates.length)&&periodUsed!=="total"&&precomputedRepairPeriods.total){
       const total=precomputedRepairPeriods.total;
       repairs=cachedRepairRowsFromPeriod(total);
       workingRepairers=repairersToWorkingRows(repairs);
-      workingStates=Array.isArray(total.states)?total.states:[];
+      workingStates=stateRowsFromRepairRows(repairs);
       workingSummary=total.summary||{};
       workingChassis=total.chassis||emptyChassisWorkingData();
       selectedRepairPeriod="total";
@@ -6932,14 +7038,14 @@ function snowyTooltipLine(summary,row){
 function repairOverviewStateRows(){
   const candidates=[
     repairDetailsLoaded?workingStates:null,
+    workingStates,
     precomputedRepairPeriods?.[selectedRepairPeriod]?.states,
     precomputedRepairPeriods?.total?.states,
-    repairDetailsLoaded?null:workingStates,
     weeklyAnalysis?.states,
   ];
   for(const rows of candidates){
     if(Array.isArray(rows)&&rows.some(row=>row&&clean(row.state)&&Number(row.ticket_count||0)>0)){
-      return rows;
+      return rows.filter(row=>isVisibleRepairState(row?.state));
     }
   }
   return [];
@@ -7072,8 +7178,8 @@ function renderWeekPanel(){
     if(rangeEl)rangeEl.textContent=`(${selectedRepairYear}, 0 tickets)`;
     return;
   }
-  const overviewTickets=repairApprovedCostTicketTotal();
-  if(rangeEl)rangeEl.textContent=`(${repairPeriodText()}, ${num(overviewTickets)} tickets with approved repair cost)`;
+  const overviewTickets=repairOverviewApprovedTicketTotal();
+  if(rangeEl)rangeEl.textContent=`(${repairPeriodText()}, ${num(overviewTickets)} approved tickets)`;
   if(!overviewStates.some(r=>r.state===selectedRegionCode))selectedRegionCode=overviewStates.some(r=>r.state==="QLD")?"QLD":overviewStates[0].state;
   const selected=selectedOverviewState(overviewStates);
   const legendMax=Math.max(1,...overviewStates.map(s=>weekStateMetric(s)));
@@ -7435,7 +7541,7 @@ function chassisRepeatTotalTicketDenominator(w=workingChassis){
   return repairApprovedPlusUnapprovedTicketTotal();
 }
 function chassisRepeatApprovedTicketCount(w=workingChassis){
-  return repairApprovedCostTicketTotal();
+  return repairOverviewApprovedTicketTotal();
 }
 function chassisRepeatCategoryDenominator(row,w=workingChassis){
   const key=`${clean(row?.key||"")} ${clean(row?.label||"")}`.toLowerCase();
@@ -7487,7 +7593,7 @@ function renderChassisRepeatPanel(){
     ${displayRows.map(row=>{
       const totals=chassisRepeatCategoryTotals(row,w);
       const isAllApproved=chassisRepeatCategoryDenominator(row,w)===approvedTicketCount;
-      const denominatorLabel=isAllApproved?"Tickets with Approved Repair Cost":"Total tickets QTY (approved+unapproved)";
+      const denominatorLabel=isAllApproved?"Approved Tickets (Claim Trend Overview)":"Total tickets QTY (approved+unapproved)";
       return `<section class="chassisRepeatScenarioCard">
         <h3 class="chassisRepeatScenarioTitle">${esc(row.label||"")}</h3>
         <div class="chassisRepeatScenarioMeta">
@@ -7528,7 +7634,7 @@ async function exportChassisRepeatExcel(){
       ["Caravans QTY (Total Repairs)",Number(w.totalUniqueChassis||0)],
       ["Caravans QTY (Repeat Repairs)",Number(w.repeatedClaimsOnSameChassis||0)],
       ["Tickets QTY (Repeat Requests)",Number(w.repeatedTicketCount||0)],
-      ["Tickets with Approved Repair Cost",Number(approvedTicketCount||0)],
+      ["Approved Tickets (Claim Trend Overview)",Number(approvedTicketCount||0)],
       ["Unapproved Tickets",Number(unapprovedTicketCount||0)],
       ["Total tickets QTY (approved+unapproved)",Number(chassisRepeatTotalTicketDenominator(w)||0)],
       ["Repeat Repair Rate %",Number(w.repeatRate||0)],
@@ -7541,7 +7647,7 @@ async function exportChassisRepeatExcel(){
       ]),
     ];
     const scenarioRows=[
-      ["Scenario","Repeat Tickets","Tickets with Approved Repair Cost","Total tickets QTY (approved+unapproved)","Repeat Rate %","Caravan QTY","Approved Cost"],
+      ["Scenario","Repeat Tickets","Approved Tickets (Claim Trend Overview)","Total tickets QTY (approved+unapproved)","Repeat Rate %","Caravan QTY","Approved Cost"],
       ...w.categories.map(row=>{
         const totals=categoryTicketTotals(row);
         const isAllApproved=chassisRepeatCategoryDenominator(row,w)===approvedTicketCount;

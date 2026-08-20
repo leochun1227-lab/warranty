@@ -1,0 +1,17 @@
+{
+  "outputPath": "C:/Users/Leo.Li/Documents/GitHub/warranty/outputs/parts_top10_createdon_split/Parts_Top10_Failure_Components_CreatedOn.xlsx",
+  "counts": {
+    "Marker Light": 1453,
+    "Stop Light": 942,
+    "Tail Light": 780,
+    "Main Door": 514,
+    "Reflector": 421,
+    "Window Blade": 400,
+    "Roof Hatch": 387,
+    "Solar": 280,
+    "Decal": 252,
+    "Clip": 251
+  },
+  "formulaErrors": "{\"kind\":\"notice\",\"message\":\"Cell search matched 0 entries.\"}",
+  "firstSheetCheck": "{\"kind\":\"table\",\"sheet\":\"01 Marker Light\",\"address\":\"A1:E20\",\"rows\":20,\"cols\":5,\"values\":[[\"Ticket ID\",\"Series\",\"Claim Scope\",\"Status\",\"Claim Type\"],[29530,\"SRC\",\"FIELD\",\"Repair in Progress\",null],[29539,\"SRT\",\"FIELD\",\"Approved Claims Closed (Closed)\",null],[29551,\"SRT\",\"FIELD\",\"Repair in Progress\",null],[29555,\"SRC\",\"FIELD\",\"Repair in Progress\",null],[29587,\"SRT\",\"FIELD\",\"Sales Order Approved\",null],[29590,\"SRC\",\"FIELD\",\"Repair in Progress\",null],[29591,\"SRT\",\"FIELD\",\"Repairer Invoiced Processed\",null],[29600,\"SRT\",\"FIELD\",\"Repairer Invoiced Received\",null],[29608,\"SRC\",\"FIELD\",\"Repair in Progress\",null],[29609,\"SRH\",\"FIELD\",\"Repairer Invoiced Processed\",null],[29610,\"SRT\",\"FIELD\",\"Repair in Progress\",null],[29612,\"SRC\",\"FIELD\",\"Repair in Progress\",null],[29616,\"SRC\",\"FIELD\",\"Repair in Progress\",null],[29620,\"SRH\",\"PRE\",\"Repairer Invoiced Processed\",null],[29630,\"SRT\",\"FIELD\",\"Repair in Progress\",null],[29648,\"SRH\",\"PRE\",\"Partially Picked\",null],[29652,\"SRT\",\"FIELD\",\"Repair in Progress\",null],[29657,\"SRC\",\"FIELD\",\"Repair in Progress\",null],[29658,\"SRC\",\"FIELD\",\"Repairer Invoiced Processed\",null]]}"
+}

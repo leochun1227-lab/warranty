@@ -1098,9 +1098,9 @@
     gap:10px;
   }
   .costSummary{
-    grid-template-columns:repeat(2,minmax(0,1fr));
+    grid-template-columns:repeat(3,minmax(0,1fr));
     gap:10px;
-    max-width:940px;
+    max-width:none;
   }
   .costStat{
     min-height:128px;
@@ -2485,7 +2485,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     const fallbackCount = summary.fallbackCount;
     const materialRows = summary.materialRows;
     const totalSoCount = summary.totalSoCount || ticketCount;
-    const avgPartsCostPerTicket = ticketCount ? (totalCost / ticketCount) : 0;
+    const avgPartsCostPerSo = totalSoCount ? (totalCost / totalSoCount) : 0;
     const reportStart = series[0]?.key || dateKey(currentYearStartDate(latest));
     const reportEnd = series[series.length - 1]?.key || "";
     const latestMonth = series && series.length ? series[series.length - 1] : null;
@@ -2503,8 +2503,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       ["Fallback Count", fallbackCount],
       ["Material Rows", materialRows],
       ["Ticket Count", ticketCount],
-      ["Avg Parts Cost / Ticket", avgPartsCostPerTicket],
-      ["Total SO Count", totalSoCount],
+      ["Total SO QTY", totalSoCount],
+      ["Avg Parts Cost / SO QTY", avgPartsCostPerSo],
       ["Source Name", report?.source?.name || ""],
       ["Source Type", report?.source?.sourceType || ""],
     ];
@@ -4029,7 +4029,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       || seriesSummary.totalSoCount
       || (currentSummary ? n(currentSummary.ticketCount) : 0);
     const totalPeriodCost = seriesSummary.totalCost;
-    const avgPartsCostPerTicket = ticketCount ? (totalPeriodCost / ticketCount) : 0;
+    const totalSoQty = seriesSummary.totalSoCount || ticketCount;
+    const avgPartsCostPerSo = totalSoQty ? (totalPeriodCost / totalSoQty) : 0;
     els.costCompare.style.display = "none";
     els.costCompare.innerHTML = "";
     if (!lineSeries.length){
@@ -4061,7 +4062,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       els.costSummary.style.display = "grid";
       els.costSummary.innerHTML = [
         { label:"Total Cost", value: money.format(totalPeriodCost), theme:"sky", icon: summaryIcons.total },
-        { label:"Avg Parts Cost / Ticket", value: money.format(avgPartsCostPerTicket), left:"", right:"", theme:"red", icon: summaryIcons.avg },
+        { label:"Total SO QTY", value: integer.format(totalSoQty), left:"", right:"", theme:"green", icon: summaryIcons.coverage },
+        { label:"Avg Parts Cost / SO QTY", value: money.format(avgPartsCostPerSo), left:"", right:"", theme:"red", icon: summaryIcons.avg },
       ].map(card => `
         <div class="costStat">
           <div class="costStatTop">

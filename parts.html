@@ -1107,7 +1107,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           </div>
           <div class="compSplit">
             <div class="compRows" id="compRows"><div class="empty">Loading component data...</div></div>
-            <div class="compPreviewWrap" id="compPreviewWrap"><div class="empty">Loading component preview...</div></div>
+            <div class="compPreviewWrap" id="compPreviewWrap"><div class="empty">Component preview is preparing...</div></div>
           </div>
         </div>
       </section>
@@ -1318,6 +1318,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const ANALYSIS_TIMEOUT_MS = 15000;
   const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v28-created-on-raw-ticket-no-pdi";
   const ANALYSIS_PAGE_CACHE_KEY = `analysis:parts-failure-components:${ANALYSIS_PAGE_CACHE_SCHEMA}`;
+  const ANALYSIS_PAGE_LATEST_CACHE_KEY = `${ANALYSIS_PAGE_CACHE_KEY}:latest`;
+  const ANALYSIS_PAGE_LATEST_CACHE_VERSION = "latest";
   const ANALYSIS_PAGE_CACHE_ENABLED = true;
   function mapEntries(map){ return map instanceof Map ? Array.from(map.entries()) : []; }
   function setValues(set){ return set instanceof Set ? Array.from(set.values()) : []; }
@@ -1371,15 +1373,46 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       seriesSales,seriesSalesByMonth,seriesSalesCumulativeByMonth,seriesBase,seriesBaseBreakdown,sources
     };
   }
+  function compactFailureAgeSummary(value){
+    if(!value||typeof value!=="object")return null;
+    return {
+      tickets:Number(value.tickets)||0,
+      pgiMatchedTickets:Number(value.pgiMatchedTickets)||0,
+      avgFailureDays:value.avgFailureDays==null?null:Number(value.avgFailureDays),
+      topPgiMonths:(Array.isArray(value.topPgiMonths)?value.topPgiMonths:[]).slice(0,5).map(item=>({
+        month:clean(item&&item.month),
+        tickets:Number(item&&item.tickets)||0,
+        share:Number(item&&item.share)||0
+      })).filter(item=>item.month)
+    };
+  }
+  function compactPartsFailureValue(value,path=[]){
+    if(Array.isArray(value))return value.map(item=>compactPartsFailureValue(item,path));
+    if(!value||typeof value!=="object")return value;
+    if(Object.prototype.hasOwnProperty.call(value,"avgFailureDays")&&Object.prototype.hasOwnProperty.call(value,"pgiMatchedTickets")){
+      return compactFailureAgeSummary(value);
+    }
+    const isComponentRow=Object.prototype.hasOwnProperty.call(value,"component")
+      && Object.prototype.hasOwnProperty.call(value,"category")
+      && (Object.prototype.hasOwnProperty.call(value,"tickets")||Object.prototype.hasOwnProperty.call(value,"lineItems"));
+    const out={};
+    Object.entries(value).forEach(([key,item])=>{
+      if(key==="componentTrends"||key==="pgiMonthCounts"||key==="minFailureDays"||key==="maxFailureDays")return;
+      if(isComponentRow&&key==="series")return;
+      if(key==="series"&&(path.includes("months")||path.includes("years")))return;
+      out[key]=compactPartsFailureValue(item,path.concat(key));
+    });
+    return out;
+  }
   function compactPartsFailureSummary(value){
     if(!value||typeof value!=="object")return null;
     const out={
       meta:value.meta||null,
-      all:value.all||null,
-      series:value.series||{},
-      dateBasisScopes:value.dateBasisScopes||null
+      all:compactPartsFailureValue(value.all||null),
+      series:compactPartsFailureValue(value.series||{}),
+      dateBasisScopes:compactPartsFailureValue(value.dateBasisScopes||null)
     };
-    if(!out.dateBasisScopes&&value.monthScopes)out.monthScopes=value.monthScopes;
+    if(!out.dateBasisScopes&&value.monthScopes)out.monthScopes=compactPartsFailureValue(value.monthScopes);
     Object.keys(out).forEach(k=>{if(out[k]===""||out[k]==null)delete out[k]});
     return out;
   }
@@ -1403,11 +1436,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     (Array.isArray(sourceRows)?sourceRows:[]).forEach(add);
     return map;
   }
-  function saveAnalysisPageState(version){
-    if(!ANALYSIS_PAGE_CACHE_ENABLED)return;
-    if(!version||!window.WarrantyPageCache)return;
-    window.WarrantyPageCache.setPage(ANALYSIS_PAGE_CACHE_KEY,version,{
+  function analysisPageStatePayload(version){
+    return {
       cacheMode:"compact-v1",
+      sourceCacheVersion:version||"",
       rows:compactRows(state.rows),
       sourceRowPool:compactSourceRowPool(state.sourceRowPool),
       selected:state.selected,
@@ -1438,13 +1470,21 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       partsDateBasis:"CREATED",
       partsIncludedTicketIds:setValues(state.partsIncludedTicketIds),
       partsTicketSeriesByIdEntries:mapEntries(state.partsTicketSeriesById)
-    });
+    };
+  }
+  function saveAnalysisPageState(version){
+    if(!ANALYSIS_PAGE_CACHE_ENABLED)return;
+    if(!window.WarrantyPageCache)return;
+    if(!Array.isArray(state.rows)||!state.rows.length)return;
+    const payload=analysisPageStatePayload(version);
+    if(version)window.WarrantyPageCache.setPage(ANALYSIS_PAGE_CACHE_KEY,version,payload);
+    window.WarrantyPageCache.setPage(ANALYSIS_PAGE_LATEST_CACHE_KEY,ANALYSIS_PAGE_LATEST_CACHE_VERSION,payload);
   }
   let analysisPageSaveTimer = null;
   function scheduleAnalysisPageSave(version = state.analysisCacheVersion){
     if(!ANALYSIS_PAGE_CACHE_ENABLED)return;
-    if(!version||!window.WarrantyPageCache)return;
-    state.analysisCacheVersion = version;
+    if(!window.WarrantyPageCache)return;
+    state.analysisCacheVersion = version || state.analysisCacheVersion || "";
     if (analysisPageSaveTimer) clearTimeout(analysisPageSaveTimer);
     analysisPageSaveTimer = setTimeout(() => {
       analysisPageSaveTimer = null;
@@ -1456,11 +1496,12 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       clearTimeout(analysisPageSaveTimer);
       analysisPageSaveTimer = null;
     }
-    if (state.analysisCacheVersion) saveAnalysisPageState(state.analysisCacheVersion);
+    saveAnalysisPageState(state.analysisCacheVersion || "");
   }
-  function restoreAnalysisPageState(cached,version){
+  function restoreAnalysisPageState(cached,version,opts={}){
     if(!ANALYSIS_PAGE_CACHE_ENABLED)return false;
     if(!cached||!Array.isArray(cached.rows))return false;
+    const restoredVersion = version || cached.sourceCacheVersion || "";
     Object.assign(state,{
       rows:cached.rows||[],
       sourceRowPool:cached.sourceRowPool||[],
@@ -1497,24 +1538,55 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       partsClassifiedRows:null,
       partsClassifiedTicketMap:null,
       partsDerivedCache:null,
-      analysisCacheVersion: version || ""
+      analysisCacheVersion: restoredVersion || ""
     });
     const overlay=$("loadingOverlay");
-    if(overlay)overlay.classList.add("show");
+    const appShell=$("appShell");
+    if(overlay)overlay.classList.remove("show");
+    if(appShell)appShell.classList.remove("blurWhileLoading");
+    render();
+    if(restoredVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(restoredVersion,"cached");
     const refreshPartsCaches = Promise.all([
       loadPartsFailureSummary(),
       loadPartsDerivedCache(),
       loadWarrantyMonthlyCounts()
     ]);
-    refreshPartsCaches.then(()=>{
+    refreshPartsCaches.then(async()=>{
+      let freshVersion = restoredVersion || "";
+      if(opts.versionPromise){
+        try{ freshVersion = await opts.versionPromise || freshVersion; }
+        catch(err){ console.warn("Parts cache version background refresh failed",err); }
+      }
+      if(freshVersion)state.analysisCacheVersion=freshVersion;
       render();
-      if(overlay)overlay.classList.remove("show");
-      scheduleAnalysisPageSave(version);
+      scheduleAnalysisPageSave(freshVersion);
+      if(freshVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(freshVersion,"fresh");
     }).catch(err=>{
-      if(overlay)overlay.classList.remove("show");
       console.warn("Parts failure background refresh failed",err);
     });
     return true;
+  }
+  async function restoreFastAnalysisPageCache(versionPromise){
+    if(!ANALYSIS_PAGE_CACHE_ENABLED||!window.WarrantyPageCache)return false;
+    const reads=[
+      ["last exact parts analysis cache",()=>window.WarrantyPageCache.getPageRecord(ANALYSIS_PAGE_CACHE_KEY)],
+      ["latest parts analysis cache",()=>window.WarrantyPageCache.getPageRecord(ANALYSIS_PAGE_LATEST_CACHE_KEY)]
+    ];
+    const records=(await Promise.all(reads.map(async([label,read])=>{
+      try{
+        const record=await withTimeout(read(),1200,label);
+        return record&&record.value?{...record,label}:null;
+      }catch(e){
+        console.warn(`${label} restore skipped`,e);
+        return null;
+      }
+    }))).filter(Boolean).sort((a,b)=>String(b.savedAt||"").localeCompare(String(a.savedAt||"")));
+    for(const record of records){
+      const cached=record.value;
+      const version=record.version==="latest"?(cached?.sourceCacheVersion||""):(record.version||cached?.sourceCacheVersion||"");
+      if(restoreAnalysisPageState(cached,version,{versionPromise}))return true;
+    }
+    return false;
   }
 
   // ============ HELPERS ============
@@ -3316,8 +3388,21 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     return numFmt.format(numeric);
   }
 
-  function failureAgeSummaryForRow(row){
-    return row && typeof row.failureAge === "object" ? row.failureAge : null;
+  function normalizeFailureAgeSummary(payload, scope = "ALL"){
+    if (!payload || typeof payload !== "object") return null;
+    if (Object.prototype.hasOwnProperty.call(payload, "avgFailureDays")) return payload;
+    const scopeKey = scope === "PRE" || scope === "FIELD" || scope === "OTHER" ? scope : "ALL";
+    return payload[scopeKey] || payload.ALL || null;
+  }
+
+  function failureAgeSummaryForRow(row, scope = "ALL"){
+    return normalizeFailureAgeSummary(row?.failureAge, scope);
+  }
+
+  function componentScopedFailureSummary(row, scope = componentScope()){
+    if (!row) return null;
+    const key = row.key || componentKey(row.component || row.name, row.category || row.cat);
+    return componentFailureSummary(key, scope) || failureAgeSummaryForRow(row, scope);
   }
 
   function formatFailureDays(value){
@@ -3730,6 +3815,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       lineShare: Number(row.lineShare ?? row.partsLineShare) || 0,
       costShare: Number(row.costShare) || 0,
       globalRank: Number(row.globalRank) || 0,
+      failureAge: row.failureAge && typeof row.failureAge === "object" ? row.failureAge : null,
       series: row.series && typeof row.series === "object" ? row.series : {},
     };
   }
@@ -3865,17 +3951,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const hits = rows.map((row, index) => {
       const hitX = padLeft + index * slot;
       const share = totalMetric ? componentTrendMetricValue(row, mode) / totalMetric : 0;
-      const failure = failureAgeSummaryForRow(row);
-      const topPgi = topShipmentBatch(failure);
       return `<rect class="compTrendHit" x="${hitX.toFixed(1)}" y="${padTop}" width="${slot.toFixed(1)}" height="${(bottom - padTop).toFixed(1)}"`
         + ` data-tm-label="${esc(row.label || compactTrendLabel(row))}"`
         + ` data-tm-tickets="${Number(row.tickets) || 0}"`
         + ` data-tm-cost="${Number(row.cost) || 0}"`
-        + ` data-tm-avg-failure-days="${failure?.avgFailureDays ?? ""}"`
-        + ` data-tm-pgi-matched="${Number(failure?.pgiMatchedTickets) || 0}"`
-        + ` data-tm-top-pgi-month="${esc(topPgi?.label || "")}"`
-        + ` data-tm-top-pgi-tickets="${Number(topPgi?.tickets) || 0}"`
-        + ` data-tm-top-pgi-share="${Number(topPgi?.share) || 0}"`
         + ` data-tm-mode="${esc(metricKey)}"`
         + ` data-tm-share="${share}"></rect>`;
     }).join("");
@@ -3936,23 +4015,11 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const compName = nameEl ? nameEl.textContent.replace(/^\s*\d+\.\s*/, "") : "";
     const tickets = Number(hit.getAttribute("data-tm-tickets")) || 0;
     const cost = Number(hit.getAttribute("data-tm-cost")) || 0;
-    const avgFailureDays = hit.getAttribute("data-tm-avg-failure-days");
-    const topPgiMonth = hit.getAttribute("data-tm-top-pgi-month") || "";
-    const topPgiTickets = Number(hit.getAttribute("data-tm-top-pgi-tickets")) || 0;
-    const topPgiShare = Number(hit.getAttribute("data-tm-top-pgi-share")) || 0;
-    const timingRows = [];
-    if (avgFailureDays !== "") {
-      timingRows.push(`<div class="compTrendTipRow"><span>Avg Time to Repair Claim</span><b>${formatFailureDays(avgFailureDays)}</b></div>`);
-    }
-    if (topPgiMonth) {
-      timingRows.push(`<div class="compTrendTipRow"><span>Main Shipment Batch</span><b>${esc(topPgiMonth)} (${numFmt.format(topPgiTickets)}, ${pctValue(topPgiShare) || "0.0%"})</b></div>`);
-    }
     el.innerHTML = `
       <div class="compTrendTipTitle">${esc(hit.getAttribute("data-tm-label") || "")}</div>
       <div class="compTrendTipSub">${esc(compName)}</div>
       <div class="compTrendTipRow"><span>Tickets</span><b>${numFmt.format(tickets)}</b></div>
       <div class="compTrendTipRow"><span>Cost</span><b>${moneyFmt.format(cost)}</b></div>
-      ${timingRows.length ? timingRows.join("") : `<div class="compTrendTipFoot">Shipment timing unavailable</div>`}
     `;
     positionCompTrendTip(el, ev);
   }
@@ -5570,35 +5637,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         ],
       },
       {
-        name:"Failure Timing",
-        rows:[
-          ["Selected Series", selected],
-          ["Dated Tickets", timingTotal],
-          ["PGI Matched", timingSources.pgi || 0],
-          [],
-          ["Timing Bucket","Tickets","Share"],
-          ...timingBuckets.map((count, i) => [
-            timingLabels[i], count, timingTotal ? pctValue(count / timingTotal) : "0.0%",
-          ]),
-        ],
-      },
-      {
-        name:"Failure Timing Detail",
-        rows:[
-          failureTimingDetailHeader(),
-          ...exportTicketRows.map(failureTimingDetailRow),
-        ],
-      },
-      {
         name:"Top Components",
         rows:[
           ["Selected Series", selected],
           [],
-          ["Component","Category","Parts","Part Share","Unique Tickets","Ticket Share","Pre-Delivery Unique Tickets","In-Field Unique Tickets","Other Unique Tickets","Cost AUD","Avg Time to Repair Claim Days","Main Shipment Batch","Main Shipment Batch Tickets","Main Shipment Batch Share"],
+          ["Component","Category","Parts","Part Share","Unique Tickets","Ticket Share","Pre-Delivery Unique Tickets","In-Field Unique Tickets","Other Unique Tickets","Cost AUD"],
           ...componentRows.map(r => {
             const stats = computeComponentStatic(componentKey(r.component, r.category));
-            const failure = componentFailureSummary(componentKey(r.component, r.category));
-            const topPgi = topShipmentBatch(failure);
             const lineItems = componentLineItems(r);
             const tickets = Number(stats.total) || componentDisplayTicketCount(r) || 0;
             return [
@@ -5612,10 +5657,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
               Number(stats.field) || 0,
               Number(stats.other) || 0,
               round(Number(r.cost)||0, 2),
-              failure?.avgFailureDays == null ? "" : round(Number(failure.avgFailureDays), 1),
-              topPgi?.label || "",
-              Number(topPgi?.tickets) || 0,
-              topPgi ? pctValue(Number(topPgi.share) || 0) : "",
             ];
           }),
         ],
@@ -5833,9 +5874,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const categories = Array.from(new Set(lines.map(line => clean(line["Part Category"] || "Other")).filter(Boolean))).join(", ");
     const poValues = Array.from(new Set(lines.map(line => normalizePoForDisplay(line["ERP Purchase Order"] || line["ERP Purchase Order ID"] || line["Purchase Order"] || "")).filter(Boolean))).join(", ");
     const lineCost = lines.reduce((sum, line) => sum + (asNumber(line["Preferred Line Cost (AUD)"]) || 0), 0);
-    const delivery = getDeliveryDate(ticket);
-    const goodReceive = getGoodReceiveDate(ticket);
-    const timing = failureAgeDays(ticket);
     return [
       ticketId,
       ticket.Status || ticket["Status"] || "",
@@ -5846,9 +5884,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       ticket["Created On"] || ticket.CreatedOn || firstLine["Created On"] || "",
       ticket["Claim Approved On"] || ticket["Claim Approved Date"] || ticket["Approved On"] || firstLine["Claim Approved On"] || "",
       ticket["Changed On"] || ticket.ChangedOn || "",
-      delivery.date ? dateKeyFromDate(delivery.date) : "",
-      goodReceive.date ? dateKeyFromDate(goodReceive.date) : "",
-      timing.age ?? "",
       ticket["Posting Date"] || firstLine["Posting Date"] || "",
       ticket["Date of Purchase"] || firstLine["Date of Purchase"] || "",
       poValues,
@@ -5959,9 +5994,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const ticketId = ticketExportId(ticket);
     const lines = classifiedLinesForTicket(ticket, ticketId, linesByTicket);
     const firstLine = lines[0] || {};
-    const delivery = getDeliveryDate(ticket);
-    const goodReceive = getGoodReceiveDate(ticket);
-    const timing = failureAgeDays(ticket);
     const lineCost = lines.reduce((sum, line) => sum + (asNumber(line["Preferred Line Cost (AUD)"]) || 0), 0);
     const orderQty = lines.reduce((sum, line) => sum + (asNumber(line["Order Qty"]) || 0), 0);
     return [
@@ -5973,9 +6005,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       ticket["Created On"] || ticket.CreatedOn || "",
       ticket["Claim Approved On"] || ticket["Claim Approved Date"] || ticket["Approved On"] || "",
       ticket["Changed On"] || ticket.ChangedOn || "",
-      delivery.date ? dateKeyFromDate(delivery.date) : "",
-      goodReceive.date ? dateKeyFromDate(goodReceive.date) : "",
-      timing.age ?? "",
       ticket["Posting Date"] || "",
       ticket["Date of Purchase"] || "",
       round(getWarrantyCost(ticket), 2),
@@ -6021,7 +6050,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       const rows = [
         [
           "Ticket ID","Series","Claim Scope","Status","Claim Type","Created On","Claim Approved On","Changed On",
-          "PGI Date","Good Receive Date","Created-PGI Days","Posting Date","Date of Purchase","Warranty Cost AUD",
+          "Posting Date","Date of Purchase","Warranty Cost AUD",
           "Chassis","Serial ID","Dealer","Repairer","Has Classified Part","Classified Part Lines",
           "Part Categories","Components","Materials","Descriptions","Purchase Orders","Sales Orders",
           "Order Qty","Preferred Line Cost AUD","Item Rejection Status",
@@ -6093,18 +6122,12 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         .sort((a,b) => String(a[0]).localeCompare(String(b[0]), undefined, { numeric:true }))
         .map(([ticketId, lines]) => componentExportTicketRow(ticketId, lines));
       const componentSummaryRows = topComponents.map(row => {
-        const failure = componentFailureSummary(componentKey(row.component, row.category), scope);
-        const topPgi = topShipmentBatch(failure);
         return [
           row.component,
           row.category,
           componentDisplayTicketCount(row),
           componentLineItems(row),
           round(Number(row.cost) || 0, 2),
-          failure?.avgFailureDays == null ? "" : round(Number(failure.avgFailureDays), 1),
-          topPgi?.label || "",
-          Number(topPgi?.tickets) || 0,
-          topPgi ? pctValue(Number(topPgi.share) || 0) : "",
         ];
       });
 
@@ -6129,7 +6152,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         {
           name:"Ticket Detail",
           rows:[
-            ["Ticket ID","Status","Series","Field","Part Category","Claim Type","Created On","Claim Approved On","Changed On","PGI Date","Good Receive Date","Created-PGI Days","Posting Date","Date of Purchase","PO","PO Line Price AUD","Approved PO Price AUD","Chassis","Serial ID","Dealer","Repairer","Matched Lines"],
+            ["Ticket ID","Status","Series","Field","Part Category","Claim Type","Created On","Claim Approved On","Changed On","Posting Date","Date of Purchase","PO","PO Line Price AUD","Approved PO Price AUD","Chassis","Serial ID","Dealer","Repairer","Matched Lines"],
             ...ticketDetailRows,
           ],
         },
@@ -6143,11 +6166,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         {
           name:"Component Line Detail",
           rows:[
-            ["Ticket ID","Status","Series","Field","Part Category","Claim Type","Created On","Claim Approved On","PGI Date","Good Receive Date","Posting Date","PO","PO Line Price AUD","3110 PO Date","First Issue Date","Material","Description","Order Qty","Sales Unit","Chassis","Serial ID","Dealer","Repairer"],
+            ["Ticket ID","Status","Series","Field","Part Category","Claim Type","Created On","Claim Approved On","Posting Date","PO","PO Line Price AUD","3110 PO Date","First Issue Date","Material","Description","Order Qty","Sales Unit","Chassis","Serial ID","Dealer","Repairer"],
             ...lineRows.map(line => {
               const ticket = ticketLookupForExport(line["Ticket ID"]);
-              const delivery = getDeliveryDate(ticket);
-              const goodReceive = getGoodReceiveDate(ticket);
               return [
                 clean(line["Ticket ID"]),
                 ticket.Status || ticket["Status"] || "",
@@ -6157,8 +6178,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
                 ticket["Ticket Type"] || line["Ticket Type"] || "",
                 ticket["Created On"] || ticket.CreatedOn || line["Created On"] || "",
                 ticket["Claim Approved On"] || ticket["Claim Approved Date"] || ticket["Approved On"] || line["Claim Approved On"] || "",
-                delivery.date ? dateKeyFromDate(delivery.date) : "",
-                goodReceive.date ? dateKeyFromDate(goodReceive.date) : "",
                 ticket["Posting Date"] || line["Posting Date"] || "",
                 normalizePoForDisplay(line["ERP Purchase Order"] || line["ERP Purchase Order ID"] || line["Purchase Order"] || ""),
                 asNumber(line["Preferred Line Cost (AUD)"]) || "",
@@ -6179,7 +6198,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         {
           name:"Top Components",
           rows:[
-            ["Field","Part Category","Unique Tickets","Component Lines","PO Line Price AUD","Avg Time to Repair Claim Days","Main Shipment Batch","Main Shipment Batch Tickets","Main Shipment Batch Share"],
+            ["Field","Part Category","Unique Tickets","Component Lines","PO Line Price AUD"],
             ...componentSummaryRows,
           ],
         },
@@ -6702,7 +6721,19 @@ ${worksheets}
   }
 
   async function loadAll(forceRefresh=false){
-    const cacheVersion = await analysisPageVersion();
+    const cacheVersionPromise = analysisPageVersion();
+    if(ANALYSIS_PAGE_CACHE_ENABLED && !forceRefresh){
+      try{
+        if(await restoreFastAnalysisPageCache(cacheVersionPromise))return;
+      }catch(e){console.warn("Fast analysis page cache restore failed",e);}
+    }
+    let cacheVersion = "";
+    try{
+      cacheVersion = await withTimeout(cacheVersionPromise,2500,"Analysis cache version request");
+    }catch(e){
+      console.warn("Analysis cache version request skipped for startup",e);
+      cacheVersion = "";
+    }
     state.analysisCacheVersion = cacheVersion || "";
     if(ANALYSIS_PAGE_CACHE_ENABLED && !forceRefresh){
       try{
@@ -6717,7 +6748,10 @@ ${worksheets}
     let overlayFailSafe=null;
     if (overlay) {
       overlay.classList.add("show");
-      overlayFailSafe=setTimeout(()=>overlay.classList.remove("show"),ANALYSIS_TIMEOUT_MS+5000);
+      overlayFailSafe=setTimeout(()=>{
+        if (overlayTitle) overlayTitle.textContent = "Still preparing analysis...";
+        if (overlaySub) overlaySub.textContent = "Large parts datasets can take a moment on first load. Cached views open faster after this completes.";
+      },ANALYSIS_TIMEOUT_MS+5000);
     }
     if (appShell) appShell.classList.add("blurWhileLoading");
     if (overlayTitle) overlayTitle.textContent = "Loading analysis...";
@@ -6735,12 +6769,8 @@ ${worksheets}
       const partsCostPromise = loadPartsTicketCosts();
       await partsSummaryPromise;
       await warrantyMonthlyPromise;
-      if (overlayFailSafe) {
-        clearTimeout(overlayFailSafe);
-        overlayFailSafe = null;
-      }
-      if (overlay) overlay.classList.remove("show");
-      if (appShell) appShell.classList.remove("blurWhileLoading");
+      if (overlayTitle) overlayTitle.textContent = "Building component preview...";
+      if (overlaySub) overlaySub.textContent = "Preparing ticket merge and component trend summaries...";
       await approvedCostPromise;
       await partsCostPromise;
       await loadVehicleBaseSummary();

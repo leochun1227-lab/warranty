@@ -1,0 +1,44 @@
+{
+  "ekko_ekpo": [
+    {
+      "PO": "7000013310",
+      "PO Created": "20250822",
+      "Document Date": "20250822",
+      "Purchasing Org": "3111",
+      "Purchasing Group": "E06",
+      "Company Code": "3110",
+      "Vendor": "0000200033",
+      "Vendor Name": "GREEN RV PTY LTD",
+      "Item": "00010",
+      "Short Text": "SRC243285",
+      "Material": "",
+      "Plant": "3111",
+      "Net Value": 2727.27,
+      "Qty": 1.0,
+      "UoM": "EA",
+      "Deletion Indicator": ""
+    }
+  ],
+  "ekbe": [
+    {
+      "PO": "7000013310",
+      "Item": "00010",
+      "PO History Category": "E",
+      "Document": "5000117206",
+      "Posting Date": "20250902",
+      "Movement Type": "101",
+      "Debit Credit": "S",
+      "Amount": 2727.27
+    },
+    {
+      "PO": "7000013310",
+      "Item": "00010",
+      "PO History Category": "Q",
+      "Document": "5105634640",
+      "Posting Date": "20250902",
+      "Movement Type": "",
+      "Debit Credit": "S",
+      "Amount": 2727.0
+    }
+  ]
+}
