@@ -9049,10 +9049,10 @@ async function loadFreshTeamDashboard(cacheVersion,{showLoading=false,cacheVersi
   activeClaim=chooseActiveClaimAfterTeamRefresh(previousClaim);
   pageElementAdjustStore=loadPageElementAdjustLocal();
   if(showLoading)hideCalcFloat(Math.max(60,Math.min(350,400-performance.now()+started)));
-  renderAll();
+  renderAllWithLoading("Loading dashboard details...");
   if(typeof scheduleReapplyAll==="function")scheduleReapplyAll();
   if(!hasFullEmployeeAnalytics()){
-    loadEmployeeAnalytics().then(v=>{employeeAnalytics=v;renderAll();}).catch(()=>null);
+    loadEmployeeAnalytics().then(v=>{employeeAnalytics=v;renderAllWithLoading("Loading dashboard details...");}).catch(()=>null);
   }
   const versionReady=resolveDashboardCacheVersion(cacheVersion,cacheVersionPromise);
   versionReady.then(version=>{
@@ -9061,7 +9061,7 @@ async function loadFreshTeamDashboard(cacheVersion,{showLoading=false,cacheVersi
     saveTeamPageState(version);
   });
   loadPageElementAdjustRemote().then(()=>{
-    renderAll();
+    renderAllWithLoading("Loading dashboard details...");
     if(typeof scheduleReapplyAll==="function")scheduleReapplyAll();
     versionReady.then(version=>saveTeamPageState(version));
   }).catch(()=>{});
@@ -9087,9 +9087,9 @@ async function load(){
   const cachedRecord=await readTeamPageCacheRecord();
   if(cachedRecord&&restoreTeamPageState(cachedRecord.value,cachedRecord.version||"")){
     showCalcFloat(true,"Refreshing dashboard details...");
-    renderAll();
+    renderAllWithLoading("Refreshing dashboard details...");
     if(!hasFullEmployeeAnalytics()){
-      loadEmployeeAnalytics().then(v=>{employeeAnalytics=v;renderAll();}).catch(()=>null);
+      loadEmployeeAnalytics().then(v=>{employeeAnalytics=v;renderAllWithLoading("Refreshing dashboard details...");}).catch(()=>null);
     }
     hideCalcFloat(120);
     refreshCachedTeamAfterVersion(versionPromise,cachedRecord.version||"");

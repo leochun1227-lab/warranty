@@ -344,6 +344,8 @@ FIREBASE_SA_PATH = os.getenv(
 )
 FIREBASE_ROOT = os.getenv("FIREBASE_ROOT", "c4cTickets_test")
 MONITOR_ROOT = os.getenv("MONITOR_ROOT", "ctmTicketStatusMonitorV44")
+RECALL_CLAIMS_TICKET_TYPE = "Z011"
+RECALL_CLAIMS_TABLE_PATH = "recallClaim"
 DEFAULT_ACTIVE_EMPLOYEES = [
     "Mark Bertoncini",
     "Leanne Pulford",
@@ -1381,6 +1383,118 @@ def build_new_snapshot() -> Tuple[Dict[str, Any], int]:
             )
 
     return new_snapshot, total_rows
+
+
+def _first_ticket_value(ticket_data: Dict[str, Any], candidates: Iterable[str]) -> Any:
+    normalized = {compact_lookup_key(k): k for k in (ticket_data or {}).keys()}
+    for candidate in candidates:
+        if candidate in ticket_data:
+            value = norm(ticket_data.get(candidate))
+            if as_clean_str(value):
+                return value
+        key = normalized.get(compact_lookup_key(candidate))
+        if key:
+            value = norm(ticket_data.get(key))
+            if as_clean_str(value):
+                return value
+    return ""
+
+
+def _recall_claim_field_group(ticket_data: Dict[str, Any], fields: Dict[str, List[str]]) -> Dict[str, Any]:
+    return {name: _first_ticket_value(ticket_data, candidates) for name, candidates in fields.items()}
+
+
+def build_recall_claims_payload(new_snapshot: Dict[str, Any]) -> Dict[str, Any]:
+    product_fields = {
+        "product": ["Product", "ProductName", "RegisteredProduct", "Registered Product"],
+        "description": ["Description", "ProductDescription", "Product Description"],
+        "serialId": ["SerialID", "Serial ID", "Serial"],
+        "productId": ["ProductCode", "Product ID", "RegisteredProductCode", "Registered Product Code"],
+        "warranty": ["Warranty", "WarrantyDuration", "Warranty Duration"],
+        "warrantyFrom": ["WarrantyFrom", "Warranty From"],
+        "warrantyTo": ["WarrantyTo", "Warranty To"],
+        "dateOfPurchase": ["DateOfPurchase", "Date of Purchase", "PurchaseDate"],
+        "chassisNumber": ["ChassisNumber", "Chassis Number", "VIN"],
+        "brand": ["Brand"],
+        "dealershipPurchasedFrom": ["Dealership Purchased from", "DealershipPurchasedFrom", "DealerName", "Dealer Name"],
+        "modelSalesforce": ["Model (SalesForce)", "ModelSalesForce", "Model"],
+    }
+    customer_fields = {
+        "customer": ["Customer", "CustomerName", "AccountName", "Account", "ServiceRequesterName", "TicketName"],
+        "address": ["Address", "CustomerAddress", "ServiceRequesterAddress"],
+        "mobile": ["Mobile", "ServiceRequesterMobile", "Service Requester Mobile"],
+        "phone": ["Phone", "ServiceRequesterPhone", "Service Requester Phone"],
+        "email": ["E-Mail", "Email", "ServiceRequesterEmail", "Service Requester Email"],
+        "serviceRequesterFirstName": ["Service Requester First Name", "ServiceRequesterFirstName"],
+        "serviceRequesterLastName": ["Service Requester Last Name", "ServiceRequesterLastName"],
+        "serviceRequesterPhone": ["Service Requester Phone", "ServiceRequesterPhone"],
+        "serviceRequesterPostalCode": ["Service Requester Postal Code", "ServiceRequesterPostalCode", "PostalCode"],
+    }
+    pricing_fields = {
+        "claimTotalAmount": ["ClaimTotalAmount", "Claim Total Amount", "AmountIncludingTax"],
+        "amountIncludingTax": ["AmountIncludingTax", "Amount Including Tax"],
+        "currency": ["Currency", "TransactionCurrency", "CurrencyCode"],
+    }
+
+    tickets: Dict[str, Any] = {}
+    for ticket_id_raw, node in (new_snapshot or {}).items():
+        ticket_data = (node or {}).get("ticket", {}) if isinstance(node, dict) else {}
+        if not isinstance(ticket_data, dict):
+            continue
+
+        ticket_type = as_clean_str(
+            _first_ticket_value(ticket_data, ["TicketType", "Ticket Type", "ProcessType", "TypeCode"])
+        )
+        if (ticket_type or "").upper() != RECALL_CLAIMS_TICKET_TYPE:
+            continue
+
+        ticket_id = (
+            as_clean_str(_first_ticket_value(ticket_data, ["TicketID", "Ticket ID"]))
+            or as_clean_str(ticket_id_raw)
+            or ""
+        )
+        ticket_key = sanitize_fb_key(ticket_id)
+        if not ticket_key:
+            continue
+
+        tickets[ticket_key] = {
+            "ticketId": ticket_id,
+            "ticketType": ticket_type,
+            "ticketTypeText": _first_ticket_value(ticket_data, ["TicketTypeText", "Ticket Type Text", "Ticket Type"]),
+            "statusCode": _first_ticket_value(ticket_data, ["TicketStatus", "StatusCode", "Status"]),
+            "statusText": _first_ticket_value(ticket_data, ["TicketStatusText", "Status Text", "Status"]),
+            "createdOn": _first_ticket_value(ticket_data, ["CreatedOn", "Created On"]),
+            "changedOn": _first_ticket_value(ticket_data, ["ChangeOnDateTime", "ChangedOn", "Changed On"]),
+            "product": _recall_claim_field_group(ticket_data, product_fields),
+            "customer": _recall_claim_field_group(ticket_data, customer_fields),
+            "pricingData": _recall_claim_field_group(ticket_data, pricing_fields),
+            "ticket": ticket_data,
+            "roles": (node or {}).get("roles", {}) if isinstance(node, dict) else {},
+            "syncedAt": iso_utc_now(),
+        }
+
+    return {
+        "meta": {
+            "ticketType": RECALL_CLAIMS_TICKET_TYPE,
+            "tableName": "Recall Claims Tickets",
+            "source": "C4C ticket snapshot",
+            "sourceRoot": FIREBASE_ROOT,
+            "count": len(tickets),
+            "syncedAt": iso_utc_now(),
+        },
+        "tickets": tickets,
+    }
+
+
+def upload_recall_claims_to_firebase(new_snapshot: Dict[str, Any]) -> None:
+    payload = build_recall_claims_payload(new_snapshot)
+    db.reference(RECALL_CLAIMS_TABLE_PATH).set(payload)
+    logger.info(
+        "Wrote Recall Claims Tickets to Firebase path %s (type=%s, tickets=%s)",
+        RECALL_CLAIMS_TABLE_PATH,
+        RECALL_CLAIMS_TICKET_TYPE,
+        payload.get("meta", {}).get("count", 0),
+    )
 
 
 def find_erp_free_order(ticket_data: Dict[str, Any]) -> Optional[str]:
@@ -4080,10 +4194,15 @@ def rebuild_ticket_timeline_export_after_fetch() -> None:
 
 
 # =================== Main ===================
+def recall_claims_only_requested() -> bool:
+    return "--recall-claims-only" in sys.argv[1:]
+
+
 def main():
     if not USERNAME or not PASSWORD:
         raise SystemExit("è¯·å…ˆè®¾ç½® C4C_USERNAME / C4C_PASSWORD")
-    if "YOUR_USER" in SAP_HANA_DSN or "YOUR_PASSWORD" in SAP_HANA_DSN:
+    recall_only = recall_claims_only_requested()
+    if not recall_only and ("YOUR_USER" in SAP_HANA_DSN or "YOUR_PASSWORD" in SAP_HANA_DSN):
         raise SystemExit("è¯·å…ˆè®¾ç½® SAP_HANA_DSN")
 
     total_started = time.time()
@@ -4096,9 +4215,18 @@ def main():
     logger.info("C4C total API rows processed: %s", total_rows)
     logger.info("C4C total unique TicketIDs: %s", len(new_snapshot))
 
+    if recall_only:
+        logger.info("Recall Claims only mode: writing type %s tickets to %s and exiting.", RECALL_CLAIMS_TICKET_TYPE, RECALL_CLAIMS_TABLE_PATH)
+        firebase_init()
+        upload_recall_claims_to_firebase(new_snapshot)
+        close_thread_session()
+        logger.info("Recall Claims only mode done. Total elapsed: %.1fs", time.time() - total_started)
+        return
+
     logger.info("Step 2/9: Initializing Firebase and loading previous sync snapshot ...")
     firebase_init()
     seed_employee_directory()
+    upload_recall_claims_to_firebase(new_snapshot)
     old_hashes = load_old_ticket_hashes()
     logger.info("Previous synced TicketIDs in hash snapshot: %s", len(old_hashes))
 
