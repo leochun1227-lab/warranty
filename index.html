@@ -4119,7 +4119,7 @@ body{
           <div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Tickets in Progress Completion Within 14 Days</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div>
         </section>
         <section class="trendLogGrid">
-          <section class="panel trendPanel"><button id="ticketMovementExportBtn" class="trendMovementExportBtn" type="button" title="Export Ticket Movement detail to Excel" aria-label="Export Ticket Movement detail to Excel"></button><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Ticket Movement</h2><span id="ticketMovementExportSpinner" class="titleInlineSpinner" aria-hidden="true"></span></div></div></div><div class="chartWrap"><div class="trendChartLayout"><div class="trendCanvasWrap"><canvas id="trendChart"></canvas></div><div id="trendSideSummary" class="trendSideSummary"></div></div></div><div class="panelDesc trendCreatedNote" id="trendCreatedNote"></div></section>
+          <section class="panel trendPanel"><button id="ticketMovementExportBtn" class="trendMovementExportBtn" type="button" title="Export Ticket Movement detail to CSV" aria-label="Export Ticket Movement detail to CSV"></button><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Ticket Movement</h2><span id="ticketMovementExportSpinner" class="titleInlineSpinner" aria-hidden="true"></span></div></div></div><div class="chartWrap"><div class="trendChartLayout"><div class="trendCanvasWrap"><canvas id="trendChart"></canvas></div><div id="trendSideSummary" class="trendSideSummary"></div></div></div><div class="panelDesc trendCreatedNote" id="trendCreatedNote"></div></section>
           <section id="repair-analytics" class="panel criticalLogPanel repairCostPanel"><div class="panelTitleRow"><h2 class="panelTitle">Employee Workload</h2><button id="employeeWorkloadExportBtn" class="summaryExportBtn" type="button" title="Export Removed, Tickets in Progress, Approved, and Unapproved tickets to Excel" aria-label="Export Removed, Tickets in Progress, Approved, and Unapproved tickets to Excel"></button><span class="dateNote" data-date-note>through --</span></div><div class="employeeWorkloadMetricBlock"><div class="teamAssignHeadTools"><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed from Critical</span><span><i style="background:#4f46e5"></i>Tickets in Progress</span></div></div></section>
         </section>
         <section class="dashboardAnalysisGrid trendSupportGrid"><div class="panel statusMixPanel"><div class="panelTitleRow"><h2 class="panelTitle">Tickets in Progress Remaining Status Mix</h2></div><div id="statusMix" class="mixRows"></div></div><div class="panel speedPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Tickets in Progress Remaining Duration Distribution</h2></div></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel repairCostDistributionPanel"><div class="panelTitleRow"><h2 class="panelTitle">Approved Repair Cost Distribution</h2></div><div id="criticalLogRows" class="statusPieLayout repairCostPie"></div></div></section>
@@ -5578,6 +5578,12 @@ function ticketMovementDisplayRemovedTotal(bridge){
   if(decisionTotal>0)return decisionTotal;
   return Number(bridge&&bridge.removed||0);
 }
+function ticketMovementBalancedAddedTotal(bridge,removedTotal){
+  const opening=Number(bridge&&bridge.opening||0);
+  const ending=Number(bridge&&bridge.ending||0);
+  const removed=Number((removedTotal??ticketMovementDisplayRemovedTotal(bridge))||0);
+  return ending+removed-opening;
+}
 function createdTicketsForSelectedMonthFallback(){
   const month=selectedDashboardMonth();
   const row=arrayFromMaybe(currentView().claimCreatedMonthly).find(item=>clean(item.month)===month);
@@ -5637,6 +5643,7 @@ function ticketMovementBridgeTrendPoints(start,end){
   if(!start||!end||end<start)return [];
   const fullBridge=ticketMovementBridge(start,end);
   const displayRemovedTotal=ticketMovementDisplayRemovedTotal(fullBridge);
+  const displayAddedTotal=ticketMovementBalancedAddedTotal(fullBridge,displayRemovedTotal);
   const bridgeRemovedTotal=Number(fullBridge.removed||0);
   const openingDate=fullBridge.openingDate||addDaysISO(start,-1);
   const rows=[{
@@ -5661,19 +5668,20 @@ function ticketMovementBridgeTrendPoints(start,end){
     const bridge=ticketMovementBridge(start,d);
     const rawRemoved=Number(bridge.removed||0);
     const displayRemoved=(d===end)?displayRemovedTotal:(displayRemovedTotal&&bridgeRemovedTotal?Math.round(displayRemovedTotal*(rawRemoved/bridgeRemovedTotal)):rawRemoved);
+    const displayAdded=(d===end)?displayAddedTotal:ticketMovementBalancedAddedTotal(bridge,displayRemoved);
     rows.push({
       date:d,
       periodStart:start,
       periodEnd:d,
       criticalTotal:Number(bridge.ending||0),
-      enteredCritical:Number(bridge.addedToWaiting||0),
+      enteredCritical:displayAdded,
       exitedCritical:displayRemoved,
       newCreatedTickets:Number(bridge.newClaims||0),
       reenteredTickets:Number(bridge.reentered||0),
       approvedRemoved:Number(bridge.approvedRemoved||0),
       unapprovedRemoved:Number(bridge.unapprovedRemoved||0),
       otherReview:Number(bridge.otherReview||0),
-      formulaDifference:Number(bridge.formulaDifference||0),
+      formulaDifference:Number(bridge.opening||0)+displayAdded-displayRemoved-Number(bridge.ending||0),
       bridgeCumulative:true,
       granularity:"daily"
     });
@@ -5683,8 +5691,8 @@ function ticketMovementBridgeTrendPoints(start,end){
 function selectedTrend(){
   const view=currentView();
   const from=$("dateFrom").value,to=$("dateTo").value;
-  if(activePeriod!=="day"&&ticketMovementFallbackDetailsReady()){
-    const bounds=periodBounds();
+  const bounds=periodBounds();
+  if(activePeriod!=="day"&&(ticketMovementFallbackDetailsReady()||precomputedTicketMovementBridge(bounds.start,bounds.end))){
     return ticketMovementBridgeTrendPoints(bounds.start,bounds.end);
   }
   const granularity=avgCostGranularity(from||earliestDateForView(),to||latestDateForView());
@@ -5728,16 +5736,17 @@ function updateTrendPanelCopy(){
   const cumulativePoints=cumulativeTrendPoints(trendPoints);
   const lastRaw=trendPoints.slice(-1)[0]||{};
   const last=cumulativePoints.slice(-1)[0]||{};
-  const newTickets=Number(last.cumulativeEnteredCritical||last.newCreatedTickets||0);
   const ending=remainingTotalForSnapshot();
   const removed=ticketMovementDisplayRemovedTotal(bridge)||Number(last.cumulativeExitedCritical||last.exitedCritical||0);
+  const remaining=Number(lastRaw.criticalTotal||last.criticalTotal||ending||0);
+  const newTickets=ticketMovementBalancedAddedTotal({...bridge,ending:remaining},removed);
   const sideSummary=$("trendSideSummary");
   if(sideSummary){
     const snapshotText=selectedSnapshotText();
     sideSummary.innerHTML=`<div class="trendSideDate">On ${esc(snapshotText)}</div>`+[
       {cls:"added",label:"Added to Waiting",value:newTickets},
       {cls:"removed",label:"Removed",value:removed},
-      {cls:"remaining",label:"In Progress Remaining",value:Number(lastRaw.criticalTotal||last.criticalTotal||ending||0)}
+      {cls:"remaining",label:"In Progress Remaining",value:remaining}
     ].map(item=>`<div class="trendSideStat ${item.cls}"><span><i class="trendSideMiniDot"></i><span class="trendSideLabelText">${esc(item.label)}</span></span><b>${esc(num(item.value))}</b></div>`).join("");
   }
   const createdNote=$("trendCreatedNote");
@@ -7473,6 +7482,35 @@ ${valid.map(sheet=>`<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name))}
   a.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
+function csvEscapeValue(v){
+  const value=exportCellValue(v).replace(/\r?\n/g," ");
+  return /[",\r\n]/.test(value)?`"${value.replace(/"/g,'""')}"`:value;
+}
+function exportCsvRows(rows,filename){
+  const valid=(rows||[]).filter(row=>Array.isArray(row)&&row.length);
+  if(!valid.length){alert("No export data found for the selected filters.");return;}
+  const csv=valid.map(row=>row.map(csvEscapeValue).join(",")).join("\r\n");
+  const blob=new Blob(["\uFEFF",csv],{type:"text/csv;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=filename.endsWith(".csv")?filename:`${filename}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function exportSheetsAsCsv(sheets,filename){
+  const valid=(sheets||[]).filter(sheet=>sheet&&sheet.rows&&sheet.rows.length);
+  const rows=[];
+  valid.forEach(sheet=>{
+    const sheetName=clean(sheet.name)||"Sheet";
+    sheet.rows.forEach((row,index)=>{
+      rows.push([index===0?"Section":sheetName].concat(row||[]));
+    });
+  });
+  exportCsvRows(rows,filename);
+}
 function exportDateSuffix(){
   const {start,end}=periodBounds();
   return start&&end&&start!==end?`${start}_to_${end}`:(end||new Date().toISOString().slice(0,10));
@@ -7914,7 +7952,7 @@ function exportTicketMovementDetails(e){
       if(addedRows.length)sheets.push(ticketExportSheet("Added to Waiting",addedRows,["Period","Period Start","Period End","Added Source","Created On"],row=>[label,start,end,row.movementSource,row.created||""]));
       if(removedRows.length)sheets.push(ticketExportSheet("Removed",removedRows,["Other Flag","Period","Period Start","Period End","Removed Bucket","Other Reason","Exit Date","Exit From","Exit To","Re-enter Date","Re-enter To","Formula Role"],row=>[row.flag||"",label,start,end,row.removedBucket||"Other",row.reason||"",row.exitDate||"",row.exitFrom||"",row.exitTo||"",row.reenterDate||"",row.reenterTo||"","Removed"]));
       if(remainingRows.length)sheets.push(ticketExportSheet("In Progress Remaining",remainingRows,["Period","Snapshot Date","Boundary Grace"],row=>[label,end,row.boundaryGrace||""]));
-      exportWorkbook(sheets,`ticket-movement-detail-${selectedDashboardMonth()}-${exportDateSuffix()}.xls`);
+      exportSheetsAsCsv(sheets,`ticket-movement-detail-${selectedDashboardMonth()}-${exportDateSuffix()}.csv`);
     }catch(err){
       console.error("Ticket Movement export failed",err);
       alert(`Ticket Movement export failed: ${err&&err.message?err.message:err}`);
