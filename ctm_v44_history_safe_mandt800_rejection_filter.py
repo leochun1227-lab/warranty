@@ -67,6 +67,7 @@ PO_CLAIM_SANITY_MIN_PO_AUD = float(os.getenv("PO_CLAIM_SANITY_MIN_PO_AUD", "5000
 PO_CLAIM_SANITY_RATIO = float(os.getenv("PO_CLAIM_SANITY_RATIO", "10"))
 IN_FIELD_KEYWORDS = ["in field", "in-field", "infield", "field warranty"]
 PRE_DELIVERY_KEYWORDS = ["pre delivery", "pre-delivery", "predelivery"]
+RECALL_CLAIMS_TICKET_TYPE = "Z011"
 CLAIM_TYPE_SEARCH_FIELDS = [
     "claimType", "ClaimType", "Claim Type",
     "ticketClaimType", "TicketClaimType",
@@ -855,11 +856,25 @@ def normalized_claim_type(v: Any) -> str:
     s = normalize_claim_text(v)
     if not s:
         return ""
+    if s == "z011" or matches_claim_keyword(s, ["recall claim", "recall claims"]):
+        return ""
     if matches_claim_keyword(s, PRE_DELIVERY_KEYWORDS):
         return "Pre Delivery Warranty Claims"
     if matches_claim_keyword(s, IN_FIELD_KEYWORDS):
         return "In Field Warranty Claims"
     return ""
+
+
+def is_recall_claim_ticket(ticket: Dict[str, Any]) -> bool:
+    if not isinstance(ticket, dict):
+        return False
+    code = clean(
+        get_field(ticket, ["TicketType", "Ticket Type", "ProcessType", "TypeCode", "ticketType"])
+    ).upper()
+    text = normalize_claim_text(
+        get_field(ticket, ["TicketTypeText", "Ticket Type Text", "ClaimType", "Claim Type", "ticketTypeText"])
+    )
+    return code == RECALL_CLAIMS_TICKET_TYPE or matches_claim_keyword(text, ["recall claim", "recall claims"])
 
 
 def ticket_claim_search_text(ticket: Dict[str, Any]) -> str:
@@ -879,6 +894,8 @@ def ticket_has_pdi_claim(ticket: Dict[str, Any]) -> bool:
 
 
 def ticket_claim_type(ticket: Dict[str, Any]) -> str:
+    if is_recall_claim_ticket(ticket):
+        return ""
     search_text = ticket_claim_search_text(ticket)
     if not search_text:
         return ""
@@ -1945,12 +1962,23 @@ def build_dealer_analytics(
 
     def row_matches_claim(t: Dict[str, Any], label: str) -> bool:
         if label == "All Claims":
-            return True
+            return bool(clean(t.get("claim")))
         return clean(t.get("claim")) == label
 
     def event_matches_claim(e: Dict[str, Any], t: Optional[Dict[str, Any]], label: str) -> bool:
         if label == "All Claims":
-            return True
+            if isinstance(t, dict) and t:
+                return bool(clean(t.get("claim")))
+            return bool(normalized_claim_type(
+                e.get("claimType")
+                or e.get("ClaimType")
+                or e.get("ticketClaimType")
+                or e.get("TicketClaimType")
+                or e.get("TicketTypeText")
+                or e.get("TicketType")
+                or e.get("processType")
+                or e.get("ProcessType")
+            ))
         # Prefer the current ticket snapshot when we have it. It uses the same
         # C4C claim extraction as the tickets table, so the dealer view, log and
         # parts view all switch consistently.
@@ -2197,12 +2225,12 @@ def build_employee_analytics(
 
     def ticket_matches(t: Dict[str, Any], label: str) -> bool:
         if label == "All Claims":
-            return True
+            return bool(clean(t.get("claimType")))
         return clean(t.get("claimType")) == label
 
     def event_matches(e: Dict[str, Any], label: str) -> bool:
         if label == "All Claims":
-            return True
+            return bool(_event_claim_type(e, ticket_by_id))
         return _event_claim_type(e, ticket_by_id) == label
 
     def build_view(label: str) -> Dict[str, Any]:
@@ -3015,10 +3043,16 @@ def _build_team_view(
         return out
 
     def ticket_matches(t: Dict[str, Any]) -> bool:
-        return (not claim_filter) or clean(t.get("claimType")) == claim_filter
+        claim_type = clean(t.get("claimType")) or ticket_claim_type(t)
+        if not claim_filter:
+            return bool(claim_type)
+        return claim_type == claim_filter
 
     def event_matches(e: Dict[str, Any]) -> bool:
-        return (not claim_filter) or _event_claim_type(e, ticket_by_id) == claim_filter
+        claim_type = _event_claim_type(e, ticket_by_id)
+        if not claim_filter:
+            return bool(claim_type)
+        return claim_type == claim_filter
 
     def approved_rows_for_range(start: str, end: str) -> list[Dict[str, Any]]:
         rows_by_key: Dict[str, Dict[str, Any]] = {}

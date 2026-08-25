@@ -4120,7 +4120,7 @@ body{
         </section>
         <section class="trendLogGrid">
           <section class="panel trendPanel"><button id="ticketMovementExportBtn" class="trendMovementExportBtn" type="button" title="Export Ticket Movement detail to CSV" aria-label="Export Ticket Movement detail to CSV"></button><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Ticket Movement</h2><span id="ticketMovementExportSpinner" class="titleInlineSpinner" aria-hidden="true"></span></div></div></div><div class="chartWrap"><div class="trendChartLayout"><div class="trendCanvasWrap"><canvas id="trendChart"></canvas></div><div id="trendSideSummary" class="trendSideSummary"></div></div></div><div class="panelDesc trendCreatedNote" id="trendCreatedNote"></div></section>
-          <section id="repair-analytics" class="panel criticalLogPanel repairCostPanel"><div class="panelTitleRow"><h2 class="panelTitle">Employee Workload</h2><button id="employeeWorkloadExportBtn" class="summaryExportBtn" type="button" title="Export Removed, Tickets in Progress, Approved, and Unapproved tickets to Excel" aria-label="Export Removed, Tickets in Progress, Approved, and Unapproved tickets to Excel"></button><span class="dateNote" data-date-note>through --</span></div><div class="employeeWorkloadMetricBlock"><div class="teamAssignHeadTools"><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed from Critical</span><span><i style="background:#4f46e5"></i>Tickets in Progress</span></div></div></section>
+          <section id="repair-analytics" class="panel criticalLogPanel repairCostPanel"><div class="panelTitleRow"><h2 class="panelTitle">Employee Workload</h2><button id="employeeWorkloadExportBtn" class="summaryExportBtn" type="button" title="Export Removed, Tickets in Progress, Approved, and Unapproved tickets to CSV" aria-label="Export Removed, Tickets in Progress, Approved, and Unapproved tickets to CSV"></button><span class="dateNote" data-date-note>through --</span></div><div class="employeeWorkloadMetricBlock"><div class="teamAssignHeadTools"><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed from Critical</span><span><i style="background:#4f46e5"></i>Tickets in Progress</span></div></div></section>
         </section>
         <section class="dashboardAnalysisGrid trendSupportGrid"><div class="panel statusMixPanel"><div class="panelTitleRow"><h2 class="panelTitle">Tickets in Progress Remaining Status Mix</h2></div><div id="statusMix" class="mixRows"></div></div><div class="panel speedPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Tickets in Progress Remaining Duration Distribution</h2></div></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel repairCostDistributionPanel"><div class="panelTitleRow"><h2 class="panelTitle">Approved Repair Cost Distribution</h2></div><div id="criticalLogRows" class="statusPieLayout repairCostPie"></div></div></section>
       </div>
@@ -4547,8 +4547,22 @@ function approvalCostWasSanityOverridden(row,cost){
   const claim=currentClaimAmountForCostSanity(row);
   return Number.isFinite(amount)&&amount>=APPROVED_COST_SANITY_MIN_AUD&&claim>0&&amount/claim>=APPROVED_COST_SANITY_RATIO;
 }
-function logClaimKey(e){const direct=clean(e.claimKey||e.claim||e.claimTypeKey);if(direct)return direct;const text=clean(e.claimType||e.ticketType||e.TicketTypeText).toLowerCase();if(text.includes("pre delivery"))return "preDelivery";if(text.includes("in field"))return "inField";const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);return entry?claimKeyForTicket(entry.ticket):"all"}
-function logMatchesClaim(e){return activeClaim==="all"||logClaimKey(e)===activeClaim}
+function isRecallClaimTicket(ticket){
+  const code=clean(getField(ticket||{},["TicketType","Ticket Type","ProcessType","TypeCode","ticketType"])).toUpperCase();
+  const text=clean(getField(ticket||{},["TicketTypeText","Ticket Type Text","ClaimType","Claim Type","ticketTypeText"])).toLowerCase();
+  return code==="Z011" || /\brecall claims?\b/.test(text);
+}
+function logClaimKey(e){
+  if(isRecallClaimTicket(e))return "";
+  const direct=canonicalClaimKey(clean(e.claimKey||e.claim||e.claimTypeKey));
+  if(direct==="inField"||direct==="preDelivery")return direct;
+  const text=clean(e.claimType||e.ticketType||e.TicketTypeText).toLowerCase();
+  if(text.includes("pre delivery"))return "preDelivery";
+  if(text.includes("in field"))return "inField";
+  const entry=ticketEntryById(e.id||e.ticketId||e.TicketID);
+  return entry?claimKeyForTicket(entry.ticket):"";
+}
+function logMatchesClaim(e){const key=logClaimKey(e);return activeClaim==="all"?!!key:key===activeClaim}
 function approvalRowAmountValue(row){
   const candidates=[
     row&&row.exportAmount,
@@ -4582,6 +4596,7 @@ function expectedCurrentCriticalTotal(start,end){
   return Number(currentPeriodSummary().criticalNow||0);
 }
 function claimKeyFromRow(row){
+  if(isRecallClaimTicket(row))return "";
   const direct=canonicalClaimKey(clean(row&&(
     row.claimKey||row.claimTypeKey||row.claimType||row.claim||row.ticketType||row.TicketTypeText
   )));
@@ -4662,11 +4677,17 @@ function bindKpiClickTip(el,html){
   el.onmouseleave=null;
   el.onclick=e=>{e.preventDefault();e.stopPropagation();tip.innerHTML=html;tip.style.display="block";tip.style.left=(e.clientX+14)+"px";tip.style.top=(e.clientY+14)+"px";};
 }
-function rawTotalTickets(start,end){if(!rawTicketEntries.length)return null;let total=0;rawTicketEntries.forEach(({ticket})=>{const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);if(!created||created<start||created>end)return;if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;total++;});return total}
-function rawCurrentTotalTickets(){if(!rawTicketEntries.length)return null;let total=0;rawTicketEntries.forEach(({ticket})=>{if(activeClaim!=="all"&&claimKeyForTicket(ticket)!==activeClaim)return;total++;});return total}
+function rawTotalTickets(start,end){if(!rawTicketEntries.length)return null;let total=0;rawTicketEntries.forEach(({ticket})=>{const created=dateKey(ticket.CreatedOn||ticket.createdOn||ticket.CreatedAt);if(!created||created<start||created>end)return;const key=claimKeyForTicket(ticket);if(!key)return;if(activeClaim!=="all"&&key!==activeClaim)return;total++;});return total}
+function rawCurrentTotalTickets(){if(!rawTicketEntries.length)return null;let total=0;rawTicketEntries.forEach(({ticket})=>{const key=claimKeyForTicket(ticket);if(!key)return;if(activeClaim!=="all"&&key!==activeClaim)return;total++;});return total}
 function claimTypeLabelForTicket(ticket){return clean(getField(ticket,["TicketTypeText","Ticket Type Text","TicketType","Ticket Type","ClaimType","Claim Type"]))}
 function claimTypeLabelFromTicketId(id){const entry=ticketEntryById(id);return entry?claimTypeLabelForTicket(entry.ticket):""}
-function claimKeyForTicket(ticket){const raw=claimTypeLabelForTicket(ticket).toLowerCase();return raw.includes("pre delivery")?"preDelivery":"inField"}
+function claimKeyForTicket(ticket){
+  if(isRecallClaimTicket(ticket))return "";
+  const raw=claimTypeLabelForTicket(ticket).toLowerCase();
+  if(raw.includes("pre delivery"))return "preDelivery";
+  if(raw.includes("in field"))return "inField";
+  return "";
+}
 function rawDealerName(ticket,roles){return clean(getField(ticket,["DealerName","Dealer Name","WarrantyHandlingDealerName","Warranty Handling Dealer Name","Warranty Handling Dealer","RepairerBusinessNameID","Repairer Business Name","Repairer"])||findRoleName(roles,"1001")||ticket.DealerID||ticket.WarrantyHandlingDealerID||"Unknown Dealership")}
 function rawAssignToName(ticket,roles){return clean(getField(ticket,["C4CAssignTo","C4C Assign To","AssignTo","Assign To","Employee","EmployeeName","OwnerName"])||findRoleName(roles,"40")||"Queue Warranty")}
 function isExcludedAssignName(name){const s=clean(name).toLowerCase().replace(/\s+/g,' ').trim();if(!s)return false;if(['admin','admin a b.a.','admin a b.a'].includes(s))return true;if(/^admin\b/.test(s))return true;return s.includes('test')||s.includes('demo')||s.includes('dummy')||s.includes('sample')}
@@ -4675,7 +4696,7 @@ function looseDealerLookupName(v){return clean(v).toLowerCase().replace(/[^a-z0-
 function setDealerKeyLookup(stats){dealerKeyLookup={exact:{},loose:{}};arrayFromMaybe(stats).forEach(x=>{const dealer=clean(x.dealer),key=clean(x.key);if(!dealer||!key)return;[dealer,standardDealerName(dealer)].forEach(name=>{if(!name)return;dealerKeyLookup.exact[name]=key;dealerKeyLookup.loose[looseDealerLookupName(name)]=key;});});}
 function dealerKeyForName(name){const standard=standardDealerName(name);return dealerKeyLookup.exact[name]||dealerKeyLookup.exact[standard]||dealerKeyLookup.loose[looseDealerLookupName(name)]||dealerKeyLookup.loose[looseDealerLookupName(standard)]||""}
 function dealerButtonName(raw,dealerOptions){const mapped=standardDealerName(raw);const loose=s=>clean(s).toLowerCase().replace(/[^a-z0-9]+/g,'');return dealerOptions.find(d=>d===mapped)||dealerOptions.find(d=>loose(d)===loose(mapped))||dealerOptions.find(d=>loose(d)===loose(raw))||""}
-function buildRawCriticalView(rows,dealerOptions,claimKey){const grouped={};let total=0,unmapped=0;rows.forEach(r=>{if(claimKey!=="all"&&r.claimKey!==claimKey)return;total++;const dealer=dealerButtonName(r.dealer,dealerOptions);if(!dealer){unmapped++;return;}grouped[dealer]=(grouped[dealer]||0)+1;});const dealers=Object.entries(grouped).map(([dealer,criticalTickets])=>({dealer,criticalTickets})).sort((a,b)=>b.criticalTickets-a.criticalTickets||a.dealer.localeCompare(b.dealer));return {total,dealers,unmapped}}
+function buildRawCriticalView(rows,dealerOptions,claimKey){const grouped={};let total=0,unmapped=0;rows.forEach(r=>{if(!r.claimKey)return;if(claimKey!=="all"&&r.claimKey!==claimKey)return;total++;const dealer=dealerButtonName(r.dealer,dealerOptions);if(!dealer){unmapped++;return;}grouped[dealer]=(grouped[dealer]||0)+1;});const dealers=Object.entries(grouped).map(([dealer,criticalTickets])=>({dealer,criticalTickets})).sort((a,b)=>b.criticalTickets-a.criticalTickets||a.dealer.localeCompare(b.dealer));return {total,dealers,unmapped}}
 async function loadRawCritical(){
   const [ticketsNode,mapping,dealerIndex]=await Promise.all([
     readJson("c4cTickets_test/tickets"),
@@ -5631,7 +5652,7 @@ function renderClaimButtons(){
   if(!months.includes(activeMonth))activeMonth=defaultDashboardMonth();
   const box=$("claimSwitch");if(!box)return;
   box.className="sidebarFilters";
-  box.innerHTML=`<div class="sidebarFiltersTitle">Filters (Global)</div><label class="sidebarFilterGroup"><span class="sidebarFilterLabel">Month</span><select id="globalDateFilter" class="sidebarFilterSelect">${months.map(month=>`<option value="${esc(month)}" ${month===activeMonth?'selected':''}>${esc(monthDisplayLabel(month))}</option>`).join("")}</select></label><label class="sidebarFilterGroup"><span class="sidebarFilterLabel">Category</span><select id="globalCategoryFilter" class="sidebarFilterSelect">${opts.map(o=>`<option value="${esc(o.key)}" ${o.key===activeClaim?'selected':''}>${esc(o.label)}</option>`).join("")}</select></label><button id="dashboardSummaryExportBtn" class="sidebarExportBtn" type="button" title="Export dashboard summary to Excel"></button>`;
+  box.innerHTML=`<div class="sidebarFiltersTitle">Filters (Global)</div><label class="sidebarFilterGroup"><span class="sidebarFilterLabel">Month</span><select id="globalDateFilter" class="sidebarFilterSelect">${months.map(month=>`<option value="${esc(month)}" ${month===activeMonth?'selected':''}>${esc(monthDisplayLabel(month))}</option>`).join("")}</select></label><label class="sidebarFilterGroup"><span class="sidebarFilterLabel">Category</span><select id="globalCategoryFilter" class="sidebarFilterSelect">${opts.map(o=>`<option value="${esc(o.key)}" ${o.key===activeClaim?'selected':''}>${esc(o.label)}</option>`).join("")}</select></label><button id="dashboardSummaryExportBtn" class="sidebarExportBtn" type="button" title="Export dashboard summary to CSV"></button>`;
   const dateFilter=$("globalDateFilter"),categoryFilter=$("globalCategoryFilter");
   if(dateFilter)dateFilter.onchange=()=>{activeMonth=dateFilter.value||defaultDashboardMonth();activePeriod="month";syncRangeInputsToActivePeriod();renderAllWithLoading()};
   if(categoryFilter)categoryFilter.onchange=()=>{activeClaim=canonicalClaimKey(categoryFilter.value||"all");const nextMonths=availableDashboardMonths();if(!nextMonths.includes(activeMonth))activeMonth=defaultDashboardMonth();syncRangeInputsToActivePeriod();renderAllWithLoading()};
@@ -7511,6 +7532,22 @@ function exportSheetsAsCsv(sheets,filename){
   });
   exportCsvRows(rows,filename);
 }
+function setExportButtonState(btn,active,label="Exporting..."){
+  if(!btn)return;
+  if(active){
+    btn.dataset.exporting="1";
+    btn.disabled=true;
+    if(!btn.dataset.idleHtml)btn.dataset.idleHtml=btn.innerHTML;
+    btn.innerHTML=`${exportIcon()}<span>${esc(label)}</span>`;
+    return;
+  }
+  btn.disabled=false;
+  delete btn.dataset.exporting;
+  if(btn.dataset.idleHtml)btn.innerHTML=btn.dataset.idleHtml;
+}
+function yieldToBrowser(){
+  return new Promise(resolve=>requestAnimationFrame(()=>setTimeout(resolve,0)));
+}
 function exportDateSuffix(){
   const {start,end}=periodBounds();
   return start&&end&&start!==end?`${start}_to_${end}`:(end||new Date().toISOString().slice(0,10));
@@ -7926,9 +7963,10 @@ function exportTicketMovementDetails(e){
     const spinner=$("ticketMovementExportSpinner");
     const btn=(e&&e.currentTarget)||$("ticketMovementExportBtn");
     if(btn&&btn.dataset.exporting==="1")return;
-    if(btn){btn.dataset.exporting="1";btn.disabled=true;}
+    setExportButtonState(btn,true);
     if(spinner)spinner.classList.add("active");
     try{
+      await yieldToBrowser();
       const {start,end}=periodBounds();
       const label=selectedMonthPeriodLabel();
       let bridge=ticketMovementBridge(start,end);
@@ -7937,7 +7975,7 @@ function exportTicketMovementDetails(e){
       let remainingRows=arrayFromMaybe(bridge&&bridge.endingRows);
       if(!addedRows.length&&!removedRows.length&&!remainingRows.length&&needsTicketMovementFallbackDetails(start,end)){
         try{
-          await withTimeout(ensureExportDetailsLoaded(),8000,"Ticket Movement export detail load");
+          await withTimeout(ensureExportDetailsLoaded(),3500,"Ticket Movement export detail load");
           bridge=ticketMovementBridge(start,end);
           addedRows=arrayFromMaybe(bridge&&bridge.newClaimRows).concat(arrayFromMaybe(bridge&&bridge.reenteredRows));
           removedRows=arrayFromMaybe(bridge&&bridge.removedRows);
@@ -7958,7 +7996,7 @@ function exportTicketMovementDetails(e){
       alert(`Ticket Movement export failed: ${err&&err.message?err.message:err}`);
     }finally{
       if(spinner)spinner.classList.remove("active");
-      if(btn){btn.disabled=false;delete btn.dataset.exporting;}
+      setExportButtonState(btn,false);
     }
   })();
 }
@@ -8026,6 +8064,123 @@ function employeeCurrentCriticalDetailRows(){
   const rows=selectedPeriodCriticalRows().map(row=>dashboardTicketPayload(row));
   rows.sort((a,b)=>teamAssignDisplayName(a.employee||a.owner).localeCompare(teamAssignDisplayName(b.employee||b.owner))||clean(a.id).localeCompare(clean(b.id)));
   return ticketExportSheet("Current Tickets in Progress Detail",rows,["Other Flag","Employee Group","Other Reason","Raw Employee"],row=>employeeWorkloadExportPrefix(row.employee||row.owner)).rows;
+}
+function ticketMovementBridgeSnapshotForExport(start,end){
+  const snap=periodSnapshotForBounds(start,end);
+  const raw=snap&&snap.ticketMovementBridge;
+  if(raw&&typeof raw==="object")return normalizeTicketMovementBridge(raw,start,end);
+  return null;
+}
+function employeeWorkloadLightTicketHeaders(extraHeaders){
+  return (extraHeaders||[]).concat([
+    "Ticket ID","Employee Group","Raw Employee","Status","Claim Type","Dealer",
+    "Aging Days","Customer","Repair","Created On","Changed On","Decision Date","Decision Source"
+  ]);
+}
+function employeeWorkloadLightTicketRow(row,extraValues){
+  const payload=dashboardTicketPayload(row||{});
+  const rawEmployee=payload.employee||payload.owner||row&&row.employee||row&&row.owner||"";
+  const mapped=teamAssignDisplayName(rawEmployee);
+  return (extraValues||[]).concat([
+    payload.id,
+    isOtherTeamAssignRow(mapped)?"OTHER - Other":mapped,
+    clean(rawEmployee)||"(blank)",
+    payload.status,
+    payload.claim,
+    payload.dealer,
+    Number(payload.agingDays||payload.days||0),
+    payload.customer,
+    payload.repair,
+    clean(row&&row.created),
+    payload.changedOn,
+    clean(row&&row.decisionDate||row&&row.exitDate||payload.decisionDate),
+    payload.decisionSource
+  ]);
+}
+function employeeCurrentCriticalLightRows(){
+  const rows=selectedPeriodCriticalRows().map(row=>dashboardTicketPayload(row));
+  rows.sort((a,b)=>teamAssignDisplayName(a.employee||a.owner).localeCompare(teamAssignDisplayName(b.employee||b.owner))||clean(a.id).localeCompare(clean(b.id)));
+  return [employeeWorkloadLightTicketHeaders(["Snapshot Date"])].concat(rows.map(row=>employeeWorkloadLightTicketRow(row,[periodEndDate()])));
+}
+function employeeRemovedLightRows(bridge){
+  const {start,end}=periodBounds();
+  const rows=arrayFromMaybe(bridge&&bridge.removedRows).slice().sort((a,b)=>clean(a.removedBucket).localeCompare(clean(b.removedBucket))||teamAssignDisplayName(a.employee||a.owner).localeCompare(teamAssignDisplayName(b.employee||b.owner))||clean(a.id).localeCompare(clean(b.id)));
+  return [employeeWorkloadLightTicketHeaders(["Period Start","Period End","Removed Bucket","Other Reason","Exit Date","Exit From","Exit To"])].concat(rows.map(row=>employeeWorkloadLightTicketRow(row,[
+    start,
+    end,
+    clean(row.removedBucket)||"Other",
+    clean(row.reason),
+    clean(row.exitDate||row.date||row.detectedAt),
+    clean(row.exitFrom),
+    clean(row.exitTo)
+  ])));
+}
+function employeeApprovalLightRows(bridge,bucket){
+  const rows=arrayFromMaybe(bridge&&bridge.removedRows).filter(row=>clean(row.removedBucket)===bucket).sort((a,b)=>teamAssignDisplayName(a.employee||a.owner).localeCompare(teamAssignDisplayName(b.employee||b.owner))||clean(a.id).localeCompare(clean(b.id)));
+  return [employeeWorkloadLightTicketHeaders(["Decision","Decision Date"])].concat(rows.map(row=>employeeWorkloadLightTicketRow(row,[
+    bucket,
+    clean(row.exitDate||row.date||row.detectedAt)
+  ])));
+}
+function dropEmptyExportColumns(rows){
+  if(!Array.isArray(rows)||rows.length<2)return rows;
+  const header=rows[0]||[];
+  const keep=header.map((_,index)=>index).filter(index=>{
+    const title=clean(header[index]);
+    if(!title)return false;
+    return rows.slice(1).some(row=>clean(row&&row[index])!=="");
+  });
+  if(!keep.length)return rows;
+  return rows.map(row=>keep.map(index=>row&&row[index]!==undefined?row[index]:""));
+}
+function employeeWorkloadLightSummaryRows(bridge){
+  const grouped=new Map();
+  const {start,end}=periodBounds();
+  const days=daysInBounds(start,end);
+  const add=(rawName,field,count=1)=>{
+    const name=teamAssignDisplayName(rawName);
+    const key=employeeStatusKey(name)||employeeStatusKey("Other");
+    const row=grouped.get(key)||{name,total:0,removed:0,approved:0,unapproved:0};
+    row[field]+=Number(count||0);
+    grouped.set(key,row);
+  };
+  selectedPeriodCriticalRows().forEach(row=>add(row.employee||row.owner,"total"));
+  arrayFromMaybe(bridge&&bridge.removedRows).forEach(row=>{
+    add(row.employee||row.owner,"removed");
+    const bucket=clean(row.removedBucket);
+    if(bucket==="Approved")add(row.employee||row.owner,"approved");
+    else if(bucket==="Unapproved")add(row.employee||row.owner,"unapproved");
+  });
+  const rows=Array.from(grouped.values()).sort((a,b)=>
+    (Number(b.total||0)+Number(b.removed||0))-(Number(a.total||0)+Number(a.removed||0))||a.name.localeCompare(b.name)
+  );
+  return [["Other Flag","Employee Group",`Tickets in Progress (On ${selectedSnapshotText()})`,`Tickets Removed from Critical (${selectedPeriodText()})`,"Approved","Unapproved","Avg Removed per Day","Avg Removed per Week","Employee Status","Other Reason"]].concat(rows.map(row=>{
+    const isOther=isOtherTeamAssignRow(row.name);
+    const removed=Number(row.removed||0);
+    return [
+      isOther?"OTHER":"",
+      isOther?"OTHER - Other":row.name,
+      Number(row.total||0),
+      removed,
+      Number(row.approved||0),
+      Number(row.unapproved||0),
+      days?removed/days:0,
+      days?removed/days*7:0,
+      isOther?"Other":(isEmployeeExited(row.name)?"Exited":"Active"),
+      isOther?"Aggregated employees mapped to Other by directory / invalid / exited rules":""
+    ];
+  }));
+}
+function employeeWorkloadLightExportSheets(){
+  const {start,end}=periodBounds();
+  const bridge=ticketMovementBridgeSnapshotForExport(start,end);
+  return [
+    {name:"Employee Workload",rows:employeeWorkloadLightSummaryRows(bridge)},
+    {name:"Removed",rows:employeeRemovedLightRows(bridge)},
+    {name:"Tickets in Progress",rows:employeeCurrentCriticalLightRows()},
+    {name:"Approved",rows:employeeApprovalLightRows(bridge,"Approved")},
+    {name:"Unapproved",rows:employeeApprovalLightRows(bridge,"Unapproved")}
+  ].map(sheet=>({...sheet,rows:dropEmptyExportColumns(sheet.rows)}));
 }
 function removedTicketEventsForRange(){
   const {start,end}=periodBounds();
@@ -8104,14 +8259,23 @@ function employeeApprovalDetailExportRows(decisionFilter){
 }
 function exportEmployeeWorkload(){
   (async()=>{
-    await ensureExportDetailsLoaded();
-    exportWorkbook([
-      {name:"Employee Workload",rows:employeeWorkloadSummaryRows()},
-      {name:"Removed",rows:removedTicketDetailExportRows()},
-      {name:"Tickets in Progress",rows:employeeCurrentCriticalDetailRows()},
-      {name:"Approved",rows:employeeApprovalDetailExportRows("approved")},
-      {name:"Unapproved",rows:employeeApprovalDetailExportRows("unapproved")}
-    ],`repair-analytics-tickets-${exportDateSuffix()}.xls`);
+    const btn=$("employeeWorkloadExportBtn");
+    if(btn&&btn.dataset.exporting==="1")return;
+    setExportButtonState(btn,true);
+    try{
+      await yieldToBrowser();
+      try{
+        await withTimeout(ensureCurrentPeriodSnapshotDetails(),1500,"Employee Workload period snapshot load");
+      }catch(detailErr){
+        console.warn("Employee Workload period snapshot load failed; exporting available on-page data.",detailErr);
+      }
+      exportSheetsAsCsv(employeeWorkloadLightExportSheets(),`employee-workload-${exportDateSuffix()}.csv`);
+    }catch(err){
+      console.error("Employee Workload export failed",err);
+      alert(`Employee Workload export failed: ${err&&err.message?err.message:err}`);
+    }finally{
+      setExportButtonState(btn,false);
+    }
   })();
 }
 function exportEmployeeApproval(){
@@ -8127,16 +8291,31 @@ function exportEmployeeApproval(){
 }
 function exportDashboardSummary(){
   (async()=>{
-    await ensureExportDetailsLoaded();
-    exportWorkbook([
-      {name:"Tickets in Progress Detail",rows:employeeCurrentCriticalDetailRows()},
-      {name:"Removed Detail",rows:removedTicketDetailExportRows()},
-      {name:"Approved Detail",rows:employeeApprovalDetailExportRows("approved")},
-      {name:"Unapproved Detail",rows:employeeApprovalDetailExportRows("unapproved")},
-      ticketExportSheet("Long Duration Tickets",longDurationTicketRows()),
-      {name:"KPI Summary",rows:kpiSummaryRows()},
-      {name:"Trend",rows:trendSummaryRows()}
-    ],`warranty-ticket-details-${exportDateSuffix()}.xls`);
+    const btn=$("dashboardSummaryExportBtn");
+    if(btn&&btn.dataset.exporting==="1")return;
+    setExportButtonState(btn,true);
+    try{
+      await yieldToBrowser();
+      try{
+        await withTimeout(ensureExportDetailsLoaded(),5000,"Dashboard summary export detail load");
+      }catch(detailErr){
+        console.warn("Dashboard summary export detail load failed; exporting available cached data.",detailErr);
+      }
+      exportSheetsAsCsv([
+        {name:"Tickets in Progress Detail",rows:employeeCurrentCriticalDetailRows()},
+        {name:"Removed Detail",rows:removedTicketDetailExportRows()},
+        {name:"Approved Detail",rows:employeeApprovalDetailExportRows("approved")},
+        {name:"Unapproved Detail",rows:employeeApprovalDetailExportRows("unapproved")},
+        ticketExportSheet("Long Duration Tickets",longDurationTicketRows()),
+        {name:"KPI Summary",rows:kpiSummaryRows()},
+        {name:"Trend",rows:trendSummaryRows()}
+      ],`warranty-ticket-details-${exportDateSuffix()}.csv`);
+    }catch(err){
+      console.error("Dashboard summary export failed",err);
+      alert(`Dashboard summary export failed: ${err&&err.message?err.message:err}`);
+    }finally{
+      setExportButtonState(btn,false);
+    }
   })();
 }
 function bindDashboardExportButtons(){
