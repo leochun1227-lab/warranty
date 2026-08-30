@@ -26,6 +26,16 @@ def run_step(label: str, command: list[str]) -> None:
         raise SystemExit(f"{label} failed with exit code {completed.returncode}")
 
 
+def has_node_package(node: str, package_name: str) -> bool:
+    completed = subprocess.run(
+        [node, "--input-type=module", "-e", f"await import('{package_name}')"],
+        cwd=ROOT,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    return completed.returncode == 0
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Refresh everything needed by the repairer page."
@@ -82,6 +92,11 @@ def main() -> None:
         "Step 6 - Rebuild repairer fast/light cache",
         [node, str(FAST_CACHE_SCRIPT)],
     )
+
+    if not args.skip_workbook and not has_node_package(node, "@oai/artifact-tool"):
+        print("\nWARNING: @oai/artifact-tool is not installed; skipping repairer workbook export.")
+        print("Install/copy node_modules if outputs/repairers_2026/repairers_2026_analysis_state.xlsx is required.")
+        args.skip_workbook = True
 
     if not args.skip_workbook:
         run_step(

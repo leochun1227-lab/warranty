@@ -27,6 +27,8 @@ ASSETS = {
     "modelSeries/partsFailureSummary": ROOT / "outputs" / "analysis_parts_failure_light.json",
     "modelSeries/partsDerivedCache": ROOT / "outputs" / "analysis_parts_derived_cache.json",
     "modelSeries/modelMtmCache": ROOT / "outputs" / "analysis_model_mtm_cache.json",
+    "repairers/fast": ROOT / "outputs" / "repairers_2026" / "repairers_2026_fast.json",
+    "repairers/light": ROOT / "outputs" / "repairers_2026" / "repairers_2026_light.json",
 }
 
 

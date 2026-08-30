@@ -4680,6 +4680,8 @@ function withTimeoutPromise(promise,timeoutMs,label){
 const DEFAULT_FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
 const ANALYSIS_JSON="outputs/repairers_2026/repairers_2026_fast.json";
 const ANALYSIS_DETAILS_JSON="outputs/repairers_2026/repairers_2026_light.json";
+const REMOTE_ANALYSIS_JSON=`${DEFAULT_FIREBASE}/ctmTicketStatusMonitorV44/analytics/pageAssets/repairers/fast.json`;
+const REMOTE_ANALYSIS_DETAILS_JSON=`${DEFAULT_FIREBASE}/ctmTicketStatusMonitorV44/analytics/pageAssets/repairers/light.json`;
 const ANALYSIS_TICKET_BASE_CSV="outputs/analysis_ticket_base.csv";
 const AUS_GEOJSON="assets/geo/australia-states.geojson";
 const NZ_GEOJSON="assets/geo/new-zealand.geojson";
@@ -4757,7 +4759,10 @@ function repairStaticJsonUrl(path){
 }
 function loadRepairAnalysisJson(){
   if(!repairAnalysisFetchPromise){
-    repairAnalysisFetchPromise=readStaticJson(repairStaticJsonUrl(ANALYSIS_JSON)).catch(e=>{
+    repairAnalysisFetchPromise=readFirstJson([
+      REMOTE_ANALYSIS_JSON,
+      repairStaticJsonUrl(ANALYSIS_JSON)
+    ]).catch(e=>{
       repairAnalysisFetchPromise=null;
       throw e;
     });
@@ -4945,6 +4950,14 @@ async function readJson(path,timeoutMs=15000){
   }
 }
 async function readStaticJson(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
+async function readFirstJson(paths){
+  let lastErr=null;
+  for(const path of paths){
+    try{return await readStaticJson(path)}
+    catch(err){lastErr=err}
+  }
+  throw lastErr||new Error("No JSON source available");
+}
 async function readStaticText(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.text()}
 async function loadClaimTrendUnapprovedCounts(){
   if(claimTrendUnapprovedCounts.loaded)return claimTrendUnapprovedCounts;
@@ -7786,7 +7799,10 @@ async function ensureRepairDetailsLoaded({renderAfter=true}={}){
         ? weeklyAnalysis.details
         : (Array.isArray(globalThis.REPAIRERS_2026_ANALYSIS?.details)&&globalThis.REPAIRERS_2026_ANALYSIS.details.length?globalThis.REPAIRERS_2026_ANALYSIS.details:null);
       if(!localDetails){
-        const detailAnalysis=await readStaticJson(repairStaticJsonUrl(ANALYSIS_DETAILS_JSON)).catch(()=>null);
+        const detailAnalysis=await readFirstJson([
+          REMOTE_ANALYSIS_DETAILS_JSON,
+          repairStaticJsonUrl(ANALYSIS_DETAILS_JSON)
+        ]).catch(()=>null);
         localDetails=Array.isArray(detailAnalysis?.details)&&detailAnalysis.details.length?detailAnalysis.details:null;
       }
       if(localDetails){
