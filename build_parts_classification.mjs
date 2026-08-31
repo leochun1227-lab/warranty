@@ -23,6 +23,15 @@ const COMPONENT_KEYWORD_ALIASES = new Map([
   ["external grab handles", "External Grab Handle"],
   ["grab handle external", "External Grab Handle"],
   ["grab handles external", "External Grab Handle"],
+  ["solar panel bracket", "Solar Panel Bracket"],
+  ["solar panel brackets", "Solar Panel Bracket"],
+  ["arizon solar panel bracket set", "Solar Panel Bracket"],
+  ["roof hatch inner blind", "Roof Hatch Inner Blind"],
+  ["roof hatch inner blinds", "Roof Hatch Inner Blind"],
+  ["inner blind", "Inner Blind"],
+  ["inner blinds", "Inner Blind"],
+  ["mounting flange", "Mounting Flange"],
+  ["mounting flanges", "Mounting Flange"],
   ["tail light", "Tail Light"],
   ["tail lights", "Tail Light"],
   ["taillight", "Tail Light"],
@@ -261,25 +270,25 @@ for (let i = 0; i < updatedRows.length; i += 1) {
   const currentCategory = cleanCell(row[categoryIdx]);
   const currentKeyword = cleanCell(row[keywordIdx]);
   const description = cleanCell(row[descIdx]);
-  const externalGrabHandleHit = externalGrabHandleClassification(description, categories);
+  const ruleHit = componentRuleClassification(description, categories);
 
   if (currentCategory) {
-    row[categoryIdx] = externalGrabHandleHit
-      ? externalGrabHandleHit.label
+    row[categoryIdx] = ruleHit
+      ? ruleHit.label
       : translateCategoryLabel(currentCategory);
     row[keywordIdx] = currentKeyword
       ? canonicalizeMatchedKeyword(currentKeyword, row[categoryIdx], description)
       : "";
-    if (externalGrabHandleHit) {
-      row[keywordIdx] = externalGrabHandleHit.keyword;
+    if (ruleHit) {
+      row[keywordIdx] = ruleHit.keyword;
     }
     preservedCount += 1;
     continue;
   }
 
-  if (externalGrabHandleHit) {
-    row[categoryIdx] = externalGrabHandleHit.label;
-    row[keywordIdx] = externalGrabHandleHit.keyword;
+  if (ruleHit) {
+    row[categoryIdx] = ruleHit.label;
+    row[keywordIdx] = ruleHit.keyword;
     keywordMatchCount += 1;
     continue;
   }
@@ -745,14 +754,73 @@ function isExternalGrabHandleText(...values) {
     || /\bgrab\s+handles?\s+external\b/.test(normalized);
 }
 
-function externalGrabHandleClassification(description, categories = []) {
-  if (!isExternalGrabHandleText(description)) {
+function categoryForRule(categories = [], preferredLabels = [], fallbackLabel = OTHER_LABEL) {
+  for (const label of preferredLabels) {
+    const found = categories.find((item) => item.label === label);
+    if (found) return found.label;
+  }
+  return fallbackLabel;
+}
+
+function isSolarPanelBracketText(...values) {
+  const normalized = normalizeKeywordKey(values.filter(Boolean).join(" "));
+  return /\bsolar\s+panel\s+brackets?\b/.test(normalized)
+    || /\barizon\s+solar\s+panel\s+bracket\s+set\b/.test(normalized);
+}
+
+function isRoofHatchInnerBlindText(...values) {
+  const normalized = normalizeKeywordKey(values.filter(Boolean).join(" "));
+  return /\broof\s+hatch\s+inner\s+blinds?\b/.test(normalized);
+}
+
+function clipsalClassification(...values) {
+  const normalized = normalizeKeywordKey(values.filter(Boolean).join(" "));
+  if (!/\bclipsal\b/.test(normalized)) {
     return null;
   }
-  const category = categories.find((item) => item.label === "Hardware / Installation")
-    || categories.find((item) => item.label === "Doors / Hatches")
-    || { label: "Hardware / Installation" };
-  return { label: category.label, keyword: "External Grab Handle" };
+  if (/\bpower\s+inlets?\b/.test(normalized) || /\binlet\s+sockets?\b/.test(normalized)) {
+    return { category: "Electrical / Power / Electronics", keyword: "Power Inlet" };
+  }
+  if (/\bpower\s+outlets?\b/.test(normalized) || /\boutlets?\b/.test(normalized)) {
+    return { category: "Electrical / Power / Electronics", keyword: "Power Outlet" };
+  }
+  if (/\bmounting\s+flanges?\b/.test(normalized) || /\bflanges?\b/.test(normalized)) {
+    return { category: "Hardware / Installation", keyword: "Mounting Flange" };
+  }
+  return null;
+}
+
+function componentRuleClassification(description, categories = []) {
+  const clipsalHit = clipsalClassification(description);
+  if (clipsalHit) {
+    return {
+      label: categoryForRule(categories, [clipsalHit.category], clipsalHit.category),
+      keyword: clipsalHit.keyword,
+    };
+  }
+
+  if (isExternalGrabHandleText(description)) {
+    return {
+      label: categoryForRule(categories, ["Hardware / Installation", "Doors / Hatches"], "Hardware / Installation"),
+      keyword: "External Grab Handle",
+    };
+  }
+
+  if (isSolarPanelBracketText(description)) {
+    return {
+      label: categoryForRule(categories, ["Hardware / Installation", "Electrical / Power / Electronics"], "Hardware / Installation"),
+      keyword: "Solar Panel Bracket",
+    };
+  }
+
+  if (isRoofHatchInnerBlindText(description)) {
+    return {
+      label: categoryForRule(categories, ["Windows / Hatches / Blinds"], "Windows / Hatches / Blinds"),
+      keyword: "Roof Hatch Inner Blind",
+    };
+  }
+
+  return null;
 }
 
 function canonicalizeMatchedKeyword(keyword, categoryLabel = "", description = "") {
@@ -760,8 +828,18 @@ function canonicalizeMatchedKeyword(keyword, categoryLabel = "", description = "
   const fallback = rawKeyword || cleanCell(description);
   if (!fallback) return "";
 
+  const clipsalHit = clipsalClassification(rawKeyword, description);
+  if (clipsalHit) {
+    return clipsalHit.keyword;
+  }
   if (isExternalGrabHandleText(rawKeyword, description)) {
     return "External Grab Handle";
+  }
+  if (isSolarPanelBracketText(rawKeyword, description)) {
+    return "Solar Panel Bracket";
+  }
+  if (isRoofHatchInnerBlindText(rawKeyword, description)) {
+    return "Roof Hatch Inner Blind";
   }
 
   const normalized = normalizeKeywordKey(fallback);
@@ -995,9 +1073,9 @@ function normalizeCategories(rawCategories) {
 }
 
 function classifyByKeywords(description, categories) {
-  const externalGrabHandleHit = externalGrabHandleClassification(description, categories);
-  if (externalGrabHandleHit) {
-    return externalGrabHandleHit;
+  const ruleHit = componentRuleClassification(description, categories);
+  if (ruleHit) {
+    return ruleHit;
   }
 
   const normalizedDescription = normalizeForMatch(description);
@@ -1007,12 +1085,19 @@ function classifyByKeywords(description, categories) {
       if (!normalizedKeyword.trim()) {
         continue;
       }
-      if (normalizedDescription.includes(normalizedKeyword)) {
+      if (matchesNormalizedKeyword(normalizedDescription, normalizedKeyword)) {
         return { label: category.label, keyword };
       }
     }
   }
   return null;
+}
+
+function matchesNormalizedKeyword(normalizedDescription, normalizedKeyword) {
+  const phrase = cleanCell(normalizedKeyword);
+  if (!phrase) return false;
+  const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
+  return new RegExp(`(?:^|\\s)${escaped}(?:$|\\s)`, "i").test(normalizedDescription);
 }
 
 async function loadHistoryCache(seedMetaPath, inputPath, descIdx, categoryIdx, keywordIdx, categorySet) {

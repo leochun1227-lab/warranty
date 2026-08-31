@@ -3295,7 +3295,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   // ------- Component key + index (uses partsClassifiedRows) -------
   function componentKey(component, category, description){
-    return `${clean(normalizeComponentLabel(component, category, description)).toLowerCase()}||${clean(category || "Other").toLowerCase()}`;
+    const normalizedCategory = normalizeComponentCategory(component, category, description);
+    return `${clean(normalizeComponentLabel(component, category, description)).toLowerCase()}||${clean(normalizedCategory || "Other").toLowerCase()}`;
   }
   function buildPartsClassifiedIndex(){
     const rows = state.partsClassifiedRows || [];
@@ -3716,12 +3717,14 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   function componentRowsForSelection(summary, selected){
     if (!summary) return [];
     if (selected === "ALL") {
-      return Array.isArray(summary.all?.topComponents) ? summary.all.topComponents.slice() : [];
+      return Array.isArray(summary.all?.topComponents)
+        ? summary.all.topComponents.filter(row => clean(row?.component || row?.name).toLowerCase() !== "other")
+        : [];
     }
     const seriesMap = summary.series || {};
     const direct = seriesMap[selected];
     if (direct && Array.isArray(direct.topComponents)) {
-      return direct.topComponents.slice();
+      return direct.topComponents.filter(row => clean(row?.component || row?.name).toLowerCase() !== "other");
     }
     const keys = Object.keys(seriesMap).filter(k => normalizeSeriesCode(k) === selected && !isExcludedSeries(k));
     const grouped = new Map();
@@ -3729,6 +3732,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       const rows = Array.isArray(seriesMap[k]?.topComponents) ? seriesMap[k].topComponents : [];
       rows.forEach(row => {
         const name = row.component || "Other";
+        if (clean(name).toLowerCase() === "other") return;
         const cat = row.category || "Other";
         const key = `${name.toLowerCase()}||${cat.toLowerCase()}`;
         if (!grouped.has(key)) grouped.set(key, { component:name, category:cat, tickets:0, cost:0 });
@@ -5499,6 +5503,15 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     ["external grab handles", "External Grab Handle"],
     ["grab handle external", "External Grab Handle"],
     ["grab handles external", "External Grab Handle"],
+    ["solar panel bracket", "Solar Panel Bracket"],
+    ["solar panel brackets", "Solar Panel Bracket"],
+    ["arizon solar panel bracket set", "Solar Panel Bracket"],
+    ["roof hatch inner blind", "Roof Hatch Inner Blind"],
+    ["roof hatch inner blinds", "Roof Hatch Inner Blind"],
+    ["inner blind", "Inner Blind"],
+    ["inner blinds", "Inner Blind"],
+    ["mounting flange", "Mounting Flange"],
+    ["mounting flanges", "Mounting Flange"],
     ["tail light", "Tail Light"],
     ["tail lights", "Tail Light"],
     ["taillight", "Tail Light"],
@@ -5523,23 +5536,55 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     ["power outlets", "Power Outlet"],
   ]);
 
-  function normalizeComponentLabel(text, category, description){
-    const raw = clean(text);
-    if (!raw) return titleCaseText(category || "Other");
-    const normalized = raw
+  function normalizedComponentText(...values){
+    return values
+      .map(value => clean(value))
+      .filter(Boolean)
+      .join(" ")
       .toLowerCase()
       .normalize("NFKD")
       .replace(/[^a-z0-9]+/g, " ")
       .replace(/\s+/g, " ")
       .trim();
-    const context = [normalized, clean(description).toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, " ")]
-      .filter(Boolean)
-      .join(" ")
-      .replace(/\s+/g, " ")
-      .trim();
-    if (/\bexternal\s+grab\s+handles?\b/.test(context) || /\bgrab\s+handles?\s+external\b/.test(context)) {
-      return "External Grab Handle";
+  }
+
+  function componentRuleOverride(text, category, description){
+    const context = normalizedComponentText(text, description);
+    if (/\bclipsal\b/.test(context)) {
+      if (/\bpower\s+inlets?\b/.test(context) || /\binlet\s+sockets?\b/.test(context)) {
+        return { component:"Power Inlet", category:"Electrical / Power / Electronics" };
+      }
+      if (/\bpower\s+outlets?\b/.test(context) || /\boutlets?\b/.test(context)) {
+        return { component:"Power Outlet", category:"Electrical / Power / Electronics" };
+      }
+      if (/\bmounting\s+flanges?\b/.test(context) || /\bflanges?\b/.test(context)) {
+        return { component:"Mounting Flange", category:"Hardware / Installation" };
+      }
     }
+    if (/\bexternal\s+grab\s+handles?\b/.test(context) || /\bgrab\s+handles?\s+external\b/.test(context)) {
+      return { component:"External Grab Handle", category:"Hardware / Installation" };
+    }
+    if (/\bsolar\s+panel\s+brackets?\b/.test(context) || /\barizon\s+solar\s+panel\s+bracket\s+set\b/.test(context)) {
+      return { component:"Solar Panel Bracket", category:"Hardware / Installation" };
+    }
+    if (/\broof\s+hatch\s+inner\s+blinds?\b/.test(context)) {
+      return { component:"Roof Hatch Inner Blind", category:"Windows / Hatches / Blinds" };
+    }
+    return null;
+  }
+
+  function normalizeComponentCategory(text, category, description){
+    const override = componentRuleOverride(text, category, description);
+    if (override) return override.category;
+    return clean(category || "Other") || "Other";
+  }
+
+  function normalizeComponentLabel(text, category, description){
+    const raw = clean(text);
+    const override = componentRuleOverride(raw, category, description);
+    if (override) return override.component;
+    if (!raw) return titleCaseText(category || "Other");
+    const normalized = normalizedComponentText(raw);
     const exact = COMPONENT_LABEL_ALIASES.get(normalized);
     if (exact) return exact;
     if (normalized.endsWith("s")) {

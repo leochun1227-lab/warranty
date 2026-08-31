@@ -33,6 +33,15 @@ COMPONENT_ALIASES = {
     "external grab handles": "External Grab Handle",
     "grab handle external": "External Grab Handle",
     "grab handles external": "External Grab Handle",
+    "solar panel bracket": "Solar Panel Bracket",
+    "solar panel brackets": "Solar Panel Bracket",
+    "arizon solar panel bracket set": "Solar Panel Bracket",
+    "roof hatch inner blind": "Roof Hatch Inner Blind",
+    "roof hatch inner blinds": "Roof Hatch Inner Blind",
+    "inner blind": "Inner Blind",
+    "inner blinds": "Inner Blind",
+    "mounting flange": "Mounting Flange",
+    "mounting flanges": "Mounting Flange",
     "tail light": "Tail Light",
     "tail lights": "Tail Light",
     "taillight": "Tail Light",
@@ -75,6 +84,45 @@ def is_external_grab_handle(*values):
         re.search(r"\bexternal\s+grab\s+handles?\b", normalized)
         or re.search(r"\bgrab\s+handles?\s+external\b", normalized)
     )
+
+
+def is_solar_panel_bracket(*values):
+    normalized = normalize_component_text(*values)
+    return bool(
+        re.search(r"\bsolar\s+panel\s+brackets?\b", normalized)
+        or re.search(r"\barizon\s+solar\s+panel\s+bracket\s+set\b", normalized)
+    )
+
+
+def is_roof_hatch_inner_blind(*values):
+    normalized = normalize_component_text(*values)
+    return bool(re.search(r"\broof\s+hatch\s+inner\s+blinds?\b", normalized))
+
+
+def clipsal_component(*values):
+    normalized = normalize_component_text(*values)
+    if not re.search(r"\bclipsal\b", normalized):
+        return None
+    if re.search(r"\bpower\s+inlets?\b", normalized) or re.search(r"\binlet\s+sockets?\b", normalized):
+        return "Power Inlet", "Electrical / Power / Electronics"
+    if re.search(r"\bpower\s+outlets?\b", normalized) or re.search(r"\boutlets?\b", normalized):
+        return "Power Outlet", "Electrical / Power / Electronics"
+    if re.search(r"\bmounting\s+flanges?\b", normalized) or re.search(r"\bflanges?\b", normalized):
+        return "Mounting Flange", "Hardware / Installation"
+    return None
+
+
+def component_rule_override(component, category="", description=""):
+    clipsal = clipsal_component(component, description)
+    if clipsal:
+        return clipsal
+    if is_external_grab_handle(component, description):
+        return "External Grab Handle", "Hardware / Installation"
+    if is_solar_panel_bracket(component, description):
+        return "Solar Panel Bracket", "Hardware / Installation"
+    if is_roof_hatch_inner_blind(component, description):
+        return "Roof Hatch Inner Blind", "Windows / Hatches / Blinds"
+    return None
 
 
 def write_text_atomic(path: Path, text: str) -> None:
@@ -321,11 +369,11 @@ def title_case(text):
 
 def normalize_component_label(component, category="", description=""):
     value = clean(component)
+    override = component_rule_override(value, category, description)
+    if override:
+        return override[0]
     if not value:
         return title_case(category or "Other")
-
-    if is_external_grab_handle(value, description):
-        return "External Grab Handle"
 
     normalized = normalize_component_text(value)
     if normalized in COMPONENT_ALIASES:
@@ -342,6 +390,14 @@ def normalize_component_label(component, category="", description=""):
             return "Stop Light"
 
     return title_case(value)
+
+
+def normalize_component_classification(component, category="", description=""):
+    label = normalize_component_label(component, category, description)
+    override = component_rule_override(component, category, description)
+    if override:
+        return label, override[1]
+    return label, clean(category) or "Other"
 
 
 def relative_path(path):
@@ -639,6 +695,8 @@ def finalize_bucket(bucket, total_tickets, total_cost, total_line_items=None):
         total_line_items = sum(stat["lineItems"] for stat in bucket.values())
     items = []
     for key, stat in bucket.items():
+        if clean(key).lower() == "other":
+            continue
         categories = stat["categories"]
         category = categories.most_common(1)[0][0] if categories else "Other"
         items.append({
@@ -1092,7 +1150,7 @@ def main():
         category = clean(get_value(row, parts_index, "Part Category")) or "Other"
         component = keyword or category or "Other"
         description = clean(get_value(row, parts_index, "Description"))
-        component_label = normalize_component_label(component, category, description)
+        component_label, category = normalize_component_classification(component, category, description)
         cost = parse_amount(get_value(row, parts_index, "Preferred Line Cost (AUD)"))
         material_qty = parse_amount(get_value(row, parts_index, "Order Qty"))
         total_cost += cost
