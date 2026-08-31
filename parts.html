@@ -425,8 +425,8 @@ body.parts-page .compRows{display:none}
 .compTrendName{font-size:12px;font-weight:640;color:#172033;line-height:1.12;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .compTrendMeta{font-size:11.2px;font-weight:720;color:#334155;line-height:1.18;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .compTrendRate{display:inline-flex;align-items:center;justify-content:center;min-width:48px;height:18px;padding:0 6px;border-radius:999px;font-size:10px;font-weight:700;font-variant-numeric:tabular-nums;background:#eef2f7;color:#475569}
-.compTrendRate.up{background:#dcfce7;color:#15803d}
-.compTrendRate.down{background:#fee2e2;color:#b91c1c}
+.compTrendRate.up{background:#fee2e2;color:#b91c1c}
+.compTrendRate.down{background:#dcfce7;color:#15803d}
 .compTrendTotals{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .compTrendTotal{border:1px solid #edf2f7;background:#fbfcfe;border-radius:6px;padding:4px 6px;min-width:0}
 .compTrendTotal span{display:block;font-size:8.8px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;line-height:1}
@@ -1100,9 +1100,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
               <h2 class="panelTitle">Top 10 Failure Components  -  <span id="compLabel">By Tickets CreatedOn</span></h2>
               <p class="panelDesc">Counts classified parts tickets only. Trend % compares the latest 3 complete ticket months with the previous 3 complete months. The current partial month is excluded.</p>
             </div>
-            <button class="compDetailExportBtn" id="compDetailExportBtn" type="button" title="Export all 2026 tickets as CSV using Created On">
+            <button class="compDetailExportBtn" id="compDetailExportBtn" type="button" title="Export the current Top 10 component detail as a 10-sheet Excel workbook">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg>
-              <span>Export CSV</span>
+              <span>Export Excel</span>
             </button>
           </div>
           <div class="compSplit">
@@ -4098,8 +4098,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   // ------- Component key + index (uses partsClassifiedRows) -------
-  function componentKey(component, category){
-    return `${clean(normalizeComponentLabel(component, category)).toLowerCase()}||${clean(category || "Other").toLowerCase()}`;
+  function componentKey(component, category, description){
+    return `${clean(normalizeComponentLabel(component, category, description)).toLowerCase()}||${clean(category || "Other").toLowerCase()}`;
   }
   function firebaseSafeKey(value){
     return clean(value).replace(/[.$#[\]\/]/g, ch => ({
@@ -4798,7 +4798,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   function monthlyCreatedOnLineDetailRow(row){
     const line = row.line || {};
     const ticket = state.ticketRowById && state.ticketRowById.get(row.ticketId) || {};
-    const component = normalizeComponentLabel(line["Matched Keyword"] || line["Part Category"] || "Other", line["Part Category"] || "Other");
+    const component = normalizeComponentLabel(line["Matched Keyword"] || line["Part Category"] || "Other", line["Part Category"] || "Other", line.Description);
     const delivery = getDeliveryDate(ticket);
     const goodReceive = getGoodReceiveDate(ticket);
     return [
@@ -5566,7 +5566,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       .filter(row => {
         if (!componentNames.size) return true;
         const component = row["Matched Keyword"] || row["Part Category"] || "Other";
-        return componentNames.has(componentKey(normalizeComponentLabel(component, row["Part Category"] || "Other"), row["Part Category"] || "Other"));
+        return componentNames.has(componentKey(normalizeComponentLabel(component, row["Part Category"] || "Other", row.Description), row["Part Category"] || "Other", row.Description));
       });
     const repairerRows = sortRows(state.repairers.filter(r=>r.tickets>=5), state.repairerSort);
     const repairerNames = new Set(repairerRows.map(r => r.name));
@@ -5667,7 +5667,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           ["Component","Part Category","Ticket ID","Series","Chassis","Serial ID","Registered Product","Product","Dealer","Repairer","Ticket Type","Created On","Posting Date","Date of Purchase","Material","Description","Order Qty","Sales Unit","Preferred Line Cost AUD","Amount Including Tax","3110 PO Date","First Issue Date","Item Rejection Status"],
           ...componentDetailRows.map(part => {
             const ticket = selectedTicketMap.get(clean(part["Ticket ID"])) || {};
-            const component = normalizeComponentLabel(part["Matched Keyword"] || part["Part Category"] || "Other", part["Part Category"] || "Other");
+            const component = normalizeComponentLabel(part["Matched Keyword"] || part["Part Category"] || "Other", part["Part Category"] || "Other", part.Description);
             return [
               component,
               part["Part Category"] || "Other",
@@ -5870,7 +5870,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   function componentExportTicketRow(ticketId, lines){
     const ticket = ticketLookupForExport(ticketId);
     const firstLine = Array.isArray(lines) && lines.length ? lines[0] : {};
-    const components = Array.from(new Set(lines.map(line => normalizeComponentLabel(line["Matched Keyword"] || line["Part Category"] || "Other", line["Part Category"] || "Other")).filter(Boolean))).join(", ");
+    const components = Array.from(new Set(lines.map(line => normalizeComponentLabel(line["Matched Keyword"] || line["Part Category"] || "Other", line["Part Category"] || "Other", line.Description)).filter(Boolean))).join(", ");
     const categories = Array.from(new Set(lines.map(line => clean(line["Part Category"] || "Other")).filter(Boolean))).join(", ");
     const poValues = Array.from(new Set(lines.map(line => normalizePoForDisplay(line["ERP Purchase Order"] || line["ERP Purchase Order ID"] || line["Purchase Order"] || "")).filter(Boolean))).join(", ");
     const lineCost = lines.reduce((sum, line) => sum + (asNumber(line["Preferred Line Cost (AUD)"]) || 0), 0);
@@ -5894,6 +5894,115 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       ticket["Dealer Name"] || firstLine["Dealer Name"] || "",
       ticket["Repair Shop"] || ticket["Repair Shop Name"] || ticket["Service Technician"] || "",
       lines.length,
+    ];
+  }
+
+  function componentCsvSheetName(rank, component){
+    const label = clean(component) || "Other";
+    return `${String(rank).padStart(2, "0")} ${label}`;
+  }
+
+  function normalizedComponentName(value){
+    return clean(value).toLowerCase();
+  }
+
+  function topComponentCsvGroups(topComponents){
+    const defs = (Array.isArray(topComponents) ? topComponents : []).map((row, index) => ({
+      rank:index + 1,
+      component:clean(row.component || row.name) || "Other",
+      category:clean(row.category || row.cat) || "Other",
+      tickets:Number(row.tickets) || 0,
+      lineItems:Number(row.lineItems ?? row.partsLines ?? row.lines) || 0,
+      cost:Number(row.cost) || 0,
+      rows:new Map(),
+    }));
+    const byComponent = new Map(defs.map(def => [normalizedComponentName(def.component), def]));
+    const scope = componentScope();
+    const month = selectedPartsMonth();
+    const includedTicketIds = state.partsIncludedTicketIds;
+
+    for (const line of (state.partsClassifiedRows || [])) {
+      const ticketId = clean(line["Ticket ID"]);
+      if (!ticketId) continue;
+      if (includedTicketIds instanceof Set && !includedTicketIds.has(ticketId)) continue;
+      const ticket = ticketLookupForExport(ticketId);
+      const ticketSource = ticket && Object.keys(ticket).length ? ticket : line;
+      if (isPdiClaim(ticketSource)) continue;
+      const lineScope = ticket && Object.keys(ticket).length ? claimScope(ticket) : classifiedRowScope(line);
+      if (!isExportableClaimScope(lineScope)) continue;
+      if (!partsMonthMatchesLine(line, month)) continue;
+      if (scope !== "ALL" && lineScope !== scope) continue;
+      const series = classifiedRowSeries(line) || "";
+      if (state.selected !== "ALL" && series !== state.selected) continue;
+
+      const lineComponent = normalizeComponentLabel(
+        line["Matched Keyword"] || line["Part Category"] || "Other",
+        line["Part Category"] || "Other",
+        line.Description,
+      );
+      const def = byComponent.get(normalizedComponentName(lineComponent));
+      if (!def) continue;
+
+      if (!def.rows.has(ticketId)) def.rows.set(ticketId, []);
+      def.rows.get(ticketId).push({
+        ...line,
+        _component:def.component,
+        _lineComponent:lineComponent,
+        _category:clean(line["Part Category"] || "Other") || "Other",
+        _series:series,
+      });
+    }
+
+    return defs.map(def => ({
+      ...def,
+      rows:Array.from(def.rows.entries()).sort((a,b) => (
+        String(a[0]).localeCompare(String(b[0]), undefined, { numeric:true })
+      )),
+    }));
+  }
+
+  function topComponentCsvRow(def, ticketId, lines){
+    const ticket = ticketLookupForExport(ticketId);
+    const ticketSource = ticket && Object.keys(ticket).length ? ticket : (lines[0] || {});
+    const firstLine = Array.isArray(lines) && lines.length ? lines[0] : {};
+    const delivery = getDeliveryDate(ticketSource);
+    const goodReceive = getGoodReceiveDate(ticketSource);
+    const lineCost = lines.reduce((sum, line) => sum + (asNumber(line["Preferred Line Cost (AUD)"]) || 0), 0);
+    const orderQty = lines.reduce((sum, line) => sum + (asNumber(line["Order Qty"]) || 0), 0);
+    const ticketScope = ticket && Object.keys(ticket).length ? claimScope(ticket) : "";
+    return [
+      def.rank,
+      componentCsvSheetName(def.rank, def.component),
+      def.component,
+      def.tickets,
+      def.lineItems,
+      round(def.cost, 2),
+      uniqueJoin(lines.map(line => line._category || line["Part Category"] || "Other")),
+      uniqueJoin(lines.map(line => line.Description)),
+      ticketId,
+      extractSeries(ticket) || firstLine._series || classifiedRowSeries(firstLine) || "",
+      ticketScope || classifiedRowScope(firstLine),
+      ticket.Status || ticket["Status"] || firstLine["Ticket Status Text"] || firstLine["Ticket Status"] || "",
+      ticket["Ticket Type"] || firstLine["Ticket Type"] || "",
+      ticket["Created On"] || ticket.CreatedOn || firstLine["Created On"] || "",
+      ticket["Claim Approved On"] || ticket["Claim Approved Date"] || ticket["Approved On"] || firstLine["Claim Approved On"] || "",
+      ticket["Changed On"] || ticket.ChangedOn || "",
+      delivery.date ? dateKeyFromDate(delivery.date) : "",
+      goodReceive.date ? dateKeyFromDate(goodReceive.date) : "",
+      ticket["Posting Date"] || firstLine["Posting Date"] || "",
+      ticket["Date of Purchase"] || firstLine["Date of Purchase"] || "",
+      round(getWarrantyCost(ticketSource), 2),
+      normalizedChassis(ticket) || clean(firstLine["Chassis Number"] || firstLine["Matched Chassis"]),
+      ticket["Serial ID"] || ticket.SerialID || firstLine["Serial ID"] || "",
+      ticket["Dealer Name"] || firstLine["Dealer Name"] || "",
+      ticket["Repair Shop"] || ticket["Repair Shop Name"] || ticket["Service Technician"] || "",
+      lines.length,
+      uniqueJoin(lines.map(line => line.Material)),
+      uniqueJoin(lines.map(line => normalizePoForDisplay(line["ERP Purchase Order"] || line["ERP Purchase Order ID"] || line["Purchase Order"] || ""))),
+      uniqueJoin(lines.map(line => line["Sales Order"])),
+      round(orderQty, 2),
+      round(lineCost, 2),
+      uniqueJoin(lines.map(line => line["Item Rejection Status"] || line["Rejection Reason"])),
     ];
   }
 
@@ -6015,7 +6124,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       lines.length ? "Y" : "N",
       lines.length,
       uniqueJoin(lines.map(line => clean(line["Part Category"] || "Other"))),
-      uniqueJoin(lines.map(line => normalizeComponentLabel(line["Matched Keyword"] || line["Part Category"] || "Other", line["Part Category"] || "Other"))),
+      uniqueJoin(lines.map(line => normalizeComponentLabel(line["Matched Keyword"] || line["Part Category"] || "Other", line["Part Category"] || "Other", line.Description))),
       uniqueJoin(lines.map(line => line.Material)),
       uniqueJoin(lines.map(line => line.Description), 12),
       uniqueJoin(lines.map(line => normalizePoForDisplay(line["ERP Purchase Order"] || line["ERP Purchase Order ID"] || line["Purchase Order"] || ""))),
@@ -6031,35 +6140,62 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (overlay) overlay.classList.add("show");
     const overlayTitle = $("loadingOverlayTitle");
     const overlaySub = $("loadingOverlaySub");
-    if (overlayTitle) overlayTitle.textContent = "Preparing CSV...";
-    const basis = partsDateBasis();
-    const basisText = "created in";
-    if (overlaySub) overlaySub.textContent = `Exporting tickets ${basisText} 2026 only, without Top 10 workbook calculations.`;
+    if (overlayTitle) overlayTitle.textContent = "Preparing Excel...";
+    if (overlaySub) overlaySub.textContent = "Building one sheet for each current Top 10 component.";
     try {
       await loadPartsClassifiedRows();
-      await ensureTicketRowLookupForExport({ preferFirebase:true });
-      const scope = "ALL";
-      const selected = "ALL";
-      const year = 2026;
-      const linesByTicket = buildClassifiedLinesByTicket();
-      const tickets = fastExportTicketRows(year, scope, selected, basis);
-      if (!tickets.length) {
-        alert(`No tickets ${basisText} ${year} were available to export.`);
+      if (!state.partsFailureSummary) {
+        await loadPartsFailureSummary();
+      }
+      try {
+        await withTimeout(loadPartsTicketCosts(), 8000, "Parts ticket cost cache");
+      } catch (err) {
+        console.warn("Parts ticket cost cache was slow; exporting with classified rows only.", err);
+      }
+      try {
+        await withTimeout(ensureTicketRowLookupForExport({ preferFirebase:false }), 8000, "Local ticket lookup for export");
+      } catch (err) {
+        console.warn("Ticket lookup was slow; exporting with classified row detail only.", err);
+      }
+      const topComponents = currentTopComponentRows(10);
+      const groups = topComponentCsvGroups(topComponents);
+      const rowCount = groups.reduce((sum, group) => sum + group.rows.length, 0);
+      if (!rowCount) {
+        alert("No component detail matched the current Top 10 Failure Components filters.");
         return;
       }
-      const rows = [
-        [
-          "Ticket ID","Series","Claim Scope","Status","Claim Type","Created On","Claim Approved On","Changed On",
-          "Posting Date","Date of Purchase","Warranty Cost AUD",
-          "Chassis","Serial ID","Dealer","Repairer","Has Classified Part","Classified Part Lines",
-          "Part Categories","Components","Materials","Descriptions","Purchase Orders","Sales Orders",
-          "Order Qty","Preferred Line Cost AUD","Item Rejection Status",
-        ],
-        ...tickets.map(ticket => fastTicketCsvRow(ticket, linesByTicket)),
+      const scope = componentScope();
+      const selected = state.selected === "ALL" ? "all_series" : String(state.selected || "all");
+      const month = selectedPartsMonth();
+      const header = [
+        "Component Rank","Component","Component Tickets On Page","Component Lines On Page","Component Cost AUD On Page","Part Categories","Descriptions",
+        "Ticket ID","Series","Claim Scope","Status","Claim Type","Created On","Claim Approved On","Changed On",
+        "PGI Date","Good Receive Date","Posting Date","Date of Purchase","Warranty Cost AUD",
+        "Chassis","Serial ID","Dealer","Repairer","Matched Component Lines",
+        "Materials","Purchase Orders","Sales Orders","Order Qty","Preferred Line Cost AUD","Item Rejection Status",
       ];
+      const sheets = groups.map(group => ({
+        name:componentCsvSheetName(group.rank, group.component),
+        rows:[
+          header,
+          ...group.rows.map(([ticketId, lines]) => {
+            const row = topComponentCsvRow(group, ticketId, lines);
+            return [row[0], row[2], ...row.slice(3)];
+          }),
+        ],
+      }));
+      const xml = buildExcelXml(sheets);
+      const blob = new Blob([xml], { type:"application/vnd.ms-excel;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
       const stamp = new Date().toISOString().slice(0,10).replace(/-/g,"");
-      const basisName = "created";
-      downloadCsv(`parts_tickets_${basisName}_${year}_all_${stamp}.csv`, rows);
+      const seriesName = selected.replace(/[^a-z0-9]+/gi,"_").replace(/^_+|_+$/g,"").toLowerCase() || "all_series";
+      const scopeName = String(scope || "all").replace(/[^a-z0-9]+/gi,"_").toLowerCase();
+      const monthName = String(month || "all").replace(/[^a-z0-9]+/gi,"_").toLowerCase();
+      a.href = url;
+      a.download = `top_failure_components_split_${seriesName}_${scopeName}_${monthName}_${stamp}.xls`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 1000);
     } finally {
       if (overlay) overlay.classList.remove("show");
     }
@@ -6097,9 +6233,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         if (scope !== "ALL" && classifiedRowScope(line) !== scope) continue;
         const series = classifiedRowSeries(line) || "";
         if (state.selected !== "ALL" && series !== state.selected) continue;
-        const component = normalizeComponentLabel(line["Matched Keyword"] || line["Part Category"] || "Other", line["Part Category"] || "Other");
+        const component = normalizeComponentLabel(line["Matched Keyword"] || line["Part Category"] || "Other", line["Part Category"] || "Other", line.Description);
         const category = clean(line["Part Category"] || "Other") || "Other";
-        const key = componentKey(component, category);
+        const key = componentKey(component, category, line.Description);
         const keyMatched = componentExportMatchKeys(component, category).some(matchKey => componentKeys.has(matchKey));
         if (componentKeys.size && !componentKeys.has(key) && !keyMatched) continue;
         const ticketId = clean(line["Ticket ID"]);
@@ -6511,6 +6647,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   const COMPONENT_LABEL_ALIASES = new Map([
+    ["external grab handle", "External Grab Handle"],
+    ["external grab handles", "External Grab Handle"],
+    ["grab handle external", "External Grab Handle"],
+    ["grab handles external", "External Grab Handle"],
     ["tail light", "Tail Light"],
     ["tail lights", "Tail Light"],
     ["taillight", "Tail Light"],
@@ -6535,7 +6675,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     ["power outlets", "Power Outlet"],
   ]);
 
-  function normalizeComponentLabel(text, category){
+  function normalizeComponentLabel(text, category, description){
     const raw = clean(text);
     if (!raw) return titleCaseText(category || "Other");
     const normalized = raw
@@ -6544,6 +6684,14 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       .replace(/[^a-z0-9]+/g, " ")
       .replace(/\s+/g, " ")
       .trim();
+    const context = [normalized, clean(description).toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, " ")]
+      .filter(Boolean)
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (/\bexternal\s+grab\s+handles?\b/.test(context) || /\bgrab\s+handles?\s+external\b/.test(context)) {
+      return "External Grab Handle";
+    }
     const exact = COMPONENT_LABEL_ALIASES.get(normalized);
     if (exact) return exact;
     if (normalized.endsWith("s")) {

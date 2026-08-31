@@ -19,6 +19,10 @@ const ENABLE_SAFETY = false;
 const OTHER_LABEL = "Other";
 const AI_MODEL_DEFAULT = "gemini-2.0-flash";
 const COMPONENT_KEYWORD_ALIASES = new Map([
+  ["external grab handle", "External Grab Handle"],
+  ["external grab handles", "External Grab Handle"],
+  ["grab handle external", "External Grab Handle"],
+  ["grab handles external", "External Grab Handle"],
   ["tail light", "Tail Light"],
   ["tail lights", "Tail Light"],
   ["taillight", "Tail Light"],
@@ -257,13 +261,26 @@ for (let i = 0; i < updatedRows.length; i += 1) {
   const currentCategory = cleanCell(row[categoryIdx]);
   const currentKeyword = cleanCell(row[keywordIdx]);
   const description = cleanCell(row[descIdx]);
+  const externalGrabHandleHit = externalGrabHandleClassification(description, categories);
 
   if (currentCategory) {
-    row[categoryIdx] = translateCategoryLabel(currentCategory);
+    row[categoryIdx] = externalGrabHandleHit
+      ? externalGrabHandleHit.label
+      : translateCategoryLabel(currentCategory);
     row[keywordIdx] = currentKeyword
       ? canonicalizeMatchedKeyword(currentKeyword, row[categoryIdx], description)
       : "";
+    if (externalGrabHandleHit) {
+      row[keywordIdx] = externalGrabHandleHit.keyword;
+    }
     preservedCount += 1;
+    continue;
+  }
+
+  if (externalGrabHandleHit) {
+    row[categoryIdx] = externalGrabHandleHit.label;
+    row[keywordIdx] = externalGrabHandleHit.keyword;
+    keywordMatchCount += 1;
     continue;
   }
 
@@ -722,10 +739,30 @@ function titleCaseKeyword(value) {
   });
 }
 
+function isExternalGrabHandleText(...values) {
+  const normalized = normalizeKeywordKey(values.filter(Boolean).join(" "));
+  return /\bexternal\s+grab\s+handles?\b/.test(normalized)
+    || /\bgrab\s+handles?\s+external\b/.test(normalized);
+}
+
+function externalGrabHandleClassification(description, categories = []) {
+  if (!isExternalGrabHandleText(description)) {
+    return null;
+  }
+  const category = categories.find((item) => item.label === "Hardware / Installation")
+    || categories.find((item) => item.label === "Doors / Hatches")
+    || { label: "Hardware / Installation" };
+  return { label: category.label, keyword: "External Grab Handle" };
+}
+
 function canonicalizeMatchedKeyword(keyword, categoryLabel = "", description = "") {
   const rawKeyword = cleanCell(keyword);
   const fallback = rawKeyword || cleanCell(description);
   if (!fallback) return "";
+
+  if (isExternalGrabHandleText(rawKeyword, description)) {
+    return "External Grab Handle";
+  }
 
   const normalized = normalizeKeywordKey(fallback);
   const exact = COMPONENT_KEYWORD_ALIASES.get(normalized);
@@ -958,6 +995,11 @@ function normalizeCategories(rawCategories) {
 }
 
 function classifyByKeywords(description, categories) {
+  const externalGrabHandleHit = externalGrabHandleClassification(description, categories);
+  if (externalGrabHandleHit) {
+    return externalGrabHandleHit;
+  }
+
   const normalizedDescription = normalizeForMatch(description);
   for (const category of categories) {
     for (const keyword of category.keywords || []) {

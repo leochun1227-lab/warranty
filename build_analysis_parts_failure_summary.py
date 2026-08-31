@@ -29,6 +29,10 @@ SERIES_ORDER = ["SRC", "SRH", "SRT", "SRM", "SRP", "SRL", "SRV", "SRS", "NG"]
 TRACKED_SERIES = {code.upper() for code in SERIES_ORDER}
 EXCLUDED_SERIES = {"UNKNOWN", "RO", "SR", "SCR", "STR", "RVV", "RR", "SPV", "SRO", "SEV", "RRC", "VRV"}
 COMPONENT_ALIASES = {
+    "external grab handle": "External Grab Handle",
+    "external grab handles": "External Grab Handle",
+    "grab handle external": "External Grab Handle",
+    "grab handles external": "External Grab Handle",
     "tail light": "Tail Light",
     "tail lights": "Tail Light",
     "taillight": "Tail Light",
@@ -58,6 +62,19 @@ def clean(value):
     if value is None:
         return ""
     return str(value).strip()
+
+
+def normalize_component_text(*values):
+    text = " ".join(clean(value) for value in values if clean(value))
+    return re.sub(r"[^a-z0-9]+", " ", text.lower()).strip()
+
+
+def is_external_grab_handle(*values):
+    normalized = normalize_component_text(*values)
+    return bool(
+        re.search(r"\bexternal\s+grab\s+handles?\b", normalized)
+        or re.search(r"\bgrab\s+handles?\s+external\b", normalized)
+    )
 
 
 def write_text_atomic(path: Path, text: str) -> None:
@@ -302,12 +319,15 @@ def title_case(text):
     return "".join(out)
 
 
-def normalize_component_label(component, category=""):
+def normalize_component_label(component, category="", description=""):
     value = clean(component)
     if not value:
         return title_case(category or "Other")
 
-    normalized = re.sub(r"[^a-z0-9]+", " ", value.lower()).strip()
+    if is_external_grab_handle(value, description):
+        return "External Grab Handle"
+
+    normalized = normalize_component_text(value)
     if normalized in COMPONENT_ALIASES:
         return COMPONENT_ALIASES[normalized]
     if normalized.endswith("s") and normalized[:-1] in COMPONENT_ALIASES:
@@ -1071,7 +1091,8 @@ def main():
         keyword = clean(get_value(row, parts_index, "Matched Keyword"))
         category = clean(get_value(row, parts_index, "Part Category")) or "Other"
         component = keyword or category or "Other"
-        component_label = normalize_component_label(component, category)
+        description = clean(get_value(row, parts_index, "Description"))
+        component_label = normalize_component_label(component, category, description)
         cost = parse_amount(get_value(row, parts_index, "Preferred Line Cost (AUD)"))
         material_qty = parse_amount(get_value(row, parts_index, "Order Qty"))
         total_cost += cost

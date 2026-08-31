@@ -3294,8 +3294,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   // ------- Component key + index (uses partsClassifiedRows) -------
-  function componentKey(component, category){
-    return `${clean(normalizeComponentLabel(component, category)).toLowerCase()}||${clean(category || "Other").toLowerCase()}`;
+  function componentKey(component, category, description){
+    return `${clean(normalizeComponentLabel(component, category, description)).toLowerCase()}||${clean(category || "Other").toLowerCase()}`;
   }
   function buildPartsClassifiedIndex(){
     const rows = state.partsClassifiedRows || [];
@@ -3307,7 +3307,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       if (includedTicketIds instanceof Set && tid && !includedTicketIds.has(tid)) continue;
       const kw = clean(r["Matched Keyword"]);
       const cat = clean(r["Part Category"]);
-      const key = componentKey(kw || "Other", cat || "Other");
+      const key = componentKey(kw || "Other", cat || "Other", r.Description);
       if (!byKey.has(key)) byKey.set(key, []);
       byKey.get(key).push(r);
       if (tid) {
@@ -5495,6 +5495,10 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   const COMPONENT_LABEL_ALIASES = new Map([
+    ["external grab handle", "External Grab Handle"],
+    ["external grab handles", "External Grab Handle"],
+    ["grab handle external", "External Grab Handle"],
+    ["grab handles external", "External Grab Handle"],
     ["tail light", "Tail Light"],
     ["tail lights", "Tail Light"],
     ["taillight", "Tail Light"],
@@ -5519,7 +5523,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     ["power outlets", "Power Outlet"],
   ]);
 
-  function normalizeComponentLabel(text, category){
+  function normalizeComponentLabel(text, category, description){
     const raw = clean(text);
     if (!raw) return titleCaseText(category || "Other");
     const normalized = raw
@@ -5528,6 +5532,14 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       .replace(/[^a-z0-9]+/g, " ")
       .replace(/\s+/g, " ")
       .trim();
+    const context = [normalized, clean(description).toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, " ")]
+      .filter(Boolean)
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
+    if (/\bexternal\s+grab\s+handles?\b/.test(context) || /\bgrab\s+handles?\s+external\b/.test(context)) {
+      return "External Grab Handle";
+    }
     const exact = COMPONENT_LABEL_ALIASES.get(normalized);
     if (exact) return exact;
     if (normalized.endsWith("s")) {
