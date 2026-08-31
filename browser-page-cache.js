@@ -5,8 +5,9 @@
   const STORE_NAME = "pages";
   const DB_VERSION = 1;
   const MAX_PAGE_CACHE_BYTES = 12 * 1024 * 1024;
+  const MAX_LARGE_CACHE_BYTES = 96 * 1024 * 1024;
   const MAX_CACHE_RECORDS = 24;
-  const MAX_CACHE_TOTAL_BYTES = 48 * 1024 * 1024;
+  const MAX_CACHE_TOTAL_BYTES = 192 * 1024 * 1024;
   const VERSION_FETCH_TIMEOUT_MS = 8000;
   const DEFAULT_VERSION_URL = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/ctmTicketStatusMonitorV44/analytics/meta/generatedAt.json";
   const DELIVERY_VERSION_URL = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/deliveryFlowHistory/latestSyncAt.json";
@@ -157,13 +158,14 @@
     return record ? record.value || null : null;
   }
 
-  async function setPage(key, version, value){
+  async function setPageWithLimit(key, version, value, maxBytes){
     if(!key || !version || value == null) return false;
     try{
       await new Promise(resolve => setTimeout(resolve, 0));
       const valueBytes = estimateJsonBytes(value);
-      if(valueBytes > MAX_PAGE_CACHE_BYTES){
-        console.warn(`Page cache write skipped for ${key}: ${Math.round(valueBytes/1024/1024*10)/10}MB exceeds ${Math.round(MAX_PAGE_CACHE_BYTES/1024/1024)}MB limit`);
+      const limit = Number(maxBytes || MAX_PAGE_CACHE_BYTES);
+      if(valueBytes > limit){
+        console.warn(`Page cache write skipped for ${key}: ${Math.round(valueBytes/1024/1024*10)/10}MB exceeds ${Math.round(limit/1024/1024)}MB limit`);
         return false;
       }
       await putRecord({ key, version, savedAt:new Date().toISOString(), valueBytes, value });
@@ -173,6 +175,14 @@
       console.warn("Page cache write failed", err);
       return false;
     }
+  }
+
+  async function setPage(key, version, value){
+    return setPageWithLimit(key, version, value, MAX_PAGE_CACHE_BYTES);
+  }
+
+  async function setLargePage(key, version, value){
+    return setPageWithLimit(key, version, value, MAX_LARGE_CACHE_BYTES);
   }
 
   function formatVersion(version){
@@ -228,7 +238,9 @@
     getPageRecord,
     getPage,
     setPage,
+    setLargePage,
     maxPageCacheBytes: MAX_PAGE_CACHE_BYTES,
+    maxLargeCacheBytes: MAX_LARGE_CACHE_BYTES,
     showBadge,
     formatVersion
   };

@@ -26,10 +26,13 @@ ASSETS = {
     "timeline/completion2026": ROOT / "generated_exports" / "ticket_timeline_completion_analytics_2026.json",
     "modelSeries/partsFailureSummary": ROOT / "outputs" / "analysis_parts_failure_light.json",
     "modelSeries/partsDerivedCache": ROOT / "outputs" / "analysis_parts_derived_cache.json",
+    "modelSeries/partsTop10Export/index": ROOT / "outputs" / "parts_top10_export_payload" / "index.json",
     "modelSeries/modelMtmCache": ROOT / "outputs" / "analysis_model_mtm_cache.json",
     "repairers/fast": ROOT / "outputs" / "repairers_2026" / "repairers_2026_fast.json",
     "repairers/light": ROOT / "outputs" / "repairers_2026" / "repairers_2026_light.json",
 }
+
+PARTS_TOP10_EXPORT_GROUPS = ROOT / "outputs" / "parts_top10_export_payload" / "groups"
 
 
 def clean(value: Any) -> str:
@@ -85,7 +88,38 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--firebase-db-url", default=DEFAULT_DB_URL)
     parser.add_argument("--firebase-sa-path", default=DEFAULT_SA_PATH)
     parser.add_argument("--monitor-root", default=DEFAULT_MONITOR_ROOT)
+    parser.add_argument(
+        "--only-parts-top10-export",
+        action="store_true",
+        help="Only upload prebuilt Top 10 parts export index/groups.",
+    )
     return parser.parse_args()
+
+
+def upload_json_tree(base_ref: Any, asset_key: str, root_dir: Path) -> dict[str, Any]:
+    info: dict[str, Any] = {"key": asset_key, "path": root_dir.relative_to(ROOT).as_posix()}
+    if not root_dir.exists():
+        info.update({"ok": False, "reason": "missing"})
+        return info
+
+    files = sorted(root_dir.rglob("*.json"))
+    target_ref = base_ref.child(asset_key)
+    total_bytes = 0
+    uploaded = 0
+    for path in files:
+        rel = path.relative_to(root_dir).with_suffix("").as_posix()
+        payload = firebase_safe_json(load_json(path))
+        target_ref.child(rel).set(payload)
+        uploaded += 1
+        total_bytes += path.stat().st_size
+
+    info.update({
+        "ok": True,
+        "files": uploaded,
+        "bytes": total_bytes,
+        "uploadedAt": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+    })
+    return info
 
 
 def main() -> int:
@@ -95,7 +129,12 @@ def main() -> int:
 
     base_ref = db.reference(f"{monitor_root}/analytics/pageAssets")
     uploaded = []
-    for asset_key, path in ASSETS.items():
+    assets = {
+        key: path
+        for key, path in ASSETS.items()
+        if not args.only_parts_top10_export or key == "modelSeries/partsTop10Export/index"
+    }
+    for asset_key, path in assets.items():
         info = {"key": asset_key}
         if not path.exists():
             info.update({"ok": False, "reason": "missing", "path": str(path)})
@@ -111,17 +150,25 @@ def main() -> int:
         })
         uploaded.append(info)
 
+    uploaded.append(upload_json_tree(base_ref, "modelSeries/partsTop10Export/groups", PARTS_TOP10_EXPORT_GROUPS))
+
     generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     meta = {
         "generatedAt": generated_at,
         "source": "sync_dashboard_assets_to_firebase.py",
         "assets": uploaded,
     }
-    base_ref.child("meta").set(meta)
-    db.reference(f"{monitor_root}/analytics/meta").update({
-        "generatedAt": generated_at,
-        "pageAssetsSyncedAt": generated_at,
-    })
+    meta_key = "partsTop10ExportMeta" if args.only_parts_top10_export else "meta"
+    base_ref.child(meta_key).set(meta)
+    if args.only_parts_top10_export:
+        db.reference(f"{monitor_root}/analytics/meta").update({
+            "partsTop10ExportSyncedAt": generated_at,
+        })
+    else:
+        db.reference(f"{monitor_root}/analytics/meta").update({
+            "generatedAt": generated_at,
+            "pageAssetsSyncedAt": generated_at,
+        })
     print(f"Synced dashboard page assets to {monitor_root}/analytics/pageAssets")
     for info in uploaded:
         print(f"- {info.get('key')}: {'ok' if info.get('ok') else info.get('reason')}")

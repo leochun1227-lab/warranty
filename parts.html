@@ -1203,6 +1203,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const FB_PAGE_ASSETS_ROOT = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/ctmTicketStatusMonitorV44/analytics/pageAssets";
   const FB_PARTS_FAILURE_SUMMARY = `${FB_PAGE_ASSETS_ROOT}/modelSeries/partsFailureSummary.json`;
   const FB_PARTS_DERIVED_CACHE = `${FB_PAGE_ASSETS_ROOT}/modelSeries/partsDerivedCache.json`;
+  const FB_PARTS_TOP10_EXPORT_ROOT = `${FB_PAGE_ASSETS_ROOT}/modelSeries/partsTop10Export`;
   const FB_TEAM_MONTHLY_ROOT = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/ctmTicketStatusMonitorV44/analytics/teamDashboard/views/all";
   const REPAIRERS_ANALYSIS_JSON = "outputs/repairers_2026/repairers_2026_data.json";
   const PARTS_COST_CACHE = "outputs/analysis_parts_ticket_cost_map.json";
@@ -1212,6 +1213,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const PARTS_FAILURE_LIGHT_CACHE = "outputs/analysis_parts_failure_light.json";
   const PARTS_FAILURE_LIGHT_JS = "outputs/analysis_parts_failure_light.js";
   const PARTS_DERIVED_CACHE = "outputs/analysis_parts_derived_cache.json";
+  const PARTS_TOP10_EXPORT_ROOT = "outputs/parts_top10_export_payload";
   const PARTS_PRECOMPUTED_ASSET_VERSION = "20260814-pgi-month-batch-v1";
   // Meta lives at a stable path and points at the current dated CSV folder.
   // We read meta first so the CSV path stays fresh across fetch-driven rebuilds.
@@ -1316,11 +1318,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   };
 
   const ANALYSIS_TIMEOUT_MS = 15000;
-  const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v28-created-on-raw-ticket-no-pdi";
+  const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v29-created-on-raw-ticket-no-pdi-derived-top10-cache";
   const ANALYSIS_PAGE_CACHE_KEY = `analysis:parts-failure-components:${ANALYSIS_PAGE_CACHE_SCHEMA}`;
   const ANALYSIS_PAGE_LATEST_CACHE_KEY = `${ANALYSIS_PAGE_CACHE_KEY}:latest`;
   const ANALYSIS_PAGE_LATEST_CACHE_VERSION = "latest";
   const ANALYSIS_PAGE_CACHE_ENABLED = true;
+  const PARTS_CLASSIFIED_ROWS_CACHE_SCHEMA = "parts-classified-rows-v2";
+  const PARTS_CLASSIFIED_ROWS_CACHE_KEY = `analysis:${PARTS_CLASSIFIED_ROWS_CACHE_SCHEMA}`;
   function mapEntries(map){ return map instanceof Map ? Array.from(map.entries()) : []; }
   function setValues(set){ return set instanceof Set ? Array.from(set.values()) : []; }
   function withTimeout(promise,timeoutMs,label){
@@ -4387,6 +4391,109 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     }).filter(row => componentTicketCount(row) > 0);
   }
 
+  const COMPONENT_CATEGORY_ALIASES = new Map([
+    ["lighting / reflectors", "Lighting / Reflectors"],
+    ["windows / hatches / blinds", "Windows / Hatches / Blinds"],
+    ["electrical / power / electronics", "Electrical / Power / Electronics"],
+    ["doors / hatches", "Doors / Hatches"],
+    ["chassis / wheels / towing", "Chassis / Wheels / Towing"],
+    ["hardware / installation", "Hardware / Installation"],
+    ["furniture / interior", "Furniture / Interior"],
+    ["appliances / hvac / gas", "Appliances / HVAC / Gas"],
+    ["body / exterior trim", "Body / Exterior Trim"],
+    ["water / plumbing / kitchen / bath", "Water / Plumbing / Kitchen / Bath"],
+    ["awning / shade", "Awning / Shade"],
+    ["storage / toolbox", "Storage / Toolbox"],
+    ["other", "Other"],
+  ]);
+
+  function normalizeCategoryLabelForDisplay(category){
+    const normalized = clean(category).toLowerCase().replace(/\s*\/\s*/g, " / ").replace(/\s+/g, " ").trim();
+    return COMPONENT_CATEGORY_ALIASES.get(normalized) || titleCaseText(clean(category) || "Other");
+  }
+
+  function getDerivedSeriesBucketExact(compKey, basis = partsDateBasis(), selected = state.selected){
+    const entry = getDerivedComponentEntry(compKey);
+    if (!entry) return null;
+    const basisKey = normalizePartsDateBasis(basis);
+    const bases = entry.bases || {};
+    const basisBucket = bases instanceof Map ? bases.get(basisKey) : bases[basisKey];
+    if (!basisBucket) return null;
+    const wanted = normalizeSeriesCode(selected || "ALL");
+    const seriesMap = basisBucket.series || {};
+    if (seriesMap instanceof Map) return seriesMap.get(wanted) || null;
+    return seriesMap[wanted] || null;
+  }
+
+  function derivedComponentRowsForSelection(selected = state.selected){
+    const cache = state.partsDerivedCache;
+    const byKey = cache && typeof cache === "object" ? cache.byKey : null;
+    if (!byKey || typeof byKey !== "object") return [];
+    const entries = byKey instanceof Map ? Array.from(byKey.entries()) : Object.entries(byKey);
+    const month = selectedPartsMonth();
+    const scope = componentScope();
+    const rows = [];
+    for (const [key, entry] of entries) {
+      const parts = String(key || "").split("||");
+      const rawComponent = clean(parts[0]);
+      const rawCategory = clean(parts[1]) || "Other";
+      if (!rawComponent || rawComponent.toLowerCase() === "other") continue;
+      const category = normalizeCategoryLabelForDisplay(rawCategory);
+      const component = normalizeComponentLabel(titleCaseText(rawComponent), category);
+      const compKey = componentKey(component, category);
+      const bucket = getDerivedSeriesBucketExact(compKey, partsDateBasis(), selected);
+      if (!bucket || !bucket.months) continue;
+      let tickets = 0;
+      let lineItems = 0;
+      let cost = 0;
+      const monthEntries = bucket.months instanceof Map ? bucket.months.entries() : Object.entries(bucket.months || {});
+      for (const [monthKey, monthBucket] of monthEntries) {
+        if (!partsMonthSelectionMatchesKey(monthKey, month)) continue;
+        tickets += scope === "ALL"
+          ? Number(monthBucket?.tickets) || 0
+          : Number(monthBucket?.scope?.[scope]) || 0;
+        lineItems += scope === "ALL"
+          ? Number(monthBucket?.lineItems) || 0
+          : Number(monthBucket?.scope?.[scope]) || 0;
+        cost += scope === "ALL"
+          ? Number(monthBucket?.cost) || 0
+          : Number(monthBucket?.scopeCost?.[scope]) || 0;
+      }
+      if (tickets <= 0) continue;
+      rows.push({
+        key: compKey,
+        component,
+        category,
+        tickets,
+        lineItems: lineItems || tickets,
+        cost:Number(cost.toFixed(3)),
+      });
+    }
+    return rows.sort((a,b) => componentTicketCount(b) - componentTicketCount(a)
+      || componentLineItems(b) - componentLineItems(a)
+      || (Number(b.cost)||0) - (Number(a.cost)||0)
+      || String(a.component).localeCompare(String(b.component)));
+  }
+
+  function mergeComponentCandidateRows(primaryRows, fallbackRows, limit = 10){
+    const grouped = new Map();
+    const add = row => {
+      if (!row) return;
+      const normalized = normalizeComponentPreviewRow(row);
+      if (!normalized || clean(normalized.component).toLowerCase() === "other") return;
+      const key = normalized.key || componentKey(normalized.component, normalized.category);
+      if (!grouped.has(key)) grouped.set(key, { ...normalized, key });
+    };
+    (Array.isArray(primaryRows) ? primaryRows : []).forEach(add);
+    (Array.isArray(fallbackRows) ? fallbackRows : []).forEach(add);
+    return Array.from(grouped.values())
+      .sort((a,b) => componentTicketCount(b) - componentTicketCount(a)
+        || componentLineItems(b) - componentLineItems(a)
+        || (Number(b.cost)||0) - (Number(a.cost)||0)
+        || String(a.component).localeCompare(String(b.component)))
+      .slice(0, limit);
+  }
+
   function componentRowsForSelection(summary, selected){
     const applyClassifiedStats = rows => {
       if (!Array.isArray(rows)) return [];
@@ -4409,7 +4516,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const month = selectedPartsMonth();
     const scopedBucket = selectedMonthSummaryPayload(componentScope(), month);
     if (scopedBucket) {
-      return applyClassifiedStats(componentRowsForSeriesWithinTopComponents(scopedBucket, selected));
+      const rows = componentRowsForSeriesWithinTopComponents(scopedBucket, selected);
+      const fallback = derivedComponentRowsForSelection(selected);
+      return applyClassifiedStats(selected === "ALL" && rows.length >= 10 ? rows : mergeComponentCandidateRows(rows, fallback, Math.max(10, rows.length)));
     }
     if (selected === "ALL") {
       return applyClassifiedStats(componentRowsFromBucket(summary.all));
@@ -6017,6 +6126,81 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     ];
   }
 
+  function top10ExportMonthKey(month = selectedPartsMonth()){
+    const value = clean(month);
+    if (!value || value === PARTS_MONTH_CURRENT_YEAR) return String(currentPartsYear());
+    return value;
+  }
+
+  function top10ExportPathPart(value){
+    return (clean(value) || "blank").replace(/[^a-z0-9_-]+/gi, "_");
+  }
+
+  function top10ExportGroupPath(){
+    const basis = normalizePartsDateBasis(partsDateBasis());
+    const scope = componentScope();
+    const month = top10ExportMonthKey();
+    const series = normalizeSeriesCode(state.selected || "ALL");
+    return [
+      "groups",
+      top10ExportPathPart(basis),
+      top10ExportPathPart(scope),
+      top10ExportPathPart(month),
+      `${top10ExportPathPart(series)}.json`,
+    ].join("/");
+  }
+
+  function top10ExportSources(){
+    const path = top10ExportGroupPath();
+    const local = { url: freshJsonUrl(`${PARTS_TOP10_EXPORT_ROOT}/${path}`), label: "local prebuilt export" };
+    const remote = { url: freshJsonUrl(`${FB_PARTS_TOP10_EXPORT_ROOT}/${path}`), label: "firebase prebuilt export" };
+    return IS_LOCAL_CONTEXT ? [local, remote] : [remote, local];
+  }
+
+  async function loadPrebuiltTop10ExportGroup(){
+    const errors = [];
+    for (const source of top10ExportSources()) {
+      try {
+        const r = await fetch(source.url, { cache:"no-store" });
+        if (!r.ok) throw new Error(`${source.label} HTTP ${r.status}`);
+        const payload = await r.json();
+        if (!payload || !Array.isArray(payload.sheets) || !payload.sheets.length) {
+          throw new Error(`${source.label} empty export payload`);
+        }
+        payload.sourceLabel = source.label;
+        return payload;
+      } catch (err) {
+        errors.push(err.message || String(err));
+      }
+    }
+    console.warn("Prebuilt Top 10 export unavailable; falling back to browser build:", errors);
+    return null;
+  }
+
+  function downloadTop10ExportWorkbook(payload){
+    const sheets = (payload?.sheets || []).map(sheet => ({
+      name: clean(sheet.name) || clean(sheet.component) || "Component",
+      rows:[
+        Array.isArray(sheet.headers) ? sheet.headers : [],
+        ...(Array.isArray(sheet.rows) ? sheet.rows : []),
+      ].filter(row => Array.isArray(row) && row.length),
+    })).filter(sheet => sheet.rows.length > 1);
+    if (!sheets.length) return false;
+    const xml = buildExcelXml(sheets);
+    const blob = new Blob([xml], { type:"application/vnd.ms-excel;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const stamp = new Date().toISOString().slice(0,10).replace(/-/g,"");
+    const seriesName = top10ExportPathPart(state.selected === "ALL" ? "all_series" : state.selected).toLowerCase();
+    const scopeName = top10ExportPathPart(componentScope()).toLowerCase();
+    const monthName = top10ExportPathPart(top10ExportMonthKey()).toLowerCase();
+    a.href = url;
+    a.download = `top_failure_components_split_${seriesName}_${scopeName}_${monthName}_${stamp}.xls`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 1000);
+    return true;
+  }
+
   function csvCell(value){
     let text = value == null ? "" : String(value);
     if (/^[=+\-@]/.test(text)) text = `\t${text}`;
@@ -6154,6 +6338,12 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (overlayTitle) overlayTitle.textContent = "Preparing Excel...";
     if (overlaySub) overlaySub.textContent = "Building one sheet for each current Top 10 component.";
     try {
+      const prebuilt = await loadPrebuiltTop10ExportGroup();
+      if (downloadTop10ExportWorkbook(prebuilt)) {
+        console.log(`Top 10 component export downloaded from ${prebuilt.sourceLabel || "prebuilt payload"}`);
+        return;
+      }
+      if (overlaySub) overlaySub.textContent = "Prebuilt export was not available; building from classified rows.";
       await loadPartsClassifiedRows();
       if (!state.partsFailureSummary) {
         await loadPartsFailureSummary();
@@ -6367,25 +6557,65 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     }
   }
 
+  function partsClassifiedRowsCacheVersion(meta, source = ""){
+    const generatedAt = clean(meta?.generatedAt);
+    const csvPath = clean(meta?.csvPath || source);
+    const rowCount = clean(meta?.rowCount);
+    if (generatedAt || csvPath || rowCount) {
+      return [PARTS_CLASSIFIED_ROWS_CACHE_SCHEMA, generatedAt, csvPath, rowCount].join("|");
+    }
+    return "";
+  }
+
+  async function readPartsClassifiedRowsCache(version){
+    if (!version || !window.WarrantyPageCache?.getPage) return null;
+    try {
+      const cached = await withTimeout(
+        window.WarrantyPageCache.getPage(PARTS_CLASSIFIED_ROWS_CACHE_KEY, version),
+        2500,
+        "Parts classified rows cache",
+      );
+      const rows = Array.isArray(cached?.rows) ? cached.rows : null;
+      if (!rows || !rows.length) return null;
+      state.partsClassifiedRows = rows;
+      state.partsClassifiedError = "";
+      state.partsClassifiedSource = cached.source || "indexeddb";
+      console.log(`Parts classified rows loaded from IndexedDB: ${rows.length} rows`);
+      return rows;
+    } catch (err) {
+      console.warn("Parts classified rows cache read skipped", err);
+      return null;
+    }
+  }
+
+  function storePartsClassifiedRows(rows, source, version){
+    state.partsClassifiedRows = Array.isArray(rows) ? rows : [];
+    state.partsClassifiedError = "";
+    state.partsClassifiedSource = source || "";
+    console.log(`Parts classified CSV loaded: ${state.partsClassifiedRows.length} rows from ${state.partsClassifiedSource || "unknown"}`);
+    if (version && window.WarrantyPageCache?.setLargePage && state.partsClassifiedRows.length) {
+      window.WarrantyPageCache
+        .setLargePage(PARTS_CLASSIFIED_ROWS_CACHE_KEY, version, {
+          source:state.partsClassifiedSource,
+          rows:state.partsClassifiedRows,
+        })
+        .catch(err => console.warn("Parts classified rows cache write failed", err));
+    }
+    return state.partsClassifiedRows;
+  }
+
   async function loadPartsClassifiedRows(){
     if (state.partsClassifiedRows) return state.partsClassifiedRows;
     const scriptCsvText = typeof globalThis.ANALYSIS_PARTS_CLASSIFIED_CSV_TEXT === "string"
       ? globalThis.ANALYSIS_PARTS_CLASSIFIED_CSV_TEXT
       : "";
-    if (IS_FILE_CONTEXT && scriptCsvText) {
-      const rows = rowsToObjects(parseCSV(scriptCsvText));
-      state.partsClassifiedRows = rows;
-      state.partsClassifiedError = "";
-      state.partsClassifiedSource = globalThis.ANALYSIS_PARTS_CLASSIFIED_SOURCE || "script";
-      console.log(`Parts classified CSV loaded from script: ${rows.length} rows`);
-      return state.partsClassifiedRows;
-    }
+    let meta = null;
     const attempts = [];
     // 1) Read meta.json -> get the canonical csvPath (rotated daily by the extract pipeline).
     try {
       const metaRes = await fetch(freshJsonUrl(PARTS_CLASSIFIED_META), { cache:"no-store" });
       if (metaRes.ok) {
-        const meta = await metaRes.json();
+        meta = await metaRes.json();
         if (meta && meta.csvPath) attempts.push(meta.csvPath);
       } else {
         attempts.push(`(meta HTTP ${metaRes.status})`);
@@ -6396,6 +6626,20 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     // 2) Try a flat top-level fallback that the rebuild pipeline also writes.
     attempts.push(PARTS_CLASSIFIED_CSV_FLAT);
 
+    const cacheVersion = partsClassifiedRowsCacheVersion(meta, scriptCsvText ? globalThis.ANALYSIS_PARTS_CLASSIFIED_SOURCE : "");
+    if (cacheVersion) {
+      const cachedRows = await readPartsClassifiedRowsCache(cacheVersion);
+      if (cachedRows) return cachedRows;
+    }
+
+    if (IS_FILE_CONTEXT && scriptCsvText) {
+      return storePartsClassifiedRows(
+        rowsToObjects(parseCSV(scriptCsvText)),
+        globalThis.ANALYSIS_PARTS_CLASSIFIED_SOURCE || "script",
+        cacheVersion,
+      );
+    }
+
     const tried = [];
     for (const url of attempts) {
       if (typeof url !== "string" || url.startsWith("(")) { tried.push({ url, ok:false, reason:url }); continue; }
@@ -6405,11 +6649,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         const text = await r.text();
         const rows = rowsToObjects(parseCSV(text));
         if (rows && rows.length) {
-          state.partsClassifiedRows = rows;
-          state.partsClassifiedError = "";
-          state.partsClassifiedSource = url;
-          console.log(`Parts classified CSV loaded: ${rows.length} rows from ${url}`);
-          return state.partsClassifiedRows;
+          return storePartsClassifiedRows(rows, url, cacheVersion || partsClassifiedRowsCacheVersion(meta, url));
         }
         tried.push({ url, ok:false, reason:"empty" });
       } catch (err) {
@@ -6417,12 +6657,11 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       }
     }
     if (scriptCsvText) {
-      const rows = rowsToObjects(parseCSV(scriptCsvText));
-      state.partsClassifiedRows = rows;
-      state.partsClassifiedError = "";
-      state.partsClassifiedSource = globalThis.ANALYSIS_PARTS_CLASSIFIED_SOURCE || "script";
-      console.log(`Parts classified CSV loaded from script fallback: ${rows.length} rows`);
-      return state.partsClassifiedRows;
+      return storePartsClassifiedRows(
+        rowsToObjects(parseCSV(scriptCsvText)),
+        globalThis.ANALYSIS_PARTS_CLASSIFIED_SOURCE || "script",
+        cacheVersion,
+      );
     }
     state.partsClassifiedRows = [];
     state.partsClassifiedError = tried;

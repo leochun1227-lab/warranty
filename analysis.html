@@ -1122,6 +1122,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const ANALYSIS_PAGE_CACHE_SCHEMA = "split-model-parts-v7";
   const ANALYSIS_PAGE_CACHE_KEY = `analysis:${IS_PARTS_PAGE ? "parts-failure-components" : "model-series"}:ticket-first-2026:${ANALYSIS_PAGE_CACHE_SCHEMA}`;
   const ANALYSIS_PAGE_CACHE_ENABLED = false;
+  const PARTS_CLASSIFIED_ROWS_CACHE_SCHEMA = "parts-classified-rows-v2";
+  const PARTS_CLASSIFIED_ROWS_CACHE_KEY = `analysis:${PARTS_CLASSIFIED_ROWS_CACHE_SCHEMA}`;
   if (!IS_PARTS_PAGE) document.querySelectorAll(".partsOnly,#partsComponentsSection").forEach(el => el.remove());
   function mapEntries(map){ return map instanceof Map ? Array.from(map.entries()) : []; }
   function setValues(set){ return set instanceof Set ? Array.from(set.values()) : []; }
@@ -5359,25 +5361,65 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     setTimeout(()=>URL.revokeObjectURL(url), 1000);
   }
 
+  function partsClassifiedRowsCacheVersion(meta, source = ""){
+    const generatedAt = clean(meta?.generatedAt);
+    const csvPath = clean(meta?.csvPath || source);
+    const rowCount = clean(meta?.rowCount);
+    if (generatedAt || csvPath || rowCount) {
+      return [PARTS_CLASSIFIED_ROWS_CACHE_SCHEMA, generatedAt, csvPath, rowCount].join("|");
+    }
+    return "";
+  }
+
+  async function readPartsClassifiedRowsCache(version){
+    if (!version || !window.WarrantyPageCache?.getPage) return null;
+    try {
+      const cached = await withTimeout(
+        window.WarrantyPageCache.getPage(PARTS_CLASSIFIED_ROWS_CACHE_KEY, version),
+        2500,
+        "Parts classified rows cache",
+      );
+      const rows = Array.isArray(cached?.rows) ? cached.rows : null;
+      if (!rows || !rows.length) return null;
+      state.partsClassifiedRows = rows;
+      state.partsClassifiedError = "";
+      state.partsClassifiedSource = cached.source || "indexeddb";
+      console.log(`Parts classified rows loaded from IndexedDB: ${rows.length} rows`);
+      return rows;
+    } catch (err) {
+      console.warn("Parts classified rows cache read skipped", err);
+      return null;
+    }
+  }
+
+  function storePartsClassifiedRows(rows, source, version){
+    state.partsClassifiedRows = Array.isArray(rows) ? rows : [];
+    state.partsClassifiedError = "";
+    state.partsClassifiedSource = source || "";
+    console.log(`Parts classified CSV loaded: ${state.partsClassifiedRows.length} rows from ${state.partsClassifiedSource || "unknown"}`);
+    if (version && window.WarrantyPageCache?.setLargePage && state.partsClassifiedRows.length) {
+      window.WarrantyPageCache
+        .setLargePage(PARTS_CLASSIFIED_ROWS_CACHE_KEY, version, {
+          source:state.partsClassifiedSource,
+          rows:state.partsClassifiedRows,
+        })
+        .catch(err => console.warn("Parts classified rows cache write failed", err));
+    }
+    return state.partsClassifiedRows;
+  }
+
   async function loadPartsClassifiedRows(){
     if (state.partsClassifiedRows) return state.partsClassifiedRows;
     const scriptCsvText = typeof globalThis.ANALYSIS_PARTS_CLASSIFIED_CSV_TEXT === "string"
       ? globalThis.ANALYSIS_PARTS_CLASSIFIED_CSV_TEXT
       : "";
-    if (IS_FILE_CONTEXT && scriptCsvText) {
-      const rows = rowsToObjects(parseCSV(scriptCsvText));
-      state.partsClassifiedRows = rows;
-      state.partsClassifiedError = "";
-      state.partsClassifiedSource = globalThis.ANALYSIS_PARTS_CLASSIFIED_SOURCE || "script";
-      console.log(`Parts classified CSV loaded from script: ${rows.length} rows`);
-      return state.partsClassifiedRows;
-    }
+    let meta = null;
     const attempts = [];
     // 1) Read meta.json -> get the canonical csvPath (rotated daily by the extract pipeline).
     try {
       const metaRes = await fetch(freshJsonUrl(PARTS_CLASSIFIED_META), { cache:"no-store" });
       if (metaRes.ok) {
-        const meta = await metaRes.json();
+        meta = await metaRes.json();
         if (meta && meta.csvPath) attempts.push(meta.csvPath);
       } else {
         attempts.push(`(meta HTTP ${metaRes.status})`);
@@ -5388,6 +5430,20 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     // 2) Try a flat top-level fallback that the rebuild pipeline also writes.
     attempts.push(PARTS_CLASSIFIED_CSV_FLAT);
 
+    const cacheVersion = partsClassifiedRowsCacheVersion(meta, scriptCsvText ? globalThis.ANALYSIS_PARTS_CLASSIFIED_SOURCE : "");
+    if (cacheVersion) {
+      const cachedRows = await readPartsClassifiedRowsCache(cacheVersion);
+      if (cachedRows) return cachedRows;
+    }
+
+    if (IS_FILE_CONTEXT && scriptCsvText) {
+      return storePartsClassifiedRows(
+        rowsToObjects(parseCSV(scriptCsvText)),
+        globalThis.ANALYSIS_PARTS_CLASSIFIED_SOURCE || "script",
+        cacheVersion,
+      );
+    }
+
     const tried = [];
     for (const url of attempts) {
       if (typeof url !== "string" || url.startsWith("(")) { tried.push({ url, ok:false, reason:url }); continue; }
@@ -5397,11 +5453,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         const text = await r.text();
         const rows = rowsToObjects(parseCSV(text));
         if (rows && rows.length) {
-          state.partsClassifiedRows = rows;
-          state.partsClassifiedError = "";
-          state.partsClassifiedSource = url;
-          console.log(`Parts classified CSV loaded: ${rows.length} rows from ${url}`);
-          return state.partsClassifiedRows;
+          return storePartsClassifiedRows(rows, url, cacheVersion || partsClassifiedRowsCacheVersion(meta, url));
         }
         tried.push({ url, ok:false, reason:"empty" });
       } catch (err) {
@@ -5409,12 +5461,11 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       }
     }
     if (scriptCsvText) {
-      const rows = rowsToObjects(parseCSV(scriptCsvText));
-      state.partsClassifiedRows = rows;
-      state.partsClassifiedError = "";
-      state.partsClassifiedSource = globalThis.ANALYSIS_PARTS_CLASSIFIED_SOURCE || "script";
-      console.log(`Parts classified CSV loaded from script fallback: ${rows.length} rows`);
-      return state.partsClassifiedRows;
+      return storePartsClassifiedRows(
+        rowsToObjects(parseCSV(scriptCsvText)),
+        globalThis.ANALYSIS_PARTS_CLASSIFIED_SOURCE || "script",
+        cacheVersion,
+      );
     }
     state.partsClassifiedRows = [];
     state.partsClassifiedError = tried;
