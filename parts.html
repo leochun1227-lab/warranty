@@ -1203,6 +1203,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const FB_PAGE_ASSETS_ROOT = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/ctmTicketStatusMonitorV44/analytics/pageAssets";
   const FB_PARTS_FAILURE_SUMMARY = `${FB_PAGE_ASSETS_ROOT}/modelSeries/partsFailureSummary.json`;
   const FB_PARTS_DERIVED_CACHE = `${FB_PAGE_ASSETS_ROOT}/modelSeries/partsDerivedCache.json`;
+  const FB_PARTS_FAST_VIEW_ROOT = `${FB_PAGE_ASSETS_ROOT}/modelSeries/partsFastView`;
   const FB_PARTS_TOP10_EXPORT_ROOT = `${FB_PAGE_ASSETS_ROOT}/modelSeries/partsTop10Export`;
   const FB_TEAM_MONTHLY_ROOT = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/ctmTicketStatusMonitorV44/analytics/teamDashboard/views/all";
   const REPAIRERS_ANALYSIS_JSON = "outputs/repairers_2026/repairers_2026_data.json";
@@ -1213,7 +1214,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const PARTS_FAILURE_LIGHT_CACHE = "outputs/analysis_parts_failure_light.json";
   const PARTS_FAILURE_LIGHT_JS = "outputs/analysis_parts_failure_light.js";
   const PARTS_DERIVED_CACHE = "outputs/analysis_parts_derived_cache.json";
+  const PARTS_FAST_VIEW_ROOT = "outputs/parts_fast_view_payload";
   const PARTS_TOP10_EXPORT_ROOT = "outputs/parts_top10_export_payload";
+  const PARTS_FAST_VIEW_INDEX = `${PARTS_FAST_VIEW_ROOT}/index.json`;
   const PARTS_PRECOMPUTED_ASSET_VERSION = "20260814-pgi-month-batch-v1";
   // Meta lives at a stable path and points at the current dated CSV folder.
   // We read meta first so the CSV path stays fresh across fetch-driven rebuilds.
@@ -1224,6 +1227,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const LEGACY_TICKET_CSV_URL = "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv";
   const IS_FILE_CONTEXT = location.protocol === "file:";
   const IS_LOCAL_CONTEXT = ["127.0.0.1", "localhost", ""].includes(location.hostname);
+  const IS_PARTS_PAGE = document.body.classList.contains("parts-page");
   const SERIES_ORDER = ["SRC","SRH","SRT","SRM","SRP","SRL","SRV","SRS","NG"];
   const TRACKED_SERIES = new Set(SERIES_ORDER.map(code => code.toUpperCase()));
   const EXCLUDED_SERIES = new Set(["UNKNOWN","RO","SR","SCR","STR","RVV","RR","SPV","SRO","SEV","RRC","VRV"]);
@@ -1311,6 +1315,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     compPreviewCat: "",
     analysisCacheVersion: "",
     partsDerivedCache: null,
+    partsFastViewGroup: null,
+    partsFastViewIndex: null,
     ticketTimingRowsCache: null,
     legacyTicketRowsCache: null,
     repairerAnalysisDetailsCache: null,
@@ -3299,6 +3305,29 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const normalizedComponent = clean(component) || "Other";
     const normalizedCategory = clean(category) || "Other";
     const compKey = componentKey(normalizedComponent, normalizedCategory);
+    const fastRows = fastViewComponentRows();
+    const fastRow = fastRows.find(row => (row.key || componentKey(row.component, row.category)) === compKey);
+    if (fastRow && Array.isArray(fastRow.trendRows) && fastRow.trendRows.length) {
+      return fastRow.trendRows
+        .map(point => {
+          const rawMonth = point.month;
+          const label = clean(point.label) || partsMonthLabel(rawMonth);
+          const parts = monthKeyParts(rawMonth);
+          return {
+            month:clean(rawMonth),
+            label,
+            shortLabel:clean(point.shortLabel) || label.replace(/\s+\d{4}$/,""),
+            year:point.year || (parts ? parts.y : ""),
+            tickets:Number(point.tickets) || 0,
+            cost:Number(point.cost) || 0,
+            lineItems:Number(point.lineItems) || Number(point.tickets) || 0,
+            failureAge:point.failureAge || null,
+          };
+        })
+        .filter(point => point.month)
+        .sort((a,b) => a.month.localeCompare(b.month))
+        .slice(-20);
+    }
     const scope = componentScope();
     const derivedBucket = getDerivedSeriesBucket(compKey, partsDateBasis(), state.selected);
     let points = [];
@@ -3466,6 +3495,35 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   function renderChips(){
     const month = selectedPartsMonth();
+    if (!state.partsFailureSummary && state.partsFastViewIndex) {
+      const seriesKeys = (Array.isArray(state.partsFastViewIndex.seriesOptions) ? state.partsFastViewIndex.seriesOptions : [])
+        .map(normalizeSeriesCode)
+        .filter(series => series && series !== "ALL" && isTrackedSeries(series) && !isExcludedSeries(series));
+      if (state.selected !== "ALL" && !seriesKeys.includes(normalizeSeriesCode(state.selected))) {
+        state.selected = "ALL";
+      }
+      const currentTotal = fastViewMatchesCurrentSelection(state.partsFastViewGroup)
+        ? Number(state.partsFastViewGroup?.totals?.tickets) || 0
+        : 0;
+      const options = [{ series:"ALL", label:"Top 10 tickets QTY", count:state.selected === "ALL" ? currentTotal : null }]
+        .concat(seriesKeys.map(series => ({
+          series,
+          label:series,
+          count:normalizeSeriesCode(state.selected) === series ? currentTotal : null
+        })));
+      const selectHtml = `<span class="seriesSelectWrap"><select class="seriesSelect" data-series-select aria-label="Top 10 component tickets by caravan model" title="Unique tickets in the current Top 10 components, split by caravan model">
+        ${options.map(option => {
+          const selected = state.selected === option.series ? " selected" : "";
+          const count = option.count == null ? "" : ` (${numFmt.format(option.count)})`;
+          return `<option value="${esc(option.series)}"${selected}>${esc(option.label)}${count}</option>`;
+        }).join("")}
+      </select><span class="partsTicketBadge">Fast view <b>${numFmt.format(currentTotal)}</b></span></span>`;
+      ["seriesChips","stickySeriesChips","timingSeriesChips"].forEach(id => {
+        const el = $(id);
+        if (el) el.innerHTML = selectHtml;
+      });
+      return;
+    }
     const totalPartsTickets = topComponentUnionTicketCount("ALL", 10);
     const seriesKeys = availableSeriesChipKeys();
     if (state.selected !== "ALL" && !seriesKeys.includes(normalizeSeriesCode(state.selected))) {
@@ -3497,6 +3555,33 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   function renderMonthButtons(){
     const target = $("monthButtons");
     if (!target) return;
+    if (!state.partsFailureSummary && state.partsFastViewIndex) {
+      const yearOptions = (Array.isArray(state.partsFastViewIndex.monthOptions) ? state.partsFastViewIndex.monthOptions : [])
+        .filter(value => /^\d{4}$/.test(String(value || "")))
+        .map(value => Number(value))
+        .filter(year => Number.isFinite(year) && year >= PARTS_REPORT_START_YEAR)
+        .sort((a,b) => b - a);
+      const fallbackYear = yearOptions.length ? yearOptions[0] : Math.max(new Date().getFullYear(), PARTS_REPORT_START_YEAR);
+      const selectedMonth = selectedPartsMonth();
+      const selectedYear = selectedMonth === PARTS_MONTH_CURRENT_YEAR
+        ? String(fallbackYear)
+        : (/^\d{4}$/.test(String(selectedMonth || "")) ? String(selectedMonth) : String(fallbackYear));
+      target.innerHTML = `<details class="monthDropdown" data-month-dropdown>
+        <summary class="monthDropdownButton" title="${esc(selectedYear)}">
+          <span>${esc(selectedYear)}</span>
+        </summary>
+        <div class="monthMenu">
+          ${yearOptions.map(year => {
+            const key = String(year);
+            const active = key === selectedYear ? " active" : "";
+            return `<button class="monthOption${active}" type="button" data-parts-month="${esc(key)}">
+              <span>${esc(key)}</span>
+            </button>`;
+          }).join("")}
+        </div>
+      </details>`;
+      return;
+    }
     if (!state.partsFailureSummary) {
       target.innerHTML = `<button class="monthDropdownButton" type="button" disabled>Loading year</button>`;
       return;
@@ -3740,12 +3825,13 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const monthTarget = $("compMonthLabel");
     if (monthTarget) monthTarget.textContent = partsMonthTitleText();
     if ($("compLabel")) $("compLabel").textContent = componentPanelLabel();
-    if (!summary) {
+    const fastRows = fastViewComponentRows();
+    if (!summary && !fastRows.length) {
       target.innerHTML = `<div class="empty">Parts classification summary not loaded.<br><small>${esc(state.partsFailureError || PARTS_FAILURE_SUMMARY_CACHE)}</small></div>`;
       if (previewTarget) previewTarget.innerHTML = `<div class="empty">Component preview will appear here once the summary loads.</div>`;
       return;
     }
-    let rows = componentRowsForSelection(summary, state.selected).slice();
+    let rows = fastRows.length ? fastRows.slice() : componentRowsForSelection(summary, state.selected).slice();
     if (!rows.length) {
       target.innerHTML = `<div class="empty">No components matched.</div>`;
       if (previewTarget) previewTarget.innerHTML = `<div class="empty">No component preview is available for the current filter.</div>`;
@@ -4494,6 +4580,25 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       .slice(0, limit);
   }
 
+  function fastViewMatchesCurrentSelection(group, selected = state.selected){
+    if (!group || typeof group !== "object") return false;
+    return normalizePartsDateBasis(group.basis) === normalizePartsDateBasis(partsDateBasis())
+      && clean(group.scope) === componentScope()
+      && clean(group.month) === top10ExportMonthKey()
+      && normalizeSeriesCode(group.series || "ALL") === normalizeSeriesCode(selected || "ALL");
+  }
+
+  function fastViewComponentRows(selected = state.selected){
+    const group = state.partsFastViewGroup;
+    if (!fastViewMatchesCurrentSelection(group, selected)) return [];
+    return (Array.isArray(group.topComponents) ? group.topComponents : [])
+      .map(row => ({
+        ...row,
+        key: row.key || componentKey(row.component, row.category),
+      }))
+      .filter(row => clean(row.component || row.name).toLowerCase() !== "other");
+  }
+
   function componentRowsForSelection(summary, selected){
     const applyClassifiedStats = rows => {
       if (!Array.isArray(rows)) return [];
@@ -4512,6 +4617,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         costShare: totalCost ? (Number(row?.cost) || 0) / totalCost : 0,
       }));
     };
+    const fastRows = fastViewComponentRows(selected);
+    if (fastRows.length) return applyClassifiedStats(fastRows);
     if (!summary) return [];
     const month = selectedPartsMonth();
     const scopedBucket = selectedMonthSummaryPayload(componentScope(), month);
@@ -5456,6 +5563,91 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     $("repairerCount").textContent = numFmt.format(state.repairers.filter(r=>r.tickets>=5).length);
   }
 
+  function renderPartsFastView(){
+    state.viewRows = [];
+    state.summary = [];
+    state.repairers = [];
+    renderScopeButtons();
+    renderMonthButtons();
+    renderChips();
+    renderComponents();
+    const totals = state.partsFastViewGroup?.totals || {};
+    const ticketTotal = Number(totals.tickets) || 0;
+    const seriesTotal = Math.max(0, (Array.isArray(state.partsFastViewIndex?.seriesOptions) ? state.partsFastViewIndex.seriesOptions.length : 1) - 1);
+    $("sourceCount").textContent = "-";
+    $("ticketCount").textContent = numFmt.format(ticketTotal);
+    $("seriesCount").textContent = seriesTotal ? numFmt.format(seriesTotal) : "-";
+    $("repairerCount").textContent = "-";
+    if (window.WarrantyPageCache) {
+      const generatedAt = state.partsFastViewGroup?.meta?.generatedAt || state.partsFastViewIndex?.meta?.generatedAt || "";
+      window.WarrantyPageCache.showBadge(generatedAt || "fast-view", "fast");
+    }
+  }
+
+  async function refreshPartsFastView(){
+    if (!IS_PARTS_PAGE) return false;
+    const payload = await loadPrebuiltPartsFastViewGroup();
+    if (!payload || !fastViewMatchesCurrentSelection(payload)) return false;
+    if (Array.isArray(state.rows) && state.rows.length) render();
+    else renderPartsFastView();
+    return true;
+  }
+
+  function hydratePartsFastViewBackground(versionPromise, cacheVersion = ""){
+    Promise.allSettled([
+      loadPrebuiltPartsFastViewIndex(),
+      loadPartsFailureSummary(),
+      loadPartsDerivedCache(),
+      loadWarrantyMonthlyCounts(),
+    ]).then(async () => {
+      let freshVersion = cacheVersion || state.analysisCacheVersion || "";
+      if (versionPromise) {
+        try {
+          freshVersion = await withTimeout(versionPromise, 2500, "Analysis cache version background refresh") || freshVersion;
+        } catch (err) {
+          console.warn("Analysis cache version background refresh failed", err);
+        }
+      }
+      state.analysisCacheVersion = freshVersion || state.analysisCacheVersion || "";
+      if (Array.isArray(state.rows) && state.rows.length) render();
+      else {
+        renderMonthButtons();
+        renderChips();
+        renderComponents();
+      }
+      if (freshVersion && window.WarrantyPageCache) window.WarrantyPageCache.showBadge(freshVersion, "fresh");
+    }).catch(err => console.warn("Parts fast view background hydration failed", err));
+  }
+
+  async function tryRenderPartsFastStartup(versionPromise, cacheVersion = ""){
+    if (!IS_PARTS_PAGE) return false;
+    const overlay = $("loadingOverlay");
+    const overlayTitle = $("loadingOverlayTitle");
+    const overlaySub = $("loadingOverlaySub");
+    const appShell = $("appShell");
+    if (overlay) overlay.classList.add("show");
+    if (appShell) appShell.classList.add("blurWhileLoading");
+    if (overlayTitle) overlayTitle.textContent = "Opening parts view...";
+    if (overlaySub) overlaySub.textContent = "Loading the prebuilt Top 10 component summary.";
+    try {
+      const [index, group] = await Promise.all([
+        loadPrebuiltPartsFastViewIndex(),
+        loadPrebuiltPartsFastViewGroup(),
+      ]);
+      if (!group) return false;
+      if (index) state.partsFastViewIndex = index;
+      renderPartsFastView();
+      hydratePartsFastViewBackground(versionPromise, cacheVersion);
+      return true;
+    } catch (err) {
+      console.warn("Parts fast startup failed; falling back to full analysis load:", err);
+      return false;
+    } finally {
+      if (overlay) overlay.classList.remove("show");
+      if (appShell) appShell.classList.remove("blurWhileLoading");
+    }
+  }
+
   function selectSeries(s){
     state.selected = !ENABLE_SERIES_SELECTION ? "ALL" : (s || "ALL");
     // regenerate insights because component-dominance rule depends on selection
@@ -5466,6 +5658,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     renderDetail();
     renderAnalystNote();
     renderComponents();
+    refreshPartsFastView();
     scheduleAnalysisPageSave();
   }
 
@@ -5473,6 +5666,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     if (!Object.prototype.hasOwnProperty.call(CLAIM_SCOPES, scope)) return;
     state.scope = scope;
     render();
+    refreshPartsFastView();
     scheduleAnalysisPageSave();
   }
 
@@ -5486,6 +5680,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     renderInsights();
     renderChips();
     renderComponents();
+    refreshPartsFastView();
     scheduleAnalysisPageSave();
   }
 
@@ -5892,8 +6087,9 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   function currentTopComponentRows(limit = 10, selected = state.selected){
     const summary = state.partsFailureSummary;
-    if (!summary) return [];
-    let rows = componentRowsForSelection(summary, selected).slice();
+    const fastRows = fastViewComponentRows(selected);
+    if (!summary && !fastRows.length) return [];
+    let rows = fastRows.length ? fastRows.slice() : componentRowsForSelection(summary, selected).slice();
     state.compMode = normalizeCompMode(state.compMode);
     rows.sort((a,b) => {
       const ar = Number(a.globalRank);
@@ -6155,6 +6351,62 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     const local = { url: freshJsonUrl(`${PARTS_TOP10_EXPORT_ROOT}/${path}`), label: "local prebuilt export" };
     const remote = { url: freshJsonUrl(`${FB_PARTS_TOP10_EXPORT_ROOT}/${path}`), label: "firebase prebuilt export" };
     return IS_LOCAL_CONTEXT ? [local, remote] : [remote, local];
+  }
+
+  function partsFastViewIndexSources(){
+    const local = { url: freshJsonUrl(PARTS_FAST_VIEW_INDEX), label: "local fast view index" };
+    const remote = { url: freshJsonUrl(`${FB_PARTS_FAST_VIEW_ROOT}/index.json`), label: "firebase fast view index" };
+    return IS_LOCAL_CONTEXT ? [local, remote] : [remote, local];
+  }
+
+  async function loadPrebuiltPartsFastViewIndex(){
+    if (state.partsFastViewIndex) return state.partsFastViewIndex;
+    const errors = [];
+    for (const source of partsFastViewIndexSources()) {
+      try {
+        const r = await fetch(source.url, { cache:"no-store" });
+        if (!r.ok) throw new Error(`${source.label} HTTP ${r.status}`);
+        const payload = await r.json();
+        if (!payload || !Array.isArray(payload.groups)) {
+          throw new Error(`${source.label} invalid fast view index`);
+        }
+        payload.sourceLabel = source.label;
+        state.partsFastViewIndex = payload;
+        return payload;
+      } catch (err) {
+        errors.push(err.message || String(err));
+      }
+    }
+    console.warn("Parts fast view index unavailable:", errors);
+    return null;
+  }
+
+  function partsFastViewSources(){
+    const path = top10ExportGroupPath();
+    const local = { url: freshJsonUrl(`${PARTS_FAST_VIEW_ROOT}/${path}`), label: "local fast view" };
+    const remote = { url: freshJsonUrl(`${FB_PARTS_FAST_VIEW_ROOT}/${path}`), label: "firebase fast view" };
+    return IS_LOCAL_CONTEXT ? [local, remote] : [remote, local];
+  }
+
+  async function loadPrebuiltPartsFastViewGroup(){
+    const errors = [];
+    for (const source of partsFastViewSources()) {
+      try {
+        const r = await fetch(source.url, { cache:"no-store" });
+        if (!r.ok) throw new Error(`${source.label} HTTP ${r.status}`);
+        const payload = await r.json();
+        if (!payload || !Array.isArray(payload.topComponents) || !payload.topComponents.length) {
+          throw new Error(`${source.label} empty fast view`);
+        }
+        payload.sourceLabel = source.label;
+        state.partsFastViewGroup = payload;
+        return payload;
+      } catch (err) {
+        errors.push(err.message || String(err));
+      }
+    }
+    console.warn("Parts fast view unavailable; falling back to full summary load:", errors);
+    return null;
   }
 
   async function loadPrebuiltTop10ExportGroup(){
@@ -7161,6 +7413,7 @@ ${worksheets}
 
   async function loadAll(forceRefresh=false){
     const cacheVersionPromise = analysisPageVersion();
+    if (!forceRefresh && await tryRenderPartsFastStartup(cacheVersionPromise)) return;
     if(ANALYSIS_PAGE_CACHE_ENABLED && !forceRefresh){
       try{
         if(await restoreFastAnalysisPageCache(cacheVersionPromise))return;

@@ -344,6 +344,7 @@ def main() -> int:
 
     sync_parts_outputs(parts_output_dir)
     run_command([sys.executable, "build_analysis_parts_failure_summary.py"], "Parts failure summary build", env=env)
+    run_command([sys.executable, "build_parts_fast_view_payload.py"], "Parts fast view payload build", env=env)
     run_command([sys.executable, "build_parts_top10_export_payload.py"], "Parts Top 10 export payload build", env=env)
     run_command([sys.executable, "export_ticket_timeline_segments_2025_2026.py"], "Ticket timeline export", env=env)
 

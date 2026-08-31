@@ -26,6 +26,7 @@ ASSETS = {
     "timeline/completion2026": ROOT / "generated_exports" / "ticket_timeline_completion_analytics_2026.json",
     "modelSeries/partsFailureSummary": ROOT / "outputs" / "analysis_parts_failure_light.json",
     "modelSeries/partsDerivedCache": ROOT / "outputs" / "analysis_parts_derived_cache.json",
+    "modelSeries/partsFastView/index": ROOT / "outputs" / "parts_fast_view_payload" / "index.json",
     "modelSeries/partsTop10Export/index": ROOT / "outputs" / "parts_top10_export_payload" / "index.json",
     "modelSeries/modelMtmCache": ROOT / "outputs" / "analysis_model_mtm_cache.json",
     "repairers/fast": ROOT / "outputs" / "repairers_2026" / "repairers_2026_fast.json",
@@ -33,6 +34,7 @@ ASSETS = {
 }
 
 PARTS_TOP10_EXPORT_GROUPS = ROOT / "outputs" / "parts_top10_export_payload" / "groups"
+PARTS_FAST_VIEW_GROUPS = ROOT / "outputs" / "parts_fast_view_payload" / "groups"
 
 
 def clean(value: Any) -> str:
@@ -93,6 +95,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Only upload prebuilt Top 10 parts export index/groups.",
     )
+    parser.add_argument(
+        "--only-parts-fast-view",
+        action="store_true",
+        help="Only upload the prebuilt Top 10 parts fast-view index/groups.",
+    )
     return parser.parse_args()
 
 
@@ -129,11 +136,14 @@ def main() -> int:
 
     base_ref = db.reference(f"{monitor_root}/analytics/pageAssets")
     uploaded = []
-    assets = {
-        key: path
-        for key, path in ASSETS.items()
-        if not args.only_parts_top10_export or key == "modelSeries/partsTop10Export/index"
-    }
+    if args.only_parts_top10_export and args.only_parts_fast_view:
+        raise SystemExit("Use only one --only-* upload mode at a time.")
+    if args.only_parts_top10_export:
+        assets = {"modelSeries/partsTop10Export/index": ASSETS["modelSeries/partsTop10Export/index"]}
+    elif args.only_parts_fast_view:
+        assets = {"modelSeries/partsFastView/index": ASSETS["modelSeries/partsFastView/index"]}
+    else:
+        assets = ASSETS
     for asset_key, path in assets.items():
         info = {"key": asset_key}
         if not path.exists():
@@ -150,7 +160,10 @@ def main() -> int:
         })
         uploaded.append(info)
 
-    uploaded.append(upload_json_tree(base_ref, "modelSeries/partsTop10Export/groups", PARTS_TOP10_EXPORT_GROUPS))
+    if args.only_parts_top10_export or not args.only_parts_fast_view:
+        uploaded.append(upload_json_tree(base_ref, "modelSeries/partsTop10Export/groups", PARTS_TOP10_EXPORT_GROUPS))
+    if args.only_parts_fast_view or not args.only_parts_top10_export:
+        uploaded.append(upload_json_tree(base_ref, "modelSeries/partsFastView/groups", PARTS_FAST_VIEW_GROUPS))
 
     generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     meta = {
@@ -158,11 +171,20 @@ def main() -> int:
         "source": "sync_dashboard_assets_to_firebase.py",
         "assets": uploaded,
     }
-    meta_key = "partsTop10ExportMeta" if args.only_parts_top10_export else "meta"
+    if args.only_parts_top10_export:
+        meta_key = "partsTop10ExportMeta"
+    elif args.only_parts_fast_view:
+        meta_key = "partsFastViewMeta"
+    else:
+        meta_key = "meta"
     base_ref.child(meta_key).set(meta)
     if args.only_parts_top10_export:
         db.reference(f"{monitor_root}/analytics/meta").update({
             "partsTop10ExportSyncedAt": generated_at,
+        })
+    elif args.only_parts_fast_view:
+        db.reference(f"{monitor_root}/analytics/meta").update({
+            "partsFastViewSyncedAt": generated_at,
         })
     else:
         db.reference(f"{monitor_root}/analytics/meta").update({
