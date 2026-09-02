@@ -39,6 +39,8 @@ ROLE_CODES = ["1001", "40", "43"]
 
 API_TOP = 1000
 API_SKIP_START = 0
+RECALL_CLAIMS_API_TOP = 20000
+RECALL_CLAIMS_API_SKIP_START = 0
 API_EXTRA_TAIL_PAGES = int(os.getenv("API_EXTRA_TAIL_PAGES", "3"))
 TIMEOUT = 60
 C4C_PAGE_RETRIES = max(1, int(os.getenv("C4C_PAGE_RETRIES", "4")))
@@ -1300,6 +1302,111 @@ def fetch_all_rows_for_role(role_code: str) -> List[Dict[str, Any]]:
     return role_rows_all
 
 
+def build_recall_claims_url(top: int, skip: int) -> str:
+    typecode = quote(RECALL_CLAIMS_TICKET_TYPE, safe="")
+    return BASE_URL.rstrip("/") + PATH + f"?$top={top}&$skip={skip}&$typecode={typecode}"
+
+
+def fetch_recall_claims_page(top: int, skip: int) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    url = build_recall_claims_url(top, skip)
+    last_err: BaseException | None = None
+
+    for attempt in range(1, C4C_PAGE_RETRIES + 1):
+        try:
+            session = get_thread_session()
+            r = session.get(
+                url,
+                auth=HTTPBasicAuth(USERNAME, PASSWORD),
+                headers={"Accept": "application/json"},
+                timeout=TIMEOUT,
+                verify=VERIFY_SSL,
+            )
+
+            if r.status_code != 200:
+                raise RuntimeError(
+                    f"[API] recall type={RECALL_CLAIMS_TICKET_TYPE} skip={skip} top={top} "
+                    f"HTTP {r.status_code} BODY={r.text[:500]}"
+                )
+
+            payload = r.json()
+            rows = list(payload.get("data", []))
+            meta = {
+                "pageSize": payload.get("pageSize"),
+                "pageNumber": payload.get("pageNumber"),
+                "count": payload.get("count"),
+                "totalCount": payload.get("totalCount"),
+            }
+            return rows, meta
+        except (requests.exceptions.Timeout, requests.exceptions.ConnectionError) as exc:
+            last_err = exc
+            close_thread_session()
+            if attempt >= C4C_PAGE_RETRIES:
+                break
+            wait = C4C_PAGE_RETRY_SLEEP_SECONDS * attempt
+            logger.warning(
+                "[API] recall type=%s skip=%s top=%s read/connect failed (try %s/%s), wait %.1fs: %s",
+                RECALL_CLAIMS_TICKET_TYPE,
+                skip,
+                top,
+                attempt,
+                C4C_PAGE_RETRIES,
+                wait,
+                exc,
+            )
+            if wait:
+                time.sleep(wait)
+        except ValueError as exc:
+            last_err = exc
+            close_thread_session()
+            if attempt >= C4C_PAGE_RETRIES:
+                break
+            wait = C4C_PAGE_RETRY_SLEEP_SECONDS * attempt
+            logger.warning(
+                "[API] recall type=%s skip=%s top=%s invalid JSON (try %s/%s), wait %.1fs: %s",
+                RECALL_CLAIMS_TICKET_TYPE,
+                skip,
+                top,
+                attempt,
+                C4C_PAGE_RETRIES,
+                wait,
+                exc,
+            )
+            if wait:
+                time.sleep(wait)
+
+    raise RuntimeError(
+        f"[API] recall type={RECALL_CLAIMS_TICKET_TYPE} skip={skip} top={top} "
+        f"failed after {C4C_PAGE_RETRIES} tries: {last_err}"
+    )
+
+
+def _involved_party_items(involved_parties: Any) -> List[Dict[str, Any]]:
+    if isinstance(involved_parties, list):
+        return [p for p in involved_parties if isinstance(p, dict)]
+    if isinstance(involved_parties, dict):
+        if first_clean_ticket_value(involved_parties, "InvolvedPartyRoleID", "Involved Party Role ID", "RoleID"):
+            return [involved_parties]
+        return [p for p in involved_parties.values() if isinstance(p, dict)]
+    return []
+
+
+def involved_parties_to_roles(involved_parties: Any) -> Dict[str, Any]:
+    roles: Dict[str, Any] = {}
+    for party in _involved_party_items(involved_parties):
+        role_id = first_clean_ticket_value(
+            party,
+            "InvolvedPartyRoleID",
+            "Involved Party Role ID",
+            "RoleID",
+            "Role ID",
+        )
+        role_key = sanitize_fb_key(role_id)
+        if not role_key:
+            continue
+        roles[role_key] = {k: norm(v) for k, v in party.items()}
+    return roles
+
+
 def split_ticket_row(row: Dict[str, Any]) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     ticket_data: Dict[str, Any] = {}
     role_data: Dict[str, Any] = {}
@@ -1332,6 +1439,69 @@ def split_ticket_row(row: Dict[str, Any]) -> Tuple[Dict[str, Any], Dict[str, Any
         ticket_data["DealerID"] = dealer_id
 
     return ticket_data, role_data
+
+
+def build_recall_claims_snapshot() -> Tuple[Dict[str, Any], int]:
+    rows, meta = fetch_recall_claims_page(RECALL_CLAIMS_API_TOP, RECALL_CLAIMS_API_SKIP_START)
+    total_raw = meta.get("totalCount") or meta.get("count")
+    try:
+        total_rows = int(total_raw)
+    except (TypeError, ValueError):
+        total_rows = len(rows)
+
+    if total_rows >= RECALL_CLAIMS_API_TOP or len(rows) >= RECALL_CLAIMS_API_TOP:
+        logger.warning(
+            "Recall Claims single query reached top=%s (count=%s, returned=%s). "
+            "If C4C truncated the raw rows, narrow the query or page manually.",
+            RECALL_CLAIMS_API_TOP,
+            total_raw,
+            len(rows),
+        )
+
+    new_snapshot: Dict[str, Any] = {}
+    for row in rows:
+        tid = str(row.get("TicketID") or "").strip()
+        if not tid:
+            continue
+
+        tid_key = sanitize_key(tid)
+        ticket_data, role_data = split_ticket_row(row)
+        c4c_ticket_id = str(row.get("TicketID") or "").strip()
+        if c4c_ticket_id:
+            ticket_data["C4CTicketID"] = c4c_ticket_id
+            ticket_data["C4C Ticket ID"] = c4c_ticket_id
+
+        roles = involved_parties_to_roles(ticket_data.get("InvolvedParties"))
+        flat_role_id = first_clean_ticket_value(role_data, "InvolvedPartyRoleID", "Involved Party Role ID", "RoleID")
+        flat_role_key = sanitize_fb_key(flat_role_id)
+        if flat_role_key:
+            roles[flat_role_key] = role_data
+
+        if tid_key not in new_snapshot:
+            new_snapshot[tid_key] = {
+                "c4c_ticket_id": c4c_ticket_id,
+                "ticket": ticket_data,
+                "roles": roles,
+            }
+            continue
+
+        if c4c_ticket_id and not as_clean_str(new_snapshot[tid_key].get("c4c_ticket_id")):
+            new_snapshot[tid_key]["c4c_ticket_id"] = c4c_ticket_id
+        if ticket_data:
+            new_snapshot[tid_key]["ticket"] = ticket_data
+        if roles:
+            new_snapshot[tid_key].setdefault("roles", {}).update(roles)
+
+    logger.info(
+        "[RECALL MERGED] type=%s top=%s skip=%s returned=%s count=%s unique_tickets=%s",
+        RECALL_CLAIMS_TICKET_TYPE,
+        RECALL_CLAIMS_API_TOP,
+        RECALL_CLAIMS_API_SKIP_START,
+        len(rows),
+        total_raw,
+        len(new_snapshot),
+    )
+    return new_snapshot, total_rows
 
 
 def build_new_snapshot() -> Tuple[Dict[str, Any], int]:
@@ -4209,19 +4379,29 @@ def main():
 
     logger.info("Script version: %s", SCRIPT_VERSION)
     logger.info("SAP HANA rule: MANDT=%s full join + exclude VBAP.ABGRU rejected items from Sales Order Details", SAP_CLIENT)
-    logger.info("Step 1/9: Fetching latest C4C snapshot ...")
-    new_snapshot, total_rows = build_new_snapshot()
-
-    logger.info("C4C total API rows processed: %s", total_rows)
-    logger.info("C4C total unique TicketIDs: %s", len(new_snapshot))
 
     if recall_only:
+        logger.info(
+            "Recall Claims only mode: fetching type %s with top=%s skip=%s and no CCSRQ_DPY_ROLE_CD filter.",
+            RECALL_CLAIMS_TICKET_TYPE,
+            RECALL_CLAIMS_API_TOP,
+            RECALL_CLAIMS_API_SKIP_START,
+        )
+        new_snapshot, total_rows = build_recall_claims_snapshot()
+        logger.info("C4C Recall Claims API rows/count processed: %s", total_rows)
+        logger.info("C4C Recall Claims unique TicketIDs: %s", len(new_snapshot))
         logger.info("Recall Claims only mode: writing type %s tickets to %s and exiting.", RECALL_CLAIMS_TICKET_TYPE, RECALL_CLAIMS_TABLE_PATH)
         firebase_init()
         upload_recall_claims_to_firebase(new_snapshot)
         close_thread_session()
         logger.info("Recall Claims only mode done. Total elapsed: %.1fs", time.time() - total_started)
         return
+
+    logger.info("Step 1/9: Fetching latest C4C snapshot ...")
+    new_snapshot, total_rows = build_new_snapshot()
+
+    logger.info("C4C total API rows processed: %s", total_rows)
+    logger.info("C4C total unique TicketIDs: %s", len(new_snapshot))
 
     logger.info("Step 2/9: Initializing Firebase and loading previous sync snapshot ...")
     firebase_init()
