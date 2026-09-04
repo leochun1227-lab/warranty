@@ -1407,6 +1407,18 @@ def involved_parties_to_roles(involved_parties: Any) -> Dict[str, Any]:
     return roles
 
 
+def role_data_for_requested_role(
+    ticket_data: Dict[str, Any],
+    role_data: Dict[str, Any],
+    requested_role_code: str,
+) -> Dict[str, Any]:
+    involved_roles = involved_parties_to_roles(ticket_data.get("InvolvedParties"))
+    involved_role_data = involved_roles.get(sanitize_fb_key(requested_role_code))
+    if isinstance(involved_role_data, dict) and involved_role_data:
+        return involved_role_data
+    return role_data
+
+
 def split_ticket_row(row: Dict[str, Any]) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     ticket_data: Dict[str, Any] = {}
     role_data: Dict[str, Any] = {}
@@ -1545,7 +1557,11 @@ def build_new_snapshot() -> Tuple[Dict[str, Any], int]:
                     if ticket_data:
                         new_snapshot[tid_key]["ticket"] = ticket_data
 
-                new_snapshot[tid_key]["roles"][role_code] = role_data
+                new_snapshot[tid_key]["roles"][role_code] = role_data_for_requested_role(
+                    ticket_data,
+                    role_data,
+                    role_code,
+                )
 
             logger.info(
                 "[ROLE MERGED] role=%s rows=%s total_rows=%s unique_tickets=%s",
