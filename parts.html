@@ -3519,7 +3519,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           const count = option.count == null ? "" : ` (${numFmt.format(option.count)})`;
           return `<option value="${esc(option.series)}"${selected}>${esc(option.label)}${count}</option>`;
         }).join("")}
-      </select><span class="partsTicketBadge">Fast view <b>${numFmt.format(currentTotal)}</b></span></span>`;
+      </select></span>`;
       ["seriesChips","stickySeriesChips","timingSeriesChips"].forEach(id => {
         const el = $(id);
         if (el) el.innerHTML = selectHtml;
