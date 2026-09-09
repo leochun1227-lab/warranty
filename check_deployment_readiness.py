@@ -4,6 +4,7 @@ import importlib.util
 import json
 import os
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -21,6 +22,8 @@ REQUIRED_FILES = [
     "build_parts_classification.mjs",
     "repairs.html",
     "infieldpredelivery.html",
+    "claim-trend-ticket-metrics.js",
+    "tests/claim-trend.test.cjs",
     "firebase-service-account.json",
     "outputs/parts_classified_meta.json",
     "outputs/analysis_parts_failure_light.json",
@@ -72,10 +75,9 @@ def check_repair_page_contract(failures: list[str]) -> None:
     required_snippets = [
         'browser-page-cache.js?v=repairer-name-map-v16',
         'c4c-eligible-sap-po-authoritative-repairer-name-map-v16',
-        'REPAIR_CLAIM_TREND_LIVE_APPROVAL_CLOSED_START="2026-06"',
-        'REPAIR_CLAIM_TREND_HISTORICAL_UNAPPROVED',
-        '"2026-01":{inField:517,preDelivery:67}',
-        '"2026-05":{inField:235,preDelivery:22}',
+        'ClaimTrendTicketMetrics.unapprovedMonthly(rawTickets)',
+        'ClaimTrendTicketMetrics.approvedMonthly(rawTickets)',
+        'claimTrendUnapprovedCounts.closedMonthly',
         "repairApprovedPlusUnapprovedTicketTotal",
         "Total tickets QTY (approved+unapproved)",
     ]
@@ -93,17 +95,37 @@ def check_claim_trend_contract(failures: list[str]) -> None:
         return
     text = read_text(path)
     required_snippets = [
-        'const LIVE_APPROVAL_CLOSED_START="2026-06"',
-        '"2026-01":{createdIn:586,createdPre:123,approvedIn:340,approvedPre:100,unapprovedIn:517,unapprovedPre:67}',
-        '"2026-05":{createdIn:782,createdPre:208,approvedIn:1080,approvedPre:245,unapprovedIn:235,unapprovedPre:22}',
-        'arr(view.approvalClosedMonthly).forEach',
+        'ClaimTrendTicketMetrics.unapprovedMonthly(RAW_TICKETS)',
+        'ClaimTrendTicketMetrics.approvedMonthly(RAW_TICKETS)',
+        'id="approvedCreatedOnBtn"',
+        'id="unapprovedCreatedOnBtn"',
     ]
     missing = [snippet for snippet in required_snippets if snippet not in text]
     if missing:
-        failures.append("infieldpredelivery.html Claim Trend historical/live unapproved contract changed or is missing: " + ", ".join(missing))
-        print("FAIL Claim Trend unapproved contract")
+        failures.append("infieldpredelivery.html Claim Trend date-basis contract is missing: " + ", ".join(missing))
+        print("FAIL Claim Trend date-basis contract")
     else:
-        print("PASS Claim Trend unapproved contract")
+        print("PASS Claim Trend date-basis contract")
+
+
+def check_claim_trend_regressions(failures: list[str]) -> None:
+    node = node_executable()
+    test_file = ROOT / "tests" / "claim-trend.test.cjs"
+    if not node or not test_file.exists():
+        failures.append("Claim Trend regression checks require Node.js and tests/claim-trend.test.cjs.")
+        return
+    try:
+        result = subprocess.run(
+            [node, str(test_file)], cwd=ROOT, capture_output=True,
+            text=True, encoding="utf-8", errors="replace", timeout=60,
+        )
+        if result.returncode:
+            failures.append("Claim Trend regression checks failed: " + result.stdout + result.stderr)
+            print("FAIL Claim Trend regression checks")
+        else:
+            print("PASS Claim Trend regression checks (date switching, exports, defaults and cross-page consistency)")
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        failures.append(f"Could not run Claim Trend regression checks: {exc}")
 
 
 def check_repairer_output_consistency(failures: list[str], warnings: list[str]) -> None:
@@ -127,6 +149,10 @@ def check_repairer_output_consistency(failures: list[str], warnings: list[str]) 
 
 
 def main() -> int:
+    # Windows scheduled-task logs may use a legacy encoding. Preserve failure
+    # diagnostics even when Node's test reporter emits Unicode status symbols.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(errors="backslashreplace")
     failures: list[str] = []
     warnings: list[str] = []
 
@@ -173,6 +199,7 @@ def main() -> int:
 
     check_repair_page_contract(failures)
     check_claim_trend_contract(failures)
+    check_claim_trend_regressions(failures)
     check_repairer_output_consistency(failures, warnings)
 
     for rel_dir in ("logs", "outputs", "generated_exports"):

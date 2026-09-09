@@ -4614,6 +4614,7 @@ body.repair-analysis-page #repairRepeatScenarios .repeatShopGridCell small{
 <script src="assets/geo/australia-states.js?v=20260706a"></script>
 <script src="assets/geo/new-zealand.js?v=20260706a"></script>
 <script src="browser-page-cache.js?v=repairer-name-map-v16"></script>
+<script src="claim-trend-ticket-metrics.js?v=3"></script>
 <script>
 
 const REPAIR_LOADING_MIN_MS=450;
@@ -4711,48 +4712,9 @@ const REPAIR_PAGE_CACHE_KEY=`repairs:${selectedRepairYear}:${REPAIR_COST_RULE_CA
 const REPAIR_PAGE_CACHE_ENABLED=false;
 const REPAIR_COST_SANITY_MIN_AUD=50000;
 const REPAIR_COST_SANITY_RATIO=10;
-const REPAIR_CLAIM_TREND_LIVE_APPROVAL_CLOSED_START="2026-06";
-const REPAIR_CLAIM_TREND_HISTORICAL_APPROVED={
-  "2025-01":{inField:504,preDelivery:133},
-  "2025-02":{inField:558,preDelivery:117},
-  "2025-03":{inField:681,preDelivery:121},
-  "2025-04":{inField:654,preDelivery:140},
-  "2025-05":{inField:729,preDelivery:134},
-  "2025-06":{inField:738,preDelivery:146},
-  "2025-07":{inField:655,preDelivery:116},
-  "2025-08":{inField:557,preDelivery:124},
-  "2025-09":{inField:613,preDelivery:112},
-  "2025-10":{inField:377,preDelivery:126},
-  "2025-11":{inField:450,preDelivery:120},
-  "2025-12":{inField:424,preDelivery:99},
-  "2026-01":{inField:340,preDelivery:100},
-  "2026-02":{inField:823,preDelivery:221},
-  "2026-03":{inField:1059,preDelivery:145},
-  "2026-04":{inField:888,preDelivery:268},
-  "2026-05":{inField:1080,preDelivery:245},
-};
-const REPAIR_CLAIM_TREND_HISTORICAL_UNAPPROVED={
-  "2025-01":{inField:101,preDelivery:10},
-  "2025-02":{inField:52,preDelivery:20},
-  "2025-03":{inField:68,preDelivery:7},
-  "2025-04":{inField:124,preDelivery:9},
-  "2025-05":{inField:65,preDelivery:7},
-  "2025-06":{inField:128,preDelivery:4},
-  "2025-07":{inField:62,preDelivery:10},
-  "2025-08":{inField:56,preDelivery:9},
-  "2025-09":{inField:53,preDelivery:2},
-  "2025-10":{inField:41,preDelivery:1},
-  "2025-11":{inField:76,preDelivery:3},
-  "2025-12":{inField:358,preDelivery:21},
-  "2026-01":{inField:517,preDelivery:67},
-  "2026-02":{inField:269,preDelivery:18},
-  "2026-03":{inField:422,preDelivery:27},
-  "2026-04":{inField:268,preDelivery:15},
-  "2026-05":{inField:235,preDelivery:22},
-};
 let repairPageVersionPromise=null;
 let repairAnalysisFetchPromise=null;
-let claimTrendUnapprovedCounts={loaded:false,monthly:[]};
+let claimTrendUnapprovedCounts={loaded:false,monthly:[],closedMonthly:null};
 function repairStaticJsonUrl(path){
   const sep=String(path).includes("?")?"&":"?";
   return `${path}${sep}v=${encodeURIComponent(REPAIR_STATIC_ASSET_VERSION)}`;
@@ -4962,14 +4924,15 @@ async function readStaticText(path){const r=await fetch(path,{cache:"no-store"})
 async function loadClaimTrendUnapprovedCounts(){
   if(claimTrendUnapprovedCounts.loaded)return claimTrendUnapprovedCounts;
   try{
-    const rows=await readJson("ctmTicketStatusMonitorV44/analytics/teamDashboard/views/all/approvalClosedMonthly",12000);
+    const rawTickets=await readJson("c4cTickets_test/tickets");
     claimTrendUnapprovedCounts={
       loaded:true,
-      monthly:Array.isArray(rows)?rows:Object.values(rows||{}),
+      monthly:ClaimTrendTicketMetrics.approvedMonthly(rawTickets),
+      closedMonthly:ClaimTrendTicketMetrics.unapprovedMonthly(rawTickets),
     };
   }catch(e){
     console.warn("Claim Trend unapproved counts unavailable",e);
-    claimTrendUnapprovedCounts={loaded:true,monthly:[]};
+    claimTrendUnapprovedCounts={loaded:false,monthly:[],closedMonthly:null};
   }
   return claimTrendUnapprovedCounts;
 }
@@ -5974,37 +5937,23 @@ function claimTrendApprovedTicketTotal(){
   const bounds=repairPeriodBounds();
   const startMonth=clean(bounds.start).slice(0,7);
   const endMonth=clean(bounds.end).slice(0,7);
-  const byMonth=new Map();
-  Object.entries(REPAIR_CLAIM_TREND_HISTORICAL_APPROVED).forEach(([month,row])=>{
-    byMonth.set(month,Number(row.inField||0)+Number(row.preDelivery||0));
-  });
-  (Array.isArray(claimTrendUnapprovedCounts.monthly)?claimTrendUnapprovedCounts.monthly:[]).forEach(row=>{
-    const month=clean(row&&row.month);
-    if(month>=REPAIR_CLAIM_TREND_LIVE_APPROVAL_CLOSED_START){
-      byMonth.set(month,Number(row.inFieldApproved||0)+Number(row.preDeliveryApproved||0));
-    }
-  });
+  const byMonth=new Map((claimTrendUnapprovedCounts.monthly||[]).map(row=>[
+    row.month,Number(row.approvedIn||0)+Number(row.approvedPre||0)
+  ]));
   return [...byMonth.entries()].filter(([month])=>{
     return month && month>=startMonth && month<=endMonth && month.slice(0,4)===String(selectedRepairYear);
   }).reduce((sum,[,value])=>sum+Number(value||0),0);
 }
 function repairOverviewApprovedTicketTotal(){
-  return claimTrendApprovedTicketTotal()||repairApprovedCostTicketTotal();
+  return claimTrendApprovedTicketTotal();
 }
 function claimTrendUnapprovedTicketTotal(){
   const bounds=repairPeriodBounds();
   const startMonth=clean(bounds.start).slice(0,7);
   const endMonth=clean(bounds.end).slice(0,7);
-  const byMonth=new Map();
-  Object.entries(REPAIR_CLAIM_TREND_HISTORICAL_UNAPPROVED).forEach(([month,row])=>{
-    byMonth.set(month,Number(row.inField||0)+Number(row.preDelivery||0));
-  });
-  (Array.isArray(claimTrendUnapprovedCounts.monthly)?claimTrendUnapprovedCounts.monthly:[]).forEach(row=>{
-    const month=clean(row&&row.month);
-    if(month>=REPAIR_CLAIM_TREND_LIVE_APPROVAL_CLOSED_START){
-      byMonth.set(month,Number(row.inFieldUnapproved||0)+Number(row.preDeliveryUnapproved||0));
-    }
-  });
+  const byMonth=new Map((claimTrendUnapprovedCounts.closedMonthly||[]).map(row=>[
+    row.month,Number(row.unapprovedClosedIn||0)+Number(row.unapprovedClosedPre||0)
+  ]));
   return [...byMonth.entries()].filter(([month])=>{
     return month && month>=startMonth && month<=endMonth && month.slice(0,4)===String(selectedRepairYear);
   }).reduce((sum,[,value])=>sum+Number(value||0),0);
@@ -7553,6 +7502,10 @@ function requestChassisRepeatDetailRefresh(){
 function chassisRepeatTotalTicketDenominator(w=workingChassis){
   return repairApprovedPlusUnapprovedTicketTotal();
 }
+function chassisRepeatRequestRate(w=workingChassis){
+  const denominator=chassisRepeatTotalTicketDenominator(w);
+  return denominator?Number(w?.repeatedTicketCount||w?.repeatedChassisCount||0)/denominator*100:0;
+}
 function chassisRepeatApprovedTicketCount(w=workingChassis){
   return repairOverviewApprovedTicketTotal();
 }
@@ -7575,12 +7528,19 @@ function renderChassisRepeatPanel(){
   const summary=$("repairRepeatSummary")||$("chassisRepeatSummary");
   const viz=$("repairRepeatScenarios")||$("chassisRepeatViz");
   if(!summary||!viz)return;
+  if(!claimTrendUnapprovedCounts.loaded){
+    summary.innerHTML="<div><span>Repeat Rate</span><b>Unavailable</b></div>";
+    viz.hidden=false;
+    viz.style.display="";
+    viz.innerHTML='<div class="chassisRepeatEmpty">Claim Trend ticket totals could not be loaded. Refresh the page to retry.</div>';
+    return;
+  }
   const w=workingChassis||{totalUniqueChassis:0,repeatedChassisCount:0,repeatRate:0,categories:[]};
   const legacy=legacyChassisRepeatSummary(w);
   const repeatedProcess=Number(w.repeatedTicketCount||w.repeatedChassisCount||0);
   const totalTickets=chassisRepeatTotalTicketDenominator(w);
   const approvedTicketCount=chassisRepeatApprovedTicketCount(w);
-  const repeatedProcessRate=totalTickets?repeatedProcess/totalTickets*100:Number(w.repeatRate||0);
+  const repeatedProcessRate=chassisRepeatRequestRate(w);
   summary.innerHTML=`
     <div><span>Tickets QTY (Repeat Requests)</span><b>${num(repeatedProcess)}</b></div>
     <div><span>Repeat Rate</span><b>${num(repeatedProcessRate,1)}%</b></div>`;
@@ -7636,6 +7596,7 @@ function renderChassisRepeatPanel(){
 async function exportChassisRepeatExcel(){
   return withDownloadFloat(async()=>{
     await loadClaimTrendUnapprovedCounts();
+    if(!claimTrendUnapprovedCounts.loaded){alert("Claim Trend ticket totals could not be loaded. Please retry the export.");return;}
     await ensureRepairDetailsLoaded();
     const w=workingChassis||{};
     if(!w||!Array.isArray(w.categories)||!w.categories.length){alert("No repeated chassis data available to export.");return}
@@ -7650,7 +7611,7 @@ async function exportChassisRepeatExcel(){
       ["Approved Tickets (Claim Trend Overview)",Number(approvedTicketCount||0)],
       ["Unapproved Tickets",Number(unapprovedTicketCount||0)],
       ["Total tickets QTY (approved+unapproved)",Number(chassisRepeatTotalTicketDenominator(w)||0)],
-      ["Repeat Repair Rate %",Number(w.repeatRate||0)],
+      ["Repeat Repair Rate %",chassisRepeatRequestRate(w)],
       ...w.categories.flatMap(row=>[
         (()=>{const totals=categoryTicketTotals(row);return [`${row.label} - Repeat Rate %`,Number(totals.rate||0)]})(),
         [`${row.label} - Repeat Tickets`,Number(categoryTicketTotals(row).repeatTickets||0)],
