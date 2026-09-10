@@ -4103,6 +4103,8 @@ def write_analytics(
     analytics_ref.child("employee").set(firebase_safe_json(payload["employee"]))
     write_team_analytics_chunked(analytics_ref.child("team"), payload["team"])
     write_team_dashboard_payload(analytics_ref, payload["team"])
+    from build_dashboard_summary_api import publish_summary
+    publish_summary(analytics_ref, team=payload["team"])
 
     if include_dealer:
         dealer_index = {k: v for k, v in payload["dealer"].items() if k != "byDealer"}

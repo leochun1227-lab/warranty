@@ -19,6 +19,7 @@ REQUIRED_FILES = [
     "delivery_flow_aggregator.py",
     "export_ticket_timeline_segments_2025_2026.py",
     "sync_dashboard_assets_to_firebase.py",
+    "build_dashboard_summary_api.py",
     "build_parts_classification.mjs",
     "repairs.html",
     "infieldpredelivery.html",

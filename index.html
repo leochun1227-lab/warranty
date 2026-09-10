@@ -2954,15 +2954,21 @@
 .trendPanel .trendChartLayout{
   display:grid!important;
   grid-template-columns:minmax(0,1fr) 110px!important;
+  grid-template-rows:minmax(0,1fr)!important;
   gap:0!important;
   align-items:stretch!important;
   height:100%!important;
 }
 .trendPanel .trendCanvasWrap{
+  position:relative!important;
   min-width:0!important;
+  min-height:0!important;
   height:100%!important;
 }
 .trendPanel .trendCanvasWrap canvas{
+  /* Keep the canvas bitmap's intrinsic size out of grid track sizing on resize/zoom. */
+  position:absolute!important;
+  inset:0!important;
   width:100%!important;
   height:100%!important;
   display:block!important;
@@ -3040,6 +3046,7 @@
 @media(max-width:1024px){
   .trendPanel .trendChartLayout{
     grid-template-columns:1fr!important;
+    grid-template-rows:minmax(0,1fr) auto!important;
   }
   .trendPanel .trendSideSummary{
     grid-template-columns:repeat(3,minmax(0,1fr))!important;
@@ -3047,6 +3054,9 @@
     border-top:1px solid #e6edf6!important;
     padding:10px 0 0!important;
     height:auto!important;
+  }
+  .trendPanel .trendSideDate{
+    grid-column:1/-1!important;
   }
 }
 .trendPanel .trendCreatedNote{

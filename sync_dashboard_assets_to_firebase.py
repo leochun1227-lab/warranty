@@ -191,6 +191,9 @@ def main() -> int:
             "generatedAt": generated_at,
             "pageAssetsSyncedAt": generated_at,
         })
+        from build_dashboard_summary_api import publish_summary
+        publish_summary(db.reference(f"{monitor_root}/analytics"))
+        print("Refreshed analytics/dashboardSummary")
     print(f"Synced dashboard page assets to {monitor_root}/analytics/pageAssets")
     for info in uploaded:
         print(f"- {info.get('key')}: {'ok' if info.get('ok') else info.get('reason')}")

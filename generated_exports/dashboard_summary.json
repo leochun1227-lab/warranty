@@ -1,0 +1,336 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-09-10T04:42:50+00:00",
+  "scope": "all",
+  "ticketTimeline": {
+    "year": 2026,
+    "sourceGeneratedAt": "2026-09-09T19:11:57",
+    "basis": "completed month in selected year; ticket Created On can be earlier than the selected year",
+    "unit": "days",
+    "stages": {
+      "approval": {
+        "label": "Warranty Approval",
+        "completedTickets": 7864,
+        "overAveragePercent": 43.6,
+        "monthlyTrend": [
+          {
+            "month": "2026-01",
+            "label": "Jan",
+            "averageDays": 86.23,
+            "rolling3MonthAverageDays": 86.23,
+            "completedTickets": 387
+          },
+          {
+            "month": "2026-02",
+            "label": "Feb",
+            "averageDays": 76.77,
+            "rolling3MonthAverageDays": 81.5,
+            "completedTickets": 968
+          },
+          {
+            "month": "2026-03",
+            "label": "Mar",
+            "averageDays": 65.65,
+            "rolling3MonthAverageDays": 76.22,
+            "completedTickets": 1089
+          },
+          {
+            "month": "2026-04",
+            "label": "Apr",
+            "averageDays": 56.23,
+            "rolling3MonthAverageDays": 66.22,
+            "completedTickets": 1054
+          },
+          {
+            "month": "2026-05",
+            "label": "May",
+            "averageDays": 57.01,
+            "rolling3MonthAverageDays": 59.63,
+            "completedTickets": 1193
+          },
+          {
+            "month": "2026-06",
+            "label": "Jun",
+            "averageDays": 50.56,
+            "rolling3MonthAverageDays": 54.6,
+            "completedTickets": 1012
+          },
+          {
+            "month": "2026-07",
+            "label": "Jul",
+            "averageDays": 34.23,
+            "rolling3MonthAverageDays": 47.27,
+            "completedTickets": 1027
+          },
+          {
+            "month": "2026-08",
+            "label": "Aug",
+            "averageDays": 24.36,
+            "rolling3MonthAverageDays": 36.38,
+            "completedTickets": 842
+          },
+          {
+            "month": "2026-09",
+            "label": "Sep",
+            "averageDays": 26.6,
+            "rolling3MonthAverageDays": 28.4,
+            "completedTickets": 292
+          }
+        ],
+        "durationBuckets": [
+          {
+            "label": "0-7",
+            "count": 3024,
+            "percent": 38.5
+          },
+          {
+            "label": "8-14",
+            "count": 700,
+            "percent": 8.9
+          },
+          {
+            "label": "15-21",
+            "count": 448,
+            "percent": 5.7
+          },
+          {
+            "label": "22-30",
+            "count": 406,
+            "percent": 5.2
+          },
+          {
+            "label": "31-60",
+            "count": 1028,
+            "percent": 13.1
+          },
+          {
+            "label": "60+",
+            "count": 2258,
+            "percent": 28.7
+          }
+        ]
+      },
+      "parts": {
+        "label": "Parts Preparation",
+        "completedTickets": 5496,
+        "overAveragePercent": 34.2,
+        "monthlyTrend": [
+          {
+            "month": "2026-01",
+            "label": "Jan",
+            "averageDays": 57.22,
+            "rolling3MonthAverageDays": 57.22,
+            "completedTickets": 370
+          },
+          {
+            "month": "2026-02",
+            "label": "Feb",
+            "averageDays": 23.77,
+            "rolling3MonthAverageDays": 40.49,
+            "completedTickets": 521
+          },
+          {
+            "month": "2026-03",
+            "label": "Mar",
+            "averageDays": 18.88,
+            "rolling3MonthAverageDays": 33.29,
+            "completedTickets": 681
+          },
+          {
+            "month": "2026-04",
+            "label": "Apr",
+            "averageDays": 21.58,
+            "rolling3MonthAverageDays": 21.41,
+            "completedTickets": 577
+          },
+          {
+            "month": "2026-05",
+            "label": "May",
+            "averageDays": 21.85,
+            "rolling3MonthAverageDays": 20.77,
+            "completedTickets": 762
+          },
+          {
+            "month": "2026-06",
+            "label": "Jun",
+            "averageDays": 33.9,
+            "rolling3MonthAverageDays": 25.78,
+            "completedTickets": 754
+          },
+          {
+            "month": "2026-07",
+            "label": "Jul",
+            "averageDays": 24.75,
+            "rolling3MonthAverageDays": 26.83,
+            "completedTickets": 1012
+          },
+          {
+            "month": "2026-08",
+            "label": "Aug",
+            "averageDays": 14.89,
+            "rolling3MonthAverageDays": 24.51,
+            "completedTickets": 612
+          },
+          {
+            "month": "2026-09",
+            "label": "Sep",
+            "averageDays": 20.3,
+            "rolling3MonthAverageDays": 19.98,
+            "completedTickets": 207
+          }
+        ],
+        "durationBuckets": [
+          {
+            "label": "0-7",
+            "count": 1588,
+            "percent": 28.9
+          },
+          {
+            "label": "8-14",
+            "count": 1336,
+            "percent": 24.3
+          },
+          {
+            "label": "15-21",
+            "count": 691,
+            "percent": 12.6
+          },
+          {
+            "label": "22-30",
+            "count": 479,
+            "percent": 8.7
+          },
+          {
+            "label": "31-60",
+            "count": 832,
+            "percent": 15.1
+          },
+          {
+            "label": "60+",
+            "count": 570,
+            "percent": 10.4
+          }
+        ]
+      }
+    }
+  },
+  "remainingStatusMix": {
+    "snapshotDate": "2026-09-09",
+    "sourceGeneratedAt": "2026-09-09T08:53:33+00:00",
+    "totalTickets": 363,
+    "percentageBasis": "ticketCount",
+    "items": [
+      {
+        "label": "Evidence Requested",
+        "count": 199,
+        "percent": 54.82
+      },
+      {
+        "label": "Quote Validation",
+        "count": 66,
+        "percent": 18.18
+      },
+      {
+        "label": "New Claim",
+        "count": 46,
+        "percent": 12.67
+      },
+      {
+        "label": "Management Query",
+        "count": 24,
+        "percent": 6.61
+      },
+      {
+        "label": "Suspended Claim",
+        "count": 8,
+        "percent": 2.2
+      },
+      {
+        "label": "Others",
+        "count": 20,
+        "percent": 5.51,
+        "details": [
+          {
+            "label": "Requires Authorization (Under $1,000)",
+            "count": 7,
+            "percent": 1.93
+          },
+          {
+            "label": "Requires Authorization ($1,001 - $3,000)",
+            "count": 6,
+            "percent": 1.65
+          },
+          {
+            "label": "Claim Assessment",
+            "count": 4,
+            "percent": 1.1
+          },
+          {
+            "label": "Requires Authorization (Above $3,000)",
+            "count": 3,
+            "percent": 0.83
+          }
+        ]
+      }
+    ]
+  },
+  "approvedRepairCostDistribution": {
+    "periodStart": "2026-09-01",
+    "periodEnd": "2026-09-09",
+    "sourceGeneratedAt": "2026-09-09T08:53:33+00:00",
+    "currency": "AUD",
+    "totalTickets": 291,
+    "totalAmount": 192723.54,
+    "percentageBasis": "amount",
+    "buckets": [
+      {
+        "key": "0",
+        "label": "$0",
+        "count": 19,
+        "amount": 0.0,
+        "ticketPercent": 6.53,
+        "amountPercent": 0.0
+      },
+      {
+        "key": "0.01-100",
+        "label": "$0.01 - $100",
+        "count": 30,
+        "amount": 1809.76,
+        "ticketPercent": 10.31,
+        "amountPercent": 0.94
+      },
+      {
+        "key": "100-500",
+        "label": "$100 - $500",
+        "count": 115,
+        "amount": 29464.28,
+        "ticketPercent": 39.52,
+        "amountPercent": 15.29
+      },
+      {
+        "key": "500-1000",
+        "label": "$500 - $1k",
+        "count": 70,
+        "amount": 50897.46,
+        "ticketPercent": 24.05,
+        "amountPercent": 26.41
+      },
+      {
+        "key": "1000-2500",
+        "label": "$1k - $2.5k",
+        "count": 44,
+        "amount": 65288.22,
+        "ticketPercent": 15.12,
+        "amountPercent": 33.88
+      },
+      {
+        "key": "2500-inf",
+        "label": ">$2.5k",
+        "count": 13,
+        "amount": 45263.82,
+        "ticketPercent": 4.47,
+        "amountPercent": 23.49
+      }
+    ]
+  }
+}
