@@ -9,11 +9,11 @@ const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].at(-1)[1];
 const definitions = script.slice(0, script.indexOf('\nsetupNav();'));
 function app() {
   const elements = new Map();
-  const document = { getElementById(id) {
+  const document = {documentElement:{dataset:{}}, getElementById(id) {
     if (!elements.has(id)) elements.set(id, {classList: {toggle() {}}, setAttribute() {}, style: {}});
     return elements.get(id);
   }};
-  const context = vm.createContext({document});
+  const context = vm.createContext({document,window:{}});
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'claim-trend-ticket-metrics.js'), 'utf8'), context);
   vm.runInContext(definitions, context);
   return {context, run: code => vm.runInContext(code, context), json: code => JSON.parse(vm.runInContext(`JSON.stringify(${code})`, context))};
@@ -241,46 +241,74 @@ test('daily data replacement recomputes both date views without retaining old co
   assert.equal(a.run('MONTHS_INDEX["2026-02"].unapprovedCreatedPre'),1);
 });
 
-test('page-cache reload refreshes raw tickets and a new daily version reloads the dashboard', async () => {
-  const saved = new Map();
-  async function visit(version, raw, approvedCount) {
-    const a = app();
-    let resolveInit;
-    const initialized = new Promise(resolve => { resolveInit=resolve; });
-    const calls=[];
-    a.context.onInit=(view,cached)=>{a.context.captured={view,cached};resolveInit();};
-    a.context.setTimeout=setTimeout;
-    a.context.clearTimeout=clearTimeout;
-    a.context.console={warn(){}};
-    a.context.location={hash:''};
+test('version-checked ticket cache skips bulk downloads but refreshes when tickets or dashboard change', async () => {
+  const saved=new Map();
+  async function visit(version,core,raw,amount) {
+    const a=app(),calls=[];
+    Object.assign(a.context,{setTimeout,clearTimeout,console:{warn(){}},location:{hash:''}});
     a.context.window={WarrantyPageCache:{
-      fetchVersion:async()=>version,
       getPage:async(key,v)=>saved.get(key)?.version===v?saved.get(key).value:null,
-      setPage:(key,v,value)=>saved.set(key,{version:v,value}),
+      setPage:async(key,v,value)=>{saved.set(key,{version:v,value});return true;},
+      setLargePage:async(key,v,value)=>{saved.set(key,{version:v,value});return true;},
       showBadge(){}
     }};
     a.context.readData=async path=>{
       calls.push(path);
+      if(path.endsWith('/generatedAt'))return version;
+      if(path.endsWith('/ticketCoreSyncAt'))return core;
+      if(path.endsWith('/ticketSoSyncAt'))return 'so1';
       if(path==='c4cTickets_test/tickets')return raw;
-      return {views:{all:{approvalClosedMonthly:[{month:'2026-06',inFieldApproved:approvedCount}]}}};
+      if(path.endsWith('/approvedAmountMonthly'))return [{month:'2026-03',inField:amount,preDelivery:0}];
+      throw Error('Unexpected full dashboard download: '+path);
     };
-    a.run('readJson=readData; init=(view,cached)=>{MONTHLY=buildMonthly(view);onInit(view,!!cached)};');
+    a.run('readJson=readData; init=view=>{MONTHLY=buildMonthly(view);};');
     await a.run(script.slice(script.indexOf('const CLAIM_TREND_PAGE_CACHE_KEY=')));
-    await initialized;
     return {a,calls};
   }
-  const first=await visit('day1',[ticket()],5);
-  assert.equal(first.a.context.captured.cached,false);
-  const cached=await visit('day1',[ticket({TicketStatus:'Y8',ResolvedOnDateTime:'2026-06-01 09:00:00'})],99);
-  assert.equal(cached.a.context.captured.cached,true);
-  assert.deepEqual(cached.calls,['c4cTickets_test/tickets']);
-  assert.equal(cached.a.run('MONTHLY.find(r=>r.month==="2026-06").unapprovedClosedIn'),1);
-  assert.equal(cached.a.run('MONTHLY.find(r=>r.month==="2026-01").approvedCreatedIn'),0);
-  const next=await visit('day2',[ticket()],8);
-  assert.equal(next.a.context.captured.cached,false);
-  assert.ok(next.calls.includes('ctmTicketStatusMonitorV44/analytics/teamDashboard'));
-  assert.equal(next.a.context.captured.view.approvalClosedMonthly[0].inFieldApproved,8);
-  assert.equal(next.a.run('MONTHLY.find(r=>r.month==="2026-06")?.approvedIn||0'),0,'aggregate snapshots cannot override raw ticket counts');
+  const first=await visit('day1','core1',[{ticket:ticket(),roles:{unused:true},orders:[{}]},null,null],25);
+  assert.ok(first.calls.includes('c4cTickets_test/tickets'));
+  const firstTotals=first.a.json('MONTHLY');
+  assert.equal(first.a.run('RAW_TICKETS[0].roles'),undefined);
+  assert.equal(first.a.run('RAW_TICKETS[0].ticket.ChassisNumber'),'000123');
+  const cached=await visit('day1','core1',[],999);
+  assert.ok(!cached.calls.includes('c4cTickets_test/tickets'));
+  assert.ok(!cached.calls.some(p=>p.endsWith('/approvedAmountMonthly')));
+  assert.deepEqual(cached.a.json('MONTHLY'),firstTotals);
+  assert.deepEqual(cached.a.json('buildExportRowsForRange("2026-01","2026-03")'),first.a.json('buildExportRowsForRange("2026-01","2026-03")'));
+  const changed=await visit('day1','core2',[ticket({TicketStatus:'Y8',ResolvedOnDateTime:'2026-06-01 09:00:00'})],99);
+  assert.ok(changed.calls.includes('c4cTickets_test/tickets'));
+  assert.ok(!changed.calls.some(p=>p.endsWith('/approvedAmountMonthly')));
+  assert.equal(changed.a.run('MONTHLY.find(r=>r.month==="2026-06").unapprovedClosedIn'),1);
+  assert.equal(changed.a.run('MONTHLY.find(r=>r.month==="2026-01").approvedCreatedIn'),0);
+  const next=await visit('day2','core2',[ticket()],80);
+  assert.ok(next.calls.includes('c4cTickets_test/tickets'));
+  assert.ok(next.calls.some(p=>p.endsWith('/approvedAmountMonthly')));
+  assert.equal(next.a.run('MONTHLY.find(r=>r.month==="2026-03").approvedAmountIn'),80);
+});
+
+test('changing source during download is rejected without caching and remains retryable',async()=>{
+  const a=app();let writes=0;
+  Object.assign(a.context,{setTimeout,clearTimeout,console:{warn(){}},source:[ticket()]});
+  a.context.window.WarrantyPageCache={getPage:async()=>null,setLargePage:async()=>{writes++;return true;}};
+  a.run('loadClaimSourceVersions=async()=>({tickets:"before"}); readClaimSourceVersions=async()=>({tickets:"after"}); readJson=async()=>source;');
+  await assert.rejects(a.run('ensureRawTicketsLoaded()'),/changed while loading/);
+  assert.equal(a.run('rawTicketsLoaded'),false);
+  assert.equal(a.run('rawTicketsPromise'),null);
+  assert.equal(writes,0);
+  a.run('loadClaimSourceVersions=async()=>({tickets:"after"});');
+  await a.run('ensureRawTicketsLoaded()');
+  assert.equal(a.run('rawTicketsLoaded'),true);
+  assert.equal(writes,1);
+});
+
+test('unavailable IndexedDB falls back to live tickets without changing their fields',async()=>{
+  const a=app();
+  Object.assign(a.context,{setTimeout,clearTimeout,console:{warn(){}},source:[null,{ticket:ticket(),roles:{unused:true}}]});
+  a.context.window.WarrantyPageCache={getPage:async()=>{throw Error('unavailable');}};
+  a.run('loadClaimSourceVersions=async()=>({tickets:"current"}); readClaimSourceVersions=loadClaimSourceVersions; readJson=async()=>source;');
+  await a.run('ensureRawTicketsLoaded()');
+  assert.deepEqual(a.json('RAW_TICKETS'),[null,{ticket:ticket()}]);
+  assert.equal(a.run('rawTicketsLoaded'),true);
 });
 
 test('every monthly Approved chart count equals the exported Approved rows for both date bases', () => {

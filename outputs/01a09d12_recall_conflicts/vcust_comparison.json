@@ -1,0 +1,171 @@
+{
+  "extra_sales_keys": [
+    [
+      "0000211630",
+      "3140",
+      "Z1",
+      "Z1"
+    ],
+    [
+      "0000211630",
+      "3140",
+      "Z1",
+      "Z3"
+    ],
+    [
+      "0000211630",
+      "3140",
+      "Z4",
+      "Z1"
+    ],
+    [
+      "0000211630",
+      "3140",
+      "Z5",
+      "Z3"
+    ],
+    [
+      "0000211630",
+      "3140",
+      "ZA",
+      "Z3"
+    ],
+    [
+      "0000500977",
+      "3120",
+      "ZA",
+      "Z3"
+    ]
+  ],
+  "missing_sales_keys": [],
+  "customer_field_differences": [
+    {
+      "customer": "211630",
+      "column": "Name 1",
+      "old": "Susan Oates Susan Oates",
+      "live": [
+        "Susan Oates"
+      ]
+    },
+    {
+      "customer": "211630",
+      "column": "Telephone 1",
+      "old": "+61 400333064",
+      "live": [
+        "+61 409284551"
+      ]
+    },
+    {
+      "customer": "215452",
+      "column": "Name 1",
+      "old": "Phillip Simcock Phillip Simcock",
+      "live": [
+        "Phillip Simcock"
+      ]
+    },
+    {
+      "customer": "215452",
+      "column": "Street",
+      "old": "1 Birkdale Place",
+      "live": [
+        "Birkdale Place"
+      ]
+    },
+    {
+      "customer": "215452",
+      "column": "House Number",
+      "old": "",
+      "live": [
+        "1"
+      ]
+    },
+    {
+      "customer": "215452",
+      "column": "Telephone 1",
+      "old": "",
+      "live": [
+        "+61 439926090"
+      ]
+    },
+    {
+      "customer": "500977",
+      "column": "Name 1",
+      "old": "Darryl COOPER Darryl COOPER",
+      "live": [
+        "Darryl COOPER"
+      ]
+    },
+    {
+      "customer": "501518",
+      "column": "Name 1",
+      "old": "Terry & leslie martin",
+      "live": [
+        "Terry & lesies martin"
+      ]
+    },
+    {
+      "customer": "501518",
+      "column": "Street",
+      "old": "5 amwlia ct",
+      "live": [
+        "amwlia ct"
+      ]
+    },
+    {
+      "customer": "501518",
+      "column": "House Number",
+      "old": "",
+      "live": [
+        "5"
+      ]
+    },
+    {
+      "customer": "501518",
+      "column": "Telephone 1",
+      "old": "",
+      "live": [
+        "+61 413012625"
+      ]
+    },
+    {
+      "customer": "501921",
+      "column": "Name 1",
+      "old": "Corey Gower Corey Gower",
+      "live": [
+        "Corey Gower"
+      ]
+    },
+    {
+      "customer": "501921",
+      "column": "Street",
+      "old": "158 Aurelian Ave",
+      "live": [
+        "Aurelian Ave"
+      ]
+    },
+    {
+      "customer": "501921",
+      "column": "House Number",
+      "old": "",
+      "live": [
+        "158"
+      ]
+    },
+    {
+      "customer": "501921",
+      "column": "Telephone 1",
+      "old": "",
+      "live": [
+        "+61 400690174"
+      ]
+    },
+    {
+      "customer": "504578",
+      "column": "Name 1",
+      "old": "john Taylor john Taylor",
+      "live": [
+        "john Taylor"
+      ]
+    }
+  ]
+}

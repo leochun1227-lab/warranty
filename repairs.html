@@ -4702,99 +4702,135 @@ let allRepairTickets=[], tickets=[], repairs=[], filtered=[], tableFiltered=[], 
 let chassisRepeatDetailRefreshStarted=false;
 let weeklyAnalysis=null, weeklyWeeks=[], weeklyIndex=0, weeklyMetric="confirmed_cost", selectedRegionCode="QLD", overviewHoverStateCode="", overviewRankView="state", precomputedRepairPeriods=null;
 let repairDetailsLoaded=false, repairDetailsPromise=null;
+let repairDetailsError="";
 let ausGeo=null, nzGeo=null;
 let topRepairSort="ticket_count";
 // Client-side working copies (recomputed from details when rate changes)
 let workingSummary=null, workingRepairers=[], workingStates=[], workingWeekly=[], workingChassis=null;
 const REPAIR_COST_RULE_CACHE_SCHEMA="c4c-eligible-sap-po-authoritative-repairer-name-map-v16";
 const REPAIR_STATIC_ASSET_VERSION=`${REPAIR_COST_RULE_CACHE_SCHEMA}:${Date.now()}`;
-const REPAIR_PAGE_CACHE_KEY=`repairs:${selectedRepairYear}:${REPAIR_COST_RULE_CACHE_SCHEMA}`;
-const REPAIR_PAGE_CACHE_ENABLED=false;
+// Cache source payloads, not derived page state. Each cache hit is checked
+// against the live version of that source before it can be displayed.
+const REPAIR_ANALYSIS_CACHE_KEY=`repairer-analysis:${REPAIR_COST_RULE_CACHE_SCHEMA}:v1`;
+const REPAIR_COUNTS_CACHE_KEY="repairer-claim-counts:claim-metrics-v3:v1";
+const REPAIR_DETAILS_CACHE_KEY=`repairer-details:${REPAIR_COST_RULE_CACHE_SCHEMA}:v1:${selectedRepairYear}`;
 const REPAIR_COST_SANITY_MIN_AUD=50000;
 const REPAIR_COST_SANITY_RATIO=10;
-let repairPageVersionPromise=null;
 let repairAnalysisFetchPromise=null;
+let repairAnalysisDataVersion="";
+let repairAnalysisSource="";
+let claimTrendCountsPromise=null;
+let repairRawTicketsPromise=null;
+let repairDetailCachePromise=null;
+let repairDetailSourceVersion="";
+let repairNameRuleSourceVersion="";
+let repairDetailEnrichmentComplete=false;
 let claimTrendUnapprovedCounts={loaded:false,monthly:[],closedMonthly:null};
+function loadRepairRawTickets(){
+  if(!repairRawTicketsPromise){
+    repairRawTicketsPromise=readJson("c4cTickets_test/tickets",30000).then(node=>{
+      if(!node||typeof node!=="object")throw new Error("Ticket data is unavailable");
+      return node;
+    }).catch(err=>{repairRawTicketsPromise=null;throw err;});
+  }
+  return repairRawTicketsPromise;
+}
+function validRepairDetails(data){
+  return Array.isArray(data)&&data.every(row=>row&&typeof row.id==="string"&&row.ticket&&typeof row.ticket==="object"&&row.roles&&typeof row.roles==="object");
+}
+async function readRepairDetailSourceVersion(){
+  try{
+    const [meta,core,roles,so,csv]=await Promise.all([
+      readStaticJson(REMOTE_ANALYSIS_DETAILS_JSON.replace(/\.json$/,"/meta.json"),4000),
+      ...["ticketCoreSyncAt","ticketRolesSyncAt","ticketSoSyncAt"].map(key=>readJson(`c4cTickets_test/${key}`,4000)),
+      withTimeoutPromise(fetch(ANALYSIS_TICKET_BASE_CSV,{method:"HEAD",cache:"no-store"}),4000,"Repairer source check")
+    ]);
+    const csvVersion=csv.ok&&(csv.headers.get("etag")||(csv.headers.get("last-modified")&&`${csv.headers.get("last-modified")}:${csv.headers.get("content-length")}`));
+    const detailVersion=repairAnalysisVersion(meta);
+    if(!detailVersion||!core||!roles||!so||!csvVersion||!repairNameRuleSourceVersion)return "";
+    return JSON.stringify([detailVersion,core,roles,so,csvVersion,repairNameRuleSourceVersion]);
+  }catch(err){console.warn("Repairer detail version unavailable",err);return "";}
+}
+function restoreRepairDetails(){
+  if(!repairDetailCachePromise){
+    repairDetailCachePromise=(async()=>{
+      repairDetailSourceVersion=await readRepairDetailSourceVersion();
+      const cached=await readRepairDataCache(REPAIR_DETAILS_CACHE_KEY,repairDetailSourceVersion,validRepairDetails);
+      if(!cached)return false;
+      allRepairTickets=cached;repairDetailsLoaded=true;
+      document.documentElement.dataset.repairDetailsSource="cached";
+      return true;
+    })();
+  }
+  return repairDetailCachePromise;
+}
+function markRepairDetailsReady(){
+  if(repairDetailsLoaded&&claimTrendUnapprovedCounts.loaded){
+    document.documentElement.dataset.repairDetailsReadyMs=String(Math.round(performance.now()));
+  }
+}
 function repairStaticJsonUrl(path){
   const sep=String(path).includes("?")?"&":"?";
   return `${path}${sep}v=${encodeURIComponent(REPAIR_STATIC_ASSET_VERSION)}`;
 }
+function repairAnalysisVersion(meta){
+  const generated=clean(meta?.cache_generated_at||meta?.generatedAt||meta?.generated_at||"");
+  return generated?`${REPAIR_COST_RULE_CACHE_SCHEMA}:${generated}:${clean(meta?.repairer_name_rule_mapping_sha256||"")}`:"";
+}
+function validRepairAnalysis(data){
+  return !!(data&&typeof data==="object"&&data.periods?.total?.summary&&
+    Array.isArray(data.periods.total.repairers)&&Array.isArray(data.periods.total.states));
+}
+function validRepairClaimCounts(data){
+  return !!(data?.loaded===true&&Array.isArray(data.monthly)&&Array.isArray(data.closedMonthly));
+}
+async function readRepairDataCache(key,version,validate){
+  if(!version||!window.WarrantyPageCache?.getPage)return null;
+  try{
+    const cached=await withTimeoutPromise(window.WarrantyPageCache.getPage(key,version),1500,"Repairer cache read");
+    return validate(cached)?cached:null;
+  }catch(err){console.warn("Repairer cache unavailable",err);return null;}
+}
+async function saveRepairDataCache(key,version,value){
+  if(!version||!window.WarrantyPageCache?.setPage)return;
+  try{await withTimeoutPromise(window.WarrantyPageCache.setPage(key,version,value),1500,"Repairer cache write");}
+  catch(err){console.warn("Repairer cache write unavailable",err);}
+}
+async function fetchRepairAnalysis(){
+  const readMeta=()=>readStaticJson(REMOTE_ANALYSIS_JSON.replace(/\.json$/,"/meta.json"),4000);
+  const meta=await readMeta().catch(()=>null);
+  const version=repairAnalysisVersion(meta);
+  const cached=await readRepairDataCache(REPAIR_ANALYSIS_CACHE_KEY,version,validRepairAnalysis);
+  if(cached&&repairAnalysisVersion(cached.meta)===version){
+    repairAnalysisDataVersion=version;repairAnalysisSource="cached";
+    return cached;
+  }
+  let analysis;
+  try{
+    analysis=await readStaticJson(REMOTE_ANALYSIS_JSON);
+  }catch(remoteError){
+    // A local fallback is safe only when its version matches the live source.
+    if(!version)throw remoteError;
+    analysis=await readStaticJson(repairStaticJsonUrl(ANALYSIS_JSON));
+    if(repairAnalysisVersion(analysis?.meta)!==version)throw new Error("Local repairer data is older than the live source. Please retry.");
+  }
+  if(!validRepairAnalysis(analysis))throw new Error("Repairer summary is missing required data.");
+  const loadedVersion=repairAnalysisVersion(analysis.meta);
+  const confirmedVersion=repairAnalysisVersion(await readMeta().catch(()=>null));
+  if(confirmedVersion&&loadedVersion!==confirmedVersion)throw new Error("Repairer data changed while loading. Please reload.");
+  if(loadedVersion&&loadedVersion===confirmedVersion)await saveRepairDataCache(REPAIR_ANALYSIS_CACHE_KEY,loadedVersion,analysis);
+  repairAnalysisDataVersion=loadedVersion;repairAnalysisSource="fresh";
+  return analysis;
+}
 function loadRepairAnalysisJson(){
   if(!repairAnalysisFetchPromise){
-    repairAnalysisFetchPromise=readFirstJson([
-      REMOTE_ANALYSIS_JSON,
-      repairStaticJsonUrl(ANALYSIS_JSON)
-    ]).catch(e=>{
-      repairAnalysisFetchPromise=null;
-      throw e;
-    });
+    repairAnalysisFetchPromise=fetchRepairAnalysis().catch(err=>{repairAnalysisFetchPromise=null;throw err;});
   }
   return repairAnalysisFetchPromise;
-}
-async function repairPageVersion(){
-  if(repairPageVersionPromise)return repairPageVersionPromise;
-  repairPageVersionPromise=(async()=>{
-    const staticVersion=await withTimeoutPromise(
-      loadRepairAnalysisJson().then(data=>{
-        const generated=clean(data?.meta?.cache_generated_at||data?.meta?.generatedAt||data?.generatedAt||"");
-        const mappingHash=clean(data?.meta?.repairer_name_rule_mapping_sha256||"").slice(0,16);
-        return [generated,mappingHash&&`map:${mappingHash}`].filter(Boolean).join(":");
-      }),
-      8000,
-      "Repair analysis version"
-    ).catch(()=>"");
-    if(staticVersion)return `${REPAIR_COST_RULE_CACHE_SCHEMA}:${staticVersion}`;
-    const remoteVersion=await withTimeoutPromise(
-      window.WarrantyPageCache?.fetchVersion?.()||Promise.resolve(""),
-      5000,
-      "Repair remote cache version"
-    ).catch(()=>"");
-    return `${REPAIR_COST_RULE_CACHE_SCHEMA}:${clean(remoteVersion)||"local"}`;
-  })();
-  return repairPageVersionPromise;
 }
 function repairPageBadgeVersion(version){
   const match=clean(version).match(/\d{4}-\d{2}-\d{2}T[0-9:.]+Z?/);
   return match?match[0]:version;
-}
-function compactRepairWeeklyAnalysis(value){return value&&typeof value==="object"?{...value,details:[]}:value}
-function saveRepairPageState(version){
-  if(!REPAIR_PAGE_CACHE_ENABLED)return;
-  if(!version||!window.WarrantyPageCache)return;
-  window.WarrantyPageCache.setPage(REPAIR_PAGE_CACHE_KEY,version,{allRepairTickets,tickets,repairs,selectedRepairPeriod,weeklyAnalysis:compactRepairWeeklyAnalysis(weeklyAnalysis),weeklyWeeks,weeklyIndex,weeklyMetric,selectedRegionCode,workingSummary,workingRepairers,workingStates,workingWeekly,workingChassis});
-}
-function restoreRepairPageState(cached,version){
-  if(!REPAIR_PAGE_CACHE_ENABLED)return false;
-  if(!cached||!Array.isArray(cached.tickets)||!Array.isArray(cached.repairs))return false;
-  const cachedAnalysis=cached.weeklyAnalysis||null;
-  const cachedPeriods=cachedAnalysis&&cachedAnalysis.periods&&typeof cachedAnalysis.periods==="object"?cachedAnalysis.periods:null;
-  const cachedAllRepairTickets=Array.isArray(cached.allRepairTickets)?cached.allRepairTickets:cached.tickets;
-  if(!cachedPeriods&&!cachedAllRepairTickets.length)return false;
-  allRepairTickets=cachedAllRepairTickets;
-  selectedRepairPeriod=cached.selectedRepairPeriod||"total";
-  weeklyAnalysis=cachedAnalysis;
-  weeklyWeeks=Array.isArray(cached.weeklyWeeks)?cached.weeklyWeeks:(Array.isArray(weeklyAnalysis&&weeklyAnalysis.weekly)?weeklyAnalysis.weekly:[]);
-  weeklyIndex=Number.isFinite(Number(cached.weeklyIndex))?Number(cached.weeklyIndex):Math.max(0,weeklyWeeks.length-1);
-  weeklyMetric=cached.weeklyMetric||"confirmed_cost";
-  selectedRegionCode=cached.selectedRegionCode||"QLD";
-  ausGeo=globalThis.REPAIRERS_AUS_GEOJSON||ausGeo;
-  nzGeo=globalThis.REPAIRERS_NZ_GEOJSON||nzGeo;
-  workingSummary=cached.workingSummary||(weeklyAnalysis&&weeklyAnalysis.summary)||{};
-  workingRepairers=Array.isArray(cached.workingRepairers)?cached.workingRepairers:[];
-  workingStates=Array.isArray(cached.workingStates)?cached.workingStates:[];
-  workingWeekly=Array.isArray(cached.workingWeekly)?cached.workingWeekly:weeklyWeeks;
-  workingChassis=cached.workingChassis||null;
-  precomputedRepairPeriods=cachedPeriods;
-  applySelectedRepairPeriod({preserveSelection:true});
-  $("loadError").style.display="none";
-  $("weekError").style.display="none";
-  showRepairYearNotice(allRepairTickets.length||Number(precomputedRepairPeriods?.total?.summary?.detail_rows||precomputedRepairPeriods?.total?.summary?.total_tickets||0));
-  renderRepairPeriodSelect();
-  renderAll();
-  renderAll_v2();
-  hideCalcFloat(0);
-  if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(repairPageBadgeVersion(version),"cached");
-  return true;
 }
 const $=id=>document.getElementById(id);
 const overviewKpis=document.querySelector(".overviewKpis");
@@ -4911,7 +4947,15 @@ async function readJson(path,timeoutMs=15000){
     if(timer)clearTimeout(timer);
   }
 }
-async function readStaticJson(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.json()}
+async function readStaticJson(path,timeoutMs=15000){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeoutMs);
+  try{
+    const r=await fetch(path,{cache:"no-store",signal:controller.signal});
+    if(!r.ok)throw new Error(path+" HTTP "+r.status);
+    return await r.json();
+  }finally{clearTimeout(timer);}
+}
 async function readFirstJson(paths){
   let lastErr=null;
   for(const path of paths){
@@ -4921,21 +4965,49 @@ async function readFirstJson(paths){
   throw lastErr||new Error("No JSON source available");
 }
 async function readStaticText(path){const r=await fetch(path,{cache:"no-store"});if(!r.ok)throw new Error(path+" HTTP "+r.status);return await r.text()}
-async function loadClaimTrendUnapprovedCounts(){
-  if(claimTrendUnapprovedCounts.loaded)return claimTrendUnapprovedCounts;
-  try{
-    const rawTickets=await readJson("c4cTickets_test/tickets");
-    claimTrendUnapprovedCounts={
-      loaded:true,
-      monthly:ClaimTrendTicketMetrics.approvedMonthly(rawTickets),
-      closedMonthly:ClaimTrendTicketMetrics.unapprovedMonthly(rawTickets),
-    };
-  }catch(e){
-    console.warn("Claim Trend unapproved counts unavailable",e);
-    claimTrendUnapprovedCounts={loaded:false,monthly:[],closedMonthly:null};
-  }
-  return claimTrendUnapprovedCounts;
+function loadClaimTrendUnapprovedCounts(){
+  if(claimTrendUnapprovedCounts.loaded)return Promise.resolve(claimTrendUnapprovedCounts);
+  if(claimTrendCountsPromise)return claimTrendCountsPromise;
+  claimTrendCountsPromise=(async()=>{
+    try{
+      const readVersion=()=>readJson("c4cTickets_test/ticketCoreSyncAt",4000).then(clean).catch(()=>"");
+      const version=await readVersion();
+      const cached=await readRepairDataCache(REPAIR_COUNTS_CACHE_KEY,version,validRepairClaimCounts);
+      if(cached){
+        claimTrendUnapprovedCounts=cached;
+        document.documentElement.dataset.repairCountsSource="cached";
+        return cached;
+      }
+      const rawTickets=await loadRepairRawTickets();
+      if(!rawTickets||typeof rawTickets!=="object")throw new Error("Ticket data is unavailable");
+      const confirmedVersion=await readVersion();
+      if(version&&confirmedVersion&&version!==confirmedVersion)throw new Error("Ticket data changed while loading. Please retry.");
+      claimTrendUnapprovedCounts={
+        loaded:true,
+        monthly:ClaimTrendTicketMetrics.approvedMonthly(rawTickets),
+        closedMonthly:ClaimTrendTicketMetrics.unapprovedMonthly(rawTickets),
+      };
+      if(version&&version===confirmedVersion)await saveRepairDataCache(REPAIR_COUNTS_CACHE_KEY,version,claimTrendUnapprovedCounts);
+      document.documentElement.dataset.repairCountsSource="fresh";
+    }catch(e){
+      console.warn("Claim Trend ticket counts unavailable",e);
+      repairRawTicketsPromise=null;
+      claimTrendUnapprovedCounts={loaded:false,monthly:[],closedMonthly:null};
+    }finally{claimTrendCountsPromise=null;}
+    return claimTrendUnapprovedCounts;
+  })();
+  return claimTrendCountsPromise;
 }
+function refreshRepairClaimCounts(){
+  const pending=loadClaimTrendUnapprovedCounts();
+  renderChassisRepeatPanel();
+  return pending.then(()=>{
+    if(weeklyAnalysis){renderChassisRepeatPanel();renderWeekPanel();}
+    if(claimTrendUnapprovedCounts.loaded)document.documentElement.dataset.repairCountsReadyMs=String(Math.round(performance.now()));
+    markRepairDetailsReady();
+  });
+}
+
 let repairerNameRuleMapPromise=null;
 function repairNameRuleKey(value){
   return clean(value)
@@ -4951,6 +5023,7 @@ function repairNameRuleKey(value){
 async function loadRepairerNameRuleMap(){
   if(!repairerNameRuleMapPromise){
     repairerNameRuleMapPromise=readStaticJson("assets/repairer_name_rule_mapping.json").then(payload=>{
+      repairNameRuleSourceVersion=JSON.stringify(payload);
       const general=new Map(), snowyParts=new Map(), snowyDealerCodes=new Map(), snowyPartEntries=[], generalRows=[], snowyDealerRows=[];
       const add=(map,key,value)=>{
         const k=repairNameRuleKey(key), v=clean(value);
@@ -5268,6 +5341,7 @@ async function loadRepairDetailEnrichmentMap(){
           addRepairEnrichmentKey(map,row.Ticket,value);
           addRepairEnrichmentKey(map,row["Ticket ID"],value);
         });
+        repairDetailEnrichmentComplete=true;
         return map;
       }catch(e){
         console.warn("Repair detail chassis enrichment could not be loaded",e);
@@ -5301,7 +5375,7 @@ function enrichRepairDetailRow(row,map){
 let firebaseTicketMapPromise=null;
 async function loadFirebaseTicketMap(){
   if(!firebaseTicketMapPromise){
-    firebaseTicketMapPromise=readJson("c4cTickets_test/tickets").then(node=>{
+    firebaseTicketMapPromise=loadRepairRawTickets().then(node=>{
       const map=new Map();
       Object.entries(node||{}).forEach(([key,row])=>{
         if(!row||typeof row!=="object")return;
@@ -5725,7 +5799,17 @@ function normalizeTicket(row,key){
   const id=clean(ticket.TicketID||ticket.Ticket||raw["Ticket ID"]||key);
   return {id,ticket,roles};
 }
+// Normalized entries stay unchanged for the lifetime of a loaded source.
+// Reuse name resolution across tables, maps, repeat analysis and exports.
+const repairInfoCache=new WeakMap();
 function repairInfo(entry){
+  const cached=repairInfoCache.get(entry);
+  if(cached&&cached.rules===repairerNameRuleMap)return cached.value;
+  const value=resolveRepairInfo(entry);
+  repairInfoCache.set(entry,{rules:repairerNameRuleMap,value});
+  return value;
+}
+function resolveRepairInfo(entry){
   const r=entry.roles&&entry.roles["43"]&&typeof entry.roles["43"]==="object"?entry.roles["43"]:null;
   if(r){
     const ticket=entry.ticket||{};
@@ -5984,7 +6068,8 @@ function buildOverviewStateExportRows(list){
 }
 async function exportRankViewExcel(){
   return withDownloadFloat(async()=>{
-    await ensureRepairDetailsLoaded();
+    await Promise.all([ensureRepairDetailsLoaded(),loadClaimTrendUnapprovedCounts()]);
+    if(!claimTrendUnapprovedCounts.loaded){alert("Claim Trend ticket totals could not be loaded. Please retry the export.");return;}
     const overviewStates=sortAustraliaStates(orderedAustraliaStates(repairOverviewStateRows()));
     const allCostTickets=repairCostTicketEntries();
     if(overviewRankView==="top"){
@@ -6039,7 +6124,8 @@ async function exportRankViewExcel(){
 }
 async function exportOverviewExcel(){
   return withDownloadFloat(async()=>{
-    await ensureRepairDetailsLoaded();
+    await Promise.all([ensureRepairDetailsLoaded(),loadClaimTrendUnapprovedCounts()]);
+    if(!claimTrendUnapprovedCounts.loaded){alert("Claim Trend ticket totals could not be loaded. Please retry the export.");return;}
     const period=repairPeriodLabel();
     const overviewStates=sortAustraliaStates(orderedAustraliaStates(repairOverviewStateRows()));
     const allRepairers=(Array.isArray(repairs)?repairs.slice():[]).filter(r=>Number(r.ticketCount||0)>0);
@@ -7111,6 +7197,12 @@ function syncRankView(){
   $("rankViewTopBtn")?.classList.toggle("is-active",isTop);
 }
 function renderWeekPanel(){
+  if(repairInitialLoading&&!weeklyAnalysis){
+    $("weekOverviewRange").textContent="Loading latest repairer summary…";
+    $("weekError").style.display="none";
+    $("weekStateList").innerHTML='<tr><td colspan="7"><div class="empty" role="status">Loading state costs and repairer rankings…</div></td></tr>';
+    return;
+  }
   const allStates=repairOverviewStateRows();
   if(allStates.length&&(!Array.isArray(workingStates)||!workingStates.length))workingStates=allStates;
   const rankBodyEl=$("weekStateList");
@@ -7141,7 +7233,9 @@ function renderWeekPanel(){
     return;
   }
   const overviewTickets=repairOverviewApprovedTicketTotal();
-  if(rangeEl)rangeEl.textContent=`(${repairPeriodText()}, ${num(overviewTickets)} approved tickets)`;
+  if(rangeEl)rangeEl.textContent=claimTrendUnapprovedCounts.loaded
+    ? `(${repairPeriodText()}, ${num(overviewTickets)} approved tickets)`
+    : `(${repairPeriodText()} · approved ticket total ${claimTrendCountsPromise?"loading…":"unavailable"})`;
   if(!overviewStates.some(r=>r.state===selectedRegionCode))selectedRegionCode=overviewStates.some(r=>r.state==="QLD")?"QLD":overviewStates[0].state;
   const selected=selectedOverviewState(overviewStates);
   const legendMax=Math.max(1,...overviewStates.map(s=>weekStateMetric(s)));
@@ -7492,12 +7586,15 @@ function requestChassisRepeatDetailRefresh(){
   if(chassisRepeatDetailRefreshStarted||repairDetailsLoaded)return;
   chassisRepeatDetailRefreshStarted=true;
   ensureRepairDetailsLoaded({renderAfter:false}).then(()=>{
-    rebuildRepairWorkingData();
     renderChassisRepeatPanel();
     renderTop20Panel();
     renderWeekPanelIfReady();
-    repairPageVersion().then(v=>saveRepairPageState(v)).catch(()=>{});
-  }).catch(err=>console.warn("Chassis repeat detail refresh failed",err));
+    markRepairDetailsReady();
+  }).catch(err=>{
+    repairDetailsError="Ticket details could not be loaded. Please retry.";
+    console.warn("Chassis repeat detail refresh failed",err);
+    renderChassisRepeatPanel();
+  });
 }
 function chassisRepeatTotalTicketDenominator(w=workingChassis){
   return repairApprovedPlusUnapprovedTicketTotal();
@@ -7529,10 +7626,14 @@ function renderChassisRepeatPanel(){
   const viz=$("repairRepeatScenarios")||$("chassisRepeatViz");
   if(!summary||!viz)return;
   if(!claimTrendUnapprovedCounts.loaded){
-    summary.innerHTML="<div><span>Repeat Rate</span><b>Unavailable</b></div>";
+    const pending=!!claimTrendCountsPromise;
+    summary.innerHTML=`<div><span>Repeat Rate</span><b>${pending?"Loading…":"Unavailable"}</b></div>`;
     viz.hidden=false;
     viz.style.display="";
-    viz.innerHTML='<div class="chassisRepeatEmpty">Claim Trend ticket totals could not be loaded. Refresh the page to retry.</div>';
+    viz.innerHTML=pending
+      ? '<div class="chassisRepeatEmpty" role="status">Loading approved and unapproved ticket totals for the repeat rate…</div>'
+      : '<div class="chassisRepeatEmpty">Ticket totals could not be loaded. <button id="retryRepairCounts" class="btn" type="button">Retry</button></div>';
+    if(!pending&&$("retryRepairCounts"))$("retryRepairCounts").onclick=()=>refreshRepairClaimCounts();
     return;
   }
   const w=workingChassis||{totalUniqueChassis:0,repeatedChassisCount:0,repeatRate:0,categories:[]};
@@ -7548,10 +7649,21 @@ function renderChassisRepeatPanel(){
   viz.hidden=false;
   viz.style.display="";
   if(!rows.length){
+    summary.innerHTML='<div><span>Tickets QTY (Repeat Requests)</span><b>Loading…</b></div><div><span>Repeat Rate</span><b>Loading…</b></div>';
+    if(repairDetailsError){
+      summary.innerHTML='<div><span>Repeat Rate</span><b>Unavailable</b></div>';
+      viz.innerHTML=`<div class="chassisRepeatEmpty">${esc(repairDetailsError)} <button id="retryRepairDetails" class="btn" type="button">Retry</button></div>`;
+      $("retryRepairDetails").onclick=()=>{
+        repairDetailsError="";chassisRepeatDetailRefreshStarted=false;
+        requestChassisRepeatDetailRefresh();renderChassisRepeatPanel();
+      };
+      return;
+    }
     requestChassisRepeatDetailRefresh();
     const message=repairDetailsLoaded
       ? "No repeated chassis cases match the current scope."
       : "Loading repeated request detail from ticket history...";
+    if(repairDetailsLoaded)summary.innerHTML='<div><span>Tickets QTY (Repeat Requests)</span><b>0</b></div><div><span>Repeat Rate</span><b>0%</b></div>';
     viz.innerHTML=`<div class="chassisRepeatEmpty">${esc(message)}</div>`;
     return;
   }
@@ -7597,7 +7709,7 @@ async function exportChassisRepeatExcel(){
   return withDownloadFloat(async()=>{
     await loadClaimTrendUnapprovedCounts();
     if(!claimTrendUnapprovedCounts.loaded){alert("Claim Trend ticket totals could not be loaded. Please retry the export.");return;}
-    await ensureRepairDetailsLoaded();
+    await Promise.all([ensureRepairDetailsLoaded(),loadClaimTrendUnapprovedCounts()]);
     const w=workingChassis||{};
     if(!w||!Array.isArray(w.categories)||!w.categories.length){alert("No repeated chassis data available to export.");return}
     const categoryTicketTotals=row=>chassisRepeatCategoryTotals(row,w);
@@ -7724,7 +7836,7 @@ function renderAll_v2(){
 }
 async function loadWeeklyAnalysis(){
   try{
-    const analysis=await loadRepairAnalysisJson().catch(()=>globalThis.REPAIRERS_2026_ANALYSIS||{});
+    const analysis=await loadRepairAnalysisJson();
     const aus=globalThis.REPAIRERS_AUS_GEOJSON||await readStaticJson(AUS_GEOJSON);
     const nz=globalThis.REPAIRERS_NZ_GEOJSON||await readStaticJson(NZ_GEOJSON);
     weeklyAnalysis=analysis;
@@ -7740,14 +7852,15 @@ async function loadWeeklyAnalysis(){
     workingStates=Array.isArray(analysis.states)?analysis.states:[];
     workingWeekly=Array.isArray(analysis.weekly)?analysis.weekly:[];
     precomputedRepairPeriods=analysis.periods&&typeof analysis.periods==="object"?analysis.periods:null;
-    renderAll_v2();
+    // Render once after the selected period has initialized workingChassis.
   }catch(e){
     weeklyAnalysis=null;
     weeklyWeeks=[];
     const msg=`Failed to load weekly repair analysis: ${e.message||e}`;
     $("weekError").textContent=msg;
     $("weekError").style.display="block";
-    $("weekStateList").innerHTML=`<div class="empty">${esc(msg)}</div>`;
+    $("weekStateList").innerHTML=`<tr><td colspan="7"><div class="empty">${esc(msg)}</div></td></tr>`;
+    throw e;
   }
 }
 async function ensureRepairDetailsLoaded({renderAfter=true}={}){
@@ -7756,29 +7869,34 @@ async function ensureRepairDetailsLoaded({renderAfter=true}={}){
   repairDetailsPromise=(async()=>{
     if(renderAfter)showCalcFloat(true,"Loading ticket details...");
     try{
+      if(await restoreRepairDetails())return allRepairTickets;
+      const enrichmentReady=loadRepairDetailEnrichmentMap();
       let localDetails=Array.isArray(weeklyAnalysis?.details)&&weeklyAnalysis.details.length
         ? weeklyAnalysis.details
         : (Array.isArray(globalThis.REPAIRERS_2026_ANALYSIS?.details)&&globalThis.REPAIRERS_2026_ANALYSIS.details.length?globalThis.REPAIRERS_2026_ANALYSIS.details:null);
       if(!localDetails){
-        const detailAnalysis=await readFirstJson([
-          REMOTE_ANALYSIS_DETAILS_JSON,
-          repairStaticJsonUrl(ANALYSIS_DETAILS_JSON)
-        ]).catch(()=>null);
+        let detailAnalysis;
+        try{detailAnalysis=await readStaticJson(REMOTE_ANALYSIS_DETAILS_JSON,30000);}
+        catch(remoteError){
+          const meta=await readStaticJson(REMOTE_ANALYSIS_DETAILS_JSON.replace(/\.json$/,"/meta.json"),4000);
+          detailAnalysis=await readStaticJson(repairStaticJsonUrl(ANALYSIS_DETAILS_JSON));
+          if(!repairAnalysisVersion(meta)||repairAnalysisVersion(detailAnalysis?.meta)!==repairAnalysisVersion(meta))throw remoteError;
+        }
         localDetails=Array.isArray(detailAnalysis?.details)&&detailAnalysis.details.length?detailAnalysis.details:null;
       }
       if(localDetails){
-        const enrichmentMap=await loadRepairDetailEnrichmentMap();
+        const enrichmentMap=await enrichmentReady;
         tickets=localDetails
           .map((r,i)=>enrichRepairDetailRow(r,enrichmentMap))
           .map((r,i)=>normalizeTicket(r,clean(r["Ticket ID"]||r.TicketID||r.Ticket||`detail-${i+1}`)))
           .filter(x=>x.id&&x.ticket);
         if(!tickets.some(entry=>isUnapprovedRepairTicket(entry.ticket))){
-          const rawNode=await readJson("c4cTickets_test/tickets").catch(()=>null);
+          const rawNode=await loadRepairRawTickets();
           const rawTickets=Object.entries(rawNode||{}).map(([k,r])=>normalizeTicket(r,k)).filter(x=>x.id&&x.ticket);
           if(rawTickets.some(entry=>isUnapprovedRepairTicket(entry.ticket)))tickets=mergeTicketCostsIntoRawTickets(rawTickets,tickets);
         }
       }else{
-        const node=await readJson("c4cTickets_test/tickets");
+        const node=await loadRepairRawTickets();
         tickets=Object.entries(node||{}).map(([k,r])=>normalizeTicket(r,k)).filter(x=>x.id&&x.ticket);
       }
       allRepairTickets=tickets.filter(entry=>{
@@ -7787,11 +7905,25 @@ async function ensureRepairDetailsLoaded({renderAfter=true}={}){
         return info.repairId!=="no-repair" && info.repairName!=="No Repair Shop Assigned" && d && isRepairScopeDate(d);
       });
       repairDetailsLoaded=true;
+      repairDetailsError="";
+      document.documentElement.dataset.repairDetailsSource="fresh";
       showRepairYearNotice(allRepairTickets.length||Number(precomputedRepairPeriods?.total?.summary?.total_tickets||0));
       applySelectedRepairPeriod({preserveSelection:true});
       if(renderAfter){
         renderAll();
         renderAll_v2();
+        markRepairDetailsReady();
+      }
+      // Persist only a complete normalized source after confirming that every
+      // upstream input still has the version checked before the download.
+      if(repairDetailSourceVersion&&repairDetailEnrichmentComplete&&window.WarrantyPageCache?.setLargePage){
+        const completedTickets=allRepairTickets;
+        readRepairDetailSourceVersion().then(version=>{
+          if(version!==repairDetailSourceVersion)return;
+          return window.WarrantyPageCache.setLargePage(REPAIR_DETAILS_CACHE_KEY,version,completedTickets).then(saved=>{
+            document.documentElement.dataset.repairDetailsCached=String(!!saved);
+          });
+        }).catch(err=>console.warn("Repairer detail cache unavailable",err));
       }
       return allRepairTickets;
     }finally{
@@ -7803,67 +7935,38 @@ async function ensureRepairDetailsLoaded({renderAfter=true}={}){
 }
 async function load(){
   repairInitialLoading=true;
-  showCalcFloat(true,"Loading repairer analysis...");
-  const loadFailSafe=setTimeout(()=>hideCalcFloat(0),22000);
-  let cacheVersion="";
-  repairerNameRuleMap=await loadRepairerNameRuleMap();
-  await loadClaimTrendUnapprovedCounts();
+  showCalcFloat(true,"Loading repairer summary...");
+  renderWeekPanel();
+  // Start independent sources together; full ticket history must not block
+  // the initial summary. Reuse verified normalized details on repeat visits.
+  const countsReady=refreshRepairClaimCounts();
+  const mappingReady=loadRepairerNameRuleMap().then(value=>{repairerNameRuleMap=value;});
+  const analysisReady=loadRepairAnalysisJson();
+  const detailsRestored=mappingReady.then(()=>restoreRepairDetails());
   try{
-    cacheVersion=await withTimeoutPromise(repairPageVersion(),10000,"Repair page version");
-  }catch(e){
-    console.warn("Repair page version failed",e);
-    cacheVersion=`${REPAIR_COST_RULE_CACHE_SCHEMA}:local`;
-  }
-  try{
-    const cached=await withTimeoutPromise(
-      window.WarrantyPageCache?.getPage?.(REPAIR_PAGE_CACHE_KEY,cacheVersion)||Promise.resolve(null),
-      5000,
-      "Repair page cache restore"
-    );
-    if(restoreRepairPageState(cached,cacheVersion)){
-      clearTimeout(loadFailSafe);
-      repairInitialLoading=false;
-      return;
-    }
-  }catch(e){console.warn("Repair page cache restore failed",e);}
-  try{
-    await withTimeoutPromise(loadWeeklyAnalysis(),15000,"Repair weekly analysis");
+    await Promise.all([mappingReady,analysisReady,detailsRestored]);
+    await loadWeeklyAnalysis();
     $("loadError").style.display="none";
-    if(precomputedRepairPeriods){
-      repairDetailsLoaded=false;
-      allRepairTickets=[];
-      tickets=[];
-      showRepairYearNotice(Number(precomputedRepairPeriods?.total?.summary?.detail_rows||precomputedRepairPeriods?.total?.summary?.total_tickets||0));
-      applySelectedRepairPeriod({preserveSelection:true});
-      renderAll();
-      renderAll_v2();
-      saveRepairPageState(cacheVersion);
-      if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(repairPageBadgeVersion(cacheVersion),"fresh");
-      clearTimeout(loadFailSafe);
-      repairInitialLoading=false;
-      hideCalcFloat(0);
-      return;
-    }else{
+    if(!precomputedRepairPeriods){
       await ensureRepairDetailsLoaded({renderAfter:false});
     }
-    showRepairYearNotice(allRepairTickets.length||Number(precomputedRepairPeriods?.total?.summary?.total_tickets||0));
+    showRepairYearNotice(allRepairTickets.length||Number(precomputedRepairPeriods?.total?.summary?.detail_rows||precomputedRepairPeriods?.total?.summary?.total_tickets||0));
     applySelectedRepairPeriod({preserveSelection:true});
-    renderAll();
-    renderAll_v2();
-    saveRepairPageState(cacheVersion);
-    if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(repairPageBadgeVersion(cacheVersion),"fresh");
-    clearTimeout(loadFailSafe);
-    repairInitialLoading=false;
-    hideCalcFloat(0);
-  }
-  catch(e){
-    clearTimeout(loadFailSafe);
-    repairInitialLoading=false;
-    hideCalcFloat(0);
+    renderAll();renderAll_v2();
+    markRepairDetailsReady();
+    if(!repairDetailsLoaded)requestChassisRepeatDetailRefresh();
+    document.documentElement.dataset.repairOverviewReadyMs=String(Math.round(performance.now()));
+    document.documentElement.dataset.repairOverviewSource=repairAnalysisSource;
+    if(repairAnalysisDataVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(repairPageBadgeVersion(repairAnalysisDataVersion),repairAnalysisSource);
+  }catch(e){
     $("loadError").textContent="Failed to load repair data: "+(e.message||e);
-    $("loadError").style.display="block"
+    $("loadError").style.display="block";
+  }finally{
+    repairInitialLoading=false;hideCalcFloat(0);
   }
+  await countsReady;
 }
+
 if($("repairSelect"))$("repairSelect").onchange=()=>{selectedRepairId=$("repairSelect").value;page=1;renderAllWithLoading()};
 $("repairPeriodSelect").onchange=()=>{
   selectedRepairPeriod=$("repairPeriodSelect").value||"total";
@@ -7871,7 +7974,6 @@ $("repairPeriodSelect").onchange=()=>{
   sortDir="desc";
   applySelectedRepairPeriod();
   renderAllWithLoading("Calculating repairer analysis...");
-  repairPageVersion().then(v=>saveRepairPageState(v)).catch(()=>{});
 };
 $("searchBox")&&($("searchBox").oninput=()=>{search=$("searchBox").value;page=1;renderAllWithLoading("Filtering repairers...")});
 $("clearRepairFiltersBtn")&&($("clearRepairFiltersBtn").onclick=clearRepairFilters);

@@ -584,6 +584,34 @@ let pageLoadingTimer=null, pageLoadingRunId=0;
 let rawTicketsPromise=null;
 let rawTicketsLoaded=false,approvedDateBasis="approved";
 let unapprovedDateBasis="closed";
+const CLAIM_TICKET_CACHE_KEY="claim-trend-ticket-payloads:v1";
+let claimSourceVersionsPromise=null;
+function loadClaimSourceVersions(){
+  if(!claimSourceVersionsPromise)claimSourceVersionsPromise=readClaimSourceVersions();
+  return claimSourceVersionsPromise;
+}
+async function readClaimSourceVersions(){
+  const [dashboard,core,so]=await Promise.all([
+    readJson(`${ROOT}/analytics/meta/generatedAt`,4000),
+    readJson("c4cTickets_test/ticketCoreSyncAt",4000),
+    readJson("c4cTickets_test/ticketSoSyncAt",4000)
+  ].map(p=>p.catch(()=>"")));
+  const valid=v=>(typeof v==="string"||typeof v==="number")&&clean(v);
+  return {
+    dashboard:valid(dashboard)?clean(dashboard):"",
+    tickets:valid(core)&&valid(so)&&valid(dashboard)?JSON.stringify([core,so,dashboard]):""
+  };
+}
+async function readClaimCache(key,version){
+  if(!version||!window.WarrantyPageCache?.getPage)return null;
+  try{return await withTimeout(window.WarrantyPageCache.getPage(key,version),1500,"Claim trend cache read");}
+  catch(err){console.warn("Claim trend cache unavailable",err);return null;}
+}
+function validClaimTicketCache(value){
+  // Firebase numeric keys may arrive as a sparse array with null slots.
+  // The existing ticket calculations already ignore those empty slots.
+  return Array.isArray(value)&&value.every(node=>node==null||typeof ticketPayload(node)==="object");
+}
 
 function unapprovedDateLabel(){return unapprovedDateBasis==="created"?"Created On":"Closed On"}
 
@@ -1169,11 +1197,33 @@ function exportDetailSheetRows(rows){
 async function ensureRawTicketsLoaded(){
   if(rawTicketsLoaded)return RAW_TICKETS;
   if(!rawTicketsPromise){
-    rawTicketsPromise=readJson(TICKETS_PATH).then(tickets=>{
-      RAW_TICKETS=nonPdiTicketNodes(tickets);
+    rawTicketsPromise=(async()=>{
+      const version=(await loadClaimSourceVersions()).tickets;
+      const cached=await readClaimCache(CLAIM_TICKET_CACHE_KEY,version);
+      if(validClaimTicketCache(cached)){
+        RAW_TICKETS=cached;rawTicketsLoaded=true;
+        document.documentElement.dataset.claimTicketsSource="cached";
+        return RAW_TICKETS;
+      }
+      const tickets=await readJson(TICKETS_PATH,30000);
+      if(!tickets||typeof tickets!=="object")throw new Error("Ticket data is unavailable");
+      const confirmed=(await readClaimSourceVersions()).tickets;
+      if(version&&confirmed&&version!==confirmed){
+        claimSourceVersionsPromise=null;
+        throw new Error("Ticket data changed while loading. Please retry.");
+      }
+      // Every chart and export reads ticketPayload. Keep all of its fields and
+      // the original wrapper shape, omitting unused roles/order subtrees.
+      RAW_TICKETS=nonPdiTicketNodes(tickets).map(node=>node?.ticket&&typeof node.ticket==="object"?{ticket:node.ticket}:node);
       rawTicketsLoaded=true;
+      document.documentElement.dataset.claimTicketsSource="fresh";
+      if(version&&version===confirmed&&window.WarrantyPageCache?.setLargePage){
+        Promise.resolve(window.WarrantyPageCache.setLargePage(CLAIM_TICKET_CACHE_KEY,version,RAW_TICKETS)).then(saved=>{
+          document.documentElement.dataset.claimTicketsCached=String(!!saved);
+        }).catch(err=>console.warn("Claim trend ticket cache write failed",err));
+      }
       return RAW_TICKETS;
-    }).finally(()=>{
+    })().finally(()=>{
       rawTicketsPromise=null;
     });
   }
@@ -1482,6 +1532,7 @@ function showPageLoading(active,label="Loading dashboard..."){
 
 function setChartsLoading(active){
   document.body.classList.toggle("charts-loading",!!active);
+  if(!active&&rawTicketsLoaded)document.documentElement.dataset.claimChartsReadyMs=String(Math.round(performance.now()));
   if(active)document.querySelectorAll(".chartWrap").forEach(w=>w.classList.remove("chart-rendered"));
 }
 
@@ -1933,7 +1984,7 @@ function renderWithPageLoading(showLoading=false,label="Calculating dashboard...
     try{
       render();
     }finally{
-      setChartsLoading(false);
+      showPageLoading(false,label);
     }
     return;
   }
@@ -1944,10 +1995,7 @@ function renderWithPageLoading(showLoading=false,label="Calculating dashboard...
       try{
         render();
       }finally{
-        pageLoadingTimer=setTimeout(()=>{
-          if(runId===pageLoadingRunId)showPageLoading(false,label);
-          pageLoadingTimer=null;
-        },650);
+        if(runId===pageLoadingRunId)showPageLoading(false,label);
       }
     });
   });
@@ -2043,21 +2091,10 @@ function scrollToSection(id,behavior){
 }
 function settleScroll(id){[0,80,250,600].forEach(d=>setTimeout(()=>scrollToSection(id,"auto"),d));}
 function navigateToSectionWithLoading(id){
-  if(pageLoadingTimer){
-    clearTimeout(pageLoadingTimer);
-    pageLoadingTimer=null;
-  }
-  const runId=++pageLoadingRunId;
-  showPageLoading(true,"Loading section...");
-  requestAnimationFrame(()=>{
-    if(runId!==pageLoadingRunId)return;
-    setActiveTab(id);
-    scrollToSection(id,"smooth");
-    pageLoadingTimer=setTimeout(()=>{
-      if(runId===pageLoadingRunId)showPageLoading(false,"Loading section...");
-      pageLoadingTimer=null;
-    },420);
-  });
+  // Sections already exist; scrolling does not require data loading or a
+  // skeleton over every chart.
+  setActiveTab(id);
+  scrollToSection(id,"smooth");
 }
 function setupNav(){
   // tab buttons -> smooth offset-aware scroll
@@ -2087,35 +2124,39 @@ function setupNav(){
 setupNav();
 window.addEventListener("load",()=>{const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);});
 
-const CLAIM_TREND_PAGE_CACHE_KEY="claim-trend-overview:v17-include-approved-closed";
+const CLAIM_TREND_PAGE_CACHE_KEY="claim-trend-overview:v18-amount-summary";
 function finishInitialScroll(){const id=(location.hash||"").slice(1);if(SECTION_IDS.includes(id)&&id!=="newclaim")settleScroll(id);}
+async function loadClaimAmountView(){
+  const version=(await loadClaimSourceVersions()).dashboard;
+  const cached=await readClaimCache(CLAIM_TREND_PAGE_CACHE_KEY,version);
+  if(cached&&Array.isArray(cached.approvedAmountMonthly)){
+    document.documentElement.dataset.claimAmountSource="cached";
+    return cached;
+  }
+  const amounts=await readJson(`${ROOT}/analytics/teamDashboard/views/all/approvedAmountMonthly`);
+  const view={approvedAmountMonthly:arr(amounts)};
+  const confirmed=(await readClaimSourceVersions()).dashboard;
+  if(version&&confirmed&&version!==confirmed)throw new Error("Amount data changed while loading. Please reload.");
+  if(version&&version===confirmed&&window.WarrantyPageCache?.setPage){
+    Promise.resolve(window.WarrantyPageCache.setPage(CLAIM_TREND_PAGE_CACHE_KEY,version,view))
+      .catch(err=>console.warn("Claim trend amount cache write failed",err));
+  }
+  document.documentElement.dataset.claimAmountSource="fresh";
+  return view;
+}
 (async()=>{
-  let cacheVersion="";
-  try{cacheVersion=await withTimeout(window.WarrantyPageCache.fetchVersion(),FETCH_TIMEOUT_MS,"Claim trend cache version request");}catch(e){console.warn("Cannot read claim trend cache version",e);}
   try{
-    const cached=await withTimeout(window.WarrantyPageCache.getPage(CLAIM_TREND_PAGE_CACHE_KEY,cacheVersion),5000,"Claim trend page cache restore");
-    if(cached&&cached.view){
-      await ensureRawTicketsLoaded().catch(()=>[]);
-      init(cached.view,true,cached.claimClosedIndex);
-      if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"cached");
-      finishInitialScroll();
-      return;
-    }
-  }catch(e){console.warn("In-field page cache restore failed",e);}
-  Promise.all([readJson(`${ROOT}/analytics/teamDashboard`),ensureRawTicketsLoaded().catch(()=>[])]).then(([data,tickets])=>{
-    const view=(data&&data.views&&data.views.all)||data||{};
-    RAW_TICKETS=nonPdiTicketNodes(tickets);
-    init(view);
-    if(cacheVersion&&window.WarrantyPageCache){
-      window.WarrantyPageCache.setPage(CLAIM_TREND_PAGE_CACHE_KEY,cacheVersion,{view,claimClosedIndex:CLAIM_CLOSED_INDEX});
-      window.WarrantyPageCache.showBadge(cacheVersion,"fresh");
-    }
+    const [view]=await Promise.all([loadClaimAmountView(),ensureRawTicketsLoaded().catch(err=>{
+      showError(`Ticket details unavailable. Select a date basis to retry. (${err.message})`);
+    })]);
+    init(view,true);
+    const version=(await loadClaimSourceVersions()).dashboard;
+    if(version&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(version,document.documentElement.dataset.claimTicketsSource==="cached"&&document.documentElement.dataset.claimAmountSource==="cached"?"cached":"fresh");
     finishInitialScroll();
-  }).catch(err=>{
+  }catch(err){
     showError(`Live dashboard data unavailable. Refresh to retry. (${err.message})`);
-    init({});
-    finishInitialScroll();
-  });
+    showPageLoading(false);
+  }
 })();
 </script>
 </body>

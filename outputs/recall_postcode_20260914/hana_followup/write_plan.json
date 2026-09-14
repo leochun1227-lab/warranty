@@ -1,0 +1,6031 @@
+{
+  "39555": {
+    "postcode": "7250",
+    "keys": {
+      "vehicle": [
+        "LRT243148"
+      ],
+      "customer_id": [],
+      "name": [
+        "JANET BEST"
+      ],
+      "email": [
+        "bestjanet52@gmail.com"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000502727"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000502727",
+        "NAME1": "DAVID & JANET BEST",
+        "NAME2": "",
+        "ORT01": "BLACKSTONE HEIGHTS",
+        "PSTLZ": "7250",
+        "REGIO": "",
+        "LAND1": "AU",
+        "SORTL": "BEST",
+        "TELF1": "0439854683",
+        "ADRNR": "0000869759",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "23 BAYVIEW DR",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "7250",
+        "CITY1": "BLACKSTONE HEIGHTS",
+        "COUNTRY": "AU",
+        "REGION": "",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "DAVID.J.BEST@BIGPOND.COM",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "LRT243148",
+        "VIN": "LRT243148",
+        "SDAUFNR": "0010037125",
+        "POSNR": "000010",
+        "KUNNR": "0000502727",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20250513"
+      },
+      {
+        "SERNR": "LRT243148",
+        "VIN": "LA9212EN5R1ZDD558",
+        "SDAUFNR": "0010037125",
+        "POSNR": "000010",
+        "KUNNR": "0000502727",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20250513"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "39589": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "NGC255232"
+      ],
+      "customer_id": [],
+      "name": [
+        "NEWCASTLE CARAVANS"
+      ],
+      "email": [
+        "service@nccrv.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000503201"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000503201",
+        "NAME1": "Newcastle Caravans and RV Store",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "NEWCASTLE",
+        "TELF1": "+61 2 40500303",
+        "ADRNR": "0000871614",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "36 Camfield Drive",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@nccrv.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "NGC255232",
+        "VIN": "LA9202EN2S1ZDD056",
+        "SDAUFNR": "0010041699",
+        "POSNR": "000010",
+        "KUNNR": "0000503201",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250725"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "39602": {
+    "postcode": "6056",
+    "keys": {
+      "vehicle": [
+        "LRV240337"
+      ],
+      "customer_id": [],
+      "name": [
+        "DOUG AND KERAN SHAW"
+      ],
+      "email": [
+        "dougvshaw@gmail.com"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000503423"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000503423",
+        "NAME1": "Keran And Doug Shaw Keran And Doug",
+        "NAME2": "",
+        "ORT01": "Greenmount",
+        "PSTLZ": "6056",
+        "REGIO": "WA",
+        "LAND1": "AU",
+        "SORTL": "KERAN AND",
+        "TELF1": "",
+        "ADRNR": "0000872468",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "116 Innaminka Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "6056",
+        "CITY1": "Greenmount",
+        "COUNTRY": "AU",
+        "REGION": "WA",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "keranshaw58@gmail.com",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "LRV240337",
+        "VIN": "LRV240337",
+        "SDAUFNR": "0010039929",
+        "POSNR": "000010",
+        "KUNNR": "0000503423",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20250627"
+      },
+      {
+        "SERNR": "LRV240337",
+        "VIN": "LA9212ES2R1ZDD491",
+        "SDAUFNR": "0010039929",
+        "POSNR": "000010",
+        "KUNNR": "0000503423",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20250627"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "39736": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRC254298"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC254298",
+        "VIN": "SRC254298",
+        "SDAUFNR": "0010037617",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250520"
+      },
+      {
+        "SERNR": "SRC254298",
+        "VIN": "LA9212ES0S1ZDD317",
+        "SDAUFNR": "0010037617",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250520"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39737": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRT253337"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRT253337",
+        "VIN": "SRT253337",
+        "SDAUFNR": "0010033239",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250304"
+      },
+      {
+        "SERNR": "SRT253337",
+        "VIN": "LA9212ENXS1ZDD089",
+        "SDAUFNR": "0010033239",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250304"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39738": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRP254478"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRP254478",
+        "VIN": "SRP254478",
+        "SDAUFNR": "0010037762",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250523"
+      },
+      {
+        "SERNR": "SRP254478",
+        "VIN": "LA9212ER5S1ZDD603",
+        "SDAUFNR": "0010037762",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250523"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39739": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRH255211"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRH255211",
+        "VIN": "LA9212ER6S1ZDD769",
+        "SDAUFNR": "0010041571",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250722"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39753": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRH255207"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRH255207",
+        "VIN": "LA9212ER9S1ZDD765",
+        "SDAUFNR": "0010041575",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250722"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39754": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRH255212"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRH255212",
+        "VIN": "LA9212ER2S1ZDD770",
+        "SDAUFNR": "0010041570",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250722"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39764": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRC243626"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC243626",
+        "VIN": "SRC243626",
+        "SDAUFNR": "0010027661",
+        "POSNR": "000010",
+        "KUNNR": "0000003133",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20241030"
+      },
+      {
+        "SERNR": "SRC243626",
+        "VIN": "LA9202ES8R1ZDD756",
+        "SDAUFNR": "0010027661",
+        "POSNR": "000010",
+        "KUNNR": "0000003133",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20241030"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39765": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRC243749"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC243749",
+        "VIN": "SRC243749",
+        "SDAUFNR": "0010031399",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250123"
+      },
+      {
+        "SERNR": "SRC243749",
+        "VIN": "LA9202ES1S1ZDD023",
+        "SDAUFNR": "0010031399",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250123"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39766": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRP253350"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRP253350",
+        "VIN": "SRP253350",
+        "SDAUFNR": "0010033225",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250304"
+      },
+      {
+        "SERNR": "SRP253350",
+        "VIN": "LA9212ER1S1ZDD128",
+        "SDAUFNR": "0010033225",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250304"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39767": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRP254349"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39768": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRP254475"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRP254475",
+        "VIN": "LA9212ER9S1ZDD670",
+        "SDAUFNR": "0010039061",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250612"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39769": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRS254768"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRS254768",
+        "VIN": "LA9202ES6S1ZDD325",
+        "SDAUFNR": "0010039131",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250613"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39770": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRC255432"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC255432",
+        "VIN": "LA9212ES8S1ZDD601",
+        "SDAUFNR": "0010042525",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250806"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39771": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRP254356"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRP254356",
+        "VIN": "LA9212ER5S1ZDD665",
+        "SDAUFNR": "0010038918",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250610"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39772": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRP254350"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRP254350",
+        "VIN": "LA9212ER1S1ZDD663",
+        "SDAUFNR": "0010038978",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250611"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39773": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRH255208"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRH255208",
+        "VIN": "LA9212ER0S1ZDD766",
+        "SDAUFNR": "0010041574",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250722"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39775": {
+    "postcode": "6172",
+    "keys": {
+      "vehicle": [
+        "SRT243559"
+      ],
+      "customer_id": [],
+      "name": [
+        "BILL TURNER"
+      ],
+      "email": [
+        "jakiara@bigpond.com"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle and private customer email; reviewed name variation",
+    "customer_ids": [
+      "0000205503"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000205503",
+        "NAME1": "Turner William George",
+        "NAME2": "",
+        "ORT01": "PORT KENNEDY",
+        "PSTLZ": "6172",
+        "REGIO": "WA",
+        "LAND1": "AU",
+        "SORTL": "SJ22288/LR",
+        "TELF1": "0417903980",
+        "ADRNR": "0000045599",
+        "KTOKD": "ZC02",
+        "LOEVM": "",
+        "STREET": "NAZAIRE LANE",
+        "HOUSE_NUM1": "3",
+        "POST_CODE1": "6172",
+        "CITY1": "PORT KENNEDY",
+        "COUNTRY": "AU",
+        "REGION": "WA",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "jakiara@bigpond.com",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRT243559",
+        "VIN": "SRT243559",
+        "SDAUFNR": "0010027244",
+        "POSNR": "000010",
+        "KUNNR": "0000205503",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20241021"
+      },
+      {
+        "SERNR": "SRT243559",
+        "VIN": "LA9212EN1R1ZDD587",
+        "SDAUFNR": "0010027244",
+        "POSNR": "000010",
+        "KUNNR": "0000205503",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20241021"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "39781": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "SRH255433"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER NEWCASTLE STOCK"
+      ],
+      "email": [
+        "customercare@snowyrivernewcastle.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Newcastle stock ticket; HANA Newcastle address matches official dealership",
+    "customer_ids": [
+      "0000003130",
+      "0000003133"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000003130",
+        "NAME1": "LEISURE LION PTY LTD",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "03 9303 6100",
+        "ADRNR": "0000033565",
+        "KTOKD": "ZC01",
+        "LOEVM": "",
+        "STREET": "26 CAMFIELD DRIVE",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@leisurelion.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@newgencaravans.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000003133",
+        "NAME1": "LEISURE LION - Newcastle",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "LEISURE LI",
+        "TELF1": "+61 753565000",
+        "ADRNR": "0000043688",
+        "KTOKD": "ZC03",
+        "LOEVM": "",
+        "STREET": "Camfield Drive",
+        "HOUSE_NUM1": "26",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRH255433",
+        "VIN": "LA9212ER4S1ZDD849",
+        "SDAUFNR": "0010042524",
+        "POSNR": "000010",
+        "KUNNR": "0000003130",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250806"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://snowyrivernewcastle.com.au/",
+      "https://snowyrivercaravans.com.au/contact-and-dealers/"
+    ]
+  },
+  "39854": {
+    "postcode": "6290",
+    "keys": {
+      "vehicle": [
+        "SRH250131"
+      ],
+      "customer_id": [],
+      "name": [
+        "ROHAN HOGBEN"
+      ],
+      "email": [
+        "rhogben6@bigpond.com"
+      ],
+      "phone": []
+    },
+    "method": "Exact contact and matching customer name",
+    "customer_ids": [
+      "0000515773"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000515773",
+        "NAME1": "Rohan Hogben Rohan Hogben",
+        "NAME2": "",
+        "ORT01": "Augusta",
+        "PSTLZ": "6290",
+        "REGIO": "WA",
+        "LAND1": "AU",
+        "SORTL": "ROHAN HOGB",
+        "TELF1": "+61 429642207",
+        "ADRNR": "0000914265",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "17 Ewing street",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "6290",
+        "CITY1": "Augusta",
+        "COUNTRY": "AU",
+        "REGION": "WA",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "rhogben6@bigpond.com",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRH250131",
+        "VIN": "LA9212ER5S1ZDD553",
+        "SDAUFNR": "0010049110",
+        "POSNR": "000010",
+        "KUNNR": "0000515773",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20260113"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "39860": {
+    "postcode": "6150",
+    "keys": {
+      "vehicle": [
+        "SRT255169"
+      ],
+      "customer_id": [],
+      "name": [
+        "ALEX AITKEN"
+      ],
+      "email": [
+        "alex@kd1.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle and private customer email; reviewed name variation",
+    "customer_ids": [
+      "0000515731"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000515731",
+        "NAME1": "Alexander Aitken",
+        "NAME2": "",
+        "ORT01": "Murdoch",
+        "PSTLZ": "6150",
+        "REGIO": "WA",
+        "LAND1": "AU",
+        "SORTL": "SJ25595",
+        "TELF1": "0893104240",
+        "ADRNR": "0000914070",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "16 Inwood Place",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "6150",
+        "CITY1": "Murdoch",
+        "COUNTRY": "AU",
+        "REGION": "WA",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "alex@kd1.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRT255169",
+        "VIN": "LA9212EN1S1ZDD322",
+        "SDAUFNR": "0010041264",
+        "POSNR": "000010",
+        "KUNNR": "0000515731",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20250717"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "39896": {
+    "postcode": "6167",
+    "keys": {
+      "vehicle": [
+        "SRC243142"
+      ],
+      "customer_id": [],
+      "name": [
+        "ROBIN WILLETT"
+      ],
+      "email": [
+        "robin.willett@westnet.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle and private customer email; reviewed name variation",
+    "customer_ids": [
+      "0000210339"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000210339",
+        "NAME1": "Brian Willett Brian Willett",
+        "NAME2": "",
+        "ORT01": "Casuarina",
+        "PSTLZ": "6167",
+        "REGIO": "WA",
+        "LAND1": "AU",
+        "SORTL": "BRIAN WILL",
+        "TELF1": "",
+        "ADRNR": "0000062545",
+        "KTOKD": "ZC02",
+        "LOEVM": "",
+        "STREET": "lot 150-193 Marri Park Drive",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "6167",
+        "CITY1": "Casuarina",
+        "COUNTRY": "AU",
+        "REGION": "WA",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "robin.willett@westnet.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC243142",
+        "VIN": "SRC243142",
+        "SDAUFNR": "0010024035",
+        "POSNR": "000010",
+        "KUNNR": "0000210339",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20240729"
+      },
+      {
+        "SERNR": "SRC243142",
+        "VIN": "LA9212ES8R1ZDD611",
+        "SDAUFNR": "0010024035",
+        "POSNR": "000010",
+        "KUNNR": "0000210339",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20240729"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40061": {
+    "postcode": "6027",
+    "keys": {
+      "vehicle": [
+        "LRV243064"
+      ],
+      "customer_id": [],
+      "name": [
+        "ANTHONY BLAKELY"
+      ],
+      "email": [
+        "tony@allstateoil.com"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle and private customer email; reviewed name variation",
+    "customer_ids": [
+      "0000209793"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000209793",
+        "NAME1": "Tony Blakely Tony Blakely",
+        "NAME2": "",
+        "ORT01": "Mullaloo",
+        "PSTLZ": "6027",
+        "REGIO": "WA",
+        "LAND1": "AU",
+        "SORTL": "TONY BLAKE",
+        "TELF1": "+61 418940179",
+        "ADRNR": "0000060112",
+        "KTOKD": "ZC02",
+        "LOEVM": "",
+        "STREET": "Contour Dr 95",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "6027",
+        "CITY1": "Mullaloo",
+        "COUNTRY": "AU",
+        "REGION": "WA",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "tony@allstateoil.com",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "LRV243064",
+        "VIN": "LRV243064",
+        "SDAUFNR": "0010022164",
+        "POSNR": "000010",
+        "KUNNR": "0000209793",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z3",
+        "AUART": "ZS01",
+        "ERDAT": "20240614"
+      },
+      {
+        "SERNR": "LRV243064",
+        "VIN": "LA9212ES0R1ZDD862",
+        "SDAUFNR": "0010022164",
+        "POSNR": "000010",
+        "KUNNR": "0000209793",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z3",
+        "AUART": "ZS01",
+        "ERDAT": "20240614"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40175": {
+    "postcode": "6232",
+    "keys": {
+      "vehicle": [
+        "SRC253007"
+      ],
+      "customer_id": [],
+      "name": [
+        "LAURENCE SLOSS"
+      ],
+      "email": [
+        "winebars@westnet.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle and private customer email; reviewed name variation",
+    "customer_ids": [
+      "0000500619"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000500619",
+        "NAME1": "Laurie Sloss Laurie Sloss",
+        "NAME2": "",
+        "ORT01": "Eaton",
+        "PSTLZ": "6232",
+        "REGIO": "WA",
+        "LAND1": "AU",
+        "SORTL": "LAURIE SLO",
+        "TELF1": "+61 400038340",
+        "ADRNR": "0000861646",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "11 Arabian Gardens",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "6232",
+        "CITY1": "Eaton",
+        "COUNTRY": "AU",
+        "REGION": "WA",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "winebars@westnet.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC253007",
+        "VIN": "SRC253007",
+        "SDAUFNR": "0010030740",
+        "POSNR": "000010",
+        "KUNNR": "0000500619",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20250107"
+      },
+      {
+        "SERNR": "SRC253007",
+        "VIN": "LA9202ESXS1ZDD019",
+        "SDAUFNR": "0010030740",
+        "POSNR": "000010",
+        "KUNNR": "0000500619",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20250107"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40596": {
+    "postcode": "2450",
+    "keys": {
+      "vehicle": [
+        "SRH250094"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER COFFS HARBOUR STOCK SRH13"
+      ],
+      "email": [
+        "kathleen@snowyrivercoffsharbour.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Coffs Harbour stock ticket; exact vehicle/dealer sales link and branch confirmation",
+    "customer_ids": [
+      "0000200032"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000200032",
+        "NAME1": "ABCO CARAVAN SERVICES PTY LTD",
+        "NAME2": "",
+        "ORT01": "Coffs Harbour",
+        "PSTLZ": "2450",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "ABCO",
+        "TELF1": "02 6651 2445",
+        "ADRNR": "0000024266",
+        "KTOKD": "ZC02",
+        "LOEVM": "",
+        "STREET": "Collison Place",
+        "HOUSE_NUM1": "6",
+        "POST_CODE1": "2450",
+        "CITY1": "Coffs Harbour",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kathleen@abcorv.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000200032",
+        "NAME1": "ABCO CARAVAN SERVICES PTY LTD",
+        "NAME2": "",
+        "ORT01": "Coffs Harbour",
+        "PSTLZ": "2450",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "ABCO",
+        "TELF1": "02 6651 2445",
+        "ADRNR": "0000024266",
+        "KTOKD": "ZC02",
+        "LOEVM": "",
+        "STREET": "Collison Place",
+        "HOUSE_NUM1": "6",
+        "POST_CODE1": "2450",
+        "CITY1": "Coffs Harbour",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRH250094",
+        "VIN": "LA9212ER6S1ZDD531",
+        "SDAUFNR": "0010040576",
+        "POSNR": "000010",
+        "KUNNR": "0000200032",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250704"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://abcocaravans.com.au/terms-of-use/",
+      "https://snowyrivercoffsharbour.com.au/caravan/src-20/"
+    ]
+  },
+  "40601": {
+    "postcode": "2450",
+    "keys": {
+      "vehicle": [
+        "SRC254230"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER COFFS HARBOUR STOCK"
+      ],
+      "email": [
+        "kathleen@snowyrivercoffsharbour.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Coffs Harbour stock ticket; exact vehicle/dealer sales link and branch confirmation",
+    "customer_ids": [
+      "0000200032"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000200032",
+        "NAME1": "ABCO CARAVAN SERVICES PTY LTD",
+        "NAME2": "",
+        "ORT01": "Coffs Harbour",
+        "PSTLZ": "2450",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "ABCO",
+        "TELF1": "02 6651 2445",
+        "ADRNR": "0000024266",
+        "KTOKD": "ZC02",
+        "LOEVM": "",
+        "STREET": "Collison Place",
+        "HOUSE_NUM1": "6",
+        "POST_CODE1": "2450",
+        "CITY1": "Coffs Harbour",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kathleen@abcorv.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000200032",
+        "NAME1": "ABCO CARAVAN SERVICES PTY LTD",
+        "NAME2": "",
+        "ORT01": "Coffs Harbour",
+        "PSTLZ": "2450",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "ABCO",
+        "TELF1": "02 6651 2445",
+        "ADRNR": "0000024266",
+        "KTOKD": "ZC02",
+        "LOEVM": "",
+        "STREET": "Collison Place",
+        "HOUSE_NUM1": "6",
+        "POST_CODE1": "2450",
+        "CITY1": "Coffs Harbour",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC254230",
+        "VIN": "SRC254230",
+        "SDAUFNR": "0010037413",
+        "POSNR": "000010",
+        "KUNNR": "0000200032",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250516"
+      },
+      {
+        "SERNR": "SRC254230",
+        "VIN": "LA9202ESXS1ZDD232",
+        "SDAUFNR": "0010037413",
+        "POSNR": "000010",
+        "KUNNR": "0000200032",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250516"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://abcocaravans.com.au/terms-of-use/",
+      "https://snowyrivercoffsharbour.com.au/caravan/src-20/"
+    ]
+  },
+  "40602": {
+    "postcode": "2450",
+    "keys": {
+      "vehicle": [
+        "SRP253048"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER COFFS HARBOUR STOCK SRP19"
+      ],
+      "email": [
+        "kathleen@snowyrivercoffsharbour.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Explicit Coffs Harbour stock ticket; exact vehicle/dealer sales link and branch confirmation",
+    "customer_ids": [
+      "0000200032"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000200032",
+        "NAME1": "ABCO CARAVAN SERVICES PTY LTD",
+        "NAME2": "",
+        "ORT01": "Coffs Harbour",
+        "PSTLZ": "2450",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "ABCO",
+        "TELF1": "02 6651 2445",
+        "ADRNR": "0000024266",
+        "KTOKD": "ZC02",
+        "LOEVM": "",
+        "STREET": "Collison Place",
+        "HOUSE_NUM1": "6",
+        "POST_CODE1": "2450",
+        "CITY1": "Coffs Harbour",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kathleen@abcorv.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000200032",
+        "NAME1": "ABCO CARAVAN SERVICES PTY LTD",
+        "NAME2": "",
+        "ORT01": "Coffs Harbour",
+        "PSTLZ": "2450",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "ABCO",
+        "TELF1": "02 6651 2445",
+        "ADRNR": "0000024266",
+        "KTOKD": "ZC02",
+        "LOEVM": "",
+        "STREET": "Collison Place",
+        "HOUSE_NUM1": "6",
+        "POST_CODE1": "2450",
+        "CITY1": "Coffs Harbour",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts.receivable@regentrv.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRP253048",
+        "VIN": "SRP253048",
+        "SDAUFNR": "0010032621",
+        "POSNR": "000010",
+        "KUNNR": "0000200032",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250220"
+      },
+      {
+        "SERNR": "SRP253048",
+        "VIN": "LA9212ER8S1ZDD062",
+        "SDAUFNR": "0010032621",
+        "POSNR": "000010",
+        "KUNNR": "0000200032",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250220"
+      }
+    ],
+    "branch_confirmation_urls": [
+      "https://abcocaravans.com.au/terms-of-use/",
+      "https://snowyrivercoffsharbour.com.au/caravan/src-20/"
+    ]
+  },
+  "40663": {
+    "postcode": "6014",
+    "keys": {
+      "vehicle": [
+        "SRC243109"
+      ],
+      "customer_id": [],
+      "name": [
+        "TOM OPIE"
+      ],
+      "email": [
+        "opietom@hotmail.com"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle and private customer email; reviewed name variation",
+    "customer_ids": [
+      "0000211577"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000211577",
+        "NAME1": "Thomas Roy Opie",
+        "NAME2": "",
+        "ORT01": "Jolimont",
+        "PSTLZ": "6014",
+        "REGIO": "WA",
+        "LAND1": "AU",
+        "SORTL": "LRV243109/",
+        "TELF1": "0438385903",
+        "ADRNR": "0000067037",
+        "KTOKD": "ZC02",
+        "LOEVM": "",
+        "STREET": "Jersey Street",
+        "HOUSE_NUM1": "146",
+        "POST_CODE1": "6014",
+        "CITY1": "Jolimont",
+        "COUNTRY": "AU",
+        "REGION": "WA",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "opietom@hotmail.com",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC243109",
+        "VIN": "SRC243109",
+        "SDAUFNR": "0010023848",
+        "POSNR": "000010",
+        "KUNNR": "0000211577",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20240723"
+      },
+      {
+        "SERNR": "SRC243109",
+        "VIN": "LA9202ES9R1ZDD619",
+        "SDAUFNR": "0010023848",
+        "POSNR": "000010",
+        "KUNNR": "0000211577",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20240723"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40733": {
+    "postcode": "6034",
+    "keys": {
+      "vehicle": [
+        "SRC253975"
+      ],
+      "customer_id": [],
+      "name": [
+        "JOHN MEESTER"
+      ],
+      "email": [
+        "jackie0604@hotmail.com"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000502128"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000502128",
+        "NAME1": "John Meester John Meester",
+        "NAME2": "",
+        "ORT01": "Eglington",
+        "PSTLZ": "6034",
+        "REGIO": "WA",
+        "LAND1": "AU",
+        "SORTL": "JOHN MEEST",
+        "TELF1": "",
+        "ADRNR": "0000867465",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "4 Daybreak Street",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "6034",
+        "CITY1": "Eglington",
+        "COUNTRY": "AU",
+        "REGION": "WA",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "123@gmail.com",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC253975",
+        "VIN": "SRC253975",
+        "SDAUFNR": "0010035273",
+        "POSNR": "000010",
+        "KUNNR": "0000502128",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20250407"
+      },
+      {
+        "SERNR": "SRC253975",
+        "VIN": "LA9202ES8S1ZDD200",
+        "SDAUFNR": "0010035273",
+        "POSNR": "000010",
+        "KUNNR": "0000502128",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20250407"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40745": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRC253231"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC253231",
+        "VIN": "SRC253231",
+        "SDAUFNR": "0010032375",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250217"
+      },
+      {
+        "SERNR": "SRC253231",
+        "VIN": "LA9202ES2S1ZDD113",
+        "SDAUFNR": "0010032375",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250217"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40747": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRC254944"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC254944",
+        "VIN": "LA9212ES3S1ZDD490",
+        "SDAUFNR": "0010041634",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250724"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40748": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRH250103"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRH250103",
+        "VIN": "LA9212ER9S1ZDD491",
+        "SDAUFNR": "0010040585",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250704"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40750": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRP254555"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact named dealership; HANA address and official branch identity confirmed",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [],
+    "branch_confirmation_urls": [
+      "https://snowyriverwangaratta.com.au/"
+    ]
+  },
+  "40754": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "LRV243076"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact named dealership; HANA address and official branch identity confirmed",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [],
+    "branch_confirmation_urls": [
+      "https://snowyriverwangaratta.com.au/"
+    ]
+  },
+  "40755": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRC254577"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC254577",
+        "VIN": "SRC254577",
+        "SDAUFNR": "0010037956",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250526"
+      },
+      {
+        "SERNR": "SRC254577",
+        "VIN": "LA9212ESXS1ZDD356",
+        "SDAUFNR": "0010037956",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250526"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40757": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRH250027"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRH250027",
+        "VIN": "SRH250027",
+        "SDAUFNR": "0010040509",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250704"
+      },
+      {
+        "SERNR": "SRH250027",
+        "VIN": "LA9212ER3S1ZDD437",
+        "SDAUFNR": "0010040509",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250704"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40758": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRH255118"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRH255118",
+        "VIN": "LA9212ER2S1ZDD803",
+        "SDAUFNR": "0010042697",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250808"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40759": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRP253023"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact named dealership; HANA address and official branch identity confirmed",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [],
+    "branch_confirmation_urls": [
+      "https://snowyriverwangaratta.com.au/"
+    ]
+  },
+  "40760": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRP254325"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRP254325",
+        "VIN": "LA9212ER5S1ZDD729",
+        "SDAUFNR": "0010041680",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250725"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40761": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRP254383"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRP254383",
+        "VIN": "SRP254383",
+        "SDAUFNR": "0010038561",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250604"
+      },
+      {
+        "SERNR": "SRP254383",
+        "VIN": "LA9212ER2S1ZDD624",
+        "SDAUFNR": "0010038561",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250604"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40763": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRT243851"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact named dealership; HANA address and official branch identity confirmed",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [],
+    "branch_confirmation_urls": [
+      "https://snowyriverwangaratta.com.au/"
+    ]
+  },
+  "40764": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRT254796"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact named dealership; HANA address and official branch identity confirmed",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [],
+    "branch_confirmation_urls": [
+      "https://snowyriverwangaratta.com.au/"
+    ]
+  },
+  "40767": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRC255278"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC255278",
+        "VIN": "LA9202ES5S1ZDD493",
+        "SDAUFNR": "0010041984",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250730"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40769": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRT250002"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRT250002",
+        "VIN": "SRT250002",
+        "SDAUFNR": "0010042304",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250804"
+      },
+      {
+        "SERNR": "SRT250002",
+        "VIN": "LA9212EN4S1ZDD248",
+        "SDAUFNR": "0010042304",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250804"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40771": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRT253814"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRT253814",
+        "VIN": "SRT253814",
+        "SDAUFNR": "0010035201",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250404"
+      },
+      {
+        "SERNR": "SRT253814",
+        "VIN": "LA9212EN5S1ZDD212",
+        "SDAUFNR": "0010035201",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250404"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40772": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRT255214"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRT255214",
+        "VIN": "LA9212EN3S1ZDD368",
+        "SDAUFNR": "0010041567",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250722"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40774": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRC254184"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC254184",
+        "VIN": "SRC254184",
+        "SDAUFNR": "0010037417",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250516"
+      },
+      {
+        "SERNR": "SRC254184",
+        "VIN": "LA9212ES7S1ZDD279",
+        "SDAUFNR": "0010037417",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250516"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40775": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRH250149"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRH250149",
+        "VIN": "LA9212ER3S1ZDD566",
+        "SDAUFNR": "0010040631",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250704"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40776": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRP254384"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRP254384",
+        "VIN": "LA9212ER4S1ZDD625",
+        "SDAUFNR": "0010038556",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250604"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40823": {
+    "postcode": "6121",
+    "keys": {
+      "vehicle": [
+        "SRC244025"
+      ],
+      "customer_id": [],
+      "name": [
+        "RICHARD HEEREMA"
+      ],
+      "email": [
+        "richardheerema@aapt.net.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000516229"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000516229",
+        "NAME1": "Richard Robert Heerema",
+        "NAME2": "",
+        "ORT01": "Oakford",
+        "PSTLZ": "6121",
+        "REGIO": "WA",
+        "LAND1": "AU",
+        "SORTL": "SJ25388",
+        "TELF1": "0410071488",
+        "ADRNR": "0000916266",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "29 Bullock Drive",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "6121",
+        "CITY1": "Oakford",
+        "COUNTRY": "AU",
+        "REGION": "WA",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "ricpetri@aapt.net.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC244025",
+        "VIN": "SRC244025",
+        "SDAUFNR": "0010054483",
+        "POSNR": "000010",
+        "KUNNR": "0000516229",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20260402"
+      },
+      {
+        "SERNR": "SRC244025",
+        "VIN": "LA9212ES7S1ZDD007",
+        "SDAUFNR": "0010054483",
+        "POSNR": "000010",
+        "KUNNR": "0000516229",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20260402"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40930": {
+    "postcode": "6160",
+    "keys": {
+      "vehicle": [
+        "SRC253888"
+      ],
+      "customer_id": [],
+      "name": [
+        "CHRISTOPHER AVENT"
+      ],
+      "email": [
+        "cavent@iinet.net.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link; Chris/Christopher Avent name variation",
+    "customer_ids": [
+      "0000502123"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000502123",
+        "NAME1": "Chris Avent Chris Avent",
+        "NAME2": "",
+        "ORT01": "Fremantle",
+        "PSTLZ": "6160",
+        "REGIO": "WA",
+        "LAND1": "AU",
+        "SORTL": "CHRIS AVEN",
+        "TELF1": "",
+        "ADRNR": "0000867447",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "51 Swanbourne St",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "6160",
+        "CITY1": "Fremantle",
+        "COUNTRY": "AU",
+        "REGION": "WA",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "lavent@iinet.net.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRC253888",
+        "VIN": "SRC253888",
+        "SDAUFNR": "0010034961",
+        "POSNR": "000010",
+        "KUNNR": "0000502123",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20250402"
+      },
+      {
+        "SERNR": "SRC253888",
+        "VIN": "LA9202ES7S1ZDD186",
+        "SDAUFNR": "0010034961",
+        "POSNR": "000010",
+        "KUNNR": "0000502123",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20250402"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "40996": {
+    "postcode": "2400",
+    "keys": {
+      "vehicle": [
+        "SRH255625"
+      ],
+      "customer_id": [
+        "1059527"
+      ],
+      "name": [
+        "JOHN MOHR BELL"
+      ],
+      "email": [
+        "johnmohrbell@bigpond.com"
+      ],
+      "phone": []
+    },
+    "method": "Exact contact and matching customer name",
+    "customer_ids": [
+      "0000504424"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504424",
+        "NAME1": "John Mohr-Bell",
+        "NAME2": "",
+        "ORT01": "Morree",
+        "PSTLZ": "2400",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "JOHN MOHR-",
+        "TELF1": "+61 427657141",
+        "ADRNR": "0000876235",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "Black Pally Road",
+        "HOUSE_NUM1": "410",
+        "POST_CODE1": "2400",
+        "CITY1": "Morree",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "johnmohrbell@bigpond.com",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [],
+    "branch_confirmation_urls": []
+  },
+  "41015": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "NGC243917"
+      ],
+      "customer_id": [],
+      "name": [
+        "NEWCASTLE CARAVANS"
+      ],
+      "email": [
+        "service@nccrv.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000503201"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000503201",
+        "NAME1": "Newcastle Caravans and RV Store",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "NEWCASTLE",
+        "TELF1": "+61 2 40500303",
+        "ADRNR": "0000871614",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "36 Camfield Drive",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@nccrv.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "NGC243917",
+        "VIN": "NGC243917",
+        "SDAUFNR": "0010034124",
+        "POSNR": "000010",
+        "KUNNR": "0000503201",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250318"
+      },
+      {
+        "SERNR": "NGC243917",
+        "VIN": "LA9212ENXS1ZDD111",
+        "SDAUFNR": "0010034124",
+        "POSNR": "000010",
+        "KUNNR": "0000503201",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250318"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "41035": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "NGB255604"
+      ],
+      "customer_id": [],
+      "name": [
+        "NEWCASTLE CARAVANS"
+      ],
+      "email": [
+        "service@nccrv.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000503201"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000503201",
+        "NAME1": "Newcastle Caravans and RV Store",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "NEWCASTLE",
+        "TELF1": "+61 2 40500303",
+        "ADRNR": "0000871614",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "36 Camfield Drive",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@nccrv.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "NGB255604",
+        "VIN": "LA9202EN8S1ZDD059",
+        "SDAUFNR": "0010043564",
+        "POSNR": "000010",
+        "KUNNR": "0000503201",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250828"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "41037": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "NGC253566"
+      ],
+      "customer_id": [],
+      "name": [
+        "NEWCASTLE CARAVANS"
+      ],
+      "email": [
+        "service@nccrv.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000503201"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000503201",
+        "NAME1": "Newcastle Caravans and RV Store",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "NEWCASTLE",
+        "TELF1": "+61 2 40500303",
+        "ADRNR": "0000871614",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "36 Camfield Drive",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@nccrv.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "NGC253566",
+        "VIN": "NGC253566",
+        "SDAUFNR": "0010034106",
+        "POSNR": "000010",
+        "KUNNR": "0000503201",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250318"
+      },
+      {
+        "SERNR": "NGC253566",
+        "VIN": "LA9202EN8S1ZDD045",
+        "SDAUFNR": "0010034106",
+        "POSNR": "000010",
+        "KUNNR": "0000503201",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZT01",
+        "ERDAT": "20250318"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "41038": {
+    "postcode": "2324",
+    "keys": {
+      "vehicle": [
+        "NGC255603"
+      ],
+      "customer_id": [],
+      "name": [
+        "NEWCASTLE CARAVANS"
+      ],
+      "email": [
+        "service@nccrv.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000503201"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000503201",
+        "NAME1": "Newcastle Caravans and RV Store",
+        "NAME2": "",
+        "ORT01": "Heatherbrae",
+        "PSTLZ": "2324",
+        "REGIO": "NSW",
+        "LAND1": "AU",
+        "SORTL": "NEWCASTLE",
+        "TELF1": "+61 2 40500303",
+        "ADRNR": "0000871614",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "36 Camfield Drive",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "2324",
+        "CITY1": "Heatherbrae",
+        "COUNTRY": "AU",
+        "REGION": "NSW",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "admin@nccrv.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "NGC255603",
+        "VIN": "LA9212EN4S1ZDD427",
+        "SDAUFNR": "0010043565",
+        "POSNR": "000010",
+        "KUNNR": "0000503201",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250828"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "41492": {
+    "postcode": "3677",
+    "keys": {
+      "vehicle": [
+        "SRS254419"
+      ],
+      "customer_id": [],
+      "name": [
+        "SNOWY RIVER WANGARATTA"
+      ],
+      "email": [
+        "warranty@snowyriverwangaratta.com.au"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle sales link and matching customer name",
+    "customer_ids": [
+      "0000504302"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "kate@wangcm.com.au",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "andrew@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      },
+      {
+        "KUNNR": "0000504302",
+        "NAME1": "Snowy River Wangaratta",
+        "NAME2": "",
+        "ORT01": "Wangaratta",
+        "PSTLZ": "3677",
+        "REGIO": "VIC",
+        "LAND1": "AU",
+        "SORTL": "SNOWY RIVE",
+        "TELF1": "03 5721 5270",
+        "ADRNR": "0000875757",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "56/58 Parfitt Rd",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "3677",
+        "CITY1": "Wangaratta",
+        "COUNTRY": "AU",
+        "REGION": "VIC",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "accounts@wangcm.com.au",
+        "FLGDEFAULT": "",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRS254419",
+        "VIN": "LA9202ES8S1ZDD469",
+        "SDAUFNR": "0010042643",
+        "POSNR": "000010",
+        "KUNNR": "0000504302",
+        "VKORG": "3110",
+        "VTWEG": "Z2",
+        "SPART": "Z1",
+        "AUART": "ZS02",
+        "ERDAT": "20250807"
+      }
+    ],
+    "branch_confirmation_urls": []
+  },
+  "41556": {
+    "postcode": "6209",
+    "keys": {
+      "vehicle": [
+        "SRT254033"
+      ],
+      "customer_id": [],
+      "name": [
+        "JASON WEATHERLEY"
+      ],
+      "email": [
+        "pawprintscharmed@gmail.com"
+      ],
+      "phone": []
+    },
+    "method": "Exact vehicle and private customer email; reviewed name variation",
+    "customer_ids": [
+      "0000502314"
+    ],
+    "customer_evidence": [
+      {
+        "KUNNR": "0000502314",
+        "NAME1": "Jason Weatherly Jason Weatherly",
+        "NAME2": "",
+        "ORT01": "Furnissdale",
+        "PSTLZ": "6209",
+        "REGIO": "WA",
+        "LAND1": "AU",
+        "SORTL": "JASON WEAT",
+        "TELF1": "",
+        "ADRNR": "0000868204",
+        "KTOKD": "ZC06",
+        "LOEVM": "",
+        "STREET": "198 Riversde DR",
+        "HOUSE_NUM1": "",
+        "POST_CODE1": "6209",
+        "CITY1": "Furnissdale",
+        "COUNTRY": "AU",
+        "REGION": "WA",
+        "DATE_FROM": "00010101",
+        "DATE_TO": "99991231",
+        "SMTP_ADDR": "pawprintscharmed@gmail.com",
+        "FLGDEFAULT": "X",
+        "FLG_NOUSE": ""
+      }
+    ],
+    "vehicle_sales_evidence": [
+      {
+        "SERNR": "SRT254033",
+        "VIN": "SRT254033",
+        "SDAUFNR": "0010035789",
+        "POSNR": "000010",
+        "KUNNR": "0000502314",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20250412"
+      },
+      {
+        "SERNR": "SRT254033",
+        "VIN": "LA9212ENXS1ZDD187",
+        "SDAUFNR": "0010035789",
+        "POSNR": "000010",
+        "KUNNR": "0000502314",
+        "VKORG": "3120",
+        "VTWEG": "Z1",
+        "SPART": "Z1",
+        "AUART": "ZS01",
+        "ERDAT": "20250412"
+      }
+    ],
+    "branch_confirmation_urls": []
+  }
+}

@@ -1,0 +1,3013 @@
+[
+  {
+    "ticket_id": "39496",
+    "keys": {
+      "serial": [
+        "SRC243279"
+      ],
+      "vin": [],
+      "sap_id": [
+        "1056461"
+      ],
+      "name": [
+        "DESMOND LENT"
+      ],
+      "email": [
+        "deslent@hotmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 5923,
+        "matched_on": [
+          "serial",
+          "name"
+        ],
+        "street": "301/4 River Spring drive",
+        "suburb": "Avoca",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4670,
+        "date": "2025-04-14 00:00:00",
+        "name": "Desmond Lent",
+        "email": "kaz057@yahoo.com.au",
+        "serial": "SRC243279",
+        "vin": "LA9202ES2R1ZDD638"
+      },
+      {
+        "source": "SAP",
+        "row": 5232,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name"
+        ],
+        "address": "25 Beacon Road / Booral QLD 4655 / AU",
+        "suburb": "Booral",
+        "state": "Queensland",
+        "street": "Beacon Road",
+        "house_number": "25",
+        "country": "Australia",
+        "postcode": "4655",
+        "date": "2025-04-14 00:00:00",
+        "name": "Desmond Lent",
+        "email": "kaz057@yahoo.com",
+        "serial": "SRC243279",
+        "customer_id": "1056461"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39511",
+    "keys": {
+      "serial": [
+        "LRV240108"
+      ],
+      "vin": [],
+      "sap_id": [
+        "1039362"
+      ],
+      "name": [
+        "ASHLEY KILLEN",
+        "ROSALIE KILLEN"
+      ],
+      "email": [
+        "ashley.rosalie@iinet.net.au"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 2934,
+        "matched_on": [
+          "serial",
+          "email"
+        ],
+        "street": "4 Aralven Parade",
+        "suburb": "Belmont",
+        "state": "AU-VIC",
+        "country": "AU",
+        "postcode": 3126,
+        "date": "2024-09-12 00:00:00",
+        "name": "Rosalie & Ashley Killen",
+        "email": "ashley.rosalie@iinet.net.au",
+        "serial": "LRV240108",
+        "vin": "LA9202ES9RIZDD295"
+      },
+      {
+        "source": "SAP",
+        "row": 4506,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "4 ARALUEN PDE / BELMONT VIC 3216 / AU",
+        "suburb": "BELMONT",
+        "state": "Victoria",
+        "street": "ARALUEN PDE",
+        "house_number": "4",
+        "country": "Australia",
+        "postcode": "3216",
+        "date": "2024-07-30 00:00:00",
+        "name": "Ashley Killen",
+        "email": "ashley.rosalie@iinet.net.au",
+        "serial": "LRV240108",
+        "customer_id": "1039362"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39523",
+    "keys": {
+      "serial": [
+        "SRH250082"
+      ],
+      "vin": [
+        "LA9212ER8S1ZDD479"
+      ],
+      "sap_id": [
+        "1065959"
+      ],
+      "name": [
+        "MARK RAAYEN"
+      ],
+      "email": [
+        "m.raayen@hotmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 8210,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "28 Trickett Way",
+        "suburb": "West Pinjarra",
+        "state": "AU-WA",
+        "country": "AU",
+        "postcode": 6208,
+        "date": "2026-01-21 00:00:00",
+        "name": "Mark Raayen",
+        "email": "m.raayen@hotmail.com",
+        "serial": "SRH250082",
+        "vin": "LA9212ER8S1ZDD479"
+      },
+      {
+        "source": "Registration",
+        "row": 8213,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "28 Trickett Way West Pinjarra",
+        "suburb": "West Pinjarra",
+        "state": "AU-WA",
+        "country": "AU",
+        "postcode": 6208,
+        "date": "2026-01-21 00:00:00",
+        "name": "Mark Raayen",
+        "email": "m.raayen@hotmail.com",
+        "serial": "SRH250082",
+        "vin": "LA9212ER8S1ZDD479"
+      },
+      {
+        "source": "SAP",
+        "row": 9205,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "WA 6164 / AU",
+        "suburb": "#",
+        "state": "Western Australia",
+        "street": "#",
+        "house_number": "#",
+        "country": "Australia",
+        "postcode": "6164",
+        "date": "2026-01-21 00:00:00",
+        "name": "Mark Raayen",
+        "email": "m.raayen@hotmail.com",
+        "serial": "SRH250082",
+        "customer_id": "1065959"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39524",
+    "keys": {
+      "serial": [
+        "SRC253777"
+      ],
+      "vin": [
+        "LA9212ES6S1ZDD189"
+      ],
+      "sap_id": [
+        "1054366"
+      ],
+      "name": [
+        "DAVID ROBINSON"
+      ],
+      "email": [
+        "ganddwine@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 7189,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "295 SHERIDAN STREET",
+        "suburb": "CAIRNS",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4870,
+        "date": "2025-09-18 00:00:00",
+        "name": "DAVID ROBINSON",
+        "email": "ganddwine@gmail.com",
+        "serial": "SRC253777",
+        "vin": "LA9212ES6S1ZDD189"
+      },
+      {
+        "source": "SAP",
+        "row": 3331,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "29 TAMAKI STREET / ROTORUA TKI 3010 / NZ",
+        "suburb": "ROTORUA",
+        "state": "Taranaki",
+        "street": " TAMAKI STREET",
+        "house_number": "29",
+        "country": "New Zealand",
+        "postcode": "3010",
+        "date": "2025-09-18 00:00:00",
+        "name": "DAVID ROBINSON",
+        "email": "ganddwine@gmail.com",
+        "serial": "SRC253777",
+        "customer_id": "1054366"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39549",
+    "keys": {
+      "serial": [
+        "SRC254189"
+      ],
+      "vin": [
+        "LA9212ES3S1ZDD313"
+      ],
+      "sap_id": [
+        "1037648"
+      ],
+      "name": [
+        "RAY NORTHCOTT",
+        "RAYMOND NORTHCOTT"
+      ],
+      "email": [
+        "raysuenorthcott@hotmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 7642,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "Site 163, 90 Carrs Drive",
+        "suburb": "Yamba",
+        "state": "AU-NSW",
+        "country": "AU",
+        "postcode": 2464,
+        "date": "2025-11-13 00:00:00",
+        "name": "Raymond Northcott",
+        "email": "raysuenorthcott@hotmail.com",
+        "serial": "SRC254189",
+        "vin": "LA9212ES3S1ZDD313"
+      },
+      {
+        "source": "SAP",
+        "row": 712,
+        "matched_on": [
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "20 Antigua Avenue / Lake Cathie NSW 2445 / AU",
+        "suburb": "Lake Cathie",
+        "state": "New South Wales",
+        "street": "Antigua Avenue",
+        "house_number": "20",
+        "country": "Australia",
+        "postcode": "2445",
+        "date": "2023-09-22 00:00:00",
+        "name": "Raymond Northcott",
+        "email": "raysuenorthcott@hotmail.com",
+        "serial": "LRV231044",
+        "customer_id": "1037648"
+      },
+      {
+        "source": "SAP",
+        "row": 3821,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "20 Antigua Avenue / Lake Cathie NSW 2445 / AU",
+        "suburb": "Lake Cathie",
+        "state": "New South Wales",
+        "street": "Antigua Avenue",
+        "house_number": "20",
+        "country": "Australia",
+        "postcode": "2445",
+        "date": "2025-11-13 00:00:00",
+        "name": "Raymond Northcott",
+        "email": "raysuenorthcott@hotmail.com",
+        "serial": "SRC254189",
+        "customer_id": "1037648"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39564",
+    "keys": {
+      "serial": [
+        "SRC243444"
+      ],
+      "vin": [
+        "LA9212ES4R1ZDD797"
+      ],
+      "sap_id": [
+        "1033486"
+      ],
+      "name": [
+        "BRIAN JONES"
+      ],
+      "email": [
+        "bdjones381@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 6477,
+        "matched_on": [
+          "serial",
+          "name",
+          "email"
+        ],
+        "street": "25 Aderman Place",
+        "suburb": "New Plymouth",
+        "state": "NZ-TKI",
+        "country": "NZ",
+        "postcode": 4310,
+        "date": "2025-06-26 00:00:00",
+        "name": "Brian Jones",
+        "email": "bdjones381@gmail.com",
+        "serial": "SRC243444",
+        "vin": null
+      },
+      {
+        "source": "Registration",
+        "row": 6736,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "25 Aderman Place",
+        "suburb": "Hurwoth, New Plymouth",
+        "state": "NZ-TKI",
+        "country": "NZ",
+        "postcode": 4310,
+        "date": "2025-06-27 00:00:00",
+        "name": "Brian Jones",
+        "email": "bdjones381@gmail.com",
+        "serial": "SRC243444",
+        "vin": "LA9212ES4R1ZDD797"
+      },
+      {
+        "source": "SAP",
+        "row": 3392,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "17 Pitcairn Street / Taranaki TKI 4314 / NZ",
+        "suburb": "Taranaki",
+        "state": "Taranaki",
+        "street": " Pitcairn Street",
+        "house_number": "17",
+        "country": "New Zealand",
+        "postcode": "4314",
+        "date": "2025-06-27 00:00:00",
+        "name": "Brian Jones",
+        "email": "bdjones381@gmail.com",
+        "serial": "SRC243444",
+        "customer_id": "1033486"
+      },
+      {
+        "source": "SAP",
+        "row": 6201,
+        "matched_on": [
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "17 Pitcairn Street / Taranaki TKI 4314 / NZ",
+        "suburb": "Taranaki",
+        "state": "Taranaki",
+        "street": " Pitcairn Street",
+        "house_number": "17",
+        "country": "New Zealand",
+        "postcode": "4314",
+        "date": "2022-05-09 00:00:00",
+        "name": "Brian Jones",
+        "email": "bdjones381@gmail.com",
+        "serial": "LRV220015",
+        "customer_id": "1033486"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39578",
+    "keys": {
+      "serial": [
+        "SRT255540"
+      ],
+      "vin": [
+        "LA9212EN2S1ZDD426"
+      ],
+      "sap_id": [
+        "1042815"
+      ],
+      "name": [
+        "SCOTT FEA"
+      ],
+      "email": [
+        "stfea@bigpond.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 3122,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "NORTHWOOD 3496 SOUTHWOOD ROAD",
+        "suburb": "HANNAFORD",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4406,
+        "date": "2026-03-26 00:00:00",
+        "name": "SCOTT FEA",
+        "email": "stfea@bigpond.com",
+        "serial": "SRT255540",
+        "vin": "LA9212EN2S1ZDD426"
+      },
+      {
+        "source": "Registration",
+        "row": 3124,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "NORTHWOOD 3496 SOUTHWOOD ROAD",
+        "suburb": "HANNAFORD",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4406,
+        "date": "2026-03-26 00:00:00",
+        "name": "SCOTT FEA",
+        "email": "stfea@bigpond.com",
+        "serial": "SRT255540",
+        "vin": "LA9212EN2S1ZDD426"
+      },
+      {
+        "source": "SAP",
+        "row": 8233,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "3496 Southwood Road / Hannaford QLD 4350 / AU",
+        "suburb": "Hannaford",
+        "state": "Queensland",
+        "street": "3496 Southwood Road",
+        "house_number": "#",
+        "country": "Australia",
+        "postcode": "4350",
+        "date": "2026-03-26 00:00:00",
+        "name": "Scott Fea",
+        "email": "stfea@bigpond.com",
+        "serial": "SRT255540",
+        "customer_id": "1042815"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39596",
+    "keys": {
+      "serial": [
+        "NG240021"
+      ],
+      "vin": [],
+      "sap_id": [
+        "1038695"
+      ],
+      "name": [
+        "BRIAN SMITH",
+        "DRAH TEST"
+      ],
+      "email": [
+        "smittysmitty1@hotmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 3368,
+        "matched_on": [
+          "serial",
+          "name",
+          "email"
+        ],
+        "street": "2 Merson Street",
+        "suburb": "Castlemaine",
+        "state": "AU-VIC",
+        "country": "AU",
+        "postcode": 3450,
+        "date": "2026-03-10 00:00:00",
+        "name": "Brian Smith",
+        "email": "smittysmitty1@hotmail.com",
+        "serial": "NG240021",
+        "vin": "LA921EN7R1ZDD321"
+      },
+      {
+        "source": "SAP",
+        "row": 10230,
+        "matched_on": [
+          "serial",
+          "sap_id"
+        ],
+        "address": "VIC 3000 / AU",
+        "suburb": "#",
+        "state": "Victoria",
+        "street": "#",
+        "house_number": "#",
+        "country": "Australia",
+        "postcode": "3000",
+        "date": "2026-04-01 00:00:00",
+        "name": "test test",
+        "email": "test@gmail.com",
+        "serial": "NG240021",
+        "customer_id": "1038695"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39654",
+    "keys": {
+      "serial": [
+        "SRC254909"
+      ],
+      "vin": [
+        "LA9212ES9S1ZDD574"
+      ],
+      "sap_id": [
+        "1059328"
+      ],
+      "name": [
+        "PAUL NUNAN"
+      ],
+      "email": [
+        "paulnunan@bigpond.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 3709,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "8 ELBERRY CRESCENT",
+        "suburb": "KELSO",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4815,
+        "date": "2026-05-06 00:00:00",
+        "name": "PAUL NUNAN",
+        "email": "paulnunan@bigpond.com",
+        "serial": "SRC254909",
+        "vin": "LA9212ES9S1ZDD574"
+      },
+      {
+        "source": "Registration",
+        "row": 3710,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "8 ELBERRY CRESCENT",
+        "suburb": "KELSO",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4815,
+        "date": "2026-05-06 00:00:00",
+        "name": "PAUL NUNAN",
+        "email": "paulnunan@bigpond.com",
+        "serial": "SRC254909",
+        "vin": "LA9212ES9S1ZDD574"
+      },
+      {
+        "source": "SAP",
+        "row": 3841,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "QLD 4000 / AU",
+        "suburb": "#",
+        "state": "Queensland",
+        "street": "#",
+        "house_number": "#",
+        "country": "Australia",
+        "postcode": "4000",
+        "date": "2026-05-06 00:00:00",
+        "name": "Paul NUNAN",
+        "email": "paulnunan@bigpond.com",
+        "serial": "SRC254909",
+        "customer_id": "1059328"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39657",
+    "keys": {
+      "serial": [
+        "SRC254641"
+      ],
+      "vin": [
+        "LA9212ES8S1ZDD369"
+      ],
+      "sap_id": [
+        "1058170"
+      ],
+      "name": [
+        "STEVE WISHART CARRAN SCOTT CONTRACTING",
+        "VAL SCOTT"
+      ],
+      "email": [
+        "val.teanu@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 7940,
+        "matched_on": [
+          "serial",
+          "vin"
+        ],
+        "street": "11 Speights Street",
+        "suburb": "Te Anau",
+        "state": "NZ-STL",
+        "country": "NZ",
+        "postcode": 9600,
+        "date": "2025-12-18 00:00:00",
+        "name": "Steve & Val Scott",
+        "email": "stevespeights@live.com",
+        "serial": "SRC254641",
+        "vin": "LA9212ES8S1ZDD369"
+      },
+      {
+        "source": "SAP",
+        "row": 3985,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name"
+        ],
+        "address": "11 Speights Street, Te Anau / Te Anau CAN 9640 / NZ",
+        "suburb": "Te Anau",
+        "state": "Canterbury",
+        "street": " Speights Street, Te Anau",
+        "house_number": "11",
+        "country": "New Zealand",
+        "postcode": "9640",
+        "date": "2025-12-18 00:00:00",
+        "name": "Steve Wishart Carran Scott Contracting",
+        "email": "stevespeights@live.com",
+        "serial": "SRC254641",
+        "customer_id": "1058170"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39659",
+    "keys": {
+      "serial": [
+        "LRV240461"
+      ],
+      "vin": [],
+      "sap_id": [
+        "1051952"
+      ],
+      "name": [
+        "PAUL LEVI"
+      ],
+      "email": [
+        "pklevi98@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 5434,
+        "matched_on": [
+          "serial",
+          "name",
+          "email"
+        ],
+        "street": "47 BURNS CIRCUIT",
+        "suburb": "MCKELLAR",
+        "state": "AU-ACT",
+        "country": "AU",
+        "postcode": 2617,
+        "date": "2025-02-08 00:00:00",
+        "name": "PAUL LEVI",
+        "email": "pklevi98@gmail.com",
+        "serial": "LRV240461",
+        "vin": "LA9202ES1R1ZDD582"
+      },
+      {
+        "source": "Registration",
+        "row": 5572,
+        "matched_on": [
+          "serial",
+          "name",
+          "email"
+        ],
+        "street": "4 Blairs road",
+        "suburb": "Long Beach",
+        "state": "AU-NSW",
+        "country": "AU",
+        "postcode": 2536,
+        "date": "2025-02-08 00:00:00",
+        "name": "Paul Levi",
+        "email": "pklevi98@gmail.com",
+        "serial": "LRV240461",
+        "vin": "la9202es1r1zdd582"
+      },
+      {
+        "source": "SAP",
+        "row": 4789,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "47 BURNS CIRCUIT / MCKELLAR ACT 2617 / AU",
+        "suburb": "MCKELLAR",
+        "state": "ACT",
+        "street": "BURNS CIRCUIT",
+        "house_number": "47",
+        "country": "Australia",
+        "postcode": "2617",
+        "date": "2025-02-08 00:00:00",
+        "name": "PAUL LEVI",
+        "email": "pklevi98@gmail.com",
+        "serial": "LRV240461",
+        "customer_id": "1051952"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39679",
+    "keys": {
+      "serial": [
+        "SRP255006"
+      ],
+      "vin": [
+        "LA9212ER1S1ZDD744"
+      ],
+      "sap_id": [
+        "1080089"
+      ],
+      "name": [
+        "STEPHEN BRAYSHAW"
+      ],
+      "email": [
+        "aus25sb@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 3938,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name"
+        ],
+        "street": "26 Eros Cres",
+        "suburb": "Cranbourne West",
+        "state": "AU-VIC",
+        "country": "AU",
+        "postcode": 3977,
+        "date": "2026-06-01 00:00:00",
+        "name": "Stephen Brayshaw",
+        "email": "stephen@stylustapes.com.au",
+        "serial": "SRP255006",
+        "vin": "LA9212ER1S1ZDD744"
+      },
+      {
+        "source": "SAP",
+        "row": 7572,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name"
+        ],
+        "address": "26 Eros Crescent / Seaford VIC 3198 / AU",
+        "suburb": "Seaford",
+        "state": "Victoria",
+        "street": "Eros Crescent",
+        "house_number": "26",
+        "country": "Australia",
+        "postcode": "3198",
+        "date": "2026-06-01 00:00:00",
+        "name": "Stephen Brayshaw",
+        "email": "stephen@stylustapes.com.au",
+        "serial": "SRP255006",
+        "customer_id": "1080089"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39709",
+    "keys": {
+      "serial": [
+        "SRC253775"
+      ],
+      "vin": [],
+      "sap_id": [
+        "1054283"
+      ],
+      "name": [
+        "ROB LAWRIE",
+        "ROBERT AND SUE LAWRIE"
+      ],
+      "email": [
+        "rslawrie@bigpond.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 7131,
+        "matched_on": [
+          "serial",
+          "email"
+        ],
+        "street": "20-24 Bronzewing Drive",
+        "suburb": "Boston",
+        "state": "AU-SA",
+        "country": "AU",
+        "postcode": 5607,
+        "date": "2025-09-02 00:00:00",
+        "name": "Robert & Susan Lawrie",
+        "email": "rslawrie@bigpond.com",
+        "serial": "SRC253775",
+        "vin": null
+      },
+      {
+        "source": "Registration",
+        "row": 7397,
+        "matched_on": [
+          "serial",
+          "name",
+          "email"
+        ],
+        "street": "20 - 24 Bronzewing Drive",
+        "suburb": "Boston",
+        "state": "AU-SA",
+        "country": "AU",
+        "postcode": 5607,
+        "date": "2025-09-02 00:00:00",
+        "name": "Robert & Sue Lawrie",
+        "email": "rslawrie@bigpond.com",
+        "serial": "SRC253775",
+        "vin": "LA9212ES1S1ZDD195"
+      },
+      {
+        "source": "SAP",
+        "row": 3330,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "20-24 Bronzewing Drive / Port Lincoln SA 5606 / AU",
+        "suburb": "Port Lincoln",
+        "state": "South Australia",
+        "street": "20-24 Bronzewing Drive",
+        "house_number": "#",
+        "country": "Australia",
+        "postcode": "5606",
+        "date": "2025-09-02 00:00:00",
+        "name": "Rob Lawrie",
+        "email": "rslawrie@bigpond.com",
+        "serial": "SRC253775",
+        "customer_id": "1054283"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39802",
+    "keys": {
+      "serial": [
+        "SRT243343"
+      ],
+      "vin": [],
+      "sap_id": [
+        "1044620"
+      ],
+      "name": [
+        "MICHELLE JONES",
+        "WILLIAM JONES"
+      ],
+      "email": [
+        "mjones2754@hotmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 5702,
+        "matched_on": [
+          "serial",
+          "name",
+          "email"
+        ],
+        "street": "22 MARTIN CIRCUIT",
+        "suburb": "Tea Gardens",
+        "state": "AU-NSW",
+        "country": "AU",
+        "postcode": 2324,
+        "date": "2025-03-17 00:00:00",
+        "name": "WILLIAM JONES",
+        "email": "mjones2754@hotmail.com",
+        "serial": "SRT243343",
+        "vin": "LA9212EN0R1ZDD564"
+      },
+      {
+        "source": "SAP",
+        "row": 8775,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "22 Martin Circuit / Tea gardens NSW 2322 / AU",
+        "suburb": "Tea gardens",
+        "state": "New South Wales",
+        "street": "Martin Circuit",
+        "house_number": "22",
+        "country": "Australia",
+        "postcode": "2322",
+        "date": "2024-12-23 00:00:00",
+        "name": "William JONES",
+        "email": "mjones2754@hotmail.com",
+        "serial": "SRT243343",
+        "customer_id": "1044620"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39911",
+    "keys": {
+      "serial": [
+        "LRT240866"
+      ],
+      "vin": [],
+      "sap_id": [
+        "1052779"
+      ],
+      "name": [
+        "JACOB BRIDGE",
+        "JAKE BRIDGE"
+      ],
+      "email": [
+        "jacob.bridge@bigpond.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 5515,
+        "matched_on": [
+          "serial",
+          "name"
+        ],
+        "street": "16 BUSBY ST",
+        "suburb": "CLIFTLEIGH",
+        "state": "AU-NSW",
+        "country": "AU",
+        "postcode": 2321,
+        "date": "2025-02-19 00:00:00",
+        "name": "JAKE BRIDGE",
+        "email": "jacobobridge@bigpond.com",
+        "serial": "LRT240866",
+        "vin": "LA9212ENXR1ZDD474"
+      },
+      {
+        "source": "SAP",
+        "row": 8884,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name"
+        ],
+        "address": "16 BUSBY ST / Gulmarrad NSW 2463 / AU",
+        "suburb": "Gulmarrad",
+        "state": "New South Wales",
+        "street": "BUSBY ST",
+        "house_number": "16",
+        "country": "Australia",
+        "postcode": "2463",
+        "date": "2025-02-19 00:00:00",
+        "name": "JAKE BRIDGE",
+        "email": "jacobobridge@bigpond.com",
+        "serial": "LRT240866",
+        "customer_id": "1052779"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39925",
+    "keys": {
+      "serial": [
+        "SRC255112"
+      ],
+      "vin": [
+        "LA9202ES6S1ZDD440"
+      ],
+      "sap_id": [
+        "1060157"
+      ],
+      "name": [
+        "DAVE MEYERS",
+        "GAYLE MEYERS"
+      ],
+      "email": [
+        "davemeyers27@outlook.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 3076,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name"
+        ],
+        "street": "6 SELWYN CRESCENT",
+        "suburb": "NORMAN GARGENS",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4701,
+        "date": "2026-03-25 00:00:00",
+        "name": "GAYLE MEYERS",
+        "email": "gaylemeyers@outlook.com",
+        "serial": "SRC255112",
+        "vin": "LA9202ES6S1ZDD440"
+      },
+      {
+        "source": "Registration",
+        "row": 3147,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name"
+        ],
+        "street": "2 NICHOLAS COURT",
+        "suburb": "UNDERWOOD",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4119,
+        "date": "2026-03-27 00:00:00",
+        "name": "GAYLE MEYERS",
+        "email": "gaylemeyers@outlook.com",
+        "serial": "SRC255112",
+        "vin": "LA9202ES6S1ZDD440"
+      },
+      {
+        "source": "Registration",
+        "row": 9508,
+        "matched_on": [
+          "serial",
+          "vin"
+        ],
+        "street": "6 Selwyn Crescent",
+        "suburb": "Norman Gardens",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4701,
+        "date": "2026-03-06 00:00:00",
+        "name": "Dave and Gayle Meyers",
+        "email": "gaylemeyers@outlook.com.au",
+        "serial": "SRC255112",
+        "vin": "LA9202ES6S1ZDD440"
+      },
+      {
+        "source": "SAP",
+        "row": 1807,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name"
+        ],
+        "address": "6 Selwyn Crescent / Norman Gardens QLD 4701 / AU",
+        "suburb": "Norman Gardens",
+        "state": "Queensland",
+        "street": "Selwyn Crescent",
+        "house_number": "6",
+        "country": "Australia",
+        "postcode": "4701",
+        "date": "2026-03-06 00:00:00",
+        "name": "Gayle Meyers",
+        "email": "gaylemeyers@outlook.com",
+        "serial": "SRC255112",
+        "customer_id": "1060157"
+      }
+    ]
+  },
+  {
+    "ticket_id": "39984",
+    "keys": {
+      "serial": [
+        "SRT253233"
+      ],
+      "vin": [
+        "LA9212EN7S1ZDD096"
+      ],
+      "sap_id": [
+        "1048321"
+      ],
+      "name": [
+        "NICOLE MILLER"
+      ],
+      "email": [
+        "woodsnic@hotmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 4087,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "51 Orama Ave",
+        "suburb": "Carrum Downs",
+        "state": "AU-VIC",
+        "country": "AU",
+        "postcode": 3201,
+        "date": "2026-06-15 00:00:00",
+        "name": "Nicole Miller",
+        "email": "woodsnic@hotmail.com",
+        "serial": "SRT253233",
+        "vin": "LA9212EN7S1ZDD096"
+      },
+      {
+        "source": "SAP",
+        "row": 8175,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "VIC 3138 / AU",
+        "suburb": "#",
+        "state": "Victoria",
+        "street": "#",
+        "house_number": "51",
+        "country": "Australia",
+        "postcode": "3138",
+        "date": "2026-06-15 00:00:00",
+        "name": "Nicole Miller",
+        "email": "woodsnic@hotmail.com",
+        "serial": "SRT253233",
+        "customer_id": "1048321"
+      },
+      {
+        "source": "SAP",
+        "row": 8321,
+        "matched_on": [
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "VIC 3138 / AU",
+        "suburb": "#",
+        "state": "Victoria",
+        "street": "#",
+        "house_number": "51",
+        "country": "Australia",
+        "postcode": "3138",
+        "date": "2024-12-09 00:00:00",
+        "name": "Nicole Miller",
+        "email": "woodsnic@hotmail.com",
+        "serial": "LRT240051",
+        "customer_id": "1048321"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40045",
+    "keys": {
+      "serial": [
+        "SRT253930"
+      ],
+      "vin": [
+        "LA9212EN7S1ZDD230"
+      ],
+      "sap_id": [
+        "1055688"
+      ],
+      "name": [
+        "SIMON DAVIES"
+      ],
+      "email": [
+        "mpclowernorth@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 3349,
+        "matched_on": [
+          "serial",
+          "vin",
+          "email"
+        ],
+        "street": "PO Box 15",
+        "suburb": "Stockwell",
+        "state": "AU-SA",
+        "country": "AU",
+        "postcode": 5355,
+        "date": "2025-12-13 00:00:00",
+        "name": "Simon & Jess Davies",
+        "email": "mpclowernorth@gmail.com",
+        "serial": "SRT253930",
+        "vin": "LA9212EN7S1ZDD230"
+      },
+      {
+        "source": "SAP",
+        "row": 8200,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "41 Glen Turret / Truro SA 5356 / AU",
+        "suburb": "Truro",
+        "state": "South Australia",
+        "street": "Glen Turret",
+        "house_number": "41",
+        "country": "Australia",
+        "postcode": "5356",
+        "date": "2025-12-13 00:00:00",
+        "name": "Simon Davies",
+        "email": "mpclowernorth@gmail.com",
+        "serial": "SRT253930",
+        "customer_id": "1055688"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40085",
+    "keys": {
+      "serial": [
+        "SRC254203"
+      ],
+      "vin": [
+        "LA9212ES1ZDD285"
+      ],
+      "sap_id": [
+        "1068447"
+      ],
+      "name": [
+        "ANDREW JAMES"
+      ],
+      "email": [
+        "andrew.nicole1020@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 3131,
+        "matched_on": [
+          "serial",
+          "name",
+          "email"
+        ],
+        "street": "15 BURRELL ROAD",
+        "suburb": "KENTHURST",
+        "state": "AU-NSW",
+        "country": "AU",
+        "postcode": 2156,
+        "date": "2026-03-26 00:00:00",
+        "name": "ANDREW JAMES",
+        "email": "andrew.nicole1020@gmail.com",
+        "serial": "SRC254203",
+        "vin": "LA9212ES2S1ZDD285"
+      },
+      {
+        "source": "Registration",
+        "row": 7850,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "15 BURRELL ROAD",
+        "suburb": "KENTHURST",
+        "state": "AU-NSW",
+        "country": "AU",
+        "postcode": 2166,
+        "date": "2025-12-09 00:00:00",
+        "name": "ANDREW JAMES",
+        "email": "andrew.nicole1020@gmail.com",
+        "serial": "SRC254203",
+        "vin": "LA9212ES1ZDD285"
+      },
+      {
+        "source": "SAP",
+        "row": 3963,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "15 BURRELL ROAD / KENTHURST NSW 2166 / AU",
+        "suburb": "KENTHURST",
+        "state": "New South Wales",
+        "street": "BURRELL ROAD",
+        "house_number": "15",
+        "country": "Australia",
+        "postcode": "2166",
+        "date": "2025-12-09 00:00:00",
+        "name": "ANDREW JAMES",
+        "email": "andrew.nicole1020@gmail.com",
+        "serial": "SRC254203",
+        "customer_id": "1068447"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40143",
+    "keys": {
+      "serial": [
+        "SRH250066"
+      ],
+      "vin": [
+        "LA9212ER1S1ZDD467"
+      ],
+      "sap_id": [
+        "1020508"
+      ],
+      "name": [
+        "VERN ELMS",
+        "VERNON ELMS"
+      ],
+      "email": [
+        "vkelms56@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 8296,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "18 SWEETLIP CIRCLE",
+        "suburb": "TIN CAN BAY",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4580,
+        "date": "2026-02-02 00:00:00",
+        "name": "VERNON ELMS",
+        "email": "vkelms56@gmail.com",
+        "serial": "SRH250066",
+        "vin": "LA9212ER1S1ZDD467"
+      },
+      {
+        "source": "SAP",
+        "row": 913,
+        "matched_on": [
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "80 Sharyn Drive / Adelaide SA 4680 / AU",
+        "suburb": "Adelaide",
+        "state": "South Australia",
+        "street": "Sharyn Drive",
+        "house_number": "80",
+        "country": "Australia",
+        "postcode": "4680",
+        "date": "2023-04-18 00:00:00",
+        "name": "Vern ELMS",
+        "email": "vkelms56@gmail.com",
+        "serial": "LRV230303",
+        "customer_id": "1020508"
+      },
+      {
+        "source": "SAP",
+        "row": 9196,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "80 Sharyn Drive / Adelaide SA 4680 / AU",
+        "suburb": "Adelaide",
+        "state": "South Australia",
+        "street": "Sharyn Drive",
+        "house_number": "80",
+        "country": "Australia",
+        "postcode": "4680",
+        "date": "2026-02-02 00:00:00",
+        "name": "Vern ELMS",
+        "email": "vkelms56@gmail.com",
+        "serial": "SRH250066",
+        "customer_id": "1020508"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40183",
+    "keys": {
+      "serial": [
+        "SRC243179"
+      ],
+      "vin": [
+        "LA9212ES7R1ZDD860"
+      ],
+      "sap_id": [
+        "1059467"
+      ],
+      "name": [
+        "GARETH LEE",
+        "MARITA AND GARETH RADONICH"
+      ],
+      "email": [
+        "marita@resicomengineering.com.au"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 6943,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "80 Geoffrey Dr",
+        "suburb": "Kilsyth",
+        "state": "AU-VIC",
+        "country": "AU",
+        "postcode": 3137,
+        "date": "2025-08-21 00:00:00",
+        "name": "Gareth Lee",
+        "email": "marita@resicomengineering.com.au",
+        "serial": "SRC243179",
+        "vin": "LA9212ES7R1ZDD860"
+      },
+      {
+        "source": "SAP",
+        "row": 3266,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "VIC 3201 / AU",
+        "suburb": "#",
+        "state": "Victoria",
+        "street": "#",
+        "house_number": "80",
+        "country": "Australia",
+        "postcode": "3201",
+        "date": "2025-08-21 00:00:00",
+        "name": "Marita & Gareth radonich",
+        "email": "marita@resicomengineering.com.au",
+        "serial": "SRC243179",
+        "customer_id": "1059467"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40346",
+    "keys": {
+      "serial": [
+        "SRP255007"
+      ],
+      "vin": [
+        "LA9212ER8S1ZDD742"
+      ],
+      "sap_id": [
+        "1078439"
+      ],
+      "name": [
+        "DEBORAH LYNNE VEENVLIET"
+      ],
+      "email": [
+        "debrudi.veenvliet@live.com.au"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 3610,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "96 St Stephen's Crescent",
+        "suburb": "Tapping",
+        "state": "AU-WA",
+        "country": "AU",
+        "postcode": 6065,
+        "date": "2026-04-24 00:00:00",
+        "name": "Deborah Lynne Veenvliet",
+        "email": "debrudi.veenvliet@live.com.au",
+        "serial": "SRP255007",
+        "vin": "LA9212ER8S1ZDD742"
+      },
+      {
+        "source": "SAP",
+        "row": 7560,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "U108/17 Booker Rd / Bittern VIC 3918 / AU",
+        "suburb": "Bittern",
+        "state": "Victoria",
+        "street": "Booker Rd",
+        "house_number": "U108/17",
+        "country": "Australia",
+        "postcode": "3918",
+        "date": "2026-04-24 00:00:00",
+        "name": "Deborah Lynne Veenvliet",
+        "email": "debrudi.veenvliet@live.com.au",
+        "serial": "SRP255007",
+        "customer_id": "1078439"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40501",
+    "keys": {
+      "serial": [
+        "SRC254631"
+      ],
+      "vin": [
+        "LA9202ES3S1ZDD301"
+      ],
+      "sap_id": [
+        "1057569"
+      ],
+      "name": [
+        "JOE JOSEPH",
+        "JOSE JOSEPH"
+      ],
+      "email": [
+        "joeayur@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 7765,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "13 Acotango Ave",
+        "suburb": "Truganina",
+        "state": "AU-VIC",
+        "country": "AU",
+        "postcode": 3029,
+        "date": "2025-12-01 00:00:00",
+        "name": "Jose Joseph",
+        "email": "joeayur@gmail.com",
+        "serial": "SRC254631",
+        "vin": "LA9202ES3S1ZDD301"
+      },
+      {
+        "source": "SAP",
+        "row": 3487,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "VIC 3026 / AU",
+        "suburb": "#",
+        "state": "Victoria",
+        "street": "#",
+        "house_number": "#",
+        "country": "Australia",
+        "postcode": "3026",
+        "date": "2025-12-01 00:00:00",
+        "name": "Joe Joseph",
+        "email": "joeayur@gmail.com",
+        "serial": "SRC254631",
+        "customer_id": "1057569"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40508",
+    "keys": {
+      "serial": [
+        "SRC243912"
+      ],
+      "vin": [
+        "LA9212ES3S1ZD117"
+      ],
+      "sap_id": [
+        "1063015"
+      ],
+      "name": [
+        "NOEL AND JENIFER CLEAL",
+        "NOEL CLEAL"
+      ],
+      "email": [
+        "noel.cleal@hotmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 7100,
+        "matched_on": [
+          "serial",
+          "vin",
+          "email"
+        ],
+        "street": "17 Blackburn St",
+        "suburb": "Stratford",
+        "state": "AU-VIC",
+        "country": "AU",
+        "postcode": 3863,
+        "date": "2025-09-08 00:00:00",
+        "name": "Noel & Jennifer Cleal",
+        "email": "noel.cleal@hotmail.com",
+        "serial": "SRC243912",
+        "vin": "LA9212ES3S1ZD117"
+      },
+      {
+        "source": "SAP",
+        "row": 3284,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "17 blackburn st stratford / stratford VIC 3862 / AU",
+        "suburb": "stratford",
+        "state": "Victoria",
+        "street": "blackburn st stratford",
+        "house_number": "17",
+        "country": "Australia",
+        "postcode": "3862",
+        "date": "2025-09-08 00:00:00",
+        "name": "noel and Jenifer Cleal",
+        "email": "noel.cleal@hotmail.com",
+        "serial": "SRC243912",
+        "customer_id": "1063015"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40552",
+    "keys": {
+      "serial": [
+        "SRP254634"
+      ],
+      "vin": [
+        "LA9212ER4S1ZDD642"
+      ],
+      "sap_id": [
+        "1080518"
+      ],
+      "name": [
+        "LINDA SAVAGE"
+      ],
+      "email": [
+        "lrsavage@bigpond.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 4209,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "5 Wilhelm Street",
+        "suburb": "LOCH SPORT",
+        "state": "AU-VIC",
+        "country": "AU",
+        "postcode": 3851,
+        "date": "2026-06-25 00:00:00",
+        "name": "Linda Savage",
+        "email": "lrsavage@bigpond.com",
+        "serial": "SRP254634",
+        "vin": "LA9212ER4S1ZDD642"
+      },
+      {
+        "source": "SAP",
+        "row": 7525,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "VIC 3844 / AU",
+        "suburb": "#",
+        "state": "Victoria",
+        "street": "#",
+        "house_number": "#",
+        "country": "Australia",
+        "postcode": "3844",
+        "date": "2026-06-25 00:00:00",
+        "name": "Linda Savage",
+        "email": "lrsavage@bigpond.com",
+        "serial": "SRP254634",
+        "customer_id": "1080518"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40568",
+    "keys": {
+      "serial": [
+        "SRH250148"
+      ],
+      "vin": [
+        "LA9212ER1S1ZDD565"
+      ],
+      "sap_id": [
+        "1004242"
+      ],
+      "name": [
+        "BARRY RATCLIFF"
+      ],
+      "email": [
+        "barryratcliff@hotmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 4092,
+        "matched_on": [
+          "serial",
+          "vin",
+          "email"
+        ],
+        "street": "785 Rainbows Road",
+        "suburb": "Kullogum",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4660,
+        "date": "2026-06-17 00:00:00",
+        "name": "BTG Pty Ltd BTG Pty Ltd",
+        "email": "barryratcliff@hotmail.com",
+        "serial": "SRH250148",
+        "vin": "LA9212ER1S1ZDD565"
+      },
+      {
+        "source": "SAP",
+        "row": 1009,
+        "matched_on": [
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "brisbane QLD 4343 / AU",
+        "suburb": "brisbane",
+        "state": "Queensland",
+        "street": "#",
+        "house_number": "#",
+        "country": "Australia",
+        "postcode": "4343",
+        "date": "2023-10-30 00:00:00",
+        "name": "Barry Ratcliff",
+        "email": "barryratcliff@hotmail.com",
+        "serial": "LRV231984",
+        "customer_id": "1004242"
+      },
+      {
+        "source": "SAP",
+        "row": 9229,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "brisbane QLD 4343 / AU",
+        "suburb": "brisbane",
+        "state": "Queensland",
+        "street": "#",
+        "house_number": "#",
+        "country": "Australia",
+        "postcode": "4343",
+        "date": "2026-06-17 00:00:00",
+        "name": "Barry Ratcliff",
+        "email": "barryratcliff@hotmail.com",
+        "serial": "SRH250148",
+        "customer_id": "1004242"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40641",
+    "keys": {
+      "serial": [
+        "LRP240584"
+      ],
+      "vin": [
+        "LRP240584"
+      ],
+      "sap_id": [],
+      "name": [
+        "SUZANNE ELIZABETH PILLING"
+      ],
+      "email": [
+        "suziepilling@icloud.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 5887,
+        "matched_on": [
+          "serial",
+          "email"
+        ],
+        "street": "31 Wildwood Hill",
+        "suburb": "Dawesville",
+        "state": "AU-WA",
+        "country": "AU",
+        "postcode": 6211,
+        "date": "2025-04-04 00:00:00",
+        "name": "Suzanne Pilling",
+        "email": "suziepilling@icloud.com",
+        "serial": "LRP240584",
+        "vin": "LA9212ER0R1ZDD115"
+      },
+      {
+        "source": "Registration",
+        "row": 8097,
+        "matched_on": [
+          "serial"
+        ],
+        "street": "1 Cessna Way",
+        "suburb": "High Wycombe",
+        "state": "AU-WA",
+        "country": "AU",
+        "postcode": 6057,
+        "date": "2025-08-26 00:00:00",
+        "name": "neil worsley",
+        "email": "neilsworsley@outlook.com",
+        "serial": "LRP240584",
+        "vin": "LA9212EROR1ZDD115"
+      },
+      {
+        "source": "SAP",
+        "row": 7203,
+        "matched_on": [
+          "serial"
+        ],
+        "address": "1 Cessna way / High Wycombe WA 6057 / AU",
+        "suburb": "High Wycombe",
+        "state": "Western Australia",
+        "street": "Cessna way",
+        "house_number": "1",
+        "country": "Australia",
+        "postcode": "6057",
+        "date": "2025-04-04 00:00:00",
+        "name": "Neil worsley",
+        "email": "neilsworsley@outlook.com",
+        "serial": "LRP240584",
+        "customer_id": "1062652"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40649",
+    "keys": {
+      "serial": [
+        "SRP254321"
+      ],
+      "vin": [
+        "SRP254321"
+      ],
+      "sap_id": [],
+      "name": [
+        "GREEN RV GREEN RV"
+      ],
+      "email": [
+        "customercare@greenrv.com.au"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 3723,
+        "matched_on": [
+          "serial"
+        ],
+        "street": "U9, 10 MILTIADIS STREET",
+        "suburb": "ACACIA RIDGE",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4110,
+        "date": "2026-05-08 00:00:00",
+        "name": "DAMBOLT ENGINEERING DAMBOLT ENGINEERING",
+        "email": "dambolt@bigpond.net.au",
+        "serial": "SRP254321",
+        "vin": "LA9212ERXS1ZDD726"
+      },
+      {
+        "source": "Registration",
+        "row": 4031,
+        "matched_on": [
+          "serial"
+        ],
+        "street": "70-74 Carron Place",
+        "suburb": "Jimboomba",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4280,
+        "date": "2026-05-07 00:00:00",
+        "name": "Suzanne & Paul Bolton",
+        "email": "psbolton@bigpond.com",
+        "serial": "SRP254321",
+        "vin": "LA9212ERXS1ZDD726"
+      },
+      {
+        "source": "SAP",
+        "row": 7530,
+        "matched_on": [
+          "serial"
+        ],
+        "address": "ACACIA RIDGE QLD 4110 / AU",
+        "suburb": "ACACIA RIDGE",
+        "state": "Queensland",
+        "street": "#",
+        "house_number": "#",
+        "country": "Australia",
+        "postcode": "4110",
+        "date": "2026-05-07 00:00:00",
+        "name": "DAMBOLT ENGINEERING DAMBOLT ENGINEERING",
+        "email": "dambolt@bigpond.net.au",
+        "serial": "SRP254321",
+        "customer_id": "1082230"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40704",
+    "keys": {
+      "serial": [
+        "SRC243240"
+      ],
+      "vin": [],
+      "sap_id": [
+        "1042215"
+      ],
+      "name": [
+        "MICHAEL DAVIES"
+      ],
+      "email": [
+        "daviesm940@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 6012,
+        "matched_on": [
+          "serial"
+        ],
+        "street": "503 Hall Road",
+        "suburb": "Serpentine",
+        "state": "AU-WA",
+        "country": "AU",
+        "postcode": 6125,
+        "date": "2025-04-23 00:00:00",
+        "name": "Glen Acland",
+        "email": "glen_kaz@bigpond.com",
+        "serial": "SRC243240",
+        "vin": "LA9202ES2R1ZDD686"
+      },
+      {
+        "source": "SAP",
+        "row": 4803,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "4 Seville place / Binningup WA 6233 / AU",
+        "suburb": "Binningup",
+        "state": "Western Australia",
+        "street": "Seville place",
+        "house_number": "4",
+        "country": "Australia",
+        "postcode": "6233",
+        "date": "2025-07-02 00:00:00",
+        "name": "Michael Davies",
+        "email": "daviesm940@gmail.com",
+        "serial": "SRC243240",
+        "customer_id": "1042215"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40739",
+    "keys": {
+      "serial": [
+        "SRC243718"
+      ],
+      "vin": [
+        "LA9202ES1R1ZDD758"
+      ],
+      "sap_id": [
+        "1077539"
+      ],
+      "name": [
+        "NATASHA JENKINS"
+      ],
+      "email": [
+        "ana2marli@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 3407,
+        "matched_on": [
+          "serial",
+          "name",
+          "email"
+        ],
+        "street": "14 Davista Drive",
+        "suburb": "Norwood",
+        "state": "AU-TAS",
+        "country": "AU",
+        "postcode": 7250,
+        "date": "2026-04-13 00:00:00",
+        "name": "Natasha Jenkins",
+        "email": "ana2marli@gmail.com",
+        "serial": "SRC243718",
+        "vin": "LA9202ESIRIZD758"
+      },
+      {
+        "source": "Registration",
+        "row": 6496,
+        "matched_on": [
+          "serial",
+          "vin"
+        ],
+        "street": "46 Herbert Street",
+        "suburb": "Invermay",
+        "state": "AU-TAS",
+        "country": "AU",
+        "postcode": 7248,
+        "date": "2025-06-27 00:00:00",
+        "name": "Owen Pennington",
+        "email": "sueowen273@gmail.com",
+        "serial": "SRC243718",
+        "vin": "LA9202ES1R1ZDD758"
+      },
+      {
+        "source": "SAP",
+        "row": 1751,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "14 Davista Drive / Norwood TAS 7250 / AU",
+        "suburb": "Norwood",
+        "state": "Tasmania",
+        "street": "Davista Drive",
+        "house_number": "14",
+        "country": "Australia",
+        "postcode": "7250",
+        "date": "2025-06-27 00:00:00",
+        "name": "Natasha Jenkins",
+        "email": "ana2marli@gmail.com",
+        "serial": "SRC243718",
+        "customer_id": "1077539"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40773",
+    "keys": {
+      "serial": [
+        "LRT230693"
+      ],
+      "vin": [],
+      "sap_id": [
+        "1009097"
+      ],
+      "name": [
+        "ANDY EFTICHIOU",
+        "SAMUEL SISSON"
+      ],
+      "email": [
+        "scsisson_live@live.com.au"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 5639,
+        "matched_on": [
+          "serial",
+          "email"
+        ],
+        "street": "76 LLANGOTHLIN STREET",
+        "suburb": "GUYRA",
+        "state": "AU-NSW",
+        "country": "AU",
+        "postcode": 2365,
+        "date": "2025-03-07 00:00:00",
+        "name": "SAM SISSON",
+        "email": "scsisson_live@live.com.au",
+        "serial": "LRT230693",
+        "vin": "LA9212EN2R1ZDD422"
+      },
+      {
+        "source": "SAP",
+        "row": 8745,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name"
+        ],
+        "address": "5 Stollard Street / Catherine Hill Bay NSW 2281 / AU",
+        "suburb": "Catherine Hill Bay",
+        "state": "New South Wales",
+        "street": "Stollard Street",
+        "house_number": "5",
+        "country": "Australia",
+        "postcode": "2281",
+        "date": "2024-04-26 00:00:00",
+        "name": "andy eftichiou",
+        "email": "info@theboothfairy.com",
+        "serial": "LRT230693",
+        "customer_id": "1009097"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40912",
+    "keys": {
+      "serial": [
+        "SRT243149"
+      ],
+      "vin": [
+        "LA9212EN8RIZDD487"
+      ],
+      "sap_id": [
+        "1053063"
+      ],
+      "name": [
+        "JUDITH MITCHELL"
+      ],
+      "email": [
+        "jamit@y7mail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 6429,
+        "matched_on": [
+          "serial",
+          "name",
+          "email"
+        ],
+        "street": "52 Carlo Drive",
+        "suburb": "Cannonvale",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4805,
+        "date": "2025-06-19 00:00:00",
+        "name": "Judith Mitchell",
+        "email": "jamit@y7mail.com",
+        "serial": "SRT243149",
+        "vin": "LA9212EN8R1ZDD487"
+      },
+      {
+        "source": "Registration",
+        "row": 7479,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "52 Carlo Drive",
+        "suburb": "CANNONVALE",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4802,
+        "date": "2025-06-19 00:00:00",
+        "name": "Judith MITCHELL",
+        "email": "jamit@y7mail.com",
+        "serial": "SRT243149",
+        "vin": "LA9212EN8RIZDD487"
+      },
+      {
+        "source": "SAP",
+        "row": 8352,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "52 Carlo Drive / Cannonvale QLD 4802 / AU",
+        "suburb": "Cannonvale",
+        "state": "Queensland",
+        "street": "Carlo Drive",
+        "house_number": "52",
+        "country": "Australia",
+        "postcode": "4802",
+        "date": "2025-06-19 00:00:00",
+        "name": "Judith Mitchell",
+        "email": "jamit@y7mail.com",
+        "serial": "SRT243149",
+        "customer_id": "1053063"
+      }
+    ]
+  },
+  {
+    "ticket_id": "40981",
+    "keys": {
+      "serial": [
+        "SRC254503"
+      ],
+      "vin": [
+        "LA9202ES4S1ZDD422"
+      ],
+      "sap_id": [
+        "1057651"
+      ],
+      "name": [
+        "PETER BROUWER"
+      ],
+      "email": [
+        "highlightcontrols@hotmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 3886,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name"
+        ],
+        "street": "48 BOLTON ROAD",
+        "suburb": "KOAH",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4881,
+        "date": "2026-05-25 00:00:00",
+        "name": "PETER BROUWER",
+        "email": "petesbuildingservice@gmail.com",
+        "serial": "SRC254503",
+        "vin": "LA9202ES4S1ZDD422"
+      },
+      {
+        "source": "Registration",
+        "row": 3888,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name"
+        ],
+        "street": "48 BOLTON ROAD",
+        "suburb": "KOAH",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4881,
+        "date": "2026-05-27 00:00:00",
+        "name": "PETER BROUWER",
+        "email": "petesbuildingservice@gmail.com",
+        "serial": "SRC254503",
+        "vin": "LA9202ES4S1ZDD422"
+      },
+      {
+        "source": "SAP",
+        "row": 3540,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name"
+        ],
+        "address": "3 ROLLINS ROAD / MARGATE QLD 7054 / AU",
+        "suburb": "MARGATE",
+        "state": "Queensland",
+        "street": "ROLLINS ROAD",
+        "house_number": "3",
+        "country": "Australia",
+        "postcode": "7054",
+        "date": "2026-05-25 00:00:00",
+        "name": "PETER BROUWER",
+        "email": "petesbuildingservice@gmail.com",
+        "serial": "SRC254503",
+        "customer_id": "1057651"
+      }
+    ]
+  },
+  {
+    "ticket_id": "41173",
+    "keys": {
+      "serial": [
+        "SRC243210"
+      ],
+      "vin": [
+        "LA9202ESOR1ZDD766"
+      ],
+      "sap_id": [
+        "1043560"
+      ],
+      "name": [
+        "TIM THOMPSON",
+        "TIMOTHY THOMPSON"
+      ],
+      "email": [
+        "timnthompson@hotmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 7124,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name",
+          "email"
+        ],
+        "street": "160 Clarkes rd",
+        "suburb": "Hazelwood North",
+        "state": "AU-VIC",
+        "country": "AU",
+        "postcode": 4830,
+        "date": "2025-07-08 00:00:00",
+        "name": "Timothy Thompson",
+        "email": "timnthompson@hotmail.com",
+        "serial": "SRC243210",
+        "vin": "LA9202ESOR1ZDD766"
+      },
+      {
+        "source": "SAP",
+        "row": 1917,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "U 41/405 Mooloolaba Road / Buderim QLD 4556 / AU",
+        "suburb": "Buderim",
+        "state": "Queensland",
+        "street": " Mooloolaba Road",
+        "house_number": "U 41/405",
+        "country": "Australia",
+        "postcode": "4556",
+        "date": "2025-07-08 00:00:00",
+        "name": "Timothy Thompson",
+        "email": "timnthompson@hotmail.com",
+        "serial": "SRC243210",
+        "customer_id": "1043560"
+      }
+    ]
+  },
+  {
+    "ticket_id": "41346",
+    "keys": {
+      "serial": [
+        "SRC243306"
+      ],
+      "vin": [],
+      "sap_id": [
+        "1044006"
+      ],
+      "name": [
+        "ANDREW CRAIG"
+      ],
+      "email": [
+        "acdrewcraig@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 6148,
+        "matched_on": [
+          "serial",
+          "name",
+          "email"
+        ],
+        "street": "38 Farmhouse Place",
+        "suburb": "Currans Hill",
+        "state": "AU-NSW",
+        "country": "AU",
+        "postcode": 2567,
+        "date": "2025-05-13 00:00:00",
+        "name": "Andrew Craig",
+        "email": "acdrewcraig@gmail.com",
+        "serial": "SRC243306",
+        "vin": "LA9202ES8R1ZDD823"
+      },
+      {
+        "source": "Registration",
+        "row": 6275,
+        "matched_on": [
+          "serial"
+        ],
+        "street": "38 Farmhouse Place",
+        "suburb": "Currans Hill",
+        "state": "AU-NSW",
+        "country": "AU",
+        "postcode": 2557,
+        "date": "2025-04-30 00:00:00",
+        "name": "Craig Andrew",
+        "email": "andrewcraig@gmail.com",
+        "serial": "SRC243306",
+        "vin": "LA9202ES8R1ZDD823"
+      },
+      {
+        "source": "SAP",
+        "row": 4578,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "38 Farmhouse Pl / Currans Hill NSW 2557 / AU",
+        "suburb": "Currans Hill",
+        "state": "New South Wales",
+        "street": "Farmhouse Pl",
+        "house_number": "38",
+        "country": "Australia",
+        "postcode": "2557",
+        "date": "2025-04-30 00:00:00",
+        "name": "Andrew Craig",
+        "email": "acdrewcraig@gmail.com",
+        "serial": "SRC243306",
+        "customer_id": "1044006"
+      }
+    ]
+  },
+  {
+    "ticket_id": "41354",
+    "keys": {
+      "serial": [
+        "SRH250002"
+      ],
+      "vin": [
+        "LA9212ERXS1ZDD516"
+      ],
+      "sap_id": [
+        "1068218"
+      ],
+      "name": [
+        "BELINDA MUSTICA",
+        "TONY GREEN"
+      ],
+      "email": [
+        "bjmustica@icloud.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 7944,
+        "matched_on": [
+          "serial",
+          "vin",
+          "name"
+        ],
+        "street": "101 Fresian Road",
+        "suburb": "Cobram",
+        "state": "AU-VIC",
+        "country": "AU",
+        "postcode": 3644,
+        "date": "2025-12-16 00:00:00",
+        "name": "Belinda Mustica",
+        "email": "warranty@wangcm.com.au",
+        "serial": "SRH250002",
+        "vin": "LA9212ERXS1ZDD516"
+      },
+      {
+        "source": "SAP",
+        "row": 1349,
+        "matched_on": [
+          "sap_id",
+          "name"
+        ],
+        "address": "11 Kakadu Ct / Thurgoona NSW 2640 / AU",
+        "suburb": "Thurgoona",
+        "state": "New South Wales",
+        "street": "Kakadu Ct",
+        "house_number": "11",
+        "country": "Australia",
+        "postcode": "2640",
+        "date": "2025-12-15 00:00:00",
+        "name": "Tony Green",
+        "email": "warranty@wangcm.com.au",
+        "serial": "SRC243787",
+        "customer_id": "1068218"
+      },
+      {
+        "source": "SAP",
+        "row": 3525,
+        "matched_on": [
+          "sap_id",
+          "name"
+        ],
+        "address": "11 Kakadu Ct / Thurgoona NSW 2640 / AU",
+        "suburb": "Thurgoona",
+        "state": "New South Wales",
+        "street": "Kakadu Ct",
+        "house_number": "11",
+        "country": "Australia",
+        "postcode": "2640",
+        "date": "2025-12-16 00:00:00",
+        "name": "Tony Green",
+        "email": "warranty@wangcm.com.au",
+        "serial": "SRC254199",
+        "customer_id": "1068218"
+      },
+      {
+        "source": "SAP",
+        "row": 3878,
+        "matched_on": [
+          "sap_id",
+          "name"
+        ],
+        "address": "11 Kakadu Ct / Thurgoona NSW 2640 / AU",
+        "suburb": "Thurgoona",
+        "state": "New South Wales",
+        "street": "Kakadu Ct",
+        "house_number": "11",
+        "country": "Australia",
+        "postcode": "2640",
+        "date": "2025-12-04 00:00:00",
+        "name": "Tony Green",
+        "email": "warranty@wangcm.com.au",
+        "serial": "SRC254262",
+        "customer_id": "1068218"
+      },
+      {
+        "source": "SAP",
+        "row": 3902,
+        "matched_on": [
+          "sap_id",
+          "name"
+        ],
+        "address": "11 Kakadu Ct / Thurgoona NSW 2640 / AU",
+        "suburb": "Thurgoona",
+        "state": "New South Wales",
+        "street": "Kakadu Ct",
+        "house_number": "11",
+        "country": "Australia",
+        "postcode": "2640",
+        "date": "2025-12-19 00:00:00",
+        "name": "Tony Green",
+        "email": "warranty@wangcm.com.au",
+        "serial": "SRC254239",
+        "customer_id": "1068218"
+      },
+      {
+        "source": "SAP",
+        "row": 7388,
+        "matched_on": [
+          "sap_id",
+          "name"
+        ],
+        "address": "11 Kakadu Ct / Thurgoona NSW 2640 / AU",
+        "suburb": "Thurgoona",
+        "state": "New South Wales",
+        "street": "Kakadu Ct",
+        "house_number": "11",
+        "country": "Australia",
+        "postcode": "2640",
+        "date": "2025-12-11 00:00:00",
+        "name": "Tony Green",
+        "email": "warranty@wangcm.com.au",
+        "serial": "SRP253223",
+        "customer_id": "1068218"
+      },
+      {
+        "source": "SAP",
+        "row": 9149,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name"
+        ],
+        "address": "11 Kakadu Ct / Thurgoona NSW 2640 / AU",
+        "suburb": "Thurgoona",
+        "state": "New South Wales",
+        "street": "Kakadu Ct",
+        "house_number": "11",
+        "country": "Australia",
+        "postcode": "2640",
+        "date": "2025-12-16 00:00:00",
+        "name": "Tony Green",
+        "email": "warranty@wangcm.com.au",
+        "serial": "SRH250002",
+        "customer_id": "1068218"
+      },
+      {
+        "source": "SAP",
+        "row": 9190,
+        "matched_on": [
+          "sap_id",
+          "name"
+        ],
+        "address": "11 Kakadu Ct / Thurgoona NSW 2640 / AU",
+        "suburb": "Thurgoona",
+        "state": "New South Wales",
+        "street": "Kakadu Ct",
+        "house_number": "11",
+        "country": "Australia",
+        "postcode": "2640",
+        "date": "2025-12-16 00:00:00",
+        "name": "Tony Green",
+        "email": "warranty@wangcm.com.au",
+        "serial": "SRH250046",
+        "customer_id": "1068218"
+      },
+      {
+        "source": "SAP",
+        "row": 9214,
+        "matched_on": [
+          "sap_id",
+          "name"
+        ],
+        "address": "11 Kakadu Ct / Thurgoona NSW 2640 / AU",
+        "suburb": "Thurgoona",
+        "state": "New South Wales",
+        "street": "Kakadu Ct",
+        "house_number": "11",
+        "country": "Australia",
+        "postcode": "2640",
+        "date": "2025-12-09 00:00:00",
+        "name": "Tony Green",
+        "email": "warranty@wangcm.com.au",
+        "serial": "SRH250101",
+        "customer_id": "1068218"
+      }
+    ]
+  },
+  {
+    "ticket_id": "41411",
+    "keys": {
+      "serial": [
+        "SRT255057"
+      ],
+      "vin": [
+        "LA9212EN9S1ZDD343"
+      ],
+      "sap_id": [
+        "1036800"
+      ],
+      "name": [
+        "DEREK CROMPTON MARCUS LANG",
+        "ROBERT SAWLEY"
+      ],
+      "email": [
+        "deansawley5@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 3182,
+        "matched_on": [
+          "serial",
+          "vin"
+        ],
+        "street": "U 31309 WATERPOINT RESIDENCE 5 HARBOUR SIDE COURT",
+        "suburb": "BIGGERA WATERS",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4216,
+        "date": "2026-03-28 00:00:00",
+        "name": "DANIEL GRISANTI",
+        "email": "dngrisanti1950@gmail.com",
+        "serial": "SRT255057",
+        "vin": "LA9212EN9S1ZDD343"
+      },
+      {
+        "source": "Registration",
+        "row": 3183,
+        "matched_on": [
+          "serial",
+          "vin"
+        ],
+        "street": "U 31309 WATERPOINT RESIDENCE 5 HARBOUR SIDE COURT",
+        "suburb": "BIGGERA WATERS",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4216,
+        "date": "2026-03-30 00:00:00",
+        "name": "DANIEL GRISANTI",
+        "email": "dngrisanti1950@gmail.com",
+        "serial": "SRT255057",
+        "vin": "LA9212EN9S1ZDD343"
+      },
+      {
+        "source": "Registration",
+        "row": 12648,
+        "matched_on": [
+          "serial",
+          "vin"
+        ],
+        "street": "52 Carrington Road",
+        "suburb": "Torrington",
+        "state": "AU-QLD",
+        "country": "AU",
+        "postcode": 4350,
+        "date": "2026-01-07 00:00:00",
+        "name": "Leisure Lion",
+        "email": "customercare@snowyrivertoowoomba.com.au",
+        "serial": "SRT255057",
+        "vin": "LA9212EN9S1ZDD343"
+      },
+      {
+        "source": "SAP",
+        "row": 4148,
+        "matched_on": [
+          "sap_id",
+          "name"
+        ],
+        "address": "52 Carrington Road / sydney NSW 4350 / AU",
+        "suburb": "sydney",
+        "state": "New South Wales",
+        "street": "Carrington Road",
+        "house_number": "52",
+        "country": "Australia",
+        "postcode": "4350",
+        "date": "2023-01-01 00:00:00",
+        "name": "Derek Crompton - Marcus Lang",
+        "email": "customercare@snowyrivertoowoomba.com.au",
+        "serial": "LRV231499",
+        "customer_id": "1036800"
+      },
+      {
+        "source": "SAP",
+        "row": 7527,
+        "matched_on": [
+          "sap_id",
+          "name"
+        ],
+        "address": "52 Carrington Road / sydney NSW 4350 / AU",
+        "suburb": "sydney",
+        "state": "New South Wales",
+        "street": "Carrington Road",
+        "house_number": "52",
+        "country": "Australia",
+        "postcode": "4350",
+        "date": "2026-01-12 00:00:00",
+        "name": "Derek Crompton - Marcus Lang",
+        "email": "customercare@snowyrivertoowoomba.com.au",
+        "serial": "SRP254689",
+        "customer_id": "1036800"
+      },
+      {
+        "source": "SAP",
+        "row": 8465,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name"
+        ],
+        "address": "52 Carrington Road / sydney NSW 4350 / AU",
+        "suburb": "sydney",
+        "state": "New South Wales",
+        "street": "Carrington Road",
+        "house_number": "52",
+        "country": "Australia",
+        "postcode": "4350",
+        "date": "2026-01-07 00:00:00",
+        "name": "Derek Crompton - Marcus Lang",
+        "email": "customercare@snowyrivertoowoomba.com.au",
+        "serial": "SRT255057",
+        "customer_id": "1036800"
+      }
+    ]
+  },
+  {
+    "ticket_id": "41446",
+    "keys": {
+      "serial": [
+        "SRC254766"
+      ],
+      "vin": [
+        "LA9202ES3S1ZDD377"
+      ],
+      "sap_id": [
+        "1056553"
+      ],
+      "name": [
+        "GWYNETH PAYNE"
+      ],
+      "email": [
+        "sagrpayne@gmail.com"
+      ],
+      "phone": []
+    },
+    "sources": [
+      {
+        "source": "Registration",
+        "row": 7957,
+        "matched_on": [
+          "serial",
+          "vin",
+          "email"
+        ],
+        "street": "Villa 32 89 Martin Street",
+        "suburb": "Armidale",
+        "state": "AU-NSW",
+        "country": "AU",
+        "postcode": 2360,
+        "date": "2025-12-19 00:00:00",
+        "name": "Stewart Payne",
+        "email": "sagrpayne@gmail.com",
+        "serial": "SRC254766",
+        "vin": "LA9202ES3S1ZDD377"
+      },
+      {
+        "source": "SAP",
+        "row": 3558,
+        "matched_on": [
+          "serial",
+          "sap_id",
+          "name",
+          "email"
+        ],
+        "address": "32/89 Martin Street / Armidale NSW 2350 / AU",
+        "suburb": "Armidale",
+        "state": "New South Wales",
+        "street": "Martin Street",
+        "house_number": "32/89",
+        "country": "Australia",
+        "postcode": "2350",
+        "date": "2025-12-19 00:00:00",
+        "name": "Gwyneth Payne",
+        "email": "sagrpayne@gmail.com",
+        "serial": "SRC254766",
+        "customer_id": "1056553"
+      }
+    ]
+  }
+]

@@ -18,6 +18,8 @@ from requests.adapters import HTTPAdapter
 from requests.auth import HTTPBasicAuth
 from urllib3.util.retry import Retry
 
+from recall_postcodes import preserve_recall_postcodes
+
 
 BASE_URL = os.getenv(
     "C4C_BASE_URL",
@@ -36,7 +38,7 @@ FIREBASE_SA_PATH = os.getenv("FIREBASE_SA_PATH", str(ROOT_DIR / "firebase-servic
 RECALL_CLAIMS_TABLE_PATH = os.getenv("RECALL_CLAIMS_TABLE_PATH", "recallClaim")
 
 RECALL_CLAIMS_TICKET_TYPE = "Z011"
-DEFAULT_TOP = 20000
+DEFAULT_TOP = 50000
 DEFAULT_SKIP = 0
 TIMEOUT = int(os.getenv("C4C_TIMEOUT_SECONDS", "60"))
 C4C_PAGE_RETRIES = max(1, int(os.getenv("C4C_PAGE_RETRIES", "4")))
@@ -287,7 +289,7 @@ def build_recall_claims_payload(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Sync Recall Claims Z011 from C4C to Firebase.")
-    parser.add_argument("--top", type=int, default=DEFAULT_TOP, help="SAP raw flattened row limit. Default: 20000.")
+    parser.add_argument("--top", type=int, default=DEFAULT_TOP, help="SAP raw flattened row limit. Default: 50000.")
     parser.add_argument("--skip", type=int, default=DEFAULT_SKIP, help="SAP raw flattened row offset. Default: 0.")
     parser.add_argument("--dry-run", action="store_true", help="Fetch and build payload, but do not write Firebase.")
     parser.add_argument("--print-url", action="store_true", help="Print the exact Recall Claims request URL and exit.")
@@ -326,7 +328,9 @@ def main() -> None:
             return
 
         firebase_init()
-        db.reference(RECALL_CLAIMS_TABLE_PATH).set(payload)
+        db.reference(RECALL_CLAIMS_TABLE_PATH).transaction(
+            lambda current: preserve_recall_postcodes(payload, current)
+        )
         logger.info("Wrote Recall Claims payload to Firebase path %s", RECALL_CLAIMS_TABLE_PATH)
     finally:
         session.close()

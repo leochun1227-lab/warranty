@@ -1,0 +1,3012 @@
+[
+  {
+    "EQUNR": "000000000010024051",
+    "SERNR": "LRV243064",
+    "VIN": "LRV243064",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112111"
+  },
+  {
+    "EQUNR": "000000000010024051",
+    "SERNR": "LRV243064",
+    "VIN": "LA9212ES0R1ZDD862",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112111"
+  },
+  {
+    "EQUNR": "000000000010027499",
+    "SERNR": "SRP254349",
+    "VIN": "LA9212ER9S1ZDD409",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122501"
+  },
+  {
+    "EQUNR": "000000000010027499",
+    "SERNR": "SRP254349",
+    "VIN": "SRP254349",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122501"
+  },
+  {
+    "EQUNR": "000000000010023195",
+    "SERNR": "SRC243853",
+    "VIN": "LA9202ES3R1ZDD843",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112305"
+  },
+  {
+    "EQUNR": "000000000010023195",
+    "SERNR": "SRC243853",
+    "VIN": "SRC243853",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112305"
+  },
+  {
+    "EQUNR": "000000000010029768",
+    "SERNR": "SRH255211",
+    "VIN": "LA9212ER6S1ZDD769",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165121"
+  },
+  {
+    "EQUNR": "000000000010035401",
+    "SERNR": "SRH255625",
+    "VIN": "LA9212ER8S1ZDD983",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242606"
+  },
+  {
+    "EQUNR": "000000000010021872",
+    "SERNR": "SRT243559",
+    "VIN": "LA9212EN1R1ZDD587",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132401"
+  },
+  {
+    "EQUNR": "000000000010021872",
+    "SERNR": "SRT243559",
+    "VIN": "SRT243559",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132401"
+  },
+  {
+    "EQUNR": "000000000010020204",
+    "SERNR": "SRC243109",
+    "VIN": "LA9202ES9R1ZDD619",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112305"
+  },
+  {
+    "EQUNR": "000000000010020204",
+    "SERNR": "SRC243109",
+    "VIN": "SRC243109",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112305"
+  },
+  {
+    "EQUNR": "000000000010023685",
+    "SERNR": "SRC244025",
+    "VIN": "SRC244025",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112308"
+  },
+  {
+    "EQUNR": "000000000010023685",
+    "SERNR": "SRC244025",
+    "VIN": "LA9212ES7S1ZDD007",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112308"
+  },
+  {
+    "EQUNR": "000000000010022113",
+    "SERNR": "NGC243181",
+    "VIN": "LA9202EN3R1ZDD075",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332402"
+  },
+  {
+    "EQUNR": "000000000010022113",
+    "SERNR": "NGC243181",
+    "VIN": "NGC243181",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332402"
+  },
+  {
+    "EQUNR": "000000000010022142",
+    "SERNR": "NGC243503",
+    "VIN": "LA9202EN9R1ZDD100",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332403"
+  },
+  {
+    "EQUNR": "000000000010022142",
+    "SERNR": "NGC243503",
+    "VIN": "NGC243503",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332403"
+  },
+  {
+    "EQUNR": "000000000010022094",
+    "SERNR": "SRC243625",
+    "VIN": "SRC243625",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112316"
+  },
+  {
+    "EQUNR": "000000000010022094",
+    "SERNR": "SRC243625",
+    "VIN": "LA9202ES6R1ZDD755",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112316"
+  },
+  {
+    "EQUNR": "000000000010022093",
+    "SERNR": "SRC243626",
+    "VIN": "LA9202ES8R1ZDD756",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112316"
+  },
+  {
+    "EQUNR": "000000000010022093",
+    "SERNR": "SRC243626",
+    "VIN": "SRC243626",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112316"
+  },
+  {
+    "EQUNR": "000000000010024386",
+    "SERNR": "SRH243778",
+    "VIN": "SRH243778",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165107"
+  },
+  {
+    "EQUNR": "000000000010024386",
+    "SERNR": "SRH243778",
+    "VIN": "LA9212ER4R1ZDD327",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165107"
+  },
+  {
+    "EQUNR": "000000000010025752",
+    "SERNR": "NGC253569",
+    "VIN": "NGC253569",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332408"
+  },
+  {
+    "EQUNR": "000000000010025752",
+    "SERNR": "NGC253569",
+    "VIN": "LA9212EN9S1ZDD116",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332408"
+  },
+  {
+    "EQUNR": "000000000010025769",
+    "SERNR": "NGC243955",
+    "VIN": "LA9202EN9S1ZDD037",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332402"
+  },
+  {
+    "EQUNR": "000000000010025769",
+    "SERNR": "NGC243955",
+    "VIN": "NGC243955",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332402"
+  },
+  {
+    "EQUNR": "000000000010025773",
+    "SERNR": "NGC243917",
+    "VIN": "LA9212ENXS1ZDD111",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332406"
+  },
+  {
+    "EQUNR": "000000000010025773",
+    "SERNR": "NGC243917",
+    "VIN": "NGC243917",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332406"
+  },
+  {
+    "EQUNR": "000000000010025755",
+    "SERNR": "NGC253566",
+    "VIN": "NGC253566",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332405"
+  },
+  {
+    "EQUNR": "000000000010025755",
+    "SERNR": "NGC253566",
+    "VIN": "LA9202EN8S1ZDD045",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332405"
+  },
+  {
+    "EQUNR": "000000000010026284",
+    "SERNR": "SRC253975",
+    "VIN": "LA9202ES8S1ZDD200",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112305"
+  },
+  {
+    "EQUNR": "000000000010026284",
+    "SERNR": "SRC253975",
+    "VIN": "SRC253975",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112305"
+  },
+  {
+    "EQUNR": "000000000010021203",
+    "SERNR": "LRV243076",
+    "VIN": "LRV243076",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112305"
+  },
+  {
+    "EQUNR": "000000000010021203",
+    "SERNR": "LRV243076",
+    "VIN": "LA9202ES2R1ZDD607",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112305"
+  },
+  {
+    "EQUNR": "000000000010026149",
+    "SERNR": "SRC253888",
+    "VIN": "LA9202ES7S1ZDD186",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112305"
+  },
+  {
+    "EQUNR": "000000000010026149",
+    "SERNR": "SRC253888",
+    "VIN": "SRC253888",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112305"
+  },
+  {
+    "EQUNR": "000000000010024065",
+    "SERNR": "LRV243064",
+    "VIN": "LRV243064",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112313"
+  },
+  {
+    "EQUNR": "000000000010024065",
+    "SERNR": "LRV243064",
+    "VIN": "LA9212ES0R1ZDD862",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112313"
+  },
+  {
+    "EQUNR": "000000000010019831",
+    "SERNR": "LRV240337",
+    "VIN": "LA9212ES2R1ZDD491",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112313"
+  },
+  {
+    "EQUNR": "000000000010019831",
+    "SERNR": "LRV240337",
+    "VIN": "LRV240337",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112313"
+  },
+  {
+    "EQUNR": "000000000010026826",
+    "SERNR": "SRC254117",
+    "VIN": "SRC254117",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112303"
+  },
+  {
+    "EQUNR": "000000000010026826",
+    "SERNR": "SRC254117",
+    "VIN": "LA9202ES0S1ZDD255",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112303"
+  },
+  {
+    "EQUNR": "000000000010026441",
+    "SERNR": "SRT254033",
+    "VIN": "SRT254033",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132403"
+  },
+  {
+    "EQUNR": "000000000010026441",
+    "SERNR": "SRT254033",
+    "VIN": "LA9212ENXS1ZDD187",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132403"
+  },
+  {
+    "EQUNR": "000000000010025897",
+    "SERNR": "SRT253814",
+    "VIN": "LA9212EN5S1ZDD212",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132403"
+  },
+  {
+    "EQUNR": "000000000010025897",
+    "SERNR": "SRT253814",
+    "VIN": "SRT253814",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132403"
+  },
+  {
+    "EQUNR": "000000000010029410",
+    "SERNR": "SRT254796",
+    "VIN": "LA9212EN1S1ZDD272",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132403"
+  },
+  {
+    "EQUNR": "000000000010022562",
+    "SERNR": "SRP243802",
+    "VIN": "LA9212ER2R1ZDD276",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122403"
+  },
+  {
+    "EQUNR": "000000000010022562",
+    "SERNR": "SRP243802",
+    "VIN": "SRP243802",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122403"
+  },
+  {
+    "EQUNR": "000000000010024856",
+    "SERNR": "SRP253048",
+    "VIN": "SRP253048",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122403"
+  },
+  {
+    "EQUNR": "000000000010024856",
+    "SERNR": "SRP253048",
+    "VIN": "LA9212ER8S1ZDD062",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122403"
+  },
+  {
+    "EQUNR": "000000000010025117",
+    "SERNR": "SRP253350",
+    "VIN": "SRP253350",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122403"
+  },
+  {
+    "EQUNR": "000000000010025117",
+    "SERNR": "SRP253350",
+    "VIN": "LA9212ER1S1ZDD128",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122403"
+  },
+  {
+    "EQUNR": "000000000010023744",
+    "SERNR": "SRC253007",
+    "VIN": "SRC253007",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112304"
+  },
+  {
+    "EQUNR": "000000000010023744",
+    "SERNR": "SRC253007",
+    "VIN": "LA9202ESXS1ZDD019",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112304"
+  },
+  {
+    "EQUNR": "000000000010026043",
+    "SERNR": "SRT253806",
+    "VIN": "SRT253806",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132407"
+  },
+  {
+    "EQUNR": "000000000010026043",
+    "SERNR": "SRT253806",
+    "VIN": "LA9212ENXS1ZDD139",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132407"
+  },
+  {
+    "EQUNR": "000000000010024691",
+    "SERNR": "SRP253090",
+    "VIN": "SRP253090",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122404"
+  },
+  {
+    "EQUNR": "000000000010024691",
+    "SERNR": "SRP253090",
+    "VIN": "LA9212ER0S1ZDD055",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122404"
+  },
+  {
+    "EQUNR": "000000000010027542",
+    "SERNR": "SRC254577",
+    "VIN": "SRC254577",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112414"
+  },
+  {
+    "EQUNR": "000000000010027542",
+    "SERNR": "SRC254577",
+    "VIN": "LA9212ESXS1ZDD356",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112414"
+  },
+  {
+    "EQUNR": "000000000010023881",
+    "SERNR": "SRP253023",
+    "VIN": "LA9212ER9S1ZDD037",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122404"
+  },
+  {
+    "EQUNR": "000000000010023881",
+    "SERNR": "SRP253023",
+    "VIN": "SRP253023",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122404"
+  },
+  {
+    "EQUNR": "000000000010029963",
+    "SERNR": "SRC255278",
+    "VIN": "LA9202ES5S1ZDD493",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112403"
+  },
+  {
+    "EQUNR": "000000000010034480",
+    "SERNR": "SRC255370",
+    "VIN": "LA9212ES1S1ZDD519",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212409"
+  },
+  {
+    "EQUNR": "000000000010030638",
+    "SERNR": "SRP255503",
+    "VIN": "LA9212ER2S1ZDD865",
+    "KUNDE": "",
+    "KUNNR": "",
+    "KDAUF": "0010043021",
+    "KDPOS": "000010",
+    "MATNR": "Z12122401"
+  },
+  {
+    "EQUNR": "000000000010024215",
+    "SERNR": "SRC243764",
+    "VIN": "SRC243764",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112316"
+  },
+  {
+    "EQUNR": "000000000010024215",
+    "SERNR": "SRC243764",
+    "VIN": "LA9202ES7S1ZDD012",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112316"
+  },
+  {
+    "EQUNR": "000000000010022223",
+    "SERNR": "SRC243644",
+    "VIN": "SRC243644",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112316"
+  },
+  {
+    "EQUNR": "000000000010022223",
+    "SERNR": "SRC243644",
+    "VIN": "LA9202ES8R1ZDD742",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112316"
+  },
+  {
+    "EQUNR": "000000000010025130",
+    "SERNR": "SRT253337",
+    "VIN": "SRT253337",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132406"
+  },
+  {
+    "EQUNR": "000000000010025130",
+    "SERNR": "SRT253337",
+    "VIN": "LA9212ENXS1ZDD089",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132406"
+  },
+  {
+    "EQUNR": "000000000010024563",
+    "SERNR": "SRC253231",
+    "VIN": "SRC253231",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112316"
+  },
+  {
+    "EQUNR": "000000000010024563",
+    "SERNR": "SRC253231",
+    "VIN": "LA9202ES2S1ZDD113",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112316"
+  },
+  {
+    "EQUNR": "000000000010029885",
+    "SERNR": "NGC255232",
+    "VIN": "LA9202EN2S1ZDD056",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332401"
+  },
+  {
+    "EQUNR": "000000000010028334",
+    "SERNR": "SRS254768",
+    "VIN": "LA9202ES6S1ZDD325",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12185101"
+  },
+  {
+    "EQUNR": "000000000010030244",
+    "SERNR": "SRT255067",
+    "VIN": "LA9212EN6S1ZDD378",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132411"
+  },
+  {
+    "EQUNR": "000000000010030235",
+    "SERNR": "SRC255370",
+    "VIN": "LA9212ES1S1ZDD519",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112409"
+  },
+  {
+    "EQUNR": "000000000010029764",
+    "SERNR": "SRT255214",
+    "VIN": "LA9212EN3S1ZDD368",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132413"
+  },
+  {
+    "EQUNR": "000000000010030959",
+    "SERNR": "NGB255604",
+    "VIN": "LA9202EN8S1ZDD059",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12322401"
+  },
+  {
+    "EQUNR": "000000000010030357",
+    "SERNR": "SRC255432",
+    "VIN": "LA9212ES8S1ZDD601",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112413"
+  },
+  {
+    "EQUNR": "000000000010028299",
+    "SERNR": "SRP254555",
+    "VIN": "LA9212ERXS1ZDD791",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122501"
+  },
+  {
+    "EQUNR": "000000000010030960",
+    "SERNR": "NGC255603",
+    "VIN": "LA9212EN4S1ZDD427",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332410"
+  },
+  {
+    "EQUNR": "000000000010030440",
+    "SERNR": "SRS255127",
+    "VIN": "LA9202ESXS1ZDD473",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12185101"
+  },
+  {
+    "EQUNR": "000000000010030388",
+    "SERNR": "SRS254419",
+    "VIN": "LA9202ES8S1ZDD469",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12185101"
+  },
+  {
+    "EQUNR": "000000000010024219",
+    "SERNR": "SRC243749",
+    "VIN": "SRC243749",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112316"
+  },
+  {
+    "EQUNR": "000000000010024219",
+    "SERNR": "SRC243749",
+    "VIN": "LA9202ES1S1ZDD023",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112316"
+  },
+  {
+    "EQUNR": "000000000010031233",
+    "SERNR": "SRH254027",
+    "VIN": "SRH254027",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242601"
+  },
+  {
+    "EQUNR": "000000000010031233",
+    "SERNR": "SRH254027",
+    "VIN": "LA9212ER2S1ZDD347",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242601"
+  },
+  {
+    "EQUNR": "000000000010031956",
+    "SERNR": "SRP254349",
+    "VIN": "LA9212ER9S1ZDD409",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222501"
+  },
+  {
+    "EQUNR": "000000000010031956",
+    "SERNR": "SRP254349",
+    "VIN": "SRP254349",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222501"
+  },
+  {
+    "EQUNR": "000000000010032015",
+    "SERNR": "SRP254383",
+    "VIN": "LA9212ER2S1ZDD624",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222501"
+  },
+  {
+    "EQUNR": "000000000010032015",
+    "SERNR": "SRP254383",
+    "VIN": "SRP254383",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222501"
+  },
+  {
+    "EQUNR": "000000000010032336",
+    "SERNR": "SRP254478",
+    "VIN": "SRP254478",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222506"
+  },
+  {
+    "EQUNR": "000000000010032336",
+    "SERNR": "SRP254478",
+    "VIN": "LA9212ER5S1ZDD603",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222506"
+  },
+  {
+    "EQUNR": "000000000010027501",
+    "SERNR": "SRC254298",
+    "VIN": "LA9212ES0S1ZDD317",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112415"
+  },
+  {
+    "EQUNR": "000000000010027501",
+    "SERNR": "SRC254298",
+    "VIN": "SRC254298",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112415"
+  },
+  {
+    "EQUNR": "000000000010027550",
+    "SERNR": "SRP254478",
+    "VIN": "SRP254478",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122506"
+  },
+  {
+    "EQUNR": "000000000010027550",
+    "SERNR": "SRP254478",
+    "VIN": "LA9212ER5S1ZDD603",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122506"
+  },
+  {
+    "EQUNR": "000000000010032617",
+    "SERNR": "SRP254384",
+    "VIN": "LA9212ER4S1ZDD625",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222502"
+  },
+  {
+    "EQUNR": "000000000010027968",
+    "SERNR": "SRP254383",
+    "VIN": "LA9212ER2S1ZDD624",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122501"
+  },
+  {
+    "EQUNR": "000000000010027968",
+    "SERNR": "SRP254383",
+    "VIN": "SRP254383",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122501"
+  },
+  {
+    "EQUNR": "000000000010027963",
+    "SERNR": "SRP254384",
+    "VIN": "LA9212ER4S1ZDD625",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122502"
+  },
+  {
+    "EQUNR": "000000000010033119",
+    "SERNR": "SRP254750",
+    "VIN": "LA9212ER7S1ZDD649",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222505"
+  },
+  {
+    "EQUNR": "000000000010028310",
+    "SERNR": "SRP254750",
+    "VIN": "LA9212ER7S1ZDD649",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122505"
+  },
+  {
+    "EQUNR": "000000000010026806",
+    "SERNR": "SRH254027",
+    "VIN": "SRH254027",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165109"
+  },
+  {
+    "EQUNR": "000000000010026806",
+    "SERNR": "SRH254027",
+    "VIN": "LA9212ER2S1ZDD347",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165109"
+  },
+  {
+    "EQUNR": "000000000010030202",
+    "SERNR": "SRT250002",
+    "VIN": "SRT250002",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132409"
+  },
+  {
+    "EQUNR": "000000000010030202",
+    "SERNR": "SRT250002",
+    "VIN": "LA9212EN4S1ZDD248",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132409"
+  },
+  {
+    "EQUNR": "000000000010028316",
+    "SERNR": "SRP254475",
+    "VIN": "LA9212ER9S1ZDD670",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122501"
+  },
+  {
+    "EQUNR": "000000000010028222",
+    "SERNR": "SRP254356",
+    "VIN": "LA9212ER5S1ZDD665",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122502"
+  },
+  {
+    "EQUNR": "000000000010029089",
+    "SERNR": "SRC254936",
+    "VIN": "LA9212ES9S1ZDD445",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112415"
+  },
+  {
+    "EQUNR": "000000000010028265",
+    "SERNR": "SRP254350",
+    "VIN": "LA9212ER1S1ZDD663",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122502"
+  },
+  {
+    "EQUNR": "000000000010034025",
+    "SERNR": "SRP254555",
+    "VIN": "LA9212ERXS1ZDD791",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222501"
+  },
+  {
+    "EQUNR": "000000000010027726",
+    "SERNR": "NGC254535",
+    "VIN": "NGC254535",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332407"
+  },
+  {
+    "EQUNR": "000000000010027726",
+    "SERNR": "NGC254535",
+    "VIN": "LA9212EN9S1ZDD228",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12332407"
+  },
+  {
+    "EQUNR": "000000000010029872",
+    "SERNR": "SRP254325",
+    "VIN": "LA9212ER5S1ZDD729",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122506"
+  },
+  {
+    "EQUNR": "000000000010030360",
+    "SERNR": "SRC255378",
+    "VIN": "LA9212ES9S1ZDD543",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112415"
+  },
+  {
+    "EQUNR": "000000000010034313",
+    "SERNR": "SRS254768",
+    "VIN": "LA9202ES6S1ZDD325",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14712101"
+  },
+  {
+    "EQUNR": "000000000010029771",
+    "SERNR": "SRH255208",
+    "VIN": "LA9212ER0S1ZDD766",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165118"
+  },
+  {
+    "EQUNR": "000000000010029772",
+    "SERNR": "SRH255207",
+    "VIN": "LA9212ER9S1ZDD765",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165117"
+  },
+  {
+    "EQUNR": "000000000010036262",
+    "SERNR": "SRS255127",
+    "VIN": "LA9202ESXS1ZDD473",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14712101"
+  },
+  {
+    "EQUNR": "000000000010030356",
+    "SERNR": "SRH255433",
+    "VIN": "LA9212ER4S1ZDD849",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165118"
+  },
+  {
+    "EQUNR": "000000000010029536",
+    "SERNR": "SRT255169",
+    "VIN": "LA9212EN1S1ZDD322",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132411"
+  },
+  {
+    "EQUNR": "000000000010029767",
+    "SERNR": "SRH255212",
+    "VIN": "LA9212ER2S1ZDD770",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165121"
+  },
+  {
+    "EQUNR": "000000000010030397",
+    "SERNR": "SRH255128",
+    "VIN": "LA9212ER4S1ZDD804",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165121"
+  },
+  {
+    "EQUNR": "000000000010020298",
+    "SERNR": "SRC243142",
+    "VIN": "SRC243142",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112309"
+  },
+  {
+    "EQUNR": "000000000010020298",
+    "SERNR": "SRC243142",
+    "VIN": "LA9212ES8R1ZDD611",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112309"
+  },
+  {
+    "EQUNR": "000000000010021675",
+    "SERNR": "LRT243148",
+    "VIN": "LA9212EN5R1ZDD558",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132404"
+  },
+  {
+    "EQUNR": "000000000010021675",
+    "SERNR": "LRT243148",
+    "VIN": "LRT243148",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132404"
+  },
+  {
+    "EQUNR": "000000000010033280",
+    "SERNR": "SRP254475",
+    "VIN": "LA9212ER9S1ZDD670",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222501"
+  },
+  {
+    "EQUNR": "000000000010033731",
+    "SERNR": "SRP254350",
+    "VIN": "LA9212ER1S1ZDD663",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222502"
+  },
+  {
+    "EQUNR": "000000000010033678",
+    "SERNR": "SRP254356",
+    "VIN": "LA9212ER5S1ZDD665",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222502"
+  },
+  {
+    "EQUNR": "000000000010034251",
+    "SERNR": "SRP254325",
+    "VIN": "LA9212ER5S1ZDD729",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222506"
+  },
+  {
+    "EQUNR": "000000000010036259",
+    "SERNR": "SRS254419",
+    "VIN": "LA9202ES8S1ZDD469",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14712101"
+  },
+  {
+    "EQUNR": "000000000010030879",
+    "SERNR": "SRH255460",
+    "VIN": "LA9212ER6S1ZDD867",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165121"
+  },
+  {
+    "EQUNR": "000000000010030396",
+    "SERNR": "SRH255118",
+    "VIN": "LA9212ER2S1ZDD803",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165117"
+  },
+  {
+    "EQUNR": "000000000010029055",
+    "SERNR": "SRH250131",
+    "VIN": "LA9212ER5S1ZDD553",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165117"
+  },
+  {
+    "EQUNR": "000000000010028339",
+    "SERNR": "SRH254797",
+    "VIN": "LA9212ER9S1ZDD877",
+    "KUNDE": "",
+    "KUNNR": "",
+    "KDAUF": "0010043956",
+    "KDPOS": "000010",
+    "MATNR": "Z12165115"
+  },
+  {
+    "EQUNR": "000000000010030143",
+    "SERNR": "SRT255419",
+    "VIN": "LA9212ENXS1ZDD402",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132411"
+  },
+  {
+    "EQUNR": "000000000010022707",
+    "SERNR": "SRT243851",
+    "VIN": "LA9212EN6R1ZDD679",
+    "KUNDE": "",
+    "KUNNR": "",
+    "KDAUF": "0010062307",
+    "KDPOS": "000010",
+    "MATNR": "Z12132406"
+  },
+  {
+    "EQUNR": "000000000010022707",
+    "SERNR": "SRT243851",
+    "VIN": "SRT243851",
+    "KUNDE": "",
+    "KUNNR": "",
+    "KDAUF": "0010062307",
+    "KDPOS": "000010",
+    "MATNR": "Z12132406"
+  },
+  {
+    "EQUNR": "000000000010021038",
+    "SERNR": "LRV243076",
+    "VIN": "LRV243076",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212305"
+  },
+  {
+    "EQUNR": "000000000010021038",
+    "SERNR": "LRV243076",
+    "VIN": "LA9202ES2R1ZDD607",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212305"
+  },
+  {
+    "EQUNR": "000000000010021118",
+    "SERNR": "SRC243109",
+    "VIN": "LA9202ES9R1ZDD619",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212305"
+  },
+  {
+    "EQUNR": "000000000010021118",
+    "SERNR": "SRC243109",
+    "VIN": "SRC243109",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212305"
+  },
+  {
+    "EQUNR": "000000000010023532",
+    "SERNR": "SRC243853",
+    "VIN": "LA9202ES3R1ZDD843",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212305"
+  },
+  {
+    "EQUNR": "000000000010023532",
+    "SERNR": "SRC243853",
+    "VIN": "SRC243853",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212305"
+  },
+  {
+    "EQUNR": "000000000010026688",
+    "SERNR": "SRC253888",
+    "VIN": "LA9202ES7S1ZDD186",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212305"
+  },
+  {
+    "EQUNR": "000000000010026688",
+    "SERNR": "SRC253888",
+    "VIN": "SRC253888",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212305"
+  },
+  {
+    "EQUNR": "000000000010027254",
+    "SERNR": "SRC253975",
+    "VIN": "LA9202ES8S1ZDD200",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212305"
+  },
+  {
+    "EQUNR": "000000000010027254",
+    "SERNR": "SRC253975",
+    "VIN": "SRC253975",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212305"
+  },
+  {
+    "EQUNR": "000000000010027882",
+    "SERNR": "SRC254117",
+    "VIN": "SRC254117",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212303"
+  },
+  {
+    "EQUNR": "000000000010027882",
+    "SERNR": "SRC254117",
+    "VIN": "LA9202ES0S1ZDD255",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212303"
+  },
+  {
+    "EQUNR": "000000000010019906",
+    "SERNR": "LRV240337",
+    "VIN": "LA9212ES2R1ZDD491",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212311"
+  },
+  {
+    "EQUNR": "000000000010019906",
+    "SERNR": "LRV240337",
+    "VIN": "LRV240337",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212311"
+  },
+  {
+    "EQUNR": "000000000010023481",
+    "SERNR": "LRV243064",
+    "VIN": "LRV243064",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212311"
+  },
+  {
+    "EQUNR": "000000000010023481",
+    "SERNR": "LRV243064",
+    "VIN": "LA9212ES0R1ZDD862",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212311"
+  },
+  {
+    "EQUNR": "000000000010024111",
+    "SERNR": "SRC244025",
+    "VIN": "SRC244025",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212308"
+  },
+  {
+    "EQUNR": "000000000010024111",
+    "SERNR": "SRC244025",
+    "VIN": "LA9212ES7S1ZDD007",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212308"
+  },
+  {
+    "EQUNR": "000000000010024417",
+    "SERNR": "SRC253007",
+    "VIN": "SRC253007",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212304"
+  },
+  {
+    "EQUNR": "000000000010024417",
+    "SERNR": "SRC253007",
+    "VIN": "LA9202ESXS1ZDD019",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212304"
+  },
+  {
+    "EQUNR": "000000000010027137",
+    "SERNR": "SRT254033",
+    "VIN": "SRT254033",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232402"
+  },
+  {
+    "EQUNR": "000000000010027137",
+    "SERNR": "SRT254033",
+    "VIN": "LA9212ENXS1ZDD187",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232402"
+  },
+  {
+    "EQUNR": "000000000010027935",
+    "SERNR": "SRT253814",
+    "VIN": "LA9212EN5S1ZDD212",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232402"
+  },
+  {
+    "EQUNR": "000000000010027935",
+    "SERNR": "SRT253814",
+    "VIN": "SRT253814",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232402"
+  },
+  {
+    "EQUNR": "000000000010029659",
+    "SERNR": "SRT254796",
+    "VIN": "LA9212EN1S1ZDD272",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232402"
+  },
+  {
+    "EQUNR": "000000000010022312",
+    "SERNR": "SRT243559",
+    "VIN": "LA9212EN1R1ZDD587",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232401"
+  },
+  {
+    "EQUNR": "000000000010022312",
+    "SERNR": "SRT243559",
+    "VIN": "SRT243559",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232401"
+  },
+  {
+    "EQUNR": "000000000010026565",
+    "SERNR": "SRT253806",
+    "VIN": "SRT253806",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232409"
+  },
+  {
+    "EQUNR": "000000000010026565",
+    "SERNR": "SRT253806",
+    "VIN": "LA9212ENXS1ZDD139",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232409"
+  },
+  {
+    "EQUNR": "000000000010027088",
+    "SERNR": "SRH254027",
+    "VIN": "SRH254027",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242607"
+  },
+  {
+    "EQUNR": "000000000010027088",
+    "SERNR": "SRH254027",
+    "VIN": "LA9212ER2S1ZDD347",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242607"
+  },
+  {
+    "EQUNR": "000000000010027924",
+    "SERNR": "SRP254349",
+    "VIN": "LA9212ER9S1ZDD409",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222502"
+  },
+  {
+    "EQUNR": "000000000010027924",
+    "SERNR": "SRP254349",
+    "VIN": "SRP254349",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222502"
+  },
+  {
+    "EQUNR": "000000000010028568",
+    "SERNR": "SRP254383",
+    "VIN": "LA9212ER2S1ZDD624",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222502"
+  },
+  {
+    "EQUNR": "000000000010028568",
+    "SERNR": "SRP254383",
+    "VIN": "SRP254383",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222502"
+  },
+  {
+    "EQUNR": "000000000010028168",
+    "SERNR": "SRP254478",
+    "VIN": "SRP254478",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222501"
+  },
+  {
+    "EQUNR": "000000000010028168",
+    "SERNR": "SRP254478",
+    "VIN": "LA9212ER5S1ZDD603",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222501"
+  },
+  {
+    "EQUNR": "000000000010028569",
+    "SERNR": "SRP254384",
+    "VIN": "LA9212ER4S1ZDD625",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222503"
+  },
+  {
+    "EQUNR": "000000000010028726",
+    "SERNR": "SRP254750",
+    "VIN": "LA9212ER7S1ZDD649",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222506"
+  },
+  {
+    "EQUNR": "000000000010029332",
+    "SERNR": "SRP254475",
+    "VIN": "LA9212ER9S1ZDD670",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222502"
+  },
+  {
+    "EQUNR": "000000000010029325",
+    "SERNR": "SRP254350",
+    "VIN": "LA9212ER1S1ZDD663",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222503"
+  },
+  {
+    "EQUNR": "000000000010029327",
+    "SERNR": "SRP254356",
+    "VIN": "LA9212ER5S1ZDD665",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222503"
+  },
+  {
+    "EQUNR": "000000000010030557",
+    "SERNR": "SRP254555",
+    "VIN": "LA9212ERXS1ZDD791",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222502"
+  },
+  {
+    "EQUNR": "000000000010028736",
+    "SERNR": "SRS254768",
+    "VIN": "LA9202ES6S1ZDD325",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14712103"
+  },
+  {
+    "EQUNR": "000000000010030248",
+    "SERNR": "SRP254325",
+    "VIN": "LA9212ER5S1ZDD729",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222501"
+  },
+  {
+    "EQUNR": "000000000010030538",
+    "SERNR": "SRC255370",
+    "VIN": "LA9212ES1S1ZDD519",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212408"
+  },
+  {
+    "EQUNR": "000000000010020554",
+    "SERNR": "LRT240828",
+    "VIN": "LRT240828",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232401"
+  },
+  {
+    "EQUNR": "000000000010020554",
+    "SERNR": "LRT240828",
+    "VIN": "LA9212EN5R1ZDD480",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232401"
+  },
+  {
+    "EQUNR": "000000000010021745",
+    "SERNR": "LRT243148",
+    "VIN": "LA9212EN5R1ZDD558",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232404"
+  },
+  {
+    "EQUNR": "000000000010021745",
+    "SERNR": "LRT243148",
+    "VIN": "LRT243148",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232404"
+  },
+  {
+    "EQUNR": "000000000010031203",
+    "SERNR": "SRH255625",
+    "VIN": "LA9212ER8S1ZDD983",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165114"
+  },
+  {
+    "EQUNR": "000000000010025645",
+    "SERNR": "SRC253231",
+    "VIN": "SRC253231",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212317"
+  },
+  {
+    "EQUNR": "000000000010025645",
+    "SERNR": "SRC253231",
+    "VIN": "LA9202ES2S1ZDD113",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212317"
+  },
+  {
+    "EQUNR": "000000000010025617",
+    "SERNR": "SRT253337",
+    "VIN": "SRT253337",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232405"
+  },
+  {
+    "EQUNR": "000000000010025617",
+    "SERNR": "SRT253337",
+    "VIN": "LA9212ENXS1ZDD089",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232405"
+  },
+  {
+    "EQUNR": "000000000010025635",
+    "SERNR": "SRP253350",
+    "VIN": "SRP253350",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222403"
+  },
+  {
+    "EQUNR": "000000000010025635",
+    "SERNR": "SRP253350",
+    "VIN": "LA9212ER1S1ZDD128",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222403"
+  },
+  {
+    "EQUNR": "000000000010028384",
+    "SERNR": "SRH250027",
+    "VIN": "LA9212ER3S1ZDD437",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242613"
+  },
+  {
+    "EQUNR": "000000000010028384",
+    "SERNR": "SRH250027",
+    "VIN": "SRH250027",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242613"
+  },
+  {
+    "EQUNR": "000000000010028438",
+    "SERNR": "SRH250103",
+    "VIN": "LA9212ER9S1ZDD491",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242613"
+  },
+  {
+    "EQUNR": "000000000010028500",
+    "SERNR": "SRH250131",
+    "VIN": "LA9212ER5S1ZDD553",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242609"
+  },
+  {
+    "EQUNR": "000000000010028478",
+    "SERNR": "SRH250094",
+    "VIN": "LA9212ER6S1ZDD531",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242609"
+  },
+  {
+    "EQUNR": "000000000010028513",
+    "SERNR": "SRH250149",
+    "VIN": "LA9212ER3S1ZDD566",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242614"
+  },
+  {
+    "EQUNR": "000000000010027619",
+    "SERNR": "SRC254229",
+    "VIN": "SRC254229",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212407"
+  },
+  {
+    "EQUNR": "000000000010027619",
+    "SERNR": "SRC254229",
+    "VIN": "LA9212ES1S1ZDD293",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212407"
+  },
+  {
+    "EQUNR": "000000000010027620",
+    "SERNR": "SRC254230",
+    "VIN": "LA9202ESXS1ZDD232",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212404"
+  },
+  {
+    "EQUNR": "000000000010027620",
+    "SERNR": "SRC254230",
+    "VIN": "SRC254230",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212404"
+  },
+  {
+    "EQUNR": "000000000010027583",
+    "SERNR": "SRC254184",
+    "VIN": "SRC254184",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212407"
+  },
+  {
+    "EQUNR": "000000000010027583",
+    "SERNR": "SRC254184",
+    "VIN": "LA9212ES7S1ZDD279",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212407"
+  },
+  {
+    "EQUNR": "000000000010031107",
+    "SERNR": "SRC255278",
+    "VIN": "LA9202ES5S1ZDD493",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212403"
+  },
+  {
+    "EQUNR": "000000000010031179",
+    "SERNR": "SRP255503",
+    "VIN": "LA9212ER2S1ZDD865",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222401"
+  },
+  {
+    "EQUNR": "000000000010031126",
+    "SERNR": "SRC255432",
+    "VIN": "LA9212ES8S1ZDD601",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212413"
+  },
+  {
+    "EQUNR": "000000000010031163",
+    "SERNR": "SRH255433",
+    "VIN": "LA9212ER4S1ZDD849",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242610"
+  },
+  {
+    "EQUNR": "000000000010023127",
+    "SERNR": "SRP243802",
+    "VIN": "LA9212ER2R1ZDD276",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222403"
+  },
+  {
+    "EQUNR": "000000000010023127",
+    "SERNR": "SRP243802",
+    "VIN": "SRP243802",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222403"
+  },
+  {
+    "EQUNR": "000000000010028079",
+    "SERNR": "NGC254535",
+    "VIN": "NGC254535",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432407"
+  },
+  {
+    "EQUNR": "000000000010028079",
+    "SERNR": "NGC254535",
+    "VIN": "LA9212EN9S1ZDD228",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432407"
+  },
+  {
+    "EQUNR": "000000000010028127",
+    "SERNR": "SRC254577",
+    "VIN": "SRC254577",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212414"
+  },
+  {
+    "EQUNR": "000000000010028127",
+    "SERNR": "SRC254577",
+    "VIN": "LA9212ESXS1ZDD356",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212414"
+  },
+  {
+    "EQUNR": "000000000010030260",
+    "SERNR": "SRC254944",
+    "VIN": "LA9212ES3S1ZDD490",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212412"
+  },
+  {
+    "EQUNR": "000000000010030305",
+    "SERNR": "NGC255232",
+    "VIN": "LA9202EN2S1ZDD056",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432401"
+  },
+  {
+    "EQUNR": "000000000010030503",
+    "SERNR": "SRT255067",
+    "VIN": "LA9212EN6S1ZDD378",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232413"
+  },
+  {
+    "EQUNR": "000000000010030302",
+    "SERNR": "SRT255214",
+    "VIN": "LA9212EN3S1ZDD368",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232415"
+  },
+  {
+    "EQUNR": "000000000010030333",
+    "SERNR": "SRH255207",
+    "VIN": "LA9212ER9S1ZDD765",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242609"
+  },
+  {
+    "EQUNR": "000000000010030334",
+    "SERNR": "SRH255208",
+    "VIN": "LA9212ER0S1ZDD766",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242610"
+  },
+  {
+    "EQUNR": "000000000010030337",
+    "SERNR": "SRH255211",
+    "VIN": "LA9212ER6S1ZDD769",
+    "KUNDE": "",
+    "KUNNR": "",
+    "KDAUF": "0010041571",
+    "KDPOS": "000010",
+    "MATNR": "D14242613"
+  },
+  {
+    "EQUNR": "000000000010030338",
+    "SERNR": "SRH255212",
+    "VIN": "LA9212ER2S1ZDD770",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242613"
+  },
+  {
+    "EQUNR": "000000000010029732",
+    "SERNR": "SRT255169",
+    "VIN": "LA9212EN1S1ZDD322",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232413"
+  },
+  {
+    "EQUNR": "000000000010020615",
+    "SERNR": "SRC243142",
+    "VIN": "SRC243142",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212309"
+  },
+  {
+    "EQUNR": "000000000010020615",
+    "SERNR": "SRC243142",
+    "VIN": "LA9212ES8R1ZDD611",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212309"
+  },
+  {
+    "EQUNR": "000000000010025069",
+    "SERNR": "SRP253090",
+    "VIN": "SRP253090",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222404"
+  },
+  {
+    "EQUNR": "000000000010025069",
+    "SERNR": "SRP253090",
+    "VIN": "LA9212ER0S1ZDD055",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222404"
+  },
+  {
+    "EQUNR": "000000000010024795",
+    "SERNR": "SRP253023",
+    "VIN": "LA9212ER9S1ZDD037",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222404"
+  },
+  {
+    "EQUNR": "000000000010024795",
+    "SERNR": "SRP253023",
+    "VIN": "SRP253023",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222404"
+  },
+  {
+    "EQUNR": "000000000010025177",
+    "SERNR": "SRP253048",
+    "VIN": "SRP253048",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222403"
+  },
+  {
+    "EQUNR": "000000000010025177",
+    "SERNR": "SRP253048",
+    "VIN": "LA9212ER8S1ZDD062",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222403"
+  },
+  {
+    "EQUNR": "000000000010018234",
+    "SERNR": "LRP240037",
+    "VIN": "LA9212ER3R1ZDD092",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222402"
+  },
+  {
+    "EQUNR": "000000000010018234",
+    "SERNR": "LRP240037",
+    "VIN": "LRP240037",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14222402"
+  },
+  {
+    "EQUNR": "000000000010022017",
+    "SERNR": "NGC243181",
+    "VIN": "LA9202EN3R1ZDD075",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432402"
+  },
+  {
+    "EQUNR": "000000000010022017",
+    "SERNR": "NGC243181",
+    "VIN": "NGC243181",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432402"
+  },
+  {
+    "EQUNR": "000000000010022504",
+    "SERNR": "SRC243644",
+    "VIN": "SRC243644",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212317"
+  },
+  {
+    "EQUNR": "000000000010022504",
+    "SERNR": "SRC243644",
+    "VIN": "LA9202ES8R1ZDD742",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212317"
+  },
+  {
+    "EQUNR": "000000000010022426",
+    "SERNR": "NGC243503",
+    "VIN": "LA9202EN9R1ZDD100",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432405"
+  },
+  {
+    "EQUNR": "000000000010022426",
+    "SERNR": "NGC243503",
+    "VIN": "NGC243503",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432405"
+  },
+  {
+    "EQUNR": "000000000010022736",
+    "SERNR": "SRC243625",
+    "VIN": "SRC243625",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212317"
+  },
+  {
+    "EQUNR": "000000000010022736",
+    "SERNR": "SRC243625",
+    "VIN": "LA9202ES6R1ZDD755",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212317"
+  },
+  {
+    "EQUNR": "000000000010022737",
+    "SERNR": "SRC243626",
+    "VIN": "LA9202ES8R1ZDD756",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212317"
+  },
+  {
+    "EQUNR": "000000000010022737",
+    "SERNR": "SRC243626",
+    "VIN": "SRC243626",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212317"
+  },
+  {
+    "EQUNR": "000000000010024429",
+    "SERNR": "SRC243749",
+    "VIN": "SRC243749",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212317"
+  },
+  {
+    "EQUNR": "000000000010024429",
+    "SERNR": "SRC243749",
+    "VIN": "LA9202ES1S1ZDD023",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212317"
+  },
+  {
+    "EQUNR": "000000000010024399",
+    "SERNR": "SRC243764",
+    "VIN": "SRC243764",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212317"
+  },
+  {
+    "EQUNR": "000000000010024399",
+    "SERNR": "SRC243764",
+    "VIN": "LA9202ES7S1ZDD012",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212317"
+  },
+  {
+    "EQUNR": "000000000010023547",
+    "SERNR": "SRT243851",
+    "VIN": "LA9212EN6R1ZDD679",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232405"
+  },
+  {
+    "EQUNR": "000000000010023547",
+    "SERNR": "SRT243851",
+    "VIN": "SRT243851",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232405"
+  },
+  {
+    "EQUNR": "000000000010023733",
+    "SERNR": "SRH243778",
+    "VIN": "SRH243778",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242407"
+  },
+  {
+    "EQUNR": "000000000010023733",
+    "SERNR": "SRH243778",
+    "VIN": "LA9212ER4R1ZDD327",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242407"
+  },
+  {
+    "EQUNR": "000000000010025956",
+    "SERNR": "NGC253569",
+    "VIN": "NGC253569",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432408"
+  },
+  {
+    "EQUNR": "000000000010025956",
+    "SERNR": "NGC253569",
+    "VIN": "LA9212EN9S1ZDD116",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432408"
+  },
+  {
+    "EQUNR": "000000000010025953",
+    "SERNR": "NGC253566",
+    "VIN": "NGC253566",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432404"
+  },
+  {
+    "EQUNR": "000000000010025953",
+    "SERNR": "NGC253566",
+    "VIN": "LA9202EN8S1ZDD045",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432404"
+  },
+  {
+    "EQUNR": "000000000010025945",
+    "SERNR": "NGC243955",
+    "VIN": "LA9202EN9S1ZDD037",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432402"
+  },
+  {
+    "EQUNR": "000000000010025945",
+    "SERNR": "NGC243955",
+    "VIN": "NGC243955",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432402"
+  },
+  {
+    "EQUNR": "000000000010025940",
+    "SERNR": "NGC243917",
+    "VIN": "LA9212ENXS1ZDD111",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432406"
+  },
+  {
+    "EQUNR": "000000000010025940",
+    "SERNR": "NGC243917",
+    "VIN": "NGC243917",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432406"
+  },
+  {
+    "EQUNR": "000000000010028522",
+    "SERNR": "SRT250002",
+    "VIN": "SRT250002",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232411"
+  },
+  {
+    "EQUNR": "000000000010028522",
+    "SERNR": "SRT250002",
+    "VIN": "LA9212EN4S1ZDD248",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232411"
+  },
+  {
+    "EQUNR": "000000000010027901",
+    "SERNR": "SRC254298",
+    "VIN": "LA9212ES0S1ZDD317",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212415"
+  },
+  {
+    "EQUNR": "000000000010027901",
+    "SERNR": "SRC254298",
+    "VIN": "SRC254298",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212415"
+  },
+  {
+    "EQUNR": "000000000010029445",
+    "SERNR": "SRC254936",
+    "VIN": "LA9212ES9S1ZDD445",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212415"
+  },
+  {
+    "EQUNR": "000000000010030723",
+    "SERNR": "SRC255378",
+    "VIN": "LA9212ES9S1ZDD543",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14212415"
+  },
+  {
+    "EQUNR": "000000000010032891",
+    "SERNR": "SRH255625",
+    "VIN": "LA9212ER8S1ZDD983",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242604"
+  },
+  {
+    "EQUNR": "000000000010030769",
+    "SERNR": "SRS254419",
+    "VIN": "LA9202ES8S1ZDD469",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14712103"
+  },
+  {
+    "EQUNR": "000000000010030773",
+    "SERNR": "SRS255127",
+    "VIN": "LA9202ESXS1ZDD473",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14712103"
+  },
+  {
+    "EQUNR": "000000000010030779",
+    "SERNR": "SRT255419",
+    "VIN": "LA9212ENXS1ZDD402",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14232413"
+  },
+  {
+    "EQUNR": "000000000010031392",
+    "SERNR": "NGB255604",
+    "VIN": "LA9202EN8S1ZDD059",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14422401"
+  },
+  {
+    "EQUNR": "000000000010031393",
+    "SERNR": "NGC255603",
+    "VIN": "LA9212EN4S1ZDD427",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14432410"
+  },
+  {
+    "EQUNR": "000000000010030740",
+    "SERNR": "SRH255118",
+    "VIN": "LA9212ER2S1ZDD803",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242609"
+  },
+  {
+    "EQUNR": "000000000010031424",
+    "SERNR": "SRH255460",
+    "VIN": "LA9212ER6S1ZDD867",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242613"
+  },
+  {
+    "EQUNR": "000000000010030741",
+    "SERNR": "SRH255128",
+    "VIN": "LA9212ER4S1ZDD804",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242613"
+  },
+  {
+    "EQUNR": "000000000010031648",
+    "SERNR": "SRH254797",
+    "VIN": "LA9212ER9S1ZDD877",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242605"
+  },
+  {
+    "EQUNR": "000000000010018661",
+    "SERNR": "LRP240037",
+    "VIN": "LA9212ER3R1ZDD092",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122402"
+  },
+  {
+    "EQUNR": "000000000010018661",
+    "SERNR": "LRP240037",
+    "VIN": "LRP240037",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12122402"
+  },
+  {
+    "EQUNR": "000000000010028951",
+    "SERNR": "SRH250027",
+    "VIN": "LA9212ER3S1ZDD437",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165121"
+  },
+  {
+    "EQUNR": "000000000010028951",
+    "SERNR": "SRH250027",
+    "VIN": "SRH250027",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165121"
+  },
+  {
+    "EQUNR": "000000000010029027",
+    "SERNR": "SRH250103",
+    "VIN": "LA9212ER9S1ZDD491",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165121"
+  },
+  {
+    "EQUNR": "000000000010029018",
+    "SERNR": "SRH250094",
+    "VIN": "LA9212ER6S1ZDD531",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165117"
+  },
+  {
+    "EQUNR": "000000000010029073",
+    "SERNR": "SRH250149",
+    "VIN": "LA9212ER3S1ZDD566",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12165122"
+  },
+  {
+    "EQUNR": "000000000010020795",
+    "SERNR": "LRT240828",
+    "VIN": "LRT240828",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132401"
+  },
+  {
+    "EQUNR": "000000000010020795",
+    "SERNR": "LRT240828",
+    "VIN": "LA9212EN5R1ZDD480",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12132401"
+  },
+  {
+    "EQUNR": "000000000010036556",
+    "SERNR": "SRH254797",
+    "VIN": "LA9212ER9S1ZDD877",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "D14242607"
+  },
+  {
+    "EQUNR": "000000000010027371",
+    "SERNR": "SRC254229",
+    "VIN": "SRC254229",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112407"
+  },
+  {
+    "EQUNR": "000000000010027371",
+    "SERNR": "SRC254229",
+    "VIN": "LA9212ES1S1ZDD293",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112407"
+  },
+  {
+    "EQUNR": "000000000010027372",
+    "SERNR": "SRC254230",
+    "VIN": "LA9202ESXS1ZDD232",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112404"
+  },
+  {
+    "EQUNR": "000000000010027372",
+    "SERNR": "SRC254230",
+    "VIN": "SRC254230",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112404"
+  },
+  {
+    "EQUNR": "000000000010027376",
+    "SERNR": "SRC254184",
+    "VIN": "SRC254184",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112407"
+  },
+  {
+    "EQUNR": "000000000010027376",
+    "SERNR": "SRC254184",
+    "VIN": "LA9212ES7S1ZDD279",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112407"
+  },
+  {
+    "EQUNR": "000000000010028895",
+    "SERNR": "SRC254944",
+    "VIN": "LA9212ES3S1ZDD490",
+    "KUNDE": "",
+    "KUNNR": null,
+    "KDAUF": null,
+    "KDPOS": null,
+    "MATNR": "Z12112412"
+  }
+]

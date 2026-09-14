@@ -25,6 +25,8 @@ import pandas as pd
 import pyodbc
 import firebase_admin
 from firebase_admin import credentials, db
+
+from recall_postcodes import preserve_recall_postcodes
 from firebase_admin.exceptions import InvalidArgumentError
 from sap_material_prices import CNY_TO_AUD_RATE, enrich_detail_rows, fetch_material_price_map, preferred_line_cost_aud
 
@@ -39,7 +41,7 @@ ROLE_CODES = ["1001", "40", "43"]
 
 API_TOP = 1000
 API_SKIP_START = 0
-RECALL_CLAIMS_API_TOP = 20000
+RECALL_CLAIMS_API_TOP = 50000
 RECALL_CLAIMS_API_SKIP_START = 0
 API_EXTRA_TAIL_PAGES = int(os.getenv("API_EXTRA_TAIL_PAGES", "3"))
 TIMEOUT = 60
@@ -1674,7 +1676,9 @@ def build_recall_claims_payload(new_snapshot: Dict[str, Any]) -> Dict[str, Any]:
 
 def upload_recall_claims_to_firebase(new_snapshot: Dict[str, Any]) -> None:
     payload = build_recall_claims_payload(new_snapshot)
-    db.reference(RECALL_CLAIMS_TABLE_PATH).set(payload)
+    db.reference(RECALL_CLAIMS_TABLE_PATH).transaction(
+        lambda current: preserve_recall_postcodes(payload, current)
+    )
     logger.info(
         "Wrote Recall Claims Tickets to Firebase path %s (type=%s, tickets=%s)",
         RECALL_CLAIMS_TABLE_PATH,
@@ -4422,7 +4426,9 @@ def main():
     logger.info("Step 2/9: Initializing Firebase and loading previous sync snapshot ...")
     firebase_init()
     seed_employee_directory()
-    upload_recall_claims_to_firebase(new_snapshot)
+    # Recall must use the dedicated query; the general snapshot is role-filtered.
+    recall_snapshot, _ = build_recall_claims_snapshot()
+    upload_recall_claims_to_firebase(recall_snapshot)
     old_hashes = load_old_ticket_hashes()
     logger.info("Previous synced TicketIDs in hash snapshot: %s", len(old_hashes))
 

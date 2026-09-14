@@ -1,0 +1,6 @@
+2026-09-14 14:21:26,701 [INFO] Recall Claims standalone sync started.
+2026-09-14 14:21:26,701 [INFO] This program does not send any CCSRQ_DPY_ROLE_CD $filter.
+2026-09-14 14:21:26,701 [INFO] GET https://longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn/http/PC4C/Ticket/queryOdataBatch?$top=50000&$skip=0&$typecode=Z011
+2026-09-14 14:22:02,318 [INFO] Recall Claims counts: api/raw=25315 returned=878 uniqueTickets=878 skippedOtherTypes=0
+2026-09-14 14:22:07,826 [INFO] Wrote Recall Claims payload to Firebase path recallClaim
+2026-09-14 14:22:07,827 [INFO] Recall Claims standalone sync done. Total elapsed: 41.1s

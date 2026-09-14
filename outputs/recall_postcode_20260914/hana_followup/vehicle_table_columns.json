@@ -1,0 +1,812 @@
+{
+  "EQUI": [
+    {
+      "COLUMN_NAME": "MANDT"
+    },
+    {
+      "COLUMN_NAME": "EQUNR"
+    },
+    {
+      "COLUMN_NAME": "ERDAT"
+    },
+    {
+      "COLUMN_NAME": "ERNAM"
+    },
+    {
+      "COLUMN_NAME": "EQASP"
+    },
+    {
+      "COLUMN_NAME": "AEDAT"
+    },
+    {
+      "COLUMN_NAME": "AENAM"
+    },
+    {
+      "COLUMN_NAME": "BEGRU"
+    },
+    {
+      "COLUMN_NAME": "EQTYP"
+    },
+    {
+      "COLUMN_NAME": "EQART"
+    },
+    {
+      "COLUMN_NAME": "LVORM"
+    },
+    {
+      "COLUMN_NAME": "INVNR"
+    },
+    {
+      "COLUMN_NAME": "GROES"
+    },
+    {
+      "COLUMN_NAME": "BRGEW"
+    },
+    {
+      "COLUMN_NAME": "GEWEI"
+    },
+    {
+      "COLUMN_NAME": "ANSDT"
+    },
+    {
+      "COLUMN_NAME": "ANSWT"
+    },
+    {
+      "COLUMN_NAME": "WAERS"
+    },
+    {
+      "COLUMN_NAME": "ELIEF"
+    },
+    {
+      "COLUMN_NAME": "GWLEN"
+    },
+    {
+      "COLUMN_NAME": "GWLDT"
+    },
+    {
+      "COLUMN_NAME": "WDBWT"
+    },
+    {
+      "COLUMN_NAME": "HERST"
+    },
+    {
+      "COLUMN_NAME": "HERLD"
+    },
+    {
+      "COLUMN_NAME": "HZEIN"
+    },
+    {
+      "COLUMN_NAME": "SERGE"
+    },
+    {
+      "COLUMN_NAME": "TYPBZ"
+    },
+    {
+      "COLUMN_NAME": "BAUJJ"
+    },
+    {
+      "COLUMN_NAME": "BAUMM"
+    },
+    {
+      "COLUMN_NAME": "APLKZ"
+    },
+    {
+      "COLUMN_NAME": "AULDT"
+    },
+    {
+      "COLUMN_NAME": "INBDT"
+    },
+    {
+      "COLUMN_NAME": "GERNR"
+    },
+    {
+      "COLUMN_NAME": "EQLFN"
+    },
+    {
+      "COLUMN_NAME": "GWLDV"
+    },
+    {
+      "COLUMN_NAME": "EQDAT"
+    },
+    {
+      "COLUMN_NAME": "EQBER"
+    },
+    {
+      "COLUMN_NAME": "EQNUM"
+    },
+    {
+      "COLUMN_NAME": "OBJNR"
+    },
+    {
+      "COLUMN_NAME": "EQSNR"
+    },
+    {
+      "COLUMN_NAME": "CUOBJ"
+    },
+    {
+      "COLUMN_NAME": "KRFKZ"
+    },
+    {
+      "COLUMN_NAME": "KMATN"
+    },
+    {
+      "COLUMN_NAME": "MATNR"
+    },
+    {
+      "COLUMN_NAME": "SERNR"
+    },
+    {
+      "COLUMN_NAME": "WERK"
+    },
+    {
+      "COLUMN_NAME": "LAGER"
+    },
+    {
+      "COLUMN_NAME": "CHARGE"
+    },
+    {
+      "COLUMN_NAME": "KUNDE"
+    },
+    {
+      "COLUMN_NAME": "WARPL"
+    },
+    {
+      "COLUMN_NAME": "IMRC_POINT"
+    },
+    {
+      "COLUMN_NAME": "REVLV"
+    },
+    {
+      "COLUMN_NAME": "MGANR"
+    },
+    {
+      "COLUMN_NAME": "BEGRUI"
+    },
+    {
+      "COLUMN_NAME": "S_EQUI"
+    },
+    {
+      "COLUMN_NAME": "S_SERIAL"
+    },
+    {
+      "COLUMN_NAME": "S_KONFI"
+    },
+    {
+      "COLUMN_NAME": "S_SALE"
+    },
+    {
+      "COLUMN_NAME": "S_FHM"
+    },
+    {
+      "COLUMN_NAME": "S_ELSE"
+    },
+    {
+      "COLUMN_NAME": "S_ISU"
+    },
+    {
+      "COLUMN_NAME": "S_EQBS"
+    },
+    {
+      "COLUMN_NAME": "S_FLEET"
+    },
+    {
+      "COLUMN_NAME": "BSTVP"
+    },
+    {
+      "COLUMN_NAME": "SPARTE"
+    },
+    {
+      "COLUMN_NAME": "HANDLE"
+    },
+    {
+      "COLUMN_NAME": "TSEGTP"
+    },
+    {
+      "COLUMN_NAME": "EMATN"
+    },
+    {
+      "COLUMN_NAME": "ACT_CHANGE_AA"
+    },
+    {
+      "COLUMN_NAME": "S_CC"
+    },
+    {
+      "COLUMN_NAME": "DATLWB"
+    },
+    {
+      "COLUMN_NAME": "UII"
+    },
+    {
+      "COLUMN_NAME": "IUID_TYPE"
+    },
+    {
+      "COLUMN_NAME": "UII_PLANT"
+    },
+    {
+      "COLUMN_NAME": "CHANGEDDATETIME"
+    },
+    {
+      "COLUMN_NAME": "ENDOFUSE"
+    },
+    {
+      "COLUMN_NAME": "DUMMY_EQUI_INCL_EEW_PS"
+    },
+    {
+      "COLUMN_NAME": "EQEXT_ACTIVE"
+    },
+    {
+      "COLUMN_NAME": "EQUI_SRTYPE"
+    },
+    {
+      "COLUMN_NAME": "EQUI_SNTYPE"
+    },
+    {
+      "COLUMN_NAME": "EQLB_DUTY"
+    },
+    {
+      "COLUMN_NAME": "EQLB_HIDE"
+    },
+    {
+      "COLUMN_NAME": "J_3GDISPO"
+    },
+    {
+      "COLUMN_NAME": "J_3GZDEQUI"
+    },
+    {
+      "COLUMN_NAME": "J_3GEQART"
+    },
+    {
+      "COLUMN_NAME": "J_3GKZMENG"
+    },
+    {
+      "COLUMN_NAME": "J_3GKONDE"
+    },
+    {
+      "COLUMN_NAME": "J_3GFIKTIV"
+    },
+    {
+      "COLUMN_NAME": "J_3GBELTYP"
+    },
+    {
+      "COLUMN_NAME": "MEINS"
+    },
+    {
+      "COLUMN_NAME": "J_3GKZLADG"
+    },
+    {
+      "COLUMN_NAME": "J_3GKZBERG"
+    },
+    {
+      "COLUMN_NAME": "J_3GEIFR"
+    },
+    {
+      "COLUMN_NAME": "J_3GVERMEIN"
+    },
+    {
+      "COLUMN_NAME": "J_3GZULNR"
+    },
+    {
+      "COLUMN_NAME": "/SAPCEM/ABRECHVH"
+    },
+    {
+      "COLUMN_NAME": "/SAPCEM/ABRECHLG"
+    },
+    {
+      "COLUMN_NAME": "/SAPCEM/DISPOGR"
+    }
+  ],
+  "EQBS": [
+    {
+      "COLUMN_NAME": "MANDT"
+    },
+    {
+      "COLUMN_NAME": "EQUNR"
+    },
+    {
+      "COLUMN_NAME": "LBBSA"
+    },
+    {
+      "COLUMN_NAME": "B_WERK"
+    },
+    {
+      "COLUMN_NAME": "B_LAGER"
+    },
+    {
+      "COLUMN_NAME": "B_CHARGE"
+    },
+    {
+      "COLUMN_NAME": "SOBKZ"
+    },
+    {
+      "COLUMN_NAME": "KUNNR"
+    },
+    {
+      "COLUMN_NAME": "LIFNR"
+    },
+    {
+      "COLUMN_NAME": "KDAUF"
+    },
+    {
+      "COLUMN_NAME": "KDPOS"
+    },
+    {
+      "COLUMN_NAME": "PS_PSP_PNR"
+    },
+    {
+      "COLUMN_NAME": "DISUB_OWNER"
+    }
+  ],
+  "ILOA": [
+    {
+      "COLUMN_NAME": "MANDT"
+    },
+    {
+      "COLUMN_NAME": "ILOAN"
+    },
+    {
+      "COLUMN_NAME": "TPLNR"
+    },
+    {
+      "COLUMN_NAME": "ABCKZ"
+    },
+    {
+      "COLUMN_NAME": "ABCKZI"
+    },
+    {
+      "COLUMN_NAME": "EQFNR"
+    },
+    {
+      "COLUMN_NAME": "EQFNRI"
+    },
+    {
+      "COLUMN_NAME": "SWERK"
+    },
+    {
+      "COLUMN_NAME": "SWERKI"
+    },
+    {
+      "COLUMN_NAME": "STORT"
+    },
+    {
+      "COLUMN_NAME": "STORTI"
+    },
+    {
+      "COLUMN_NAME": "MSGRP"
+    },
+    {
+      "COLUMN_NAME": "MSGRPI"
+    },
+    {
+      "COLUMN_NAME": "BEBER"
+    },
+    {
+      "COLUMN_NAME": "BEBERI"
+    },
+    {
+      "COLUMN_NAME": "CR_OBJTY"
+    },
+    {
+      "COLUMN_NAME": "PPSID"
+    },
+    {
+      "COLUMN_NAME": "PPSIDI"
+    },
+    {
+      "COLUMN_NAME": "GSBER"
+    },
+    {
+      "COLUMN_NAME": "GSBERI"
+    },
+    {
+      "COLUMN_NAME": "KOKRS"
+    },
+    {
+      "COLUMN_NAME": "KOKRSI"
+    },
+    {
+      "COLUMN_NAME": "KOSTL"
+    },
+    {
+      "COLUMN_NAME": "KOSTLI"
+    },
+    {
+      "COLUMN_NAME": "PROID"
+    },
+    {
+      "COLUMN_NAME": "PROIDI"
+    },
+    {
+      "COLUMN_NAME": "BUKRS"
+    },
+    {
+      "COLUMN_NAME": "BUKRSI"
+    },
+    {
+      "COLUMN_NAME": "ANLNR"
+    },
+    {
+      "COLUMN_NAME": "ANLNRI"
+    },
+    {
+      "COLUMN_NAME": "ANLUN"
+    },
+    {
+      "COLUMN_NAME": "ANLUNI"
+    },
+    {
+      "COLUMN_NAME": "DAUFN"
+    },
+    {
+      "COLUMN_NAME": "DAUFNI"
+    },
+    {
+      "COLUMN_NAME": "AUFNR"
+    },
+    {
+      "COLUMN_NAME": "AUFNRI"
+    },
+    {
+      "COLUMN_NAME": "TPLNRI"
+    },
+    {
+      "COLUMN_NAME": "VKORG"
+    },
+    {
+      "COLUMN_NAME": "VKORGI"
+    },
+    {
+      "COLUMN_NAME": "VTWEG"
+    },
+    {
+      "COLUMN_NAME": "VTWEGI"
+    },
+    {
+      "COLUMN_NAME": "SPART"
+    },
+    {
+      "COLUMN_NAME": "SPARTI"
+    },
+    {
+      "COLUMN_NAME": "ADRNR"
+    },
+    {
+      "COLUMN_NAME": "ADRNRI"
+    },
+    {
+      "COLUMN_NAME": "OWNER"
+    },
+    {
+      "COLUMN_NAME": "VKBUR"
+    },
+    {
+      "COLUMN_NAME": "VKGRP"
+    }
+  ],
+  "ZTSD002": [
+    {
+      "COLUMN_NAME": "MANDT"
+    },
+    {
+      "COLUMN_NAME": "WERKS"
+    },
+    {
+      "COLUMN_NAME": "SERNR"
+    },
+    {
+      "COLUMN_NAME": "SERNR2"
+    }
+  ],
+  "BUT000": [
+    {
+      "COLUMN_NAME": "CLIENT"
+    },
+    {
+      "COLUMN_NAME": "PARTNER"
+    },
+    {
+      "COLUMN_NAME": "TYPE"
+    },
+    {
+      "COLUMN_NAME": "BPKIND"
+    },
+    {
+      "COLUMN_NAME": "BU_GROUP"
+    },
+    {
+      "COLUMN_NAME": "BPEXT"
+    },
+    {
+      "COLUMN_NAME": "BU_SORT1"
+    },
+    {
+      "COLUMN_NAME": "BU_SORT2"
+    },
+    {
+      "COLUMN_NAME": "SOURCE"
+    },
+    {
+      "COLUMN_NAME": "TITLE"
+    },
+    {
+      "COLUMN_NAME": "XDELE"
+    },
+    {
+      "COLUMN_NAME": "XBLCK"
+    },
+    {
+      "COLUMN_NAME": "AUGRP"
+    },
+    {
+      "COLUMN_NAME": "TITLE_LET"
+    },
+    {
+      "COLUMN_NAME": "BU_LOGSYS"
+    },
+    {
+      "COLUMN_NAME": "CONTACT"
+    },
+    {
+      "COLUMN_NAME": "NOT_RELEASED"
+    },
+    {
+      "COLUMN_NAME": "NOT_LG_COMPETENT"
+    },
+    {
+      "COLUMN_NAME": "PRINT_MODE"
+    },
+    {
+      "COLUMN_NAME": "BP_EEW_DUMMY"
+    },
+    {
+      "COLUMN_NAME": "RATE"
+    },
+    {
+      "COLUMN_NAME": "NAME_ORG1"
+    },
+    {
+      "COLUMN_NAME": "NAME_ORG2"
+    },
+    {
+      "COLUMN_NAME": "NAME_ORG3"
+    },
+    {
+      "COLUMN_NAME": "NAME_ORG4"
+    },
+    {
+      "COLUMN_NAME": "LEGAL_ENTY"
+    },
+    {
+      "COLUMN_NAME": "IND_SECTOR"
+    },
+    {
+      "COLUMN_NAME": "LEGAL_ORG"
+    },
+    {
+      "COLUMN_NAME": "FOUND_DAT"
+    },
+    {
+      "COLUMN_NAME": "LIQUID_DAT"
+    },
+    {
+      "COLUMN_NAME": "LOCATION_1"
+    },
+    {
+      "COLUMN_NAME": "LOCATION_2"
+    },
+    {
+      "COLUMN_NAME": "LOCATION_3"
+    },
+    {
+      "COLUMN_NAME": "NAME_LAST"
+    },
+    {
+      "COLUMN_NAME": "NAME_FIRST"
+    },
+    {
+      "COLUMN_NAME": "NAME_LST2"
+    },
+    {
+      "COLUMN_NAME": "NAME_LAST2"
+    },
+    {
+      "COLUMN_NAME": "NAMEMIDDLE"
+    },
+    {
+      "COLUMN_NAME": "TITLE_ACA1"
+    },
+    {
+      "COLUMN_NAME": "TITLE_ACA2"
+    },
+    {
+      "COLUMN_NAME": "TITLE_ROYL"
+    },
+    {
+      "COLUMN_NAME": "PREFIX1"
+    },
+    {
+      "COLUMN_NAME": "PREFIX2"
+    },
+    {
+      "COLUMN_NAME": "NAME1_TEXT"
+    },
+    {
+      "COLUMN_NAME": "NICKNAME"
+    },
+    {
+      "COLUMN_NAME": "INITIALS"
+    },
+    {
+      "COLUMN_NAME": "NAMEFORMAT"
+    },
+    {
+      "COLUMN_NAME": "NAMCOUNTRY"
+    },
+    {
+      "COLUMN_NAME": "LANGU_CORR"
+    },
+    {
+      "COLUMN_NAME": "XSEXM"
+    },
+    {
+      "COLUMN_NAME": "XSEXF"
+    },
+    {
+      "COLUMN_NAME": "BIRTHPL"
+    },
+    {
+      "COLUMN_NAME": "MARST"
+    },
+    {
+      "COLUMN_NAME": "EMPLO"
+    },
+    {
+      "COLUMN_NAME": "JOBGR"
+    },
+    {
+      "COLUMN_NAME": "NATIO"
+    },
+    {
+      "COLUMN_NAME": "CNTAX"
+    },
+    {
+      "COLUMN_NAME": "CNDSC"
+    },
+    {
+      "COLUMN_NAME": "PERSNUMBER"
+    },
+    {
+      "COLUMN_NAME": "XSEXU"
+    },
+    {
+      "COLUMN_NAME": "XUBNAME"
+    },
+    {
+      "COLUMN_NAME": "BU_LANGU"
+    },
+    {
+      "COLUMN_NAME": "GENDER"
+    },
+    {
+      "COLUMN_NAME": "BIRTHDT"
+    },
+    {
+      "COLUMN_NAME": "DEATHDT"
+    },
+    {
+      "COLUMN_NAME": "PERNO"
+    },
+    {
+      "COLUMN_NAME": "CHILDREN"
+    },
+    {
+      "COLUMN_NAME": "MEM_HOUSE"
+    },
+    {
+      "COLUMN_NAME": "BIRTHDT_STATUS"
+    },
+    {
+      "COLUMN_NAME": "PARTGRPTYP"
+    },
+    {
+      "COLUMN_NAME": "NAME_GRP1"
+    },
+    {
+      "COLUMN_NAME": "NAME_GRP2"
+    },
+    {
+      "COLUMN_NAME": "MC_NAME1"
+    },
+    {
+      "COLUMN_NAME": "MC_NAME2"
+    },
+    {
+      "COLUMN_NAME": "CRUSR"
+    },
+    {
+      "COLUMN_NAME": "CRDAT"
+    },
+    {
+      "COLUMN_NAME": "CRTIM"
+    },
+    {
+      "COLUMN_NAME": "CHUSR"
+    },
+    {
+      "COLUMN_NAME": "CHDAT"
+    },
+    {
+      "COLUMN_NAME": "CHTIM"
+    },
+    {
+      "COLUMN_NAME": "PARTNER_GUID"
+    },
+    {
+      "COLUMN_NAME": "ADDRCOMM"
+    },
+    {
+      "COLUMN_NAME": "TD_SWITCH"
+    },
+    {
+      "COLUMN_NAME": "IS_ORG_CENTRE"
+    },
+    {
+      "COLUMN_NAME": "DB_KEY"
+    },
+    {
+      "COLUMN_NAME": "VALID_FROM"
+    },
+    {
+      "COLUMN_NAME": "VALID_TO"
+    },
+    {
+      "COLUMN_NAME": "XPCPT"
+    },
+    {
+      "COLUMN_NAME": "NATPERS"
+    },
+    {
+      "COLUMN_NAME": "MILVE"
+    },
+    {
+      "COLUMN_NAME": "NUC_SEC"
+    },
+    {
+      "COLUMN_NAME": "PAR_REL"
+    },
+    {
+      "COLUMN_NAME": "BP_SORT"
+    },
+    {
+      "COLUMN_NAME": "KBANKS"
+    },
+    {
+      "COLUMN_NAME": "KBANKL"
+    },
+    {
+      "COLUMN_NAME": "ZCRM_ID"
+    },
+    {
+      "COLUMN_NAME": "ZUSER_ID"
+    }
+  ],
+  "CVI_CUST_LINK": [
+    {
+      "COLUMN_NAME": "CLIENT"
+    },
+    {
+      "COLUMN_NAME": "PARTNER_GUID"
+    },
+    {
+      "COLUMN_NAME": "CUSTOMER"
+    },
+    {
+      "COLUMN_NAME": "CRUSER"
+    },
+    {
+      "COLUMN_NAME": "CRDAT"
+    },
+    {
+      "COLUMN_NAME": "CRTIM"
+    }
+  ]
+}

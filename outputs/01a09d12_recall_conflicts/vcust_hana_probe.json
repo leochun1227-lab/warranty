@@ -1,0 +1,2137 @@
+{
+  "KNA1_columns": [
+    {
+      "COLUMN_NAME": "MANDT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KUNNR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LAND1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "NAME1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "NAME2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ORT01",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSTLZ",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "REGIO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "SORTL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STRAS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TELF1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TELFX",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "XCPDK",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ADRNR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "MCOD1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "MCOD2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "MCOD3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ANRED",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "AUFSD",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BAHNE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BAHNS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BBBNR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BBSNR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BEGRU",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BRSCH",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BUBKZ",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DATLT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ERDAT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ERNAM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "EXABL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FAKSD",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FISKN",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KNAZK",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KNRZA",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KONZS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KTOKD",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KUKLA",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LIFNR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LIFSD",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LOCCO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LOEVM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "NAME3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "NAME4",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "NIELS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ORT02",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PFACH",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSTL2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "COUNC",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CITYC",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "RPMKR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "SPERR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "SPRAS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STCD1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STCD2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STKZA",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STKZU",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TELBX",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TELF2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TELTX",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TELX1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LZONE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "XZEMP",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "VBUND",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STCEG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DEAR1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DEAR2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DEAR3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DEAR4",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DEAR5",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "GFORM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BRAN1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BRAN2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BRAN3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BRAN4",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BRAN5",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "EKONT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "UMSAT",
+      "DATA_TYPE_NAME": "DECIMAL"
+    },
+    {
+      "COLUMN_NAME": "UMJAH",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "UWAER",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "JMZAH",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "JMJAH",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KATR1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KATR2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KATR3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KATR4",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KATR5",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KATR6",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KATR7",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KATR8",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KATR9",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KATR10",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STKZN",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "UMSA1",
+      "DATA_TYPE_NAME": "DECIMAL"
+    },
+    {
+      "COLUMN_NAME": "TXJCD",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PERIV",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ABRVW",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "INSPBYDEBI",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "INSPATDEBI",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KTOCD",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PFORT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "WERKS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DTAMS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DTAWS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DUEFL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "HZUOR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "SPERZ",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ETIKG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CIVVE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "MILVE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KDKG1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KDKG2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KDKG3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KDKG4",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KDKG5",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "XKNZA",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FITYP",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STCDT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STCD3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STCD4",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STCD5",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STCD6",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "XICMS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "XXIPI",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "XSUBT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CFOPC",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TXLW1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TXLW2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CCC01",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CCC02",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CCC03",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CCC04",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BONDED_AREA_CONFIRM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DONATE_MARK",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CONSOLIDATE_INVOICE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ALLOWANCE_TYPE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "EINVOICE_MODE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CASSD",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KNURL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1KFREPRE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1KFTBUS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1KFTIND",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CONFS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "UPDAT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "UPTIM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "NODEL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DEAR6",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DELIVERY_DATE_RULE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CVP_XBLCK",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "SUFRAMA",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "RG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "EXP",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "UF",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "RGDATE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "RIC",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "RNE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "RNEDATE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CNAE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LEGALNAT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CRTN",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ICMSTAXPAY",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "INDTYP",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TDT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "COMSIZE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DECREGPC",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PH_BIZ_STYLE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PAYTRSN",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KNA1_EEW_CUST",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "RULE_EXCLUSION",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KNA1_ADDR_EEW_CUST",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "/VSO/R_PALHGT",
+      "DATA_TYPE_NAME": "DECIMAL"
+    },
+    {
+      "COLUMN_NAME": "/VSO/R_PAL_UL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "/VSO/R_PK_MAT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "/VSO/R_MATPAL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "/VSO/R_I_NO_LYR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "/VSO/R_ONE_MAT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "/VSO/R_ONE_SORT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "/VSO/R_ULD_SIDE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "/VSO/R_LOAD_PREF",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "/VSO/R_DPOINT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ALC",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PMT_OFFICE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FEE_SCHEDULE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DUNS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DUNS4",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "SAM_UE_ID",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "SAM_EFT_IND",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSOFG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSOIS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSON1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSON2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSON3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSOVN",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSOTL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSOHS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSOST",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSOO1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSOO2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSOO3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSOO4",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSOO5",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1IEXCD",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1IEXRN",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1IEXRG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1IEXDI",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1IEXCO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1ICSTNO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1ILSTNO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1IPANNO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1IEXCICU",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "AEDAT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "USNAM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1ISERN",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1IPANREF",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "GST_TDS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GETYP",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GREFTYP",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PSPNR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "COAUFNR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GAGEXT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GAGINT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GAGDUMI",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GAGSTDI",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LGORT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KOKRS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KOSTL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GABGLG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GABGVG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GABRART",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GSTDMON",
+      "DATA_TYPE_NAME": "DECIMAL"
+    },
+    {
+      "COLUMN_NAME": "J_3GSTDTAG",
+      "DATA_TYPE_NAME": "DECIMAL"
+    },
+    {
+      "COLUMN_NAME": "J_3GTAGMON",
+      "DATA_TYPE_NAME": "DECIMAL"
+    },
+    {
+      "COLUMN_NAME": "J_3GZUGTAG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GMASCHB",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GMEINSA",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GKEINSA",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GBLSPER",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GKLEIVO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GCALID",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GVMONAT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GABRKEN",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GLABRECH",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GAABRECH",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GZUTVHLG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GNEGMEN",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GFRISTLO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GEMINBE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GFMGUE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GZUSCHUE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GSCHPRS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_3GINVSTA",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "/SAPCEM/DBER",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "/SAPCEM/KVMEQ",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    }
+  ],
+  "KNVV_columns": [
+    {
+      "COLUMN_NAME": "MANDT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KUNNR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "VKORG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "VTWEG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "SPART",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ERNAM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ERDAT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BEGRU",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LOEVM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "VERSG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "AUFSD",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KALKS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KDGRP",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BZIRK",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KONDA",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PLTYP",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "AWAHR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "INCO1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "INCO2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LIFSD",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "AUTLF",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ANTLF",
+      "DATA_TYPE_NAME": "DECIMAL"
+    },
+    {
+      "COLUMN_NAME": "KZTLF",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KZAZU",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CHSPL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LPRIO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "EIKTO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "VSBED",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FAKSD",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "MRNKZ",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PERFK",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PERRL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KVAKZ",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KVAWT",
+      "DATA_TYPE_NAME": "DECIMAL"
+    },
+    {
+      "COLUMN_NAME": "WAERS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KLABC",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KTGRD",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ZTERM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "VWERK",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "VKGRP",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "VKBUR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "VSORT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KVGR1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KVGR2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KVGR3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KVGR4",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KVGR5",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BOKRE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BOIDT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KURST",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PRFRE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PRAT1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PRAT2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PRAT3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PRAT4",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PRAT5",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PRAT6",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PRAT7",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PRAT8",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PRAT9",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PRATA",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KABSS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KKBER",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CASSD",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "RDOFF",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "AGREL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "MEGRU",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "UEBTO",
+      "DATA_TYPE_NAME": "DECIMAL"
+    },
+    {
+      "COLUMN_NAME": "UNTTO",
+      "DATA_TYPE_NAME": "DECIMAL"
+    },
+    {
+      "COLUMN_NAME": "UEBTK",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PVKSM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PODKZ",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PODTG",
+      "DATA_TYPE_NAME": "DECIMAL"
+    },
+    {
+      "COLUMN_NAME": "BLIND",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CARRIER_NOTIF",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CVP_XBLCK_V",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "INCOV",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "INCO2_L",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "INCO3_L",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "INCO2_KEY",
+      "DATA_TYPE_NAME": "VARBINARY"
+    },
+    {
+      "COLUMN_NAME": "INCO3_KEY",
+      "DATA_TYPE_NAME": "VARBINARY"
+    },
+    {
+      "COLUMN_NAME": "INCO4_KEY",
+      "DATA_TYPE_NAME": "VARBINARY"
+    },
+    {
+      "COLUMN_NAME": "KNVV_EEW_CONTACT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STATUS_OBJ_GUID",
+      "DATA_TYPE_NAME": "VARBINARY"
+    },
+    {
+      "COLUMN_NAME": "BILLPLAN_PROC",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "KNVV_ADDR_EEW_CUST",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "/BEV1/EMLGPFAND",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "/BEV1/EMLGFORTS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "J_1NBOESL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_KVGR6",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_KVGR7",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_KVGR8",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_KVGR9",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_KVGR10",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_GRREG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_RESGY",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_SC_CID",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_VAS_DETC",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_VAS_CG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_GRSGY",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_SS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_FRATE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_FRATE_AGG_LEVEL",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_MSOCDC",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FSH_MSOPID",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "RFM_PSST_RULE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "RFM_PSST_EXCLUDE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    }
+  ],
+  "ADRC_columns": [
+    {
+      "COLUMN_NAME": "CLIENT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ADDRNUMBER",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DATE_FROM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "NATION",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DATE_TO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TITLE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "NAME1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "NAME2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "NAME3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "NAME4",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "NAME_TEXT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "NAME_CO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CITY1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CITY2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CITY_CODE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CITYP_CODE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "HOME_CITY",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CITYH_CODE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CHCKSTATUS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "REGIOGROUP",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "POST_CODE1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "POST_CODE2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "POST_CODE3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PCODE1_EXT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PCODE2_EXT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PCODE3_EXT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PO_BOX",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DONT_USE_P",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PO_BOX_NUM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PO_BOX_LOC",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CITY_CODE2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PO_BOX_REG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PO_BOX_CTY",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "POSTALAREA",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TRANSPZONE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STREET",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DONT_USE_S",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STREETCODE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STREETABBR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "HOUSE_NUM1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "HOUSE_NUM2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "HOUSE_NUM3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STR_SUPPL1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STR_SUPPL2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "STR_SUPPL3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LOCATION",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "BUILDING",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLOOR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ROOMNUMBER",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "COUNTRY",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LANGU",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "REGION",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ADDR_GROUP",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLAGGROUPS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PERS_ADDR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "SORT1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "SORT2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "SORT_PHN",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DEFLT_COMM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TEL_NUMBER",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TEL_EXTENS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FAX_NUMBER",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FAX_EXTENS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLAGCOMM2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLAGCOMM3",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLAGCOMM4",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLAGCOMM5",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLAGCOMM6",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLAGCOMM7",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLAGCOMM8",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLAGCOMM9",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLAGCOMM10",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLAGCOMM11",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLAGCOMM12",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLAGCOMM13",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ADDRORIGIN",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "MC_NAME1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "MC_CITY1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "MC_STREET",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "EXTENSION1",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "EXTENSION2",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TIME_ZONE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TAXJURCODE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ADDRESS_ID",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "LANGU_CREA",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ADRC_UUID",
+      "DATA_TYPE_NAME": "VARBINARY"
+    },
+    {
+      "COLUMN_NAME": "UUID_BELATED",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ID_CATEGORY",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ADRC_ERR_STATUS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PO_BOX_LOBBY",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DELI_SERV_TYPE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DELI_SERV_NUMBER",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "COUNTY_CODE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "COUNTY",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TOWNSHIP_CODE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TOWNSHIP",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "MC_COUNTY",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "MC_TOWNSHIP",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "XPCPT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "_DATAAGING",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DUNS",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DUNSP4",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    }
+  ],
+  "ADR6_columns": [
+    {
+      "COLUMN_NAME": "CLIENT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ADDRNUMBER",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PERSNUMBER",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DATE_FROM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CONSNUMBER",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLGDEFAULT",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "FLG_NOUSE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "HOME_FLAG",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "SMTP_ADDR",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "SMTP_SRCH",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DFT_RECEIV",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "R3_USER",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "ENCODE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "TNEF",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "VALID_FROM",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "VALID_TO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "_DATAAGING",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    }
+  ],
+  "TSTC_columns": [
+    {
+      "COLUMN_NAME": "TCODE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "PGMNA",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "DYPNO",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "MENUE",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    },
+    {
+      "COLUMN_NAME": "CINFO",
+      "DATA_TYPE_NAME": "VARBINARY"
+    },
+    {
+      "COLUMN_NAME": "ARBGB",
+      "DATA_TYPE_NAME": "NVARCHAR"
+    }
+  ],
+  "customer_counts": [
+    {
+      "MANDT": "800",
+      "LAND1": "AU",
+      "N": 17710
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "CA",
+      "N": 1
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "CN",
+      "N": 2596
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "CO",
+      "N": 2
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "DE",
+      "N": 3
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "EG",
+      "N": 1
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "HK",
+      "N": 7
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "IT",
+      "N": 1
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "KR",
+      "N": 5
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "KY",
+      "N": 2
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "KZ",
+      "N": 1
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "NL",
+      "N": 1
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "NP",
+      "N": 1
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "NZ",
+      "N": 636
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "TW",
+      "N": 1
+    },
+    {
+      "MANDT": "800",
+      "LAND1": "UY",
+      "N": 1
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "AU",
+      "N": 14286
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "CA",
+      "N": 1
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "CN",
+      "N": 2408
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "CO",
+      "N": 2
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "DE",
+      "N": 2
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "EG",
+      "N": 1
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "HK",
+      "N": 6
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "IT",
+      "N": 1
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "KR",
+      "N": 4
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "KY",
+      "N": 2
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "KZ",
+      "N": 1
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "NL",
+      "N": 1
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "NP",
+      "N": 1
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "NZ",
+      "N": 454
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "TW",
+      "N": 1
+    },
+    {
+      "MANDT": "850",
+      "LAND1": "UY",
+      "N": 1
+    }
+  ],
+  "vcust_transaction": [
+    {
+      "TCODE": "VCUST",
+      "PGMNA": "ERPSLS_CUSTOMERS",
+      "DYPNO": "1000"
+    }
+  ],
+  "sample_customer": [
+    {
+      "MANDT": "800",
+      "KUNNR": "0000205445",
+      "NAME1": "Sarah Jane Kilian",
+      "PSTLZ": "6065",
+      "ADRNR": "0000045410",
+      "ERDAT": "20231018",
+      "KTOKD": "ZC02"
+    },
+    {
+      "MANDT": "850",
+      "KUNNR": "0000205445",
+      "NAME1": "Jason Kilian",
+      "PSTLZ": "6065",
+      "ADRNR": "0000045410",
+      "ERDAT": "20231018",
+      "KTOKD": "ZC02"
+    }
+  ]
+}
