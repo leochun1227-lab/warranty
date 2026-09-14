@@ -19,6 +19,7 @@ from requests.auth import HTTPBasicAuth
 from urllib3.util.retry import Retry
 
 from recall_postcodes import preserve_recall_postcodes
+from recall_models import enrich_recall_models
 
 
 BASE_URL = os.getenv(
@@ -314,6 +315,7 @@ def main() -> None:
     try:
         rows, api_meta = fetch_recall_claims_page(session, args.top, args.skip)
         payload = build_recall_claims_payload(rows, api_meta, top=args.top, skip=args.skip)
+        payload = enrich_recall_models(payload)
         meta = payload["meta"]
         logger.info(
             "Recall Claims counts: api/raw=%s returned=%s uniqueTickets=%s skippedOtherTypes=%s",

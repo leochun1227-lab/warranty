@@ -1,0 +1,22 @@
+{
+  "total_tickets": 880,
+  "models": 877,
+  "model_statuses": {
+    "matched": 877,
+    "conflict": 2,
+    "invalid_vehicle_id": 1
+  },
+  "conflict_ticket_ids": [
+    "39648",
+    "39876"
+  ],
+  "without_model_ids": [
+    "39648",
+    "39876",
+    "40478"
+  ],
+  "postcodes_preserved": 847,
+  "postcode_losses": [],
+  "model_errors": [],
+  "verified_at_utc": "2026-09-14T05:46:31.509760+00:00"
+}

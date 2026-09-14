@@ -27,6 +27,7 @@ import firebase_admin
 from firebase_admin import credentials, db
 
 from recall_postcodes import preserve_recall_postcodes
+from recall_models import enrich_recall_models
 from firebase_admin.exceptions import InvalidArgumentError
 from sap_material_prices import CNY_TO_AUD_RATE, enrich_detail_rows, fetch_material_price_map, preferred_line_cost_aud
 
@@ -1676,6 +1677,7 @@ def build_recall_claims_payload(new_snapshot: Dict[str, Any]) -> Dict[str, Any]:
 
 def upload_recall_claims_to_firebase(new_snapshot: Dict[str, Any]) -> None:
     payload = build_recall_claims_payload(new_snapshot)
+    payload = enrich_recall_models(payload, dsn=SAP_HANA_DSN)
     db.reference(RECALL_CLAIMS_TABLE_PATH).transaction(
         lambda current: preserve_recall_postcodes(payload, current)
     )
