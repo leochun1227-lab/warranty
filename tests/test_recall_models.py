@@ -1,4 +1,5 @@
 import copy
+import json
 import unittest
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
@@ -27,7 +28,10 @@ class RecallModelTests(unittest.TestCase):
         original = copy.deepcopy(incoming)
         result = attach_recall_models(incoming, [row(), row(SALES_ORDER="0010099999", ORDER_DATE="20260914")], "now")
         ticket = result["tickets"]["1"]
-        self.assertEqual(ticket["model"], "Z12112305")
+        self.assertEqual(ticket["model"], "2023 SRC19")
+        self.assertNotIn("modelDescription", ticket)
+        self.assertNotIn("materialCode", json.dumps(result))
+        self.assertNotIn("Z12112305", json.dumps(result))
         self.assertEqual(ticket["modelLookup"]["status"], "matched")
         self.assertEqual(len(ticket["modelLookup"]["salesOrders"]), 2)
         self.assertEqual(incoming, original)
@@ -43,7 +47,21 @@ class RecallModelTests(unittest.TestCase):
     def test_other_organizations_and_order_items_cannot_supply_model(self):
         rows = [row("D14212305", SALES_ORG="3090"), row("WRONG", MODEL_ITEM="000020"), row()]
         result = attach_recall_models(payload(), rows, "now")
-        self.assertEqual(result["tickets"]["1"]["model"], "Z12112305")
+        self.assertEqual(result["tickets"]["1"]["model"], "2023 SRC19")
+
+    def test_blank_description_never_falls_back_to_material_code(self):
+        result = attach_recall_models(payload(), [row(MATERIAL_DESCRIPTION=" ")], "now")
+        ticket = result["tickets"]["1"]
+        self.assertNotIn("model", ticket)
+        self.assertNotIn("modelDescription", ticket)
+        self.assertEqual(ticket["modelLookup"]["status"], "missing_model_description")
+        self.assertNotIn("Z12112305", json.dumps(result))
+
+    def test_latest_description_is_refreshed_without_storing_codes(self):
+        rows = [row(), row(MATERIAL_DESCRIPTION="2026 SRC19", ORDER_DATE="20260914", SALES_ORDER="0010099999")]
+        result = attach_recall_models(payload(), rows, "now")
+        self.assertEqual(result["tickets"]["1"]["model"], "2026 SRC19")
+        self.assertNotIn("Z12112305", json.dumps(result))
 
     def test_missing_material_and_invalid_vehicle_clear_stale_model(self):
         missing = attach_recall_models(payload(), [row(None, MODEL_ITEM=None)], "now")["tickets"]["1"]
@@ -59,7 +77,7 @@ class RecallModelTests(unittest.TestCase):
         for postcode in ["0800", "3216"]:
             result = preserve_recall_postcodes(enriched, {"tickets": {"1": {"postcode": postcode, "model": "OLD"}}})
             self.assertEqual(result["tickets"]["1"]["postcode"], postcode)
-            self.assertEqual(result["tickets"]["1"]["model"], "Z12112305")
+            self.assertEqual(result["tickets"]["1"]["model"], "2023 SRC19")
         self.assertNotIn("postcode", enriched["tickets"]["1"])
 
     def test_hana_failure_propagates_without_modifying_payload(self):
@@ -96,7 +114,7 @@ class RecallModelTests(unittest.TestCase):
             sync.upload_recall_claims_to_firebase({})
             enrich.assert_called_once()
             reference.return_value.transaction.assert_called_once()
-            self.assertEqual(committed[0]["tickets"]["1"]["model"], "Z12112305")
+            self.assertEqual(committed[0]["tickets"]["1"]["model"], "2023 SRC19")
             self.assertEqual(committed[0]["tickets"]["1"]["postcode"], "0800")
         with patch.object(sync, "build_recall_claims_payload", return_value=payload()), \
              patch.object(sync, "enrich_recall_models", side_effect=RuntimeError("HANA unavailable")), \

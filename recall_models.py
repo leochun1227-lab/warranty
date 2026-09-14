@@ -1,4 +1,4 @@
-"""Refresh recall models from HANA sales organization 3110, order item 000010."""
+"""Store model descriptions from HANA sales organization 3110, order item 000010."""
 from __future__ import annotations
 
 import logging
@@ -81,12 +81,13 @@ def attach_recall_models(
                       and str(r.get("MATERIAL_CODE") or "").strip()]
         codes = sorted({str(r["MATERIAL_CODE"]).strip() for r in model_rows})
         if len(codes) == 1:
-            status = "matched"
-            ticket["model"] = codes[0]
-            # Multiple orders may share one model. Use the newest description only.
+            # Codes identify conflicting vehicles internally; only the description is stored.
             latest = max(model_rows, key=lambda r: (str(r.get("ORDER_DATE") or ""),
                                                     str(r.get("SALES_ORDER") or "")))
-            ticket["modelDescription"] = str(latest.get("MATERIAL_DESCRIPTION") or "").strip()
+            description = str(latest.get("MATERIAL_DESCRIPTION") or "").strip()
+            status = "matched" if description else "missing_model_description"
+            if description:
+                ticket["model"] = description
         elif len(codes) > 1:
             status = "conflict"
         elif not any(len(key) >= 8 for key in keys):
@@ -103,11 +104,11 @@ def attach_recall_models(
         if model_rows:
             candidates = {
                 (str(r["INPUT_ID"]), str(r["SERIAL_ID"]), str(r["SALES_ORDER"]),
-                 str(r["MATERIAL_CODE"]).strip(), str(r.get("MATERIAL_DESCRIPTION") or "").strip())
+                 str(r.get("MATERIAL_DESCRIPTION") or "").strip())
                 for r in model_rows
             }
             lookup["candidates"] = [dict(zip(
-                ["vehicleInput", "matchedSerial", "salesOrder", "materialCode", "description"], row
+                ["vehicleInput", "matchedSerial", "salesOrder", "description"], row
             )) for row in sorted(candidates)]
         ticket["modelLookup"] = lookup
         tickets[tid] = ticket
@@ -116,7 +117,7 @@ def attach_recall_models(
     meta["modelLookup"] = {
         "source": "SAP HANA", "client": SAP_CLIENT, "salesOrganization": SALES_ORG,
         "salesOrderItem": MODEL_ITEM, "checkedAt": checked_at, "counts": dict(counts),
-        "rule": "Chassis/serial or mapped VIN -> sales order -> item 000010 material code",
+        "rule": "Chassis/serial or mapped VIN -> sales order -> item 000010 model description",
     }
     return {**payload, "meta": meta, "tickets": tickets}
 

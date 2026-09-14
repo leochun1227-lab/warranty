@@ -6,15 +6,18 @@ Both `sync_recall_claims_to_firebase.py` and
 
 Each run reads SAP HANA client **800**, sales organization **3110**. Chassis/serial
 values join `OBJK -> SER02 -> VBAK`; VINs first map through `ZTSD002` plant **3091**.
-The model is the exact `VBAP.MATNR` from sales order item **000010** (displayed as
-0010). It is not the vehicle's serial, VIN, or shortened marketing name.
+The model is the `VBAP.ARKTX` description from sales order item **000010** (displayed
+as 0010), for example `2026 SRC22S`. `VBAP.MATNR` is used internally to detect
+conflicting results but is not written to Firebase.
 
 Firebase fields under `recallClaim/tickets/{ticketId}`:
 
-- `model`: unique material code, for example `Z12112414`.
-- `modelDescription`: description from the most recent matching order.
+- `model`: description from the most recent matching order, for example `2026 SRC22S`.
 - `modelLookup`: status, lookup time, input vehicle identifiers, sales orders,
-  and material candidates for review.
+  and descriptive candidates for review. These contain no material codes.
+
+The former duplicate `modelDescription` field is removed during refresh. A blank
+description produces `missing_model_description`; it never falls back to a code.
 
 Several orders with the same material count as one model. Different material
 codes, including disagreements between VIN and serial, produce `conflict` and

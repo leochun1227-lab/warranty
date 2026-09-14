@@ -9,7 +9,7 @@ ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'outputs/recall_postcode_20260914'))
 from latest_refresh import firebase_ref,clean
 
-OUT=Path(__file__).resolve().parent/'sync_verification'
+OUT=Path(__file__).resolve().parent/'description_sync_verification'
 OUT.mkdir(exist_ok=True)
 def save(file,data):
     (OUT/file).write_text(json.dumps(data,ensure_ascii=False,indent=2),encoding='utf-8')
@@ -31,9 +31,11 @@ else:
         lookup=t.get('modelLookup',{})
         status=lookup.get('status','missing_status')
         counts[status]+=1
-        material_codes={r['materialCode'] for r in lookup.get('candidates',[])}
+        descriptions={r.get('description') for r in lookup.get('candidates',[])}
+        if 'modelDescription' in t or any('materialCode' in r for r in lookup.get('candidates',[])):
+            errors.append(tid)
         if status=='matched':
-            if not t.get('model') or material_codes!={t['model']} or not lookup.get('salesOrders'):errors.append(tid)
+            if not t.get('model') or t['model'] not in descriptions or not lookup.get('salesOrders'):errors.append(tid)
         elif t.get('model'):errors.append(tid)
     lookup_meta=snap.get('meta',{}).get('modelLookup',{})
     assert lookup_meta.get('salesOrganization')=='3110' and lookup_meta.get('salesOrderItem')=='000010'
