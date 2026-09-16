@@ -301,6 +301,128 @@ test('changing source during download is rejected without caching and remains re
   assert.equal(writes,1);
 });
 
+test('amount date switch regroups the same SAP costs and keeps ticket switches independent', async () => {
+  const a=app();
+  a.context.tickets=[ticket({approvedAmount:9999}),ticket({TicketID:'2',TicketTypeText:'Pre Delivery',CreatedOn:'2025-12-10',approvedAmount:9999})];
+  a.context.costRows=[
+    {id:'1',decisionKey:'approved',claim:'In Field Warranty Claims',created:'31/01/2026',decisionDate:'2026-03-01',amount:125.25},
+    {id:'2',decisionKey:'approved',claim:'Pre Delivery Warranty Claims',created:'2025-12-10',decisionDate:'2026-03-01',amount:50},
+    {id:'3',decisionKey:'unapproved',claim:'In Field Warranty Claims',created:'2026-01-01',amount:1000},
+    {id:'4',decisionKey:'approved',claim:'PDI',created:'2026-01-01',amount:1000},
+    {id:'5',decisionKey:'approved',claim:'In Field Warranty Claims',created:'',decisionDate:'2026-03-01',amount:20}
+  ];
+  a.run(`RAW_TICKETS=tickets; rawTicketsLoaded=true;
+    MONTHLY=buildMonthly({approvedAmountMonthly:[{month:'2026-03',inField:145.25,preDelivery:50}]});
+    MONTHS_INDEX=Object.fromEntries(MONTHLY.map(r=>[r.month,r]));
+    loadClaimSourceVersions=async()=>({dashboard:'v1'}); readClaimSourceVersions=loadClaimSourceVersions;
+    readJson=async()=>costRows; renderWithPageLoading=()=>{};`);
+  await a.run('setAmountDateBasis("created")');
+  assert.equal(a.run('MONTHS_INDEX["2026-01"].createdAmountIn'),125.25,'SAP cost is used instead of the raw approvedAmount');
+  assert.equal(a.run('MONTHS_INDEX["2025-12"].createdAmountPre'),50);
+  assert.equal(a.run('MONTHS_INDEX["2026-03"].approvedAmountIn'),145.25,'default summary stays unchanged');
+  assert.equal(a.run('MONTHLY.reduce((s,r)=>s+r.createdAmountIn+r.createdAmountPre,0)'),175.25,'missing creation dates are excluded');
+  assert.equal(a.run('approvedDateBasis'),'approved');
+  assert.equal(a.run('unapprovedDateBasis'),'closed');
+  assert.equal(a.run('exportTicketMatchFlags(tickets[0],"2026-01","2026-01").amountClaim'),true);
+  assert.equal(a.run('exportTicketMatchFlags(tickets[0],"2026-03","2026-03").amountClaim'),false);
+  const exported=a.json('buildExportRowsForRange("2026-01","2026-01")');
+  assert.equal(exported[0].claimAmount,125.25);
+  for(const summary of ['summarySheetRowsSingle([])','summarySheetRowsCompare([],[])']){
+    const [header,row]=a.json(summary);
+    assert.equal(row[header.indexOf('Amount Claim Group By')],'Created On');
+    assert.equal(row.length,header.length);
+  }
+  await a.run('setAmountDateBasis("approved")');
+  assert.equal(a.run('exportTicketMatchFlags(tickets[0],"2026-03","2026-03").amountClaim'),true);
+  await a.run('setAmountDateBasis("created")');
+  assert.equal(a.run('MONTHS_INDEX["2026-01"].createdAmountIn'),125.25,'repeated toggles do not accumulate');
+});
+
+test('amount charts, totals, field filter and year comparison use the selected date basis', () => {
+  const a=app();
+  a.run(`MONTHLY=[{...emptyMonth('2025-01'),createdAmountIn:40,createdAmountPre:10},
+    {...emptyMonth('2026-01'),createdAmountIn:125,createdAmountPre:50,approvedAmountIn:300}];
+    MONTHS_INDEX=Object.fromEntries(MONTHLY.map(r=>[r.month,r]));
+    activeStart='2026-01'; activeEnd='2026-01'; amountDateBasis='created';
+    const calls={}; updateViewNote=()=>{}; setLegend=()=>{};
+    setTotals=(id,items)=>{calls[id]=items};
+    drawSingleLineChart=(id,rows)=>{calls[id]=rows};
+    drawChart=(id,rows,inKey,preKey)=>{calls[id]={rows,inKey,preKey}};
+    drawCompareBarChart=(id,rows)=>{calls[id]=rows}; render();`);
+  assert.equal(a.run('calls.approvedAmountChart[0].total'),175);
+  assert.equal(a.run('calls.approvedAmountSplitChart.inKey'),'createdAmountIn');
+  assert.equal(a.run('calls.approvedAmountSplitChart.preKey'),'createdAmountPre');
+  assert.equal(a.run('renderAmountPivot(rowsForRange(),"createdAmountIn","createdAmountPre").total'),175);
+  a.run('viewMode="compare"; compareYearA="2026"; compareYearB="2025"; fieldMode="all"; render();');
+  assert.equal(a.run('calls.approvedAmountChart[0].firstValue'),175);
+  assert.equal(a.run('calls.approvedAmountChart[0].secondValue'),50);
+  a.run('fieldMode="pre"; render();');
+  assert.equal(a.run('calls.approvedAmountChart[0].firstValue'),50);
+  assert.equal(a.run('calls.approvedAmountChart[0].secondValue'),10);
+  a.run('viewMode="single"; amountDateBasis="approved"; render();');
+  assert.equal(a.run('calls.approvedAmountChart[0].total'),300);
+});
+
+test('created amount details use the versioned cache and preserve refunds and reimbursement rows', async () => {
+  const a=app();
+  a.context.cachedRows=[
+    {id:'1',decision:'Approved',claim:'In Field Warranty Claims',created:'2026-01-01',amount:100},
+    {id:'2',decision:'Approved',status:'Reimbursement Required',claim:'Pre Delivery Warranty Claims',created:'2026-01-01',amount:20},
+    {id:'3',decision:'Approved',claim:'In Field Warranty Claims',created:'2026-01-01',amount:-10}
+  ];
+  a.run(`loadClaimSourceVersions=async()=>({dashboard:'v1'}); readClaimSourceVersions=loadClaimSourceVersions;
+    readClaimCache=async(key,version)=>version==='v1'?cachedRows:null;
+    readJson=async()=>{throw Error('should use the cache')}; renderWithPageLoading=()=>{};`);
+  await a.run('setAmountDateBasis("created")');
+  assert.equal(a.run('MONTHS_INDEX["2026-01"].createdAmountIn'),90);
+  assert.equal(a.run('MONTHS_INDEX["2026-01"].createdAmountPre'),20);
+});
+
+test('amount load failure and a changed dashboard keep the old selection and support retry', async () => {
+  const a=app();
+  a.run(`loadClaimSourceVersions=async()=>({dashboard:'v1'});
+    readClaimSourceVersions=async()=>({dashboard:'v1'});
+    readJson=async()=>{throw new Error('offline')}; renderWithPageLoading=()=>{};`);
+  await a.run('setAmountDateBasis("created")');
+  assert.equal(a.run('amountDateBasis'),'approved');
+  assert.equal(a.run('amountTicketRowsPromise'),null);
+  assert.equal(a.run('$("amountCreatedOnBtn").disabled'),false);
+  assert.match(a.run('$("error").textContent'),/offline/);
+  assert.match(a.run('$("amountDateNote").textContent'),/Still showing Approved On.*offline.*retry/);
+  a.run(`readJson=async()=>[{id:'1',decisionKey:'approved',created:'2026-01-01',amount:25}];
+    readClaimSourceVersions=async()=>({dashboard:'v2'});`);
+  await a.run('setAmountDateBasis("created")');
+  assert.equal(a.run('amountDateBasis'),'approved');
+  assert.equal(a.run('amountTicketRows'),null);
+  assert.match(a.run('$("error").textContent'),/changed while loading/);
+  a.run('readClaimSourceVersions=loadClaimSourceVersions');
+  await a.run('setAmountDateBasis("created")');
+  assert.equal(a.run('amountDateBasis'),'created');
+  assert.equal(a.run('MONTHS_INDEX["2026-01"].createdAmountIn'),25);
+});
+
+test('Created On loads the full team detail endpoint and shows progress beside the switch', async () => {
+  const a=app();
+  a.run(`loadClaimSourceVersions=async()=>({dashboard:'v1'}); readClaimSourceVersions=loadClaimSourceVersions;
+    renderWithPageLoading=()=>{};
+    let resolveDetails;
+    readJson=path=>{
+      if(path==='ctmTicketStatusMonitorV44/analytics/teamDashboard/views/all/approvalTicketRows')return Promise.resolve(null);
+      if(path!=='ctmTicketStatusMonitorV44/analytics/team/views/all/approvalTicketRows')throw Error('Unexpected endpoint: '+path);
+      return new Promise(resolve=>{resolveDetails=resolve});
+    };`);
+  const switching=a.run('setAmountDateBasis("created")');
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(a.run('$("amountCreatedOnBtn").disabled'),true);
+  assert.match(a.run('$("amountDateNote").textContent'),/Loading claim amounts by Created On/);
+  a.run(`resolveDetails([{id:'1',decisionKey:'approved',created:'2026-01-01',amount:25}]);`);
+  await switching;
+  assert.equal(a.run('amountDateBasis'),'created');
+  assert.equal(a.run('MONTHS_INDEX["2026-01"].createdAmountIn'),25);
+  assert.equal(a.run('$("amountCreatedOnBtn").disabled'),false);
+  assert.match(a.run('$("amountDateNote").textContent'),/grouped by Created On/);
+});
+
 test('unavailable IndexedDB falls back to live tickets without changing their fields',async()=>{
   const a=app();
   Object.assign(a.context,{setTimeout,clearTimeout,console:{warn(){}},source:[null,{ticket:ticket(),roles:{unused:true}}]});

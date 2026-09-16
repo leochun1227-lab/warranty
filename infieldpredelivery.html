@@ -407,7 +407,17 @@ body{
 
       <section class="panel" id="amount">
         <div class="panelHead">
-          <h2 class="panelTitle"><span class="titleIcon ic-violet"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M17 7.5c0-1.9-2.2-3.5-5-3.5s-5 1.6-5 3.5 2.2 3.5 5 3.5 5 1.6 5 3.5-2.2 3.5-5 3.5-5-1.6-5-3.5"/></svg></span>Amount Claim</h2>
+          <div class="panelTitleWrap">
+            <h2 class="panelTitle"><span class="titleIcon ic-violet"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M17 7.5c0-1.9-2.2-3.5-5-3.5s-5 1.6-5 3.5 2.2 3.5 5 3.5 5 1.6 5 3.5-2.2 3.5-5 3.5-5-1.6-5-3.5"/></svg></span>Amount Claim</h2>
+            <div class="approvedDateControls">
+              <span class="viewNote">Group by</span>
+              <div class="miniSwitch" role="group" aria-label="Amount claim date basis">
+                <button id="amountApprovedOnBtn" class="miniBtn active" type="button" aria-pressed="true" aria-describedby="amountDateNote">Approved On</button>
+                <button id="amountCreatedOnBtn" class="miniBtn" type="button" aria-pressed="false" aria-describedby="amountDateNote">Created On</button>
+              </div>
+            </div>
+            <div id="amountDateNote" class="approvedDateNote" aria-live="polite"></div>
+          </div>
           <div id="amountTotals" class="grandTotals"></div>
         </div>
         <div class="dualChartGrid">
@@ -584,6 +594,9 @@ let pageLoadingTimer=null, pageLoadingRunId=0;
 let rawTicketsPromise=null;
 let rawTicketsLoaded=false,approvedDateBasis="approved";
 let unapprovedDateBasis="closed";
+let amountDateBasis="approved",amountTicketRows=null,amountTicketRowsPromise=null;
+let amountTicketsById=new Map();
+const CLAIM_AMOUNT_TICKET_CACHE_KEY="claim-trend-amount-tickets:v2";
 const CLAIM_TICKET_CACHE_KEY="claim-trend-ticket-payloads:v1";
 let claimSourceVersionsPromise=null;
 function loadClaimSourceVersions(){
@@ -681,7 +694,97 @@ async function setApprovedDateBasis(basis){
   }
 }
 
-function emptyMonth(m){return {month:m,createdIn:0,createdPre:0,approvedIn:0,approvedPre:0,unapprovedIn:0,unapprovedPre:0,approvedAmountIn:0,approvedAmountPre:0,unapprovedAmountIn:0,unapprovedAmountPre:0}}
+function amountDateLabel(){return amountDateBasis==="created"?"Created On":"Approved On"}
+
+function syncAmountDateControls(){
+  ["approved","created"].forEach(basis=>{
+    const button=$(basis==="approved"?"amountApprovedOnBtn":"amountCreatedOnBtn");
+    button.classList.toggle("active",amountDateBasis===basis);
+    button.setAttribute("aria-pressed",String(amountDateBasis===basis));
+  });
+  $("amountDateNote").textContent=amountDateBasis==="created"
+    ?"Approved claim amounts grouped by Created On. Claims without a creation date are excluded."
+    :"Approved claim amounts grouped by Approved On.";
+}
+
+function amountRowField(row){
+  if(!row||ticketIsPdi(row))return "";
+  if(ticketIsPreDelivery(row))return "Pre";
+  if(ticketIsInField(row)||!ticketClaimText(row))return "In";
+  return "";
+}
+
+async function ensureAmountTicketRowsLoaded(){
+  if(amountTicketRows!==null)return amountTicketRows;
+  if(!amountTicketRowsPromise){
+    amountTicketRowsPromise=(async()=>{
+      const version=(await loadClaimSourceVersions()).dashboard;
+      const cached=await readClaimCache(CLAIM_AMOUNT_TICKET_CACHE_KEY,version);
+      let rows=Array.isArray(cached)?cached:null;
+      if(rows===null){
+        // The lightweight teamDashboard mirror deliberately omits detail rows.
+        const data=await readJson(`${ROOT}/analytics/team/views/all/approvalTicketRows`,30000);
+        if(!data||typeof data!=="object")throw new Error("Claim amount details are unavailable. Please retry after the dashboard refreshes.");
+        rows=arr(data);
+      }
+      const confirmed=(await readClaimSourceVersions()).dashboard;
+      if(version&&confirmed&&version!==confirmed)throw new Error("Amount data changed while loading. Please reload.");
+      // These are the same approved rows and SAP amounts used by the monthly summary.
+      const byId=new Map();
+      rows.forEach(row=>{
+        if(!row||clean(row.decisionKey||row.decision).toLowerCase()!=="approved"||!amountRowField(row))return;
+        const id=ticketId(row);
+        if(id)byId.set(id,row);
+      });
+      amountTicketsById=byId;
+      amountTicketRows=[...byId.values()];
+      if(!cached&&version&&version===confirmed&&window.WarrantyPageCache?.setLargePage){
+        Promise.resolve(window.WarrantyPageCache.setLargePage(CLAIM_AMOUNT_TICKET_CACHE_KEY,version,amountTicketRows))
+          .catch(err=>console.warn("Claim amount cache write failed",err));
+      }
+      return amountTicketRows;
+    })().finally(()=>{amountTicketRowsPromise=null;});
+  }
+  return amountTicketRowsPromise;
+}
+
+function withCreatedAmountMonthly(monthly){
+  const out=Object.fromEntries(monthly.map(row=>[row.month,{...row,createdAmountIn:0,createdAmountPre:0}]));
+  (amountTicketRows||[]).forEach(row=>{
+    const month=monthKeyFromValue(row.created),field=amountRowField(row);
+    if(!field||!month||month<HARD_MIN)return;
+    if(!out[month])out[month]=emptyMonth(month);
+    const key=`createdAmount${field}`;
+    out[month][key]=Math.round((Number(out[month][key]||0)+amountNum(row.amount))*100)/100;
+  });
+  return Object.values(out).sort((a,b)=>a.month.localeCompare(b.month));
+}
+
+async function setAmountDateBasis(basis){
+  if(!["approved","created"].includes(basis)||basis===amountDateBasis)return;
+  const buttons=[$("amountApprovedOnBtn"),$("amountCreatedOnBtn")];
+  buttons.forEach(button=>button.disabled=true);
+  $("amount").setAttribute("aria-busy","true");
+  $("amountDateNote").textContent=`Loading claim amounts by ${basis==="created"?"Created On":"Approved On"}...`;
+  try{
+    if(basis==="created"){
+      await ensureAmountTicketRowsLoaded();
+      MONTHLY=withCreatedAmountMonthly(MONTHLY);
+      MONTHS_INDEX=Object.fromEntries(MONTHLY.map(row=>[row.month,row]));
+    }
+    amountDateBasis=basis;
+    syncAmountDateControls();
+    renderWithPageLoading(false);
+  }catch(err){
+    $("amountDateNote").textContent=`Could not switch to ${basis==="created"?"Created On":"Approved On"}. Still showing ${amountDateLabel()}. ${err.message} Click again to retry.`;
+    showError(`Cannot group claim amounts: ${err.message}`);
+  }finally{
+    buttons.forEach(button=>button.disabled=false);
+    $("amount").setAttribute("aria-busy","false");
+  }
+}
+
+function emptyMonth(m){return {month:m,createdIn:0,createdPre:0,approvedIn:0,approvedPre:0,unapprovedIn:0,unapprovedPre:0,approvedAmountIn:0,approvedAmountPre:0,createdAmountIn:0,createdAmountPre:0,unapprovedAmountIn:0,unapprovedAmountPre:0}}
 
 function ticketClaimText(ticket){
   return clean(
@@ -1058,10 +1161,16 @@ function exportTicketMatchFlags(ticket,start,end){
   const created=monthWithinRange(createdMonth,start,end);
   const approvedGroupMonth=approvedDateBasis==="created"?createdMonth:approvedMonth;
   const approved=monthWithinRange(approvedGroupMonth,start,end)&&ticketApprovedActiveNow(ticket);
-  const amountClaim=monthWithinRange(approvedMonth,start,end)&&ClaimTrendTicketMetrics.isActiveApproved(ticket)&&approvedAmountValue(ticket)>0;
+  const amountRow=amountTicketsById.get(ticketId(ticket));
+  const amountGroupMonth=amountDateBasis==="created"
+    ?monthKeyFromValue(amountTicketRows!==null?amountRow?.created:ticketCreatedOn(ticket))
+    :amountTicketRows!==null?monthKeyFromValue(amountRow?.decisionDate):approvedMonth;
+  const claimAmount=amountTicketRows!==null?amountNum(amountRow?.amount):approvedAmountValue(ticket);
+  const amountEligible=amountTicketRows!==null?!!amountRow:ClaimTrendTicketMetrics.isActiveApproved(ticket);
+  const amountClaim=monthWithinRange(amountGroupMonth,start,end)&&amountEligible&&claimAmount!==0;
   const unapproved=monthWithinRange(unapprovedGroupMonth,start,end)&&ticketUnapprovedClosedNow(ticket);
   if(!(created||approved||amountClaim||unapproved))return null;
-  return {created,approved,amountClaim,unapproved,createdMonth,approvedMonth,approvedGroupMonth,unapprovedMonth,unapprovedGroupMonth};
+  return {created,approved,amountClaim,claimAmount,amountGroupMonth,unapproved,createdMonth,approvedMonth,approvedGroupMonth,unapprovedMonth,unapprovedGroupMonth};
 }
 
 function exportRowFromTicket(ticket,flags){
@@ -1082,6 +1191,7 @@ function exportRowFromTicket(ticket,flags){
     createdFlag:flags.created?"Y":"",
     approvedFlag:flags.approved?"Y":"",
     amountFlag:flags.amountClaim?"Y":"",
+    claimAmount:flags.amountClaim?flags.claimAmount:"",
     unapprovedFlag:flags.unapproved?"Y":"",
     createdOn:ticketCreatedOn(ticket),
     createdMonth:flags.createdMonth,
@@ -1125,6 +1235,7 @@ function buildExportRowsForRange(start,end){
       existing.createdFlag=existing.createdFlag|| (flags.created?"Y":"");
       existing.approvedFlag=existing.approvedFlag|| (flags.approved?"Y":"");
       existing.amountFlag=existing.amountFlag|| (flags.amountClaim?"Y":"");
+      if(flags.amountClaim)existing.claimAmount=flags.claimAmount;
       existing.unapprovedFlag=existing.unapprovedFlag|| (flags.unapproved?"Y":"");
       existing.metrics=[
         existing.createdFlag?"Created":"",
@@ -1182,12 +1293,12 @@ function exportDetailSheetRows(rows){
   const header=[
     "Ticket ID","ChassisNumber","Status","Field","Matches Metrics",
     "Created On","Claim Approved On","Resolved On","Changed On","Posting Date",
-    "ERP Purchase Order ID","Sales Order","PO Price (SAP EKPO.NETWR)","PO Price Source","Approved Amount"
+    "ERP Purchase Order ID","Sales Order","PO Price (SAP EKPO.NETWR)","PO Price Source","Approved Amount","Amount Claim"
   ];
   const values=rows.map(row=>[
     row.ticketId,row.chassisNumber,row.status,row.field,row.metrics,
     row.createdOn,row.claimApprovedOn,row.resolvedOn,row.changedOn,row.postingDate,
-    row.poNumber,row.salesOrder,row.poPrice,row.poPriceSource,row.approvedAmount
+    row.poNumber,row.salesOrder,row.poPrice,row.poPriceSource,row.approvedAmount,row.claimAmount
   ]);
   // Keep identifiers even for an empty result. Zero is data, not a blank value.
   const keep=header.map((_,index)=>index).filter(index=>index<2||values.some(row=>clean(row[index])!==""));
@@ -1232,13 +1343,14 @@ async function ensureRawTicketsLoaded(){
 
 function summarySheetRowsSingle(rows){
   return [
-    ["Mode","Field Filter","From","To","Approved Tickets Group By","Unapproved Tickets Group By","Exported Tickets","Generated At","Notes"],
+    ["Mode","Field Filter","From","To","Approved Tickets Group By","Amount Claim Group By","Unapproved Tickets Group By","Exported Tickets","Generated At","Notes"],
     [
       "Single / Range",
       fieldConfig().label,
       activeStart,
       activeEnd,
       approvedDateLabel(),
+      amountDateLabel(),
       unapprovedDateLabel(),
       rows.length,
       new Date().toISOString(),
@@ -1249,7 +1361,7 @@ function summarySheetRowsSingle(rows){
 
 function summarySheetRowsCompare(rowsA,rowsB){
   return [
-    ["Mode","Field Filter","Year A","Year A Tickets","Year B","Year B Tickets","Approved Tickets Group By","Unapproved Tickets Group By","Generated At","Notes"],
+    ["Mode","Field Filter","Year A","Year A Tickets","Year B","Year B Tickets","Approved Tickets Group By","Amount Claim Group By","Unapproved Tickets Group By","Generated At","Notes"],
     [
       "Year Compare",
       fieldConfig().label,
@@ -1258,6 +1370,7 @@ function summarySheetRowsCompare(rowsA,rowsB){
       compareYearB,
       rowsB.length,
       approvedDateLabel(),
+      amountDateLabel(),
       unapprovedDateLabel(),
       new Date().toISOString(),
       "Detail export includes only tickets matched by this page: Created, Approved, Amount Claim, or Unapproved. Approved includes Approved Claims Closed. Amount Including Tax is excluded."
@@ -1266,7 +1379,7 @@ function summarySheetRowsCompare(rowsA,rowsB){
 }
 
 async function exportClaimTrendDetails(){
-  try{await ensureRawTicketsLoaded();}catch(err){showError(`Cannot export ticket details: ${err.message}`);return;}
+  try{await Promise.all([ensureRawTicketsLoaded(),ensureAmountTicketRowsLoaded()]);}catch(err){showError(`Cannot export ticket details: ${err.message}`);return;}
   if(viewMode==="compare"){
     const rowsA=buildExportRowsForRange(`${compareYearA}-01`,`${compareYearA}-12`);
     const rowsB=buildExportRowsForRange(`${compareYearB}-01`,`${compareYearB}-12`);
@@ -1278,7 +1391,7 @@ async function exportClaimTrendDetails(){
       {name:"Summary",rows:summarySheetRowsCompare(rowsA,rowsB)},
       {name:String(compareYearA),rows:exportDetailSheetRows(rowsA)},
       {name:String(compareYearB),rows:exportDetailSheetRows(rowsB)}
-    ],`claim_trend_ticket_details_compare_${compareYearA}_vs_${compareYearB}_${fieldMode}_approved_by_${approvedDateBasis}_unapproved_by_${unapprovedDateBasis}`);
+    ],`claim_trend_ticket_details_compare_${compareYearA}_vs_${compareYearB}_${fieldMode}_approved_by_${approvedDateBasis}_amount_by_${amountDateBasis}_unapproved_by_${unapprovedDateBasis}`);
     return;
   }
   const rows=buildExportRowsForRange(activeStart,activeEnd);
@@ -1289,7 +1402,7 @@ async function exportClaimTrendDetails(){
   downloadWorkbook([
     {name:"Summary",rows:summarySheetRowsSingle(rows)},
     {name:"Tickets",rows:exportDetailSheetRows(rows)}
-  ],`claim_trend_ticket_details_${activeStart}_to_${activeEnd}_${fieldMode}_approved_by_${approvedDateBasis}_unapproved_by_${unapprovedDateBasis}`);
+  ],`claim_trend_ticket_details_${activeStart}_to_${activeEnd}_${fieldMode}_approved_by_${approvedDateBasis}_amount_by_${amountDateBasis}_unapproved_by_${unapprovedDateBasis}`);
 }
 
 function resolvedMonth(ticket){
@@ -1427,14 +1540,14 @@ function renderPivot(tbodyId,rows,inKey,preKey,emptyText,formatter=num){
   return {inField:gi,preDelivery:gp,total:gi+gp};
 }
 
-function renderAmountPivot(rows){
+function renderAmountPivot(rows,inKey="approvedAmountIn",preKey="approvedAmountPre"){
   let html="",cy="",yi=0,yp=0,gi=0,gp=0;
   const closeYear=()=>{
     if(cy)html+=`<tr class="yearRow"><td>${cy}</td><td class="num">${moneyK(yi)}</td><td class="num">${moneyK(yp)}</td><td class="num">${moneyNum(yi+yp)}</td></tr>`;
   };
   rows.forEach(r=>{
     if(r.year!==cy){closeYear();cy=r.year;yi=0;yp=0}
-    const iv=Number(r.approvedAmountIn||0),pv=Number(r.approvedAmountPre||0),tv=iv+pv;
+    const iv=Number(r[inKey]||0),pv=Number(r[preKey]||0),tv=iv+pv;
     yi+=iv;yp+=pv;gi+=iv;gp+=pv;
     html+=`<tr><td>&nbsp;&nbsp;${monthShort(r.month)}</td><td class="num">${moneyK(iv)}</td><td class="num">${moneyK(pv)}</td><td class="num">${moneyNum(tv)}</td></tr>`;
   });
@@ -1775,12 +1888,14 @@ function render(){
   const field=fieldConfig();
   const [approvedInKey,approvedPreKey]=approvedDateBasis==="created"
     ?["approvedCreatedIn","approvedCreatedPre"]:["approvedIn","approvedPre"];
+  const [amountInKey,amountPreKey]=amountDateBasis==="created"
+    ?["createdAmountIn","createdAmountPre"]:["approvedAmountIn","approvedAmountPre"];
   const [unapprovedInKey,unapprovedPreKey]=unapprovedDateBasis==="created"
     ?["unapprovedCreatedIn","unapprovedCreatedPre"]:["unapprovedClosedIn","unapprovedClosedPre"];
   if(viewMode==="compare"){
     const newClaimRows=compareRowsForMetric("createdIn","createdPre",compareYearA,compareYearB);
     const approvedRows=compareRowsForMetric(approvedInKey,approvedPreKey,compareYearA,compareYearB);
-    const amountRows=compareRowsForMetric("approvedAmountIn","approvedAmountPre",compareYearA,compareYearB);
+    const amountRows=compareRowsForMetric(amountInKey,amountPreKey,compareYearA,compareYearB);
     const unapprovedRows=compareRowsForMetric(unapprovedInKey,unapprovedPreKey,compareYearA,compareYearB);
     const claimClosedRows=claimClosedCompareRows(compareYearA,compareYearB);
     drawCompareBarChart("newClaimChart",newClaimRows);
@@ -1853,7 +1968,7 @@ function render(){
   const rows=rowsForRange();
   const newClaimRows=totalRowsForRange("createdIn","createdPre");
   const approvedRows=totalRowsForRange(approvedInKey,approvedPreKey);
-  const amountRows=totalRowsForRange("approvedAmountIn","approvedAmountPre");
+  const amountRows=totalRowsForRange(amountInKey,amountPreKey);
   const unapprovedRows=totalRowsForRange(unapprovedInKey,unapprovedPreKey);
   const claimClosedRows=iterMonths(activeStart,activeEnd).map(month=>{
     const row=CLAIM_CLOSED_INDEX[month]||{};
@@ -1865,7 +1980,7 @@ function render(){
   });
   const approved=renderPivot("approvedPivot",rows,approvedInKey,approvedPreKey,"No approved data found.");
   const unapproved=renderPivot("unapprovedPivot",rows,unapprovedInKey,unapprovedPreKey,"No unapproved data found.");
-  const amount=renderAmountPivot(rows);
+  const amount=renderAmountPivot(rows,amountInKey,amountPreKey);
   const claimClosedSplit=claimClosedSplitRowsForRange();
   drawSingleLineChart("newClaimChart",newClaimRows,"total",{color:"#156082"});
   drawSingleLineChart("approvedChart",approvedRows,"total",{color:"#16a34a"});
@@ -1875,7 +1990,7 @@ function render(){
   drawChart("newClaimSplitChart",rows,"createdIn","createdPre");
   drawChart("approvedSplitChart",rows,approvedInKey,approvedPreKey);
   drawChart("unapprovedSplitChart",rows,unapprovedInKey,unapprovedPreKey);
-  drawChart("approvedAmountSplitChart",rows,"approvedAmountIn","approvedAmountPre",{yMax:niceCurrencyMax,pointFormatter:moneyK});
+  drawChart("approvedAmountSplitChart",rows,amountInKey,amountPreKey,{yMax:niceCurrencyMax,pointFormatter:moneyK});
   drawChart("claimClosedSplitChart",claimClosedSplit,"inValue","preValue");
   setLegend("newClaimLegend",[
     {label:"All Fields",color:"#156082"}
@@ -2052,6 +2167,7 @@ function init(view,useCached=false,claimClosedIndex=null){
   syncControls();
   syncApprovedDateControls();
   syncUnapprovedDateControls();
+  syncAmountDateControls();
   renderWithPageLoading(!useCached,"Loading dashboard...");
   // controls
   $("yearSelect").onchange=()=>{customRange=false;applyYear($("yearSelect").value);syncControls();renderWithPageLoading(true,"Loading dashboard...")};
@@ -2075,6 +2191,8 @@ function init(view,useCached=false,claimClosedIndex=null){
   $("exportTicketsBtn").onclick=()=>exportClaimTrendDetails();
   $("approvedOnBtn").onclick=()=>setApprovedDateBasis("approved");
   $("approvedCreatedOnBtn").onclick=()=>setApprovedDateBasis("created");
+  $("amountApprovedOnBtn").onclick=()=>setAmountDateBasis("approved");
+  $("amountCreatedOnBtn").onclick=()=>setAmountDateBasis("created");
   $("unapprovedClosedOnBtn").onclick=()=>setUnapprovedDateBasis("closed");
   $("unapprovedCreatedOnBtn").onclick=()=>setUnapprovedDateBasis("created");
   window.addEventListener("resize",()=>renderWithPageLoading(false));
