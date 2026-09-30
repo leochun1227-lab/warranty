@@ -20,6 +20,7 @@ from urllib3.util.retry import Retry
 
 from recall_postcodes import preserve_recall_postcodes
 from recall_models import enrich_recall_models
+from recall_pagination import fetch_all_recall_claims, validate_recall_replacement
 
 
 BASE_URL = os.getenv(
@@ -39,9 +40,9 @@ FIREBASE_SA_PATH = os.getenv("FIREBASE_SA_PATH", str(ROOT_DIR / "firebase-servic
 RECALL_CLAIMS_TABLE_PATH = os.getenv("RECALL_CLAIMS_TABLE_PATH", "recallClaim")
 
 RECALL_CLAIMS_TICKET_TYPE = "Z011"
-DEFAULT_TOP = 50000
+DEFAULT_TOP = 10000
 DEFAULT_SKIP = 0
-TIMEOUT = int(os.getenv("C4C_TIMEOUT_SECONDS", "60"))
+TIMEOUT = int(os.getenv("C4C_TIMEOUT_SECONDS", "240"))
 C4C_PAGE_RETRIES = max(1, int(os.getenv("C4C_PAGE_RETRIES", "4")))
 C4C_PAGE_RETRY_SLEEP_SECONDS = max(0.0, float(os.getenv("C4C_PAGE_RETRY_SLEEP_SECONDS", "4")))
 VERIFY_SSL = os.getenv("C4C_VERIFY_SSL", "true").strip().lower() not in {"0", "false", "no"}
@@ -253,6 +254,8 @@ def build_recall_claims_payload(
         if not ticket_key:
             continue
 
+        roles = dict(tickets.get(ticket_key, {}).get("roles", {}))
+        roles.update(involved_parties_to_roles(row.get("InvolvedParties")))
         tickets[ticket_key] = {
             "ticketId": ticket_id,
             "ticketType": ticket_type,
@@ -265,13 +268,16 @@ def build_recall_claims_payload(
             "customer": field_group(row, customer_fields),
             "pricingData": field_group(row, pricing_fields),
             "ticket": row,
-            "roles": involved_parties_to_roles(row.get("InvolvedParties")),
+            "roles": roles,
             "syncedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         }
 
     raw_row_count = api_meta.get("totalCount") or api_meta.get("count") or len(rows)
     return {
         "meta": {
+            **{key: api_meta[key] for key in (
+                "syncComplete", "pageSize", "pagesFetched", "pages", "rawRowsCovered"
+            ) if key in api_meta},
             "ticketType": RECALL_CLAIMS_TICKET_TYPE,
             "tableName": "Recall Claims Tickets",
             "source": "C4C Ticket queryOdataBatch with typecode",
@@ -290,8 +296,8 @@ def build_recall_claims_payload(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Sync Recall Claims Z011 from C4C to Firebase.")
-    parser.add_argument("--top", type=int, default=DEFAULT_TOP, help="SAP raw flattened row limit. Default: 50000.")
-    parser.add_argument("--skip", type=int, default=DEFAULT_SKIP, help="SAP raw flattened row offset. Default: 0.")
+    parser.add_argument("--top", type=int, default=DEFAULT_TOP, help="Raw rows per page, not a total limit. All pages are fetched. Default: 10000.")
+    parser.add_argument("--skip", type=int, default=DEFAULT_SKIP, help="Diagnostic offset; nonzero values require --print-url.")
     parser.add_argument("--dry-run", action="store_true", help="Fetch and build payload, but do not write Firebase.")
     parser.add_argument("--print-url", action="store_true", help="Print the exact Recall Claims request URL and exit.")
     return parser.parse_args()
@@ -303,6 +309,8 @@ def main() -> None:
     if args.print_url:
         print(url)
         return
+    if args.skip != 0:
+        raise SystemExit("Full Recall sync must start at --skip 0; partial snapshots are not allowed")
 
     if not USERNAME or not PASSWORD:
         raise SystemExit("Please set C4C_USERNAME / C4C_PASSWORD")
@@ -313,7 +321,9 @@ def main() -> None:
 
     session = build_session()
     try:
-        rows, api_meta = fetch_recall_claims_page(session, args.top, args.skip)
+        rows, api_meta = fetch_all_recall_claims(
+            lambda top, skip: fetch_recall_claims_page(session, top, skip), args.top
+        )
         payload = build_recall_claims_payload(rows, api_meta, top=args.top, skip=args.skip)
         payload = enrich_recall_models(payload)
         meta = payload["meta"]
@@ -331,7 +341,7 @@ def main() -> None:
 
         firebase_init()
         db.reference(RECALL_CLAIMS_TABLE_PATH).transaction(
-            lambda current: preserve_recall_postcodes(payload, current)
+            lambda current: preserve_recall_postcodes(validate_recall_replacement(payload, current), current)
         )
         logger.info("Wrote Recall Claims payload to Firebase path %s", RECALL_CLAIMS_TABLE_PATH)
     finally:

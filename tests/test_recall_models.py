@@ -105,13 +105,14 @@ class RecallModelTests(unittest.TestCase):
     def test_main_sync_entrypoint_enriches_before_transaction_and_aborts_on_failure(self):
         import fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER as sync
         enriched = attach_recall_models(payload(), [row()], "now")
+        enriched["meta"]["syncComplete"] = True
         current = {"tickets": {"1": {"postcode": "0800"}}}
         with patch.object(sync, "build_recall_claims_payload", return_value=payload()), \
              patch.object(sync, "enrich_recall_models", return_value=enriched) as enrich, \
              patch.object(sync.db, "reference") as reference:
             committed = []
             reference.return_value.transaction.side_effect = lambda callback: committed.append(callback(current))
-            sync.upload_recall_claims_to_firebase({})
+            sync.upload_recall_claims_to_firebase({}, {"totalCount": 1, "syncComplete": True})
             enrich.assert_called_once()
             reference.return_value.transaction.assert_called_once()
             self.assertEqual(committed[0]["tickets"]["1"]["model"], "2023 SRC19")
@@ -120,7 +121,7 @@ class RecallModelTests(unittest.TestCase):
              patch.object(sync, "enrich_recall_models", side_effect=RuntimeError("HANA unavailable")), \
              patch.object(sync.db, "reference") as reference:
             with self.assertRaises(RuntimeError):
-                sync.upload_recall_claims_to_firebase({})
+                sync.upload_recall_claims_to_firebase({}, {"totalCount": 1, "syncComplete": True})
             reference.assert_not_called()
 
     def test_standalone_failure_aborts_before_firebase_and_dry_run_still_enriches(self):
@@ -130,7 +131,7 @@ class RecallModelTests(unittest.TestCase):
         args = SimpleNamespace(top=50000, skip=0, print_url=False, dry_run=True)
         with patch.object(sync, "parse_args", return_value=args), \
              patch.object(sync, "build_session"), \
-             patch.object(sync, "fetch_recall_claims_page", return_value=([], {})), \
+             patch.object(sync, "fetch_all_recall_claims", return_value=([], {"syncComplete": True})), \
              patch.object(sync, "build_recall_claims_payload", return_value=source), \
              patch.object(sync, "enrich_recall_models") as enrich, \
              patch.object(sync, "firebase_init") as initialize, \

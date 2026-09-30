@@ -28,6 +28,7 @@ from firebase_admin import credentials, db
 
 from recall_postcodes import preserve_recall_postcodes
 from recall_models import enrich_recall_models
+from recall_pagination import fetch_all_recall_claims, validate_recall_replacement
 from firebase_admin.exceptions import InvalidArgumentError
 from sap_material_prices import CNY_TO_AUD_RATE, enrich_detail_rows, fetch_material_price_map, preferred_line_cost_aud
 
@@ -42,7 +43,7 @@ ROLE_CODES = ["1001", "40", "43"]
 
 API_TOP = 1000
 API_SKIP_START = 0
-RECALL_CLAIMS_API_TOP = 50000
+RECALL_CLAIMS_API_TOP = 10000
 RECALL_CLAIMS_API_SKIP_START = 0
 API_EXTRA_TAIL_PAGES = int(os.getenv("API_EXTRA_TAIL_PAGES", "3"))
 TIMEOUT = 60
@@ -1321,7 +1322,7 @@ def fetch_recall_claims_page(top: int, skip: int) -> Tuple[List[Dict[str, Any]],
                 url,
                 auth=HTTPBasicAuth(USERNAME, PASSWORD),
                 headers={"Accept": "application/json"},
-                timeout=TIMEOUT,
+                timeout=int(os.getenv("C4C_TIMEOUT_SECONDS", "240")),
                 verify=VERIFY_SSL,
             )
 
@@ -1456,22 +1457,9 @@ def split_ticket_row(row: Dict[str, Any]) -> Tuple[Dict[str, Any], Dict[str, Any
     return ticket_data, role_data
 
 
-def build_recall_claims_snapshot() -> Tuple[Dict[str, Any], int]:
-    rows, meta = fetch_recall_claims_page(RECALL_CLAIMS_API_TOP, RECALL_CLAIMS_API_SKIP_START)
-    total_raw = meta.get("totalCount") or meta.get("count")
-    try:
-        total_rows = int(total_raw)
-    except (TypeError, ValueError):
-        total_rows = len(rows)
-
-    if total_rows >= RECALL_CLAIMS_API_TOP or len(rows) >= RECALL_CLAIMS_API_TOP:
-        logger.warning(
-            "Recall Claims single query reached top=%s (count=%s, returned=%s). "
-            "If C4C truncated the raw rows, narrow the query or page manually.",
-            RECALL_CLAIMS_API_TOP,
-            total_raw,
-            len(rows),
-        )
+def build_recall_claims_snapshot() -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    rows, meta = fetch_all_recall_claims(fetch_recall_claims_page, RECALL_CLAIMS_API_TOP)
+    total_raw = meta["totalCount"]
 
     new_snapshot: Dict[str, Any] = {}
     for row in rows:
@@ -1516,7 +1504,7 @@ def build_recall_claims_snapshot() -> Tuple[Dict[str, Any], int]:
         total_raw,
         len(new_snapshot),
     )
-    return new_snapshot, total_rows
+    return new_snapshot, meta
 
 
 def build_new_snapshot() -> Tuple[Dict[str, Any], int]:
@@ -1675,11 +1663,14 @@ def build_recall_claims_payload(new_snapshot: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def upload_recall_claims_to_firebase(new_snapshot: Dict[str, Any]) -> None:
+def upload_recall_claims_to_firebase(new_snapshot: Dict[str, Any], api_meta: Dict[str, Any]) -> None:
     payload = build_recall_claims_payload(new_snapshot)
+    payload["meta"].update(api_meta)
+    payload["meta"]["rawRowCount"] = api_meta["totalCount"]
+    payload["meta"]["count"] = len(payload["tickets"])
     payload = enrich_recall_models(payload, dsn=SAP_HANA_DSN)
     db.reference(RECALL_CLAIMS_TABLE_PATH).transaction(
-        lambda current: preserve_recall_postcodes(payload, current)
+        lambda current: preserve_recall_postcodes(validate_recall_replacement(payload, current), current)
     )
     logger.info(
         "Wrote Recall Claims Tickets to Firebase path %s (type=%s, tickets=%s)",
@@ -4409,12 +4400,12 @@ def main():
             RECALL_CLAIMS_API_TOP,
             RECALL_CLAIMS_API_SKIP_START,
         )
-        new_snapshot, total_rows = build_recall_claims_snapshot()
-        logger.info("C4C Recall Claims API rows/count processed: %s", total_rows)
+        new_snapshot, recall_meta = build_recall_claims_snapshot()
+        logger.info("C4C Recall Claims API raw rows processed: %s", recall_meta["totalCount"])
         logger.info("C4C Recall Claims unique TicketIDs: %s", len(new_snapshot))
         logger.info("Recall Claims only mode: writing type %s tickets to %s and exiting.", RECALL_CLAIMS_TICKET_TYPE, RECALL_CLAIMS_TABLE_PATH)
         firebase_init()
-        upload_recall_claims_to_firebase(new_snapshot)
+        upload_recall_claims_to_firebase(new_snapshot, recall_meta)
         close_thread_session()
         logger.info("Recall Claims only mode done. Total elapsed: %.1fs", time.time() - total_started)
         return
@@ -4429,8 +4420,8 @@ def main():
     firebase_init()
     seed_employee_directory()
     # Recall must use the dedicated query; the general snapshot is role-filtered.
-    recall_snapshot, _ = build_recall_claims_snapshot()
-    upload_recall_claims_to_firebase(recall_snapshot)
+    recall_snapshot, recall_meta = build_recall_claims_snapshot()
+    upload_recall_claims_to_firebase(recall_snapshot, recall_meta)
     old_hashes = load_old_ticket_hashes()
     logger.info("Previous synced TicketIDs in hash snapshot: %s", len(old_hashes))
 

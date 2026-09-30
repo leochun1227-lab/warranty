@@ -1,0 +1,24 @@
+2026-09-30 15:26:44,474 [INFO] Recall Claims standalone sync started.
+2026-09-30 15:26:44,474 [INFO] This program does not send any CCSRQ_DPY_ROLE_CD $filter.
+2026-09-30 15:26:44,474 [INFO] GET https://longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn/http/PC4C/Ticket/queryOdataBatch?$top=10000&$skip=0&$typecode=Z011
+2026-09-30 15:27:21,072 [INFO] Recall page: skip=0 size=10000 tickets=1566 rawTotal=89039
+2026-09-30 15:27:21,073 [INFO] GET https://longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn/http/PC4C/Ticket/queryOdataBatch?$top=10000&$skip=10000&$typecode=Z011
+2026-09-30 15:27:56,068 [INFO] Recall page: skip=10000 size=10000 tickets=1125 rawTotal=89039
+2026-09-30 15:27:56,069 [INFO] GET https://longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn/http/PC4C/Ticket/queryOdataBatch?$top=10000&$skip=20000&$typecode=Z011
+2026-09-30 15:28:30,925 [INFO] Recall page: skip=20000 size=10000 tickets=1086 rawTotal=89121
+2026-09-30 15:28:30,925 [INFO] GET https://longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn/http/PC4C/Ticket/queryOdataBatch?$top=10000&$skip=30000&$typecode=Z011
+2026-09-30 15:29:05,250 [INFO] Recall page: skip=30000 size=10000 tickets=1088 rawTotal=89121
+2026-09-30 15:29:05,250 [INFO] GET https://longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn/http/PC4C/Ticket/queryOdataBatch?$top=10000&$skip=40000&$typecode=Z011
+2026-09-30 15:29:39,097 [INFO] Recall page: skip=40000 size=10000 tickets=1086 rawTotal=89121
+2026-09-30 15:29:39,098 [INFO] GET https://longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn/http/PC4C/Ticket/queryOdataBatch?$top=10000&$skip=50000&$typecode=Z011
+2026-09-30 15:30:16,156 [INFO] Recall page: skip=50000 size=10000 tickets=1087 rawTotal=89121
+2026-09-30 15:30:16,157 [INFO] GET https://longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn/http/PC4C/Ticket/queryOdataBatch?$top=10000&$skip=60000&$typecode=Z011
+2026-09-30 15:30:50,436 [INFO] Recall page: skip=60000 size=10000 tickets=1096 rawTotal=89121
+2026-09-30 15:30:50,436 [INFO] GET https://longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn/http/PC4C/Ticket/queryOdataBatch?$top=10000&$skip=70000&$typecode=Z011
+2026-09-30 15:31:24,669 [INFO] Recall page: skip=70000 size=10000 tickets=1086 rawTotal=89121
+2026-09-30 15:31:24,669 [INFO] GET https://longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn/http/PC4C/Ticket/queryOdataBatch?$top=10000&$skip=80000&$typecode=Z011
+2026-09-30 15:31:57,805 [INFO] Recall page: skip=80000 size=10000 tickets=1648 rawTotal=89121
+2026-09-30 15:32:16,626 [INFO] Recall model lookup completed: {'matched': 1645, 'invalid_vehicle_id': 1, 'conflict': 2}
+2026-09-30 15:32:16,627 [INFO] Recall Claims counts: api/raw=89121 returned=10868 uniqueTickets=1648 skippedOtherTypes=0
+2026-09-30 15:32:23,130 [INFO] Wrote Recall Claims payload to Firebase path recallClaim
+2026-09-30 15:32:23,132 [INFO] Recall Claims standalone sync done. Total elapsed: 338.7s

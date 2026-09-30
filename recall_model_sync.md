@@ -1,5 +1,15 @@
 # Recall model refresh
 
+Both sync entrypoints fetch **all** Recall Z011 pages using the API's flattened
+raw-row count. `--top` is the per-request page size (default 10000), never a total
+ticket limit. Grouped ticket counts must not be used to detect the last page.
+Smaller pages avoid the observed CPI HTTP 500 failures on 50000-row first pages.
+The default Recall request timeout is 240 seconds (`C4C_TIMEOUT_SECONDS`).
+Page totals and `syncComplete` are recorded in Firebase metadata. A failed page,
+missing count, premature empty page, or unexpected loss of an existing TicketID
+aborts the replacement. Nonzero `--skip` is only allowed with `--print-url`.
+Unexpected source deletions require investigation before the snapshot can shrink.
+
 Both `sync_recall_claims_to_firebase.py` and
 `fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py` call
 `recall_models.enrich_recall_models` before writing `recallClaim`.
