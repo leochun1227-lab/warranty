@@ -19,13 +19,13 @@
   --flow-amber: #f59e0b;
   --flow-orange: #ea7a2f;
   --flow-red: #ef4444;
-  --flow-violet: #7c3aed;
+  --flow-teal: #0f766e;
 }
 
 html,body{
   background:
     radial-gradient(circle at top left, rgba(22,119,242,.08), transparent 28%),
-    radial-gradient(circle at top right, rgba(124,58,237,.06), transparent 24%),
+    radial-gradient(circle at top right, rgba(78,217,206,.06), transparent 24%),
     linear-gradient(180deg, var(--flow-bg) 0%, #f7f9fd 42%, #eef3f8 100%) !important;
   color: var(--flow-ink);
 }
@@ -276,7 +276,7 @@ body::before{
 .teamKpiGrid .kpi:nth-child(4n+4)::before,
 .employeeModalKpis .kpi:nth-child(4n+4)::before,
 .partsGrid .kpi:nth-child(4n+4)::before{
-  background: linear-gradient(90deg, rgba(124,58,237,.95), rgba(99,102,241,.82));
+  background: linear-gradient(90deg, rgba(78,217,206,.95), rgba(115,225,216,.82));
 }
 
 .controls,

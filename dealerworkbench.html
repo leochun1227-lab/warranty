@@ -436,10 +436,10 @@ td b{font-weight:500!important;}
 .kpis .kpi:nth-child(2):before{background:#dcfce7;}
 .kpis .kpi:nth-child(3):after{content:"!";color:#f59e0b;}
 .kpis .kpi:nth-child(3):before{background:#fff7ed;}
-.kpis .kpi:nth-child(4):after{content:"%";color:#6366f1;}
+.kpis .kpi:nth-child(4):after{content:"%";color:#0369a1;}
 .kpis .kpi:nth-child(4):before{background:#eef2ff;}
-.partsGrid .kpi:nth-child(1):after{content:"$";color:#7c3aed;}
-.partsGrid .kpi:nth-child(1):before{background:#f3e8ff;}
+.partsGrid .kpi:nth-child(1):after{content:"$";color:#0f766e;}
+.partsGrid .kpi:nth-child(1):before{background:#ecfbfa;}
 .partsGrid .kpi:nth-child(2):after{content:"%";color:#1677f2;}
 .partsGrid .kpi:nth-child(3):after{content:"14";color:#10b981;font-size:16px;}
 .partsGrid .kpi:nth-child(3):before{background:#dcfce7;}
@@ -489,8 +489,8 @@ td b{font-weight:500!important;}
 }
 #page-dashboard .dealerHandlingKpis .kpi:has(#outlookNet):after{content:"/"!important;color:#1677f2!important;}
 #page-dashboard .dealerHandlingKpis .kpi:has(#outlookNet):before{background:#eaf4ff!important;}
-#page-dashboard .dealerHandlingKpis .kpi:has(#outlookChange):after{content:"?"!important;color:#8b5cf6!important;}
-#page-dashboard .dealerHandlingKpis .kpi:has(#outlookChange):before{background:#f3e8ff!important;}
+#page-dashboard .dealerHandlingKpis .kpi:has(#outlookChange):after{content:"?"!important;color:#0d9488!important;}
+#page-dashboard .dealerHandlingKpis .kpi:has(#outlookChange):before{background:#ecfbfa!important;}
 #page-dashboard .dealerHandlingKpis .kpi:has(#outlookRisk):after{content:"!"!important;color:#ef4444!important;}
 #page-dashboard .dealerHandlingKpis .kpi:has(#outlookRisk):before{background:#fee2e2!important;}
 .dealerDashboardGrid{
@@ -645,7 +645,7 @@ td b{font-weight:500!important;}
 /* Dealer KPI icons */
 #page-dashboard .dealerHandlingKpis .kpi:nth-child(1):before{background:#eaf4ff!important;}
 #page-dashboard .dealerHandlingKpis .kpi:has(#outlookNet):before{background:#eaf4ff!important;}
-#page-dashboard .dealerHandlingKpis .kpi:has(#outlookChange):before{background:#f3e8ff!important;}
+#page-dashboard .dealerHandlingKpis .kpi:has(#outlookChange):before{background:#ecfbfa!important;}
 #page-dashboard .dealerHandlingKpis .kpi:has(#outlookRisk):before{background:#fee2e2!important;}
 #page-dashboard .dealerHandlingKpis .kpi:nth-child(1):after,
 #page-dashboard .dealerHandlingKpis .kpi:has(#outlookNet):after,
@@ -669,7 +669,7 @@ td b{font-weight:500!important;}
   --dealer-kpi-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 17l6-6 4 4 7-8'/%3E%3Cpath d='M14 7h6v6'/%3E%3C/svg%3E");
 }
 #page-dashboard .dealerHandlingKpis .kpi:has(#outlookChange):after{
-  --dealer-kpi-icon:#7c3aed;
+  --dealer-kpi-icon:#0f766e;
   --dealer-kpi-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h4l3-7 4 14 3-7h2'/%3E%3C/svg%3E");
 }
 #page-dashboard .dealerHandlingKpis .kpi:has(#outlookRisk):after{
@@ -759,8 +759,9 @@ body{
   border-radius:14px!important;
   box-shadow:none!important;
 }
-</style><link rel="stylesheet" href="flow-polish.css">
-<link rel="stylesheet" href="sidebar-light.css?v=20260806-compact-sidebar">
+</style><link rel="stylesheet" href="flow-polish.css?v=20261001-neutral">
+<link rel="stylesheet" href="sidebar-light.css?v=20261001-neutral">
+<link rel="stylesheet" href="dashboard-theme.css?v=20261001-neutral">
 </head><body><div class="app"><aside class="sidebar"><div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div><div class="navSection">Workspace</div><a class="navLink" href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="7" height="7" rx="1.8"/><rect x="13" y="4" width="7" height="7" rx="1.8"/><rect x="4" y="13" width="7" height="7" rx="1.8"/><rect x="13" y="13" width="7" height="7" rx="1.8"/></svg><span>Warranty Team</span></a><a class="navLink" href="delivery_flow.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 17h2l2-7h10l2 7h2"/><path d="M7 17a2 2 0 1 0 4 0"/><path d="M15 17a2 2 0 1 0 4 0"/><path d="M8 10V6h8v4"/></svg><span>Parts Delivery</span></a><a class="navLink" href="repairs.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-3-3 2.4-2.4z"/></svg><span>Repairer</span></a><div class="navDivider"></div><div class="navSection">Tickets</div>
     <a class="navLink" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15 17l2-2 2 2"/></svg><span>Claim Trend Overview</span></a><div class="navDivider"></div>
  <div class="navSection">Analysis</div>
@@ -878,7 +879,7 @@ function renderOutlook(){
 function drawDonut(c,data){
   if(!c)return;
   const {ctx,w,h}=prepare(c);
-  const colors=["#2f6df6","#22c55e","#f59e0b","#fb7185","#8b5cf6","#94a3b8"];
+  const colors=["#2f6df6","#22c55e","#f59e0b","#fb7185","#0d9488","#94a3b8"];
   let rows=(data||[]).filter(x=>Number(x.count||0)>0);
   if(rows.length>6)rows=rows.slice(0,5).concat({label:"Others",count:rows.slice(5).reduce((sum,x)=>sum+Number(x.count||0),0)});
   const total=rows.reduce((sum,x)=>sum+Number(x.count||0),0);
@@ -1076,7 +1077,7 @@ function renderHandlingSpeed(){
   if($('dealerSpeedAvg'))$('dealerSpeedAvg').textContent=h.clearStatus==='done'?'Done':(h.clearDays==null?'-':formatClearTime(h.clearDays));
   if(!rowsEl)return;
   const rows=dealerCriticalDurationBuckets();
-  const colors=['#6366f1','#3b82f6','#8b5cf6','#22c55e','#f59e0b'];
+  const colors=['#0369a1','#3b82f6','#0d9488','#22c55e','#f59e0b'];
   const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
   const max=Math.max(1,...rows.map(row=>Number(row.count||0)));
   rowsEl.className='speedRows agingRows';
@@ -1117,7 +1118,7 @@ function statusDistributionFromTickets(){
 
 
 function dealerStatusMixMarkup(rows){
-  const colors=['#3b82f6','#22c55e','#f59e0b','#ec4899','#8b5cf6','#94a3b8'];
+  const colors=['#3b82f6','#22c55e','#f59e0b','#ec4899','#0d9488','#94a3b8'];
   const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
   if(!total)return '<div class="speedEmpty">No status distribution found.</div>';
   let cursor=0;
@@ -1146,7 +1147,7 @@ function incomingTicketOverrideList(){if(incomingDashboardTicketsMode())return d
 function incomingTicketFilterLabel(){if(incomingDashboardTicketsMode())return dashboardTicketsLabel();if(incomingNoUpdateMode())return 'No update tickets (Over 30days)';return ''}
 function resolveIncomingStatusFilter(statusQuery,tickets){const needle=clean(statusQuery).toLowerCase();if(!needle)return"";const matches=new Map();(tickets||[]).forEach(t=>{const status=clean(t.status);if(status&&status.toLowerCase().includes(needle))matches.set(status,(matches.get(status)||0)+1)});return [...matches.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]))[0]?.[0]||""}
 function applyIncomingTicketSearch(){const q=incomingTicketSearch();const override=incomingTicketOverrideList();const requestedStatus=incomingTicketStatus();if(!q&&!override&&!requestedStatus)return;currentPage='tickets';selectedStatus='';const input=$("ticketSearch");const sourceTickets=override||(currentDealerView()?.tickets||[]);const matchedStatus=resolveIncomingStatusFilter(requestedStatus,sourceTickets);if(matchedStatus)selectedStatus=matchedStatus;if(input){if(override)input.value=incomingTicketFilterLabel();else if(q)input.value=q;else input.value=""}syncPageHash();renderAll();setTimeout(()=>{const target=input||document.getElementById('page-tickets');if(target)target.scrollIntoView({behavior:'smooth',block:'center'});},80)}
-function renderDashboard(){drawTrend();renderDealerStatusMix();renderOutlook();renderHandlingSpeed()}function logClass(e){return clean(e.cls)||'move'}function logType(e){const c=logClass(e);return c==='exit'?'Exited critical':c==='enter'?'Entered critical':'Critical status changed'}function badge(t){return t.isCritical?'b-critical':'b-normal'}function filteredTickets(){const override=incomingTicketOverrideList();if(override)return override.filter(t=>(!selectedStatus||t.status===selectedStatus));const q=clean($("ticketSearch")?.value||incomingTicketSearch()).toLowerCase();const view=currentDealerView();return (view?.tickets||[]).filter(t=>(!selectedStatus||t.status===selectedStatus)&&(!q||[t.id,t.customer,t.employee,t.repair,t.status,t.claim].join(' ').toLowerCase().includes(q)))}function chipColor(status,i){const s=clean(status).toLowerCase();if(s.includes('claim assessment'))return'#3b82f6';if(s.includes('new claim'))return'#60a5fa';if(s.includes('evidence'))return'#2563eb';if(s.includes('quote'))return'#f59e0b';if(s.includes('management'))return'#fb7185';if(s.includes('authorization'))return'#ec4899';if(s.includes('supplier'))return'#14b8a6';if(s.includes('awaiting'))return'#22c55e';if(s.includes('suspended'))return'#64748b';return['#6366f1','#06b6d4','#8b5cf6','#f97316'][i%4]}
+function renderDashboard(){drawTrend();renderDealerStatusMix();renderOutlook();renderHandlingSpeed()}function logClass(e){return clean(e.cls)||'move'}function logType(e){const c=logClass(e);return c==='exit'?'Exited critical':c==='enter'?'Entered critical':'Critical status changed'}function badge(t){return t.isCritical?'b-critical':'b-normal'}function filteredTickets(){const override=incomingTicketOverrideList();if(override)return override.filter(t=>(!selectedStatus||t.status===selectedStatus));const q=clean($("ticketSearch")?.value||incomingTicketSearch()).toLowerCase();const view=currentDealerView();return (view?.tickets||[]).filter(t=>(!selectedStatus||t.status===selectedStatus)&&(!q||[t.id,t.customer,t.employee,t.repair,t.status,t.claim].join(' ').toLowerCase().includes(q)))}function chipColor(status,i){const s=clean(status).toLowerCase();if(s.includes('claim assessment'))return'#3b82f6';if(s.includes('new claim'))return'#60a5fa';if(s.includes('evidence'))return'#2563eb';if(s.includes('quote'))return'#f59e0b';if(s.includes('management'))return'#fb7185';if(s.includes('authorization'))return'#ec4899';if(s.includes('supplier'))return'#14b8a6';if(s.includes('awaiting'))return'#22c55e';if(s.includes('suspended'))return'#64748b';return['#0369a1','#06b6d4','#0d9488','#f97316'][i%4]}
 function renderChips(){const m=new Map();(incomingTicketOverrideList()||(currentDealerView()?.tickets||[])).forEach(t=>m.set(t.status,(m.get(t.status)||0)+1));$("statusChips").innerHTML=[...m.entries()].sort((a,b)=>b[1]-a[1]).slice(0,14).map(([s,c],i)=>{const color=chipColor(s,i);return `<button class="chip ${selectedStatus===s?'active':''}" data-status="${esc(s)}" style="--chip:${color};--chipBg:${color}18"><span class="chipDot"></span><span class="chipText">${esc(s)}</span><span class="chipCount">${num(c)}</span></button>`}).join('');document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{selectedStatus=selectedStatus===b.dataset.status?'':b.dataset.status;renderTickets()})}function renderTickets(){const view=currentDealerView();const s=view?.summary||{};const pLogs=periodLogs();$("kpiCritical").textContent=num(periodCurrentCritical());$("kpiEntered").textContent=num(pLogs.filter(e=>logClass(e)==="enter").length);$("kpiExited").textContent=num(pLogs.filter(e=>logClass(e)==="exit").length);$("logNote").textContent=`Showing ${num(pLogs.length)} ${activePeriod==="day"?"today":"this week"} historical record(s) for ${dealerData?.dealer}.`;$("logRows").innerHTML=pLogs.slice(0,80).map((e,i)=>`<tr><td><div style="font-weight:520;color:#0f172a">${niceDate(e.detectedAt)}</div><div style="color:#64748b;font-size:12px;margin-top:3px">Data sync - ${niceDate(e.dataSyncAt)}</div></td><td><div style="font-weight:500;color:#0f172a">${esc([e.fromCode,e.fromStatus].filter(Boolean).join(' ')||'-')}</div><div style="color:#64748b;margin:3px 0">-> ${esc([e.toCode,e.toStatus].filter(Boolean).join(' ')||'-')}</div><span class="changeType ${esc(logClass(e))}">${esc(logType(e))}</span></td><td><span style="font-weight:500;color:#0f172a">#${esc(e.id)}</span></td><td><button class="btn viewTicketBtn logDetailBtn" data-i="${i}" type="button">View ticket</button></td><td>${money(e.amount)}</td></tr>`).join('')||'<tr><td colspan="5"><div class="empty">No historical critical status changes.</div></td></tr>';$('logRows').querySelectorAll('.logDetailBtn').forEach(b=>b.onclick=()=>openLogTicket(pLogs[Number(b.dataset.i)]));renderChips();const list=filteredTickets();$("ticketRows").innerHTML=list.slice(0,500).map(t=>`<tr><td><span class="badge ${badge(t)}">${esc(t.status)}</span></td><td>${esc(t.id)}</td><td>${esc(t.customer)}${t.dealer?`<div style="color:#64748b;font-size:12px;margin-top:3px">${esc(t.dealer)}</div>`:""}</td><td>${esc(t.claim)}</td><td>${esc(t.repair)}</td><td>${esc(t.employee)}</td><td>${num(t.agingDays)} days</td></tr>`).join('')||'<tr><td colspan="7"><div class="empty">No matching tickets.</div></td></tr>'}function openLogTicket(e){if(!e)return;$("modalTitle").textContent=`Ticket #${clean(e.id)||""}`;const rows=[
   ["Customer", clean(e.customer||e.name)||"-"],
   ["Dealer", clean(e.dealer)||clean(dealerData?.dealer)||"-"],

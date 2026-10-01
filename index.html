@@ -6,13 +6,14 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>Warranty Team</title>
+<link rel="stylesheet" href="dashboard-overview.css?v=20261001-overview">
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#0f172a;--muted:#607089;--line:#dbe3ee;--nav:#0b1222;--blue:#3b82f6;--orange:#fb6b1d;--green:#16a34a;--shadow:0 10px 28px rgba(15,23,42,.06)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;font-size:14px;font-weight:400}.app{min-height:100vh;display:grid;grid-template-columns:288px 1fr}.sidebar{background:#0b1222;color:#e5e7eb;min-height:100vh;padding:22px 16px;position:sticky;top:0}.brandWrap{display:flex;align-items:center;gap:12px;margin:0 0 28px}.brandMark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#38bdf8,#2563eb);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(37,99,235,.25)}.brandMark svg{width:20px;height:20px;stroke-width:1.8}.brandText span{display:block;font-size:18px;font-weight:600}.brandText small{display:block;color:#9aa8bc;font-size:12px;margin-top:2px}.navSection{font-size:12px;letter-spacing:4px;color:#8ea0b8;text-transform:uppercase;margin:25px 8px 10px}.navBtn,.navLink{width:100%;display:flex;align-items:center;gap:13px;border:0;background:transparent;color:#d9e1ec;padding:13px 14px;border-radius:12px;font-weight:600;text-decoration:none;cursor:pointer;text-align:left}.navBtn.active,.navLink.active{background:rgba(255,255,255,.10);color:#fff}.navBtn:hover,.navLink:hover{background:rgba(255,255,255,.07)}.navBtn svg,.navLink svg{width:18px;height:18px;stroke-width:1.8;color:#aebcd1}.navDivider{height:1px;background:rgba(255,255,255,.10);margin:22px 8px}.main{min-width:0;padding:30px 40px 46px}.pageTop{display:flex;justify-content:space-between;gap:22px;align-items:flex-start;margin-bottom:18px}.pageTitle{font-size:28px;line-height:1.15;font-weight:600;margin:0 0 8px;letter-spacing:-.02em}.subTitle{color:#52627a;font-size:14px;margin:0}.topActions{display:flex;justify-content:flex-end;align-items:center;gap:10px;flex-wrap:wrap;min-width:520px}.claimSwitch{display:inline-flex;padding:4px;border:1px solid #dbe7f5;background:#fff;border-radius:18px;box-shadow:0 8px 22px rgba(15,23,42,.04)}.claimBtn{height:38px;border:0;background:transparent;border-radius:14px;padding:0 17px;color:#334155;font-weight:500;cursor:pointer;white-space:nowrap}.claimBtn:hover{background:#f8fbff}.claimBtn.active{background:#eaf4ff;color:#1d4ed8;box-shadow:inset 0 0 0 1px #bfdbfe}.changeSwitch{display:inline-flex;padding:3px;border:1px solid #dbe7f5;background:#fff;border-radius:14px;box-shadow:0 8px 22px rgba(15,23,42,.04)}.changeBtn{height:32px;border:0;background:transparent;border-radius:11px;padding:0 12px;color:#334155;font-weight:500;cursor:pointer;white-space:nowrap}.changeBtn.active{background:#eef7ff;color:#155e9f;box-shadow:inset 0 0 0 1px #bfdbfe}.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px 28px;margin-bottom:24px;overflow:hidden}.panelHead{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:16px}.panelTitle{font-size:22px;font-weight:500;margin:0 0 8px;letter-spacing:-.015em}.panelDesc{color:#5f6f86;margin:0;font-size:13px;line-height:1.45}.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.input{height:42px;border:1px solid var(--line);border-radius:12px;background:#fff;padding:0 13px;color:#0f172a}.chartWrap{height:390px;position:relative}canvas{width:100%;height:100%;display:block}.legend{display:flex;gap:18px;justify-content:center;align-items:center;margin-top:10px;color:#52627a;flex-wrap:wrap}.legend span{display:flex;gap:7px;align-items:center}.dot{width:9px;height:9px;border-radius:999px;display:inline-block}.blue{background:var(--blue)}.orange{background:var(--orange)}.green{background:var(--green)}.error{display:none;background:#fff7ed;border:1px solid #fdba74;color:#9a3412;border-radius:12px;padding:12px 14px;margin-bottom:16px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:0 0 24px}.speedKpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 18px}.speedKpis .kpi{min-height:82px;padding:13px 15px;border-radius:14px;box-shadow:0 8px 20px rgba(15,23,42,.045)}.speedKpis .kpiLabel{font-size:10px;letter-spacing:3px;margin-bottom:8px}.speedKpis .kpiValue{font-size:23px}.speedKpis .kpiHint{display:none}.speedKpis #kpiApprovedAmount,.speedKpis #kpiUnapprovedAmount{display:block}.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:21px 22px;box-shadow:var(--shadow);min-height:120px}.kpiLabel{font-weight:600;margin:0 0 14px;color:#52627a;font-size:12px;letter-spacing:4px;text-transform:uppercase}.kpiValue{font-size:30px;font-weight:500;letter-spacing:-.025em}.kpiHint{color:#64748b;font-size:12px;margin-top:9px}.infoGrid{display:grid;grid-template-columns:1.05fr .95fr;gap:22px}.barList{display:grid;gap:12px;margin-top:18px}.barRow{display:grid;grid-template-columns:210px 1fr 76px;gap:14px;align-items:center}.barLabel{color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.barTrack{height:16px;border-radius:999px;background:#eef3f8;border:1px solid #e2e8f0;overflow:hidden}.barFill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7dd3fc,#3b82f6)}.barValue{text-align:right;color:#334155;font-weight:500}.mixRows{display:grid;gap:10px;margin-top:18px}.mixRow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:11px 13px;border:1px solid #e5edf6;border-radius:12px;background:#f9fbfe;color:#334155}.mixRow b{font-weight:500;color:#0f172a}.tooltip{position:fixed;display:none;pointer-events:none;z-index:50;background:white;border:1px solid #e2e8f0;box-shadow:0 18px 44px rgba(15,23,42,.18);border-radius:14px;padding:12px 14px;font-size:13px;min-width:250px;line-height:1.45}.tooltip b{display:block;margin-bottom:8px}.tipRow{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:7px}.tipLeft{font-weight:500}.tipRight{display:flex;align-items:center;gap:10px;justify-content:flex-end;white-space:nowrap}.tipValue{font-weight:700;color:#0f172a}.tipDelta{font-size:12px;font-weight:700;padding:2px 8px;border-radius:999px;line-height:1.4}.tipDelta.up{color:#166534;background:#dcfce7}.tipDelta.down{color:#b91c1c;background:#fee2e2}.tipDelta.flat{color:#475569;background:#e2e8f0}@media(max-width:1120px){.app{grid-template-columns:250px 1fr}.kpis{grid-template-columns:repeat(2,1fr)}.infoGrid{grid-template-columns:1fr}.pageTop{display:block}.topActions{justify-content:flex-start;min-width:0;margin-top:14px}}@media(max-width:760px){.app{display:block}.sidebar{position:relative;min-height:auto}.main{padding:22px}.kpis{grid-template-columns:1fr}.barRow{grid-template-columns:120px 1fr 58px}.claimSwitch{display:grid;grid-template-columns:1fr;width:100%}}
 
 .heroGrid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(440px,.92fr);gap:24px;margin-bottom:24px}.heroGrid .panel{margin-bottom:0}.speedPanel{display:flex;flex-direction:column}.speedHeadLine{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:2px 0 18px;padding-top:2px;border-top:1px solid #eef3f8}.speedMetric{display:flex;flex-direction:column;align-items:flex-start}.speedMetric b{font-size:31px;font-weight:500;letter-spacing:-.03em;color:#0f172a}.speedMetric span{font-size:12px;color:#64748b;margin-top:4px}.speedRows{display:grid;gap:12px;margin-top:4px}.speedRow{display:grid;grid-template-columns:116px 1fr 44px;gap:12px;align-items:center}.speedLabel{color:#52627a;font-size:13px;text-align:right}.speedTrack{height:18px;border-radius:999px;background:#eef4fa;border:1px solid #e1e9f2;overflow:hidden}.speedFill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7dd3fc,#22aeea)}.speedValue{font-weight:500;color:#334155}@media(max-width:1180px){.heroGrid{grid-template-columns:1fr}.speedRow{grid-template-columns:118px 1fr 52px}}
 
-.teamKpiGrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;margin:0 0 24px}.teamKpiGrid .kpi{grid-column:span 3;min-height:122px;padding:18px 20px;border-radius:16px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;background:linear-gradient(180deg,#fff,#fbfdff)}.teamKpiGrid .kpi:nth-child(n+5){grid-column:span 4}.kpiTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.kpiIcon{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#eff6ff;color:#2563eb;font-size:20px;font-weight:700;flex:0 0 auto}.kpiIcon.green{background:#ecfdf5;color:#10b981}.kpiIcon.orange{background:#fff7ed;color:#f97316}.kpiIcon.red{background:#fff1f2;color:#e11d48}.kpiIcon.purple{background:#f5f3ff;color:#7c3aed}.kpiIcon.sky{background:#f0f9ff;color:#0284c7}.kpiMain{min-width:0}.teamKpiGrid .kpiLabel{letter-spacing:0;text-transform:none;font-size:13px;margin:0 0 8px;color:#344054;font-weight:500}.teamKpiGrid .kpiValue{font-size:28px;line-height:1;font-weight:600;letter-spacing:-.025em}.kpiHint{display:block}.kpiTrend{display:flex;align-items:center;gap:7px;color:#64748b;font-size:12px;line-height:1.3;min-height:20px;flex-wrap:wrap}.kpiTrend svg{width:17px;height:17px;flex:0 0 auto}.kpiTrend.good{color:#059669}.kpiTrend.bad{color:#e11d48}.kpiTrend.flat{color:#64748b}.kpiTrend span{white-space:nowrap}.kpiTrend .kpiTrendMeta{margin-left:auto;color:#64748b;background:#f8fbff;border:1px solid #dbe4ef;border-radius:999px;padding:3px 8px;font-weight:700;font-size:11px}.kpiTrend.kpiTrendDateOnly{justify-content:flex-end}.ratioBase{font-size:12px;color:#2563eb;font-weight:600;margin-top:8px}.speedPanel .panelHead{margin-bottom:14px}.speedPanel .speedHeadLine{border-top:0;padding-top:0}@media(max-width:1280px){.teamKpiGrid .kpi,.teamKpiGrid .kpi:nth-child(n+5){grid-column:span 6}}@media(max-width:760px){.teamKpiGrid{grid-template-columns:1fr}.teamKpiGrid .kpi,.teamKpiGrid .kpi:nth-child(n+5){grid-column:1}}
+.teamKpiGrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;margin:0 0 24px}.teamKpiGrid .kpi{grid-column:span 3;min-height:122px;padding:18px 20px;border-radius:16px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;background:linear-gradient(180deg,#fff,#fbfdff)}.teamKpiGrid .kpi:nth-child(n+5){grid-column:span 4}.kpiTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.kpiIcon{width:38px;height:38px;border-radius:13px;display:grid;place-items:center;background:#eff6ff;color:#2563eb;font-size:20px;font-weight:700;flex:0 0 auto}.kpiIcon.green{background:#ecfdf5;color:#10b981}.kpiIcon.orange{background:#fff7ed;color:#f97316}.kpiIcon.red{background:#fff1f2;color:#e11d48}.kpiIcon.teal{background:#f5fdfc;color:#0f766e}.kpiIcon.sky{background:#f0f9ff;color:#0284c7}.kpiMain{min-width:0}.teamKpiGrid .kpiLabel{letter-spacing:0;text-transform:none;font-size:13px;margin:0 0 8px;color:#344054;font-weight:500}.teamKpiGrid .kpiValue{font-size:28px;line-height:1;font-weight:600;letter-spacing:-.025em}.kpiHint{display:block}.kpiTrend{display:flex;align-items:center;gap:7px;color:#64748b;font-size:12px;line-height:1.3;min-height:20px;flex-wrap:wrap}.kpiTrend svg{width:17px;height:17px;flex:0 0 auto}.kpiTrend.good{color:#059669}.kpiTrend.bad{color:#e11d48}.kpiTrend.flat{color:#64748b}.kpiTrend span{white-space:nowrap}.kpiTrend .kpiTrendMeta{margin-left:auto;color:#64748b;background:#f8fbff;border:1px solid #dbe4ef;border-radius:999px;padding:3px 8px;font-weight:700;font-size:11px}.kpiTrend.kpiTrendDateOnly{justify-content:flex-end}.ratioBase{font-size:12px;color:#2563eb;font-weight:600;margin-top:8px}.speedPanel .panelHead{margin-bottom:14px}.speedPanel .speedHeadLine{border-top:0;padding-top:0}@media(max-width:1280px){.teamKpiGrid .kpi,.teamKpiGrid .kpi:nth-child(n+5){grid-column:span 6}}@media(max-width:760px){.teamKpiGrid{grid-template-columns:1fr}.teamKpiGrid .kpi,.teamKpiGrid .kpi:nth-child(n+5){grid-column:1}}
 .speedDonutLayout{display:grid;grid-template-columns:178px minmax(0,1fr);gap:22px;align-items:center;margin-top:4px}.speedDonut{width:170px;height:170px;border-radius:999px;position:relative;box-shadow:inset 0 0 0 1px #e5edf6,0 16px 32px rgba(37,99,235,.10)}.speedDonut:after{content:"";position:absolute;inset:42px;border-radius:999px;background:linear-gradient(180deg,#fff,#f8fbff);box-shadow:inset 0 0 0 1px #e5edf6}.speedDonutCenter{position:absolute;inset:0;z-index:1;display:grid;place-items:center;text-align:center;pointer-events:none}.speedDonutCenter b{display:block;font-size:27px;font-weight:600;letter-spacing:-.03em;color:#0f172a}.speedDonutCenter span{display:block;margin-top:4px;font-size:12px;color:#64748b}.speedLegendRows{display:grid;gap:9px;min-width:0}.speedLegendRow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 11px;border:1px solid #e8eef6;border-radius:13px;background:#fbfdff}.speedSwatch{width:10px;height:10px;border-radius:999px;box-shadow:0 0 0 3px rgba(148,163,184,.10)}.speedLegendLabel{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#334155}.speedLegendRow b{font-weight:600;color:#0f172a;white-space:nowrap}.speedLegendRow small{font-size:11px;color:#64748b;font-weight:500;margin-left:5px}.speedEmpty{grid-column:1/-1;padding:34px 16px;border:1px dashed #cbd5e1;border-radius:16px;background:#f8fafc;color:#64748b;text-align:center}@media(max-width:760px){.speedDonutLayout{grid-template-columns:1fr}.speedDonut{margin:0 auto}.speedLegendRow{grid-template-columns:auto minmax(0,1fr) auto}}
 .dashboardTop{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;margin:0 0 18px;align-items:stretch}.dashboardMain{min-width:0}.dashboardTop .teamKpiGrid{margin:0}.criticalSummaryPanel{background:#fff;border:1px solid #dde6f2;border-radius:18px;box-shadow:0 14px 36px rgba(15,23,42,.06);padding:20px 20px 16px;min-height:100%;display:flex;flex-direction:column}.criticalSummaryPanel .panelTitle{font-size:17px;margin:0 0 14px}.criticalSideList{display:grid;gap:10px;min-height:0}.criticalSideRow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;color:#475569;font-size:13px}.criticalSideDot{width:8px;height:8px;border-radius:999px;box-shadow:0 0 0 3px rgba(59,130,246,.10)}.criticalSideLabel{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.criticalSideValue{min-width:34px;text-align:center;border-radius:999px;background:#eef6ff;color:#1d4ed8;font-weight:600;padding:4px 9px}.criticalSideLink{margin-top:auto;height:38px;border:0;border-radius:12px;background:#f1f6fd;color:#1d4ed8;font-weight:600;display:grid;place-items:center;text-decoration:none}.dashboardAnalysisGrid{display:grid;grid-template-columns:1fr 1fr 1.15fr;gap:18px;margin:0 0 18px}.dashboardAnalysisGrid .panel{margin-bottom:0;min-height:240px}.dashboardTrendGrid{grid-template-columns:1fr;margin-bottom:18px}.dashboardTrendGrid .panel{margin-bottom:0}.dashboardTrendGrid .speedPanel{display:none}.dashboardTop .kpi{border-radius:14px;box-shadow:0 12px 28px rgba(15,23,42,.045);border-color:#dfe8f3}.panel{border-radius:16px;box-shadow:0 14px 34px rgba(15,23,42,.055)}.panelTitle{font-size:16px;font-weight:600;margin-bottom:5px}.panelDesc{font-size:12px}.chartWrap{height:330px}.dashboardAnalysisGrid .barList{margin-top:10px}.dashboardAnalysisGrid .barRow{grid-template-columns:145px 1fr 42px;gap:10px}.dashboardAnalysisGrid .barTrack{height:12px}.dashboardAnalysisGrid .speedDonutLayout{grid-template-columns:150px minmax(0,1fr);gap:16px}.dashboardAnalysisGrid .speedDonut{width:148px;height:148px}.dashboardAnalysisGrid .speedDonut:after{inset:37px}.dashboardAnalysisGrid .speedDonutCenter b{font-size:23px}.dashboardAnalysisGrid .speedLegendRow{padding:7px 9px;border-radius:11px}@media(max-width:1320px){.dashboardTop{grid-template-columns:1fr}.criticalSummaryPanel{min-height:auto}.dashboardAnalysisGrid{grid-template-columns:1fr 1fr}.dashboardAnalysisGrid .dealerRankPanel{grid-column:1/-1}}@media(max-width:900px){.dashboardAnalysisGrid{grid-template-columns:1fr}.dashboardAnalysisGrid .dealerRankPanel{grid-column:auto}.dashboardTop{display:block}.criticalSummaryPanel{margin-top:16px}}
 
@@ -89,9 +90,9 @@
   height:24px!important;
   display:block!important;
 }
-.teamKpiGrid .customPurple{
-  background:#f3edff!important;
-  color:#6d4aff!important;
+.teamKpiGrid .customTeal{
+  background:#f0fcfb!important;
+  color:#0f766e!important;
 }
 .teamKpiGrid .customGreen{
   background:#eafaf1!important;
@@ -397,7 +398,7 @@
   border:0!important;
   border-radius:12px!important;
   background:#f1f6fd!important;
-  color:#4f00ff!important;
+  color:#1d4ed8!important;
   font-weight:700!important;
   display:grid!important;
   place-items:center!important;
@@ -582,7 +583,7 @@
   margin:-3px -5px!important;
 }
 .criticalLogTicket:hover{
-  color:#4f46e5!important;
+  color:#1d4ed8!important;
   background:#eef4ff!important;
 }
 .criticalLogAmount{
@@ -631,7 +632,7 @@
   border:0!important;
   border-radius:11px!important;
   background:#eef4ff!important;
-  color:#4f46e5!important;
+  color:#1d4ed8!important;
   padding:0 14px!important;
   font-size:12px!important;
   font-weight:700!important;
@@ -1046,7 +1047,7 @@
 .teamAssignBlue{
   top:0!important;
   bottom:0!important;
-  background:linear-gradient(90deg,#93c5fd,#4f46e5)!important;
+  background:linear-gradient(90deg,#93c5fd,#1d4ed8)!important;
   min-width:3px!important;
 }
 .teamAssignRed{
@@ -1143,7 +1144,7 @@
   white-space:nowrap!important;
 }
 .teamAssignValue .redValue{color:#0284c7!important}
-.teamAssignValue .blueValue{color:#4f46e5!important}
+.teamAssignValue .blueValue{color:#1d4ed8!important}
 .teamAssignValue .greenValue{color:#16a34a!important}
 .teamAssignValue .amberValue{color:#e11d48!important}
 .teamAssignLegend{
@@ -1554,7 +1555,7 @@
   border:1px solid #dbe4ef!important;
   border-radius:9px!important;
   background:#fff!important;
-  color:#4f46e5!important;
+  color:#1d4ed8!important;
   padding:0 10px!important;
   font-size:11px!important;
   font-weight:600!important;
@@ -1968,7 +1969,7 @@
 .employeeBarRow{display:grid;grid-template-columns:118px minmax(0,1fr) 42px;gap:10px;align-items:center;font-size:12px;color:#334155}
 .employeeBarLabel{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;color:#475569}
 .employeeBarTrack{height:15px;border:1px solid #e1e9f2;background:#eef4fa;border-radius:999px;overflow:hidden}
-.employeeBarFill{height:100%;border-radius:999px;background:linear-gradient(90deg,#6366f1,#8b5cf6)}
+.employeeBarFill{height:100%;border-radius:999px;background:linear-gradient(90deg,#0369a1,#0d9488)}
 .employeeBarValue{font-weight:700;color:#0f172a;text-align:right}
 .employeeDistBars{min-height:210px;display:flex;align-items:center}
 .employeeDistBars .employeeBarRows{width:100%}
@@ -2204,7 +2205,7 @@
   display:block!important;
   font-size:13px!important;
   line-height:1!important;
-  color:#4f46e5!important;
+  color:#1d4ed8!important;
   font-weight:700!important;
   white-space:nowrap!important;
   letter-spacing:-0.01em!important;
@@ -3464,8 +3465,8 @@
 }
 
 </style>
-<link rel="stylesheet" href="flow-polish.css">
-<link rel="stylesheet" href="sidebar-light.css?v=20260806-compact-sidebar">
+<link rel="stylesheet" href="flow-polish.css?v=20261001-neutral">
+<link rel="stylesheet" href="sidebar-light.css?v=20261001-neutral">
 <style>
 /* Right rail height rebalance: give useful space to Avg Cost and Status Mix, keep Duration compact. */
 @media(min-width:980px){
@@ -4095,8 +4096,10 @@ body{
   font-weight:650!important;
 }
 </style>
+<link rel="stylesheet" href="dashboard-theme.css?v=20261001-neutral">
+<link rel="stylesheet" href="dashboard-kpis.css?v=20261001-compact">
 </head>
-<body>
+<body class="team-overview-page">
 <div class="app">
   <aside class="sidebar">
     <div class="brandWrap"><div class="brandMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17v-5"/><path d="M12 17V8"/><path d="M16 17v-3"/></svg></div><div class="brandText"><span>After-Sales</span><small>Service analytics</small></div></div>
@@ -4114,23 +4117,23 @@ body{
   </aside>
   <main class="main">
     <div class="pageTop">
-      <div class="pageTitleWrap"><h1 class="pageTitle">Warranty Team Dashboard</h1><span class="pageTitleNote" id="pageTitleNote">--</span></div>
+      <div class="pageTitleWrap"><h1 class="pageTitle">Warranty Team Dashboard</h1></div>
       <div class="topActions"><input id="dateFrom" type="hidden"><input id="dateTo" type="hidden"><div id="claimSwitch" class="sidebarFilters"></div></div>
     </div>
     <div id="loadError" class="error"></div>
     <section id="analysis" class="dashboardTop dashboardFullFlow">
       <div class="dashboardMain">
         <section class="teamKpiGrid">
-          <div class="kpi totalCriticalCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Tickets in Progress</div><div class="kpiValue" id="kpiCritical">0</div></div><button class="kpiExportBtn" id="totalCriticalExportBtn" type="button" title="Export Tickets in Progress to Excel" aria-label="Export Tickets in Progress to Excel"></button><div class="kpiIcon customPurple" aria-hidden="true">!</div></div><div class="kpiTrend" id="kpiCriticalTrend"></div></div>
-          <div class="kpi approvedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Repair Cost</div><div class="kpiValue" id="kpiApproved">$0</div></div><div class="kpiIcon customPurple" aria-hidden="true">$</div></div><div class="kpiTrend" id="kpiApprovedTrend"></div></div>
+          <div class="kpi totalCriticalCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Tickets in Progress</div><div class="kpiValue" id="kpiCritical">0</div></div><button class="kpiExportBtn" id="totalCriticalExportBtn" type="button" title="Export Tickets in Progress to Excel" aria-label="Export Tickets in Progress to Excel"></button><div class="kpiIcon customTeal" aria-hidden="true">!</div></div><div class="kpiTrend" id="kpiCriticalTrend"></div></div>
+          <div class="kpi approvedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Repair Cost</div><div class="kpiValue" id="kpiApproved">$0</div></div><div class="kpiIcon customTeal" aria-hidden="true">$</div></div><div class="kpiTrend" id="kpiApprovedTrend"></div></div>
           <div class="kpi avgCostCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Average Approved Cost per Ticket</div><div class="kpiValue" id="kpiAvgCost">$0</div></div><div class="kpiIcon customGreen" aria-hidden="true">$</div></div><div class="kpiTrend" id="kpiAvgCostTrend"></div></div>
-          <div class="kpi ratioKpiCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved vs Approved</div><div class="kpiValue" id="kpiUnapprovedRatio">0.00%</div><div class="ratioBase" id="kpiRatioBase"><span class="ratioBaseValue">0 / 0</span><span class="ratioBaseNote">Ticket count: unapproved / approved</span></div></div><div class="kpiIcon">%</div></div><div class="kpiTrend" id="kpiRatioTrend"></div></div>
-          <div class="kpi unapprovedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Tickets in Progress Over 60 Days</div><div class="kpiValue" id="kpiUnapproved">0</div></div><button class="kpiExportBtn" id="longDurationExportBtn" type="button" title="Export Tickets in Progress Over 60 Days to Excel" aria-label="Export Tickets in Progress Over 60 Days to Excel"></button><div class="kpiIcon customAmber" aria-hidden="true">!</div></div><div class="kpiTrend" id="kpiUnapprovedTrend"></div></div>
-          <div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Tickets in Progress Completion Within 14 Days</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div>
+          <div class="kpi ratioKpiCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved vs Approved</div><div class="kpiValue" id="kpiUnapprovedRatio">0.00%</div></div><div class="kpiIcon">%</div></div><div class="kpiTrend" id="kpiRatioTrend"></div></div>
+          <div class="kpi unapprovedTicketsCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Tickets in Progress Over 60 Days</div><div class="kpiValue" id="kpiUnapproved">0</div><button class="kpiDetailExportBtn" id="longDurationExportBtn" type="button" title="Download tickets in progress over 60 days" aria-label="Download Excel details for tickets in progress over 60 days">Download Excel</button></div><div class="kpiIcon customAmber" aria-hidden="true">!</div></div><div class="kpiTrend" id="kpiUnapprovedTrend"></div></div>
+          <div class="kpi benchmarkRateCard"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Tickets Completion Within 14 Days</div><div class="kpiValue" id="kpiBenchmark">0%</div></div><div class="kpiIcon sky">%</div></div><div class="kpiTrend" id="kpiBenchmarkTrend"></div></div>
         </section>
         <section class="trendLogGrid">
           <section class="panel trendPanel"><button id="ticketMovementExportBtn" class="trendMovementExportBtn" type="button" title="Export Ticket Movement detail to CSV" aria-label="Export Ticket Movement detail to CSV"></button><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Ticket Movement</h2><span id="ticketMovementExportSpinner" class="titleInlineSpinner" aria-hidden="true"></span></div></div></div><div class="chartWrap"><div class="trendChartLayout"><div class="trendCanvasWrap"><canvas id="trendChart"></canvas></div><div id="trendSideSummary" class="trendSideSummary"></div></div></div><div class="panelDesc trendCreatedNote" id="trendCreatedNote"></div></section>
-          <section id="repair-analytics" class="panel criticalLogPanel repairCostPanel"><div class="panelTitleRow"><h2 class="panelTitle">Employee Workload</h2><button id="employeeWorkloadExportBtn" class="summaryExportBtn" type="button" title="Export Removed, Tickets in Progress, Approved, and Unapproved tickets to CSV" aria-label="Export Removed, Tickets in Progress, Approved, and Unapproved tickets to CSV"></button><span class="dateNote" data-date-note>through --</span></div><div class="employeeWorkloadMetricBlock"><div class="teamAssignHeadTools"><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed from Critical</span><span><i style="background:#4f46e5"></i>Tickets in Progress</span></div></div></section>
+          <section id="repair-analytics" class="panel criticalLogPanel repairCostPanel"><div class="panelTitleRow"><h2 class="panelTitle">Employee Workload</h2><button id="employeeWorkloadExportBtn" class="summaryExportBtn" type="button" title="Export Removed, Tickets in Progress, Approved, and Unapproved tickets to CSV" aria-label="Export Removed, Tickets in Progress, Approved, and Unapproved tickets to CSV"></button><span class="dateNote" data-date-note>through --</span></div><div class="employeeWorkloadMetricBlock"><div class="teamAssignHeadTools"><div id="teamAssignActions" class="teamAssignActions"></div></div><div id="teamAssignGrid" class="teamAssignGrid"></div><div class="teamAssignLegend"><span><i style="background:#e11d48"></i>Removed from Critical</span><span><i style="background:#1d4ed8"></i>Tickets in Progress</span></div></div></section>
         </section>
         <section class="dashboardAnalysisGrid trendSupportGrid"><div class="panel statusMixPanel"><div class="panelTitleRow"><h2 class="panelTitle">Tickets in Progress Remaining Status Mix</h2></div><div id="statusMix" class="mixRows"></div></div><div class="panel speedPanel"><div class="panelHead"><div><div class="panelTitleRow"><h2 class="panelTitle">Tickets in Progress Remaining Duration Distribution</h2></div></div></div><div id="speedRows" class="speedRows"></div></div><div class="panel repairCostDistributionPanel"><div class="panelTitleRow"><h2 class="panelTitle">Approved Repair Cost Distribution</h2></div><div id="criticalLogRows" class="statusPieLayout repairCostPie"></div></div></section>
       </div>
@@ -4145,7 +4148,7 @@ body{
       <div class="employeeModalControls"><div id="employeeModalPeriod" class="employeeModalPeriod"></div><button id="employeeModalClose" class="employeeModalClose" type="button">X</button></div>
     </div>
     <section class="employeeModalKpis">
-      <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Tickets in Progress</div><div id="empKpiCritical" class="kpiValue">0</div></div><div class="kpiIcon customPurple" aria-hidden="true">!</div></div><div id="empKpiCriticalTrend" class="kpiTrend"></div></div>
+      <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Tickets in Progress</div><div id="empKpiCritical" class="kpiValue">0</div></div><div class="kpiIcon customTeal" aria-hidden="true">!</div></div><div id="empKpiCriticalTrend" class="kpiTrend"></div></div>
       <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Handled Tickets</div><div id="empKpiHandled" class="kpiValue">0</div></div><div class="kpiIcon customGreen" aria-hidden="true">OK</div></div><div id="empKpiHandledTrend" class="kpiTrend"></div></div>
       <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Tickets</div><div id="empKpiApprovedCost" class="kpiValue">0</div></div><div class="kpiIcon customGreen" aria-hidden="true">OK</div></div><div id="empKpiApprovedCostTrend" class="kpiTrend"></div></div>
       <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved Tickets</div><div id="empKpiAvgCost" class="kpiValue">0</div></div><div class="kpiIcon customAmber" aria-hidden="true">!</div></div><div id="empKpiAvgCostTrend" class="kpiTrend"></div></div>
@@ -4185,7 +4188,9 @@ const $=id=>document.getElementById(id); const clean=v=>v==null?"":String(v).tri
 const esc=v=>clean(v).replace(/[&<>"']/g,s=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[s]));
 const money=v=>Number(v||0).toLocaleString(undefined,{style:"currency",currency:"AUD",maximumFractionDigits:0});
 const EMPLOYEE_STATUS_STORAGE_KEY="warrantyEmployeeStatusMapping";
-const DEFAULT_ACTIVE_EMPLOYEES=["Marissa Colosimo","Ford Hapuku","Mark Bertoncini","Leanne Pulford","Kylie Clayton","Rosemary Johnstone","Michael Scordia","Robert Stella","Chloe Bolger","Salvino Briganti"];
+const DEFAULT_ACTIVE_EMPLOYEES=["Marissa Colosimo","Mark Bertoncini","Kylie Clayton","Rosemary Johnstone","Robert Stella","Chloe Bolger"];
+// Confirmed departures: take precedence over stale local or remote directory entries.
+const CONFIRMED_EXITED_EMPLOYEES=["Leanne Pulford","Salvino Briganti","Ford Hapuku","Michael Scordia"];
 const CLEAR_TARGET_CRITICAL=300;
 function normalizeEmployeeDirectory(raw={}){
   const out={};
@@ -4198,6 +4203,7 @@ function normalizeEmployeeDirectory(raw={}){
     if(normalizedKey)out[normalizedKey]={name:name||key,status};
   });
   DEFAULT_ACTIVE_EMPLOYEES.forEach(name=>{const key=employeeStatusKey(name);if(key&&!out[key])out[key]={name,status:"active"};});
+  CONFIRMED_EXITED_EMPLOYEES.forEach(name=>{out[employeeStatusKey(name)]={name,status:"exited"};});
   return out;
 }
 function loadEmployeeStatusMapping(){try{employeeStatusMapping=normalizeEmployeeDirectory(JSON.parse(localStorage.getItem(EMPLOYEE_STATUS_STORAGE_KEY)||"{}")||{});}catch(e){employeeStatusMapping=normalizeEmployeeDirectory({});}saveEmployeeStatusMapping();}
@@ -5114,6 +5120,24 @@ async function ensureCurrentPeriodSnapshotDetails(){
   }
   return view.periodSnapshots[key]||periodSnapshotForBounds(start,end)||null;
 }
+async function ensureKpiComparisonSnapshotDetails(){
+  const bounds=periodBounds();
+  const {start,end}=previousPeriodBounds(bounds.start,bounds.end);
+  if(end<earliestDateForView())return null;
+  const view=currentView()||{};
+  view.periodSnapshots=view.periodSnapshots||{};
+  const key=`${start}|${end}`;
+  if(view.periodSnapshots[key]?.__fullExportDetailsLoaded)return view.periodSnapshots[key];
+  const path=`${fullTeamViewPath()}/periodSnapshots/${firebaseSafeKey(key)}`;
+  try{
+    const snap=await loadTeamDetailSource(`snapshot:${path}`,()=>readJson(path),value=>value===null||typeof value==="object");
+    if(snap&&typeof snap==="object")view.periodSnapshots[key]={...(view.periodSnapshots[key]||{}),...snap,__fullExportDetailsLoaded:true};
+    return view.periodSnapshots[key]||null;
+  }catch(err){
+    console.warn("Previous month KPI details unavailable",err);
+    return null;
+  }
+}
 async function ensureExportDetailsLoaded(){
   await Promise.all([
     ensureFullTeamViewDetails(),
@@ -5769,7 +5793,7 @@ function updateTrendPanelCopy(){
   if(!panel)return;
   const title=panel.querySelector(".panelTitle");
   const periodLabel=selectedMonthPeriodLabel();
-  if(title)title.textContent=`Ticket Movement (${periodLabel})`;
+  if(title){title.textContent=`Ticket Movement (${kpiMonthLabel(periodEndDate())})`;title.title=selectedPeriodText();}
   const bounds=periodBounds();
   const bridge=ticketMovementBridge(bounds.start,bounds.end);
   const cumulativePoints=cumulativeTrendPoints(trendPoints);
@@ -5798,21 +5822,22 @@ function updateTrendPanelCopy(){
 }
 function updateDashboardCopy(){
   const periodLabel=selectedMonthPeriodLabel();
+  const shortMonth=kpiMonthLabel(periodEndDate());
   const periodText=selectedPeriodText();
   const snapshotText=selectedSnapshotText();
   updateTrendPanelCopy();
   const repairPanelTitle=document.querySelector(".repairCostPanel>.panelTitleRow .panelTitle");
-  if(repairPanelTitle)repairPanelTitle.textContent=`Employee Workload (${periodLabel})`;
+  if(repairPanelTitle){repairPanelTitle.textContent=`Employee Workload (${shortMonth})`;repairPanelTitle.title=periodText;}
   const repairCostTitle=document.querySelector(".repairCostDistributionPanel .panelTitle");
-  if(repairCostTitle)repairCostTitle.textContent=`Approved Repair Cost Distribution (${periodLabel})`;
+  if(repairCostTitle){repairCostTitle.textContent=`Approved Repair Cost Distribution (${shortMonth})`;repairCostTitle.title=periodText;}
   const avgTitle=document.querySelector(".avgCostTrendPanel .panelTitle");
   if(avgTitle)avgTitle.textContent=`Average Approved Cost per Ticket Trend (${periodLabel})`;
   const dealerTitle=document.querySelector(".dealerRankPanel .panelTitle");
   if(dealerTitle)dealerTitle.textContent=`Top Dealers by Tickets in Progress (On ${snapshotText})`;
   const durationTitle=document.querySelector(".speedPanel .panelTitle");
-  if(durationTitle)durationTitle.textContent=`Tickets in Progress Remaining Duration Distribution (On ${snapshotText})`;
+  if(durationTitle){durationTitle.textContent=`Tickets Remaining Duration Distribution (${shortMonth})`;durationTitle.title=`As of ${kpiDateLabel(periodEndDate())}`;}
   const statusTitle=document.querySelector(".statusMixPanel .panelTitle");
-  if(statusTitle)statusTitle.textContent=`Tickets in Progress Remaining Status Mix (On ${snapshotText})`;
+  if(statusTitle){statusTitle.textContent=`Tickets Remaining Status (${shortMonth})`;statusTitle.title=`As of ${kpiDateLabel(periodEndDate())}`;}
   document.querySelectorAll("[data-copy-period]").forEach(el=>{el.textContent=periodText;});
 }
 function cumulativeTrendPoints(rows){
@@ -5856,16 +5881,16 @@ function drawTrend(){
     ctx.fillText("No trend data found for this date range.",w/2,h/2);
     return;
   }
-  const left=46,right=56,top=40,bottom=88,plotW=w-left-right,plotH=h-top-bottom;
+  const left=42,right=42,top=30,bottom=h<320?36:58,plotW=w-left-right,plotH=h-top-bottom;
   const cumulativeMax=niceMax(Math.max(1,...pts.flatMap(p=>[p.cumulativeEnteredCritical,p.cumulativeExitedCritical])));
   const criticalMax=niceMax(Math.max(1,...pts.map(p=>p.criticalTotal)));
   const xFor=i=>left+(pts.length<=1?plotW/2:plotW*i/(pts.length-1));
   const yCumulative=v=>top+plotH-(plotH*(Number(v||0)/cumulativeMax));
   const yCritical=v=>top+plotH-(plotH*(Number(v||0)/criticalMax));
   ctx.save();
-  ctx.strokeStyle="#e8eef5";
+  ctx.strokeStyle="#f0f3f6";
   ctx.lineWidth=1;
-  ctx.font="560 12px 'Segoe UI Variable', Aptos, 'Segoe UI', Arial";
+  ctx.font="400 12px 'Segoe UI Variable', Aptos, 'Segoe UI', Arial";
   ctx.textBaseline="middle";
   for(let i=0;i<=5;i++){
     const y=top+plotH-(plotH*i/5);
@@ -5875,14 +5900,14 @@ function drawTrend(){
     ctx.stroke();
     const leftVal=Math.round(cumulativeMax*i/5);
     const rightVal=Math.round(criticalMax*i/5);
-    ctx.fillStyle="#2563eb";
+    ctx.fillStyle="#8491a3";
     ctx.textAlign="right";
     ctx.fillText(String(leftVal),left-10,y);
-    ctx.fillStyle="#b45309";
+    ctx.fillStyle="#8491a3";
     ctx.textAlign="left";
     ctx.fillText(String(rightVal),w-right+10,y);
   }
-  ctx.strokeStyle="#cfd8e3";
+  ctx.strokeStyle="#e2e8ef";
   ctx.beginPath();
   ctx.moveTo(left,top);
   ctx.lineTo(left,top+plotH);
@@ -5895,7 +5920,7 @@ function drawTrend(){
   ctx.moveTo(left,top+plotH);
   ctx.lineTo(w-right,top+plotH);
   ctx.stroke();
-  ctx.font="650 12px 'Segoe UI Variable', Aptos, 'Segoe UI', Arial";
+  ctx.font="500 12px 'Segoe UI Variable', Aptos, 'Segoe UI', Arial";
   ctx.textBaseline="top";
   ctx.fillStyle="#2563eb";
   ctx.textAlign="left";
@@ -5903,8 +5928,8 @@ function drawTrend(){
   ctx.fillStyle="#b45309";
   ctx.textAlign="right";
   ctx.fillText("Remaining",w-right,top-24);
-  ctx.fillStyle="#64748b";
-  ctx.font="560 12px 'Segoe UI Variable', Aptos, 'Segoe UI', Arial";
+  ctx.fillStyle="#8491a3";
+  ctx.font="400 12px 'Segoe UI Variable', Aptos, 'Segoe UI', Arial";
   ctx.textAlign="center";
   ctx.textBaseline="top";
   trendAxisTickIndexes(pts).forEach(i=>{
@@ -6014,37 +6039,52 @@ function bindWeeklyAvgCostTooltip(){
     point.onmouseleave=()=>{tip.style.display="none";};
   });
 }
+function kpiDateLabel(iso){
+  const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(clean(iso));
+  return match?`${match[3]}/${match[2]}/${match[1]}`:"";
+}
+function kpiMonthLabel(iso){
+  const month=Number(clean(iso).slice(5,7));
+  return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][month-1]||"";
+}
+function setCompactKpiLabel(selector,label,period){
+  const el=document.querySelector(selector+" .kpiLabel");
+  if(el)el.innerHTML=`${esc(label)}<span class="kpiPeriod">(${esc(period)})</span>`;
+}
+function kpiComparisonMarkup(current,previous,{month,format="number",lowerIsBetter=false,higherIsBetter=false}={}){
+  const valid=v=>v!==null&&v!==undefined&&Number.isFinite(Number(v));
+  const formatValue=v=>format==="money"?money(v):format==="ratio"?pctText(v,2):num(v);
+  if(!valid(previous))return `<span class="kpiPrevious">${esc(month)}: unavailable</span><span class="kpiChange flat">No comparison data</span>`;
+  const previousLine=`<span class="kpiPrevious">${esc(month)}: <b>${esc(formatValue(previous))}</b></span>`;
+  if(!valid(current))return previousLine+`<span class="kpiChange flat">No comparison data</span>`;
+  const diff=Number(current)-Number(previous);
+  const cls=diff===0?"flat":lowerIsBetter?(diff<0?"good":"bad"):higherIsBetter?(diff>0?"good":"bad"):"neutral";
+  let delta;
+  if(format==="ratio")delta=`${diff>0?"+":""}${numFixed(diff,1)} pp`;
+  else if(Number(previous)===0&&diff!==0)return previousLine+`<span class="kpiChange flat">Change: N/A (zero base)</span>`;
+  else delta=`${diff>0?"+":""}${numFixed(Number(previous)===0?0:diff/Math.abs(Number(previous))*100,1)}%`;
+  return previousLine+`<span class="kpiChange ${cls}">${esc(delta)} vs ${esc(month)}</span>`;
+}
 function renderKpis(){
   const s=currentPeriodSummary();
-  const approvalMonthSummary=approvalAnalyticsSummary();
   const b=periodBounds(),pb=previousPeriodBounds(b.start,b.end),prev=summaryForBounds(pb.start,pb.end);
   const h=periodHandlingSummary();
-  const prevH=periodHandlingSummaryForBounds(pb.start,pb.end,prev.criticalNow);
-  const filtered=hasTicketFilter();
   const noUpdate=noUpdateAgingSummary();
   const approvedAmountCurrent=Number(s.approvedAmount||0);
-  const approvedCostTicketsCurrent=Number(s.approvedCostTickets||0);
-  const approvedAvg=approvedCostPerTicket({
-    approvedAmount:approvedAmountCurrent,
-    approvedCostTickets:approvedCostTicketsCurrent
-  });
-  const prevApprovedAvg=approvedCostPerTicket(prev);
+  const approvedAvg=approvedCostPerTicket(s);
   const removedApproval=ticketMovementRemovedApprovalSummary(b.start,b.end);
-  const ratioUnapproved=Number(removedApproval.unapprovedTickets||0);
   const ratioApproved=Number(removedApproval.approvedTickets||0);
-  const ratio=pctValue(ratioUnapproved,ratioApproved),prevRatio=pctValue(prev.unapprovedTickets,prev.approvedTickets);
+  const ratio=pctValue(removedApproval.unapprovedTickets,ratioApproved);
   const totalTicketValue=selectedPeriodCriticalTotal();
   const todayMode=activePeriod==="day";
-  const snapshotText=selectedSnapshotText();
-  const periodLabel=selectedMonthPeriodLabel();
-  setCardLabel(".totalCriticalCard",`Tickets in Progress (On ${snapshotText})`);
-  const noUpdateLabel=document.querySelector(".unapprovedTicketsCard .kpiLabel");
-  if(noUpdateLabel)noUpdateLabel.innerHTML=`Tickets in Progress Over 60 Days (On ${esc(snapshotText)})`;
-  const benchmarkLabel=document.querySelector(".benchmarkRateCard .kpiLabel");
-  if(benchmarkLabel)benchmarkLabel.textContent='Tickets in Progress Completion Within 14 Days';
-  setCardLabel(".approvedTicketsCard",`Approved Repair Cost (${periodLabel})`);
-  setCardLabel(".avgCostCard",`Average Approved Cost per Ticket (${periodLabel})`);
-  setCardLabel(".ratioKpiCard",`Unapproved vs Approved (${periodLabel})`);
+  const monthLabel=kpiMonthLabel(b.end)+(b.end<monthEndISO(selectedDashboardMonth())?" MTD":"");
+  const snapshotLabel=kpiDateLabel(b.end);
+  setCompactKpiLabel(".totalCriticalCard","Tickets in Progress",snapshotLabel);
+  setCompactKpiLabel(".approvedTicketsCard","Approved Repair Cost",monthLabel);
+  setCompactKpiLabel(".avgCostCard","Avg. Approved Cost / Ticket",monthLabel);
+  setCompactKpiLabel(".ratioKpiCard","Unapproved vs Approved",monthLabel);
+  setCompactKpiLabel(".unapprovedTicketsCard","Tickets in Progress > 60 Days",snapshotLabel);
+  setCompactKpiLabel(".benchmarkRateCard","Tickets Completion Within 14 Days",monthLabel);
   $("kpiCritical").textContent=num(totalTicketValue);
   if($("kpiUnapproved"))$("kpiUnapproved").textContent=num(noUpdate.count);
   if($("kpiBenchmark"))$("kpiBenchmark").textContent=todayMode?"-":`${numFixed(h.rate||0,1)}%`;
@@ -6052,18 +6092,35 @@ function renderKpis(){
   if($("kpiAvgCost"))$("kpiAvgCost").textContent=money(approvedAvg);
   if($("kpiUnapprovedAmount"))$("kpiUnapprovedAmount").textContent=money(s.unapprovedAmount);
   if($("kpiUnapprovedRatio"))$("kpiUnapprovedRatio").textContent=todayMode?"-":pctText(ratio,2);
-  if($("kpiRatioBase"))$("kpiRatioBase").innerHTML=todayMode?"":`<span class="ratioBaseValue">${num(ratioUnapproved)} / ${num(ratioApproved)}</span><span class="ratioBaseNote">Decision Ticket Count: Unapproved / Approved</span>`;
-  if($("kpiCriticalTrend")){ $("kpiCriticalTrend").innerHTML=selectedSnapshotMetaMarkup(); $("kpiCriticalTrend").className="kpiTrend flat kpiTrendDateOnly"; }
-  if($("kpiUnapprovedTrend")){ $("kpiUnapprovedTrend").innerHTML=selectedSnapshotMetaMarkup(); $("kpiUnapprovedTrend").className="kpiTrend flat kpiTrendDateOnly"; }
-  setTrend("kpiBenchmarkTrend","benchmarkRate",h.rate||0,prevH.rate||0,"percentPoint",filtered&&!todayMode);
+  // A missing prior snapshot is not a zero-valued month.
+  const prior=periodSnapshotForBounds(pb.start,pb.end);
+  const priorApproval=approvalSummaryFromRows(pb.start,pb.end);
+  const priorSummary=prior&&prior.summary;
+  const hasCosts=priorApproval!==null||(prior?.__fullExportDetailsLoaded&&priorSummary?.approvedAmount!=null);
+  const hasDecisions=priorApproval!==null||(prior?.__fullExportDetailsLoaded&&priorSummary?.approvedTickets!=null&&priorSummary?.unapprovedTickets!=null);
+  const priorTrend=arrayFromMaybe(currentView().trend).some(row=>clean(row.date)===pb.end);
+  const priorStockRows=criticalSnapshotRowsAt(pb.end);
+  const hasStock=priorStockRows.length>0||priorSummary?.criticalNow!=null||priorTrend;
+  const priorStock=priorStockRows.length||prev.criticalNow;
+  const previousMonth=kpiMonthLabel(pb.end);
+  const comparisons=[
+    ["kpiCriticalTrend",totalTicketValue,hasStock?priorStock:null,"number",true],
+    ["kpiApprovedTrend",approvedAmountCurrent,hasCosts?prev.approvedAmount:null,"money",true],
+    ["kpiAvgCostTrend",s.approvedCostTickets>0?approvedAvg:null,hasCosts&&prev.approvedCostTickets>0?approvedCostPerTicket(prev):null,"money",true],
+    ["kpiRatioTrend",!todayMode&&ratioApproved>0?ratio:null,hasDecisions&&prev.approvedTickets>0?pctValue(prev.unapprovedTickets,prev.approvedTickets):null,"ratio",false,true]
+  ];
+  comparisons.forEach(([id,current,previous,format,lowerIsBetter,higherIsBetter])=>{
+    const el=$(id);if(!el)return;
+    el.className="kpiTrend";
+    el.innerHTML=kpiComparisonMarkup(current,previous,{month:previousMonth,format,lowerIsBetter,higherIsBetter});
+    el.title=`Compared with ${kpiDateLabel(pb.start)} - ${kpiDateLabel(pb.end)}`;
+  });
+  ["kpiUnapprovedTrend","kpiBenchmarkTrend"].forEach(id=>{if($(id))$(id).innerHTML="";});
   clearKpiPreview(document.querySelector(".benchmarkRateCard"));
   const noUpdateCard=document.querySelector(".unapprovedTicketsCard");
- if(noUpdateCard)noUpdateCard.onclick=null;
-  if($("kpiBenchmarkTrend")){ $("kpiBenchmarkTrend").innerHTML=selectedPeriodMetaMarkup(); $("kpiBenchmarkTrend").className="kpiTrend flat kpiTrendDateOnly"; }
-  if($("kpiApprovedTrend")){ $("kpiApprovedTrend").innerHTML=selectedPeriodMetaMarkup(); $("kpiApprovedTrend").className="kpiTrend flat kpiTrendDateOnly"; }
-  if($("kpiAvgCostTrend")){ $("kpiAvgCostTrend").innerHTML='<span class="kpiTrendMeta">Denominator: cost &gt; 0 tickets</span>'; $("kpiAvgCostTrend").className="kpiTrend flat kpiTrendDateOnly"; }
-  if($("kpiRatioTrend")){ $("kpiRatioTrend").innerHTML=selectedPeriodMetaMarkup(); $("kpiRatioTrend").className="kpiTrend flat kpiTrendDateOnly"; }
-}function formatClearTime(days){
+  if(noUpdateCard)noUpdateCard.onclick=null;
+}
+function formatClearTime(days){
   days=Number(days||0);
   if(!Number.isFinite(days)||days<=0)return "0 weeks";
   const weeks=days/7;
@@ -6109,7 +6166,7 @@ function statusPiePoint(cx,cy,r,angle){
   return {x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};
 }
 function distributionDonutMarkup(rows,centerLabel,clickableStatus=false){
-  const colors=["#5b5cf6","#22c55e","#f59e0b","#fb7185","#8b5cf6","#94a3b8"];
+  const colors=["#2563eb","#22c55e","#f59e0b","#fb7185","#0d9488","#94a3b8"];
   const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
   if(!total)return `<div class="speedEmpty">No status mix found for this claim type and selected period.</div>`;
   const detailValue=v=>typeof v==="number"?num(v):esc(v);
@@ -6469,21 +6526,6 @@ function openStatusBucketTickets(label,details){
   openDashboardTickets(rows,`Tickets in Progress Remaining Status Mix - ${label}`);
 }
 
-function bindDurationDatePicker(){
-  const input=$("durationSnapshotDate");
-  if(!input)return;
-  input.min=earliestDateForView();
-  input.max=latestDateForView();
-  input.value=periodEndDate();
-  if(input.dataset.bound)return;
-  input.dataset.bound="1";
-  input.addEventListener("change",()=>{
-    const value=clean(input.value);
-    if(!value)return;
-    if($("dateTo"))$("dateTo").value=value;
-    renderAllWithLoading();
-  });
-}
 function renderHandlingSpeed(){
   const rowsEl=$('speedRows');
   const h=periodHandlingSummary();
@@ -6492,19 +6534,18 @@ function renderHandlingSpeed(){
   if($("speedRate"))$("speedRate").textContent=(h.rate||0)+"%";
   if($("speedAvg"))$("speedAvg").textContent=clearToTargetText(h.clearToTarget);
   if(rowsEl){
-    const colors=["#6366f1","#3b82f6","#8b5cf6","#22c55e","#f59e0b","#fb7185"];
+    const colors=["#0369a1","#3b82f6","#0d9488","#22c55e","#f59e0b","#fb7185"];
     const total=rows.reduce((sum,row)=>sum+Number(row.count||0),0);
     const max=Math.max(1,...rows.map(row=>Number(row.count||0)));
     rowsEl.className="speedRows agingRows";
     const chartMarkup=total?rows.map((row,i)=>{
       const count=Number(row.count||0);
       const pct=total?Math.round(count/total*100):0;
-      const width=Math.max(4,Math.round(count/max*100));
+      const width=Math.max(0,count/max*100);
       const color=colors[i%colors.length];
-      return `<div class="agingRow clickableRow" role="button" tabindex="0" data-duration-key="${esc(row.key)}" data-duration-label="${esc(row.label)}" title="Open tickets in ${esc(row.label)}"><div class="agingLabel">${esc(row.label)}</div><div class="agingTrack"><div class="agingFill" style="width:${width}%;background:linear-gradient(90deg,${color},${color}cc)"></div></div><div class="agingValue"><span class="durationValueGuide">${num(count)}<small>${pct}%</small></span></div></div>`;
+      return `<div class="agingRow clickableRow" role="button" tabindex="0" data-duration-key="${esc(row.key)}" data-duration-label="${esc(row.label)}" title="Open tickets in ${esc(row.label)}"><div class="agingLabel">${esc(row.label)}</div><div class="agingTrack"><div class="agingFill" style="width:${width}%;background:${color}"></div></div><div class="agingValue"><span class="durationValueGuide">${num(count)}<small>${pct}%</small></span></div></div>`;
     }).join(""):`<div class="speedEmpty">No critical duration data found for this period.</div>`;
-    rowsEl.innerHTML=`<div class="durationDatePicker"><label>Snapshot To <input id="durationSnapshotDate" type="date" value="${esc(periodEndDate())}"></label></div>`+chartMarkup;
-    bindDurationDatePicker();
+    rowsEl.innerHTML=chartMarkup;
     rowsEl.querySelectorAll(".agingRow[data-duration-key]").forEach(row=>{
       row.onclick=()=>openDurationBucketTickets(row.dataset.durationKey,row.dataset.durationLabel);
       row.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDurationBucketTickets(row.dataset.durationKey,row.dataset.durationLabel);}};
@@ -6857,7 +6898,7 @@ function repairCostDistributionRows(){
   }).filter(row=>row.count>0||row.total>0);
 }
 function repairCostDonutMarkup(rows){
-  const colors=["#5b5cf6","#22c55e","#f59e0b","#fb7185","#8b5cf6","#94a3b8"];
+  const colors=["#2563eb","#22c55e","#f59e0b","#fb7185","#0d9488","#94a3b8"];
   const total=rows.reduce((sum,row)=>sum+Number(row.total||0),0);
   if(!total)return `<div class="speedEmpty">No repair cost data found for this claim type and selected period.</div>`;
   let cursor=0;
@@ -7181,13 +7222,13 @@ function setModalTrend(id,key,current,previous,fmt,show){
 }
 function employeeBarMarkup(rows,emptyText){
   if(!rows.length)return `<div class="speedEmpty">${esc(emptyText||"No data found.")}</div>`;
-  const colors=["#5b5cf6","#22c55e","#f59e0b","#fb7185","#8b5cf6","#94a3b8"];
+  const colors=["#2563eb","#22c55e","#f59e0b","#fb7185","#0d9488","#94a3b8"];
   const max=Math.max(1,...rows.map(row=>Number(row.count||0)));
   return `<div class="employeeBarRows">${rows.map((row,i)=>{
     const count=Number(row.count||0);
     const width=Math.max(3,count/max*100);
     const tip=`<b>${esc(row.label)}</b>${num(count)} tickets`;
-    return `<div class="employeeBarRow" data-status-tip="${esc(tip)}"><span class="employeeBarLabel" title="${esc(row.label)}">${esc(row.label)}</span><span class="employeeBarTrack"><span class="employeeBarFill" style="width:${width}%;background:linear-gradient(90deg,${colors[i%colors.length]},#a855f7)"></span></span><span class="employeeBarValue">${num(count)}</span></div>`;
+    return `<div class="employeeBarRow" data-status-tip="${esc(tip)}"><span class="employeeBarLabel" title="${esc(row.label)}">${esc(row.label)}</span><span class="employeeBarTrack"><span class="employeeBarFill" style="width:${width}%;background:linear-gradient(90deg,${colors[i%colors.length]},#0891b2)"></span></span><span class="employeeBarValue">${num(count)}</span></div>`;
   }).join("")}</div>`;
 }
 function renderEmployeeDistribution(id,rows,emptyText){
@@ -7691,19 +7732,41 @@ function exportTotalCriticalTickets(e){
   })();
 }
 function longDurationTicketRows(){
-  return criticalDurationRows().filter(row=>durationBucketMatch(row,"overSixtyDays"));
+  // The KPI buckets measure age since creation for tickets open at the snapshot.
+  // Re-entering a status must not reset that age or add today's tickets to history.
+  const end=periodEndDate(),createdMap=rawCreatedOnDateByTicketId();
+  const rows=new Map();
+  teamRowsAtDate(end).forEach(row=>{
+    const id=clean(row.id);
+    const createdOn=criticalCreatedOnDateForRow({...row,createdOn:row.createdOn||row.created},createdMap);
+    const days=daysBetweenISO(createdOn,end);
+    if(id&&days!==null&&days>60&&!rows.has(id))rows.set(id,{...row,id,createdOn,days});
+  });
+  return Array.from(rows.values());
 }
-function exportLongDurationTickets(e){
+async function exportLongDurationTickets(e){
   if(e){e.preventDefault();e.stopPropagation();}
-  (async()=>{
+  const btn=$("longDurationExportBtn");
+  if(btn?.dataset.exporting==="1")return;
+  const snapshotDate=periodEndDate(),claim=activeClaim;
+  setExportButtonState(btn,true,"Preparing...");
+  try{
     await ensureExportDetailsLoaded();
-    const rows=longDurationTicketRows();
+    if(snapshotDate!==periodEndDate()||claim!==activeClaim){
+      alert("The selected filters changed. Please download again for the current selection.");return;
+    }
+    const rows=longDurationTicketRows().slice().sort((a,b)=>b.days-a.days||clean(a.id).localeCompare(clean(b.id)));
     if(!rows.length){alert("No Long Duration Tickets over 60 days found for the selected filters.");return;}
-    exportWorkbook([
-      ticketExportSheet("Long Duration Tickets",rows),
-      ticketExportSheet("Ticket Detail",rows,["Source View"],row=>[activeClaim==="all"?"All":activeClaim])
-    ],`long-duration-tickets-over-60-days-${exportDateSuffix()}.xls`);
-  })();
+    exportWorkbook([{name:"Tickets Over 60 Days",rows:[
+      ["Ticket Number","Employee","Status","Days Since Created","Snapshot Date"],
+      ...rows.map(row=>[clean(row.id),clean(row.owner)||"Unassigned",clean(row.status),Number(row.days),kpiDateLabel(snapshotDate)])
+    ]}],`tickets-over-60-days-${snapshotDate}.xls`);
+  }catch(err){
+    console.error("Long duration ticket export failed",err);
+    alert("Unable to download ticket details. Please try again.");
+  }finally{
+    setExportButtonState(btn,false);
+  }
 }
 function dealerSummaryRows(){
   const rawView=currentRawCriticalView();
@@ -7739,7 +7802,7 @@ function kpiSummaryRows(){
   const s=currentPeriodSummary(),approvalMonthSummary=approvalAnalyticsSummary(),h=periodHandlingSummary(),noUpdate=noUpdateAgingSummary(),claimCounts=claimTypeCounts();
   const removedApproval=ticketMovementRemovedApprovalSummary(periodBounds().start,periodBounds().end);
   const ratio=pctValue(removedApproval.unapprovedTickets,removedApproval.approvedTickets);
-  return [["Metric","Value","Context"],[`Tickets in Progress (On ${selectedSnapshotText()})`,remainingTotalForSnapshot(),`On ${selectedSnapshotText()}`],[`Tickets in Progress Over 60 Days (On ${selectedSnapshotText()})`,noUpdate.count,`On ${selectedSnapshotText()}`],[`In Field Warranty Claims Remaining (On ${selectedSnapshotText()})`,claimCounts.inField,`On ${selectedSnapshotText()}`],[`Pre Delivery Warranty Claims Remaining (On ${selectedSnapshotText()})`,claimCounts.preDelivery,`On ${selectedSnapshotText()}`],[`Approved Tickets (${selectedMonthPeriodLabel()})`,removedApproval.approvedTickets,`Decision tickets in period: ${selectedPeriodText()}`],[`Unapproved Tickets (${selectedMonthPeriodLabel()})`,removedApproval.unapprovedTickets,`Decision tickets in period: ${selectedPeriodText()}`],[`Approved PO Cost Tickets (${selectedMonthPeriodLabel()})`,approvalMonthSummary.approvedCostTickets,`Approved tickets with SAP PO cost > 0`],[`Approved Repair Cost (${selectedMonthPeriodLabel()})`,approvalMonthSummary.approvedAmount,`Period: ${selectedPeriodText()}`],[`Average Approved Cost per Ticket (${selectedMonthPeriodLabel()})`,s.avgCostPerTicket,`Period: ${selectedPeriodText()}`],["Tickets in Progress Completion Within 14 Days",`${numFixed(h.rate||0,1)}%`,`Period: ${selectedPeriodText()}`],[`Unapproved vs Approved (${selectedMonthPeriodLabel()})`,`${numFixed(ratio,2)}%`,`${removedApproval.unapprovedTickets} / ${removedApproval.approvedTickets}`]];
+  return [["Metric","Value","Context"],[`Tickets in Progress (On ${selectedSnapshotText()})`,remainingTotalForSnapshot(),`On ${selectedSnapshotText()}`],[`Tickets in Progress Over 60 Days (On ${selectedSnapshotText()})`,noUpdate.count,`On ${selectedSnapshotText()}`],[`In Field Warranty Claims Remaining (On ${selectedSnapshotText()})`,claimCounts.inField,`On ${selectedSnapshotText()}`],[`Pre Delivery Warranty Claims Remaining (On ${selectedSnapshotText()})`,claimCounts.preDelivery,`On ${selectedSnapshotText()}`],[`Approved Tickets (${selectedMonthPeriodLabel()})`,removedApproval.approvedTickets,`Decision tickets in period: ${selectedPeriodText()}`],[`Unapproved Tickets (${selectedMonthPeriodLabel()})`,removedApproval.unapprovedTickets,`Decision tickets in period: ${selectedPeriodText()}`],[`Approved PO Cost Tickets (${selectedMonthPeriodLabel()})`,approvalMonthSummary.approvedCostTickets,`Approved tickets with SAP PO cost > 0`],[`Approved Repair Cost (${selectedMonthPeriodLabel()})`,approvalMonthSummary.approvedAmount,`Period: ${selectedPeriodText()}`],[`Average Approved Cost per Ticket (${selectedMonthPeriodLabel()})`,s.avgCostPerTicket,`Period: ${selectedPeriodText()}`],["Tickets Completion Within 14 Days",`${numFixed(h.rate||0,1)}%`,`Period: ${selectedPeriodText()}`],[`Unapproved vs Approved (${selectedMonthPeriodLabel()})`,`${numFixed(ratio,2)}%`,`${removedApproval.unapprovedTickets} / ${removedApproval.approvedTickets}`]];
 }
 function trendSummaryRows(){
   return [["Date",`Added to Waiting from ${selectedPeriodText()}`,`Removed from ${selectedPeriodText()}`,`Tickets in Progress Remaining (On ${selectedSnapshotText()})`,`New Tickets from ${selectedPeriodText()}`,"Old Tickets","Formula Difference"]].concat(cumulativeTrendPoints(selectedTrend()).map(row=>[row.date,Number(row.cumulativeEnteredCritical||0),Number(row.cumulativeExitedCritical||0),Number(row.criticalTotal||0),Number(row.cumulativeNewCreatedTickets||0),Number(row.reenteredTickets||0),Number(row.formulaDifference||0)]));
@@ -8346,7 +8409,7 @@ function bindDashboardExportButtons(){
   const total=$("totalCriticalExportBtn");
   if(total&&!total.dataset.bound){total.innerHTML=exportIcon();total.onclick=exportTotalCriticalTickets;total.dataset.bound="1";}
   const longBtn=$("longDurationExportBtn");
-  if(longBtn&&!longBtn.dataset.bound){longBtn.innerHTML=exportIcon();longBtn.onclick=exportLongDurationTickets;longBtn.dataset.bound="1";}
+  if(longBtn&&!longBtn.dataset.bound){longBtn.innerHTML=`${exportIcon()}<span>Download Excel</span>`;longBtn.onclick=exportLongDurationTickets;longBtn.dataset.bound="1";}
   const empWorkload=$("employeeWorkloadExportBtn");
   if(empWorkload&&!empWorkload.dataset.bound){empWorkload.innerHTML=exportIcon();empWorkload.onclick=exportEmployeeWorkload;empWorkload.dataset.bound="1";}
   const movement=$("ticketMovementExportBtn");
@@ -8511,7 +8574,7 @@ function teamAssignMetricValue(row){
 }
 function teamAssignMetricLabel(v){return num(v)}
 function teamAssignMetricColor(){
-  if(teamAssignMetric==="currentCritical")return "#4f46e5";
+  if(teamAssignMetric==="currentCritical")return "#1d4ed8";
   if(teamAssignMetric==="approved")return "#16a34a";
   if(teamAssignMetric==="unapproved")return "#e11d48";
   return "#0284c7";
@@ -8850,7 +8913,7 @@ function renderLists(){const rawView=currentRawCriticalView();const rows=selecte
   const fallbackDealers=arrayFromMaybe(currentView().topDealers).map(x=>({dealer:clean(x.dealer),criticalTickets:Number(x.criticalTickets||x.count||0)})).filter(x=>x.dealer);
   const dealers=(!hasTicketFilter()&&rawView)?rawView.dealers:(Object.keys(grouped).length?Object.entries(grouped).map(([dealer,criticalTickets])=>({dealer,criticalTickets})).sort((a,b)=>b.criticalTickets-a.criticalTickets||a.dealer.localeCompare(b.dealer)):fallbackDealers);
   const max=Math.max(1,...dealers.map(x=>Number(x.criticalTickets||0)));
-  const dealerColors=["#4f46e5","#60a5fa","#7c3aed","#f59e0b","#ec4899","#8b5cf6","#22c55e","#94a3b8"];
+  const dealerColors=["#1d4ed8","#60a5fa","#0f766e","#f59e0b","#ec4899","#0d9488","#22c55e","#94a3b8"];
   const dealerLimit=4;
   const shownDealers=dealerListExpanded?dealers:dealers.slice(0,dealerLimit);
   if($("dealerBars")){$("dealerBars").className=`dealerCriticalList${dealerListExpanded?' expanded':''}`;$("dealerBars").innerHTML=dealers.length?shownDealers.map((x,i)=>`<div class="dealerCriticalRow" data-dealer="${esc(x.dealer)}" title="${esc(x.dealer)}"><span class="dealerCriticalDot" style="background:${dealerColors[i%dealerColors.length]}"></span><span class="dealerCriticalLabel" title="${esc(x.dealer)}">${esc(x.dealer)}</span><span class="dealerCriticalValue">${num(x.criticalTickets)}</span></div>`).join("")+(dealers.length>dealerLimit?`<button class="dealerCriticalToggle" type="button" onclick="toggleDealerList()">${dealerListExpanded?'Collapse dealers':'View all dealers ->'}</button>`:""):`<div class="panelDesc">No dealer analytics found for this claim type and selected period.</div>`;}
@@ -8858,7 +8921,7 @@ function renderLists(){const rawView=currentRawCriticalView();const rows=selecte
   const statusDonutRows=statuses.length>6?statuses.slice(0,5).concat({label:"Others",count:statuses.slice(5).reduce((sum,x)=>sum+Number(x.count||0),0),details:statuses.slice(5)}):statuses;
   if($("statusMix")){window.__dashboardStatusDonutRows=statusDonutRows;$("statusMix").className="statusPieLayout";$("statusMix").innerHTML=distributionDonutMarkup(statusDonutRows,"tickets",true);bindStatusMixTips();}
   if($("criticalSideList")){
-    const colors=["#2f6df6","#60a5fa","#2563eb","#f59e0b","#fb7185","#8b5cf6","#22c55e","#94a3b8"];
+    const colors=["#2f6df6","#60a5fa","#2563eb","#f59e0b","#fb7185","#0d9488","#22c55e","#94a3b8"];
     $("criticalSideList").innerHTML=statuses.slice(0,8).map((x,i)=>`<div class="criticalSideRow"><span class="criticalSideDot" style="background:${colors[i%colors.length]}"></span><span class="criticalSideLabel" title="${esc(x.label)}">${esc(x.label)}</span><span class="criticalSideValue">${num(x.count)}</span></div>`).join("")||`<div class="panelDesc">No tickets in progress found.</div>`;
   }
 }
@@ -8868,15 +8931,6 @@ function toggleDealerList(){dealerListExpanded=!dealerListExpanded;renderLists()
 function setDateDefaults(){const view=currentView();const pts=trendThroughToday(view);if(!pts.length)return;syncRangeInputsToActivePeriod();}
 
 function updateDateNotes(){
-  const date=periodEndDate();
-  const label=formatSnapshotDateLabel(date);
-  const approvalLabel=approvalAnalyticsLabel();
-  const dashboardRangeLabel=formatDashboardDateRangeLabel();
-  const pageTitleNote=$("pageTitleNote");
-  if(pageTitleNote){
-    pageTitleNote.textContent=dashboardRangeLabel?`Selected period: ${dashboardRangeLabel}`:(label?`On ${label}`:"");
-    pageTitleNote.title=pageTitleNote.textContent;
-  }
   document.querySelectorAll("[data-date-note]").forEach(el=>{
     el.textContent="";
     el.title="";
@@ -9021,6 +9075,7 @@ async function renderAllWithLoading(text="Calculating..."){
   try{
     await Promise.all([
       ensureCurrentPeriodSnapshotDetails(),ensureFullTeamViewDetails(),
+      ensureKpiComparisonSnapshotDetails(),
       employeeAnalytics?Promise.resolve():loadEmployeeAnalytics().then(value=>{employeeAnalytics=value;})
     ]);
     if(req!==renderAllRequestSeq)return;

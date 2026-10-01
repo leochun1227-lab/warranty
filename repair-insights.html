@@ -68,10 +68,10 @@
 .kpis .kpi:nth-child(2):before{background:#dcfce7;}
 .kpis .kpi:nth-child(3):after{content:"!";color:#f59e0b;}
 .kpis .kpi:nth-child(3):before{background:#fff7ed;}
-.kpis .kpi:nth-child(4):after{content:"%";color:#6366f1;}
+.kpis .kpi:nth-child(4):after{content:"%";color:#0369a1;}
 .kpis .kpi:nth-child(4):before{background:#eef2ff;}
-.partsGrid .kpi:nth-child(1):after{content:"$";color:#7c3aed;}
-.partsGrid .kpi:nth-child(1):before{background:#f3e8ff;}
+.partsGrid .kpi:nth-child(1):after{content:"$";color:#0f766e;}
+.partsGrid .kpi:nth-child(1):before{background:#ecfbfa;}
 .partsGrid .kpi:nth-child(2):after{content:"%";color:#1677f2;}
 .partsGrid .kpi:nth-child(3):after{content:"14";color:#10b981;font-size:16px;}
 .partsGrid .kpi:nth-child(3):before{background:#dcfce7;}
@@ -134,7 +134,7 @@
 .repeatRowRepeat4:hover td,.repeatRowRepeat23:hover td{background:#f8fafc}
 .repeatRowRepeat4 td:first-child,.repeatRowRepeat23 td:first-child{font-weight:800}
 @media(max-width:760px){.repeatWrap{grid-template-columns:1fr}.repeatCardBadge{font-size:16px}.repeatModal{width:96vw}.repeatModal .tableWrap{max-height:58vh}}
-</style><link rel="stylesheet" href="flow-polish.css">
+</style><link rel="stylesheet" href="flow-polish.css?v=20261001-neutral">
 <style>
 body.repair-insights-page{
   background:
@@ -523,6 +523,7 @@ body.repair-insights-page .calcFloat{
   body.repair-insights-page .repeatModal{width:96vw;}
 }
 </style>
+<link rel="stylesheet" href="dashboard-theme.css?v=20261001-neutral">
 </head>
 <body class="repair-insights-page"><main class="main">
 <div class="header"><div><h1 id="title" class="title" style="display:none">Analysis</h1></div><div><button class="btn" id="exportExcelBtn" type="button">Export Excel</button> <a class="btn" href="index.html">Warranty Team</a> <a class="btn" href="analysis.html">Repairs by Model</a> <a class="btn" href="parts.html">Parts Failure Components</a> <a class="btn" href="delivery_flow.html">Parts Delivery</a> <a class="btn" href="repairs.html">Repairer</a> <a class="btn" href="infieldpredelivery.html">Claim Trend Overview</a></div></div>
@@ -802,7 +803,7 @@ function barChart(id,data,color="#3b82f6"){
   const totalH=data.length*barH+Math.max(0,data.length-1)*gap;
   const top=Math.max(18,(h-totalH)/2);
   const max=Math.max(1,...data.map(x=>Number(x.value||0)));
-  const palette=[color,"#10b981","#f59e0b","#7c3aed","#ef4444","#06b6d4","#22c55e","#f97316"];
+  const palette=[color,"#10b981","#f59e0b","#0f766e","#ef4444","#06b6d4","#22c55e","#f97316"];
   ctx.font="12px Segoe UI,Arial";
   ctx.textBaseline="middle";
   data.forEach((d,i)=>{
@@ -941,7 +942,7 @@ function hitPieSegment(state,x,y){
   return index>=0?{index}:null;
 }
 function statusVolumeRows(status){
-  const colors=["#10b981","#3b82f6","#f59e0b","#7c3aed","#ef4444","#06b6d4","#22c55e","#f97316"];
+  const colors=["#10b981","#3b82f6","#f59e0b","#0f766e","#ef4444","#06b6d4","#22c55e","#f97316"];
   return Object.entries(status||{})
     .sort((a,b)=>b[1]-a[1])
     .slice(0,8)

@@ -128,7 +128,7 @@
 .chassisRepeatSeg.low{background:linear-gradient(90deg,#93c5fd,#3b82f6)}
 .chassisRepeatSeg.mid{background:linear-gradient(90deg,#fcd34d,#f59e0b)}
 .chassisRepeatSeg.high{background:linear-gradient(90deg,#fca5a5,#ef4444)}
-.chassisRepeatSeg.prem{background:linear-gradient(90deg,#c4b5fd,#7c3aed)}
+.chassisRepeatSeg.prem{background:linear-gradient(90deg,#99f6e4,#0f766e)}
 .chassisRepeatSeg.isTiny{font-size:0;text-shadow:none}
 .chassisRepeatLegend{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
 .chassisRepeatLegendItem{display:inline-flex;align-items:center;gap:8px;border-radius:999px;background:#f3f7fb;padding:6px 10px;font-size:12px;color:#334155;border:0;appearance:none}
@@ -212,16 +212,16 @@
   font-weight:850;
   line-height:1;
 }
-.kpis .kpi:nth-child(1):after{content:"$";color:#7c3aed;}
-.kpis .kpi:nth-child(1):before{background:#f3e8ff;}
+.kpis .kpi:nth-child(1):after{content:"$";color:#0f766e;}
+.kpis .kpi:nth-child(1):before{background:#ecfbfa;}
 .kpis .kpi:nth-child(2):after{content:"#";color:#1677f2;}
 .kpis .kpi:nth-child(2):before{background:#eaf4ff;}
 .kpis .kpi:nth-child(3):after{content:"AVG";color:#10b981;font-size:13px;}
 .kpis .kpi:nth-child(3):before{background:#dcfce7;}
 .kpis .kpi:nth-child(4):after{content:"SH";color:#f59e0b;font-size:13px;}
 .kpis .kpi:nth-child(4):before{background:#fff7ed;}
-.partsGrid .kpi:nth-child(1):after{content:"$";color:#7c3aed;}
-.partsGrid .kpi:nth-child(1):before{background:#f3e8ff;}
+.partsGrid .kpi:nth-child(1):after{content:"$";color:#0f766e;}
+.partsGrid .kpi:nth-child(1):before{background:#ecfbfa;}
 .partsGrid .kpi:nth-child(2):after{content:"%";color:#1677f2;}
 .partsGrid .kpi:nth-child(3):after{content:"14";color:#10b981;font-size:16px;}
 .partsGrid .kpi:nth-child(3):before{background:#dcfce7;}
@@ -253,7 +253,7 @@
   font-size:12px!important;
   font-weight:650!important;
 }
-</style><link rel="stylesheet" href="flow-polish.css">
+</style><link rel="stylesheet" href="flow-polish.css?v=20261001-neutral">
 <style>
 .weekPanel{margin-bottom:24px;position:relative;overflow:hidden}
 .weekPanel::before{content:"";position:absolute;inset:-1px;background:radial-gradient(circle at 12% 8%,rgba(59,130,246,.10),transparent 28%),radial-gradient(circle at 86% 14%,rgba(16,185,129,.08),transparent 26%),linear-gradient(180deg,rgba(255,255,255,.44),rgba(255,255,255,0));pointer-events:none}
@@ -353,10 +353,10 @@ body.repair-analysis-page .kpis .kpi:nth-child(3){
     linear-gradient(180deg,#fbfffd 0%,#edf9f2 100%) !important;
 }
 body.repair-analysis-page .kpis .kpi:nth-child(4){
-  border-color:#e2d7ff !important;
+  border-color:#def8f6 !important;
   background:
-    radial-gradient(circle at 88% 14%, rgba(124,58,237,.10), transparent 28%),
-    linear-gradient(180deg,#fffafd 0%,#f6efff 100%) !important;
+    radial-gradient(circle at 88% 14%, rgba(78,217,206,.10), transparent 28%),
+    linear-gradient(180deg,#fffafd 0%,#f2fcfb 100%) !important;
 }
 body.repair-analysis-page .kpiIcon{
   position:absolute;
@@ -375,8 +375,8 @@ body.repair-analysis-page .kpiIcon svg{
   stroke-width:2;
 }
 body.repair-analysis-page .kpis .kpi:nth-child(1) .kpiIcon{
-  background:#f3e8ff;
-  color:#7c3aed;
+  background:#ecfbfa;
+  color:#0f766e;
 }
 body.repair-analysis-page .kpis .kpi:nth-child(2) .kpiIcon{
   background:#eef6ff;
@@ -408,7 +408,7 @@ body.repair-analysis-page .kpiValue{
 body.repair-analysis-page .kpis .kpi:nth-child(1) .kpiValue{color:#1d4ed8 !important;}
 body.repair-analysis-page .kpis .kpi:nth-child(2) .kpiValue{color:#c2410c !important;}
 body.repair-analysis-page .kpis .kpi:nth-child(3) .kpiValue{color:#047857 !important;}
-body.repair-analysis-page .kpis .kpi:nth-child(4) .kpiValue{color:#7c3aed !important;}
+body.repair-analysis-page .kpis .kpi:nth-child(4) .kpiValue{color:#0f766e !important;}
 body.repair-analysis-page .panelTitle{
   font-size: 20px !important;
   letter-spacing: -.02em !important;
@@ -1273,11 +1273,11 @@ body.repair-analysis-page .weekMeta .weekMetric:nth-child(3)::before{
   background:radial-gradient(circle,rgba(245,158,11,.16) 0,rgba(245,158,11,.05) 42%,transparent 70%);
 }
 body.repair-analysis-page .weekMeta .weekMetric:nth-child(4){
-  border-color:#e2d7ff;
-  background:linear-gradient(180deg,#fffafd 0%,#f6efff 100%);
+  border-color:#def8f6;
+  background:linear-gradient(180deg,#fffafd 0%,#f2fcfb 100%);
 }
 body.repair-analysis-page .weekMeta .weekMetric:nth-child(4)::before{
-  background:radial-gradient(circle,rgba(124,58,237,.16) 0,rgba(124,58,237,.05) 42%,transparent 70%);
+  background:radial-gradient(circle,rgba(78,217,206,.16) 0,rgba(78,217,206,.05) 42%,transparent 70%);
 }
 body.repair-analysis-page .weekMetric span{
   color:#5e6d85;
@@ -1343,7 +1343,7 @@ body.repair-analysis-page .stateRow:nth-child(4n+3){
   background:linear-gradient(180deg,#fffdf7 0%,#fff5e6 100%);
 }
 body.repair-analysis-page .stateRow:nth-child(4n){
-  background:linear-gradient(180deg,#fffafb 0%,#f5efff 100%);
+  background:linear-gradient(180deg,#fffafb 0%,#f2fcfb 100%);
 }
 body.repair-analysis-page .stateRow:hover{
   background:#eef5ff;
@@ -1370,7 +1370,7 @@ body.repair-analysis-page .stateRankTable tbody tr:nth-child(4n+3) td{
   background:linear-gradient(180deg,#fffdf7 0%,#fff5e6 100%);
 }
 body.repair-analysis-page .stateRankTable tbody tr:nth-child(4n) td{
-  background:linear-gradient(180deg,#f9f7ff 0%,#f2ecff 100%);
+  background:linear-gradient(180deg,#f8fefd 0%,#effcfb 100%);
 }
 body.repair-analysis-page .stateRankTable tbody tr.is-active td{
   background:linear-gradient(180deg,#eff5ff 0%,#dfeaff 100%);
@@ -1416,7 +1416,7 @@ body.repair-analysis-page .chassisRepeatVizCard:nth-of-type(4n+3){
   border-color:#f6ddb5;
 }
 body.repair-analysis-page .chassisRepeatVizCard:nth-of-type(4n){
-  border-color:#e6d9ff;
+  border-color:#e0f8f6;
 }
 body.repair-analysis-page .chassisRepeatVizCard .chassisRepeatVizTotals b{color:#0f172a;}
 body.repair-analysis-page .chassisRepeatStack{
@@ -1486,7 +1486,7 @@ body.repair-analysis-page .kpis .kpi::after{
   height:3px !important;
   background:linear-gradient(90deg,#3b82f6,#22aeea) !important;
 }
-body.repair-analysis-page .kpis .kpi:nth-child(1)::after{background:linear-gradient(90deg,#8b5cf6,#a855f7) !important;}
+body.repair-analysis-page .kpis .kpi:nth-child(1)::after{background:linear-gradient(90deg,#0d9488,#0891b2) !important;}
 body.repair-analysis-page .kpis .kpi:nth-child(2)::after{background:linear-gradient(90deg,#0ea5e9,#38bdf8) !important;}
 body.repair-analysis-page .kpis .kpi:nth-child(3)::after{background:linear-gradient(90deg,#10b981,#22d3a0) !important;}
 body.repair-analysis-page .kpis .kpi:nth-child(4)::after{background:linear-gradient(90deg,#f59e0b,#fb923c) !important;}
@@ -1932,7 +1932,7 @@ body.repair-analysis-page .pager{
   margin-top:10px !important;
 }
 </style>
-<link rel="stylesheet" href="sidebar-light.css?v=20260806-compact-sidebar">
+<link rel="stylesheet" href="sidebar-light.css?v=20261001-neutral">
 <style>
 /* Repair final typography pass: keep titles and table numbers closer to Ticket Lifecycle. */
 body.repair-analysis-page,
@@ -2392,7 +2392,7 @@ body.repair-analysis-page .app{
   grid-template-columns:228px minmax(0,1fr)!important;
 }
 body.repair-analysis-page .sidebar{
-  background:linear-gradient(180deg,#15164f 0%,#111346 100%)!important;
+  background:linear-gradient(180deg,#154f4a 0%,#114642 100%)!important;
   padding:14px 10px!important;
 }
 body.repair-analysis-page .brandText span{
@@ -4468,6 +4468,7 @@ body.repair-analysis-page #repairRepeatScenarios .repeatShopGridCell small{
   }
 }
 </style>
+<link rel="stylesheet" href="dashboard-theme.css?v=20261001-neutral">
 </head>
 <body class="repair-analysis-page">
 <div class="app">

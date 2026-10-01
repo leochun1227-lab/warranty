@@ -1,0 +1,67 @@
+/* Layered important rules take precedence over legacy page-local overrides. */
+@layer dashboardSurfaces{
+/* Final shared surface layer, after page-specific styles.
+   Decorative containers stay neutral; data and actions keep semantic colors. */
+:root{
+  --flow-bg:#f6f7f8!important;
+  --flow-line:#e5e7eb!important;
+  --flow-shadow-soft:0 2px 8px rgba(15,23,42,.025)!important;
+  --flow-shadow:0 2px 8px rgba(15,23,42,.025)!important;
+}
+
+html body{
+  background:#f6f7f8!important;
+}
+
+body::before,
+body .wrap::before,
+body .wrap::after{
+  content:none!important;
+}
+
+/* Shared surfaces include the embedded repair insights view. */
+html body :is(.app,.main) :is(.panel,.card,.kpi,.miniKpi,.costStat,.criticalSummaryPanel,
+  .tableWrap,.pivotWrap,.chartBox,.globalDateRange,.dealerSwitcher,.nameFilter,
+  .claimToggle,.tabs,.toolbar,.repairFilterPanel,.filters,.topList){
+  background:#fff!important;
+  border:1px solid #e5e7eb!important;
+  box-shadow:0 2px 8px rgba(15,23,42,.025)!important;
+}
+
+html body :is(.app,.main) :is(.panel,.card,.kpi,.miniKpi,.costStat):hover{
+  transform:none!important;
+  box-shadow:0 2px 8px rgba(15,23,42,.025)!important;
+}
+
+html body :is(.app,.main) :is(.panel,.card,.kpi,.dealerSwitcher,.globalDateRange,
+  .repairFilterPanel,.filters,.modal,.employeeModal,.topList)::before,
+html body.repair-analysis-page .kpis .kpi::after,
+html body .wrap .kpi::after,
+html body .costStat::after{
+  content:none!important;
+}
+
+.pageTop::after,.head::after,.topbar::after{
+  background:#e5e7eb!important;
+}
+
+html body :is(.app,.main) :is(.tab.active,.chip.active,.btn.active,.claimToggleBtn.active,
+  .changeBtn.active,.claimBtn.active,.seg button.on){
+  background:#edf3fc!important;
+  color:#1d4ed8!important;
+  border-color:#cbdaf1!important;
+  box-shadow:none!important;
+}
+
+html body :is(.app,.main) :is(.btn.dark,.controls button.primary,.exportBtn,.linkBtn){
+  background:#2563eb!important;
+  color:#fff!important;
+  box-shadow:none!important;
+}
+
+:is(button,a,input,select):focus-visible{
+  outline:2px solid #2563eb;
+  outline-offset:2px;
+}
+
+}

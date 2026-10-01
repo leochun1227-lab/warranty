@@ -25,7 +25,7 @@
     --a1:#d39a1f;
     --a2:#e07b39;
     --a3:#cf4b46;
-    --violet:#7c3aed;
+    --teal:#0f766e;
     --sky:#0284c7;
     --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
     --sans:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
@@ -112,7 +112,7 @@
     height:260px;
     left:40px;
     top:320px;
-    background:radial-gradient(circle, rgba(124,58,237,.10), rgba(124,58,237,0) 70%);
+    background:radial-gradient(circle, rgba(78,217,206,.10), rgba(78,217,206,0) 70%);
   }
   .wrap > *{position:relative;z-index:1}
   .head{
@@ -215,7 +215,7 @@
     position:absolute;
     inset:0 0 auto 0;
     height:3px;
-    background:linear-gradient(90deg, rgba(63,111,224,.95), rgba(31,157,107,.92), rgba(224,123,57,.92), rgba(124,58,237,.92));
+    background:linear-gradient(90deg, rgba(63,111,224,.95), rgba(31,157,107,.92), rgba(224,123,57,.92), rgba(78,217,206,.92));
     opacity:.7;
   }
   .kpi:hover{box-shadow:0 16px 34px rgba(15,23,42,.08);transform:translateY(-1px)}
@@ -317,7 +317,7 @@
     inset:0 auto auto 0;
     width:100%;
     height:4px;
-    background:linear-gradient(90deg, rgba(59,130,246,.58), rgba(16,185,129,.48), rgba(249,115,22,.44), rgba(124,58,237,.48));
+    background:linear-gradient(90deg, rgba(59,130,246,.58), rgba(16,185,129,.48), rgba(249,115,22,.44), rgba(78,217,206,.48));
     opacity:.55;
   }
   .panel > *{position:relative;z-index:1}
@@ -345,7 +345,7 @@
   .panelIcon.green{background:#ecfdf5;color:#10b981}
   .panelIcon.orange{background:#fff7ed;color:#f97316}
   .panelIcon.red{background:#fff1f2;color:#e11d48}
-  .panelIcon.violet{background:#f5f3ff;color:#7c3aed}
+  .panelIcon.teal{background:#f5fdfc;color:#0f766e}
   .panelIcon.sky{background:#f0f9ff;color:#0284c7}
   .panelRow{
     display:grid;
@@ -551,7 +551,7 @@
     position:absolute;
     inset:auto 0 0 0;
     height:3px;
-    background:linear-gradient(90deg, rgba(37,99,235,.75), rgba(16,185,129,.68), rgba(249,115,22,.68), rgba(124,58,237,.72));
+    background:linear-gradient(90deg, rgba(37,99,235,.75), rgba(16,185,129,.68), rgba(249,115,22,.68), rgba(78,217,206,.72));
     opacity:.28;
   }
   .costSummary .costStat:nth-child(1)::after{background:linear-gradient(90deg, rgba(37,99,235,.78), rgba(59,130,246,.48));}
@@ -588,7 +588,7 @@
   .costStatIcon.green{background:#ecfdf5;color:#10b981}
   .costStatIcon.orange{background:#fff7ed;color:#f97316}
   .costStatIcon.red{background:#fff1f2;color:#e11d48}
-  .costStatIcon.violet{background:#f5f3ff;color:#7c3aed}
+  .costStatIcon.teal{background:#f5fdfc;color:#0f766e}
   .costStatIcon.sky{background:#f0f9ff;color:#0284c7}
   .costStatHead{
     min-width:0;
@@ -667,7 +667,7 @@
     position:absolute;
     inset:0 auto 0 0;
     width:4px;
-    background:linear-gradient(180deg,#7c3aed,#3f6fe0,#1f9d6b,#e07b39);
+    background:linear-gradient(180deg,#0f766e,#3f6fe0,#1f9d6b,#e07b39);
     opacity:.5;
   }
   .compareTop{
@@ -824,7 +824,7 @@
   .green{background:var(--issued)}
   .orange{background:var(--open)}
   .red{background:var(--rejected)}
-  .violet{background:var(--violet)}
+  .teal{background:var(--teal)}
   .foot{
     margin-top:10px;
     font-family:var(--mono);
@@ -1137,7 +1137,8 @@
     height:260px!important;
   }
 </style>
-<link rel="stylesheet" href="sidebar-light.css?v=20260806-compact-sidebar">
+<link rel="stylesheet" href="sidebar-light.css?v=20261001-neutral">
+<link rel="stylesheet" href="dashboard-theme.css?v=20261001-neutral">
 </head>
 <body class="is-loading">
 <div id="pageLoading" class="pageLoading active" aria-live="polite" aria-busy="true" aria-label="Loading Parts Delivery">
@@ -1247,7 +1248,7 @@
     <section class="panel">
       <div class="panelHead">
         <div class="panelTopic">
-          <div class="panelIcon violet" aria-hidden="true">
+          <div class="panelIcon teal" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/><path d="M9 3.5h6"/><path d="M12 20.5v-2"/></svg>
           </div>
           <div>
@@ -1261,7 +1262,7 @@
       </div>
       <div class="legend">
         <span><i class="dot blue"></i> YTD avg complete issue time</span>
-        <span><i class="dot violet"></i> 3M moving average</span>
+        <span><i class="dot teal"></i> 3M moving average</span>
       </div>
       <div class="foot" id="leadFoot"></div>
     </section>
@@ -3554,7 +3555,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     const cards = [
       { label:"Current Awaiting Parts", value: integer.format(awaitingNow), left:"Ticket status YA / Awaiting Parts", right:"unique SOs awaiting parts", hint:`Awaiting unique SOs ${integer.format(awaitingNow)}`, theme:"blue", icon: icon.awaiting, action:{ kind:"awaiting", label:"Export", title:"Export Current Awaiting Parts with ticket details" } },
       { label:"Open parts", value: integer.format(openNotIssuedParts), left:"Material rows", right:"still open today", hint:`Age bands use ${integer.format(openNotIssuedParts)} open parts`, theme:"orange", icon: icon.open, action:{ kind:"open-so", label:"Export", title:"Export Open Parts with ticket details" } },
-      { label:"2026 YTD Average Complete Parts Issuing Time", value: `${daysFmt.format(avgDaysToCompleteIssue)}<small>d</small>`, note:avgIssuePeriod, left:avgIssueSourceLabel, right:"SO Created Date to Complete Issue Date", hint:"Average across issued SOs completed in each month; 3M moving average is shown in the chart", theme:"violet", icon: icon.lead },
+      { label:"2026 YTD Average Complete Parts Issuing Time", value: `${daysFmt.format(avgDaysToCompleteIssue)}<small>d</small>`, note:avgIssuePeriod, left:avgIssueSourceLabel, right:"SO Created Date to Complete Issue Date", hint:"Average across issued SOs completed in each month; 3M moving average is shown in the chart", theme:"teal", icon: icon.lead },
     ];
 
     els.kpis.innerHTML = cards.map(card => `
@@ -3773,7 +3774,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         const y = yFor(r.movingAvg || 0);
         if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
       });
-      ctx.strokeStyle = "rgba(124,58,237,.96)";
+      ctx.strokeStyle = "rgba(78,217,206,.96)";
       ctx.lineWidth = 2.25;
       ctx.setLineDash([6, 4]);
       ctx.stroke();
@@ -3785,7 +3786,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         ctx.fillStyle = "#fff";
         ctx.arc(x, y, 3.2, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = "rgba(124,58,237,.96)";
+        ctx.strokeStyle = "rgba(78,217,206,.96)";
         ctx.lineWidth = 1.8;
         ctx.stroke();
       });
@@ -3894,7 +3895,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     const colors = {
       total: "#3f6fe0",
       po: "#1f9d6b",
-      mean: "#7c3aed",
+      mean: "#0f766e",
       grid: getComputedStyle(document.documentElement).getPropertyValue("--grid").trim(),
       inkFaint: getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim(),
       mono: getComputedStyle(document.documentElement).getPropertyValue("--mono").trim(),
@@ -4082,7 +4083,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     els.costTrend.innerHTML = `
       <div class="legend">
         <span><i class="dot green"></i> 3110 PO Cost</span>
-        <span><i class="dot violet"></i> 3M moving average</span>
+        <span><i class="dot teal"></i> 3M moving average</span>
       </div>
       <canvas class="costLineChart" id="costLineChart"></canvas>
     `;
