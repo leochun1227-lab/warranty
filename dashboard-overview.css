@@ -5,14 +5,14 @@
   .team-overview-page .pageTop .sidebarFilterLabel{font-weight:400!important;color:#7b8798!important}
   .team-overview-page .pageTop .sidebarFilterSelect{font-weight:400!important;color:#64748b!important}
   .team-overview-page #dashboardSummaryExportBtn{font-weight:400!important;color:#5275a5!important}
-  .team-overview-page .dashboardFullFlow .panelTitle{font-size:12px!important;font-weight:600!important;line-height:1.35!important;text-align:left!important;justify-content:flex-start!important}
+  .team-overview-page .dashboardFullFlow .panelTitle{font-size:14px!important;font-weight:600!important;line-height:1.35!important;text-align:left!important;justify-content:flex-start!important}
   .team-overview-page .trendLogGrid :is(.panelHead,.panelTitleRow){justify-content:flex-start!important;text-align:left!important}
   .team-overview-page .trendSideLabelText{font-weight:400!important;color:#475569!important}
   .team-overview-page .trendSideStat b{font-weight:600!important}
   .team-overview-page .teamAssignName{font-weight:400!important;color:#475569!important}
   .team-overview-page :is(.teamAssignValue,.teamAssignValuePair){font-weight:600!important;font-variant-numeric:tabular-nums!important}
   .team-overview-page .teamAssignLegend{font-weight:400!important;color:#475569!important}
-  .team-overview-page .trendSupportGrid .panelTitle{font-size:12px!important;font-weight:600!important;line-height:1.35!important;text-align:left!important;justify-content:flex-start!important;width:100%!important;margin:0!important}
+  .team-overview-page .trendSupportGrid .panelTitle{font-size:14px!important;font-weight:600!important;line-height:1.35!important;text-align:left!important;justify-content:flex-start!important;width:100%!important;margin:0!important}
   .team-overview-page .trendSupportGrid :is(.panelTitleRow,.panelHead){justify-content:flex-start!important;text-align:left!important}
   .team-overview-page .agingTrack{height:24px!important;border:0!important;border-radius:1px!important;background:transparent!important;box-shadow:none!important}
   .team-overview-page .agingFill{height:100%!important;border-radius:1px!important;box-shadow:none!important}
@@ -40,7 +40,7 @@
     }
     .team-overview-page .teamKpiGrid .kpi{min-height:0!important;padding:9px 12px!important}
     .team-overview-page .teamKpiGrid .kpiMain{gap:4px!important}
-    .team-overview-page .teamKpiGrid .kpiLabel{height:44px!important;min-height:44px!important;font-size:11px!important}
+    .team-overview-page .teamKpiGrid .kpiLabel{height:52px!important;min-height:52px!important;font-size:14px!important}
     .team-overview-page .teamKpiGrid .kpiValue{min-height:30px!important;font-size:29px!important}
     .team-overview-page .teamKpiGrid .kpiTrend{margin-top:7px!important;padding-top:6px!important;gap:2px!important}
     .team-overview-page .trendLogGrid{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)!important}
