@@ -1,0 +1,69 @@
+/* This first layer keeps presentation overrides ahead of legacy important rules. */
+@layer repairerOverview{
+  .repairer-overview-page .repairLegacy{display:none!important}
+  .repairer-overview-page .main{padding:14px 22px 26px!important;display:flex!important;flex-direction:column!important;gap:12px!important;min-width:0!important}
+  .repairer-overview-page .repairPageHeader{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;flex:0 0 auto!important;margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;min-height:60px!important}
+  .repairer-overview-page .pageTitle{font:400 26px/1.2 Inter,'Segoe UI',sans-serif!important;color:#64748b!important;margin:0!important}
+  .repairer-overview-page .repairHeaderText{display:flex!important;align-items:center!important;gap:15px!important;flex-wrap:wrap!important}
+  .repairer-overview-page :is(.repairHeaderControls,.repairPeriodControl){display:flex!important;align-items:center!important;gap:8px!important;min-width:0!important}
+  .repairer-overview-page :is(.repairPeriodNote,.repairYearNotice){display:none!important}
+  .repairer-overview-page .repairYearSwitch{margin:0!important}
+  .repairer-overview-page .repairPeriodLabel{font:400 10px 'Segoe UI',sans-serif!important;color:#8491a3!important;letter-spacing:0!important;text-transform:none!important}
+  .repairer-overview-page :is(.roGrid,.roDialog) *{box-sizing:border-box}
+  .repairer-overview-page :is(.roGrid,.roDialog){font-family:Inter,'Segoe UI',Arial,sans-serif;color:#334155}
+  .repairer-overview-page .roGrid{display:grid;grid-template-columns:1fr 1.15fr;gap:10px;min-height:0;flex:1}
+  .repairer-overview-page .roPanel{display:flex;flex-direction:column;gap:8px;min-width:0;min-height:0;padding:12px 14px;border:1px solid #e5e7eb;border-radius:10px;background:#fff;box-shadow:0 2px 8px #0f172a04}
+  .repairer-overview-page .roHead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;flex:0 0 auto}
+  .repairer-overview-page :is(.roHead h2,.roHead h3){font-size:12px;font-weight:600;margin:0;line-height:1.4;color:#334155}
+  .repairer-overview-page .roHead h2 span{font-size:10px;font-weight:400;color:#8491a3}
+  .repairer-overview-page .roActions{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+  .repairer-overview-page :is(.roGrid,.roDialog) :is(button,select),.repairer-overview-page :is(.repairPeriodSelect,.repairYearBtn,#overviewExportBtn){font:400 11px/1.3 Inter,'Segoe UI',sans-serif!important;color:#52627a!important;border:1px solid #dfe5ec!important;border-radius:6px!important;background:#fff!important;padding:5px 8px!important;min-height:27px!important;height:auto!important;box-shadow:none!important;cursor:pointer;letter-spacing:0!important}
+  .repairer-overview-page :is(.roGrid,.roDialog) button:hover{background:#f8fafc!important}
+  .repairer-overview-page :is(.roGrid,.roDialog) :is(button,select):focus-visible{outline:2px solid #2563eb;outline-offset:2px}
+  .repairer-overview-page :is(.roGrid,.roDialog) button.selected{background:#eff6ff!important;border-color:#93b9f7!important;color:#1d4ed8!important}
+  .repairer-overview-page .roCaption,.repairer-overview-page .roNote{font-size:10px;font-weight:400;color:#8491a3;line-height:1.4;margin:0;flex:0 0 auto}
+  .repairer-overview-page .roBars{display:flex;flex-direction:column;justify-content:space-evenly;flex:1;min-height:0;gap:3px}
+  .repairer-overview-page .roGrid .roBar{display:grid;grid-template-columns:minmax(110px,42%) minmax(30px,1fr) 76px;align-items:center;gap:3px 8px;width:100%;padding:4px!important;border:1px solid transparent!important;text-align:left;min-height:0!important}
+  .repairer-overview-page .roBarName{font-size:11px;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#475569}
+  .repairer-overview-page .roBarTrack{display:block;height:12px;border-radius:2px;background:#f1f5f9;overflow:hidden}
+  .repairer-overview-page .roBarTrack>span{display:block;height:100%;background:#4b83d4;border-radius:2px}
+  .repairer-overview-page .roBarNumber{font-size:12px;font-weight:600;color:#1f2937;text-align:right;font-variant-numeric:tabular-nums}
+  .repairer-overview-page .roBarMeta{grid-column:2/-1;font-size:10px;color:#64748b;text-align:right;font-variant-numeric:tabular-nums}
+  .repairer-overview-page .roScenarios{display:flex;flex-direction:column;justify-content:space-evenly;gap:10px;flex:1;min-height:0}
+  .repairer-overview-page .roGrid .roScenario{display:flex;flex-direction:column;gap:4px;padding:8px!important;text-align:left}
+  .repairer-overview-page .roScenarioHead{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px}
+  .repairer-overview-page .roScenarioHead b{font-size:20px;font-weight:600;color:#1f2937}
+  .repairer-overview-page .roScenario .roBarTrack{height:10px}
+  .repairer-overview-page .roScenarioMeta{font-size:12px;color:#475569;font-variant-numeric:tabular-nums}
+  .repairer-overview-page .roScenario small{font-size:10px;color:#8491a3}
+  .repairer-overview-page .roEmpty{font-size:12px;color:#64748b;margin:auto;padding:12px}
+  .repairer-overview-page #roMap{flex:1;min-height:0}
+  .repairer-overview-page #roMap #weekMapCard{height:100%!important;min-height:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:transparent!important}
+  .repairer-overview-page #roMap .weekMapControls,.repairer-overview-page #roMap .mapColorLegend{display:none!important}
+  .repairer-overview-page #roMap #ausMap{width:100%!important;height:100%!important;min-height:0!important;max-height:100%!important}
+  .repairer-overview-page .roGrid [hidden]{display:none!important}
+  .repairer-overview-page .roDialog{width:min(1000px,94vw);max-height:85vh;padding:18px;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 15px 65px #0f172a26}
+  .repairer-overview-page .roDialog::backdrop{background:#0f172a55}
+  .repairer-overview-page .roDialog[open]{display:flex;flex-direction:column;gap:12px}
+  .repairer-overview-page .roDialog h2{font-size:16px}
+  .repairer-overview-page .roDetailBody{overflow:auto;min-height:0}
+  .repairer-overview-page .roDialog table{width:100%;border-collapse:collapse}
+  .repairer-overview-page .roDialog :is(td,th){font:400 12px/1.4 'Segoe UI',sans-serif;padding:8px 10px;border-bottom:1px solid #edf0f4;text-align:left;white-space:nowrap}
+  .repairer-overview-page .roDialog th{position:sticky;top:0;background:#f8fafc;color:#64748b;font-weight:600}
+  .repairer-overview-page .roDialog button:disabled{opacity:.5;cursor:wait}
+  .repairer-overview-page #warrantyDataUpdatedBadge{bottom:3px!important;padding:0!important;border:0!important;box-shadow:none!important;background:transparent!important;font:400 9px 'Segoe UI',sans-serif!important;white-space:nowrap!important;max-width:calc(100vw - 265px)!important;overflow:hidden!important;text-overflow:ellipsis!important;color:#8491a3!important}
+  @media(min-width:1120px) and (min-height:720px){
+    .repairer-overview-page .main{height:100dvh!important}
+    .repairer-overview-page .roGrid{grid-template-rows:minmax(0,1fr) minmax(0,1fr)}
+  }
+  @media(max-width:1119px), (max-height:719px){
+    .repairer-overview-page .roPanel{min-height:340px}
+  }
+  @media(max-width:760px){
+    .repairer-overview-page .main{padding:14px!important}
+    .repairer-overview-page .repairPageHeader{flex-wrap:wrap!important}
+    .repairer-overview-page .repairHeaderControls{flex-wrap:wrap!important}
+    .repairer-overview-page .roGrid{grid-template-columns:minmax(0,1fr)}
+    .repairer-overview-page .roGrid .roBar{grid-template-columns:minmax(100px,42%) minmax(25px,1fr) 67px}
+  }
+}

@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+<link rel="stylesheet" href="claim-overview.css?v=20261001-single-row">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Cache-Control" content="no-store" />
@@ -315,31 +316,34 @@ body{
 <a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Repairs by Model</span></a><a class="navLink" href="parts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16"/><path d="M7 7v10"/><path d="M17 7v10"/><path d="M5 17h14"/><path d="M9 11h6"/></svg><span>Parts Failure Components</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket Timeline</span></a></aside>
   <main class="main">
     <div class="toolbar">
-      <div class="modeRow">
-        <div class="modeCluster">
-          <div class="modeSwitch">
-            <button id="singleModeBtn" class="modeBtn active" type="button">Single / Range</button>
-            <button id="compareModeBtn" class="modeBtn" type="button">Year Compare</button>
-          </div>
-        </div>
-        <div id="viewNote" class="viewNote"></div>
-      </div>
+      <h1 class="pageTitle">Claim Trend Overview</h1>
       <div class="controls">
         <div id="singleControls" class="controlsGroup">
-          <label>Year <select id="yearSelect"></select></label>
-          <label>From <input id="fromMonth" type="month"></label>
-          <label>To <input id="toMonth" type="month"></label>
-          <button id="applyRange" class="primary" type="button">Apply range</button>
-          <button id="last12" type="button">Last 12 months</button>
-          <button id="clearRange" type="button">All (2025+)</button>
+          <label>Period <select id="rangePreset">
+            <option value="year">This Year</option>
+            <option value="last12">Last 12 Months</option>
+            <option value="all">All Time</option>
+            <option value="custom">Custom</option>
+          </select></label>
+          <div id="customRangeControls" class="controlsGroup" hidden>
+            <label>From <input id="fromMonth" type="month"></label>
+            <label>To <input id="toMonth" type="month"></label>
+            <button id="applyRange" class="primary" type="button">Apply</button>
+          </div>
         </div>
         <div id="compareControls" class="controlsGroup" hidden>
           <label>Year A <select id="compareYearA"></select></label>
           <label>Year B <select id="compareYearB"></select></label>
-          <button id="applyCompare" class="primary" type="button">Compare years</button>
           <button id="swapCompare" type="button">Swap</button>
         </div>
-        <button id="exportTicketsBtn" type="button">Export Ticket Details</button>
+        <div id="viewNote" class="viewNote" aria-live="polite"></div>
+      </div>
+      <div class="modeCluster">
+        <div class="modeSwitch">
+          <button id="singleModeBtn" class="modeBtn active" type="button" aria-pressed="true">Trend</button>
+          <button id="compareModeBtn" class="modeBtn" type="button" aria-pressed="false">Year Compare</button>
+        </div>
+        <button id="exportTicketsBtn" type="button" title="Export ticket details for the selected period">Export Excel</button>
       </div>
     </div>
 
@@ -354,7 +358,7 @@ body{
         <div class="dualChartGrid">
           <div class="dualChartCard">
             <div class="dualChartHead">
-              <div class="dualChartTitle">All Fields<small>Combined total line</small></div>
+              <div class="dualChartTitle">All Fields</div>
               <div id="newClaimTotalsAll" class="grandTotals"></div>
             </div>
             <div class="chartWrap"><canvas id="newClaimChart"></canvas></div>
@@ -362,7 +366,7 @@ body{
           </div>
           <div id="newClaimSplitCard" class="dualChartCard">
             <div class="dualChartHead">
-              <div class="dualChartTitle">In Field vs Pre Delivery<small>Side-by-side comparison</small></div>
+              <div class="dualChartTitle">In Field vs Pre Delivery</div>
               <div id="newClaimTotalsSplit" class="grandTotals"></div>
             </div>
             <div class="chartWrap"><canvas id="newClaimSplitChart"></canvas></div>
@@ -389,7 +393,7 @@ body{
         <div class="dualChartGrid">
           <div class="dualChartCard">
             <div class="dualChartHead">
-              <div class="dualChartTitle">All Fields<small>Combined total line</small></div>
+              <div class="dualChartTitle">All Fields</div>
               <div id="approvedTotalsAll" class="grandTotals"></div>
             </div>
             <div class="chartWrap"><canvas id="approvedChart"></canvas></div>
@@ -397,7 +401,7 @@ body{
           </div>
           <div id="approvedSplitCard" class="dualChartCard">
             <div class="dualChartHead">
-              <div class="dualChartTitle">In Field vs Pre Delivery<small>Side-by-side comparison</small></div>
+              <div class="dualChartTitle">In Field vs Pre Delivery</div>
               <div id="approvedTotalsSplit" class="grandTotals"></div>
             </div>
             <div class="chartWrap"><canvas id="approvedSplitChart"></canvas></div>
@@ -424,7 +428,7 @@ body{
         <div class="dualChartGrid">
           <div class="dualChartCard">
             <div class="dualChartHead">
-              <div class="dualChartTitle">All Fields<small>Combined approved amount line</small></div>
+              <div class="dualChartTitle">All Fields</div>
               <div id="amountTotalsAll" class="grandTotals"></div>
             </div>
             <div class="chartWrap chartWrapTall"><canvas id="approvedAmountChart"></canvas></div>
@@ -432,7 +436,7 @@ body{
           </div>
           <div id="amountSplitCard" class="dualChartCard">
             <div class="dualChartHead">
-              <div class="dualChartTitle">In Field vs Pre Delivery<small>Side-by-side comparison</small></div>
+              <div class="dualChartTitle">In Field vs Pre Delivery</div>
               <div id="amountTotalsSplit" class="grandTotals"></div>
             </div>
             <div class="chartWrap chartWrapTall"><canvas id="approvedAmountSplitChart"></canvas></div>
@@ -459,7 +463,7 @@ body{
         <div class="dualChartGrid">
           <div class="dualChartCard">
             <div class="dualChartHead">
-              <div class="dualChartTitle">All Fields<small>Combined total line</small></div>
+              <div class="dualChartTitle">All Fields</div>
               <div id="unapprovedTotalsAll" class="grandTotals"></div>
             </div>
             <div class="chartWrap"><canvas id="unapprovedChart"></canvas></div>
@@ -467,7 +471,7 @@ body{
           </div>
           <div id="unapprovedSplitCard" class="dualChartCard">
             <div class="dualChartHead">
-              <div class="dualChartTitle">In Field vs Pre Delivery<small>Side-by-side comparison</small></div>
+              <div class="dualChartTitle">In Field vs Pre Delivery</div>
               <div id="unapprovedTotalsSplit" class="grandTotals"></div>
             </div>
             <div class="chartWrap"><canvas id="unapprovedSplitChart"></canvas></div>
@@ -484,7 +488,7 @@ body{
         <div class="dualChartGrid">
           <div class="dualChartCard">
             <div class="dualChartHead">
-              <div class="dualChartTitle">All Fields<small>Combined total line</small></div>
+              <div class="dualChartTitle">All Fields</div>
               <div id="claimClosedTotalsAll" class="grandTotals"></div>
             </div>
             <div class="chartWrap"><canvas id="claimClosedChart"></canvas></div>
@@ -492,7 +496,7 @@ body{
           </div>
           <div id="claimClosedSplitCard" class="dualChartCard">
             <div class="dualChartHead">
-              <div class="dualChartTitle">In Field vs Pre Delivery<small>Side-by-side comparison</small></div>
+              <div class="dualChartTitle">In Field vs Pre Delivery</div>
               <div id="claimClosedTotalsSplit" class="grandTotals"></div>
             </div>
             <div class="chartWrap"><canvas id="claimClosedSplitChart"></canvas></div>
@@ -587,7 +591,7 @@ function niceCurrencyMax(maxRaw){
   return nice*pow;
 }
 
-let MONTHLY=[],MONTHS_INDEX={},RAW_TICKETS=[],CLAIM_CLOSED_INDEX={},activeStart=HARD_MIN,activeEnd=HARD_MIN,customRange=false,viewMode="single",compareYearA="",compareYearB="",fieldMode="all";
+let MONTHLY=[],MONTHS_INDEX={},RAW_TICKETS=[],CLAIM_CLOSED_INDEX={},activeStart=HARD_MIN,activeEnd=HARD_MIN,customRange=false,rangePreset="year",viewMode="single",compareYearA="",compareYearB="",fieldMode="all";
 const CLAIM_CLOSED_MONTH_OVERRIDES={
   "2026-03":{all:4184}
 };
@@ -641,6 +645,7 @@ function syncUnapprovedDateControls(){
       ?"Currently unapproved closed tickets grouped by creation month."
       :"Currently unapproved closed tickets grouped by actual closure month. Tickets without a closure date are excluded.";
   $("unapproved").classList.toggle("dataUnavailable",!rawTicketsLoaded);
+  syncDateHelp("unapprovedDateNote",["unapprovedClosedOnBtn","unapprovedCreatedOnBtn"]);
 }
 
 async function setUnapprovedDateBasis(basis){
@@ -675,6 +680,7 @@ function syncApprovedDateControls(){
     :"Approved tickets, including Approved Claims Closed, grouped by Claim Approved On.";
   $("approved").classList.toggle("dataUnavailable",!rawTicketsLoaded);
   $("newclaim").classList.toggle("dataUnavailable",!rawTicketsLoaded);
+  syncDateHelp("approvedDateNote",["approvedOnBtn","approvedCreatedOnBtn"]);
 }
 
 async function setApprovedDateBasis(basis){
@@ -706,6 +712,7 @@ function syncAmountDateControls(){
   $("amountDateNote").textContent=amountDateBasis==="created"
     ?"Approved claim amounts grouped by Created On. Claims without a creation date are excluded."
     :"Approved claim amounts grouped by Approved On.";
+  syncDateHelp("amountDateNote",["amountApprovedOnBtn","amountCreatedOnBtn"]);
 }
 
 function amountRowField(row){
@@ -1590,6 +1597,9 @@ function sumSplitCompareRows(rows){
 }
 
 function toggleModeButtons(){
+  document.documentElement.dataset.claimView=viewMode;
+  $("singleModeBtn")?.setAttribute("aria-pressed",String(viewMode==="single"));
+  $("compareModeBtn")?.setAttribute("aria-pressed",String(viewMode==="compare"));
   $("singleModeBtn")?.classList.toggle("active",viewMode==="single");
   $("compareModeBtn")?.classList.toggle("active",viewMode==="compare");
   if($("singleControls"))$("singleControls").hidden=viewMode!=="single";
@@ -1616,22 +1626,20 @@ function syncFieldButtons(){
   $("fieldPreBtn")?.classList.toggle("active",fieldMode==="pre");
 }
 
+function compactRangeLabel(start,end){
+  const short=m=>monthShort(m).replace("Sept","Sep");
+  if(start===end)return short(start)+" "+start.slice(0,4);
+  if(start.slice(0,4)===end.slice(0,4))return short(start)+" – "+short(end)+" "+end.slice(0,4);
+  return short(start)+" "+start.slice(0,4)+" – "+short(end)+" "+end.slice(0,4);
+}
+
 function updateViewNote(){
   const note=$("viewNote");
   if(!note)return;
-  const field=fieldConfig();
   if(viewMode==="compare"){
     const limit=compareMonthLimit(compareYearA,compareYearB);
-    note.textContent=limit>=12?`Comparing ${compareYearA} vs ${compareYearB} (${field.label}).`:`Comparing ${compareYearA} vs ${compareYearB} from Jan to ${monthShort(buildMonthKey(compareYearA,limit))} (${field.label}).`;
-    return;
-  }
-  if(activeStart===activeEnd){
-    note.textContent=`Showing ${monthLong(activeStart)} with All Fields on the left and In Field vs Pre Delivery on the right.`;
-    return;
-  }
-  const sameYear=activeStart.slice(0,4)===activeEnd.slice(0,4);
-  const fullYear=sameYear&&activeStart.endsWith("-01")&&activeEnd.endsWith("-12");
-  note.textContent=fullYear?`Showing ${activeStart.slice(0,4)} with All Fields on the left and In Field vs Pre Delivery on the right.`:`Showing ${monthLong(activeStart)} to ${monthLong(activeEnd)} with All Fields on the left and In Field vs Pre Delivery on the right.`;
+    note.textContent=compareYearA+" vs "+compareYearB+" · Jan – "+monthShort(buildMonthKey(compareYearA,limit)).replace("Sept","Sep");
+  }else note.textContent=compactRangeLabel(activeStart,activeEnd);
 }
 
 function showPageLoading(active,label="Loading dashboard..."){
@@ -2120,11 +2128,14 @@ function renderWithPageLoading(showLoading=false,label="Calculating dashboard...
 function syncControls(){
   const b=dataBounds();
   const yearOptions=b.years.map(y=>`<option value="${y}">${y}</option>`).join("");
-  $("yearSelect").innerHTML=`<option value="">All years</option>`+yearOptions;
   $("compareYearA").innerHTML=yearOptions;
   $("compareYearB").innerHTML=yearOptions;
-  const singleYearSelected=b.years.includes(activeStart.slice(0,4))&&customRange===false&&activeStart.slice(0,4)===activeEnd.slice(0,4);
-  $("yearSelect").value=singleYearSelected?activeStart.slice(0,4):"";
+  $("rangePreset").value=rangePreset;
+  $("customRangeControls").hidden=rangePreset!=="custom";
+  // When no current-year data exists, name the fallback year explicitly.
+  const yearOption=$("rangePreset").querySelector('[value="year"]');
+  const primaryYear=preferredDefaultYear(b);
+  if(yearOption)yearOption.textContent=primaryYear===String(new Date().getFullYear())?"This Year":primaryYear;
   ["fromMonth","toMonth"].forEach(id=>{$(id).min=b.min;$(id).max=b.max});
   $("fromMonth").value=activeStart;$("toMonth").value=activeEnd;
   if(!b.years.includes(compareYearA))compareYearA=preferredDefaultYear(b);
@@ -2134,6 +2145,24 @@ function syncControls(){
   toggleModeButtons();
   syncFieldButtons();
   updateViewNote();
+}
+
+function clampMonthRange(start,end,bounds){
+  const valid=m=>/^\d{4}-(0[1-9]|1[0-2])$/.test(m||"");
+  let a=valid(start)?start:bounds.min,b=valid(end)?end:bounds.max;
+  if(a>b)[a,b]=[b,a];
+  const clamp=m=>m<bounds.min?bounds.min:m>bounds.max?bounds.max:m;
+  return {start:clamp(a),end:clamp(b)};
+}
+
+function presetMonthRange(preset,bounds=dataBounds()){
+  if(preset==="year")return defaultSingleRange(bounds);
+  if(preset==="last12")return clampMonthRange(addMonths(bounds.max,-11),bounds.max,bounds);
+  return {start:bounds.min,end:bounds.max};
+}
+
+function syncDateHelp(noteId,buttonIds){
+  buttonIds.forEach(id=>$(id).setAttribute("title",$(noteId).textContent));
 }
 
 function applyYear(year){
@@ -2163,6 +2192,7 @@ function init(view,useCached=false,claimClosedIndex=null){
   compareYearA=defaultYear;
   compareYearB=defaultCompareYear(b,defaultYear);
   customRange=defaultRange.isMultiYear;
+  rangePreset=defaultRange.isMultiYear?"all":"year";
   activeStart=defaultRange.start;
   activeEnd=defaultRange.end;
   syncControls();
@@ -2171,19 +2201,39 @@ function init(view,useCached=false,claimClosedIndex=null){
   syncAmountDateControls();
   renderWithPageLoading(!useCached,"Loading dashboard...");
   // controls
-  $("yearSelect").onchange=()=>{customRange=false;applyYear($("yearSelect").value);syncControls();renderWithPageLoading(true,"Loading dashboard...")};
-  $("applyRange").onclick=()=>{let a=$("fromMonth").value||b.min,c=$("toMonth").value||b.max;if(a>c)[a,c]=[c,a];const bb=dataBounds();activeStart=a<bb.min?bb.min:a;activeEnd=c>bb.max?bb.max:c;customRange=true;$("yearSelect").value="";renderWithPageLoading(true,"Loading dashboard...")};
-  $("last12").onclick=()=>{const bb=dataBounds();activeEnd=bb.max;activeStart=addMonths(bb.max,-11)<bb.min?bb.min:addMonths(bb.max,-11);customRange=true;$("yearSelect").value="";syncControls();renderWithPageLoading(true,"Loading dashboard...")};
-  $("clearRange").onclick=()=>{customRange=false;applyYear("");$("yearSelect").value="";syncControls();renderWithPageLoading(true,"Loading dashboard...")};
+  $("rangePreset").onchange=()=>{
+    rangePreset=$("rangePreset").value;
+    if(rangePreset==="custom"){
+      syncControls();
+      $("fromMonth").focus();
+      return;
+    }
+    const bounds=dataBounds();
+    const range=presetMonthRange(rangePreset,bounds);
+    activeStart=range.start;activeEnd=range.end;
+    customRange=rangePreset!=="year";
+    syncControls();renderWithPageLoading(true,"Loading dashboard...");
+  };
+  $("applyRange").onclick=()=>{
+    const range=clampMonthRange($("fromMonth").value,$("toMonth").value,dataBounds());
+    activeStart=range.start;activeEnd=range.end;
+    rangePreset="custom";customRange=true;
+    syncControls();renderWithPageLoading(true,"Loading dashboard...");
+  };
   $("singleModeBtn").onclick=()=>{viewMode="single";toggleModeButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
   $("compareModeBtn").onclick=()=>{viewMode="compare";toggleModeButtons();updateViewNote();renderWithPageLoading(true,"Loading dashboard...")};
-  $("applyCompare").onclick=()=>{
+  const applyComparison=event=>{
     compareYearA=$("compareYearA").value||compareYearA;
     compareYearB=$("compareYearB").value||compareYearB;
-    if(compareYearA===compareYearB)compareYearB=defaultCompareYear(dataBounds(),compareYearA);
+    if(compareYearA===compareYearB){
+      if(event?.target.id==="compareYearB")compareYearA=defaultCompareYear(dataBounds(),compareYearB);
+      else compareYearB=defaultCompareYear(dataBounds(),compareYearA);
+    }
     syncControls();
     renderWithPageLoading(true,"Loading dashboard...");
   };
+  $("compareYearA").onchange=applyComparison;
+  $("compareYearB").onchange=applyComparison;
   $("swapCompare").onclick=()=>{
     [compareYearA,compareYearB]=[compareYearB,compareYearA];
     syncControls();

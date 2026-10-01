@@ -4063,7 +4063,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     if (els.costSummary) {
       els.costSummary.style.display = "grid";
       els.costSummary.innerHTML = [
-        { label:"Total Cost", value: money.format(totalPeriodCost), theme:"sky", icon: summaryIcons.total },
+        { label:"Total Cost", period:dateKey(currentYearStartDate(latest)).slice(0,4), value: money.format(totalPeriodCost), theme:"sky", icon: summaryIcons.total },
         { label:"Total SO QTY", value: integer.format(totalSoQty), left:"", right:"", theme:"green", icon: summaryIcons.coverage },
         { label:"Avg Parts Cost / SO QTY", value: money.format(avgPartsCostPerSo), left:"", right:"", theme:"red", icon: summaryIcons.avg },
       ].map(card => `
@@ -4072,6 +4072,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
             <div class="costStatIcon ${card.theme}">${card.icon}</div>
             <div class="costStatHead">
               <div class="k">${esc(card.label)}</div>
+              ${card.period ? `<span class="kpiPeriod">${esc(card.period)}</span>` : ""}
               ${card.left ? `<div class="sub">${esc(card.left)}</div>` : ""}
               ${card.right ? `<div class="sub">${esc(card.right)}</div>` : ""}
             </div>

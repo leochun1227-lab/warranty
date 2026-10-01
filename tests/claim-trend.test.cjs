@@ -7,6 +7,16 @@ const vm = require('node:vm');
 const html = fs.readFileSync(path.join(__dirname, '..', 'infieldpredelivery.html'), 'utf8');
 const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].at(-1)[1];
 const definitions = script.slice(0, script.indexOf('\nsetupNav();'));
+test('custom month ranges normalize reversed inputs and clamp both endpoints to available data', () => {
+  const a=app();
+  a.run('var bounds={min:"2025-01",max:"2026-09",years:["2025","2026"]}');
+  assert.deepEqual(a.json('clampMonthRange("2026-09","2026-08",bounds)'),{start:'2026-08',end:'2026-09'});
+  assert.deepEqual(a.json('clampMonthRange("2027-01","2027-09",bounds)'),{start:'2026-09',end:'2026-09'});
+  assert.deepEqual(a.json('clampMonthRange("2024-01","2024-09",bounds)'),{start:'2025-01',end:'2025-01'});
+  assert.deepEqual(a.json('clampMonthRange("","",bounds)'),{start:'2025-01',end:'2026-09'});
+  assert.deepEqual(a.json('presetMonthRange("last12",bounds)'),{start:'2025-10',end:'2026-09'});
+  assert.deepEqual(a.json('presetMonthRange("all",bounds)'),{start:'2025-01',end:'2026-09'});
+});
 function app() {
   const elements = new Map();
   const document = {documentElement:{dataset:{}}, getElementById(id) {
