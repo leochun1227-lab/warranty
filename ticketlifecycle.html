@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+<link rel="stylesheet" href="timeline-overview.css?v=20261001">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Cache-Control" content="no-store" />
@@ -756,14 +757,18 @@ body{
   <main class="main">
     <div class="pageTop">
       <div>
-        <div class="eyebrow">Repair process view</div>
+
         <div class="titleRow">
-          <h1 id="pageTitle" class="pageTitle">Created in 2026 Ticket Timeline</h1>
+          <h1 id="pageTitle" class="pageTitle">Ticket Timeline</h1>
+          <span id="timelineYear" class="timelineYear">2026</span>
+          <div id="yearSwitch" class="yearSwitch" aria-label="Timeline year"></div>
           <span id="scopeBadge" class="scopeBadge">Created in 2026</span>
         </div>
-        <div id="yearSwitch" class="yearSwitch" aria-label="Timeline year"></div>
         <div id="yearNotice" class="yearNotice" hidden></div>
       </div>
+        <div class="timelineHeaderActions">
+          <a id="filteredExport" class="softExport" download title="Export all page ticket details" href="generated_exports/ticket_timeline_segments_2025_2026.xlsx">Export Excel</a>
+        </div>
     </div>
 
     <section class="hero" aria-label="Interactive ticket timeline">
@@ -771,11 +776,12 @@ body{
         <section class="timelinePanel">
           <div class="timelinePanelHead">
             <div>
-              <div class="panelKicker">Hover the road or cards</div>
+
               <h2 id="panelTitle" class="panelTitle">Created in 2026 Ticket Timeline</h2>
             </div>
-            <div class="timelineAvg" aria-label="Target average process duration">
-              <span>Target Avg Duration:</span>
+            <div class="timelineAvg" aria-label="Sum of stage reference durations">
+              <button id="timelineEvidenceClose" class="timelineEvidenceClose" type="button" hidden>Close details</button>
+              <span title="Sum of the displayed stage reference durations; each stage has its own valid ticket denominator. This is not the overall average for completed tickets.">Stage reference</span>
               <strong id="timelineAvgDuration">-- days</strong>
             </div>
           </div>
@@ -787,7 +793,7 @@ body{
             <div class="road"></div>
             <div id="milestones" class="milestones"></div>
             <div id="segmentDurations" class="segmentDurations"></div>
-            <div id="timelineEvidence" class="timelineEvidence" aria-label="Evidence for 2026 average timing"></div>
+
             <div id="caravan" class="caravan" style="--progress:0">
               <div class="patch"></div>
               <div class="frontPlate"></div>
@@ -799,7 +805,7 @@ body{
               <div class="wheel two"></div>
             </div>
           </div>
-
+            <div id="timelineEvidence" class="timelineEvidence" aria-label="Evidence for 2026 average timing"></div>
         </section>
 
         <aside class="detailPanel" aria-live="polite">
@@ -844,9 +850,7 @@ body{
           <div id="summaryKicker" class="panelKicker">Completed in 2026 workbook summary</div>
           <h2 id="analyticsTitle" class="panelTitle">Completed in 2026 Ticket Timeline</h2>
         </div>
-        <div class="trendActions">
-          <a id="filteredExport" class="softExport" href="generated_exports/ticket_timeline_segments_2025_2026.xlsx">Export All Page Tickets Detail</a>
-        </div>
+
       </div>
       <div id="analyticsSections" class="analyticsSections" aria-label="All handling duration analytics"></div>
     </section>
@@ -1100,12 +1104,13 @@ function remoteSummaryUrlForYear(year){
 }
 
 function renderYearContext(){
-  document.title=`Created in ${selectedYear} Ticket Timeline`;
-  pageTitle.textContent=`Created in ${selectedYear} Ticket Timeline`;
-  panelTitle.textContent=`Created in ${selectedYear} Ticket Timeline`;
+  document.title="Ticket Timeline";
+  document.getElementById("timelineYear").textContent=selectedYear;
+  pageTitle.textContent="Ticket Timeline";
+  panelTitle.textContent=`Created in ${selectedYear}`;
   scopeBadge.textContent=`Created in ${selectedYear}`;
   summaryKicker.textContent=`Completed in ${selectedYear} workbook summary`;
-  analyticsTitle.textContent=`Completed in ${selectedYear} Ticket Timeline`;
+  analyticsTitle.textContent=`Completed in ${selectedYear}`;
   if(CURRENT_TIMELINE_YEAR<=BASE_TIMELINE_YEAR){
     yearSwitch.innerHTML="";
     return;
@@ -1224,7 +1229,7 @@ async function loadTimelineSummary(){
   if(!hasEmbeddedSummary){
     try{
       const cached=await withTimeout(window.WarrantyPageCache.getPage(`ticket-lifecycle:summary:${selectedYear}`,cacheVersion),5000,"Timeline summary cache restore");
-      if(cached&&Array.isArray(cached.stages)){applyTimelineSummary(cached);if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"cached");}
+      if(cached&&Array.isArray(cached.stages)){applyTimelineSummary(cached);if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion.replace(`:${TIMELINE_CACHE_SCHEMA}`,""),"cached");}
     }catch(e){console.warn("Timeline summary cache restore failed",e);}
   }
   const urls=[remoteSummaryUrlForYear(selectedYear),`${FIREBASE_PAGE_ASSETS_ROOT}/timeline/summaryLatest.json`,summaryUrlForYear(selectedYear),TIMELINE_SUMMARY_URL];
@@ -1235,7 +1240,7 @@ async function loadTimelineSummary(){
       const payload=await response.json();
       if(!payload||!Array.isArray(payload.stages))continue;
       applyTimelineSummary(payload);
-      if(cacheVersion&&window.WarrantyPageCache){window.WarrantyPageCache.setPage(`ticket-lifecycle:summary:${selectedYear}`,cacheVersion,payload);window.WarrantyPageCache.showBadge(cacheVersion,"fresh");}
+      if(cacheVersion&&window.WarrantyPageCache){window.WarrantyPageCache.setPage(`ticket-lifecycle:summary:${selectedYear}`,cacheVersion,payload);window.WarrantyPageCache.showBadge(cacheVersion.replace(`:${TIMELINE_CACHE_SCHEMA}`,""),"fresh");}
       return;
     }catch(error){
       // Try the next summary source, then keep the current fallback/empty state.
@@ -1258,7 +1263,7 @@ async function loadCompletionAnalytics(){
   if(!hasEmbeddedAnalytics){
     try{
       const cached=await withTimeout(window.WarrantyPageCache.getPage("ticket-lifecycle:completion",cacheVersion),5000,"Timeline completion cache restore");
-      if(cached&&applyCompletionAnalytics(cached)){if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"cached");}
+      if(cached&&applyCompletionAnalytics(cached)){if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion.replace(`:${TIMELINE_CACHE_SCHEMA}`,""),"cached");}
     }catch(e){console.warn("Timeline completion cache restore failed",e);}
   }
   const urls=[`${FIREBASE_PAGE_ASSETS_ROOT}/timeline/completion2026.json`,COMPLETION_ANALYTICS_URL];
@@ -1434,6 +1439,8 @@ function evidenceSvg(evidence){
 
 function renderTimelineEvidence(){
   document.body.classList.toggle("evidenceOpen",evidenceVisible);
+  document.getElementById("timelineEvidenceClose").hidden=!evidenceVisible;
+  document.querySelectorAll(".segmentDuration").forEach(button=>button.setAttribute("aria-expanded",String(evidenceVisible)));
   if(!evidenceVisible){
     timelinePanel&&timelinePanel.classList.add("evidenceCollapsed");
     roadStage.classList.add("evidenceCollapsed");
@@ -1576,7 +1583,7 @@ function trendSvg(analysis){
           <rect width="2.5" height="7" fill="rgba(29,42,61,.34)"></rect>
         </pattern>
       </defs>
-      <text class="axisTitle" x="162" y="288">Completion month, 2026</text>
+      <text class="axisTitle" x="42" y="12">Days</text>
       ${ticks.map(tick=>{
         const y=bottom-(tick/maxValue*height);
         return `<line class="gridLine" x1="${left}" y1="${y.toFixed(1)}" x2="${left+width}" y2="${y.toFixed(1)}"></line><text class="axisText" x="${left-12}" y="${(y+4).toFixed(1)}" text-anchor="end">${tick}</text>`;
@@ -1597,7 +1604,7 @@ function trendSvg(analysis){
         const priorH=completed&&value!==null?h*Math.min(1,Math.max(0,prior/completed)):0;
         const priorY=bottom-priorH;
         return `
-          ${value===null?`<text class="axisText" x="${(x+barWidth/2).toFixed(1)}" y="${bottom-6}" text-anchor="middle">--</text>`:`<rect class="avgBar ${row.maturing?"maturing":""}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(1,h).toFixed(1)}" rx="5" data-tip="${tip}"></rect>${priorH>0?`<rect class="priorBarShadow" x="${x.toFixed(1)}" y="${priorY.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(1,priorH).toFixed(1)}" rx="5" data-tip="${tip}"></rect>`:""}<text class="axisText" x="${(x+barWidth/2).toFixed(1)}" y="${(Math.max(top+10,y-5)).toFixed(1)}" text-anchor="middle">${Math.round(value)}</text>`}
+          ${value===null?`<text class="axisText" x="${(x+barWidth/2).toFixed(1)}" y="${bottom-6}" text-anchor="middle">--</text>`:`<rect class="avgBar ${row.maturing?"maturing":""}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(1,h).toFixed(1)}" rx="5" data-tip="${tip}"></rect>${priorH>0?`<rect class="priorBarShadow" x="${x.toFixed(1)}" y="${priorY.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(1,priorH).toFixed(1)}" rx="5" data-tip="${tip}"></rect>`:""}<text class="trendValue" x="${(x+barWidth/2).toFixed(1)}" y="${(Math.max(top+10,y-5)).toFixed(1)}" text-anchor="middle">${Math.round(value)}</text>`}
           ${label?`<text class="axisText" x="${(x+barWidth/2).toFixed(1)}" y="${bottom+18}" text-anchor="middle">${label}</text>`:""}
           ${rollingY===null?"":`<circle class="trendPoint" cx="${pointX(index).toFixed(1)}" cy="${rollingY.toFixed(1)}" r="3.5" data-tip="${tip}"></circle>`}
           <rect class="chartHit" x="${(left+index*barSlot).toFixed(1)}" y="${top}" width="${barSlot.toFixed(1)}" height="${height}" data-bucket="${row.label}" data-tip="${tip}"></rect>
@@ -1640,7 +1647,7 @@ function overAvgPercent(analysis){
 }
 
 function overAvgText(analysis){
-  return `Ticket complete over avg time: ${overAvgPercent(analysis)}`;
+  return `Above Avg ${overAvgPercent(analysis)}`;
 }
 
 function renderDurationDistribution(analysis,buckets,labelText="YTD completed"){
@@ -1650,7 +1657,7 @@ function renderDurationDistribution(analysis,buckets,labelText="YTD completed"){
   const bucketTotal=bucketRows.reduce((sum,bucket)=>sum+(Number(bucket[3])||0),0);
   donut.style.background=donutGradient(bucketRows);
   donut.dataset.label=`${fmt(bucketTotal)} completed`;
-  donut.dataset.tip=`<strong>${labelText}</strong><span>${overAvgText(analysis)}</span><span>Duration bucket share for completed tickets.</span>`;
+  donut.dataset.tip=`<strong>${labelText}</strong><span title="Share of completed tickets above the average duration for this stage.">${overAvgText(analysis)}</span><span>Duration bucket share for completed tickets.</span>`;
   document.getElementById("bucketList").innerHTML=bucketRows.map(bucket=>`
     <button class="bucketBtn" type="button" data-bucket="${bucket[0]}" data-tip="<strong>${bucket[0]} days</strong><span>${fmt(bucket[3])} tickets</span><span>${Number(bucket[1]).toFixed(1)}% of completed tickets</span>" style="--swatch:${bucket[2]}" aria-label="${bucket[0]} days bucket">
       <span class="swatch"></span>
@@ -1693,9 +1700,9 @@ function analyticsSectionMarkup(key,analysis){
   const total=buckets.reduce((sum,row)=>sum+(Number(row[3])||0),0);
   const priorTotal=(Array.isArray(analysis.trend)?analysis.trend:[]).reduce((sum,row)=>sum+(Number(row.priorCreated)||0),0);
   const priorPct=total?priorTotal/total*100:0;
-  const title=key==="closed"?"Total handling":analysis.exportLabel||analysis.responsibility||key;
+  const title=key==="closed"?"Total Handling":analysis.exportLabel||analysis.responsibility||key;
   const sectionAvg=key==="closed"?trendAverageDays(analysis):null;
-  const donutLabel=showPriorOverlay?`${fmt(total)} completed\n${priorPct.toFixed(1)}% before`:`${fmt(total)} completed`;
+  const donutLabel=showPriorOverlay?`${fmt(total)}\ntickets\n${priorPct.toFixed(1)}% before`:`${fmt(total)}\ntickets`;
   return `
     <section class="analyticsSection ${showPriorOverlay?"showPriorOverlay":""}" data-analysis-key="${key}">
       <div class="analyticsSectionHead">
@@ -1709,12 +1716,12 @@ function analyticsSectionMarkup(key,analysis){
       </div>
       <div class="analyticsSectionGrid">
         <div class="analyticsMiniTrend">
-          <div class="panelKicker trendChartTitle">Avg Monthly completion speed</div>
+          
           ${trendSvg(analysis)}
-          <div class="chartLegend"><span class="legendMark">monthly avg days</span><span class="legendMark line">3-month rolling avg</span></div>
+          <div class="chartLegend"><span class="legendMark">Monthly Avg</span><span class="legendMark line">3M Avg</span></div>
         </div>
         <div>
-          <div class="analyticsMiniLabel">Completed in ${selectedYear} Ticket Timeline</div>
+          <div class="analyticsMiniLabel">Duration (days)</div>
           <div class="miniDistribution">
             <div class="donut ${showPriorOverlay?"priorActive":""}" style="background:${donutGradient(buckets)}" data-label="${donutLabel}" data-tip="${tipAttr(`<strong>${title}</strong><span>${fmt(total)} completed tickets</span><span>before ${selectedYear} created: ${fmt(priorTotal)} (${priorPct.toFixed(1)}%)</span><span>YTD duration bucket share.</span>`)}"></div>
             <div class="miniBucketList">${miniBucketRows(analysis,buckets)}</div>
@@ -1741,6 +1748,15 @@ function renderDrilldown(){
   renderAllAnalytics();
 }
 
+let stageMotionTimer;
+function playStageMotion(){
+  clearTimeout(stageMotionTimer);
+  roadStage.classList.remove("is-moving");
+  if(window.matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  roadStage.classList.add("is-moving");
+  stageMotionTimer=setTimeout(()=>roadStage.classList.remove("is-moving"),2200);
+}
+
 function setActive(index,shouldPin=false){
   activeIndex=Math.max(0,Math.min(stages.length-1,index));
   if(shouldPin)pinned=true;
@@ -1750,6 +1766,8 @@ function setActive(index,shouldPin=false){
   caravan.classList.toggle("needsPatch",Boolean(stage.patch));
   root.style.setProperty("--active-color",stage.color);
   scene.innerHTML=sceneMarkup(stage.scene);
+  document.querySelectorAll(".milestone").forEach((button,i)=>button.setAttribute("aria-pressed",String(i===activeIndex)));
+  if(shouldPin)playStageMotion();
   document.getElementById("stageBadge").lastElementChild.textContent=stage.short;
   document.getElementById("detailTitle").textContent=stage.title;
   document.getElementById("metricBig").innerHTML=stage.avg==null
@@ -1764,17 +1782,17 @@ function setActive(index,shouldPin=false){
   document.getElementById("stageNote").textContent=stage.note;
   document.querySelectorAll(".segmentDuration").forEach((pill,i)=>pill.classList.toggle("active",i===Math.min(activeIndex,stages.length-2)));
   document.querySelectorAll(".summaryCard").forEach(card=>card.classList.toggle("active",Number(card.dataset.index)===activeIndex));
-  renderAllAnalytics();
 }
 
 function renderControls(){
+  const shortLabels={approval:"Ticket Open",parts:"Approved",repair:"Parts Issued",closed:"Invoice Received"};
   milestones.innerHTML=stages.map((stage,index)=>{
     const x=index/(stages.length-1)*100;
-    return `<button class="milestone" type="button" data-index="${index}" style="--x:${x}%;--color:${stage.color}" aria-label="${stage.title}"><div class="pin">${stageIconMarkup(stage.key)}</div><span>${stage.label}</span></button>`;
+    return `<button class="milestone" type="button" data-index="${index}" style="--x:${x}%;--color:${stage.color}" aria-label="${stage.title}" title="${stage.title}" aria-pressed="false"><div class="pin">${stageIconMarkup(stage.key)}</div><span>${shortLabels[stage.key]||stage.label}</span></button>`;
   }).join("");
   segmentDurations.innerHTML='<div class="avgTag">AVG</div>'+stages.slice(0,-1).map((stage,index)=>{
     const x=(index+.5)/(stages.length-1)*100;
-    return `<button class="segmentDuration" type="button" data-index="${index}" style="--x:${x}%;--color:${stage.color}" aria-label="Show evidence for ${stage.short} average">${formatDays(stage.avg)}</button>`;
+    return `<button class="segmentDuration" type="button" data-index="${index}" style="--x:${x}%;--color:${stage.color}" aria-label="Show evidence for ${stage.short} average" aria-expanded="false" aria-controls="timelineEvidence">${formatDays(stage.avg)}</button>`;
   }).join("");
   renderTimelineEvidence();
   segmentDurations.querySelectorAll(".segmentDuration").forEach(button=>{
@@ -1792,7 +1810,6 @@ function renderControls(){
     });
   });
   milestones.querySelectorAll(".milestone").forEach(button=>{
-    button.addEventListener("mouseenter",()=>setActive(Number(button.dataset.index)));
     button.addEventListener("click",()=>setActive(Number(button.dataset.index),true));
   });
 }
@@ -1808,7 +1825,6 @@ function renderSummary(){
     </div>
   `).join("");
   document.querySelectorAll(".summaryCard").forEach(card=>{
-    card.addEventListener("mouseenter",()=>setActive(Number(card.dataset.index)));
     card.addEventListener("click",()=>setActive(Number(card.dataset.index),true));
     card.addEventListener("keydown",event=>{
       if(event.key==="Enter"||event.key===" "){
@@ -1819,18 +1835,21 @@ function renderSummary(){
   });
 }
 
-roadStage.addEventListener("mousemove",event=>{
-  if(pinned)return;
-  const rect=roadStage.getBoundingClientRect();
-  const ratio=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width));
-  setActive(Math.round(ratio*(stages.length-1)));
+document.getElementById("timelineEvidenceClose").addEventListener("click",()=>{
+  evidenceVisible=false;renderTimelineEvidence();
+  segmentDurations.querySelector('.segmentDuration.active')?.focus();
 });
-roadStage.addEventListener("mouseleave",()=>{if(!pinned)setActive(activeIndex)});
-roadStage.addEventListener("click",()=>{pinned=!pinned});
+roadStage.addEventListener("keydown",event=>{
+  if(event.key==="ArrowRight"||event.key==="ArrowLeft"){
+    event.preventDefault();setActive(activeIndex+(event.key==="ArrowRight"?1:-1),true);
+    milestones.querySelector('[data-index="'+activeIndex+'"]')?.focus();
+  }
+});
 document.addEventListener("keydown",event=>{
-  if(event.key==="Escape"){pinned=false;setActive(activeIndex)}
-  if(event.key==="ArrowRight"){pinned=true;setActive(activeIndex+1)}
-  if(event.key==="ArrowLeft"){pinned=true;setActive(activeIndex-1)}
+  if(event.key==="Escape"){
+    evidenceVisible=false;renderTimelineEvidence();
+    clearTimeout(stageMotionTimer);roadStage.classList.remove("is-moving");hidePreviewTooltip();
+  }
 });
 
 const startStage=Number(urlParams.get("stage"));

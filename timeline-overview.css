@@ -1,0 +1,96 @@
+@layer timelineOverview {
+  html,body.previewPage { height:auto!important; overflow:auto!important; }
+  body.previewPage .app { height:auto!important; min-height:100vh!important; overflow:visible!important; }
+  body.previewPage .main { display:block!important; height:auto!important; min-height:100vh!important; overflow:visible!important; padding:18px 20px 28px!important; }
+  .previewPage .pageTop { display:flex!important; align-items:center!important; justify-content:space-between!important; flex-wrap:wrap; gap:12px; margin:0 0 12px!important; padding:14px 16px; border:1px solid #e5e7eb; border-radius:12px; background:#fff; }
+  .previewPage .titleRow { gap:14px; }
+  .previewPage .pageTitle { font-size:22px!important; font-weight:500!important; color:#536174!important; margin:0!important; line-height:1.3!important; }
+  .previewPage .yearSwitch { margin:0!important; gap:4px; }
+  .previewPage .yearBtn { height:30px; border-radius:7px; box-shadow:none; font-weight:400; }
+  .timelineYear { color:#738094; font-size:12px; }
+  .timelineHeaderActions { display:flex; gap:12px; align-items:center; }
+  .previewPage .softExport { min-height:31px!important; padding:0 11px!important; border:1px solid #dbe3ec!important; border-radius:7px!important; color:#2563eb!important; background:#fff!important; font-size:12px!important; font-weight:400!important; }
+  .previewPage .hero { margin:0 0 12px!important; padding:14px 16px!important; border:1px solid #e5e7eb!important; border-radius:12px!important; background:#fff!important; box-shadow:none!important; height:auto!important; overflow:visible!important; }
+  .previewPage .hero:before { content:none!important; }
+  .previewPage .heroGrid { display:block!important; height:auto!important; }
+  .previewPage .timelinePanel { display:block!important; padding:0!important; height:auto!important; min-height:0!important; background:transparent!important; border:0!important; box-shadow:none!important; }
+  .previewPage .timelinePanelHead { align-items:center!important; margin:0 0 10px; }
+  .previewPage .panelTitle { margin:0!important; font-size:13px!important; font-weight:600!important; letter-spacing:0!important; color:#334155!important; }
+  .previewPage .panelKicker,.previewPage #scopeBadge { display:none!important; }
+  .previewPage .timelineAvg { display:flex; gap:9px; align-items:baseline; margin:0!important; }
+  .previewPage .timelineAvg span { text-transform:none!important; letter-spacing:0!important; font-size:11px!important; font-weight:400!important; color:#7b8797!important; }
+  .previewPage .timelineAvg strong { font-size:18px!important; font-weight:600!important; color:#334155!important; }
+  .timelineEvidenceClose { padding:4px 8px; border:1px solid #dce2e9; border-radius:6px; background:#fff; color:#64748b; font:400 11px "Segoe UI",sans-serif; cursor:pointer; }
+  [hidden] { display:none!important; }
+  .previewPage .roadStage,.previewPage .roadStage.evidenceCollapsed,.previewPage .timelinePanel:not(.evidenceCollapsed) .roadStage { height:204px!important; border:0!important; border-radius:10px!important; background:linear-gradient(180deg,#f5f9f8 0 59%,#edf3ee 59% 100%)!important; overflow:hidden!important; }
+  .previewPage .skyDot { display:none!important; }
+  .previewPage .scene { top:10px!important; height:105px!important; transform:translateX(-50%) scale(.58)!important; }
+  .previewPage .sceneLabel { display:none!important; }
+  .previewPage .milestones { top:87px!important; height:100px!important; left:10%!important; right:10%!important; z-index:7!important; }
+  .previewPage .milestones:before { top:25px!important; background:#cbdad5!important; height:2px!important; }
+  .previewPage .pin { width:48px!important; height:48px!important; border:5px solid #e5eeea!important; background:#fff!important; color:#82968d!important; box-shadow:none!important; }
+  .previewPage .milestone[aria-pressed="true"] .pin { border-color:#c9e1ff!important; color:#2563eb!important; }
+  .previewPage .pin svg { width:22px!important; height:22px!important; }
+  .previewPage .milestone span,.previewPage .timelinePanel:not(.evidenceCollapsed) .milestone span { display:block!important; max-width:130px!important; font-size:11px!important; text-transform:none!important; letter-spacing:0!important; font-weight:500!important; color:#526174!important; }
+  .previewPage .caravan { top:123px!important; transform:translateX(-50%) scale(.44)!important; }
+  .previewPage .segmentDurations { top:108px!important; }
+  .previewPage .segmentDuration { min-width:66px!important; height:25px!important; border:1px solid #d5dfdc!important; background:#fff!important; color:#526174!important; font-size:11px!important; font-weight:500!important; box-shadow:none!important; }
+  .previewPage .segmentDuration.active { border-color:#9fc1ee!important; background:#f0f6ff!important; color:#2563eb!important; }
+  .roadStage .caravan,.roadStage .wheel,.roadStage .person,.roadStage .headset,.roadStage .desk,.roadStage .bubble,.roadStage .box,.roadStage .tool,.roadStage .spark { animation-play-state:paused!important; }
+  .roadStage.is-moving .caravan,.roadStage.is-moving .wheel,.roadStage.is-moving .person,.roadStage.is-moving .headset,.roadStage.is-moving .desk,.roadStage.is-moving .bubble,.roadStage.is-moving .box,.roadStage.is-moving .tool,.roadStage.is-moving .spark { animation-play-state:running!important; }
+  .previewPage .timelineEvidence { position:static!important; margin-top:12px!important; display:grid; grid-template-columns:repeat(3,minmax(0,1fr))!important; gap:12px!important; }
+  .previewPage .timelineEvidence.is-hidden { display:none!important; }
+  .previewPage .evidenceCard { min-height:0!important; max-height:none!important; padding:12px!important; border:1px solid #e5e7eb!important; background:#fff!important; border-radius:8px!important; box-shadow:none!important; overflow:visible!important; }
+  .previewPage .evidenceSvg { display:block!important; }
+  .previewPage .evidenceDist,.previewPage .priceMixGrid { display:grid!important; }
+  .previewPage .priceMixActions { display:flex!important; }
+  .previewPage .evidenceTitle { font-size:11px!important; font-weight:600!important; text-transform:none!important; letter-spacing:0!important; }
+  .previewPage .evidenceCount { font-size:11px!important; font-weight:400!important; letter-spacing:0!important; }
+  .previewPage .analyticsPanel { padding:0!important; border:0!important; border-radius:0!important; background:transparent!important; box-shadow:none!important; height:auto!important; margin:0!important; overflow:visible!important; }
+  .previewPage .trendToolbar { margin:0 0 10px!important; align-items:center!important; padding:0 2px; }
+  .previewPage .analyticsSections { height:auto!important; overflow:visible!important; margin:0!important; gap:12px!important; }
+  .previewPage .analyticsSection { height:auto!important; padding:14px!important; border:1px solid #e5e7eb!important; border-radius:12px!important; background:#fff!important; box-shadow:none!important; overflow:visible!important; }
+  .previewPage .analyticsSectionHead { min-height:40px; margin:0 0 12px!important; }
+  .previewPage .analyticsSectionTitle { font-size:13px!important; font-weight:600!important; color:#334155!important; }
+  .previewPage .analyticsSectionMeta { font-size:11px!important; font-weight:400!important; color:#7b8797!important; margin-top:5px; }
+  .previewPage .analyticsSectionAvg { min-height:22px!important; padding:0!important; border:0!important; border-radius:0!important; background:none!important; color:#334155!important; font-size:12px!important; font-weight:600!important; }
+  .previewPage .analyticsSectionGrid { gap:18px!important; }
+  .previewPage .analyticsMiniTrend .yearTrend { height:auto!important; aspect-ratio:460 / 304; margin:0!important; }
+  .previewPage .axisText { font-size:16px!important; font-weight:400!important; fill:#8591a1!important; }
+  .previewPage .axisTitle { font-size:15px!important; font-weight:400!important; fill:#8591a1!important; }
+  .previewPage .trendValue { font-size:18px!important; font-weight:600!important; fill:#334155!important; }
+  .previewPage .gridLine { stroke:#e9edf2!important; }
+  .previewPage .axisLine { stroke:#dbe2e9!important; }
+  .previewPage .analyticsMiniTrend .chartLegend { margin:3px 0 0!important; font-size:11px!important; font-weight:400!important; justify-content:center; gap:12px!important; color:#64748b!important; }
+  .previewPage .analyticsMiniLabel { margin:0 0 10px!important; font-size:11px!important; font-weight:400!important; text-transform:none!important; letter-spacing:0!important; color:#7b8797!important; }
+  .previewPage .miniDistribution { grid-template-columns:104px minmax(0,1fr)!important; gap:12px!important; }
+  .previewPage .miniDistribution .donut { width:104px!important; justify-self:center; box-shadow:none!important; }
+  .previewPage .miniDistribution .donut:after { width:67px!important; font-size:12px!important; font-weight:500!important; background:#fff!important; border:0!important; }
+  .previewPage .miniBucketList { gap:8px!important; }
+  .previewPage .miniBucketRow { grid-template-columns:45px minmax(0,1fr) 91px!important; gap:8px!important; font-size:11px!important; font-weight:400!important; }
+  .previewPage .miniBucketRow > span:first-child { white-space:nowrap; }
+  .previewPage .miniBucketValue { font-size:11px!important; font-weight:500!important; }
+  .previewPage .miniBucketTrack { height:12px!important; border-radius:3px!important; background:#f1f4f8!important; }
+  .previewPage .miniBucketFill { min-width:0!important; border-radius:3px!important; background:var(--c)!important; box-shadow:none!important; }
+  @media(max-width:1499px) { .previewPage .analyticsSections { grid-template-columns:repeat(2,minmax(0,1fr))!important; } .previewPage .analyticsMiniTrend .yearTrend { max-height:245px!important; } .previewPage .miniDistribution { grid-template-columns:110px minmax(0,1fr)!important; } }
+  @media(max-width:700px) {
+    body.previewPage .main { padding:12px!important; }
+    .previewPage .pageTop { padding:12px; }
+    .previewPage .pageTitle { font-size:20px!important; }
+    .previewPage .hero { padding:12px!important; }
+    .previewPage .analyticsSections,.previewPage .timelineEvidence { grid-template-columns:1fr!important; }
+    .previewPage .milestone { width:74px!important; }
+    .previewPage .milestone span { font-size:10px!important; }
+    .previewPage .pin { width:38px!important; height:38px!important; }
+    .previewPage .milestones:before { top:20px!important; }
+    .previewPage .segmentDurations { top:159px!important; }
+    .previewPage .segmentDuration { min-width:56px!important; padding:0 5px!important; font-size:10px!important; }
+    .previewPage .roadStage,.previewPage .roadStage.evidenceCollapsed,.previewPage .timelinePanel:not(.evidenceCollapsed) .roadStage { height:205px!important; }
+    .previewPage .caravan { top:53px!important; }
+    .previewPage .timelineAvg strong { font-size:16px!important; }
+    .previewPage .timelineAvg { gap:6px; }
+  }
+  @media(prefers-reduced-motion:reduce) {
+    .roadStage * { animation:none!important; transition:none!important; }
+  }
+}

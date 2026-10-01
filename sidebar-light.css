@@ -1,5 +1,7 @@
 /* Layered important rules take precedence over legacy page-local overrides. */
 @layer dashboardSidebar{
+/* Temporarily hide this navigation entry; keep the page available for later work. */
+.sidebar a[href="parts.html"]{display:none!important;}
 /* Shared neutral sidebar: color identifies the current destination. */
 .sidebar{
   --sidebar-bg:#f8f9fa;
@@ -8,7 +10,7 @@
   --sidebar-muted:#6b7280;
   --sidebar-icon:#6b7280;
   --sidebar-active:#2563eb;
-  --sidebar-hover:#eef0f2;
+  --sidebar-hover:#f3f6fa;
 }
 
 .app{
@@ -89,30 +91,32 @@
 .navLink,
 .nav-link{
   width:100%!important;
-  min-height:38px!important;
+  min-height:52px!important;
   display:flex!important;
   align-items:center!important;
   gap:10px!important;
-  padding:0 10px!important;
-  border:1px solid transparent!important;
-  border-radius:11px!important;
-  background:transparent!important;
+  padding:0 12px!important;
+  margin:0 0 8px!important;
+  border:1px solid #dfe3e8!important;
+  border-radius:2px!important;
+  background:#fff!important;
   color:var(--sidebar-ink)!important;
   box-shadow:none!important;
   text-decoration:none!important;
   text-align:left!important;
-  font-size:12.5px!important;
+  font-size:13.5px!important;
   font-weight:500!important;
   letter-spacing:0!important;
   transform:none!important;
+  cursor:pointer!important;
 }
 
 .navBtn svg,
 .navLink svg,
 .nav-link svg,
 .nav-link i{
-  width:16px!important;
-  height:16px!important;
+  width:18px!important;
+  height:18px!important;
   color:var(--sidebar-icon)!important;
   stroke:currentColor!important;
   flex:0 0 auto!important;
@@ -123,7 +127,7 @@
 .nav-link:hover{
   background:var(--sidebar-hover)!important;
   color:#1f2937!important;
-  border-color:transparent!important;
+  border-color:#c3ccd8!important;
   transform:none!important;
 }
 
@@ -137,10 +141,10 @@
 .navBtn.active,
 .navLink.active,
 .nav-link.active{
-  color:#1d4ed8!important;
-  background:#edf3fc!important;
-  border-color:transparent!important;
-  box-shadow:inset 3px 0 0 var(--sidebar-active)!important;
+  color:#23476b!important;
+  background:#eaf1fb!important;
+  border-color:#a5bcdb!important;
+  box-shadow:none!important;
   font-weight:600!important;
 }
 

@@ -1,0 +1,95 @@
+@layer modelOverview {
+  body.model-page .main { padding:18px 20px 32px!important; }
+  .topbar { display:flex!important; align-items:center!important; flex-wrap:wrap; gap:12px 18px; margin:0 0 12px!important; padding:14px 16px!important; background:#fff; border:1px solid #e5e7eb; border-radius:12px; }
+  .topbar .title { margin:0!important; font-size:22px!important; font-weight:500!important; color:#536174!important; letter-spacing:0!important; }
+  .modelFilters { display:flex; align-items:center; flex-wrap:wrap; gap:12px; }
+  .modelFilters label,.modelYear { display:flex; align-items:center; gap:6px; font-size:11px; color:#7b8797; font-weight:400; }
+  .modelYear span { font-size:12px; color:#475569; }
+  .modelFilters select,.modelMetric,.modelFailureMode { height:31px; padding:0 9px; border:1px solid #dce2e9; border-radius:7px; background:#fff; color:#475569; font:400 12px "Segoe UI",sans-serif; max-width:100%; }
+  #modelPeriodSelect { min-width:112px; }
+  #modelSelect { min-width:105px; }
+  .modelHeaderActions { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-left:auto; }
+  .scopeSwitch { padding:2px!important; border:1px solid #e5e7eb!important; background:#f6f7f8!important; border-radius:8px!important; gap:2px!important; box-shadow:none!important; }
+  .scopeBtn { font-size:11px!important; font-weight:400!important; padding:6px 9px!important; min-height:0!important; color:#64748b!important; background:transparent!important; border:0!important; border-radius:6px!important; box-shadow:none!important; }
+  .scopeBtn.active { color:#1d4ed8!important; background:#fff!important; box-shadow:0 1px 3px #0f172a12!important; }
+  .stickyExportBtn { min-height:31px!important; padding:0 10px!important; font-size:12px!important; font-weight:400!important; color:#2563eb!important; background:#fff!important; border:1px solid #dbe3ec!important; border-radius:8px!important; box-shadow:none!important; }
+  .stickyControls,.insightsPanel,.leaderboardControls,#seriesChips,#analystNoteWrap { display:none!important; }
+  .seriesLayout { display:grid!important; grid-template-columns:minmax(300px,.85fr) minmax(0,1.15fr)!important; grid-template-rows:1.5fr 1fr!important; align-items:stretch!important; gap:12px!important; margin:0!important; }
+  .seriesLayout .leaderboardPanel { grid-row:1 / 3; }
+  .seriesLayout .seriesDetailPanel,.detailStack { display:contents!important; }
+  .seriesDetailPanel > .panelHead { display:none!important; }
+  .leaderboardPanel,.modelFailureCard,.timingCard { padding:16px!important; margin:0!important; background:#fff!important; border:1px solid #e5e7eb!important; border-radius:12px!important; box-shadow:none!important; min-width:0!important; }
+  .modelFailureCard { grid-column:2; grid-row:1; gap:10px!important; }
+  .timingCard { grid-column:2; grid-row:2; display:flex; flex-direction:column; }
+  .leaderboardPanel .panelHead,.leaderboardHead { display:flex!important; align-items:center!important; justify-content:space-between!important; gap:8px!important; flex-wrap:wrap; margin:0!important; width:100%; }
+  .panelTitle,.modelFailureTitle,.timingTitle { font-size:13px!important; font-weight:600!important; color:#334155!important; letter-spacing:0!important; }
+  .panelTitleNote,.modelContext { color:#7b8797!important; font-size:11px!important; font-weight:400!important; }
+  .modelContext { margin-left:6px; }
+  .modelRankNote { margin:5px 0 14px; font-size:11px; color:#7b8797; }
+  .seriesLayout .lbRows { display:flex!important; flex-direction:column; justify-content:space-evenly; gap:8px!important; max-height:none!important; overflow:visible!important; padding:0!important; flex:1; }
+  .seriesLayout .leaderboardPanel { display:flex!important; flex-direction:column!important; }
+  .seriesLayout .lbRow { display:grid!important; grid-template-columns:52px minmax(0,1fr) 94px!important; gap:12px!important; align-items:center!important; padding:10px 8px!important; min-height:39px; width:100%; border:1px solid transparent!important; border-radius:7px!important; background:transparent!important; box-shadow:none!important; cursor:pointer; font-family:inherit; }
+  .seriesLayout .lbRow:hover,.seriesLayout .lbRow.active { background:#f4f8fe!important; border-color:#dce8fa!important; transform:none!important; }
+  .modelRankName { text-align:left; font-size:12px; font-weight:500; color:#475569; }
+  .modelRankTrack { height:18px; background:#f1f4f8; border-radius:3px; overflow:hidden; }
+  .modelRankFill { display:block; height:100%; background:#3b82f6; border-radius:3px; }
+  .modelRankValue { color:#243247; font-size:14px; font-weight:600; text-align:right; font-variant-numeric:tabular-nums; }
+  .modelFailureHead { align-items:center!important; gap:8px!important; margin:0!important; }
+  .modelFailureTools { display:flex; align-items:center; gap:10px; }
+  .modelFailureTotal,.timingTotal { font-size:11px!important; font-weight:400!important; color:#7b8797!important; text-align:left!important; }
+  .modelFailureLegend { font-size:11px!important; font-weight:400!important; margin:0!important; gap:14px!important; }
+  .modelFailureLegend .early { background:#3b82f6!important; }
+  .modelFailureLegend .mid { background:#f3b54a!important; }
+  .modelFailureRows { display:flex!important; flex-direction:column!important; align-items:stretch!important; justify-content:space-evenly; gap:3px!important; min-height:0!important; padding:0!important; flex:1; }
+  .modelFailureRow { display:grid; grid-template-columns:42px minmax(0,1fr) 134px; gap:10px; align-items:center; min-height:24px; padding:3px 0; border:0; background:transparent; cursor:pointer; font-family:inherit; text-align:left; }
+  .modelFailureRow:hover { background:#f5f8fc; }
+  .modelFailureRow .modelRankName { font-size:11px; }
+  .modelFailureTrack { display:flex; height:17px; background:#f3f5f8; border-radius:2px; overflow:hidden; }
+  .modelFailureTrack span { height:100%; background:#3b82f6; }
+  .modelFailureTrack .mid { background:#f3b54a; }
+  .modelFailureValue { display:flex; justify-content:flex-end; align-items:baseline; gap:7px; font-size:12px; color:#334155; font-weight:600; font-variant-numeric:tabular-nums; }
+  .modelFailureValue small { font-size:10px; font-weight:400; color:#7b8797; }
+  .modelFailureAxis { display:flex; justify-content:space-between; margin:0 144px 0 52px; font-size:10px; color:#8a96a5; }
+  .timingHead { flex-wrap:wrap!important; gap:6px!important; margin:0 0 12px!important; }
+  .timingWrap { flex:1; justify-content:space-evenly; gap:12px!important; overflow:visible!important; }
+  .timingRow { grid-template-columns:91px minmax(0,1fr) 102px!important; gap:12px!important; }
+  .timingLabel { font-size:12px!important; font-weight:400!important; color:#526174!important; }
+  .timingBarTrack { height:22px!important; border-radius:3px!important; background:#f1f4f8!important; }
+  .timingBarFill { background:#4e8bda!important; border-radius:3px!important; }
+  .timingCount { display:flex; align-items:baseline; justify-content:flex-end; gap:8px; font-size:14px!important; font-weight:600!important; }
+  .timingCount small { min-width:37px; margin:0!important; font-size:11px!important; font-weight:400!important; color:#7b8797!important; }
+  .modelDataNote { margin:10px 2px 0; color:#738094; font-size:11px; }
+  .modelDataNote summary { cursor:pointer; width:fit-content; }
+  .modelDataNote p { margin:6px 0; }
+  .modelDataNote button { margin-top:4px; font:inherit; color:#2563eb; background:#fff; border:1px solid #dbe3ec; border-radius:6px; padding:5px 9px; cursor:pointer; }
+  .modelDataNote button:disabled { color:#94a3b8; cursor:default; }
+  @media(min-width:1120px) and (min-height:720px) {
+    .seriesLayout { min-height:max(565px,calc(100dvh - 160px)); height:auto!important; }
+  }
+  @media(min-width:1120px) and (max-height:800px) {
+    .leaderboardPanel,.modelFailureCard,.timingCard { padding:12px!important; }
+    .modelFailureCard { gap:6px!important; }
+    .modelFailureRows { gap:2px!important; }
+    .modelFailureRow { min-height:20px; padding:0; }
+    .modelFailureTrack { height:16px; }
+    .timingWrap { gap:8px!important; }
+    .timingBarTrack { height:20px!important; }
+  }
+  @media(max-width:1119px) {
+    .seriesLayout { grid-template-columns:1fr!important; grid-template-rows:auto!important; }
+    .seriesLayout .leaderboardPanel,.modelFailureCard,.timingCard { grid-column:1!important; grid-row:auto!important; }
+    .timingCard { min-height:270px; }
+  }
+  @media(max-width:620px) {
+    body.model-page .main { padding:12px!important; }
+    .topbar { padding:12px!important; }
+    .topbar .title { font-size:20px!important; }
+    .modelHeaderActions { margin-left:0; gap:8px; }
+    .leaderboardPanel,.modelFailureCard,.timingCard { padding:12px!important; }
+    .modelFailureRow { grid-template-columns:35px minmax(0,1fr) 115px; gap:7px; }
+    .modelFailureAxis { margin:0 122px 0 42px; }
+    .timingRow { grid-template-columns:75px minmax(0,1fr) 83px!important; gap:7px!important; }
+    .timingCount { gap:5px; font-size:12px!important; }
+    .timingCount small { font-size:10px!important; }
+  }
+}

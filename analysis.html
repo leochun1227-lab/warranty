@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+<link rel="stylesheet" href="model-overview.css?v=20261001">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Cache-Control" content="no-store" />
@@ -836,40 +837,28 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     <a class="navLink active" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Repairs by Model</span></a>
     <a class="navLink" href="parts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16"/><path d="M7 7v10"/><path d="M17 7v10"/><path d="M5 17h14"/><path d="M9 11h6"/></svg><span>Parts Failure Components</span></a>
     <a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket Timeline</span></a>
-    <div class="navDivider"></div>
-    <div class="navSection">Tools</div>
-    <button class="navBtn" id="reloadBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12a9 9 0 0 0-15.5-6.2"/><path d="M3 12a9 9 0 0 0 15.5 6.2"/><path d="M18.5 2.5v3.3h-3.3"/><path d="M5.5 21.5v-3.3h3.3"/></svg><span>Reload Data</span></button>
-    <button class="navBtn" id="exportBtn" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 15v4h14v-4"/></svg><span>Export Excel</span></button>
   </aside>
 
   <main class="main">
     <div class="shell">
       <!-- ============ HEADER ============ -->
       <header class="topbar">
-        <div>
-          <div class="eyebrow">Warranty analytics  -  2026 tickets</div>
-          <h1 class="title">Repairs by Model</h1>
-          <div style="margin-top:4px;color:var(--muted);font-size:12.5px;font-weight:600">Use this page to compare repair tickets, failure timing, rejection rate and warranty cost by caravan model.</div>
+        <h1 class="title">Repairs by Model</h1>
+        <div class="modelFilters">
+          <div class="modelYear">Year <span id="modelYearLabel">2026</span></div>
+          <label>Period <select id="modelPeriodSelect" aria-label="Model analysis period"><option value="all">All Months</option></select></label>
+          <label>Model <select id="modelSelect" aria-label="Select model"><option value="ALL">All Models</option></select></label>
         </div>
-        <div class="statusRow" style="display:none" aria-hidden="true">
-          <div class="pill blue" style="display:none" aria-hidden="true"><strong id="sourceCount">...</strong> ticket rows</div>
-          <div class="pill"><strong id="ticketCount">-</strong> tickets</div>
-          <div class="pill green"><strong id="seriesCount">-</strong> model series</div>
-          <div class="pill amber"><strong id="repairerCount">-</strong> repairers</div>
+        <div class="modelHeaderActions">
+          <div class="scopeSwitch" id="scopeButtons" aria-label="Claim scope">
+            <button class="scopeBtn active" type="button" data-scope="ALL">Total</button>
+            <button class="scopeBtn" type="button" data-scope="PRE">Pre Delivery</button>
+            <button class="scopeBtn" type="button" data-scope="FIELD">In Field</button>
+          </div>
+          <button class="stickyExportBtn" id="exportTicketDetailsBtn" type="button" title="Export ticket details for the selected model, period and claim scope">Export Excel</button>
         </div>
+        <div hidden><span id="sourceCount"></span><span id="ticketCount"></span><span id="seriesCount"></span><span id="repairerCount"></span></div>
       </header>
-
-      <div class="stickyControls">
-        <div class="stickySeriesScroller">
-          <div class="chipRow" id="stickySeriesChips"></div>
-        </div>
-        <div class="stickyActions">
-          <button class="stickyExportBtn" id="exportTicketDetailsBtn" type="button" title="Export the currently used model tickets with source fields, costs, timing, and vehicle matching detail">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v12"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/></svg>
-            <span>Export Ticket Details</span>
-          </button>
-        </div>
-      </div>
 
       <!-- ============ KPI ROW ============ -->
 
@@ -889,7 +878,11 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
         <div class="panel leaderboardPanel">
         <div class="panelHead">
           <div class="leaderboardHead">
-            <h2 class="panelTitle">Model Leaderboard <span class="panelTitleNote">(this year)</span></h2>
+            <h2 class="panelTitle">Model Comparison</h2>
+            <select id="modelMetric" class="modelMetric" aria-label="Model ranking metric">
+              <option value="cost">Repair Cost</option><option value="tickets">Tickets</option>
+              <option value="vehicles">Repaired Vehicles</option><option value="average">Avg Cost / Ticket</option>
+            </select>
             <div class="leaderboardControls">
               <div class="scopeSwitch" aria-label="Leaderboard period">
                 <button class="scopeBtn active" type="button" data-leaderboard-mode="total">Total</button>
@@ -900,6 +893,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           </div>
           <div class="chipRow" id="seriesChips"></div>
         </div>
+          <div class="modelRankNote" id="modelRankNote"></div>
           <div class="lbRows" id="lbRows"></div>
         </div>
 
@@ -908,11 +902,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           <div class="panelHead">
             <div class="seriesDetailTitleRow">
               <h2 class="panelTitle">Series Detail - <span id="selectedLabel">All Series</span> <span class="panelTitleNote" id="selectedPeriodLabel">(this year)</span></h2>
-              <div class="scopeSwitch seriesDetailScope" id="scopeButtons" aria-label="Claim scope">
-                <button class="scopeBtn active" type="button" data-scope="ALL">Total</button>
-                <button class="scopeBtn" type="button" data-scope="PRE">Pre Delivery</button>
-                <button class="scopeBtn" type="button" data-scope="FIELD">In Field</button>
-              </div>
+
             </div>
           </div>
 
@@ -920,20 +910,22 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
             <div class="modelFailureCard">
               <div class="modelFailureHead">
                 <div>
-                  <div class="modelFailureTitle">0-90 Day Failure Distribution by Model</div>
+                  <div class="modelFailureTitle">Repairs Within 90 Days <span class="modelContext" id="modelFailureScope">All Models</span></div>
                 </div>
-                <div class="modelFailureTotal" id="modelFailure90Total"></div>
+                <div class="modelFailureTools"><select id="modelFailureMode" class="modelFailureMode" aria-label="Early repair chart metric" title="Share is calculated among repaired vehicles with a matched delivery date, not all vehicles sold."><option value="count">Vehicles</option><option value="share">Share %</option></select></div>
               </div>
+              <div class="modelFailureTotal" id="modelFailure90Total" title="Vehicles with an earliest repair in this scope within 90 days of PGI delivery / all repaired vehicles with a matched PGI delivery date."></div>
               <div class="modelFailureLegend">
                 <span><i class="early"></i>0-30 days</span>
                 <span><i class="mid"></i>31-90 days</span>
               </div>
               <div class="modelFailureRows" id="modelFailure90Chart"></div>
+              <div class="modelFailureAxis" id="modelFailureAxis" aria-hidden="true"></div>
             </div>
 
             <div class="timingCard">
               <div class="timingHead">
-                <div class="timingTitle">Failure timing (delivery -> ticket created)</div>
+                <div class="timingTitle" title="Days from PGI delivery to the earliest ticket for each vehicle within the selected period and claim scope.">Time to First Repair <span class="modelContext" id="modelTimingScope">All Models</span></div>
                 <div class="timingTotal" id="timingTotal"></div>
               </div>
               <div class="timingWrap" id="timingWrap"></div>
@@ -943,6 +935,14 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
           </div>
         </div>
       </section>
+
+      <details class="modelDataNote">
+        <summary>Data notes <span id="modelGapSummary"></span></summary>
+        <p>Repair timing uses each vehicle’s earliest ticket in the selected scope, measured from its matched PGI delivery date. Percentages describe repaired vehicles with delivery dates, not all vehicles sold.</p>
+        <p id="modelGapDetail"></p>
+        <button id="modelGapExport" type="button">Export historical adjustments</button>
+        <span id="modelGapError" role="status"></span>
+      </details>
 
       <!-- ============ CLAIM REJECTION BY REPAIRER ============ -->
       <section class="section panel" hidden>
@@ -1023,6 +1023,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   </main>
 </div>
 
+<script src="model-overview.js?v=20261001"></script>
 <script>
 (function(){
   // ============ CONFIG ============
@@ -1074,6 +1075,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     viewRows: [],
     summary: [],
     selected: "ALL",
+    modelMetric: "cost",
+    modelFailureMode: "count",
     scope: "ALL",
     soldBySeries: {},
     autoBaseBySeries: {},         // Legacy: distinct chassis observed in tickets (problem-only)
@@ -2759,14 +2762,16 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   // ============ RENDER: chips ============
   function renderChips(){
-    const totalMatchedVehicles = displaySummaryRows().reduce((sum, item) => sum + (Number(item?.pgiMatchedVehicles ?? item?.timingSources?.pgi ?? 0) || 0), 0);
-    const chips = [`<button class="chip ${state.selected==="ALL"?"active":""}" data-series="ALL">All Repaired CVs <small>${numFmt.format(totalMatchedVehicles)}</small></button>`]
-      .concat(sortRows(displaySummaryRows(), state.seriesSort).map(r => `<button class="chip ${state.selected===r.series?"active":""}" data-series="${r.series}">${r.series} <small>${numFmt.format(Number(r?.pgiMatchedVehicles ?? r?.timingSources?.pgi ?? 0) || 0)}</small></button>`));
-    ["seriesChips","stickySeriesChips","timingSeriesChips"].forEach(id => {
-      const el = $(id);
-      if (el) el.innerHTML = chips.join("");
-    });
+    const rows=ModelOverview.modelRows(displaySummaryRows());
+    $("modelSelect").innerHTML='<option value="ALL">All Models</option>'+rows.map(row=>'<option value="'+esc(row.series)+'">'+esc(row.series)+'</option>').join("");
+    $("modelSelect").value=state.selected;
+    const gap=displaySummaryRows().find(row=>row.series===HISTORICAL_GAP_SERIES);
+    const count=Number(gap?.tickets||0);
+    $("modelGapSummary").textContent=count?' · '+numFmt.format(count)+' historical adjustments':'';
+    $("modelGapDetail").textContent=count?numFmt.format(count)+' historical ticket adjustments are excluded from the model charts and retained in the All Models export. These records reconcile historical totals and do not identify a vehicle model.':'No historical ticket adjustments in this scope.';
+    $("modelGapExport").disabled=!count;
   }
+
 
   function renderScopeButtons(){
     document.querySelectorAll("[data-scope]").forEach(btn => {
@@ -2776,20 +2781,14 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   function renderLeaderboardControls(){
-    document.querySelectorAll("[data-leaderboard-mode]").forEach(btn => {
-      btn.classList.toggle("active", btn.getAttribute("data-leaderboard-mode") === state.leaderboardMode);
-    });
-    const monthWrap = $("leaderboardMonthChips");
-    if (!monthWrap) return;
-    const months = modelMonthOptions();
-    const activeMonth = activeLeaderboardMonth();
-    monthWrap.hidden = state.leaderboardMode !== "mtm";
-    monthWrap.innerHTML = months.map(month => (
-      `<button class="monthChip ${month === activeMonth ? "active" : ""}" type="button" data-leaderboard-month="${month}">${monthLabel(month)}</button>`
-    )).join("");
+    const months=modelMonthOptions();
+    $("modelYearLabel").textContent=MODEL_ANALYSIS_YEAR;
+    const label=monthRangeLabel(months).replaceAll("Sept","Sep");
+    $("modelPeriodSelect").innerHTML='<option value="all">'+esc(label||"All Months")+'</option>'+months.map(month=>'<option value="'+month+'">'+esc(monthLabel(month).replaceAll("Sept","Sep"))+'</option>').join("");
+    $("modelPeriodSelect").value=state.leaderboardMode==="mtm"?activeLeaderboardMonth():"all";
   }
 
-  // ============ RENDER: series table ============
+
   function renderSeriesTable(){
     const rows = sortRows(displaySummaryRows(), state.seriesSort);
     // fleet baselines for cell-level highlighting
@@ -2828,39 +2827,19 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   // Leaderboard bar follows approved repair cost, not inferred sales base.
   function renderLeaderboard(){
-    const sorted = sortRows(displaySummaryRows(), state.seriesSort);
-    const target = $("lbRows");
-    if (!sorted.length) { target.innerHTML = `<div class="empty">No data yet.</div>`; return; }
-    const maxRepairCost = Math.max(...sorted.map(row => Number(row.cost) || 0), 1);
-    target.innerHTML = sorted.map((row, i) => {
-      const pgiMatchedVehicles = Number(row.pgiMatchedVehicles ?? row.timingSources?.pgi ?? 0) || 0;
-      const repairCost = Number(row.cost) || 0;
-      const avgTicketCost = row.costPerTicket == null ? "N/A" : moneyFmt.format(row.costPerTicket);
-      const barWidth = repairCost ? Math.max(4, (repairCost / maxRepairCost) * 100) : 4;
-      const active = state.selected === row.series ? "active" : "";
-      const badge = seriesBadgeColor(i);
-      return `<div class="lbRow ${active}" data-series="${row.series}">
-        <div class="lbSeries">
-          <div class="lbBadge ${badge}">${row.series}</div>
-        </div>
-        <div class="lbBarWrap">
-          <div class="lbBarLabel">
-            <span>Repair Cost</span>
-            <span class="lbBarValue"><strong>${moneyFmt.format(repairCost)}</strong> / ${avgTicketCost} per ticket</span>
-          </div>
-          <div class="lbBar"><div class="lbBarFill" style="width:${barWidth}%"></div></div>
-        </div>
-        <div class="lbMetric"><div class="lbMetricLabel">Repaired CVs (PGI Matched)</div><div class="lbMetricValue">${numFmt.format(pgiMatchedVehicles)}</div></div>
-        <div class="lbMetric"><div class="lbMetricLabel">Ticket Share</div><div class="lbMetricValue ${row.ticketShare==null?"na":""}">${row.ticketShare==null?"N/A":pctValue(row.ticketShare)}</div></div>
-        <div class="lbMetric"><div class="lbMetricLabel">Tickets</div><div class="lbMetricValue">${numFmt.format(row.tickets)}</div></div>
-        <div class="lbMetric extraMetric"><div class="lbMetricLabel">PGI Matched</div><div class="lbMetricValue">${numFmt.format(pgiMatchedVehicles)}</div></div>
-        <div class="lbMetric extraMetric"><div class="lbMetricLabel">Avg / Chassis</div><div class="lbMetricValue ${row.avgRepairs==null?"na":""}">${row.avgRepairs==null?"N/A":row.avgRepairs.toFixed(2)}</div></div>
-        <div class="lbMetric extraMetric"><div class="lbMetricLabel">Median Age</div><div class="lbMetricValue ${row.medianAge==null?"na":""}">${fmtDays(row.medianAge)}</div></div>
-        <div class="lbMetric extraMetric"><div class="lbMetricLabel">Cost / Ticket</div><div class="lbMetricValue ${row.costPerTicket==null?"na":""}">${row.costPerTicket==null?"N/A":moneyFmt.format(row.costPerTicket)}</div></div>
-        <div class="lbMetric extraMetric"><div class="lbMetricLabel">Warranty Cost</div><div class="lbMetricValue">${moneyFmt.format(row.cost || 0)}</div></div>
-      </div>`;
-    }).join("");
+    const metric=state.modelMetric||"cost";
+    const rows=ModelOverview.rankedRows(displaySummaryRows(),metric);
+    const max=Math.max(...rows.map(row=>ModelOverview.metricValue(row,metric)||0),1);
+    $("modelMetric").value=metric;
+    const notes={cost:"Approved repair cost",tickets:"Tickets by model",vehicles:"Repaired vehicles with matched delivery dates",average:"Approved cost / tickets with cost greater than $0"};
+    $("modelRankNote").textContent=notes[metric];
+    $("lbRows").innerHTML=rows.length?rows.map(row=>{
+      const value=ModelOverview.metricValue(row,metric);
+      const formatted=value==null?"N/A":(metric==="cost"||metric==="average"?moneyFmt:numFmt).format(value);
+      return '<button type="button" class="lbRow '+(state.selected===row.series?'active':'')+'" data-series="'+esc(row.series)+'" aria-pressed="'+(state.selected===row.series)+'" title="'+esc(row.series)+': '+formatted+'"><span class="modelRankName">'+esc(row.series)+'</span><span class="modelRankTrack"><span class="modelRankFill" style="width:'+Math.max(0,(value||0)/max*100)+'%"></span></span><span class="modelRankValue">'+formatted+'</span></button>';
+    }).join(""):'<div class="empty">No model data for this period.</div>';
   }
+
 
   function renderSeriesTable(){
     const target = $("seriesRows");
@@ -2944,84 +2923,43 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   }
 
   function renderModelFailure90Chart(){
-    const target = $("modelFailure90Chart");
-    const totalEl = $("modelFailure90Total");
-    if (!target) return;
-    const allRows = displaySummaryRows()
-      .map(row => {
-        const buckets = Array.isArray(row.buckets) ? row.buckets : [0,0,0,0,0];
-        const early = Number(buckets[0] || 0);
-        const mid = Number(buckets[1] || 0);
-        const count = early + mid;
-        const dated = Number(row.pgiMatchedVehicles ?? row.timingSources?.pgi ?? 0) || buckets.reduce((sum, value) => sum + (Number(value) || 0), 0);
-        return { series:row.series, early, mid, count, dated };
-      })
-    const rows = allRows.filter(row => row.count > 0)
-      .sort((a,b) => b.count - a.count || b.early - a.early || a.series.localeCompare(b.series));
-    const total = rows.reduce((sum,row) => sum + row.count, 0);
-    const datedTotal = allRows.reduce((sum,row) => sum + row.dated, 0);
-    if (totalEl) {
-      totalEl.textContent = total
-        ? `${numFmt.format(total)} chassis within 0-90d${datedTotal ? ` / ${numFmt.format(datedTotal)} PGI-matched chassis` : ""}`
-        : "No 0-90d PGI-matched chassis";
-    }
-    if (!rows.length) {
-      target.innerHTML = `<div class="empty">No chassis have PGI-matched failures within 0-90 days for the selected scope.</div>`;
-      return;
-    }
-    const max = Math.max(...rows.map(row => row.count), 1);
-    const logMax = Math.log10(max) || 1;
-    target.innerHTML = rows.slice(0, 8).map(row => {
-      const height = Math.max(6, Math.log10(row.count + 1) / logMax * 100);
-      const earlyPct = row.count ? row.early / row.count * 100 : 0;
-      const midPct = 100 - earlyPct;
-      const share = row.dated ? row.count / row.dated * 100 : 0;
-      const active = state.selected === row.series ? " active" : "";
-      return `<div class="modelFailureBar${active}" data-series="${esc(row.series)}" title="Open ${esc(row.series)} detail">
-        <div class="modelFailureBarValue">${numFmt.format(row.count)}<small>chassis</small><small>${share.toFixed(1)}%</small></div>
-        <div class="modelFailureColumn">
-          <div class="modelFailureStack" style="height:${height}%">
-            <span class="modelFailureSegEarly" style="height:${earlyPct}%"></span>
-            <span class="modelFailureSegMid" style="height:${midPct}%"></span>
-          </div>
-        </div>
-        <div class="modelFailureName">${esc(row.series)}</div>
-      </div>`;
-    }).join("");
+    const mode=state.modelFailureMode||"count";
+    const rows=ModelOverview.failureRows(displaySummaryRows(),state.selected).filter(row=>row.dated>0)
+      .sort((a,b)=>(mode==="share"?b.share-a.share:b.count-a.count)||a.series.localeCompare(b.series));
+    const total=rows.reduce((sum,row)=>sum+row.count,0),dated=rows.reduce((sum,row)=>sum+row.dated,0);
+    const max=Math.max(...rows.map(row=>row.count),1);
+    $("modelFailureScope").textContent=state.selected==="ALL"?"All Models":state.selected;
+    $("modelFailureMode").value=mode;
+    $("modelFailure90Total").textContent=dated?numFmt.format(total)+' / '+numFmt.format(dated)+' repaired vehicles · '+(total/dated*100).toFixed(1)+'%':'No repaired vehicles with delivery dates';
+    $("modelFailureAxis").innerHTML=rows.length?'<span>0</span><span>'+(mode==="share"?'100%':numFmt.format(max)+' vehicles')+'</span>':'';
+    $("modelFailure90Chart").innerHTML=rows.length?rows.map(row=>{
+      const segments=ModelOverview.failureSegments(row,mode,max);
+      const sample=numFmt.format(row.count)+' / '+numFmt.format(row.dated);
+      const percent=row.share.toFixed(1)+'%';
+      const value=mode==="share"?percent:numFmt.format(row.count);
+      const detail=mode==="share"?sample:percent;
+      return '<button type="button" class="modelFailureRow" data-series="'+esc(row.series)+'" aria-pressed="'+(state.selected===row.series)+'" title="'+esc(row.series)+': '+sample+' repaired vehicles with delivery dates ('+percent+'). 0–30 days: '+row.early+'; 31–90 days: '+row.mid+'."><span class="modelRankName">'+esc(row.series)+'</span><span class="modelFailureTrack"><span style="width:'+segments.early+'%"></span><span class="mid" style="width:'+segments.mid+'%"></span></span><span class="modelFailureValue">'+value+'<small>'+detail+'</small></span></button>';
+    }).join(""):'<div class="empty">No repair timing data for this selection.</div>';
   }
+
 
   function renderMedianFailureChart(){
     return;
   }
 
   function renderFailureTiming(detail){
-    const totalEl = $("timingTotal");
-    const wrap = $("timingWrap");
-    if (!wrap) return;
-    const buckets = Array.isArray(detail?.buckets) ? detail.buckets : [0,0,0,0,0];
-    const total = buckets.reduce((sum, value) => sum + (Number(value) || 0), 0);
-    const src = detail?.timingSources || {};
-    if (totalEl) {
-      totalEl.textContent = total
-        ? `${numFmt.format(total)} PGI-matched chassis`
-        : "No PGI-matched chassis";
-    }
-    const labels = ["0 - 30 days","31 - 90 days","91 - 180 days","181 - 360 days","360+ days"];
-    const classes = ["b0","b1","b2","b3","b4"];
-    const max = Math.max(...buckets.map(value => Number(value) || 0), 1);
-    wrap.innerHTML = buckets.map((rawCount, index) => {
-      const count = Number(rawCount) || 0;
-      const width = Math.max(3, count / max * 100);
-      const pct = total ? count / total * 100 : 0;
-      return `<div class="timingRow">
-        <div class="timingMeta">
-          <div class="timingLabel">${labels[index]}</div>
-          <div class="timingCount">${numFmt.format(count)}<small>${pct.toFixed(1)}%</small></div>
-        </div>
-        <div class="timingBarTrack"><div class="timingBarFill ${classes[index]}" style="width:${width}%"></div></div>
-      </div>`;
+    const buckets=Array.isArray(detail?.buckets)?detail.buckets:[0,0,0,0,0];
+    const total=buckets.reduce((sum,n)=>sum+Number(n||0),0);
+    $("modelTimingScope").textContent=state.selected==="ALL"?"All Models":state.selected;
+    $("timingTotal").textContent=total?numFmt.format(total)+' repaired vehicles':'No repaired vehicles with delivery dates';
+    const labels=["0–30 days","31–90 days","91–180 days","181–360 days","360+ days"];
+    const max=Math.max(...buckets.map(Number),1);
+    $("timingWrap").innerHTML=buckets.map((n,i)=>{
+      const count=Number(n)||0,share=total?count/total*100:0;
+      return '<div class="timingRow"><div class="timingLabel">'+labels[i]+'</div><div class="timingBarTrack"><div class="timingBarFill" style="width:'+count/max*100+'%"></div></div><div class="timingCount">'+numFmt.format(count)+'<small>'+share.toFixed(1)+'%</small></div></div>';
     }).join("");
   }
+
 
   function renderDetail(){
     const s = selectedSummaryData();
@@ -4723,6 +4661,22 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 
   // ============ EVENTS ============
   function wireEvents(){
+    $("modelMetric").onchange=()=>{state.modelMetric=$("modelMetric").value;renderLeaderboard();};
+    $("modelSelect").onchange=()=>selectSeries($("modelSelect").value);
+    $("modelPeriodSelect").onchange=()=>{
+      const period=$("modelPeriodSelect").value;
+      state.leaderboardMode=period==="all"?"total":"mtm";
+      if(period!=="all")state.leaderboardMonth=period;
+      render();
+    };
+    $("modelFailureMode").onchange=()=>{state.modelFailureMode=$("modelFailureMode").value;renderModelFailure90Chart();};
+    $("modelGapExport").onclick=async()=>{
+      const selected=state.selected;
+      $("modelGapError").textContent="";
+      try{state.selected=HISTORICAL_GAP_SERIES;await exportTicketDetailsExcel();}
+      catch(err){$("modelGapError").textContent="Export unavailable: "+err.message;}
+      finally{state.selected=selected;render();}
+    };
     // series selection (chips, leaderboard rows, table rows)
     document.addEventListener("click", (ev) => {
       const compModeEl = ev.target.closest("[data-comp-mode]");
@@ -4855,8 +4809,6 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
       render();
     });
 
-    $("reloadBtn").addEventListener("click", () => loadAll(true));
-    $("exportBtn").addEventListener("click", exportExcel);
     const ticketDetailsBtn = $("exportTicketDetailsBtn");
     if (ticketDetailsBtn) ticketDetailsBtn.addEventListener("click", exportTicketDetailsExcel);
   }
