@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>Parts Delivery</title>
+<link rel="stylesheet" href="delivery-overview.css?v=20261001">
 <style>
   :root{
     --bg:#f5f6f8;
@@ -1140,7 +1141,7 @@
 <link rel="stylesheet" href="sidebar-light.css?v=20261001-neutral">
 <link rel="stylesheet" href="dashboard-theme.css?v=20261001-neutral">
 </head>
-<body class="is-loading">
+<body class="is-loading delivery-overview-page">
 <div id="pageLoading" class="pageLoading active" aria-live="polite" aria-busy="true" aria-label="Loading Parts Delivery">
   <div class="pageLoadingCard">
     <div class="calcSpinner" aria-hidden="true"></div>
@@ -1166,18 +1167,19 @@
 <main class="main">
   <div class="wrap">
     <div class="head">
-      <div>
+      <div class="deliveryTitle">
         <div class="eyebrow">Parts workflow</div>
         <h1>Parts Delivery</h1>
-      </div>
-    <div class="headRight">
       <div class="pill" id="snapshotPill"><strong>Latest</strong> loading...</div>
-    </div>
+      </div>
+      <div class="deliveryMetrics">
+        <div class="kpis" id="kpis"></div>
+        <div class="costSummary" id="costSummary"></div>
+      </div>
   </div>
 
   <div class="panelRow">
     <section class="panel panelAging">
-      <div class="kpis" id="kpis"></div>
       <div class="panelHead">
         <div class="panelTopic">
           <div class="panelIcon orange" aria-hidden="true">
@@ -1185,7 +1187,6 @@
           </div>
           <div>
             <h2 class="panelTitle">Open parts not issued waiting time</h2>
-            <p class="panelDesc">Ageing analysis by days outstanding for unique SOs that are still open and not issued yet.</p>
           </div>
         </div>
         <div class="badge">Current</div>
@@ -1268,7 +1269,7 @@
     </section>
   </div>
 
-  <section class="panel">
+  <section class="panel partsCostPanel">
     <div class="panelHead">
       <div class="panelTopic">
         <div class="panelIcon sky" aria-hidden="true">
@@ -1284,7 +1285,6 @@
       </div>
     </div>
     <div class="costGrid">
-      <div class="costSummary" id="costSummary"></div>
       <div class="costBody">
         <div class="costTrendList" id="costTrend"></div>
         <div class="compareList" id="costCompare"></div>
@@ -3555,7 +3555,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     const cards = [
       { label:"Current Awaiting Parts", value: integer.format(awaitingNow), left:"Ticket status YA / Awaiting Parts", right:"unique SOs awaiting parts", hint:`Awaiting unique SOs ${integer.format(awaitingNow)}`, theme:"blue", icon: icon.awaiting, action:{ kind:"awaiting", label:"Export", title:"Export Current Awaiting Parts with ticket details" } },
       { label:"Open parts", value: integer.format(openNotIssuedParts), left:"Material rows", right:"still open today", hint:`Age bands use ${integer.format(openNotIssuedParts)} open parts`, theme:"orange", icon: icon.open, action:{ kind:"open-so", label:"Export", title:"Export Open Parts with ticket details" } },
-      { label:"2026 YTD Average Complete Parts Issuing Time", value: `${daysFmt.format(avgDaysToCompleteIssue)}<small>d</small>`, note:avgIssuePeriod, left:avgIssueSourceLabel, right:"SO Created Date to Complete Issue Date", hint:"Average across issued SOs completed in each month; 3M moving average is shown in the chart", theme:"teal", icon: icon.lead },
+      { label:"Avg Parts Issuing Time", period:String(latestDate.getUTCFullYear()), value: `${daysFmt.format(avgDaysToCompleteIssue)}<small>d</small>`, left:avgIssueSourceLabel, right:"SO Created Date to Complete Issue Date", hint:"Average across issued SOs completed in each month; 3M moving average is shown in the chart", theme:"teal", icon: icon.lead },
     ];
 
     els.kpis.innerHTML = cards.map(card => `
@@ -3565,7 +3565,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
             ${card.icon}
           </div>
           <div class="kpiHead">
-            <div class="lbl">${esc(card.label)}</div>
+            <div class="lbl">${esc(card.label)}${card.period ? `<span class="kpiPeriod">${esc(card.period)}</span>` : ""}</div>
           </div>
         </div>
         <div class="val">${card.value}</div>
@@ -3596,7 +3596,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
     const w = Math.max(1, rect.width);
-    const h = Math.max(1, height);
+    const compact = window.matchMedia('(min-width:1120px) and (min-height:720px)').matches;
+    const h = Math.max(1, compact ? rect.height : height);
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
     canvas.style.height = `${h}px`;
@@ -3610,7 +3611,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
   function drawChartLabel(ctx, text, x, y, color){
     if (text === "" || text == null) return;
     ctx.save();
-    ctx.font = chartFont(14, 580);
+    ctx.font = chartFont(11, 600);
     ctx.fillStyle = color || getComputedStyle(document.documentElement).getPropertyValue("--ink").trim();
     ctx.strokeStyle = "#fff";
     ctx.lineWidth = 3;
@@ -3686,8 +3687,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       const xFor = i => ml + step * i + step / 2;
       const yFor = v => mt + plotH - (Math.max(0, Number(v) || 0) / axisMax) * plotH;
       ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--grid").trim();
-      ctx.fillStyle = "#5f6b80";
-      ctx.font = chartFont(14, 540);
+      ctx.fillStyle = "#8491a3";
+      ctx.font = chartFont(11, 400);
       ctx.textAlign = "right";
       for (let i = 0; i <= 4; i++){
         const t = i / 4;
@@ -3709,8 +3710,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         drawChartLabel(ctx, integer.format(r.partsIssued), x, Math.max(mt + 12, y - 6), "rgba(31,157,107,.98)");
       });
       const tickStep = visible.length > 6 ? Math.ceil(visible.length / 6) : 1;
-      ctx.fillStyle = "#69758a";
-      ctx.font = chartFont(14, 540);
+      ctx.fillStyle = "#8491a3";
+      ctx.font = chartFont(11, 400);
       drawXAxisLabels(ctx, visible, xFor, height - 14, tickStep, { lastPadding: 16 });
     });
 
@@ -3747,8 +3748,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       const xFor = i => ml + step * i + step / 2;
       const yFor = v => mt + plotH - (Number(v) || 0) / axisMax * plotH;
       ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--grid").trim();
-      ctx.fillStyle = "#5f6b80";
-      ctx.font = chartFont(14, 540);
+      ctx.fillStyle = "#8491a3";
+      ctx.font = chartFont(11, 400);
       ctx.textAlign = "right";
       for (let i = 0; i <= 4; i++){
         const y = mt + plotH * i / 4;
@@ -3791,8 +3792,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         ctx.stroke();
       });
       const tickStep = effectiveVisible.length > 6 ? Math.ceil(effectiveVisible.length / 6) : 1;
-      ctx.fillStyle = "#69758a";
-      ctx.font = chartFont(14, 540);
+      ctx.fillStyle = "#8491a3";
+      ctx.font = chartFont(11, 400);
       drawXAxisLabels(ctx, effectiveVisible, xFor, height - 14, tickStep, { lastPadding: 16 });
     });
 
@@ -3885,7 +3886,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     if (!series.length){
       renderCanvas(canvas, 260, (ctx) => {
         ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--inkFaint").trim();
-      ctx.font = chartFont(14, 540);
+      ctx.font = chartFont(11, 400);
         ctx.fillText("No cost data found.", 18, 28);
       });
       return;
@@ -3937,8 +3938,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
 
       ctx.clearRect(0, 0, width, height);
       ctx.strokeStyle = colors.grid;
-      ctx.fillStyle = "#5f6b80";
-      ctx.font = chartFont(14, 540);
+      ctx.fillStyle = "#8491a3";
+      ctx.font = chartFont(11, 400);
       ctx.textAlign = "right";
       for (let i = 0; i <= 4; i++){
         const t = i / 4;
@@ -3969,8 +3970,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         ctx.stroke();
       }
 
-      ctx.fillStyle = "#69758a";
-      ctx.font = chartFont(14, 540);
+      ctx.fillStyle = "#8491a3";
+      ctx.font = chartFont(11, 400);
       ctx.textAlign = "center";
       const labelStep = Math.max(1, Math.ceil(series.length / 8));
       drawXAxisLabels(ctx, series, xFor, height - 14, labelStep, { lastPadding: 16 });
@@ -4098,7 +4099,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
       els.leadFoot.textContent = "No trend data found.";
       return;
     }
-    els.flowFoot.textContent = `Parts selected ${state.granularity.toUpperCase()} table by unique SO - ${visible.length} visible rows - latest period ${visible[visible.length - 1].tooltip}.`;
+    els.flowFoot.textContent = "";
     const issuedVisible = issuedSeries;
     els.issuedFoot.textContent = `${issuedVisible.length} visible points - ${monthSeriesRangeAsOf(issuedVisible, latest)}`;
     els.leadFoot.textContent = "";
@@ -4165,11 +4166,11 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
 
     const costReport = latest.costReport || state.costReport;
     renderCards(latest, latestGroup, normalizedIssuedSeries, costReport, currentSummary, leadSeries);
+    renderAging(latest, currentSummary);
+    renderFooter(series, latest, normalizedIssuedSeries, leadSeries);
     drawIssuedChart(normalizedIssuedSeries);
     drawLeadChart(latest, currentSummary, state.currentTickets);
-    renderAging(latest, currentSummary);
     renderCost(costReport, latest, state.currentTickets, currentSummary);
-    renderFooter(series, latest, normalizedIssuedSeries, leadSeries);
   }
 
   (async () => {
@@ -4252,7 +4253,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
 
   window.addEventListener("resize", () => {
     if (!state.history.length) return;
-    if (state.latest) drawLeadChart(state.latest, state.currentSummary, state.currentTickets);
+    render();
   });
 })();
 </script>

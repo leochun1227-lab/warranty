@@ -1,0 +1,94 @@
+/* Match the team overview, with KPI cards beside the page title. */
+@layer deliveryOverview{
+  .delivery-overview-page .wrap{max-width:none!important;padding:14px 22px 26px!important}
+  .delivery-overview-page .head{display:grid!important;grid-template-columns:175px minmax(0,1fr)!important;gap:14px!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important}
+  .delivery-overview-page .deliveryMetrics{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;min-width:0;height:100%}
+  .delivery-overview-page .deliveryMetrics :is(#kpis,#costSummary){display:contents!important}
+  .delivery-overview-page h1{font-size:26px!important;font-weight:400!important;color:#64748b!important;margin:0!important}
+  .delivery-overview-page .eyebrow{display:none!important}
+  .delivery-overview-page #snapshotPill{margin-top:8px!important;border:0!important;padding:0!important;background:transparent!important;box-shadow:none!important;font:400 10px var(--sans)!important;color:#8491a3!important}
+  .delivery-overview-page #snapshotPill strong{font-weight:400!important;color:inherit!important}
+  .delivery-overview-page .kpis{margin:0!important;gap:10px!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .delivery-overview-page .kpi{min-height:108px!important;padding:10px 12px!important;align-items:flex-start!important;justify-content:flex-start!important;gap:4px!important;text-align:left!important;border-radius:10px!important}
+  .delivery-overview-page .kpi .lbl{font:600 11px/1.25 var(--sans)!important;text-align:left!important;letter-spacing:0!important}
+  .delivery-overview-page .kpiPeriod{display:block;margin-top:3px;font:400 10px/1.2 var(--sans);color:#8491a3}
+  .delivery-overview-page .kpi .costStatTop{min-height:29px!important;padding:0!important;align-items:flex-start!important}
+  .delivery-overview-page .val{font-size:29px!important;font-weight:600!important;line-height:1.1!important;margin:0!important}
+  .delivery-overview-page .val{width:auto!important;text-align:left!important;align-self:flex-start!important}
+  .delivery-overview-page .kpiHead{min-height:0!important;height:29px!important;align-items:flex-start!important;justify-content:flex-start!important}
+  .delivery-overview-page .kpi .costStatTop{flex:0 0 auto!important;justify-content:flex-start!important;width:100%!important}
+  .delivery-overview-page .val small{font-size:14px!important;color:#8491a3!important}
+  .delivery-overview-page .kpiNote{font:400 9px/1.3 var(--sans)!important;color:#8491a3!important;margin:0!important}
+  .delivery-overview-page :is(.costStatIcon,.panelIcon){display:none!important}
+  .delivery-overview-page .panel{padding:10px 14px!important;border-radius:10px!important;min-width:0!important;margin:0!important}
+  .delivery-overview-page .panelHead{margin:0 0 6px!important;gap:6px!important;align-items:center!important}
+  .delivery-overview-page .panelTitle{font:600 12px/1.3 var(--sans)!important;color:#334155!important;margin:0!important}
+  .delivery-overview-page .panelDesc{font:400 10px/1.3 var(--sans)!important;color:#8491a3!important;margin:4px 0 0!important}
+  .delivery-overview-page :is(.badge,.legend,.foot){font:400 10px/1.3 var(--sans)!important;letter-spacing:0!important}
+  .delivery-overview-page .badge{background:transparent!important;border:0!important;padding:0!important;color:#8491a3!important;white-space:normal!important}
+  .delivery-overview-page .panelActions{gap:6px!important}
+  .delivery-overview-page .flowExportBtn{font:400 10px var(--sans)!important;letter-spacing:0!important;padding:4px 7px!important;min-height:24px!important;box-shadow:none!important;border-radius:6px!important}
+  .delivery-overview-page .kpiAction{margin:0!important;align-self:flex-start!important}
+  .delivery-overview-page .seg{padding:2px!important;box-shadow:none!important}
+  .delivery-overview-page .seg button{font:400 10px var(--sans)!important;min-width:44px!important;padding:4px 7px!important}
+  .delivery-overview-page .chartBox{border:0!important;background:transparent!important;padding:0!important;min-width:0!important}
+  .delivery-overview-page .legend{gap:10px!important;margin:4px 0 0!important;color:#64748b!important}
+  .delivery-overview-page .foot{margin:3px 0 0!important;color:#8491a3!important}
+  .delivery-overview-page .foot:empty{display:none!important}
+  .delivery-overview-page .agingRow{grid-template-columns:70px minmax(0,1fr) 42px!important;gap:10px!important}
+  .delivery-overview-page :is(.agingLabel,.agingValue){font:400 12px var(--sans)!important}
+  .delivery-overview-page .agingValue{font-weight:600!important}
+  .delivery-overview-page .agingTrack{height:18px!important;border:0!important;border-radius:2px!important;background:#f3f5f7!important}
+  .delivery-overview-page .agingFill{border-radius:2px!important}
+  .delivery-overview-page .flowTableWrap{border:0!important;border-radius:0!important}
+  .delivery-overview-page .flowTable :is(th,td){padding:4px 10px!important;font:400 11px/1.25 var(--sans)!important;letter-spacing:0!important}
+  .delivery-overview-page .flowTable th{color:#8491a3!important;background:#fafbfc!important}
+  .delivery-overview-page .flowTable td.num{font-weight:600!important}
+  .delivery-overview-page .costStat{min-height:0!important;padding:8px!important;gap:6px!important;box-shadow:none!important;border:0!important;background:transparent!important}
+  .delivery-overview-page .costStat .k{font:600 10px/1.3 var(--sans)!important;letter-spacing:0!important}
+  .delivery-overview-page .costStat .v{font:600 clamp(17px,1.4vw,25px)/1.2 var(--sans)!important;white-space:nowrap!important}
+  .delivery-overview-page .costStat .v{color:#1f2937!important}
+  .delivery-overview-page .deliveryMetrics :is(.kpi,.costStat){min-width:0!important;min-height:112px!important;padding:9px!important;gap:5px!important;border:1px solid #e5e7eb!important;background:#fff!important;border-radius:10px!important;display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;text-align:left!important}
+  .delivery-overview-page .deliveryMetrics :is(.costStatTop,.kpiHead){height:43px!important;min-height:43px!important;width:100%!important;align-items:flex-start!important;justify-content:flex-start!important;flex:0 0 auto!important}
+  .delivery-overview-page .deliveryMetrics :is(.lbl,.costStat .k){font:600 11px/1.25 var(--sans)!important;text-transform:none!important;text-align:left!important;text-wrap:initial!important}
+  .delivery-overview-page .deliveryMetrics .val{font-size:clamp(20px,1.8vw,29px)!important}
+  .delivery-overview-page .deliveryMetrics .costStat .v{font-size:clamp(16px,1.45vw,25px)!important;align-self:flex-start!important;text-align:left!important}
+  .delivery-overview-page #warrantyDataUpdatedBadge{bottom:3px!important;right:22px!important;padding:0!important;border:0!important;box-shadow:none!important;background:transparent!important;font:400 9px var(--sans)!important;max-width:calc(100vw - 270px)!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;color:#8491a3!important}
+  @media(min-width:1120px) and (min-height:720px){
+    .delivery-overview-page .wrap{height:100dvh!important;display:grid!important;grid-template-rows:128px minmax(140px,.75fr) minmax(170px,.9fr) minmax(170px,1fr)!important;gap:10px!important}
+    .delivery-overview-page .kpis{height:100%!important;min-height:0!important}
+    .delivery-overview-page .kpi{height:100%!important;min-height:0!important}
+    .delivery-overview-page .head{margin:0!important;min-height:0!important}
+    .delivery-overview-page .panelRow{min-height:0!important;margin:0!important;gap:10px!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+    .delivery-overview-page .panel{height:100%!important;min-height:0!important;display:flex!important;flex-direction:column!important}
+    .delivery-overview-page .panelHead{flex:0 0 auto!important}
+    .delivery-overview-page .chartBox{flex:1!important;min-height:0!important;display:flex!important;flex-direction:column!important}
+    .delivery-overview-page .chartBox canvas{flex:1!important;min-height:0!important;height:100%!important}
+    .delivery-overview-page .flowTableWrap{height:100%!important;max-height:none!important;overflow:auto!important}
+    .delivery-overview-page #agingGrid{flex:1!important;align-content:space-evenly!important;gap:4px!important;margin:0!important}
+    .delivery-overview-page #flowFoot{max-height:26px!important;overflow:hidden!important}
+    .delivery-overview-page #issuedFoot{display:none!important}
+    .delivery-overview-page .partsCostPanel{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:26px minmax(0,1fr)!important;gap:4px!important}
+    .delivery-overview-page .partsCostPanel>.panelHead{align-content:center!important;margin:0!important}
+    .delivery-overview-page .costGrid{min-height:0!important;display:block!important;grid-column:1/-1!important}
+    .delivery-overview-page .costSummary{align-items:center!important;gap:4px!important}
+    .delivery-overview-page .costStat{padding:2px 8px!important;gap:3px!important;align-items:flex-start!important;text-align:left!important}
+    .delivery-overview-page .costStatTop{justify-content:flex-start!important}
+    .delivery-overview-page :is(.costBody,.costTrendList){height:100%!important;min-height:0!important;min-width:0!important}
+    .delivery-overview-page .costBody{display:block!important}
+    .delivery-overview-page .costTrendList{display:flex!important;flex-direction:column!important;gap:2px!important}
+    .delivery-overview-page .costTrendList .legend{flex:0 0 auto!important;margin:0!important}
+    .delivery-overview-page .costLineChart{flex:1!important;height:0!important;min-height:0!important;width:100%!important}
+  }
+  @media(max-width:1119px), (max-height:719px){
+    .delivery-overview-page .head{grid-template-columns:1fr!important}
+    .delivery-overview-page .deliveryMetrics{grid-template-columns:repeat(3,minmax(0,1fr));height:auto}
+    .delivery-overview-page .panelRow{margin:10px 0!important;gap:10px!important}
+  }
+  @media(max-width:700px){
+    .delivery-overview-page .deliveryMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .delivery-overview-page .wrap{padding:14px!important}
+    .delivery-overview-page .kpis{grid-template-columns:1fr!important}
+    .delivery-overview-page .costSummary{grid-template-columns:1fr!important}
+  }
+}
