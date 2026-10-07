@@ -87,4 +87,13 @@
     .team-overview-page .trendSupportGrid :is(.statusPieWrap,.statusPieSvg){width:132px!important;height:132px!important}
     .team-overview-page .trendSupportGrid .statusPieLegend{gap:2px!important}
   }
+  /* Keep the desktop heading and filters in a shallower top row. */
+  @media(min-width:901px){
+    .team-overview-page .pageTop{min-height:0!important;padding:0!important;align-items:center!important}
+    .team-overview-page .pageTitle{font-size:24px!important;line-height:1.1!important}
+    .team-overview-page .pageTop .sidebarFilters{padding:4px 10px!important;border-radius:12px!important}
+    .team-overview-page .pageTop .sidebarFilterGroup{gap:2px!important}
+    .team-overview-page .pageTop .sidebarFilterLabel{line-height:1.1!important}
+    .team-overview-page .pageTop :is(.sidebarFilterSelect,.sidebarExportBtn){height:28px!important;border-radius:8px!important}
+  }
 }
