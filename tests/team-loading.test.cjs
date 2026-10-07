@@ -61,6 +61,7 @@ test('dashboard startup verifies the version before restoring cached figures',as
       showCalcFloat(){},hideCalcFloat(){},
       teamPageVersion:async()=>version,
       readTeamPageCacheRecord:async()=>({version:'same',value:{team:{}}}),
+      readLocalTeamStartup:async()=>null,
       restoreTeamPageState:()=>{events.push('restore');return true;},
       loadEmployeeStatusMappingRemote:async()=>{},
       renderAllWithLoading:async()=>events.push('render'),

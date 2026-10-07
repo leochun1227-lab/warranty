@@ -3,7 +3,8 @@
 
   const DB_NAME = "warranty-dashboard-page-cache";
   const STORE_NAME = "pages";
-  const DB_VERSION = 1;
+  const DB_VERSION = 2;
+  const META_STORE = "sizes";
   const MAX_PAGE_CACHE_BYTES = 12 * 1024 * 1024;
   const MAX_LARGE_CACHE_BYTES = 96 * 1024 * 1024;
   const MAX_CACHE_RECORDS = 24;
@@ -12,10 +13,19 @@
   const DEFAULT_VERSION_URL = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/ctmTicketStatusMonitorV44/analytics/meta/generatedAt.json";
   const DELIVERY_VERSION_URL = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/deliveryFlowHistory/latestSyncAt.json";
   let dbPromise = null;
+  const versionRequests = new Map();
+
+  function bounded(promise, ms, label){
+    let timer;
+    return Promise.race([promise, new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`${label} timed out`)), ms);
+    })]).finally(() => clearTimeout(timer));
+  }
 
   function openDb(){
     if(dbPromise) return dbPromise;
     dbPromise = new Promise((resolve, reject) => {
+      let blocked = false;
       if(!("indexedDB" in window)){
         reject(new Error("IndexedDB is not available"));
         return;
@@ -26,10 +36,27 @@
         if(!db.objectStoreNames.contains(STORE_NAME)){
           db.createObjectStore(STORE_NAME, { keyPath:"key" });
         }
+        if(!db.objectStoreNames.contains(META_STORE)){
+          const meta = db.createObjectStore(META_STORE, { keyPath:"key" });
+          // One-time migration. Subsequent pruning never clones page payloads.
+          const cursor = req.transaction.objectStore(STORE_NAME).openCursor();
+          cursor.onsuccess = () => {
+            const item = cursor.result;
+            if(!item) return;
+            const { key, savedAt, valueBytes } = item.value;
+            meta.put({ key, savedAt, valueBytes });
+            item.continue();
+          };
+        }
       };
-      req.onsuccess = () => resolve(req.result);
+      req.onsuccess = () => {
+        if(blocked){req.result.close();return;}
+        req.result.onversionchange = () => { req.result.close(); dbPromise = null; };
+        resolve(req.result);
+      };
+      req.onblocked = () => { blocked = true; reject(new Error("IndexedDB upgrade is blocked by another tab")); };
       req.onerror = () => reject(req.error || new Error("IndexedDB open failed"));
-    });
+    }).catch(error => { dbPromise = null; throw error; });
     return dbPromise;
   }
 
@@ -46,9 +73,11 @@
 
   function putRecord(record){
     return openDb().then(db => new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, "readwrite");
+      const tx = db.transaction([STORE_NAME, META_STORE], "readwrite");
       const store = tx.objectStore(STORE_NAME);
       const req = store.put(record);
+      const { key, savedAt, valueBytes } = record;
+      tx.objectStore(META_STORE).put({ key, savedAt, valueBytes });
       req.onerror = () => reject(req.error || new Error("IndexedDB put failed"));
       tx.oncomplete = () => resolve(true);
       tx.onabort = () => reject(tx.error || new Error("IndexedDB transaction aborted"));
@@ -57,8 +86,8 @@
 
   function getAllRecords(){
     return openDb().then(db => new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, "readonly");
-      const store = tx.objectStore(STORE_NAME);
+      const tx = db.transaction(META_STORE, "readonly");
+      const store = tx.objectStore(META_STORE);
       const req = store.getAll();
       req.onsuccess = () => resolve(Array.isArray(req.result) ? req.result : []);
       req.onerror = () => reject(req.error || new Error("IndexedDB getAll failed"));
@@ -69,9 +98,9 @@
   function deleteRecords(keys){
     if(!keys || !keys.length) return Promise.resolve(true);
     return openDb().then(db => new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, "readwrite");
+      const tx = db.transaction([STORE_NAME, META_STORE], "readwrite");
       const store = tx.objectStore(STORE_NAME);
-      keys.forEach(key => store.delete(key));
+      keys.forEach(key => { store.delete(key); tx.objectStore(META_STORE).delete(key); });
       tx.oncomplete = () => resolve(true);
       tx.onerror = () => reject(tx.error || new Error("IndexedDB delete failed"));
       tx.onabort = () => reject(tx.error || new Error("IndexedDB transaction aborted"));
@@ -116,7 +145,17 @@
     }
   }
 
-  async function fetchVersion(url, timeoutMs){
+  function fetchVersion(url, timeoutMs){
+    const key = `${url || DEFAULT_VERSION_URL}|${timeoutMs || VERSION_FETCH_TIMEOUT_MS}`;
+    // Only coalesce in-flight checks. A post-download consistency check must
+    // still hit the network, not a TTL-memoized version.
+    if(!versionRequests.has(key)){
+      versionRequests.set(key, requestVersion(url, timeoutMs).finally(() => versionRequests.delete(key)));
+    }
+    return versionRequests.get(key);
+  }
+
+  async function requestVersion(url, timeoutMs){
     const target = url || DEFAULT_VERSION_URL;
     const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
     const limit = Number(timeoutMs || VERSION_FETCH_TIMEOUT_MS);
@@ -136,7 +175,7 @@
   async function getPageRecord(key, version){
     if(!key) return null;
     try{
-      const record = await getRecord(key);
+      const record = await bounded(getRecord(key), 1000, "Page cache read");
       if(!record) return null;
       if(version && record.version !== version) return null;
       return {
@@ -185,6 +224,40 @@
     return setPageWithLimit(key, version, value, MAX_LARGE_CACHE_BYTES);
   }
 
+  async function loadSnapshot({key, readVersion, fetchValue, validate, versionOf, apply, force=false}){
+    const valid = validate || (value => !!value);
+    const versionPromise = Promise.resolve().then(readVersion).then(normalizeVersion);
+    // Attach a handler immediately, even while IndexedDB is opening.
+    const checkedVersion = versionPromise.then(value => ({value}), error => ({error}));
+    const record = force ? null : await getPageRecord(key);
+    const cached = record && valid(record.value) ? record : null;
+    if(cached) await apply(cached.value, {version:cached.version, mode:"checking"});
+    const refresh = (async () => {
+      const checked = await checkedVersion;
+      if(checked.error) throw checked.error;
+      const version = checked.value;
+      if(cached && version && version === cached.version){
+        showBadge(version, "cached");
+        return cached.value;
+      }
+      const value = await fetchValue(version);
+      if(!valid(value)) throw new Error("Incomplete page snapshot");
+      const actual = normalizeVersion(versionOf ? versionOf(value) : version);
+      if(version && actual !== version) throw new Error("Page data changed during refresh. Please retry.");
+      await apply(value, {version:actual, mode:"fresh"});
+      if(actual) void setPage(key, actual, value);
+      return value;
+    })();
+    if(!cached) return refresh;
+    // Keep the complete previous snapshot usable during a slow refresh, with
+    // its real timestamp visible. Never mark a failed refresh as current.
+    void refresh.catch(error => {
+      console.warn("Page snapshot refresh failed", error);
+      showBadge(cached.version, "offline");
+    });
+    return cached.value;
+  }
+
   function formatVersion(version){
     const raw = normalizeVersion(version);
     if(!raw) return "unknown";
@@ -227,7 +300,8 @@
       document.addEventListener("DOMContentLoaded", () => document.body.appendChild(el), { once:true });
       if(document.body) document.body.appendChild(el);
     }
-    const suffix = mode === "cached" ? " - local cache" : (mode === "fresh" ? " - refreshed" : "");
+    const suffix = mode === "cached" ? " - local cache" : (mode === "fresh" ? " - refreshed" :
+      mode === "checking" ? " - checking for updates…" : mode === "offline" ? " - saved data; refresh unavailable" : "");
     el.textContent = `Data updated: ${formatVersion(version)}${suffix}`;
   }
 
@@ -239,6 +313,7 @@
     getPage,
     setPage,
     setLargePage,
+    loadSnapshot,
     maxPageCacheBytes: MAX_PAGE_CACHE_BYTES,
     maxLargeCacheBytes: MAX_LARGE_CACHE_BYTES,
     showBadge,

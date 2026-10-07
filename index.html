@@ -4161,7 +4161,8 @@ body{
   </section>
 </div>
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
-<script src="browser-page-cache.js"></script>
+<script src="browser-page-cache.js?v=startup-v1"></script>
+<script src="dashboard-render-cache.js?v=1"></script>
 <script>
 
 let calcFloatHideTimer=null;
@@ -6096,8 +6097,8 @@ function renderKpis(){
   const prior=periodSnapshotForBounds(pb.start,pb.end);
   const priorApproval=approvalSummaryFromRows(pb.start,pb.end);
   const priorSummary=prior&&prior.summary;
-  const hasCosts=priorApproval!==null||(prior?.__fullExportDetailsLoaded&&priorSummary?.approvedAmount!=null);
-  const hasDecisions=priorApproval!==null||(prior?.__fullExportDetailsLoaded&&priorSummary?.approvedTickets!=null&&priorSummary?.unapprovedTickets!=null);
+  const hasCosts=priorApproval!==null||((prior?.__fullExportDetailsLoaded||prior?.__summaryVerified)&&priorSummary?.approvedAmount!=null);
+  const hasDecisions=priorApproval!==null||((prior?.__fullExportDetailsLoaded||prior?.__summaryVerified)&&priorSummary?.approvedTickets!=null&&priorSummary?.unapprovedTickets!=null);
   const priorTrend=arrayFromMaybe(currentView().trend).some(row=>clean(row.date)===pb.end);
   const priorStockRows=criticalSnapshotRowsAt(pb.end);
   const hasStock=priorStockRows.length>0||priorSummary?.criticalNow!=null||priorTrend;
@@ -9069,10 +9070,15 @@ function scheduleStatusMixBottomAlignment(){
 }
 
 let renderAllRequestSeq=0;
-async function renderAllWithLoading(text="Calculating..."){
-  showCalcFloat(true,text);
+async function renderAllWithLoading(text="Calculating...",quiet=false){
+  if(!quiet)showCalcFloat(true,text);
   const req=++renderAllRequestSeq;
   try{
+    if(dashboardRenderCache.matches(dashboardRenderSelection())){
+      renderAll();
+      document.documentElement.dataset.teamReadyMs=String(Math.round(performance.now()));
+      return;
+    }
     await Promise.all([
       ensureCurrentPeriodSnapshotDetails(),ensureFullTeamViewDetails(),
       ensureKpiComparisonSnapshotDetails(),
@@ -9104,7 +9110,8 @@ function settleRepairAnalyticsScroll(){
   },delay));
   setTimeout(()=>{repairAnalyticsScrollPending=false;},900);
 }
-function renderAll(){renderPeriodButtons();renderClaimButtons();bindLayoutAdjustPanel();bindDashboardExportButtons();setDateDefaults();trendPoints=selectedTrend();updateDateNotes();renderKpis();renderHandlingSpeed();renderWeeklyAvgCostTrend();renderLists();renderRepairCostDistribution();renderApprovedMix();renderTeamAssignChart();updateDashboardCopy();bindTeamAssignPanelLink();drawTrend();validateTicketsInProgressAlignment();scheduleStatusMixBottomAlignment();settleRepairAnalyticsScroll();}
+function renderAll(){setDateDefaults();return dashboardRenderCache.render(dashboardRenderSelection(),renderDashboardContents);}
+function renderDashboardContents(){renderPeriodButtons();renderClaimButtons();bindLayoutAdjustPanel();bindDashboardExportButtons();trendPoints=selectedTrend();updateDateNotes();renderKpis();renderHandlingSpeed();renderWeeklyAvgCostTrend();renderLists();renderRepairCostDistribution();renderApprovedMix();renderTeamAssignChart();updateDashboardCopy();bindTeamAssignPanelLink();drawTrend();validateTicketsInProgressAlignment();scheduleStatusMixBottomAlignment();settleRepairAnalyticsScroll();}
 function validateTicketsInProgressAlignment(){
   const last=trendPoints.slice(-1)[0]||{};
   const remaining=Number(last.criticalTotal||0);
@@ -9117,8 +9124,40 @@ function validateTicketsInProgressAlignment(){
 function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(prev||0);if(delta===0)return{cls:"flat",arrow:"-",text:"0"};const isGood=(metric==="exited")?delta>0:delta<0;return{cls:isGood?"up":"down",arrow:delta>0?"^":"v",text:num(Math.abs(delta))};}
 function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}
 function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const pointEndRaw=clean(hit.p.periodEnd||hit.p.date||hit.p.periodStart);const pointEnd=shortDateLabel(pointEndRaw);const cumulativeStart=shortDateLabel(periodStartDate(periodEndDate()));const cumulativeRange=hit.p.isOpeningPoint?`Opening (${pointEnd})`:(cumulativeStart&&pointEnd?`${cumulativeStart} to ${pointEnd}`:(pointEnd||cumulativeStart));const addedDelta=deltaInfoMetric("entered",hit.p.cumulativeEnteredCritical,prev?prev.cumulativeEnteredCritical:hit.p.cumulativeEnteredCritical);const removedDelta=deltaInfoMetric("exited",hit.p.cumulativeExitedCritical,prev?prev.cumulativeExitedCritical:hit.p.cumulativeExitedCritical);const criticalDelta=deltaInfoMetric("critical",hit.p.criticalTotal,prev?prev.criticalTotal:hit.p.criticalTotal);tip.innerHTML=`<b>${esc(cumulativeRange)}</b>${tipRow("Added to Waiting","#3b82f6",hit.p.cumulativeEnteredCritical,addedDelta)}${tipRow("Removed","#16a34a",hit.p.cumulativeExitedCritical,removedDelta)}${tipRow("Tickets in Progress Remaining","#fb6b1d",hit.p.criticalTotal,criticalDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
-const TEAM_PAGE_CACHE_SCHEMA="indexeddb-existing-precalc-v19";
+const TEAM_PAGE_CACHE_SCHEMA="render-snapshot-v20";
 const TEAM_PAGE_CACHE_KEY=`team-dashboard:${TEAM_PAGE_CACHE_SCHEMA}`;
+const dashboardRenderCache=DashboardRenderCache.create();
+function dashboardRenderSelection(){return JSON.stringify([activeClaim,selectedDashboardMonth(),activePeriod,teamAssignMetric,JSON.stringify(employeeStatusMapping)]);}
+function prepareDashboardRenderSnapshot(){
+  setDateDefaults();
+  const b=periodBounds(),p=previousPeriodBounds(b.start,b.end);
+  dashboardRenderCache.render(dashboardRenderSelection(),()=>{
+    selectedTrend();currentPeriodSummary();summaryForBounds(p.start,p.end);
+    approvalSummaryFromRows(p.start,p.end);approvalAnalyticsSummary();
+    periodHandlingSummary();noUpdateAgingSummary();selectedPeriodCriticalTotal();
+    criticalSnapshotRowsAt(p.end);selectedPeriodCriticalRows();criticalDurationBuckets();
+    currentCriticalStatusRows();repairCostDistributionRows();teamAssignRowsWithDirectory();
+    employeeApprovalRows();ticketMovementRemovedApprovalSummary(b.start,b.end);
+    ticketMovementBridge(b.start,b.end);
+  });
+}
+selectedTrend=dashboardRenderCache.wrap("trend",selectedTrend);
+currentPeriodSummary=dashboardRenderCache.wrap("summary",currentPeriodSummary);
+summaryForBounds=dashboardRenderCache.wrap("comparison",summaryForBounds);
+approvalSummaryFromRows=dashboardRenderCache.wrap("approvalRows",approvalSummaryFromRows);
+approvalAnalyticsSummary=dashboardRenderCache.wrap("approval",approvalAnalyticsSummary);
+periodHandlingSummary=dashboardRenderCache.wrap("handling",periodHandlingSummary);
+noUpdateAgingSummary=dashboardRenderCache.wrap("aging",noUpdateAgingSummary);
+selectedPeriodCriticalTotal=dashboardRenderCache.wrap("criticalTotal",selectedPeriodCriticalTotal);
+criticalSnapshotRowsAt=dashboardRenderCache.wrap("criticalRows",criticalSnapshotRowsAt);
+selectedPeriodCriticalRows=dashboardRenderCache.wrap("selectedRows",selectedPeriodCriticalRows);
+criticalDurationBuckets=dashboardRenderCache.wrap("duration",criticalDurationBuckets);
+currentCriticalStatusRows=dashboardRenderCache.wrap("status",currentCriticalStatusRows);
+repairCostDistributionRows=dashboardRenderCache.wrap("costBuckets",repairCostDistributionRows);
+teamAssignRowsWithDirectory=dashboardRenderCache.wrap("employees",teamAssignRowsWithDirectory);
+employeeApprovalRows=dashboardRenderCache.wrap("employeeApprovals",employeeApprovalRows);
+ticketMovementRemovedApprovalSummary=dashboardRenderCache.wrap("decisions",ticketMovementRemovedApprovalSummary);
+ticketMovementBridge=dashboardRenderCache.wrap("movement",ticketMovementBridge,value=>Object.fromEntries(Object.entries(value).filter(([,v])=>!Array.isArray(v))));
 let dashboardSourceVersion="";
 const teamDetailSourcePromises=new Map();
 function loadTeamDetailSource(key,fetchSource,validate){
@@ -9158,13 +9197,17 @@ function restoreTeamPageState(cached,version){
   activeClaim=canonicalClaimKey(cached.activeClaim||team.defaultView||"all");
   employeeAnalytics=cached.employeeAnalytics||null;
   if(cached.employeeStatusMapping&&typeof cached.employeeStatusMapping==="object")employeeStatusMapping=normalizeEmployeeDirectory(cached.employeeStatusMapping);
+  activeMonth=cached.activeMonth||activeMonth;
+  activePeriod=cached.activePeriod||activePeriod;
+  dashboardRenderCache.restore(cached.renderSnapshot);
+  pageElementAdjustStore=loadPageElementAdjustLocal();
   $("loadError").style.display="none";
   if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(version,"cached");
   return true;
 }
 function saveTeamPageState(version){
   if(!version||!window.WarrantyPageCache)return;
-  window.WarrantyPageCache.setPage(TEAM_PAGE_CACHE_KEY,version,{team:compactTeamForPageCache(team),activeClaim,employeeAnalytics:compactEmployeeAnalyticsForPageCache(employeeAnalytics),employeeStatusMapping});
+  window.WarrantyPageCache.setPage(TEAM_PAGE_CACHE_KEY,version,{team:compactTeamForPageCache(team),activeClaim,activeMonth,activePeriod,renderSnapshot:dashboardRenderCache.snapshot(),employeeAnalytics:compactEmployeeAnalyticsForPageCache(employeeAnalytics),employeeStatusMapping});
 }
 function clonePageCacheValue(value){
   if(value==null||typeof value!=="object")return value;
@@ -9252,6 +9295,7 @@ function compactTeamForPageCache(source){
             return;
           }
           const compactSnapshot={};
+          if(snapshot.__fullExportDetailsLoaded)compactSnapshot.__summaryVerified=true;
           Object.entries(snapshot).forEach(([snapshotField,snapshotValue])=>{
             if(heavySnapshotKeys.includes(snapshotField))return;
             if(snapshotField==="ticketMovementBridge")return;
@@ -9277,6 +9321,18 @@ async function readTeamPageCacheRecord(){
     return null;
   }
 }
+async function readLocalTeamStartup(){
+  // The local preview uses an actual calculated snapshot produced from the
+  // same live sources, without requiring a Firebase publication first.
+  if(!["localhost","127.0.0.1","[::1]"].includes(location.hostname))return null;
+  try{
+    const response=await fetch("outputs/team_dashboard_startup.json",{cache:"no-cache",signal:AbortSignal.timeout(2000)});
+    if(!response.ok)return null;
+    const snapshot=await response.json();
+    if(snapshot?.schema!=="team-startup-v1"||!snapshot.page?.renderSnapshot||!snapshot.page?.team?.views)return null;
+    return {version:snapshot.sourceVersion||snapshot.generatedAt,value:snapshot.page};
+  }catch(error){return null;}
+}
 function claimExistsInTeam(key){
   const candidate=canonicalClaimKey(key||"");
   return !!(candidate&&team&&team.views&&team.views[candidate]);
@@ -9286,35 +9342,91 @@ function chooseActiveClaimAfterTeamRefresh(previousClaim){
   if(claimExistsInTeam(previous))return previous;
   return canonicalClaimKey(team.defaultView||"all");
 }
-async function loadFreshTeamDashboard(version){
+async function loadFreshTeamDashboard(version,quiet=false){
+  const startup=await readJson(MONITOR_ROOT+"/analytics/teamStartup").catch(()=>null);
+  if(typeof startup?.page==="string"){
+    try{startup.page=JSON.parse(startup.page);}catch(error){startup.page=null;}
+  }
+  const startupMatchesSelection=(!activeMonth||activeMonth===startup?.page?.activeMonth)&&activeClaim===(startup?.page?.activeClaim||"all");
+  if(startupMatchesSelection&&startup?.schema==="team-startup-v1"&&startup.page?.renderSnapshot&&startup.generatedAt){
+    const [teamGeneratedAt,confirmed]=await Promise.all([
+      readJson(MONITOR_ROOT+"/analytics/team/generatedAt"),teamPageVersion()
+    ]);
+    if(teamGeneratedAt!==startup.generatedAt||!confirmed||(version&&confirmed!==version))throw new Error("Dashboard snapshot is being refreshed. Please retry shortly.");
+    dashboardSourceVersion=confirmed;
+    teamDetailSourcePromises.clear();
+    if(restoreTeamPageState(startup.page,startup.generatedAt)){
+      await renderAllWithLoading("Loading dashboard...",quiet);
+      saveTeamPageState(confirmed);
+      window.WarrantyPageCache.showBadge(startup.generatedAt,"fresh");
+      return;
+    }
+  }
   const data=await readJson(MONITOR_ROOT+"/analytics/teamDashboard");
   if(!data||typeof data!=="object"||!data.views)throw new Error("analytics/teamDashboard is empty. Please rebuild analytics.");
   const confirmed=await teamPageVersion();
   if(version&&confirmed&&version!==confirmed)throw new Error("Dashboard data changed while loading. Please reload.");
   dashboardSourceVersion=version&&version===confirmed?version:"";
+  dashboardRenderCache.clear();
+  teamDetailSourcePromises.clear();
   const previousClaim=activeClaim;
   team=data;
   activeClaim=chooseActiveClaimAfterTeamRefresh(previousClaim);
   employeeAnalytics=null;
   pageElementAdjustStore=loadPageElementAdjustLocal();
   await Promise.all([loadEmployeeStatusMappingRemote(),loadPageElementAdjustRemote()]);
-  await renderAllWithLoading("Loading dashboard details...");
+  await renderAllWithLoading("Loading dashboard details...",quiet);
   if(version&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(version,"fresh");
 }
 async function load(){
   showCalcFloat(true,"Loading dashboard...");
+  let cachedRecord=null,restored=false;
   try{
-    const [version,cachedRecord]=await Promise.all([teamPageVersion(),readTeamPageCacheRecord()]);
-    dashboardSourceVersion=version;
-    if(version&&cachedRecord?.version===version&&restoreTeamPageState(cachedRecord.value,version)){
+    const versionPromise=teamPageVersion();
+    const [browserRecord,localRecord]=await Promise.all([readTeamPageCacheRecord(),readLocalTeamStartup()]);
+    cachedRecord=browserRecord;
+    if(localRecord&&(!browserRecord||String(localRecord.value.team.generatedAt)>String(browserRecord.value?.team?.generatedAt||"")))cachedRecord=localRecord;
+    restored=!!(cachedRecord?.value?.renderSnapshot&&restoreTeamPageState(cachedRecord.value,cachedRecord.version));
+    if(restored){
+      dashboardSourceVersion=cachedRecord.version;
+      await renderAllWithLoading();
+      window.WarrantyPageCache.showBadge(cachedRecord.version,"checking");
+    }
+    const version=await versionPromise;
+    if(!restored)dashboardSourceVersion=version;
+    if(restored&&(!version||cachedRecord.version===version)){
+      window.WarrantyPageCache.showBadge(cachedRecord.version,version?"cached":"offline");
+      if(version)saveTeamPageState(version);
+      return;
+    }
+    if(restored&&version){
+      const teamVersion=await readJson(MONITOR_ROOT+"/analytics/team/generatedAt").catch(()=>"");
+      if(teamVersion&&teamVersion===cachedRecord.value.team.generatedAt){
+        dashboardSourceVersion=version;
+        saveTeamPageState(version);
+        window.WarrantyPageCache.showBadge(teamVersion,"cached");
+        return;
+      }
+    }
+    if(!restored&&version&&cachedRecord?.version===version&&restoreTeamPageState(cachedRecord.value,version)){
       // Check the live version before presenting cached figures. Load each
       // missing source once, then paint once, without repeated refresh overlays.
       await loadEmployeeStatusMappingRemote();
       await renderAllWithLoading("Loading dashboard details...");
       return;
     }
-    await loadFreshTeamDashboard(version);
+    if(restored){
+      // Keep the rendered figures visible while the replacement is prepared.
+      window.WarrantyPageCache.showBadge(cachedRecord.version,"checking");
+    }
+    await loadFreshTeamDashboard(version,restored);
   }catch(err){
+    if(restored){
+      dashboardSourceVersion=cachedRecord.version;
+      restoreTeamPageState(cachedRecord.value,cachedRecord.version);
+      await renderAllWithLoading("",true);
+      window.WarrantyPageCache.showBadge(cachedRecord.version,"offline");
+    }
     hideCalcFloat(0);
     $("loadError").textContent="Cannot load team analytics from Firebase. Details: "+(err.message||err);
     $("loadError").style.display="block";

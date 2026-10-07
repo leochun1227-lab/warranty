@@ -29,6 +29,7 @@ ASSETS = {
     "modelSeries/partsFastView/index": ROOT / "outputs" / "parts_fast_view_payload" / "index.json",
     "modelSeries/partsTop10Export/index": ROOT / "outputs" / "parts_top10_export_payload" / "index.json",
     "modelSeries/modelMtmCache": ROOT / "outputs" / "analysis_model_mtm_cache.json",
+    "modelSeries/modelMtmSummary": ROOT / "outputs" / "analysis_model_mtm_summary.json",
     "repairers/fast": ROOT / "outputs" / "repairers_2026" / "repairers_2026_fast.json",
     "repairers/light": ROOT / "outputs" / "repairers_2026" / "repairers_2026_light.json",
 }
@@ -151,7 +152,10 @@ def main() -> int:
             uploaded.append(info)
             continue
         payload = firebase_safe_json(load_json(path))
-        base_ref.child(asset_key).set(payload)
+        if asset_key == "modelSeries/modelMtmSummary":
+            publish_model_snapshot(base_ref, payload)
+        else:
+            base_ref.child(asset_key).set(payload)
         info.update({
             "ok": True,
             "path": path.relative_to(ROOT).as_posix(),
@@ -198,6 +202,28 @@ def main() -> int:
     for info in uploaded:
         print(f"- {info.get('key')}: {'ok' if info.get('ok') else info.get('reason')}")
     return 0
+
+
+def publish_model_snapshot(base_ref: Any, summary: dict) -> None:
+    """Publish immutable export details first, then atomically switch the summary.
+
+    Retain old content-addressed details so already-open pages can still export
+    the snapshot they are displaying during the next daily rebuild.
+    """
+    import hashlib
+    paths = {}
+    for period in summary["periods"].values():
+        for scope in period["scopes"].values():
+            key = scope["detailKey"]
+            if len(key) != 64 or any(c not in "0123456789abcdef" for c in key):
+                raise ValueError("Invalid model detail key")
+            path = ROOT / "outputs" / "model_mtm_details" / f"{key}.json"
+            if hashlib.sha256(path.read_bytes()).hexdigest() != key:
+                raise ValueError(f"Model detail integrity check failed: {key}")
+            paths[key] = path
+    for key, path in paths.items():
+        base_ref.child(f"modelSeries/modelMtmDetails/{key}").set(firebase_safe_json(load_json(path)))
+    base_ref.child("modelSeries/modelMtmSummary").set(summary)
 
 
 if __name__ == "__main__":

@@ -4615,7 +4615,7 @@ body.repair-analysis-page #repairRepeatScenarios .repeatShopGridCell small{
 <div id="calcFloat" class="calcFloat" role="status" aria-live="polite"><span class="calcSpinner" aria-hidden="true"></span><span class="calcFloatText">Calculating...</span></div>
 <script src="assets/geo/australia-states.js?v=20260706a"></script>
 <script src="assets/geo/new-zealand.js?v=20260706a"></script>
-<script src="browser-page-cache.js?v=repairer-name-map-v16"></script>
+<script src="browser-page-cache.js?v=repairer-name-map-v16&startup=v1"></script>
 <script src="claim-trend-ticket-metrics.js?v=3"></script>
 <script>
 
@@ -4820,7 +4820,7 @@ async function fetchRepairAnalysis(){
   const loadedVersion=repairAnalysisVersion(analysis.meta);
   const confirmedVersion=repairAnalysisVersion(await readMeta().catch(()=>null));
   if(confirmedVersion&&loadedVersion!==confirmedVersion)throw new Error("Repairer data changed while loading. Please reload.");
-  if(loadedVersion&&loadedVersion===confirmedVersion)await saveRepairDataCache(REPAIR_ANALYSIS_CACHE_KEY,loadedVersion,analysis);
+  if(loadedVersion&&loadedVersion===confirmedVersion)void saveRepairDataCache(REPAIR_ANALYSIS_CACHE_KEY,loadedVersion,analysis);
   repairAnalysisDataVersion=loadedVersion;repairAnalysisSource="fresh";
   return analysis;
 }
@@ -7841,8 +7841,10 @@ function renderAll_v2(){
 async function loadWeeklyAnalysis(){
   try{
     const analysis=await loadRepairAnalysisJson();
-    const aus=globalThis.REPAIRERS_AUS_GEOJSON||await readStaticJson(AUS_GEOJSON);
-    const nz=globalThis.REPAIRERS_NZ_GEOJSON||await readStaticJson(NZ_GEOJSON);
+    const [aus,nz]=await Promise.all([
+      globalThis.REPAIRERS_AUS_GEOJSON||readStaticJson(AUS_GEOJSON),
+      globalThis.REPAIRERS_NZ_GEOJSON||readStaticJson(NZ_GEOJSON)
+    ]);
     weeklyAnalysis=analysis;
     weeklyWeeks=Array.isArray(analysis.weekly)?analysis.weekly:[];
     ausGeo=aus;
@@ -7946,9 +7948,11 @@ async function load(){
   const countsReady=refreshRepairClaimCounts();
   const mappingReady=loadRepairerNameRuleMap().then(value=>{repairerNameRuleMap=value;});
   const analysisReady=loadRepairAnalysisJson();
-  const detailsRestored=mappingReady.then(()=>restoreRepairDetails());
+  const detailsRestored=mappingReady.then(()=>restoreRepairDetails()).catch(err=>{
+    console.warn("Repairer detail cache restore failed",err);return false;
+  });
   try{
-    await Promise.all([mappingReady,analysisReady,detailsRestored]);
+    await Promise.all([mappingReady,analysisReady]);
     await loadWeeklyAnalysis();
     $("loadError").style.display="none";
     if(!precomputedRepairPeriods){

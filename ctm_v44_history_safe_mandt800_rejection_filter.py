@@ -4123,6 +4123,8 @@ def write_analytics(
     root_ref.child("employeeAnalytics").set(firebase_safe_json(payload["employee"]))
     if include_dealer:
         root_ref.child("dealerAnalytics").set(firebase_safe_json(dealer_index))
+    from build_dashboard_startup import publish_dashboard_startup
+    publish_dashboard_startup(analytics_ref, payload["team"], payload["employee"], employee_directory)
     print(
         f"[ANALYTICS DONE] employees={payload['employee']['summary']['employees']}, "
         f"employeeCriticalTickets={payload['employee']['summary']['totalTickets']}, "

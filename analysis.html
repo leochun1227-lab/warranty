@@ -803,7 +803,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
 }
 </style>
 <link rel="stylesheet" href="sidebar-light.css?v=20261007-compact">
-<script src="browser-page-cache.js"></script>
+<script src="browser-page-cache.js?v=startup-v1"></script>
 <link rel="stylesheet" href="dashboard-theme.css?v=20261001-neutral">
 </head>
 <body class="model-page">
@@ -1037,6 +1037,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   const FB_PAGE_ASSETS_ROOT = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/ctmTicketStatusMonitorV44/analytics/pageAssets";
   const FB_PARTS_FAILURE_SUMMARY = `${FB_PAGE_ASSETS_ROOT}/modelSeries/partsFailureSummary.json`;
   const FB_MODEL_MTM_CACHE = `${FB_PAGE_ASSETS_ROOT}/modelSeries/modelMtmCache.json`;
+  const FB_MODEL_MTM_SUMMARY = `${FB_PAGE_ASSETS_ROOT}/modelSeries/modelMtmSummary.json`;
+  const MODEL_MTM_SUMMARY = "outputs/analysis_model_mtm_summary.json";
   const REPAIRERS_ANALYSIS_JSON = "outputs/repairers_2026/repairers_2026_data.json";
   const PARTS_COST_CACHE = "outputs/analysis_parts_ticket_cost_map.json";
   const APPROVED_COST_CACHE = "outputs/analysis_approved_cost_by_ticket.json";
@@ -5877,6 +5879,26 @@ ${worksheets}
   async function ensureFullModelRowsForExport(){
     const slice = activeModelCacheSlice();
     if (IS_PARTS_PAGE || state.rows.length || Array.isArray(slice?.detailRows)) return;
+    if (slice?.detailKey) {
+      const key = slice.detailKey;
+      const version = state.modelMtmCache.generatedAt;
+      const cacheKey = `model-details:${key}`;
+      let payload = await window.WarrantyPageCache.getPage(cacheKey, version);
+      const valid = value => value?.generatedAt === version && value.periodKey === slice.periodKey &&
+        value.scope === slice.scope && Array.isArray(value.rows) && value.rows.length === slice.detailCount;
+      if (!valid(payload)) {
+        const urls = [`${FB_PAGE_ASSETS_ROOT}/modelSeries/modelMtmDetails/${key}.json`, `outputs/model_mtm_details/${key}.json`];
+        if (IS_LOCAL_CONTEXT) urls.reverse();
+        payload = await readModelSnapshotSources(urls, valid);
+        void window.WarrantyPageCache.setLargePage(cacheKey, version, payload);
+      }
+      slice.detailRows = payload.rows;
+      // The export must use the originally selected slice, even if a background
+      // summary refresh completed during the download.
+      if (slice !== activeModelCacheSlice()) throw new Error("Model data changed. Please export again.");
+      applyModelCacheSlice(slice);
+      return;
+    }
     if (state.modelHydratePromise) {
       await state.modelHydratePromise;
       return;
@@ -5889,6 +5911,26 @@ ${worksheets}
 
   async function loadPrebuiltModelView(cacheVersion, forceRefresh=false){
     loadSold();
+    if (window.WarrantyPageCache?.loadSnapshot) {
+      const valid = value => value?.deliverySchema === "model-summary-v1" && value.generatedAt && value.periods?.total?.scopes?.ALL;
+      const urls = [FB_MODEL_MTM_SUMMARY, MODEL_MTM_SUMMARY];
+      if (IS_LOCAL_CONTEXT) urls.reverse();
+      try {
+        await window.WarrantyPageCache.loadSnapshot({
+          key:"model-summary:v1", force:forceRefresh,
+          readVersion:() => IS_LOCAL_CONTEXT ? Promise.resolve("") : window.WarrantyPageCache.fetchVersion(FB_MODEL_MTM_SUMMARY.replace(/\.json$/, "/generatedAt.json")),
+          fetchValue:() => readModelSnapshotSources(urls, valid),
+          validate:valid, versionOf:value => value.generatedAt,
+          apply:(value, info) => {
+            if (!applyModelMtmCacheState(value)) throw new Error("Model summary has no active scope");
+            render();
+            document.documentElement.dataset.modelReadyMs = String(Math.round(performance.now()));
+            window.WarrantyPageCache.showBadge(info.version, info.mode);
+          }
+        });
+        return;
+      } catch (error) { console.warn("Model summary unavailable; trying legacy cache", error); }
+    }
     const modelCache = await withTimeout(loadModelMtmCache(forceRefresh), ANALYSIS_TIMEOUT_MS, "Model MTM cache load");
     if (!applyModelMtmCacheState(modelCache)) {
       throw new Error("Model MTM cache is unavailable or malformed");
@@ -5904,8 +5946,25 @@ ${worksheets}
     $("sourceCount").textContent = "cache err";
   }
 
+  async function readModelSnapshotSources(urls, validate){
+    let lastError;
+    for (const url of urls) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
+      try {
+        const response = await fetch(url, {cache:"no-cache", signal:controller.signal});
+        if (!response.ok) throw new Error(`Model snapshot HTTP ${response.status}`);
+        const value = await response.json();
+        if (!validate(value)) throw new Error("Model snapshot is incomplete or out of date");
+        return value;
+      } catch (error) { lastError = error; }
+      finally { clearTimeout(timer); }
+    }
+    throw lastError || new Error("Model snapshot unavailable");
+  }
+
   async function loadAll(forceRefresh=false){
-    const cacheVersion = await analysisPageVersion();
+    const cacheVersion = IS_PARTS_PAGE ? await analysisPageVersion() : "";
     const overlay = $("loadingOverlay");
     let overlayFailSafe=null;
     if (overlay) {

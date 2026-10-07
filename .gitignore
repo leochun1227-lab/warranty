@@ -36,6 +36,9 @@ outputs/claim_ytd_comparison/claim_ytd_comparison_*_20*.xlsx
 # pushing 70MB-100MB files to GitHub.
 outputs/analysis_model_mtm_cache.json
 outputs/analysis_model_mtm_cache.js
+outputs/model_mtm_details/
+outputs/team_dashboard_startup.json
+outputs/team_dashboard_startup.json.tmp
 
 # One-off reconciliation/debug folders generated during local checks.
 outputs/counted_not_stock_removed/

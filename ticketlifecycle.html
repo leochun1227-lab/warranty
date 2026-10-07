@@ -860,7 +860,7 @@ body{
 <script src="generated_exports/ticket_timeline_summary_2026.js"></script>
 <script src="generated_exports/ticket_timeline_summary.js"></script>
 <script src="generated_exports/ticket_timeline_completion_analytics_2026.js"></script>
-<script src="browser-page-cache.js"></script>
+<script src="browser-page-cache.js?v=startup-v1"></script>
 <script>
 const TIMELINE_SUMMARY_URL="generated_exports/ticket_timeline_summary.json";
 const COMPLETION_ANALYTICS_URL="generated_exports/ticket_timeline_completion_analytics_2026.json";
@@ -1214,8 +1214,15 @@ function applyTimelineSummary(summary){
 }
 
 async function loadTimelineSummary(){
+  const cacheKey=`ticket-lifecycle:summary:${selectedYear}`;
+  const saved=await window.WarrantyPageCache.getPageRecord(cacheKey);
+  const hasSaved=!!(saved?.value&&Array.isArray(saved.value.stages)&&saved.version.endsWith(`:${TIMELINE_CACHE_SCHEMA}`));
+  if(hasSaved){applyTimelineSummary(saved.value);window.WarrantyPageCache.showBadge(saved.version.replace(`:${TIMELINE_CACHE_SCHEMA}`,""),"checking");}
   let cacheVersion="";
   try{cacheVersion=await withTimeout(window.WarrantyPageCache.fetchVersion(),TIMELINE_TIMEOUT_MS,"Timeline cache version request");}catch(e){console.warn("Cannot read timeline cache version",e);}
+  if(hasSaved&&(!cacheVersion||saved.version===`${cacheVersion}:${TIMELINE_CACHE_SCHEMA}`)){
+    window.WarrantyPageCache.showBadge(saved.version.replace(`:${TIMELINE_CACHE_SCHEMA}`,""),cacheVersion?"cached":"offline");return;
+  }
   cacheVersion=cacheVersion?`${cacheVersion}:${TIMELINE_CACHE_SCHEMA}`:TIMELINE_CACHE_SCHEMA;
   const globalYearSummary=window[`TICKET_TIMELINE_SUMMARY_${selectedYear}`];
   let hasEmbeddedSummary=false;
@@ -1246,6 +1253,7 @@ async function loadTimelineSummary(){
       // Try the next summary source, then keep the current fallback/empty state.
     }
   }
+  if(hasSaved)window.WarrantyPageCache.showBadge(saved.version.replace(`:${TIMELINE_CACHE_SCHEMA}`,""),"offline");
 }
 
 function applyCompletionAnalytics(payload){
@@ -1256,8 +1264,14 @@ function applyCompletionAnalytics(payload){
 }
 
 async function loadCompletionAnalytics(){
+  const saved=await window.WarrantyPageCache.getPageRecord("ticket-lifecycle:completion");
+  const hasSaved=!!(saved?.value?.stages&&saved.version.endsWith(`:${TIMELINE_CACHE_SCHEMA}`));
+  if(hasSaved){applyCompletionAnalytics(saved.value);window.WarrantyPageCache.showBadge(saved.version.replace(`:${TIMELINE_CACHE_SCHEMA}`,""),"checking");}
   let cacheVersion="";
   try{cacheVersion=await withTimeout(window.WarrantyPageCache.fetchVersion(),TIMELINE_TIMEOUT_MS,"Timeline completion cache version request");}catch(e){cacheVersion="";}
+  if(hasSaved&&(!cacheVersion||saved.version===`${cacheVersion}:${TIMELINE_CACHE_SCHEMA}`)){
+    window.WarrantyPageCache.showBadge(saved.version.replace(`:${TIMELINE_CACHE_SCHEMA}`,""),cacheVersion?"cached":"offline");return;
+  }
   cacheVersion=cacheVersion?`${cacheVersion}:${TIMELINE_CACHE_SCHEMA}`:TIMELINE_CACHE_SCHEMA;
   const hasEmbeddedAnalytics=applyCompletionAnalytics(window.TICKET_TIMELINE_COMPLETION_ANALYTICS_2026);
   if(!hasEmbeddedAnalytics){
@@ -1281,6 +1295,7 @@ async function loadCompletionAnalytics(){
       // Try the next source, then keep the embedded fallback analytics.
     }
   }
+  if(hasSaved)window.WarrantyPageCache.showBadge(saved.version.replace(`:${TIMELINE_CACHE_SCHEMA}`,""),"offline");
 }
 
 function sceneMarkup(type){

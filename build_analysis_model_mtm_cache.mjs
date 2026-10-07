@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { writeModelCacheAssets } from "./model-cache-assets.mjs";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = path.join(ROOT, "outputs");
@@ -1564,6 +1565,7 @@ async function main() {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   fs.writeFileSync(paths.outJson, JSON.stringify(cache, null, 2), "utf8");
   writeJsGlobal(paths.outJs, "ANALYSIS_MODEL_MTM_CACHE", cache);
+  writeModelCacheAssets(cache, OUTPUT_DIR);
   console.log(`Wrote ${path.relative(ROOT, paths.outJson)} (${page1ModelRows.length} Page1-approved model tickets + ${gapRows.length} historical gap rows, ${cache.monthOptions.length} months).`);
   console.timeEnd("model-mtm-cache");
 }
