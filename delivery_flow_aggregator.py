@@ -697,6 +697,7 @@ def run_once(as_of: Optional[str]) -> None:
 
     ticket_version_ref = db.reference(f"{FIREBASE_ROOT}/ticketSoSyncAt")
     ticket_version = ticket_version_ref.get()
+    core_version = db.reference(f"{FIREBASE_ROOT}/ticketCoreSyncAt").get()
     tickets_node = db.reference(f"{FIREBASE_ROOT}/tickets").get() or {}
     snapshot = aggregate(tickets_node, as_of_date)
     nishi_rows = snapshot.pop("_nishiRows", [])
@@ -737,6 +738,10 @@ def run_once(as_of: Optional[str]) -> None:
         snapshot["generatedAt"], ticket_version, ticket_version_ref.get,
     )
     logger.info("Published delivery startup snapshot")
+    from build_claim_startup import publish_claim_startup
+    publish_claim_startup(db.reference(f"{MONITOR_ROOT}/analytics"), db.reference(FIREBASE_ROOT),
+                          tickets_node, core_version, ticket_version)
+    logger.info("Published claim trend startup snapshot")
 
 
 def main() -> None:

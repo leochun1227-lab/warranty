@@ -272,7 +272,8 @@ test('version-checked ticket cache skips bulk downloads but refreshes when ticke
       throw Error('Unexpected full dashboard download: '+path);
     };
     a.run('readJson=readData; init=view=>{MONTHLY=buildMonthly(view);};');
-    await a.run(script.slice(script.indexOf('const CLAIM_TREND_PAGE_CACHE_KEY=')));
+    a.run(script.slice(script.indexOf('const CLAIM_TREND_PAGE_CACHE_KEY='),script.indexOf('const CLAIM_STARTUP_CACHE_KEY=')));
+    await a.run('(async()=>{const [view]=await Promise.all([loadClaimAmountView(),ensureRawTicketsLoaded()]);init(view);})()');
     return {a,calls};
   }
   const first=await visit('day1','core1',[{ticket:ticket(),roles:{unused:true},orders:[{}]},null,null],25);
