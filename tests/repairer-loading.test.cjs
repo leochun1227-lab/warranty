@@ -178,3 +178,40 @@ test('summary renders without waiting for ticket counts, and period initializati
   assert.equal(a.context.document.documentElement.dataset.repairOverviewReadyMs,'123');
   finishCounts();await loaded;
 });
+
+test('details restored after the summary rebuild the current period before repeat panels render',async()=>{
+  for(const renderAfter of [false,true]){
+    let finishCache;
+    const cacheReady=new Promise(resolve=>{finishCache=resolve;});
+    const events=[];
+    const saved=[{id:'0001',ticket:{},roles:{}},{id:'0002',ticket:{},roles:{}}];
+    const context=vm.createContext({
+      showCalcFloat(){},hideCalcFloat(){},
+      restoreRepairDetails:async()=>{
+        await cacheReady;
+        context.allRepairTickets=saved;context.repairDetailsLoaded=true;
+        return true;
+      },
+      applySelectedRepairPeriod:options=>{
+        assert.equal(options.preserveSelection,true);
+        assert.equal(context.selectedRepairPeriod,'2026-09');
+        assert.equal(context.allRepairTickets,saved);
+        events.push('rebuild');context.workingChassis={categories:[{key:'all_approved'}]};
+      },
+      renderAll:()=>events.push('render'),renderAll_v2:()=>{
+        assert.equal(context.workingChassis.categories.length,1);events.push('panels');
+      },markRepairDetailsReady:()=>events.push('ready'),
+      repairDetailsLoaded:false,repairDetailsPromise:null,allRepairTickets:[],
+      selectedRepairPeriod:'total',workingChassis:{categories:[]}
+    });
+    const start=html.indexOf('async function ensureRepairDetailsLoaded(');
+    vm.runInContext(html.slice(start,html.indexOf('async function load(){',start)),context);
+    const pending=vm.runInContext(`ensureRepairDetailsLoaded({renderAfter:${renderAfter}})`,context);
+    context.selectedRepairPeriod='2026-09';
+    assert.deepEqual(events,[],'the summary remains usable while the cache is pending');
+    finishCache();
+    assert.equal(await pending,saved);
+    assert.deepEqual(events,renderAfter?['rebuild','render','panels','ready']:['rebuild']);
+    assert.equal(context.workingChassis.categories.length,1);
+  }
+});

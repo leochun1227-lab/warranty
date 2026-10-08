@@ -7875,7 +7875,17 @@ async function ensureRepairDetailsLoaded({renderAfter=true}={}){
   repairDetailsPromise=(async()=>{
     if(renderAfter)showCalcFloat(true,"Loading ticket details...");
     try{
-      if(await restoreRepairDetails())return allRepairTickets;
+      if(await restoreRepairDetails()){
+        // The summary may have rendered before IndexedDB finished. Restoring
+        // ticket rows alone leaves workingChassis on its empty summary value.
+        applySelectedRepairPeriod({preserveSelection:true});
+        if(renderAfter){
+          renderAll();
+          renderAll_v2();
+          markRepairDetailsReady();
+        }
+        return allRepairTickets;
+      }
       const enrichmentReady=loadRepairDetailEnrichmentMap();
       let localDetails=Array.isArray(weeklyAnalysis?.details)&&weeklyAnalysis.details.length
         ? weeklyAnalysis.details
