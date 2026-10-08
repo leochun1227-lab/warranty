@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>Parts Delivery</title>
+<link rel="preload" href="outputs/delivery_flow_startup.json" as="fetch" crossorigin>
 <link rel="stylesheet" href="delivery-overview.css?v=20261001">
 <style>
   :root{
@@ -1313,7 +1314,8 @@
     currentSummary: null,
   };
 
-  const DELIVERY_PAGE_CACHE_KEY = "delivery-flow-v11";
+  const DELIVERY_PAGE_CACHE_KEY = "delivery-flow-v12";
+  const DELIVERY_STARTUP_URL = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/deliveryFlowHistory/startup.json";
   const DELIVERY_SYNC_VERSION_URL = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/c4cTickets_test/ticketSoSyncAt.json";
   async function deliveryPageVersion(){
     try{
@@ -1321,10 +1323,8 @@
         window.WarrantyPageCache.fetchVersion(window.WarrantyPageCache.deliveryVersionUrl),
         window.WarrantyPageCache.fetchVersion(DELIVERY_SYNC_VERSION_URL),
       ]);
-      const parts = results
-        .map(result => result.status === "fulfilled" ? clean(result.value) : "")
-        .filter(Boolean);
-      return parts.join("|");
+      const parts = results.map(result => result.status === "fulfilled" ? clean(result.value) : "");
+      return parts.every(Boolean) ? parts.join("|") : "";
     }catch(e){
       console.warn("Cannot read delivery cache version",e);
       return "";
@@ -1334,17 +1334,20 @@
     if(!version||!window.WarrantyPageCache)return;
     if(!hasMeaningfulDeliverySummary(state.currentSummary)) return;
     window.WarrantyPageCache.setPage(DELIVERY_PAGE_CACHE_KEY,version,{
-      cacheMode:"summary-v2",
+      cacheMode:"summary-v3",
       granularity:state.granularity,
       history:state.history,
       currentTickets:[],
-      currentSummary:state.currentSummary,
+      currentSummary:{...state.currentSummary,
+        issuedLeadSeriesMonth:buildEffectiveMonthlyLeadSeries(state.history[state.history.length-1],state.currentSummary,state.currentTickets),
+        costTicketCount:state.currentTickets.length?uniqueTicketCountForCost(state.currentTickets,state.history[state.history.length-1]):state.currentSummary.costTicketCount,
+      },
       costReport:state.costReport
     });
   }
   function restoreDeliveryPageState(cached,version){
     if(!cached||!Array.isArray(cached.history)||!cached.history.length)return false;
-    if(cached.cacheMode!=="summary-v2")return false;
+    if(cached.cacheMode!=="summary-v3")return false;
     if(!hasMeaningfulDeliverySummary(cached.currentSummary))return false;
     state.granularity=cached.granularity||"week";
     state.history=cached.history;
@@ -1356,39 +1359,6 @@
     if(window.WarrantyPageCache)window.WarrantyPageCache.showBadge(version,"cached");
     return true;
   }
-  function refreshCurrentTicketsSummary(cacheVersion){
-    return loadCurrentTickets().then(rows => {
-      if (!Array.isArray(rows) || !rows.length || !state.history.length) return false;
-      state.currentTickets = rows;
-      const latestHistory = state.history[state.history.length - 1];
-      const liveSummary = buildCurrentTicketsSummary(rows, latestHistory);
-      state.currentSummary = mergeCurrentSummary(state.currentSummary, liveSummary);
-      render();
-      saveDeliveryPageState(cacheVersion);
-      return rebuildLeadSeriesFromLocalClassified(cacheVersion);
-    }).catch(err => {
-      console.warn("Background current ticket load failed", err);
-      return rebuildLeadSeriesFromLocalClassified(cacheVersion);
-    });
-  }
-  function rebuildLeadSeriesFromLocalClassified(cacheVersion){
-    return loadCurrentTicketsFromLocalClassified().then(rows => {
-      if (!Array.isArray(rows) || !rows.length || !state.history.length) return false;
-      const latestHistory = state.history[state.history.length - 1];
-      const localSummary = buildCurrentTicketsSummary(rows, latestHistory);
-      state.currentSummary = mergeCurrentSummary(state.currentSummary, localSummary);
-      if (!hasUsableTicketDetails(state.currentTickets) || currentDetailSeriesIsBetter(state.currentTickets, rows, latestHistory, "partsIssued")){
-        state.currentTickets = rows;
-      }
-      render();
-      saveDeliveryPageState(cacheVersion);
-      return true;
-    }).catch(err => {
-      console.warn("Local classified lead-series rebuild failed", err);
-      return false;
-    });
-  }
-
   const els = {
     kpis: document.getElementById("kpis"),
     granSeg: document.getElementById("granSeg"),
@@ -1701,6 +1671,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
   }
   function setPageLoading(isLoading){
     document.body.classList.toggle("is-loading", !!isLoading);
+    if(!isLoading&&!document.documentElement.dataset.deliveryReadyMs)document.documentElement.dataset.deliveryReadyMs=String(Math.round(performance.now()));
     if (els.pageLoading){
       els.pageLoading.classList.toggle("active", !!isLoading);
       els.pageLoading.setAttribute("aria-busy", isLoading ? "true" : "false");
@@ -2389,13 +2360,8 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     });
     return rows;
   }
-  async function loadCurrentTickets(){
-    try{
-      const res = await fetchWithTimeout(freshJsonUrl(FB_TICKETS), { cache: "no-store" }, 8000);
-      if (!res.ok) throw new Error(`Firebase HTTP ${res.status}`);
-      const data = await res.json();
-      const entries = ticketValues(data);
-      const rows = entries
+  function normalizeCurrentTickets(data){
+      return ticketValues(data)
       .map(([ticketKey, raw]) => normalizeTicketExportRow(ticketKey, raw))
       .filter(row => row.ticketId || row.salesOrder || row.detailItems)
       .sort((a, b) => {
@@ -2403,9 +2369,17 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
         if (byCreated) return byCreated;
         return clean(b.ticketId).localeCompare(clean(a.ticketId)) || clean(b.ticketKey).localeCompare(clean(a.ticketKey));
       });
+  }
+  async function loadCurrentTickets({allowLocalFallback=true}={}){
+    try{
+      const res = await fetchWithTimeout(freshJsonUrl(FB_TICKETS), { cache: "no-store" }, 8000);
+      if (!res.ok) throw new Error(`Firebase HTTP ${res.status}`);
+      const rows = normalizeCurrentTickets(await res.json());
       if (hasUsableTicketDetails(rows)) return rows;
+      if(!allowLocalFallback)throw Error("Live delivery ticket details are incomplete");
       console.warn("Firebase tickets loaded but without usable detail rows, falling back to local parts_classified.csv");
     }catch(err){
+      if(!allowLocalFallback)throw err;
       console.warn("Firebase tickets load failed, falling back to local parts_classified.csv", err);
     }
     return loadCurrentTicketsFromLocalClassified();
@@ -2714,6 +2688,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     }
     return {
       ticketCount:n(summary.ticketCount),
+      costTicketCount:n(summary.costTicketCount),
       awaitingNow:n(summary.awaitingNow),
       agingBuckets:summary.agingBuckets||null,
       materialStats,
@@ -2879,6 +2854,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     const leadWindow=rollingMonthWindow(latestDate,12);
     return normalizeCurrentSummary({
       ticketCount:tickets.length,
+      costTicketCount:uniqueTicketCountForCost(tickets,latest),
       awaitingNow:awaitingTicketRows(tickets).length,
       agingBuckets:materialAgingFromTickets(tickets,latest?.asOf),
       materialStats:materialMetricsFromTickets(tickets,leadWindow.start,leadWindow.end),
@@ -4028,6 +4004,7 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     const lineSeries = currentYearMonthlySeries(reportSeries.length ? reportSeries : fallbackSeries, latest);
     const seriesSummary = summarizeCostSeries(lineSeries);
     const ticketCount = uniqueTicketCountForCost(currentTickets, latest)
+      || n(currentSummary?.costTicketCount)
       || seriesSummary.totalSoCount
       || (currentSummary ? n(currentSummary.ticketCount) : 0);
     const totalPeriodCost = seriesSummary.totalCost;
@@ -4174,83 +4151,55 @@ ${valid.map(sheet => `<Worksheet ss:Name="${xmlEscape(excelSheetName(sheet.name)
     renderCost(costReport, latest, state.currentTickets, currentSummary);
   }
 
-  (async () => {
-    let cacheVersion = "";
-    try{
-      cacheVersion = await withTimeoutPromise(deliveryPageVersion(), 10000, "Delivery page version");
-    }catch(e){
-      console.warn("Delivery page version failed", e);
-      cacheVersion = "local";
+  async function loadDeliveryStartup(url){
+    const response=await fetchWithTimeout(url,{cache:"no-cache"},12000);
+    if(!response.ok)throw Error(`Delivery snapshot HTTP ${response.status}`);
+    const snapshot=await response.json();
+    if(typeof snapshot?.page==="string")snapshot.page=JSON.parse(snapshot.page);
+    if(snapshot?.schema!=="delivery-startup-v1"||!snapshot.sourceVersion||!snapshot.generatedAt)throw Error("Invalid delivery snapshot");
+    return {version:snapshot.sourceVersion,value:snapshot.page};
+  }
+
+  async function loadDeliveryPage(){
+    let cacheVersion="",shown=null;
+    const badge=(version,mode)=>window.WarrantyPageCache?.showBadge(version,mode);
+    const offer=record=>{
+      if(!record?.version||!record.value||shown&&record.version<=shown.version)return false;
+      const selection=state.granularity;
+      const value=shown?{...record.value,granularity:selection}:record.value;
+      if(!restoreDeliveryPageState(value,record.version))return false;
+      shown={...record,value};
+      badge(record.version,"checking");
+      return true;
+    };
+    // All three sources race to paint. A slow version check never blocks the
+    // saved page, and first-time visitors can use the small deployed snapshot.
+    const versionPromise=withTimeoutPromise(deliveryPageVersion(),10000,"Delivery page version").catch(()=>"");
+    const candidates=[
+      window.WarrantyPageCache?.getPageRecord(DELIVERY_PAGE_CACHE_KEY),
+      loadDeliveryStartup("outputs/delivery_flow_startup.json"),
+      loadDeliveryStartup(DELIVERY_STARTUP_URL),
+    ].map(promise=>Promise.resolve(promise).then(offer).catch(error=>console.warn("Delivery snapshot unavailable",error)));
+    await Promise.all(candidates);
+    cacheVersion=await versionPromise;
+    if(shown&&(!cacheVersion||shown.version===cacheVersion)){
+      badge(shown.version,cacheVersion?"fresh":"offline");
+      if(cacheVersion)saveDeliveryPageState(cacheVersion);
+      return;
     }
-    try{
-      if (window.WarrantyPageCache){
-        const cached = await withTimeoutPromise(
-          window.WarrantyPageCache.getPage(DELIVERY_PAGE_CACHE_KEY, cacheVersion),
-          5000,
-          "Delivery page cache restore"
-        );
-        if (restoreDeliveryPageState(cached, cacheVersion)) {
-          refreshCurrentTicketsSummary(cacheVersion);
-          return;
-        }
-      }
-    }catch(e){
-      console.warn("Delivery page cache restore failed", e);
+    // A missing or unfinished snapshot must never start a 100 MB ticket
+    // download. Full ticket data is reserved for an explicit export action.
+    if(shown){
+      badge(shown.version,"offline");
+    }else{
+      els.snapshotPill.innerHTML="<strong>Latest</strong> unavailable";
+      els.agingGrid.innerHTML='<div class="hint">Delivery summary is not available yet. Please refresh after the data update completes.</div>';
+      els.flowFoot.textContent="Delivery summary is being prepared.";
     }
-    try{
-      const results = await Promise.allSettled([
-        withTimeoutPromise(loadHistory(), 15000, "Delivery history"),
-        withTimeoutPromise(loadCurrentSummary(), 15000, "Delivery summary"),
-        withTimeoutPromise(loadCurrentTickets(), 15000, "Delivery ticket details"),
-      ]);
-      const historyResult = results[0];
-      const summaryResult = results[1];
-      const ticketsResult = results[2];
-      if (historyResult.status === "fulfilled") {
-        state.history = historyResult.value;
-        state.costReport = state.history.length ? (state.history[state.history.length - 1].costReport || null) : null;
-      }
-      if (summaryResult.status === "fulfilled") {
-        state.currentSummary = summaryResult.value;
-      }
-      if (ticketsResult.status === "fulfilled" && Array.isArray(ticketsResult.value) && ticketsResult.value.length) {
-        state.currentTickets = ticketsResult.value;
-        const latestHistory = state.history[state.history.length - 1] || null;
-        if (latestHistory) {
-          const liveSummary = buildCurrentTicketsSummary(state.currentTickets, latestHistory);
-          state.currentSummary = mergeCurrentSummary(state.currentSummary, liveSummary);
-        }
-      }
-      if (!state.history.length){
-        throw new Error("No history data");
-      }
-      const latestHistory = state.history[state.history.length - 1] || null;
-      if (latestHistory && !hasMeaningfulLeadSeries(buildEffectiveMonthlyLeadSeries(latestHistory, state.currentSummary, state.currentTickets))){
-        try{
-          const localRows = await withTimeoutPromise(loadCurrentTicketsFromLocalClassified(), 12000, "Local classified lead-series rebuild");
-          if (Array.isArray(localRows) && localRows.length){
-            const localSummary = buildCurrentTicketsSummary(localRows, latestHistory);
-            state.currentSummary = mergeCurrentSummary(state.currentSummary, localSummary);
-            if (!hasUsableTicketDetails(state.currentTickets)) state.currentTickets = localRows;
-          }
-        }catch(err){
-          console.warn("Initial local classified lead-series rebuild failed", err);
-        }
-      }
-      render();
-      saveDeliveryPageState(cacheVersion);
-      if(cacheVersion&&window.WarrantyPageCache)window.WarrantyPageCache.showBadge(cacheVersion,"fresh");
-      refreshCurrentTicketsSummary(cacheVersion);
-    }catch(err){
-      els.snapshotPill.innerHTML = `<strong>Latest</strong> unavailable`;
-      els.kpis.innerHTML = "";
-      els.agingGrid.innerHTML = `<div class="hint">Unable to load delivery-flow history: ${esc(err.message)}</div>`;
-      els.flowFoot.textContent = "Unable to load delivery-flow history.";
-      els.leadFoot.textContent = "Unable to load delivery-flow history.";
-    }finally{
-      setPageLoading(false);
-    }
-  })();
+    setPageLoading(false);
+  }
+
+  loadDeliveryPage();
 
   window.addEventListener("resize", () => {
     if (!state.history.length) return;

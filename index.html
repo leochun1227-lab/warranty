@@ -6,6 +6,7 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>Warranty Team</title>
+<link rel="preload" href="outputs/team_dashboard_startup.json" as="fetch" crossorigin>
 <link rel="stylesheet" href="dashboard-overview.css?v=20261007-compact-header">
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#0f172a;--muted:#607089;--line:#dbe3ee;--nav:#0b1222;--blue:#3b82f6;--orange:#fb6b1d;--green:#16a34a;--shadow:0 10px 28px rgba(15,23,42,.06)}
@@ -9322,9 +9323,8 @@ async function readTeamPageCacheRecord(){
   }
 }
 async function readLocalTeamStartup(){
-  // The local preview uses an actual calculated snapshot produced from the
-  // same live sources, without requiring a Firebase publication first.
-  if(!["localhost","127.0.0.1","[::1]"].includes(location.hostname))return null;
+  // Ship the generated snapshot with the site so a first visit on any device
+  // can paint immediately. load() still checks the live team's generation.
   try{
     const response=await fetch("outputs/team_dashboard_startup.json",{cache:"no-cache",signal:AbortSignal.timeout(2000)});
     if(!response.ok)return null;
@@ -9383,6 +9383,9 @@ async function load(){
   let cachedRecord=null,restored=false;
   try{
     const versionPromise=teamPageVersion();
+    // Meta is published before team data. Check the team's generation on every
+    // visit, even if this browser already saw the new meta during publication.
+    const teamVersionPromise=readJson(MONITOR_ROOT+"/analytics/team/generatedAt").catch(()=>"");
     const [browserRecord,localRecord]=await Promise.all([readTeamPageCacheRecord(),readLocalTeamStartup()]);
     cachedRecord=browserRecord;
     if(localRecord&&(!browserRecord||String(localRecord.value.team.generatedAt)>String(browserRecord.value?.team?.generatedAt||"")))cachedRecord=localRecord;
@@ -9392,15 +9395,13 @@ async function load(){
       await renderAllWithLoading();
       window.WarrantyPageCache.showBadge(cachedRecord.version,"checking");
     }
-    const version=await versionPromise;
+    const [version,teamVersion]=await Promise.all([versionPromise,teamVersionPromise]);
     if(!restored)dashboardSourceVersion=version;
-    if(restored&&(!version||cachedRecord.version===version)){
-      window.WarrantyPageCache.showBadge(cachedRecord.version,version?"cached":"offline");
-      if(version)saveTeamPageState(version);
+    if(restored&&(!version||!teamVersion)){
+      window.WarrantyPageCache.showBadge(cachedRecord.value.team.generatedAt||cachedRecord.version,"offline");
       return;
     }
     if(restored&&version){
-      const teamVersion=await readJson(MONITOR_ROOT+"/analytics/team/generatedAt").catch(()=>"");
       if(teamVersion&&teamVersion===cachedRecord.value.team.generatedAt){
         dashboardSourceVersion=version;
         saveTeamPageState(version);
@@ -9408,7 +9409,7 @@ async function load(){
         return;
       }
     }
-    if(!restored&&version&&cachedRecord?.version===version&&restoreTeamPageState(cachedRecord.value,version)){
+    if(!restored&&version&&cachedRecord?.version===version&&teamVersion&&teamVersion===cachedRecord.value?.team?.generatedAt&&restoreTeamPageState(cachedRecord.value,version)){
       // Check the live version before presenting cached figures. Load each
       // missing source once, then paint once, without repeated refresh overlays.
       await loadEmployeeStatusMappingRemote();

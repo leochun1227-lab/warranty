@@ -695,6 +695,8 @@ def run_once(as_of: Optional[str]) -> None:
     as_of_date = parse_date(as_of) or datetime.now(timezone.utc).date()
     logger.info("Aggregating delivery flow as of %s", as_of_date.isoformat())
 
+    ticket_version_ref = db.reference(f"{FIREBASE_ROOT}/ticketSoSyncAt")
+    ticket_version = ticket_version_ref.get()
     tickets_node = db.reference(f"{FIREBASE_ROOT}/tickets").get() or {}
     snapshot = aggregate(tickets_node, as_of_date)
     nishi_rows = snapshot.pop("_nishiRows", [])
@@ -729,6 +731,12 @@ def run_once(as_of: Optional[str]) -> None:
         )
     write_snapshot(snapshot)
     write_nishi_detail(snapshot, nishi_rows)
+    from build_delivery_startup import publish_delivery_startup
+    publish_delivery_startup(
+        db.reference(f"{FIREBASE_ROOT}/{HISTORY_NODE}"), tickets_node,
+        snapshot["generatedAt"], ticket_version, ticket_version_ref.get,
+    )
+    logger.info("Published delivery startup snapshot")
 
 
 def main() -> None:

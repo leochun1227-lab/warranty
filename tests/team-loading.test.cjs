@@ -5,6 +5,17 @@ const vm=require('node:vm');
 const path=require('node:path');
 const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 function between(a,b){return html.slice(html.indexOf(a),html.indexOf(b,html.indexOf(a)));}
+test('deployed Team snapshot is available on the production hostname',async()=>{
+  const requests=[],snapshot={schema:'team-startup-v1',generatedAt:'team-v1',sourceVersion:'meta-v1',page:{renderSnapshot:{values:{}},team:{views:{all:{}}}}};
+  const context=vm.createContext({location:{hostname:'warranty-l9jw.onrender.com'},AbortSignal,
+    fetch:async(url)=>{requests.push(url);return {ok:true,json:async()=>snapshot};}
+  });
+  vm.runInContext(between('async function readLocalTeamStartup(){','function claimExistsInTeam'),context);
+  const record=await vm.runInContext('readLocalTeamStartup()',context);
+  assert.equal(record.version,'meta-v1');
+  assert.equal(record.value,snapshot.page);
+  assert.deepEqual(requests,['outputs/team_dashboard_startup.json']);
+});
 function app({saved=new Map(),read=async()=>[],confirmed='v1'}={}){
   const requests=[],writes=[],view={};
   const context=vm.createContext({console:{warn(){}},document:{documentElement:{dataset:{}}},
@@ -60,7 +71,8 @@ test('dashboard startup verifies the version before restoring cached figures',as
     Object.assign(a.context,{
       showCalcFloat(){},hideCalcFloat(){},
       teamPageVersion:async()=>version,
-      readTeamPageCacheRecord:async()=>({version:'same',value:{team:{}}}),
+      MONITOR_ROOT:'/monitor',readJson:async()=> 'team-generation',
+      readTeamPageCacheRecord:async()=>({version:'same',value:{team:{generatedAt:'team-generation'}}}),
       readLocalTeamStartup:async()=>null,
       restoreTeamPageState:()=>{events.push('restore');return true;},
       loadEmployeeStatusMappingRemote:async()=>{},
@@ -71,4 +83,38 @@ test('dashboard startup verifies the version before restoring cached figures',as
     await a.run('load()');
     assert.deepEqual(events,version==='same'?['restore','render']:['fresh:'+version]);
   }
+});
+
+test('cached dashboard checks team generation even after observing the new meta before data publication',async()=>{
+  const cached={version:'old-meta',value:{team:{generatedAt:'old-team'},renderSnapshot:{}}};
+  let liveTeam='old-team';
+  async function visit(){
+    const a=app(),events=[];
+    Object.assign(a.context,{
+      MONITOR_ROOT:'/monitor',showCalcFloat(){},hideCalcFloat(){},
+      teamPageVersion:async()=> 'new-meta',
+      readJson:async()=>liveTeam,
+      readTeamPageCacheRecord:async()=>cached,readLocalTeamStartup:async()=>null,
+      restoreTeamPageState:()=>true,
+      renderAllWithLoading:async()=>events.push('render'),
+      saveTeamPageState:version=>{cached.version=version;events.push('save');},
+      loadFreshTeamDashboard:async(version,quiet)=>events.push(['fresh',version,quiet]),
+    });
+    a.context.window.WarrantyPageCache.showBadge=(version,mode)=>events.push(['badge',version,mode]);
+    a.run(between('async function load(){','\nwindow.addEventListener("hashchange"'));
+    await a.run('load()');
+    return events;
+  }
+  const duringPublication=await visit();
+  assert.equal(cached.version,'new-meta');
+  assert.ok(duringPublication.includes('save'));
+  liveTeam='new-team';
+  const afterPublication=await visit();
+  assert.deepEqual(afterPublication.at(-1),['fresh','new-meta',true]);
+  assert.equal(afterPublication[0],'render','cached figures remain immediately visible');
+  assert.ok(!afterPublication.includes('save'),'old figures cannot be saved as current');
+  liveTeam='';
+  const offline=await visit();
+  assert.deepEqual(offline.at(-1),['badge','old-team','offline']);
+  assert.ok(!offline.includes('save'));
 });
