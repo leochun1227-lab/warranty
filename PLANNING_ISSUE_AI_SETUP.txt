@@ -9,7 +9,9 @@ Planning 每日更新：Issue Position 分类（2026-10-09）
 In Field / Pre Delivery 全部直接按 IssuesPosition 编码、IssuesPositionText 名称分组；不使用 Subcategory、描述关键词或 9 月 9 日分界。
 Position 为空归 Other（Z009）。9997、Labour（Z012）、Other/Others（Z009）在 Tickets / Issues 两种 Top 10 排名中均排除。它们仍保留在完整审计明细和总数中。
 同一 Ticket 在一个 Position 内去重；Issue 每条计一次。一个 Ticket 涉及多个 Position 时，各类 Ticket 数可以重叠。
-只统计 Approved 工单（含 Approved Claims Closed），排除未批准、未批准关闭和无有效批准日期的工单。年份和月份均按旧接口主表的 Ticket Claim Approved On；不用 Issue 日期或 Created On。
+只统计 Approved 工单（含 Approved Claims Closed），排除未批准、未批准关闭和无有效批准日期的工单。年份和月份均按父工单 Claim Approved On；不用 Issue 日期或 Created On。
+Top10 的工单集合、日期和状态直接读取 Claim Trend 已发布版本对应的 Firebase 工单快照。逐月校验 Created、Approved On 和 Approved by Created On 数量；PC4C 新接口仅补 Issue Item，不决定工单是否计入。
+同版本工单主表保存在更新账号的私有缓存。若 Claim Trend 仍显示旧快照，而对应主表不在缓存中，则保留上一版 Top10，不混用更新的 C4C 主表。原 daily 完成 Claim Trend 快照发布后，Top10 再读取并校验同版本数据；无额外安装。
 顶部 Tickets 总数包含所选类型和批准月份的全部 Approved 工单，包括无 Issue 工单。它与相同主表版本的 Claim Trend Overview / Approved 按批准日期统计一致。无 Issue 工单在完整导出中归 Other，但不虚构 Issue。
 
 金额
