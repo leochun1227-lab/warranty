@@ -2,6 +2,8 @@ Planning 每日更新：Issue Position 分类（2026-10-09）
 
 更新方式
 将 planning_issue_ai_update.zip 解压覆盖原更新目录，保留原 Firebase service account。继续使用原 run_daily_5pm_mandt800_rejection_filter.bat，不需要另装程序或另建任务。
+本包是现有可运行目录的覆盖更新，不是独立安装包。保留原 SAP 抓取脚本和 outputs 中的既有数据；deployment_manifest.json 列出保留文件与更新文件校验值。
+本次已补齐每日快照生成、版本检查、回归检查及已有 PDV 更新入口的依赖。启动时先检查文件与环境；原每日流程发布 Claim Trend 快照后才生成 Top10，最后检查页面快照版本并执行 PDV 更新。任何步骤失败都会返回失败状态，保留日志。
 原 daily hook 文件名 issue_ai_daily.py 为兼容保留，但它实际运行 sync_issue_positions.py。旧 sync_issue_subcategories.py 的命令行入口同样转到 Issue Position 更新。
 本包只加密携带 C4C 读取凭据；不携带 OpenAI key，不检查 OpenAI 额度，不调用 AI。已有私有设置可沿用，只读取 C4C 凭据。历史 AI 缓存保留，但不参与分类。
 

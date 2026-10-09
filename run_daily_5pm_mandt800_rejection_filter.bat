@@ -43,10 +43,10 @@ set "MONITOR_ROOT=ctmTicketStatusMonitorV44"
 set "PYTHONUNBUFFERED=1"
 set "SKIP_MODEL_SERIES_ASSETS_AFTER_FETCH=0"
 
-rem The existing CTM --once flow runs Issue AI after a successful ticket refresh.
+rem The existing CTM --once flow runs Issue Position after a successful ticket refresh.
 rem Its first run prepares private settings from the encrypted update package.
 rem Reuse this Python/Firebase environment; no pip install or separate setup task.
-if exist "%~dp0.issue-ai\bootstrap.json" echo Issue AI automatic configuration is included in this update.>> "%LOG_FILE%"
+if exist "%~dp0.issue-ai\bootstrap.json" echo Issue Position automatic configuration is included in this update.>> "%LOG_FILE%"
 
 if exist "%~dp0check_deployment_readiness.py" (
   if "%PYTHON_CMD%"=="py -3" (
