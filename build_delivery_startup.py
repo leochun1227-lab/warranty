@@ -4,14 +4,15 @@ import subprocess
 from pathlib import Path
 
 
-def publish_delivery_startup(history_ref, tickets, history_version, ticket_version, read_ticket_version):
+def publish_delivery_startup(history_ref, tickets, history_version, ticket_version, read_ticket_version,
+                             *, publish=True, use_local_summary=True):
     from rebuild_model_series_assets import resolve_node_executable
     root = Path(__file__).resolve().parent
     summary_path = root / "outputs/delivery_flow_current_summary.json"
     payload = {
         "history": history_ref.child("daily").get(), "tickets": tickets,
         "historyVersion": history_version, "ticketVersion": ticket_version,
-        "summary": json.loads(summary_path.read_text(encoding="utf-8")) if summary_path.exists() else None,
+        "summary": json.loads(summary_path.read_text(encoding="utf-8")) if use_local_summary and summary_path.exists() else None,
     }
     result = subprocess.run(
         [resolve_node_executable(), str(root / "build_delivery_startup.mjs")],
@@ -27,6 +28,8 @@ def publish_delivery_startup(history_ref, tickets, history_version, ticket_versi
         raise ValueError("Invalid delivery startup snapshot")
     if history_ref.child("latestSyncAt").get() != history_version or read_ticket_version() != ticket_version:
         raise ValueError("Delivery sources changed during calculation; snapshot was not replaced")
+    if not publish:
+        return snapshot
     # One atomic write. The JSON string preserves array shapes and numeric keys.
     history_ref.child("startup").set({**snapshot, "page": json.dumps(snapshot["page"], ensure_ascii=False, separators=(",", ":"))})
     save_delivery_startup(root, snapshot)

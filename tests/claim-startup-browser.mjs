@@ -71,5 +71,10 @@ try{
  await page.waitForFunction(()=>document.body.textContent.includes('refresh unavailable'));
  assert.equal(await page.evaluate(()=>MONTHS_INDEX['2026-03'].approvedIn),2);
  assert.deepEqual(errors,[]);
+ offline=false;published=null;input={...input,coreVersion:'2026-10-09T00:00:00Z'};
+ await page.reload();await ready();
+ await page.waitForFunction(()=>document.body.textContent.includes('awaiting server update'));
+ assert.equal(await page.evaluate(()=>MONTHS_INDEX['2026-03'].approvedIn),2,'missing publication retains saved figures');
+ assert.equal(await page.evaluate(async()=>(await WarrantyPageCache.getPageRecord('claim-trend-startup:v1')).version),JSON.stringify([v,'2026-10-08T00:00:00Z',v]));
  console.log(JSON.stringify({coldMs:cold,warmWith3sNetworkMs:warm,checks:'chart parity, no loading flashes, summary-only switches, export, new publication, offline cache'}));
 }finally{await browser.close();await new Promise(r=>server.close(r));}

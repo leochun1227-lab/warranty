@@ -73,9 +73,12 @@ try {
     }) -join " "
 
     $Process = [System.Diagnostics.Process]::Start($ProcessInfo)
-    $StdOut = $Process.StandardOutput.ReadToEnd()
-    $StdErr = $Process.StandardError.ReadToEnd()
+    # Drain both pipes concurrently: a full stderr pipe must not deadlock stdout.
+    $StdOutTask = $Process.StandardOutput.ReadToEndAsync()
+    $StdErrTask = $Process.StandardError.ReadToEndAsync()
     $Process.WaitForExit()
+    $StdOut = $StdOutTask.GetAwaiter().GetResult()
+    $StdErr = $StdErrTask.GetAwaiter().GetResult()
 
     if ($StdOut) {
         $StdOut.TrimEnd() | Tee-Object -FilePath $LogPath -Append

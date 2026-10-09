@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 
 // Keep every chart/period/scope, but move repeated ticket rows off the render path.
 // Content-addressed detail files let an open page export its exact snapshot even
@@ -24,4 +25,17 @@ export function writeModelCacheAssets(cache, outputDir) {
   }
   fs.writeFileSync(path.join(outputDir, 'analysis_model_mtm_summary.json'), JSON.stringify(summary));
   return summary;
+}
+
+// Repackage an existing complete generation without rerunning SAP/C4C queries.
+if(process.argv[1] === fileURLToPath(import.meta.url)) {
+  const cache = JSON.parse(fs.readFileSync(0, 'utf8'));
+  for(const period of Object.values(cache.periods || {})) {
+    for(const slice of Object.values(period.scopes || {})) {
+      // RTDB omits empty arrays; all populated detail arrays must remain intact.
+      if(slice.detailRows == null) slice.detailRows = [];
+    }
+  }
+  const summary = writeModelCacheAssets(cache, process.argv[2]);
+  process.stdout.write(JSON.stringify({generatedAt:summary.generatedAt}));
 }

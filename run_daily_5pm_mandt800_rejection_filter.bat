@@ -43,6 +43,11 @@ set "MONITOR_ROOT=ctmTicketStatusMonitorV44"
 set "PYTHONUNBUFFERED=1"
 set "SKIP_MODEL_SERIES_ASSETS_AFTER_FETCH=0"
 
+rem The existing CTM --once flow runs Issue AI after a successful ticket refresh.
+rem Its first run prepares private settings from the encrypted update package.
+rem Reuse this Python/Firebase environment; no pip install or separate setup task.
+if exist "%~dp0.issue-ai\bootstrap.json" echo Issue AI automatic configuration is included in this update.>> "%LOG_FILE%"
+
 if exist "%~dp0check_deployment_readiness.py" (
   if "%PYTHON_CMD%"=="py -3" (
     py -3 "%~dp0check_deployment_readiness.py" >> "%LOG_FILE%" 2>&1
@@ -61,6 +66,16 @@ if "%PYTHON_CMD%"=="py -3" (
   "%PYTHON_CMD%" -u "%~dp0ctm_v44_history_safe_mandt800_rejection_filter.py" --once --company-file "%~dp0fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py" >> "%LOG_FILE%" 2>&1
 )
 set "ERR=%ERRORLEVEL%"
+
+if "%ERR%"=="0" (
+  echo Verifying all three dashboard publications...>> "%LOG_FILE%"
+  if "%PYTHON_CMD%"=="py -3" (
+    py -3 "%~dp0refresh_dashboard_snapshots.py" --check >> "%LOG_FILE%" 2>&1
+  ) else (
+    "%PYTHON_CMD%" "%~dp0refresh_dashboard_snapshots.py" --check >> "%LOG_FILE%" 2>&1
+  )
+  if errorlevel 1 set "ERR=1"
+)
 
 echo CTM V44 daily 5:00 PM run finished at %date% %time% with code %ERR%>> "%LOG_FILE%"
 exit /b %ERR%

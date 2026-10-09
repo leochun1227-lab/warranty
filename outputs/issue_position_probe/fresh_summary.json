@@ -1,0 +1,155 @@
+{
+  "endpoint": "https://longcui-automobile-cpi-tyrbc1k7.it-cpi010-rt.cpi.cn40.apps.platform.sapcloud.cn/http/PC4C/Ticket/list",
+  "scope": "fresh sampled first/middle/last pages; not a new full scan",
+  "reports": [
+    {
+      "type": "Z006",
+      "fetchedAt": "2026-10-09T03:04:33.305046+00:00",
+      "samplePages": [
+        {
+          "skip": 0,
+          "tickets": 50,
+          "reportedCount": "28408"
+        },
+        {
+          "skip": 14200,
+          "tickets": 50,
+          "reportedCount": "28408"
+        },
+        {
+          "skip": 28400,
+          "tickets": 8,
+          "reportedCount": "28408"
+        }
+      ],
+      "tickets": 108,
+      "issues": 280,
+      "missingCode": 0,
+      "missingText": 0,
+      "positions": [
+        {
+          "code": "Z003",
+          "name": "Electrical System",
+          "issues": 71
+        },
+        {
+          "code": "Z009",
+          "name": "Others",
+          "issues": 63
+        },
+        {
+          "code": "Z001",
+          "name": "External Fixtures",
+          "issues": 55
+        },
+        {
+          "code": "Z006",
+          "name": "Interior Components",
+          "issues": 46
+        },
+        {
+          "code": "Z002",
+          "name": "Plumbing",
+          "issues": 16
+        },
+        {
+          "code": "Z010",
+          "name": "Appliances",
+          "issues": 15
+        },
+        {
+          "code": "Z005",
+          "name": "Exterior Components",
+          "issues": 8
+        },
+        {
+          "code": "Z004",
+          "name": "Mechanical",
+          "issues": 5
+        },
+        {
+          "code": "Z008",
+          "name": "Gas System",
+          "issues": 1
+        }
+      ]
+    },
+    {
+      "type": "Z005",
+      "fetchedAt": "2026-10-09T03:04:32.935310+00:00",
+      "samplePages": [
+        {
+          "skip": 0,
+          "tickets": 50,
+          "reportedCount": "6869"
+        },
+        {
+          "skip": 3400,
+          "tickets": 50,
+          "reportedCount": "6869"
+        },
+        {
+          "skip": 6850,
+          "tickets": 19,
+          "reportedCount": "6869"
+        }
+      ],
+      "tickets": 119,
+      "issues": 287,
+      "missingCode": 0,
+      "missingText": 0,
+      "positions": [
+        {
+          "code": "Z003",
+          "name": "Electrical System",
+          "issues": 115
+        },
+        {
+          "code": "Z009",
+          "name": "Others",
+          "issues": 59
+        },
+        {
+          "code": "Z006",
+          "name": "Interior Components",
+          "issues": 41
+        },
+        {
+          "code": "Z001",
+          "name": "External Fixtures",
+          "issues": 37
+        },
+        {
+          "code": "Z002",
+          "name": "Plumbing",
+          "issues": 12
+        },
+        {
+          "code": "Z004",
+          "name": "Mechanical",
+          "issues": 8
+        },
+        {
+          "code": "Z010",
+          "name": "Appliances",
+          "issues": 8
+        },
+        {
+          "code": "Z005",
+          "name": "Exterior Components",
+          "issues": 5
+        },
+        {
+          "code": "Z008",
+          "name": "Gas System",
+          "issues": 1
+        },
+        {
+          "code": "Z007",
+          "name": "Floor",
+          "issues": 1
+        }
+      ]
+    }
+  ]
+}

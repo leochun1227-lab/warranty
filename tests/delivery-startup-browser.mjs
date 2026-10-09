@@ -104,7 +104,8 @@ try{
   offline=false;failTickets=true;published=null;current.historyVersion='2026-10-09T00:00:00Z';
   fast.requests.length=0;
   await fast.page.reload();await ready(fast.page);
-  await fast.page.waitForFunction(()=>document.body.textContent.includes('refresh unavailable'));
+  await fast.page.waitForFunction(()=>document.body.textContent.includes('awaiting server update'));
+  assert.ok(!(await fast.page.locator('#warrantyDataUpdatedBadge').textContent()).includes('|'),'internal version tuple is not shown as a date');
   assert.equal(await fast.page.locator('#kpis .val').first().textContent(),'3');
   const retained=await fast.page.evaluate(async()=>(await WarrantyPageCache.getPageRecord('delivery-flow-v12')).version);
   assert.equal(retained,'2026-10-08T00:00:00Z|2026-10-08T00:00:00Z','failed new generation must not relabel old cache');

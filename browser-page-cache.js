@@ -224,7 +224,7 @@
     return setPageWithLimit(key, version, value, MAX_LARGE_CACHE_BYTES);
   }
 
-  async function loadSnapshot({key, readVersion, fetchValue, validate, versionOf, apply, force=false}){
+  async function loadSnapshot({key, readVersion, fetchValue, validate, versionOf, apply, force=false, requireVersion=false}){
     const valid = validate || (value => !!value);
     const versionPromise = Promise.resolve().then(readVersion).then(normalizeVersion);
     // Attach a handler immediately, even while IndexedDB is opening.
@@ -236,6 +236,10 @@
       const checked = await checkedVersion;
       if(checked.error) throw checked.error;
       const version = checked.value;
+      if(cached && requireVersion && !version){
+        showBadge(cached.version, "pending");
+        return cached.value;
+      }
       if(cached && version && version === cached.version){
         showBadge(version, "cached");
         return cached.value;
@@ -244,8 +248,9 @@
       if(!valid(value)) throw new Error("Incomplete page snapshot");
       const actual = normalizeVersion(versionOf ? versionOf(value) : version);
       if(version && actual !== version) throw new Error("Page data changed during refresh. Please retry.");
-      await apply(value, {version:actual, mode:"fresh"});
-      if(actual) void setPage(key, actual, value);
+      const mode = requireVersion && !version ? "pending" : "fresh";
+      await apply(value, {version:actual, mode});
+      if(actual && mode === "fresh") void setPage(key, actual, value);
       return value;
     })();
     if(!cached) return refresh;
@@ -261,7 +266,12 @@
   function formatVersion(version){
     const raw = normalizeVersion(version);
     if(!raw) return "unknown";
-    const d = new Date(raw);
+    // Composite source versions are cache identities, not display timestamps.
+    let timestamp = raw.split("|")[0];
+    if(raw.startsWith("[")){
+      try{ timestamp = JSON.parse(raw)[0] || raw; }catch(err){}
+    }
+    const d = new Date(timestamp);
     if(!Number.isNaN(d.getTime())){
       return d.toLocaleString("en-AU", {
         day:"2-digit",
@@ -301,7 +311,7 @@
       if(document.body) document.body.appendChild(el);
     }
     const suffix = mode === "cached" ? " - local cache" : (mode === "fresh" ? " - refreshed" :
-      mode === "checking" ? " - checking for updates…" : mode === "offline" ? " - saved data; refresh unavailable" : "");
+      mode === "checking" ? " - checking for updates…" : mode === "pending" ? " - saved data; awaiting server update" : mode === "offline" ? " - saved data; refresh unavailable" : "");
     el.textContent = `Data updated: ${formatVersion(version)}${suffix}`;
   }
 

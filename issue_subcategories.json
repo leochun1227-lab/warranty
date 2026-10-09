@@ -1,0 +1,554 @@
+{
+  "version": "c4c-handover-v1.7-2026-09-16",
+  "source": "BI工单查询接口交接文档.md section 14.3",
+  "categories": {
+    "Z001": {
+      "position": "Z001",
+      "name": "Windows"
+    },
+    "Z002": {
+      "position": "Z001",
+      "name": "External Door"
+    },
+    "Z003": {
+      "position": "Z001",
+      "name": "Access Doors"
+    },
+    "Z004": {
+      "position": "Z001",
+      "name": "Awning"
+    },
+    "Z005": {
+      "position": "Z001",
+      "name": "Cladding"
+    },
+    "Z006": {
+      "position": "Z001",
+      "name": "Chequer Plate"
+    },
+    "Z007": {
+      "position": "Z001",
+      "name": "Bolt On Components"
+    },
+    "Z008": {
+      "position": "Z001",
+      "name": "Silicone"
+    },
+    "Z009": {
+      "position": "Z002",
+      "name": "Hot Water Service"
+    },
+    "Z010": {
+      "position": "Z002",
+      "name": "Tapware"
+    },
+    "Z011": {
+      "position": "Z002",
+      "name": "Shower"
+    },
+    "Z012": {
+      "position": "Z002",
+      "name": "Water Tanks"
+    },
+    "Z013": {
+      "position": "Z002",
+      "name": "Fittings"
+    },
+    "Z014": {
+      "position": "Z002",
+      "name": "Water Pump"
+    },
+    "Z015": {
+      "position": "Z003",
+      "name": "Appliances"
+    },
+    "Z016": {
+      "position": "Z003",
+      "name": "Battery System"
+    },
+    "Z017": {
+      "position": "Z003",
+      "name": "Lighting System"
+    },
+    "Z018": {
+      "position": "Z003",
+      "name": "Wiring"
+    },
+    "Z019": {
+      "position": "Z003",
+      "name": "Connectors"
+    },
+    "Z020": {
+      "position": "Z003",
+      "name": "Plugs"
+    },
+    "Z021": {
+      "position": "Z003",
+      "name": "Solar System"
+    },
+    "Z022": {
+      "position": "Z003",
+      "name": "Battery Management System"
+    },
+    "Z023": {
+      "position": "Z004",
+      "name": "Axles"
+    },
+    "Z024": {
+      "position": "Z004",
+      "name": "Brake Adjustment"
+    },
+    "Z025": {
+      "position": "Z004",
+      "name": "Brake Replacement"
+    },
+    "Z026": {
+      "position": "Z004",
+      "name": "Tyres"
+    },
+    "Z027": {
+      "position": "Z004",
+      "name": "Independent Suspension"
+    },
+    "Z028": {
+      "position": "Z004",
+      "name": "Bearings"
+    },
+    "Z029": {
+      "position": "Z004",
+      "name": "Wheel Aligment"
+    },
+    "Z030": {
+      "position": "Z005",
+      "name": "Cladding"
+    },
+    "Z031": {
+      "position": "Z005",
+      "name": "Framing"
+    },
+    "Z032": {
+      "position": "Z005",
+      "name": "J-Mould & External Trims"
+    },
+    "Z033": {
+      "position": "Z005",
+      "name": "Water Test"
+    },
+    "Z034": {
+      "position": "Z005",
+      "name": "Doors"
+    },
+    "Z035": {
+      "position": "Z005",
+      "name": "Paint"
+    },
+    "Z036": {
+      "position": "Z005",
+      "name": "Decal"
+    },
+    "Z037": {
+      "position": "Z006",
+      "name": "Cupboards, Drawers & Storage"
+    },
+    "Z038": {
+      "position": "Z006",
+      "name": "Upholstery"
+    },
+    "Z039": {
+      "position": "Z006",
+      "name": "Benchtop"
+    },
+    "Z040": {
+      "position": "Z006",
+      "name": "Carcass"
+    },
+    "Z041": {
+      "position": "Z006",
+      "name": "Tunnel Boot"
+    },
+    "Z042": {
+      "position": "Z006",
+      "name": "Sliding Door"
+    },
+    "Z043": {
+      "position": "Z006",
+      "name": "Splashback/Mirror"
+    },
+    "Z044": {
+      "position": "Z007",
+      "name": "Vinyl"
+    },
+    "Z045": {
+      "position": "Z007",
+      "name": "Fibreglass"
+    },
+    "Z046": {
+      "position": "Z007",
+      "name": "Framing"
+    },
+    "Z047": {
+      "position": "Z007",
+      "name": "Weld Supports"
+    },
+    "Z048": {
+      "position": "Z008",
+      "name": "Hot Water Service"
+    },
+    "Z049": {
+      "position": "Z008",
+      "name": "Gas Bottle & Holder"
+    },
+    "Z050": {
+      "position": "Z008",
+      "name": "Fridge"
+    },
+    "Z051": {
+      "position": "Z008",
+      "name": "Heater"
+    },
+    "Z052": {
+      "position": "Z008",
+      "name": "Cooktop"
+    },
+    "Z053": {
+      "position": "Z008",
+      "name": "Gas Regulator & Pigtail Hose"
+    },
+    "Z054": {
+      "position": "Z008",
+      "name": "Gas Fittings & Connections"
+    },
+    "Z055": {
+      "position": "Z008",
+      "name": "Lines"
+    },
+    "Z056": {
+      "position": "Z010",
+      "name": "Fridge"
+    },
+    "Z057": {
+      "position": "Z010",
+      "name": "Washing Machine"
+    },
+    "Z058": {
+      "position": "Z010",
+      "name": "Toilet"
+    },
+    "Z059": {
+      "position": "Z010",
+      "name": "Stove"
+    },
+    "Z060": {
+      "position": "Z010",
+      "name": "Cooktop & Oven"
+    },
+    "Z061": {
+      "position": "Z010",
+      "name": "Radio"
+    },
+    "Z062": {
+      "position": "Z010",
+      "name": "Entertainment System"
+    },
+    "Z063": {
+      "position": "Z010",
+      "name": "Speakers"
+    },
+    "Z064": {
+      "position": "Z010",
+      "name": "TV Antenna"
+    },
+    "Z065": {
+      "position": "Z001",
+      "name": "Wheel Spats"
+    },
+    "Z066": {
+      "position": "Z001",
+      "name": "Picnic Table"
+    },
+    "Z067": {
+      "position": "Z001",
+      "name": "Stone Shield"
+    },
+    "Z068": {
+      "position": "Z004",
+      "name": "A Frame"
+    },
+    "Z069": {
+      "position": "Z004",
+      "name": "Jockey Wheel"
+    },
+    "Z070": {
+      "position": "Z004",
+      "name": "Coupling"
+    },
+    "Z071": {
+      "position": "Z004",
+      "name": "Brakes"
+    },
+    "Z072": {
+      "position": "Z009",
+      "name": "Others"
+    },
+    "Z073": {
+      "position": "Z009",
+      "name": "Admin Fee"
+    },
+    "Z074": {
+      "position": "Z010",
+      "name": "Reverse Camera"
+    },
+    "Z075": {
+      "position": "Z010",
+      "name": "Microwave / Air Fryer"
+    },
+    "Z076": {
+      "position": "Z009",
+      "name": "Supplementary"
+    },
+    "Z077": {
+      "position": "Z009",
+      "name": "Finance"
+    },
+    "Z078": {
+      "position": "Z014",
+      "name": "Repairer misc."
+    },
+    "Z079": {
+      "position": "Z008",
+      "name": "Gas Pipework"
+    },
+    "Z080": {
+      "position": "Z008",
+      "name": "Isolation Valve"
+    },
+    "Z081": {
+      "position": "Z008",
+      "name": "Gas BBQ Outlet"
+    },
+    "Z082": {
+      "position": "Z008",
+      "name": "Gas Appliance Connection"
+    },
+    "Z083": {
+      "position": "Z008",
+      "name": "Gas Leak Detected (Location Unknown)"
+    },
+    "Z084": {
+      "position": "Z018",
+      "name": "Water Tank & Water Filter System"
+    },
+    "Z085": {
+      "position": "Z018",
+      "name": "Water Pump"
+    },
+    "Z086": {
+      "position": "Z018",
+      "name": "Water Pipework & Fittings"
+    },
+    "Z087": {
+      "position": "Z018",
+      "name": "Tapware"
+    },
+    "Z088": {
+      "position": "Z018",
+      "name": "Toilet System"
+    },
+    "Z089": {
+      "position": "Z018",
+      "name": "Shower System"
+    },
+    "Z090": {
+      "position": "Z018",
+      "name": "Drainage System"
+    },
+    "Z091": {
+      "position": "Z018",
+      "name": "Hot Water System"
+    },
+    "Z092": {
+      "position": "Z003",
+      "name": "Charging System"
+    },
+    "Z093": {
+      "position": "Z003",
+      "name": "Power Distribution & Protection"
+    },
+    "Z094": {
+      "position": "Z003",
+      "name": "240V System"
+    },
+    "Z095": {
+      "position": "Z003",
+      "name": "Control Panels, Displays & Monitoring"
+    },
+    "Z096": {
+      "position": "Z003",
+      "name": "Trailer Safety Systems"
+    },
+    "Z097": {
+      "position": "Z003",
+      "name": "External Grab Handle"
+    },
+    "Z098": {
+      "position": "Z015",
+      "name": "Entry Door & Accessories"
+    },
+    "Z099": {
+      "position": "Z015",
+      "name": "Windows"
+    },
+    "Z100": {
+      "position": "Z015",
+      "name": "Roof Hatch Assembly"
+    },
+    "Z101": {
+      "position": "Z015",
+      "name": "Access Doors"
+    },
+    "Z102": {
+      "position": "Z015",
+      "name": "Air Vents"
+    },
+    "Z103": {
+      "position": "Z006",
+      "name": "Bed & Bed Frame"
+    },
+    "Z104": {
+      "position": "Z006",
+      "name": "Seating & Lounge"
+    },
+    "Z105": {
+      "position": "Z006",
+      "name": "Tables"
+    },
+    "Z106": {
+      "position": "Z006",
+      "name": "Kitchen Furniture & Benchtops"
+    },
+    "Z107": {
+      "position": "Z006",
+      "name": "Ensuite & Bathroom Furniture"
+    },
+    "Z108": {
+      "position": "Z006",
+      "name": "Shower Cubicle & Door Assembly"
+    },
+    "Z109": {
+      "position": "Z006",
+      "name": "Internal Doors & Partitions"
+    },
+    "Z110": {
+      "position": "Z006",
+      "name": "Flooring & Floor Coverings"
+    },
+    "Z111": {
+      "position": "Z006",
+      "name": "Interior Trims & Finishes"
+    },
+    "Z112": {
+      "position": "Z006",
+      "name": "Safety Equipment"
+    },
+    "Z113": {
+      "position": "Z010",
+      "name": "Rangehood"
+    },
+    "Z114": {
+      "position": "Z010",
+      "name": "Air Conditioning"
+    },
+    "Z115": {
+      "position": "Z010",
+      "name": "Diesel / Gas Heater"
+    },
+    "Z116": {
+      "position": "Z010",
+      "name": "Slide-Out Kitchen"
+    },
+    "Z117": {
+      "position": "Z005",
+      "name": "Front & Rear Wall"
+    },
+    "Z118": {
+      "position": "Z005",
+      "name": "Side Walls"
+    },
+    "Z119": {
+      "position": "Z005",
+      "name": "Window Protectors"
+    },
+    "Z120": {
+      "position": "Z005",
+      "name": "Roof Components"
+    },
+    "Z121": {
+      "position": "Z005",
+      "name": "Front & Rear Mouldings"
+    },
+    "Z122": {
+      "position": "Z005",
+      "name": "Protection Components & Carriers"
+    },
+    "Z123": {
+      "position": "Z005",
+      "name": "Decals & Graphics"
+    },
+    "Z124": {
+      "position": "Z005",
+      "name": "Awnings"
+    },
+    "Z125": {
+      "position": "Z005",
+      "name": "External Step Assembly"
+    },
+    "Z126": {
+      "position": "Z005",
+      "name": "Picnic Table Assembly"
+    },
+    "Z127": {
+      "position": "Z005",
+      "name": "Tool Box Assembly"
+    },
+    "Z128": {
+      "position": "Z016",
+      "name": "Chassis Structure & Mounting Brackets"
+    },
+    "Z129": {
+      "position": "Z016",
+      "name": "Coupling System"
+    },
+    "Z130": {
+      "position": "Z016",
+      "name": "Jockey Wheel"
+    },
+    "Z131": {
+      "position": "Z016",
+      "name": "Stabiliser Legs"
+    },
+    "Z132": {
+      "position": "Z016",
+      "name": "Suspension System"
+    },
+    "Z133": {
+      "position": "Z016",
+      "name": "Hub Assembly"
+    },
+    "Z134": {
+      "position": "Z016",
+      "name": "Wheels & Tyres"
+    },
+    "Z135": {
+      "position": "Z016",
+      "name": "Wheel Alignment & Tracking"
+    },
+    "Z136": {
+      "position": "Z017",
+      "name": "Vehicle Mass & Load Compliance"
+    },
+    "Z137": {
+      "position": "Z005",
+      "name": "Slide-Out Assembly"
+    }
+  }
+}

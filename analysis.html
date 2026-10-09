@@ -802,8 +802,8 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
   .compPreviewStats{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 </style>
-<link rel="stylesheet" href="sidebar-light.css?v=20261007-compact">
-<script src="browser-page-cache.js?v=startup-v1"></script>
+<link rel="stylesheet" href="sidebar-light.css?v=20261009-subcategories">
+<script src="browser-page-cache.js?v=refresh-publication-v2"></script>
 <link rel="stylesheet" href="dashboard-theme.css?v=20261001-neutral">
 </head>
 <body class="model-page">
@@ -835,7 +835,7 @@ td.cellWarn::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px
     <div class="navDivider"></div>
     <div class="navSection">Analysis</div>
     <a class="navLink active" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model-wise Distribution</span></a>
-    <a class="navLink" href="parts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16"/><path d="M7 7v10"/><path d="M17 7v10"/><path d="M5 17h14"/><path d="M9 11h6"/></svg><span>Parts Failure Components</span></a>
+    <a class="navLink" href="parts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16"/><path d="M7 7v10"/><path d="M17 7v10"/><path d="M5 17h14"/><path d="M9 11h6"/></svg><span>Top10 Failure Parts</span></a>
     <a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket Timeline</span></a>
   </aside>
 
@@ -5918,8 +5918,9 @@ ${worksheets}
       try {
         await window.WarrantyPageCache.loadSnapshot({
           key:"model-summary:v1", force:forceRefresh,
+          requireVersion:!IS_LOCAL_CONTEXT,
           readVersion:() => IS_LOCAL_CONTEXT ? Promise.resolve("") : window.WarrantyPageCache.fetchVersion(FB_MODEL_MTM_SUMMARY.replace(/\.json$/, "/generatedAt.json")),
-          fetchValue:() => readModelSnapshotSources(urls, valid),
+          fetchValue:version => readModelSnapshotSources(urls, value => valid(value) && (!version || value.generatedAt === version)),
           validate:valid, versionOf:value => value.generatedAt,
           apply:(value, info) => {
             if (!applyModelMtmCacheState(value)) throw new Error("Model summary has no active scope");

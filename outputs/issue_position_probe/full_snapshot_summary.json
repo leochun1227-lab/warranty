@@ -1,0 +1,247 @@
+{
+  "scope": "Previously fetched complete 9 Oct 2026 snapshots, all creation dates",
+  "reports": [
+    {
+      "type": "Z006",
+      "snapshotFetchedAt": "2026-10-09T00:40:48.981541+00:00",
+      "fullScan": true,
+      "tickets": 28399,
+      "noIssueTickets": 45,
+      "issues": 73039,
+      "blankPosition": 494,
+      "excluded9997": 2,
+      "excludedLabour": 1,
+      "positions": [
+        {
+          "code": "Z003",
+          "name": "Electrical System",
+          "issues": 18786,
+          "tickets": 11509
+        },
+        {
+          "code": "Z009",
+          "name": "Others",
+          "issues": 16961,
+          "tickets": 11987
+        },
+        {
+          "code": "Z001",
+          "name": "External Fixtures",
+          "issues": 13163,
+          "tickets": 8946
+        },
+        {
+          "code": "Z006",
+          "name": "Interior Components",
+          "issues": 8152,
+          "tickets": 5657
+        },
+        {
+          "code": "Z005",
+          "name": "Exterior Components",
+          "issues": 4019,
+          "tickets": 3279
+        },
+        {
+          "code": "Z010",
+          "name": "Appliances",
+          "issues": 3834,
+          "tickets": 3249
+        },
+        {
+          "code": "Z002",
+          "name": "Plumbing",
+          "issues": 3209,
+          "tickets": 2663
+        },
+        {
+          "code": "Z004",
+          "name": "Mechanical",
+          "issues": 2226,
+          "tickets": 1976
+        },
+        {
+          "code": "Z008",
+          "name": "Gas System",
+          "issues": 1449,
+          "tickets": 1399
+        },
+        {
+          "code": "",
+          "name": "",
+          "issues": 494,
+          "tickets": 307
+        },
+        {
+          "code": "Z007",
+          "name": "Floor",
+          "issues": 369,
+          "tickets": 341
+        },
+        {
+          "code": "Z014",
+          "name": "Repairer misc.",
+          "issues": 198,
+          "tickets": 192
+        },
+        {
+          "code": "Z015",
+          "name": "Openings",
+          "issues": 79,
+          "tickets": 62
+        },
+        {
+          "code": "Z018",
+          "name": "Water System",
+          "issues": 46,
+          "tickets": 41
+        },
+        {
+          "code": "Z016",
+          "name": "Chassis & Running Gear",
+          "issues": 41,
+          "tickets": 38
+        },
+        {
+          "code": "Z017",
+          "name": "Compliance",
+          "issues": 5,
+          "tickets": 3
+        },
+        {
+          "code": "Z013",
+          "name": "Accessories",
+          "issues": 3,
+          "tickets": 3
+        },
+        {
+          "code": "9997",
+          "name": "",
+          "issues": 2,
+          "tickets": 2
+        },
+        {
+          "code": "Z011",
+          "name": "Service",
+          "issues": 2,
+          "tickets": 2
+        },
+        {
+          "code": "Z012",
+          "name": "Labour",
+          "issues": 1,
+          "tickets": 1
+        }
+      ]
+    },
+    {
+      "type": "Z005",
+      "snapshotFetchedAt": "2026-10-09T00:29:49.130773+00:00",
+      "fullScan": true,
+      "tickets": 6867,
+      "noIssueTickets": 1,
+      "issues": 18192,
+      "blankPosition": 309,
+      "excluded9997": 0,
+      "excludedLabour": 0,
+      "positions": [
+        {
+          "code": "Z003",
+          "name": "Electrical System",
+          "issues": 5848,
+          "tickets": 3216
+        },
+        {
+          "code": "Z009",
+          "name": "Others",
+          "issues": 4194,
+          "tickets": 2994
+        },
+        {
+          "code": "Z006",
+          "name": "Interior Components",
+          "issues": 2361,
+          "tickets": 1459
+        },
+        {
+          "code": "Z001",
+          "name": "External Fixtures",
+          "issues": 2316,
+          "tickets": 1744
+        },
+        {
+          "code": "Z005",
+          "name": "Exterior Components",
+          "issues": 974,
+          "tickets": 805
+        },
+        {
+          "code": "Z004",
+          "name": "Mechanical",
+          "issues": 658,
+          "tickets": 586
+        },
+        {
+          "code": "Z010",
+          "name": "Appliances",
+          "issues": 553,
+          "tickets": 505
+        },
+        {
+          "code": "Z002",
+          "name": "Plumbing",
+          "issues": 536,
+          "tickets": 448
+        },
+        {
+          "code": "",
+          "name": "",
+          "issues": 309,
+          "tickets": 174
+        },
+        {
+          "code": "Z008",
+          "name": "Gas System",
+          "issues": 239,
+          "tickets": 229
+        },
+        {
+          "code": "Z007",
+          "name": "Floor",
+          "issues": 134,
+          "tickets": 130
+        },
+        {
+          "code": "Z016",
+          "name": "Chassis & Running Gear",
+          "issues": 27,
+          "tickets": 24
+        },
+        {
+          "code": "Z015",
+          "name": "Openings",
+          "issues": 19,
+          "tickets": 17
+        },
+        {
+          "code": "Z014",
+          "name": "Repairer misc.",
+          "issues": 18,
+          "tickets": 18
+        },
+        {
+          "code": "Z018",
+          "name": "Water System",
+          "issues": 5,
+          "tickets": 5
+        },
+        {
+          "code": "Z017",
+          "name": "Compliance",
+          "issues": 1,
+          "tickets": 1
+        }
+      ]
+    }
+  ]
+}

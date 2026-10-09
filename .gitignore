@@ -1,4 +1,11 @@
 firebase-service-account.json
+# AI runner secrets and local processing state never belong in the website/repository.
+*.env
+!*.env.example
+.issue-ai/
+outputs/issue_ai_*/
+outputs/issue_subcategory_trial_*/
+outputs/pc4c_issue_probe_*/
 *.inspect.ndjson
 __pycache__/
 *.pyc
@@ -40,6 +47,7 @@ outputs/model_mtm_details/
 outputs/team_dashboard_startup.json.tmp
 outputs/delivery_flow_startup.json.tmp
 outputs/claim_trend_startup.json.tmp
+outputs/issue_subcategory_startup.json.tmp
 
 # One-off reconciliation/debug folders generated during local checks.
 outputs/counted_not_stock_removed/

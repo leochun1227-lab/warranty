@@ -1,0 +1,37 @@
+Planning 每日更新：Issue Position 分类（2026-10-09）
+
+更新方式
+将 planning_issue_ai_update.zip 解压覆盖原更新目录，保留原 Firebase service account。继续使用原 run_daily_5pm_mandt800_rejection_filter.bat，不需要另装程序或另建任务。
+原 daily hook 文件名 issue_ai_daily.py 为兼容保留，但它实际运行 sync_issue_positions.py。旧 sync_issue_subcategories.py 的命令行入口同样转到 Issue Position 更新。
+本包只加密携带 C4C 读取凭据；不携带 OpenAI key，不检查 OpenAI 额度，不调用 AI。已有私有设置可沿用，只读取 C4C 凭据。历史 AI 缓存保留，但不参与分类。
+
+分类和排除
+In Field / Pre Delivery 全部直接按 IssuesPosition 编码、IssuesPositionText 名称分组；不使用 Subcategory、描述关键词或 9 月 9 日分界。
+Position 为空归 Other（Z009）。9997、Labour（Z012）、Other/Others（Z009）在 Tickets / Issues 两种 Top 10 排名中均排除。它们仍保留在完整审计明细和总数中。
+同一 Ticket 在一个 Position 内去重；Issue 每条计一次。一个 Ticket 涉及多个 Position 时，各类 Ticket 数可以重叠。
+所有年份和月份均按旧接口主表的 Ticket Created On；不用 Issue 日期或 Approved On。
+顶部 Tickets 总数包含所选类型和月份的全部 Created On 工单，包括无 Issue 工单。它与相同主表版本的 Claim Trend Overview / Tickets Created by Month 一致。无 Issue 工单在完整导出中归 Other，但不虚构 Issue。
+
+金额
+Parts (AUD) = 关联 Ticket 的 Factory Parts Claim Total Amount + Repairer Parts Claim Total Amount，不含人工。
+同一 Ticket 在一个 Position 内只计一次金额；不同 Position 的关联 Ticket 可重叠，卡片金额不能加起来当整站总额。
+缺少金额时显示 —；部分金额缺失用 * 标明。柱形悬浮提示显示精确金额。金额采用原 daily 主表，无额外接口写入。
+
+加载与导出
+首屏只读精简汇总 JSON，使用本地 / IndexedDB 缓存和远端版本校验，不下载原始 Ticket 或 Issue 明细。
+默认 Both / Tickets / 今年全年，支持去年、前年全年及按月筛选。
+Top 10 卡片使用渐变蓝月度柱状图。Tickets 与 Issues 都排除 9997、Labour、Other，后续类别补位。
+Excel 包含 Top 10、Monthly、Tickets、Issues、Summary。Tickets 是该筛选范围的全部工单，一张一行；Issues 保留所有真实 Issue；排名列用 Issue Position，原 System Subcategory 只作来源追溯。
+只有点击 Export 才加载按月压缩的明细。导出校验唯一 Ticket 行数与网页总数相等，并核对类别数量、Issue 数量和金额。
+
+读取与发布
+C4C 使用 PC4C/Ticket/list，只发送 GET，按两种类型分页读取完整 IssueItems。
+每次 daily 重新按来源 Position 分组，不需要 AI 缓存、AI token 或历史补分类。重复结果复用不可变导出版本。
+汇总和导出仅写入自己的 Firebase issueSubcategoryAnalysis/v1/<source-root> 区域；为兼容现有缓存路径保留命名，实际 categoryDimension 为 issue_position。
+原 results 中的历史 AI 数据不覆盖、不删除。直接分组不另写重复的每-Issue Firebase 缓存。
+先完整发布导出明细，再原子切换汇总和 startup；接口读取或校验失败时保留上一份完整结果。
+
+检查
+sync_issue_positions.py --check-config 只验证 C4C 设置，不需要 OpenAI key。
+日志沿用原 daily 日志，并带 [ISSUE POSITION] 前缀，正常显示 aiCalls: 0。
+已完成直接字段分组、排除项、日期、金额、导出完整性、无 AI 调用和浏览器缓存测试；尚未在 Planning 电脑上实际执行本次更新包。

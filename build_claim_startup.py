@@ -4,7 +4,7 @@ import subprocess
 from pathlib import Path
 
 
-def publish_claim_startup(analytics_ref, source_ref, tickets, core_version, so_version):
+def publish_claim_startup(analytics_ref, source_ref, tickets, core_version, so_version, *, publish=True):
     from rebuild_model_series_assets import resolve_node_executable
     root = Path(__file__).resolve().parent
     team_version = analytics_ref.child("team/generatedAt").get()
@@ -26,6 +26,8 @@ def publish_claim_startup(analytics_ref, source_ref, tickets, core_version, so_v
               source_ref.child("ticketSoSyncAt").get()]
     if actual != expected:
         raise ValueError("Claim sources changed during calculation; previous snapshot retained")
+    if not publish:
+        return snapshot
     metadata = {key: snapshot[key] for key in ("schema", "generatedAt", "sourceVersion")}
     analytics_ref.child("claimTrendStartup").set({**metadata, "data": json.dumps(
         {"monthly": snapshot["monthly"], "closedIndex": snapshot["closedIndex"]}, separators=(",", ":"))})

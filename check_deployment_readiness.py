@@ -12,6 +12,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 
 REQUIRED_FILES = [
+    "issue_ai.py",
+    "build_issue_startup.py",
+    "build_issue_exports.py",
+    "build_failure_reporting.py",
+    "issue_positions.py",
+    "sync_issue_positions.py",
+    "issue_ai_daily.py",
+    "bootstrap_issue_ai.py",
+    "sync_issue_subcategories.py",
+    "configure_issue_ai.py",
+    "issue_subcategories.json",
     "ctm_v44_history_safe_mandt800_rejection_filter.py",
     "fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py",
     "rebuild_model_series_assets.py",
@@ -21,6 +32,11 @@ REQUIRED_FILES = [
     "build_delivery_startup.mjs",
     "build_claim_startup.py",
     "build_claim_startup.mjs",
+    "refresh_dashboard_snapshots.py",
+    "browser-page-cache.js",
+    "analysis.html",
+    "build_analysis_model_mtm_cache.mjs",
+    "tests/startup-cache.test.cjs",
     "infieldpredelivery.html",
     "delivery_flow.html",
     "export_ticket_timeline_segments_2025_2026.py",
@@ -127,14 +143,14 @@ def check_claim_trend_regressions(failures: list[str]) -> None:
         return
     try:
         result = subprocess.run(
-            [node, str(test_file)], cwd=ROOT, capture_output=True,
+            [node, "--test", str(test_file), str(ROOT / "tests/startup-cache.test.cjs")], cwd=ROOT, capture_output=True,
             text=True, encoding="utf-8", errors="replace", timeout=60,
         )
         if result.returncode:
             failures.append("Claim Trend regression checks failed: " + result.stdout + result.stderr)
             print("FAIL Claim Trend regression checks")
         else:
-            print("PASS Claim Trend regression checks (date switching, exports, defaults and cross-page consistency)")
+            print("PASS Claim Trend and snapshot refresh regression checks")
     except (OSError, subprocess.TimeoutExpired) as exc:
         failures.append(f"Could not run Claim Trend regression checks: {exc}")
 
@@ -212,6 +228,22 @@ def main() -> int:
     check_claim_trend_contract(failures)
     check_claim_trend_regressions(failures)
     check_repairer_output_consistency(failures, warnings)
+
+    # Optional feature: old installations keep working until planning is configured.
+    try:
+        from issue_ai import load_config
+        from issue_positions import position_enabled, validate_position_config
+        issue_config = load_config()
+        if position_enabled(issue_config):
+            validate_position_config(issue_config)
+            print("PASS Issue Position C4C configuration (no AI)")
+        else:
+            if (ROOT / '.issue-ai' / 'bootstrap.json').is_file():
+                print("INFO Issue Position encrypted settings will be prepared automatically by the daily task.")
+            else:
+                print("INFO Issue Position is not enabled for this Windows account.")
+    except Exception as exc:
+        failures.append("Issue Position configuration check failed (" + type(exc).__name__ + "). Run sync_issue_subcategories.py --check-config.")
 
     for rel_dir in ("logs", "outputs", "generated_exports"):
         ok, err = check_writable_dir(ROOT / rel_dir)

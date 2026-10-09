@@ -4799,6 +4799,12 @@ def run_once(args: argparse.Namespace) -> None:
         sa_path=args.firebase_sa_path,
     )
 
+    # New issue analysis runs only after a real, successful core fetch. Analytics-only
+    # rebuilds and baseline resets never trigger paid model calls.
+    if not args.skip_fetch:
+        from issue_ai_daily import run_after_daily_fetch
+        run_after_daily_fetch(args.source_root, args.firebase_db_url, args.firebase_sa_path)
+
     db.reference(args.monitor_root).child("automation").update({
         "lastRunFinishedAt": now_iso(),
         "lastRunMode": "once",

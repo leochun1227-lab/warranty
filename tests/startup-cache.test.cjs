@@ -65,3 +65,31 @@ test('concurrent version requests share only an in-flight fetch, not a stale TTL
   resolve();assert.deepEqual(await Promise.all([a,b]),['1','1']);
   const c=cache.fetchVersion();assert.equal(calls,2);resolve();assert.equal(await c,'2');
 });
+
+function pageCache(){
+  const context=vm.createContext({window:{},console,AbortController,setTimeout,clearTimeout});
+  vm.runInContext(fs.readFileSync(path.join(__dirname,'../browser-page-cache.js'),'utf8'),context);
+  return context.window.WarrantyPageCache;
+}
+
+test('missing published model version cannot label a deployed snapshot as refreshed',async()=>{
+  const cache=pageCache(),applied=[];
+  await cache.loadSnapshot({key:'model',force:true,requireVersion:true,
+    readVersion:async()=>'',fetchValue:async()=>({generatedAt:'old'}),
+    versionOf:value=>value.generatedAt,apply:(value,info)=>applied.push(info)});
+  assert.equal(applied[0].version,'old');assert.equal(applied[0].mode,'pending');
+});
+
+test('a snapshot from a different generation is never applied as fresh',async()=>{
+  const cache=pageCache();let applied=false;
+  await assert.rejects(cache.loadSnapshot({key:'model',force:true,requireVersion:true,
+    readVersion:async()=> 'new',fetchValue:async()=>({generatedAt:'old'}),
+    versionOf:value=>value.generatedAt,apply:()=>{applied=true;}}),/changed during refresh/);
+  assert.equal(applied,false);
+});
+
+test('composite versions display only their data timestamp',()=>{
+  const cache=pageCache(),time='2026-10-08T07:48:26+00:00';
+  assert.equal(cache.formatVersion(time+'|2026-10-08T07:01:47+00:00'),cache.formatVersion(time));
+  assert.equal(cache.formatVersion(JSON.stringify([time,'core','so'])),cache.formatVersion(time));
+});

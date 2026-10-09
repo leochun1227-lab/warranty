@@ -1,0 +1,52 @@
+Planning computer: dashboard refresh deployment (2026-10-09)
+
+Confirmed issue
+The Firebase ticket/team/history data was updated on October 8, but these new
+page publications were absent:
+  ctmTicketStatusMonitorV44/analytics/claimTrendStartup
+  c4cTickets_test/deliveryFlowHistory/startup
+  ctmTicketStatusMonitorV44/analytics/pageAssets/modelSeries/modelMtmSummary
+The browser therefore continued showing the October 7 deployed snapshots.
+
+Deploy
+1. Update the complete repository on planning, including the new Python/MJS
+   builders, tests, HTML and browser-page-cache.js. Updating only HTML is not
+   enough. Retain planning's existing firebase-service-account.json.
+2. Open PowerShell in the warranty directory. Use the same Python account and
+   environment as the scheduled task. Run:
+
+   python check_deployment_readiness.py
+   python refresh_dashboard_snapshots.py --publish
+   python refresh_dashboard_snapshots.py --check
+
+   If the installation uses the Python launcher, replace python with py -3.
+   --publish builds the three page snapshots from existing Firebase data. It
+   does not fetch SAP/C4C, reset baselines, or delete history. Run it after any
+   active daily refresh has finished; changing source versions abort the repair.
+   The final check must report:
+   PASS all three dashboard publications match their source generations
+
+3. Deploy the updated frontend files to the dashboard host as usual. Reload
+   the three pages with Ctrl+F5 once. Their displayed dates should match the
+   published data; the dates are not changed merely because repair runs later.
+
+Daily operation
+Keep the scheduled task pointing to run_daily_5pm_mandt800_rejection_filter.bat.
+The normal updated pipeline creates these snapshots. Its final publication
+check now returns failure if any of the three snapshots is missing or stale.
+Inspect logs/ctm_daily_5pm_YYYYMMDD.log for the exact missing publication.
+
+Read-only diagnosis / rehearsal
+  python refresh_dashboard_snapshots.py --check
+  python refresh_dashboard_snapshots.py --dry-run
+
+--check reads version metadata only. --dry-run downloads the existing source
+data and builds all three snapshots in memory/temporary files, validates the
+versions again, and does not change Firebase or deployed output files.
+
+Validation completed on the development computer
+- Real Firebase data: all three builders passed --dry-run.
+- Browser tests: new publication, cached startup, missing publication, failed
+  refresh, offline retention, claim/delivery exports and chart parity.
+- Unit/publication tests and deployment readiness passed.
+Planning's own account, network and scheduled job still require the checks above.

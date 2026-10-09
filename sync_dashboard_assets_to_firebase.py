@@ -148,6 +148,8 @@ def main() -> int:
     for asset_key, path in assets.items():
         info = {"key": asset_key}
         if not path.exists():
+            if asset_key == "modelSeries/modelMtmSummary":
+                raise FileNotFoundError(f"Required model summary was not built: {path}")
             info.update({"ok": False, "reason": "missing", "path": str(path)})
             uploaded.append(info)
             continue
@@ -204,7 +206,8 @@ def main() -> int:
     return 0
 
 
-def publish_model_snapshot(base_ref: Any, summary: dict) -> None:
+def publish_model_snapshot(base_ref: Any, summary: dict, *, output_dir: Path | None = None,
+                           validate_source=None) -> None:
     """Publish immutable export details first, then atomically switch the summary.
 
     Retain old content-addressed details so already-open pages can still export
@@ -217,12 +220,14 @@ def publish_model_snapshot(base_ref: Any, summary: dict) -> None:
             key = scope["detailKey"]
             if len(key) != 64 or any(c not in "0123456789abcdef" for c in key):
                 raise ValueError("Invalid model detail key")
-            path = ROOT / "outputs" / "model_mtm_details" / f"{key}.json"
+            path = (output_dir or ROOT / "outputs") / "model_mtm_details" / f"{key}.json"
             if hashlib.sha256(path.read_bytes()).hexdigest() != key:
                 raise ValueError(f"Model detail integrity check failed: {key}")
             paths[key] = path
     for key, path in paths.items():
         base_ref.child(f"modelSeries/modelMtmDetails/{key}").set(firebase_safe_json(load_json(path)))
+    if validate_source is not None:
+        validate_source()
     base_ref.child("modelSeries/modelMtmSummary").set(summary)
 
 

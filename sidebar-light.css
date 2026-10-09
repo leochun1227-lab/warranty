@@ -1,7 +1,5 @@
 /* Layered important rules take precedence over legacy page-local overrides. */
 @layer dashboardSidebar{
-/* Temporarily hide this navigation entry; keep the page available for later work. */
-.sidebar a[href="parts.html"]{display:none!important;}
 /* Shared neutral sidebar: color identifies the current destination. */
 .sidebar{
   --sidebar-bg:#f8f9fa;
