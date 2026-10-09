@@ -6,6 +6,7 @@ firebase-service-account.json
 outputs/issue_ai_*/
 outputs/issue_subcategory_trial_*/
 outputs/pc4c_issue_probe_*/
+outputs/top10_claim_alignment/
 *.inspect.ndjson
 __pycache__/
 *.pyc

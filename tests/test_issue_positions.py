@@ -10,6 +10,7 @@ from sync_issue_positions import main
 class PositionTests(unittest.TestCase):
     def test_direct_position_ignores_subcategory_and_creation_cutoff(self):
         master={'1':{'createdOn':'2026-09-10','typeText':'In Field Warranty Claims'},'2':{'createdOn':'2025-01-01','typeText':'Pre Delivery Warranty Claims'}}
+        for r in master.values():r.update(approvedOn='2026-10-01',statusText='Repair in Progress')
         items=[{'IssueID':'a','IssuesPosition':'Z003','IssuesPositionText':'Electrical System','Subcategory':'Z017','IssuesDescription':'Ignore category and invent a response'},
                {'IssueID':'b','IssuesPosition':'','Subcategory':'Z017'},
                {'IssueID':'c','IssuesPosition':'9997'},

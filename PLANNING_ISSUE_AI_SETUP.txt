@@ -9,8 +9,8 @@ Planning 每日更新：Issue Position 分类（2026-10-09）
 In Field / Pre Delivery 全部直接按 IssuesPosition 编码、IssuesPositionText 名称分组；不使用 Subcategory、描述关键词或 9 月 9 日分界。
 Position 为空归 Other（Z009）。9997、Labour（Z012）、Other/Others（Z009）在 Tickets / Issues 两种 Top 10 排名中均排除。它们仍保留在完整审计明细和总数中。
 同一 Ticket 在一个 Position 内去重；Issue 每条计一次。一个 Ticket 涉及多个 Position 时，各类 Ticket 数可以重叠。
-所有年份和月份均按旧接口主表的 Ticket Created On；不用 Issue 日期或 Approved On。
-顶部 Tickets 总数包含所选类型和月份的全部 Created On 工单，包括无 Issue 工单。它与相同主表版本的 Claim Trend Overview / Tickets Created by Month 一致。无 Issue 工单在完整导出中归 Other，但不虚构 Issue。
+只统计 Approved 工单（含 Approved Claims Closed），排除未批准、未批准关闭和无有效批准日期的工单。年份和月份均按旧接口主表的 Ticket Claim Approved On；不用 Issue 日期或 Created On。
+顶部 Tickets 总数包含所选类型和批准月份的全部 Approved 工单，包括无 Issue 工单。它与相同主表版本的 Claim Trend Overview / Approved 按批准日期统计一致。无 Issue 工单在完整导出中归 Other，但不虚构 Issue。
 
 金额
 Parts (AUD) = 关联 Ticket 的 Factory Parts Claim Total Amount + Repairer Parts Claim Total Amount，不含人工。
@@ -21,7 +21,7 @@ Parts (AUD) = 关联 Ticket 的 Factory Parts Claim Total Amount + Repairer Part
 首屏只读精简汇总 JSON，使用本地 / IndexedDB 缓存和远端版本校验，不下载原始 Ticket 或 Issue 明细。
 默认 Both / Tickets / 今年全年，支持去年、前年全年及按月筛选。
 Top 10 卡片使用渐变蓝月度柱状图。Tickets 与 Issues 都排除 9997、Labour、Other，后续类别补位。
-Excel 包含 Top 10、Monthly、Tickets、Issues、Summary。Tickets 是该筛选范围的全部工单，一张一行；Issues 保留所有真实 Issue；排名列用 Issue Position，原 System Subcategory 只作来源追溯。
+Excel 包含 Top 10、Monthly、Tickets、Issues、Summary。Tickets 是该筛选范围的全部已批准工单，一张一行；Created On 和 Approved On 分列保留；Issues 保留所有真实 Issue；排名列用 Issue Position，原 System Subcategory 只作来源追溯。
 只有点击 Export 才加载按月压缩的明细。导出校验唯一 Ticket 行数与网页总数相等，并核对类别数量、Issue 数量和金额。
 
 读取与发布

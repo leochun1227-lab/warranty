@@ -11,7 +11,7 @@ from issue_ai import ROOT, IssueAIError, read_env, utc_now
 
 FILES = ['run_daily_5pm_mandt800_rejection_filter.bat',
          'parts.html','parts-subcategories.css','parts-subcategories.js','sidebar-light.css','browser-page-cache.js',
-         'build_issue_startup.py','build_issue_exports.py','build_failure_reporting.py','parts-export.js','outputs/issue_subcategory_startup.json',
+         'build_issue_startup.py','build_issue_exports.py','build_failure_reporting.py','issue_claim_source.py','parts-export.js','outputs/issue_subcategory_startup.json',
          'index.html','analysis.html','delivery_flow.html','repairs.html','infieldpredelivery.html','ticketlifecycle.html',
          'dealerworkbench.html','employee-workbench.html','employeeworkbench.html','temp-interface.html',
          'bootstrap_issue_ai.py','issue_ai.py','issue_ai_daily.py',
@@ -19,7 +19,7 @@ FILES = ['run_daily_5pm_mandt800_rejection_filter.bat',
          'issue_ai.env.example','issue-subcategory-data.js','PLANNING_ISSUE_AI_SETUP.txt',
          'ctm_v44_history_safe_mandt800_rejection_filter.py','check_deployment_readiness.py',
          'tests/test_issue_ai.py','tests/test_issue_ai_bootstrap.py',
-         'tests/test_issue_startup.py','tests/test_issue_exports.py','tests/test_issue_reporting.py','tests/test_issue_positions.py',
+         'tests/test_issue_startup.py','tests/test_issue_exports.py','tests/test_issue_reporting.py','tests/test_issue_positions.py','tests/test_issue_claim_source.py',
          'tests/issue-subcategory-data.test.cjs','tests/parts-subcategory-browser.mjs','.gitignore']
 
 
@@ -44,7 +44,7 @@ def main():
             if any(s.encode() in content for s in forbidden if s):
                 raise IssueAIError('Refusing to package a plaintext credential')
         files['deployment_manifest.json']=json.dumps({'builtAt':utc_now(),
-            'mode':'Existing run_daily_5pm; Issue Position only; no AI key/calls; no installs',
+            'mode':'Existing run_daily_5pm; approved Tickets by Claim Approved On; Issue Position only; no AI key/calls; no installs',
             'sha256':{name:hashlib.sha256(content).hexdigest() for name,content in files.items()}},indent=2).encode()
         output=Path(args.output)
         output.parent.mkdir(parents=True,exist_ok=True)

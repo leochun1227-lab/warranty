@@ -60,17 +60,21 @@
     });
     if([...sums.keys()].some(k=>!covSeen.has(k))||groups.reduce((n,r)=>n+r.issueCount,0)!==value.acceptedIssueCount||coverage.reduce((n,r)=>n+r.issueCount,0)!==value.issueCount)throw new Error('Startup totals do not reconcile');
     if(coverage.reduce((n,r)=>n+r.ticketCount,0)!==value.ticketCount||coverage.reduce((n,r)=>n+r.classifiedTicketCount,0)!==value.acceptedTicketCount)throw new Error('Ticket totals do not reconcile');
+    if(value.claimSourceVersion!=null){const versions=JSON.parse(value.claimSourceVersion);if(!Array.isArray(versions)||versions.length!==3||versions[1]!==value.ticketDataAsOf||!Number.isFinite(Date.parse(value.ticketDataAsOf)))throw Error('Invalid Claim Trend source version');}
+    const approved=value.reportingBasis==='approved_on';
+    if(value.reportingBasis!=null&&(!approved||value.ticketScope!=='approved_only'||!value.allReportTickets))throw Error('Invalid approved Ticket scope');
+    const coverageRows=approved?value.reportCoverage:value.createdCoverage,totalTickets=approved?value.reportTicketCount:value.createdTicketCount;
     let createdCoverage=[];
-    if(value.allCreatedTickets){
-      if(!Array.isArray(value.createdCoverage)||!count(value.createdTicketCount))throw Error('Missing Created On totals');
+    if(value.allCreatedTickets||value.allReportTickets){
+      if(!Array.isArray(coverageRows)||!count(totalTickets))throw Error('Missing Created On totals');
       const seenCreated=new Set();
-      createdCoverage=value.createdCoverage.map(r=>{
+      createdCoverage=coverageRows.map(r=>{
         if(!Array.isArray(r)||r.length!==3||!r.every(count)||!types[r[0]]||!months[r[1]]||seenCreated.has(r[0]+'|'+r[1]))throw Error('Invalid Created On coverage');
         seenCreated.add(r[0]+'|'+r[1]);return {ticketType:types[r[0]],month:months[r[1]],ticketCount:r[2]};
       });
-      if(createdCoverage.reduce((n,r)=>n+r.ticketCount,0)!==value.createdTicketCount||coverage.some(r=>r.ticketCount>(createdCoverage.find(c=>c.ticketType===r.ticketType&&c.month===r.month)?.ticketCount??0)))throw Error('Created On totals do not reconcile');
+      if(createdCoverage.reduce((n,r)=>n+r.ticketCount,0)!==totalTickets||coverage.some(r=>r.ticketCount>(createdCoverage.find(c=>c.ticketType===r.ticketType&&c.month===r.month)?.ticketCount??0)))throw Error('Created On totals do not reconcile');
     }
-    return {snapshot:value,summary:{retrievalComplete:true,generatedAt:value.generatedAt,sourceVersion:value.sourceVersion,issueCount:value.issueCount,acceptedIssueCount:value.acceptedIssueCount,ticketCount:value.ticketCount,acceptedTicketCount:value.acceptedTicketCount,categoryDimension:positionMode?'issue_position':'subcategory',otherCategoryCode:otherCode,excludedRankingCodes:positionMode?value.excludedRankingCodes:['Z072'],allCreatedTickets:!!value.allCreatedTickets,createdCoverage,exportVersion:value.exportVersion||null,groups,coverage},automation:value.automation||{}};
+    return {snapshot:value,summary:{retrievalComplete:true,generatedAt:value.generatedAt,sourceVersion:value.sourceVersion,issueCount:value.issueCount,acceptedIssueCount:value.acceptedIssueCount,ticketCount:value.ticketCount,acceptedTicketCount:value.acceptedTicketCount,claimSourceVersion:value.claimSourceVersion||null,ticketDataAsOf:value.ticketDataAsOf||null,categoryDimension:positionMode?'issue_position':'subcategory',otherCategoryCode:otherCode,excludedRankingCodes:positionMode?value.excludedRankingCodes:['Z072'],reportingBasis:approved?'approved_on':'created_on',ticketScope:approved?'approved_only':'all',allReportTickets:!!value.allReportTickets,reportCoverage:approved?createdCoverage:[],allCreatedTickets:!!value.allCreatedTickets,createdCoverage:approved?[]:createdCoverage,exportVersion:value.exportVersion||null,groups,coverage},automation:value.automation||{}};
   }
   async function load(readJson, sourceRoot) {
     const path = basePath(sourceRoot);
@@ -107,7 +111,7 @@
     const all=[...merged.values()].sort((a,b)=>b[metric]-a[metric]||a.code.localeCompare(b.code));
     const coverage=(summary.coverage||[]).filter(g=>(type==='both'||g.ticketType===type)&&matchesPeriod(g.month,month));
     const issueCount=coverage.reduce((n,g)=>n+g.issueCount,0);
-    const total=metric==='tickets'?(summary.allCreatedTickets?summary.createdCoverage.filter(g=>(type==='both'||g.ticketType===type)&&matchesPeriod(g.month,month)).reduce((n,g)=>n+g.ticketCount,0):coverage.reduce((n,g)=>n+g.classifiedTicketCount,0)):all.reduce((n,r)=>n+r.issues,0);
+    const total=metric==='tickets'?((summary.allReportTickets||summary.allCreatedTickets)?(summary.reportCoverage?.length?summary.reportCoverage:summary.createdCoverage).filter(g=>(type==='both'||g.ticketType===type)&&matchesPeriod(g.month,month)).reduce((n,g)=>n+g.ticketCount,0):coverage.reduce((n,g)=>n+g.classifiedTicketCount,0)):all.reduce((n,r)=>n+r.issues,0);
     if(!Number.isSafeInteger(total))throw new Error('Distinct Ticket coverage is missing');
     const pending=metric==='tickets'?coverage.reduce((n,g)=>n+g.pendingTicketCount,0):Math.max(0,issueCount-total);
     // Other stays in totals and complete details, but never participates in Top 10 rankings.
@@ -118,9 +122,10 @@
   function exportRows(summary,scope,month,metric='tickets'){
     if(!['both','Z005','Z006'].includes(scope))throw new Error('Invalid export scope');
     const dimension=summary.categoryDimension==='issue_position'?'Issue Position':'Subcategory';
-    const rows=[['Ticket type','Ticket creation period','Rank',dimension+' code',dimension,metric==='tickets'?'Distinct Ticket count':'Issue count','Share of '+(summary.allCreatedTickets&&metric==='tickets'?'Created On tickets':'classified '+metric),'Data updated','Date basis','Count basis','Ticket Parts Amount (AUD)','Tickets with parts amount','Amount basis']];
+    const approved=summary.reportingBasis==='approved_on';
+    const rows=[['Ticket type',approved?'Ticket approval period':'Ticket creation period','Rank',dimension+' code',dimension,metric==='tickets'?'Distinct Ticket count':'Issue count','Share of '+(approved&&metric==='tickets'?'approved tickets':summary.allCreatedTickets&&metric==='tickets'?'Created On tickets':'classified '+metric),'Data updated','Date basis','Count basis','Ticket Parts Amount (AUD)','Tickets with parts amount','Amount basis']];
     const type=scope;top10(summary,type,month,metric).rows.forEach((r,i)=>rows.push([
-      type==='both'?'Both':type==='Z006'?'In Field':'Pre Delivery',periodLabel(month),i+1,r.code,r.name,r.count,(r.share*100).toFixed(1)+'%',summary.generatedAt,'Ticket CreatedOn',metric==='tickets'?'Distinct Tickets per '+dimension+'; categories can overlap':'One Issue per '+dimension,r.partsAmountKnownTickets?r.partsAmountCents/100:'',r.partsAmountKnownTickets,'Factory Parts + Repairer Parts; distinct Ticket per category; categories overlap; no labour'
+      type==='both'?'Both':type==='Z006'?'In Field':'Pre Delivery',periodLabel(month),i+1,r.code,r.name,r.count,(r.share*100).toFixed(1)+'%',summary.generatedAt,approved?'Ticket Claim Approved On; approved statuses including approved closed':'Ticket CreatedOn',metric==='tickets'?'Distinct Tickets per '+dimension+'; categories can overlap':'One Issue per '+dimension,r.partsAmountKnownTickets?r.partsAmountCents/100:'',r.partsAmountKnownTickets,'Factory Parts + Repairer Parts; distinct Ticket per category; categories overlap; no labour'
     ]));
     return rows;
   }

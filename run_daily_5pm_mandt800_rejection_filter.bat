@@ -77,5 +77,18 @@ if "%ERR%"=="0" (
   if errorlevel 1 set "ERR=1"
 )
 
+rem BEGIN OZZ PDV DASHBOARD
+rem Run only after the existing warranty refresh and publication checks succeed.
+if "%ERR%"=="0" (
+  echo Refreshing standalone Pre Delivery dashboard...>> "%LOG_FILE%"
+  if "%PYTHON_CMD%"=="py -3" (
+    py -3 "%~dp0..\ozz-dashboard\refresh.py" --warranty-root "%~dp0." >> "%LOG_FILE%" 2>&1
+  ) else (
+    "%PYTHON_CMD%" "%~dp0..\ozz-dashboard\refresh.py" --warranty-root "%~dp0." >> "%LOG_FILE%" 2>&1
+  )
+  if errorlevel 1 set "ERR=1"
+)
+rem END OZZ PDV DASHBOARD
+
 echo CTM V44 daily 5:00 PM run finished at %date% %time% with code %ERR%>> "%LOG_FILE%"
 exit /b %ERR%

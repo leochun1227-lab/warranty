@@ -144,7 +144,7 @@ def ticket_id(value):
     return value.lstrip('0') or '0' if value.isdigit() else value
 
 
-def load_master(path, require_fresh=False):
+def load_master(path, require_fresh=False, require_approval=False):
     path = Path(path)
     if not path.is_file():
         raise IssueAIError('Old-interface master CSV is missing; run the existing daily fetch first')
@@ -155,11 +155,15 @@ def load_master(path, require_fresh=False):
         reader = csv.DictReader(handle)
         if not {'C4C Ticket ID','Created On','Ticket Type'} <= set(reader.fieldnames or []):
             raise IssueAIError('Master CSV does not contain the expected old-interface fields')
+        if require_approval and not {'Status','Claim Approved On'} <= set(reader.fieldnames or []):
+            raise IssueAIError('Master CSV has no approval status/date fields; previous report preserved')
         for row in reader:
             key = ticket_id(row['C4C Ticket ID'])
             if not key:
                 continue
-            entry = {'createdOn': row['Created On'].strip(), 'typeText': row['Ticket Type'].strip()}
+            entry = {'createdOn': row['Created On'].strip(), 'typeText': row['Ticket Type'].strip(),
+                     'approvedOn': row.get('Claim Approved On', '').strip(),
+                     'statusText': row.get('Status', '').strip(), 'statusCode': row.get('TicketStatus', '').strip()}
             if key in result and result[key] != entry:
                 raise IssueAIError('Conflicting dates/types for a master Ticket ID')
             result[key] = entry
@@ -585,22 +589,22 @@ def summarize(results):
     ticket_periods={}
     for row in results.values():
         statuses[row['status']]+=1
-        cov_key='|'.join([row['ticketType'],row['createdOn'][:7] or 'unknown'])
-        # A Ticket has one type and one parent creation month. This makes monthly
+        cov_key='|'.join([row['ticketType'],row.get('reportOn',row['createdOn'])[:7] or 'unknown'])
+        # A Ticket has one type and one parent reporting month. This makes monthly
         # distinct counts additive across periods, never across categories.
         if ticket_periods.setdefault(row['ticketId'],cov_key)!=cov_key:
-            raise ValueError('Conflicting Ticket type or creation month')
+            raise ValueError('Conflicting Ticket type or reporting month')
         coverage_tickets[cov_key]['all'].add(row['ticketId'])
-        cov=coverage.setdefault(cov_key,{'ticketType':row['ticketType'],'month':row['createdOn'][:7] or 'unknown','issueCount':0,'classifiedCount':0,'statusCounts':{}})
+        cov=coverage.setdefault(cov_key,{'ticketType':row['ticketType'],'month':row.get('reportOn',row['createdOn'])[:7] or 'unknown','issueCount':0,'classifiedCount':0,'statusCounts':{}})
         cov['issueCount']+=1;cov['statusCounts'][row['status']]=cov['statusCounts'].get(row['status'],0)+1
         if row['status'] not in {'source','classified'} or row['needsReview'] or not row['categoryCode']:
             coverage_tickets[cov_key]['pending'].add(row['ticketId'])
             continue
         coverage_tickets[cov_key]['classified'].add(row['ticketId'])
         cov['classifiedCount']+=1
-        key='|'.join([row['ticketType'],row['createdOn'][:7] or 'unknown',row['categoryCode']])
+        key='|'.join([row['ticketType'],row.get('reportOn',row['createdOn'])[:7] or 'unknown',row['categoryCode']])
         if key not in groups:
-            groups[key]={'ticketType':row['ticketType'],'month':row['createdOn'][:7] or 'unknown',
+            groups[key]={'ticketType':row['ticketType'],'month':row.get('reportOn',row['createdOn'])[:7] or 'unknown',
                 'subcategoryCode':row['categoryCode'],'subcategoryName':row['categoryName'],'issueCount':0,
                 'sourceIssueCount':0,'aiIssueCount':0,'otherFallbackCount':0}
         groups[key]['issueCount']+=1

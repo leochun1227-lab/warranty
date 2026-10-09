@@ -6,9 +6,24 @@ const {chromium}=require(path.resolve('node_modules/.pnpm',pkg,'node_modules/pla
 const allowed=new Set(['parts.html','parts-subcategories.css','sidebar-light.css','issue-subcategory-data.js','parts-subcategories.js','browser-page-cache.js','parts-export.js']);
 const server=http.createServer((req,res)=>{const name=new URL(req.url,'http://localhost').pathname.slice(1);if(!allowed.has(name)){res.writeHead(404);return res.end();}res.setHeader('Content-Type',name.endsWith('.html')?'text/html':name.endsWith('.js')?'application/javascript':'text/css');res.end(fs.readFileSync(name));});await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const browser=await chromium.launch({channel:'msedge',headless:true});
-const fixture={categoryDimension:'issue_position',otherCategoryCode:'Z009',excludedRankingCodes:['Z009','Z012','9997'],schema:'issue-startup-v2',sourceRoot:'c4cTickets_test',generatedAt:'2026-10-09T02:00:00Z',sourceVersion:'2026-10-09T02:00:00Z',issueCount:60,acceptedIssueCount:58,ticketCount:40,acceptedTicketCount:39,exportVersion:'1'.repeat(32),
- partsAmounts:[[12345,8],[2000,2],[98765,4],[2500,25]],categories:[['Z001','External Fixtures'],['Z003','Electrical System'],['Z009','Other']],months:['2026-09','2026-10','2025-09'],rows:[[0,0,1,10,8,7,3,0],[0,1,2,3,2,0,0,3],[1,1,0,5,4,2,3,0],[0,2,1,40,25,40,0,0]],coverage:[[0,0,12,10,9,8,2],[0,1,3,3,2,2,0],[1,1,5,5,4,4,0],[0,2,40,40,25,25,0]],automation:{status:'partial'}};
-function exportsFor(s){const shards={},entries=[];for(const [ri,r] of s.rows.entries()){const type=['Z006','Z005'][r[0]],month=s.months[r[1]],category=s.categories[r[2]][0],group=type+'_'+category,key=month+'_0';const tickets=Array.from({length:r[4]},(_,i)=>['T'+group+'_'+month+'_'+i,month+'-01','Open','Dealer','Repairer','00001','CHASSIS','Van','Model',((Math.floor(s.partsAmounts[ri][0]/r[4])+(i===r[4]-1?s.partsAmounts[ri][0]%r[4]:0))/100).toFixed(2)]);const issues=Array.from({length:r[3]},(_,i)=>[i%r[4],'00'+i,'Z003','Position',i===0?'=HYPERLINK("bad")':'Issue description '+i,'Z003','Lighting','R1','Reason','ai']);const raw=Buffer.from(JSON.stringify({schema:'failure-export-shard-v2',type,month,category,tickets,issues}));(shards[group]??={})[key]=gzipSync(raw).toString('base64');entries.push([type,month,category,group+'/'+key,issues.length,createHash('sha256').update(raw).digest('hex'),raw.length]);}return {manifest:JSON.stringify({schema:'failure-export-v1',version:s.exportVersion,shards:entries}),shards};}
+const fixture={claimSourceVersion:JSON.stringify(['2026-10-07T07:00:00Z','2026-10-07T06:00:00Z','2026-10-07T06:30:00Z']),ticketDataAsOf:'2026-10-07T06:00:00Z',reportingBasis:'approved_on',ticketScope:'approved_only',allReportTickets:true,reportTicketCount:39,reportCoverage:[[0,0,8],[0,1,2],[1,1,4],[0,2,25]],categoryDimension:'issue_position',otherCategoryCode:'Z009',excludedRankingCodes:['Z009','Z012','9997'],schema:'issue-startup-v2',sourceRoot:'c4cTickets_test',generatedAt:'2026-10-09T02:00:00Z',sourceVersion:'2026-10-09T02:00:00Z',issueCount:58,acceptedIssueCount:58,ticketCount:39,acceptedTicketCount:39,exportVersion:'1'.repeat(32),
+ partsAmounts:[[12345,8],[2000,2],[98765,4],[2500,25]],categories:[['Z001','External Fixtures'],['Z003','Electrical System'],['Z009','Other']],months:['2026-09','2026-10','2025-09'],rows:[[0,0,1,10,8,7,3,0],[0,1,2,3,2,0,0,3],[1,1,0,5,4,2,3,0],[0,2,1,40,25,40,0,0]],coverage:[[0,0,10,10,8,8,0],[0,1,3,3,2,2,0],[1,1,5,5,4,4,0],[0,2,40,40,25,25,0]],automation:{status:'partial'}};
+function exportsFor(s){
+ const shards={},entries=[],ticketShards=[];
+ for(const [ri,r] of s.rows.entries()){
+  const type=['Z006','Z005'][r[0]],month=s.months[r[1]],category=s.categories[r[2]][0],group=type+'_'+category,key=month+'_0';
+  // Deliberately create in a different year: membership must use approval dates.
+  const tickets=Array.from({length:r[4]},(_,i)=>['T'+group+'_'+month+'_'+i,'2024-12-20','Repair in Progress','Dealer','Repairer','00001','CHASSIS','Van','Model',((Math.floor(s.partsAmounts[ri][0]/r[4])+(i===r[4]-1?s.partsAmounts[ri][0]%r[4]:0))/100).toFixed(2),month+'-01']);
+  const issues=Array.from({length:r[3]},(_,i)=>[i%r[4],'00'+i,'Z003','Position',i===0?'=HYPERLINK("bad")':'Issue description '+i,'Z003','Lighting','R1','Reason','issue_position']);
+  const raw=Buffer.from(JSON.stringify({schema:'failure-export-shard-v3',type,month,category,tickets,issues}));
+  (shards[group]??={})[key]=gzipSync(raw).toString('base64');entries.push([type,month,category,group+'/'+key,issues.length,createHash('sha256').update(raw).digest('hex'),raw.length]);
+  const all=tickets.map((t,i)=>[...t.slice(0,10),[category],[s.categories[r[2]][1]],issues.filter(v=>v[0]===i).length,t[10]]),tk=group+'_'+key;
+  // One category per type/month in this fixture.
+  const tkey=type+'_'+month+'_0',traw=Buffer.from(JSON.stringify({schema:'failure-all-tickets-v2',type,month,tickets:all}));
+  (shards.tickets??={})[tkey]=gzipSync(traw).toString('base64');ticketShards.push([type,month,'tickets/'+tkey,all.length,createHash('sha256').update(traw).digest('hex'),traw.length]);
+ }
+ return {manifest:JSON.stringify({schema:'failure-export-v1',version:s.exportVersion,claimSourceVersion:s.claimSourceVersion,reportingBasis:'approved_on',ticketScope:'approved_only',allReportTickets:true,shards:entries,ticketShards}),shards};
+}
 const versions=new Map([[fixture.exportVersion,exportsFor(fixture)]]);let published=structuredClone(fixture),delay=1500,offline=false,malformed=false,corruptExport=false;
 try{
  const context=await browser.newContext({viewport:{width:1440,height:1050},acceptDownloads:true}),page=await context.newPage(),errors=[],urls=[];
@@ -40,7 +55,7 @@ try{
  await page.locator('[data-metric="issues"]').click();const other=await exported();assert.match(other.name,/-issues\.xlsx$/);assert.match(other.text,/>Issue count</);
  await page.locator('[data-scope="both"]').click();await page.selectOption('#month','2026');const both=await exported();assert.match(both.text,/TZ006_Z003_2026-09_0/);assert.match(both.text,/<sheet name="Monthly"/);
  // A shared category must produce one combined ranking and retain details from both types.
- const shared={...structuredClone(fixture),issueCount:5,acceptedIssueCount:5,ticketCount:3,acceptedTicketCount:3,partsAmounts:[[300,2],[200,1]],rows:[[0,0,1,3,2,3,0,0],[1,0,1,2,1,2,0,0]],coverage:[[0,0,3,3,2,2,0],[1,0,2,2,1,1,0]]};
+ const shared={...structuredClone(fixture),reportTicketCount:3,reportCoverage:[[0,0,2],[1,0,1]],issueCount:5,acceptedIssueCount:5,ticketCount:3,acceptedTicketCount:3,partsAmounts:[[300,2],[200,1]],rows:[[0,0,1,3,2,3,0,0],[1,0,1,2,1,2,0,0]],coverage:[[0,0,3,3,2,2,0],[1,0,2,2,1,1,0]]};
  const sharedFiles=exportsFor(shared);
  const sharedBytes=await page.evaluate(async({shared,files})=>{
   const api=IssueSubcategoryData,summary=api.decodeStartup(shared).summary;
@@ -50,26 +65,27 @@ try{
  const sharedText=unzipText(Buffer.from(sharedBytes));
  assert.match(sharedText,/TZ006_Z003_2026-09_0/);assert.match(sharedText,/TZ005_Z003_2026-09_0/);
  const sharedSheets=sharedText.split('<worksheet ');assert.equal((sharedSheets[1].match(/<row /g)||[]).length,2);assert.equal((sharedSheets[2].match(/<row /g)||[]).length,11);assert.equal((sharedSheets[3].match(/<row /g)||[]).length,4);assert.equal((sharedSheets[4].match(/<row /g)||[]).length,6);
- // All Created On export includes a no-Issue Ticket as Other, with no synthetic Issue.
- const complete={...shared,allCreatedTickets:true,createdTicketCount:4,createdCoverage:[[0,0,3],[1,0,1]]};
- const completeFiles=exportsFor(complete),fullManifest=JSON.parse(completeFiles.manifest);fullManifest.allCreatedTickets=true;fullManifest.ticketShards=[];
+ // Approved export includes a no-Issue Ticket as Other, with no synthetic Issue.
+ const complete={...shared,reportTicketCount:4,reportCoverage:[[0,0,3],[1,0,1]]};
+ const completeFiles=exportsFor(complete),fullManifest=JSON.parse(completeFiles.manifest);fullManifest.allReportTickets=true;fullManifest.ticketShards=[];
  const allByType=new Map();
- for(const e of fullManifest.shards){const [group,key]=e[3].split('/'),data=JSON.parse(gunzipSync(Buffer.from(completeFiles.shards[group][key],'base64')));allByType.set(e[0],data.tickets.map((r,i)=>[...r,[e[2]],['Electrical System'],data.issues.filter(v=>v[0]===i).length]));}
- allByType.get('Z006').push(['NO-ISSUE','2026-09-02','Open','Dealer','Repairer','','','','','0.00',['Z009'],['Other'],0]);
- for(const [type,tickets] of allByType){const key=type+'_2026-09_0',raw=Buffer.from(JSON.stringify({schema:'failure-all-tickets-v1',type,month:'2026-09',tickets}));(completeFiles.shards.tickets??={})[key]=gzipSync(raw).toString('base64');fullManifest.ticketShards.push([type,'2026-09','tickets/'+key,tickets.length,createHash('sha256').update(raw).digest('hex'),raw.length]);}
+ for(const e of fullManifest.shards){const [group,key]=e[3].split('/'),data=JSON.parse(gunzipSync(Buffer.from(completeFiles.shards[group][key],'base64')));allByType.set(e[0],data.tickets.map((r,i)=>[...r.slice(0,10),[e[2]],['Electrical System'],data.issues.filter(v=>v[0]===i).length,r[10]]));}
+ allByType.get('Z006').push(['NO-ISSUE','2024-12-20','Repair in Progress','Dealer','Repairer','','','','','0.00',['Z009'],['Other'],0,'2026-09-02']);
+ for(const [type,tickets] of allByType){const key=type+'_2026-09_0',raw=Buffer.from(JSON.stringify({schema:'failure-all-tickets-v2',type,month:'2026-09',tickets}));(completeFiles.shards.tickets??={})[key]=gzipSync(raw).toString('base64');fullManifest.ticketShards.push([type,'2026-09','tickets/'+key,tickets.length,createHash('sha256').update(raw).digest('hex'),raw.length]);}
  completeFiles.manifest=JSON.stringify(fullManifest);
  const fullBytes=await page.evaluate(async({fixture,files})=>{const api=IssueSubcategoryData,summary=api.decodeStartup(fixture).summary;const blob=await FailurePartsExport.build({summary,scope:'both',month:'2026',metric:'tickets',year:'2026',api,onProgress:()=>{},read:async path=>{let value=files;for(const key of path.split('/').slice(2))value=value[key];return value;}});return Array.from(new Uint8Array(await blob.arrayBuffer()));},{fixture:complete,files:completeFiles});
+ assert.match(unzipText(Buffer.from(fullBytes)),/Ticket Approved On/);
  const fullText=unzipText(Buffer.from(fullBytes)),fullSheets=fullText.split('<worksheet ');
- assert.match(fullText,/Created On Tickets/);assert.match(fullText,/NO-ISSUE/);assert.match(fullSheets[3],/Other/);
+ assert.match(fullText,/Approved Tickets/);assert.match(fullText,/NO-ISSUE/);assert.match(fullSheets[3],/Other/);
  assert.equal((fullSheets[3].match(/<row /g)||[]).length,5);assert.equal((fullSheets[4].match(/<row /g)||[]).length,6);assert.ok(!fullSheets[4].includes('NO-ISSUE'));
  // Immutable export generation remains pinned while the displayed snapshot refreshes.
- published={...structuredClone(fixture),generatedAt:'2026-10-10T02:00:00Z',sourceVersion:'2026-10-10T02:00:00Z',issueCount:62,acceptedIssueCount:60,exportVersion:'2'.repeat(32)};published.rows[2]=[1,1,0,7,4,4,3,0];published.coverage[2]=[1,1,7,7,4,4,0];versions.set(published.exportVersion,exportsFor(published));
+ published={...structuredClone(fixture),generatedAt:'2026-10-10T02:00:00Z',sourceVersion:'2026-10-10T02:00:00Z',issueCount:60,acceptedIssueCount:60,exportVersion:'2'.repeat(32)};published.rows[2]=[1,1,0,7,4,4,3,0];published.coverage[2]=[1,1,7,7,4,4,0];versions.set(published.exportVersion,exportsFor(published));
  delay=700;await page.locator('#reload').click();const during=await exported();assert.match(during.text,/2026-10-09T02:00:00Z/);await settled();delay=0;assert.equal(await page.locator('[data-category="Z001"] .card-count').textContent(),'7');const after=await exported();assert.match(after.text,/2026-10-10T02:00:00Z/);
  // Damaged detail data never produces a misleading workbook or poisons the cache.
  published={...structuredClone(published),generatedAt:'2026-10-11T02:00:00Z',sourceVersion:'2026-10-11T02:00:00Z',exportVersion:'3'.repeat(32)};versions.set(published.exportVersion,exportsFor(published));await page.locator('#reload').click();await settled();
  corruptExport=true;let badDownloads=0;const recordDownload=()=>badDownloads++;page.on('download',recordDownload);await page.locator('#export').click();await page.waitForFunction(()=>document.getElementById('export-status').textContent.startsWith('Export failed:'));assert.equal(badDownloads,0);page.off('download',recordDownload);corruptExport=false;const repaired=await exported();assert.match(repaired.text,/2026-10-11T02:00:00Z/);
  malformed=true;published.sourceVersion=published.generatedAt='2026-10-12T02:00:00Z';await page.locator('#reload').click();await settled();assert.equal(await page.locator('#run-status').textContent(),'Saved data');
- offline=true;await page.reload({waitUntil:'domcontentloaded'});await ready();await settled();assert.match(await page.locator('#view-total').textContent(),/Both · 14 tickets/);assert.equal(await page.locator('#run-status').textContent(),'Saved data');const cached=await exported();assert.match(cached.text,/TZ006_Z003_2026-09_0/);assert.ok(!cached.text.includes('Z009'));assert.ok(!cached.text.includes('Other'));
+ offline=true;await page.reload({waitUntil:'domcontentloaded'});await ready();await settled();assert.match(await page.locator('#view-total').textContent(),/Both · 14 tickets/);assert.equal(await page.locator('#run-status').textContent(),'Saved data');const cached=await exported();assert.match(cached.text,/TZ006_Z003_2026-09_0/);assert.ok(cached.text.includes('Z009'));assert.ok(cached.text.includes('Other'));
  await page.setViewportSize({width:390,height:844});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.equal(await page.locator('#sidebar-links').isVisible(),false);await page.locator('#navigation-toggle').click();assert.equal(await page.locator('a[href="parts.html"]').isVisible(),true);
  assert.deepEqual(errors,[]);assert.ok(!urls.some(u=>/\/(results|tickets|summary)\.json/.test(u)));console.log(JSON.stringify({coldMs:cold,warmMs:warm,checks:'category card charts, combined Both ranking, month/type/metric controls; no Data info; lazy detailed workbook; generation pinned; offline cached export; no raw startup requests'}));
 }finally{await browser.close();await new Promise(r=>server.close(r));}

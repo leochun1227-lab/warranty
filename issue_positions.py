@@ -41,5 +41,6 @@ def classify_positions(tickets,master):
                 'categoryCode':code,'categoryName':names.get(code,code),'status':'source','needsReview':False,'method':'issue_position',
                 'dateSource':'old_interface_master_csv','classificationBasis':'IssuesPosition','missingPosition':not bool(position)}
     return results,{'categoryDimension':'issue_position','otherCategoryCode':'Z009','excludedRankingCodes':sorted(excluded),
-                    'ruleVersion':'issue-position-v1','decisionVersion':'direct-source-no-ai','configuredModel':'none',
+                    'reportingBasis':'approved_on','ticketScope':'approved_only',
+                    'ruleVersion':'issue-position-approved-v2','decisionVersion':'direct-source-no-ai','configuredModel':'none',
                     'modelRun':{'modelCalls':0,'usage':{}},'runStatus':'success','missingPositionIssues':sum(r['missingPosition'] for r in results.values())}

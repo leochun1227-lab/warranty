@@ -115,3 +115,13 @@ const positioned=api.decodeStartup(positionSnapshot).summary;
 for(const metric of ['tickets','issues'])assert.deepEqual(api.top10(positioned,'both','2026',metric).rows.map(r=>r.code),['Z003']);
 assert.equal(api.top10(positioned,'both','2026','issues').total,8);
 assert.equal(api.exportRows(positioned,'both','2026')[0][4],'Issue Position');
+
+const approvedSnapshot={...positionSnapshot,reportingBasis:'approved_on',ticketScope:'approved_only',allReportTickets:true,reportTicketCount:5,reportCoverage:[[0,0,5]]};
+const approved=api.decodeStartup(approvedSnapshot).summary;
+assert.equal(api.top10(approved,'both','2026').total,5);
+assert.equal(api.top10(approved,'both','2026').rows[0].share,0.2);
+assert.equal(api.top10(approved,'both','2026','issues').total,8);
+assert.equal(api.exportRows(approved,'both','2026')[0][1],'Ticket approval period');
+assert.match(api.exportRows(approved,'both','2026')[1][8],/Claim Approved On/);
+assert.throws(()=>api.decodeStartup({...approvedSnapshot,ticketScope:'all'}));
+assert.throws(()=>api.decodeStartup({...approvedSnapshot,reportTicketCount:3,reportCoverage:[[0,0,3]]}));

@@ -40,17 +40,19 @@ async function unpack(value,entry,allTickets=false){
  if(length!==entry[6]||hash!==entry[5])throw Error('Export detail failed integrity validation');
  const data=JSON.parse(new TextDecoder().decode(raw));
  if(allTickets){
-  if(data.schema!=='failure-all-tickets-v1'||data.type!==entry[0]||data.month!==entry[1]||!Array.isArray(data.tickets)||data.tickets.length!==entry[4])throw Error('Invalid Created On Ticket shard');
+  if(!['failure-all-tickets-v1','failure-all-tickets-v2'].includes(data.schema)||data.type!==entry[0]||data.month!==entry[1]||!Array.isArray(data.tickets)||data.tickets.length!==entry[4])throw Error('Invalid reporting Ticket shard');
   for(const r of data.tickets){
-   if(!Array.isArray(r)||r.length!==13||r.slice(0,10).some(v=>typeof v!=='string')||!Array.isArray(r[10])||!r[10].length||!Array.isArray(r[11])||r[10].length!==r[11].length||r[10].some(v=>!/^(?:Z\d{3}|9997)$/.test(v))||r[11].some(v=>typeof v!=='string')||!Number.isSafeInteger(r[12])||r[12]<0)throw Error('Invalid Created On Ticket row');
+   if(!Array.isArray(r)||r.length!==(data.schema==='failure-all-tickets-v2'?14:13)||r.slice(0,10).some(v=>typeof v!=='string')||!Array.isArray(r[10])||!r[10].length||!Array.isArray(r[11])||r[10].length!==r[11].length||r[10].some(v=>!/^(?:Z\d{3}|9997)$/.test(v))||r[11].some(v=>typeof v!=='string')||!Number.isSafeInteger(r[12])||r[12]<0)throw Error('Invalid reporting Ticket row');
+   if(data.schema==='failure-all-tickets-v2'&&(typeof r[13]!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(r[13])))throw Error('Invalid Ticket approval date');
    if(r[9]!==''&&(!/^-?\d+\.\d{2}$/.test(r[9])||!Number.isSafeInteger(Math.round(Number(r[9])*100))))throw Error('Invalid parts amount');
   }
   return data;
  }
- if(!['failure-export-shard-v1','failure-export-shard-v2'].includes(data.schema)||data.type!==entry[0]||data.month!==entry[1]||data.category!==entry[2]||!Array.isArray(data.tickets)||!Array.isArray(data.issues)||data.issues.length!==entry[4])throw Error('Export detail does not match this view');
- if(data.tickets.some(r=>!Array.isArray(r)||r.length!==(data.schema==='failure-export-shard-v2'?10:9)||r.some(v=>typeof v!=='string'))||data.issues.some(r=>!Array.isArray(r)||r.length!==10||!Number.isInteger(r[0])||!data.tickets[r[0]]||r.slice(1).some(v=>typeof v!=='string')))throw Error('Invalid export rows');
+ if(!['failure-export-shard-v1','failure-export-shard-v2','failure-export-shard-v3'].includes(data.schema)||data.type!==entry[0]||data.month!==entry[1]||data.category!==entry[2]||!Array.isArray(data.tickets)||!Array.isArray(data.issues)||data.issues.length!==entry[4])throw Error('Export detail does not match this view');
+ if(data.tickets.some(r=>!Array.isArray(r)||r.length!==(data.schema==='failure-export-shard-v3'?11:data.schema==='failure-export-shard-v2'?10:9)||r.some(v=>typeof v!=='string'))||data.issues.some(r=>!Array.isArray(r)||r.length!==10||!Number.isInteger(r[0])||!data.tickets[r[0]]||r.slice(1).some(v=>typeof v!=='string')))throw Error('Invalid export rows');
  if(data.schema==='failure-export-shard-v1')data.tickets.forEach(r=>r.push(''));
  if(data.tickets.some(r=>r[9]!==''&&(!/^-?\d+\.\d{2}$/.test(r[9])||!Number.isSafeInteger(Math.round(Number(r[9])*100)))))throw Error('Invalid Ticket parts amount');
+ if(data.schema==='failure-export-shard-v3'&&data.tickets.some(r=>!/^\d{4}-\d{2}-\d{2}$/.test(r[10])))throw Error('Invalid Ticket approval date');
  return data;
 }
 async function build({summary,scope,month,metric,year,api,read,cache,onProgress}){
@@ -59,11 +61,13 @@ async function build({summary,scope,month,metric,year,api,read,cache,onProgress}
  const load=async(path)=>{const key='failure-export:'+version+':'+path;let cached;try{cached=await cache?.getPageRecord(key);}catch{}if(cached?.value)return cached.value;const value=await read('exports/'+version+'/'+path);if(value==null)throw Error('Export details unavailable for this snapshot');pendingCache.push([key,value]);return value;};
  const manifest=JSON.parse(await load('manifest'));
  if(manifest.schema!=='failure-export-v1'||manifest.version!==version||!Array.isArray(manifest.shards))throw Error('Invalid export manifest');
+ if(summary.claimSourceVersion&&manifest.claimSourceVersion!==summary.claimSourceVersion)throw Error('Claim Trend and Top10 detail versions do not match');
  const types=['Z006','Z005'].filter(t=>scope==='both'||scope===t),label=t=>t==='Z006'?'In Field':'Pre Delivery';const ranks=new Map();
  const dimension=summary.categoryDimension==='issue_position'?'Issue Position':'Subcategory';
  const displayed=api.top10(summary,scope,month,metric).rows;
- const complete=summary.allCreatedTickets===true;
- if(complete&&manifest.allCreatedTickets!==true)throw Error('All Created On Ticket details are missing');
+ const approved=summary.reportingBasis==='approved_on',complete=summary.allReportTickets===true||summary.allCreatedTickets===true;
+ if(approved&&(manifest.reportingBasis!=='approved_on'||manifest.ticketScope!=='approved_only'||manifest.allReportTickets!==true))throw Error('Approved Ticket export scope mismatch');
+ if(complete&&!approved&&manifest.allCreatedTickets!==true)throw Error('All Created On Ticket details are missing');
  const categories=complete?[...new Map(summary.groups.filter(g=>types.includes(g.ticketType)&&api.matchesPeriod(g.month,month)).map(g=>[g.subcategoryCode,{code:g.subcategoryCode,name:g.subcategoryName}])).values()]:displayed;
  for(const t of types)categories.forEach(r=>{const i=displayed.findIndex(d=>d.code===r.code);
   const groups=summary.groups.filter(g=>g.ticketType===t&&g.subcategoryCode===r.code&&api.matchesPeriod(g.month,month));
@@ -78,9 +82,9 @@ async function build({summary,scope,month,metric,year,api,read,cache,onProgress}
  const readShard=async e=>{if(complete&&manifest.periodGroups){const key=e[0]+'_'+e[1];if(!groupLoads.has(key))groupLoads.set(key,load('periods/'+key));const group=await groupLoads.get(key);const value=group?.[e[3].replace('/','_')];if(typeof value!=='string')throw Error('Export month details unavailable');return value;}if(month!=='all')return load('shards/'+e[3]);const [group,key]=e[3].split('/');if(!groupLoads.has(group))groupLoads.set(group,load('shards/'+group));const value=await groupLoads.get(group);if(!value||typeof value!=='object'||typeof value[key]!=='string')throw Error('Export category details unavailable');return value[key];};
  await Promise.all(Array.from({length:Math.min(6,entries.length)},async()=>{while(next<entries.length){const e=entries[next++];const data=await unpack(await readShard(e),e);const rank=ranks.get(data.type+'|'+data.category);
   for(const row of data.issues){const t=data.tickets[row[0]],id=data.type+'|'+t[0]+'|'+row[1];if(uniqueIssues.has(id))throw Error('Duplicate Issue in export');uniqueIssues.add(id);
-   if((t[1].slice(0,7)||'unknown')!==data.month)throw Error('Ticket date does not match export month');
+   if((t[approved?10:1]?.slice(0,7)||'unknown')!==data.month)throw Error('Ticket date does not match export month');
    const key=data.type+'|'+data.category+'|'+t[0];let bucket=buckets.get(key);if(!bucket){bucket={rank,ticket:t,ids:[],descriptions:[]};buckets.set(key,bucket);}bucket.ids.push(row[1]);bucket.descriptions.push(row[4]);
-   issues.push([label(data.type),rank.rank,rank.name,t[0],t[1],...row.slice(1),rank.code]);
+   issues.push([label(data.type),rank.rank,rank.name,t[0],t[1],...row.slice(1),rank.code,...(approved?[t[10]]:[])]);
   }onProgress(++done,entries.length);
  }}));
  const ticketRows=[...buckets.values()].sort((a,b)=>a.rank.type.localeCompare(b.rank.type)||a.rank.rank-b.rank.rank||a.ticket[0].localeCompare(b.ticket[0]));
@@ -89,33 +93,33 @@ async function build({summary,scope,month,metric,year,api,read,cache,onProgress}
  const allTickets=[],bucketsByTicket=new Map();
  for(const b of ticketRows){const key=b.rank.type+'|'+b.ticket[0];if(!bucketsByTicket.has(key))bucketsByTicket.set(key,[]);bucketsByTicket.get(key).push(b);}
  if(complete){
-  if(!Array.isArray(manifest.ticketShards))throw Error('Missing Created On Ticket manifest');
+  if(!Array.isArray(manifest.ticketShards))throw Error('Missing reporting Ticket manifest');
   const ticketKeys=new Set(),seenTickets=new Set();
   const selected=manifest.ticketShards.filter(e=>{
-   if(!Array.isArray(e)||e.length!==6||!['Z006','Z005'].includes(e[0])||!/^(\d{4}-\d{2}|unknown)$/.test(e[1])||!/^tickets\/Z\d{3}_(?:\d{4}-\d{2}|unknown)_\d+$/.test(e[2])||ticketKeys.has(e[2])||!Number.isSafeInteger(e[3])||e[3]<1||!/^[a-f0-9]{64}$/.test(e[4])||!Number.isSafeInteger(e[5])||e[5]>2*1024*1024)throw Error('Invalid Created On Ticket manifest');ticketKeys.add(e[2]);
+   if(!Array.isArray(e)||e.length!==6||!['Z006','Z005'].includes(e[0])||!/^(\d{4}-\d{2}|unknown)$/.test(e[1])||!/^tickets\/Z\d{3}_(?:\d{4}-\d{2}|unknown)_\d+$/.test(e[2])||ticketKeys.has(e[2])||!Number.isSafeInteger(e[3])||e[3]<1||!/^[a-f0-9]{64}$/.test(e[4])||!Number.isSafeInteger(e[5])||e[5]>2*1024*1024)throw Error('Invalid reporting Ticket manifest');ticketKeys.add(e[2]);
    return types.includes(e[0])&&api.matchesPeriod(e[1],month);
   });
   let cursor=0;
   await Promise.all(Array.from({length:Math.min(6,selected.length)},async()=>{while(cursor<selected.length){const e=selected[cursor++],data=await unpack(await load('shards/'+e[2]),[e[0],e[1],'',e[2],e[3],e[4],e[5]],true);
    for(const r of data.tickets){
-    if(seenTickets.has(r[0])||(r[1].slice(0,7)||'unknown')!==e[1])throw Error('Created On Ticket identity/date mismatch');seenTickets.add(r[0]);
+    if(seenTickets.has(r[0])||(r[approved?13:1]?.slice(0,7)||'unknown')!==e[1])throw Error('Reporting Ticket identity/date mismatch');seenTickets.add(r[0]);
     const matching=bucketsByTicket.get(e[0]+'|'+r[0])||[];
-    if(matching.reduce((n,b)=>n+b.ids.length,0)!==r[12]||matching.some(b=>!r[10].includes(b.rank.code)||JSON.stringify(b.ticket)!==JSON.stringify(r.slice(0,10)))||(r[12]===0&&(r[10].length!==1||r[10][0]!==(summary.otherCategoryCode||'Z072'))))throw Error('Created On Ticket details do not reconcile');
+    if(matching.reduce((n,b)=>n+b.ids.length,0)!==r[12]||matching.some(b=>!r[10].includes(b.rank.code)||JSON.stringify(b.ticket)!==JSON.stringify([...r.slice(0,10),...(approved?[r[13]]:[])]))||(r[12]===0&&(r[10].length!==1||r[10][0]!==(summary.otherCategoryCode||'Z072'))))throw Error('Reporting Ticket details do not reconcile');
     allTickets.push({type:e[0],row:r});
    }
   }}));
-  if(allTickets.length!==api.top10(summary,scope,month,'tickets').total||ticketRows.some(b=>!seenTickets.has(b.ticket[0]))||allTickets.reduce((n,t)=>n+t.row[12],0)!==api.top10(summary,scope,month,'issues').total)throw Error('Export does not match the Created On total');
+  if(allTickets.length!==api.top10(summary,scope,month,'tickets').total||ticketRows.some(b=>!seenTickets.has(b.ticket[0]))||allTickets.reduce((n,t)=>n+t.row[12],0)!==api.top10(summary,scope,month,'issues').total)throw Error('Export does not match the displayed Ticket total');
   allTickets.sort((a,b)=>a.type.localeCompare(b.type)||a.row[0].localeCompare(b.row[0]));
  }
- const months=[['Ticket type','Year',dimension,'Ticket creation month','Count by','Count','Data updated','Ticket Parts Amount (AUD)','Tickets with parts amount']];
+ const months=[['Ticket type','Year',dimension,approved?'Ticket approval month':'Ticket creation month','Count by','Count','Data updated','Ticket Parts Amount (AUD)','Tickets with parts amount']];
  for(const category of displayed)for(const r of api.monthly(summary,scope,year,metric,category.code))months.push([scope==='both'?'Both':label(scope),year,category.name,r.month,metric,r.count,summary.generatedAt,r.partsAmountKnownTickets?r.partsAmountCents/100:'',r.partsAmountKnownTickets]);
  await Promise.all(pendingCache.map(([key,value])=>Promise.resolve(cache?.setPage(key,version,value)).catch(()=>{})));
  return workbook([
   {name:'Top 10',rows:api.exportRows(summary,scope,month,metric)},
   {name:'Monthly',rows:months},
-  {name:'Tickets',rows:complete?[['Ticket type','Ticket ID','Ticket Created On','Status','Dealer','Repairer','Serial ID','Chassis','Registered Product','Product','Ticket Parts Amount (AUD)',dimension+' codes',dimension+' categories','Issue count'],...allTickets.map(({type,row:r})=>[label(type),...r.slice(0,9),r[9]===''?'':Number(r[9]),r[10].join('; '),r[11].join('; '),r[12]])]:[['Ticket type','Rank',dimension,'Ticket ID','Ticket Created On','Status','Dealer','Repairer','Serial ID','Chassis','Registered Product','Product','Ticket Parts Amount (AUD)','Matched Issue count','Issue IDs',dimension+' code'],...ticketRows.map(b=>[label(b.rank.type),b.rank.rank,b.rank.name,...b.ticket.slice(0,9),b.ticket[9]===''?'':Number(b.ticket[9]),b.ids.length,b.ids.join('; '),b.rank.code])]},
-  {name:'Issues',rows:[['Ticket type','Rank',dimension,'Ticket ID','Ticket Created On','Issue ID','Issue position','Issue position text','Issues description','System Subcategory','System Subcategory text','Subcategory reason','Subcategory reason text','Classification source',dimension+' code'],...issues]},
-  ...(complete?[{name:'Summary',rows:[['Ticket type','Ticket creation period','Created On Tickets','Issues','Date basis'],[scope==='both'?'Both':label(scope),api.periodLabel(month),allTickets.length,issues.length,'Ticket CreatedOn; unclassified and no-Issue Tickets included in Other']]}]:[])
+  {name:'Tickets',rows:complete?[['Ticket type','Ticket ID','Ticket Created On','Status','Dealer','Repairer','Serial ID','Chassis','Registered Product','Product','Ticket Parts Amount (AUD)',dimension+' codes',dimension+' categories','Issue count',...(approved?['Ticket Approved On']:[])],...allTickets.map(({type,row:r})=>[label(type),...r.slice(0,9),r[9]===''?'':Number(r[9]),r[10].join('; '),r[11].join('; '),r[12],...(approved?[r[13]]:[])])]:[['Ticket type','Rank',dimension,'Ticket ID','Ticket Created On','Status','Dealer','Repairer','Serial ID','Chassis','Registered Product','Product','Ticket Parts Amount (AUD)','Matched Issue count','Issue IDs',dimension+' code'],...ticketRows.map(b=>[label(b.rank.type),b.rank.rank,b.rank.name,...b.ticket.slice(0,9),b.ticket[9]===''?'':Number(b.ticket[9]),b.ids.length,b.ids.join('; '),b.rank.code])]},
+  {name:'Issues',rows:[['Ticket type','Rank',dimension,'Ticket ID','Ticket Created On','Issue ID','Issue position','Issue position text','Issues description','System Subcategory','System Subcategory text','Subcategory reason','Subcategory reason text','Classification source',dimension+' code',...(approved?['Ticket Approved On']:[])],...issues]},
+  ...(complete?[{name:'Summary',rows:[['Ticket type',approved?'Ticket approval period':'Ticket creation period',approved?'Approved Tickets':'Created On Tickets','Issues','Date basis','Ticket data as of'],[scope==='both'?'Both':label(scope),api.periodLabel(month),allTickets.length,issues.length,approved?'Ticket Claim Approved On; approved statuses including Approved Claims Closed; no-Issue Tickets included in Other':'Ticket CreatedOn; unclassified and no-Issue Tickets included in Other',summary.ticketDataAsOf||'']]}]:[])
  ]);
 }
 root.FailurePartsExport={build,workbook,unpack};

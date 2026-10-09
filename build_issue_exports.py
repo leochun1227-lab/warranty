@@ -26,7 +26,7 @@ def enrich_parts_amounts(results,summary,ticket_details):
     tickets=defaultdict(set)
     for r in results.values():
         if r.get('status') in {'source','classified'} and not r.get('needsReview') and r.get('categoryCode'):
-            tickets[(r['ticketType'],r['createdOn'][:7] or 'unknown',r['categoryCode'])].add(r['ticketId'])
+            tickets[(r['ticketType'],r.get('reportOn',r['createdOn'])[:7] or 'unknown',r['categoryCode'])].add(r['ticketId'])
     for g in summary.get('groups',[]):
         ids=tickets[(g['ticketType'],g['month'],g['subcategoryCode'])]
         if len(ids)!=g['ticketCount']:raise ValueError('Amount Ticket membership mismatch')
@@ -50,15 +50,17 @@ def load_export_tickets(path):
 
 def build_issue_exports(results,summary,ticket_details=None,ticket_universe=None):
     ticket_details=ticket_details or {}
+    approved=summary.get('reportingBasis')=='approved_on'
     groups=defaultdict(list)
     for r in results.values():
         if r.get('status') in {'source','classified'} and not r.get('needsReview') and r.get('categoryCode'):
-            groups[(r['ticketType'],r['createdOn'][:7] or 'unknown',r['categoryCode'])].append(r)
+            groups[(r['ticketType'],r.get('reportOn',r['createdOn'])[:7] or 'unknown',r['categoryCode'])].append(r)
     expected={(g['ticketType'],g['month'],g['subcategoryCode']):(g['issueCount'],g['ticketCount']) for g in summary.get('groups',[])}
     actual={k:(len(v),len({r['ticketId'] for r in v})) for k,v in groups.items()}
     if expected!=actual:raise ValueError('Export details do not match the displayed summary')
     def encode(value):return json.dumps(value,ensure_ascii=False,separators=(',',':')).encode('utf-8')
-    shards={};index=[];content=hashlib.sha256(b'category-shards-v3-parts-amount')
+    shards={};index=[];content=hashlib.sha256(b'approved-position-shards-v4' if approved else b'category-shards-v3-parts-amount')
+    if summary.get('claimSourceVersion'):content.update(summary['claimSourceVersion'].encode())
     for (typ,month,code),records in sorted(groups.items()):
         records.sort(key=lambda r:(r['ticketId'],r['issueId']))
         part=0;buffer=[];weight=0
@@ -72,9 +74,9 @@ def build_issue_exports(results,summary,ticket_details=None,ticket_universe=None
                     lookup[tid]=len(tickets)
                     detail=list(ticket_details.get(tid,['']*8))
                     if len(detail)==7:detail.append('')
-                    tickets.append([tid,r['createdOn'],*detail])
+                    tickets.append([tid,r['createdOn'],*detail]+([r['approvedOn']] if approved else []))
                 issues.append([lookup[tid],r['issueId'],r.get('position',''),r.get('positionText',''),r.get('description',''),r.get('sourceSubcategory',''),r.get('sourceSubcategoryText',''),r.get('sourceSubcategoryReason',''),r.get('sourceSubcategoryReasonText',''),r.get('method','')])
-            value={'schema':'failure-export-shard-v2','type':typ,'month':month,'category':code,'tickets':tickets,'issues':issues}
+            value={'schema':'failure-export-shard-v3' if approved else 'failure-export-shard-v2','type':typ,'month':month,'category':code,'tickets':tickets,'issues':issues}
             raw=encode(value)
             if len(raw)>2*1024*1024:raise ValueError('An Issue export shard is too large')
             packed=base64.b64encode(gzip.compress(raw,mtime=0)).decode('ascii')
@@ -100,18 +102,20 @@ def build_issue_exports(results,summary,ticket_details=None,ticket_universe=None
             detail=list(ticket_details.get(tid,['']*8))
             if len(detail)==7:detail.append('')
             cats=sorted(membership.get(tid) or {(summary.get('otherCategoryCode','Z072'),'Other')})
-            ticket_rows[(r['ticketType'],r['createdOn'][:7] or 'unknown')].append([tid,r['createdOn'],*detail,[c[0] for c in cats],[c[1] for c in cats],issue_counts[tid]])
+            ticket_rows[(r['ticketType'],r.get('reportOn',r['createdOn'])[:7] or 'unknown')].append([tid,r['createdOn'],*detail,[c[0] for c in cats],[c[1] for c in cats],issue_counts[tid]]+([r['approvedOn']] if approved else []))
         for (typ,month),rows in sorted(ticket_rows.items()):
             for start in range(0,len(rows),250):
-                chunk=rows[start:start+250];raw=encode({'schema':'failure-all-tickets-v1','type':typ,'month':month,'tickets':chunk})
+                chunk=rows[start:start+250];raw=encode({'schema':'failure-all-tickets-v2' if approved else 'failure-all-tickets-v1','type':typ,'month':month,'tickets':chunk})
                 if len(raw)>2*1024*1024:raise ValueError('All-Ticket shard exceeds limit')
                 key=f'tickets/{typ}_{month}_{start//250}'
                 shards[key]=base64.b64encode(gzip.compress(raw,mtime=0)).decode('ascii')
                 checksum=hashlib.sha256(raw).hexdigest();content.update(checksum.encode())
                 all_ticket_index.append([typ,month,key,len(chunk),checksum,len(raw)])
     version=content.hexdigest()[:32]
-    manifest={'schema':'failure-export-v1','version':version,'generatedAt':summary['generatedAt'],'ticketColumns':TICKET_COLUMNS,'issueColumns':ISSUE_COLUMNS,'shards':index}
-    if ticket_universe is not None:manifest.update(allCreatedTickets=True,ticketShards=all_ticket_index,periodGroups=True)
+    manifest={'schema':'failure-export-v1','version':version,'generatedAt':summary['generatedAt'],'ticketColumns':TICKET_COLUMNS+(['Ticket Approved On'] if approved else []),'issueColumns':ISSUE_COLUMNS,'shards':index}
+    if ticket_universe is not None:manifest.update({('allReportTickets' if approved else 'allCreatedTickets'):True},ticketShards=all_ticket_index,periodGroups=True)
+    if approved:manifest.update(reportingBasis='approved_on',ticketScope='approved_only')
+    if summary.get('claimSourceVersion'):manifest.update(claimSourceVersion=summary['claimSourceVersion'],ticketDataAsOf=summary['ticketDataAsOf'])
     return {'periods':periods,'version':version,'manifest':json.dumps(manifest,ensure_ascii=False,separators=(',',':')),'shards':shards}
 
 def publish_issue_exports(store,bundle):

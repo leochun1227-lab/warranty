@@ -33,7 +33,7 @@ def build_issue_startup(summary):
         raise ValueError('Subcategory snapshot totals do not reconcile')
     names = {g['subcategoryCode']:g['subcategoryName'] for g in groups}
     categories = sorted(names)
-    months = sorted({g['month'] for g in coverage} | {g['month'] for g in groups} | {g['month'] for g in summary.get('createdCoverage',[])})
+    months = sorted({g['month'] for g in coverage} | {g['month'] for g in groups} | {g['month'] for g in summary.get('reportCoverage',summary.get('createdCoverage',[]))})
     category_index = {code:i for i,code in enumerate(categories)}
     month_index = {month:i for i,month in enumerate(months)}
     snapshot = {
@@ -55,13 +55,20 @@ def build_issue_startup(summary):
     }
     if summary.get('categoryDimension')=='issue_position':
         snapshot.update(categoryDimension='issue_position',otherCategoryCode=summary['otherCategoryCode'],excludedRankingCodes=summary['excludedRankingCodes'])
-    if summary.get('allCreatedTickets'):
-        created=summary['createdCoverage']
-        if any(type(r['ticketCount']) is not int or r['ticketCount']<0 for r in created) or sum(r['ticketCount'] for r in created)!=summary['createdTicketCount']:
-            raise ValueError('Invalid Created On coverage')
-        snapshot['allCreatedTickets']=True
-        snapshot['createdCoverage']=[[TYPES.index(r['ticketType']),month_index[r['month']],r['ticketCount']] for r in created]
-        snapshot['createdTicketCount']=summary['createdTicketCount']
+    for key in ('claimSourceVersion','ticketDataAsOf','claimGeneratedAt','ticketSource'):
+        if key in summary:snapshot[key]=summary[key]
+    approved=summary.get('reportingBasis')=='approved_on'
+    if approved:
+        if summary.get('ticketScope')!='approved_only' or not summary.get('allReportTickets'):raise ValueError('Missing approved Ticket scope')
+        snapshot.update(reportingBasis='approved_on',ticketScope='approved_only')
+    if summary.get('allCreatedTickets') or summary.get('allReportTickets'):
+        prefix='report' if approved else 'created'
+        created=summary[prefix+'Coverage']
+        if any(type(r['ticketCount']) is not int or r['ticketCount']<0 for r in created) or sum(r['ticketCount'] for r in created)!=summary[prefix+'TicketCount']:
+            raise ValueError('Invalid reporting Ticket coverage')
+        snapshot['allReportTickets' if approved else 'allCreatedTickets']=True
+        snapshot[prefix+'Coverage']=[[TYPES.index(r['ticketType']),month_index[r['month']],r['ticketCount']] for r in created]
+        snapshot[prefix+'TicketCount']=summary[prefix+'TicketCount']
     if 'partsAmountBasis' in summary:
         amounts=[[g['partsAmountCents'],g['partsAmountKnownTickets']] for g in groups]
         if any(type(a) is not int or type(n) is not int or n<0 or n>g['ticketCount'] for (a,n),g in zip(amounts,groups)):

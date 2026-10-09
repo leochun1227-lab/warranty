@@ -3,7 +3,7 @@
   const api=window.IssueSubcategoryData;
   const database='https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app/';
   const root='c4cTickets_test';
-  const cache=window.WarrantyPageCache, cacheKey='issue-position-startup:v1:'+root;
+  const cache=window.WarrantyPageCache, cacheKey='issue-position-claim-startup:v3:'+root;
   const dataPath=api.basePath(root);
   const $=id=>document.getElementById(id), number=n=>new Intl.NumberFormat('en-AU').format(n);
   const money=cents=>new Intl.NumberFormat('en-AU',{style:'currency',currency:'AUD'}).format(cents/100);
@@ -30,15 +30,15 @@
     if(!summary)return;hideTooltip();
     const view=api.top10(summary,scope,selectedMonth,metric),target=$('rankings');target.replaceChildren();
     currentPending=view.pending;
-    $('view-total').textContent=`${labels[scope]} · ${number(view.total)} ${metric}${summary.allCreatedTickets&&metric==='tickets'?' created':''} · ${api.periodLabel(selectedMonth)}`;
-    $('view-total').title=metric==='tickets'?summary.allCreatedTickets?'All Tickets by Ticket Created On, including Other and Tickets without Issues':'Distinct classified Tickets; a Ticket can appear in more than one Subcategory':'Classified Issues';
+    $('view-total').textContent=`${labels[scope]} · ${number(view.total)} ${metric}${metric==='tickets'?' approved':' on approved tickets'} · ${api.periodLabel(selectedMonth)}`;
+    $('view-total').title=metric==='tickets'?'Approved Tickets by Ticket Claim Approved On, including approved closed, Other and Tickets without Issues':'Classified Issues';
     $('pending-count').textContent=view.pending?`${number(view.pending)} pending`:'';$('pending-count').hidden=!view.pending;
     if(!view.rows.length)target.append(element('p','empty',view.pending?'Classification is still in progress.':'No classified issues in this period.'));
     view.rows.forEach((row,i)=>{
       const card=element('section','failure-card');card.dataset.category=row.code;
       const head=element('div','card-head'),title=element('h2','',`${i+1}. ${row.name}`);title.title=row.name;head.append(title);card.append(head);
       const stats=element('div','card-stats'),total=element('div');total.append(element('span','stat-label',metric==='tickets'?'Tickets':'Issues'),element('strong','card-count',number(row.count)));
-      const share=element('div');share.append(element('span','stat-label','Share'),element('span','card-share',(row.share*100).toFixed(1)+'%'));share.title=metric==='tickets'?summary.allCreatedTickets?'Share of all Tickets created in this period; categories may overlap':'Share of distinct classified Tickets; categories may overlap':'Share of classified Issues';const amount=element('div','amount-stat');amount.append(element('span','stat-label','Parts (AUD)'),element('span','card-amount',amountText(row,true)));amount.title=(row.partsAmountKnownTickets?money(row.partsAmountCents)+'. ':'')+amountHelp(row);stats.append(total,share,amount);card.append(stats);
+      const share=element('div');share.append(element('span','stat-label','Share'),element('span','card-share',(row.share*100).toFixed(1)+'%'));share.title=metric==='tickets'?'Share of all approved Tickets in this approval period; categories may overlap':'Share of classified Issues';const amount=element('div','amount-stat');amount.append(element('span','stat-label','Parts (AUD)'),element('span','card-amount',amountText(row,true)));amount.title=(row.partsAmountKnownTickets?money(row.partsAmountCents)+'. ':'')+amountHelp(row);stats.append(total,share,amount);card.append(stats);
       const rows=api.monthly(summary,scope,trendYear,metric,row.code),calendar=api.reportingCalendar();
       const last=selectedMonth.length===7?Number(selectedMonth.slice(5)):rows.length;
       const complete=Number(trendYear)===calendar.year?Math.min(last,calendar.month-1):last;
@@ -48,7 +48,7 @@
         const badge=element('span','trend-badge'+(delta>0?' rising':delta<0?' falling':''),delta===null?(recent?'New':'—'):(delta>0?'+':'')+delta.toFixed(1)+'%');
         badge.title=`${rows[complete-3].month}–${rows[complete-1].month}: ${number(recent)} ${metric}; previous 3 months: ${number(prior)}`;head.append(badge);
       }
-      const chart=element('div','card-chart');chart.setAttribute('aria-label',`${row.name}, ${labels[scope]}, monthly ${metric}, ${trendYear}, Ticket creation date`);
+      const chart=element('div','card-chart');chart.setAttribute('aria-label',`${row.name}, ${labels[scope]}, monthly ${metric}, ${trendYear}, Ticket approval date`);
       const max=Math.max(1,...rows.map(r=>r.count)),axis=element('div','chart-axis');axis.append(element('span','',number(max)),element('span','',number(Math.round(max/2))),element('span','','0'));chart.append(axis);
       const grid=element('div','month-bars');grid.style.setProperty('--months',rows.length);
       rows.forEach((r,index)=>{
@@ -72,7 +72,7 @@
   let exportScript;
   function loadExportScript(){
     if(window.FailurePartsExport)return Promise.resolve();
-    if(!exportScript)exportScript=new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='parts-export.js?v=20261009-issue-position';script.onload=resolve;script.onerror=()=>{script.remove();exportScript=null;reject(Error('Export module could not be loaded.'));};document.head.append(script);});
+    if(!exportScript)exportScript=new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='parts-export.js?v=20261009-claim-aligned';script.onload=resolve;script.onerror=()=>{script.remove();exportScript=null;reject(Error('Export module could not be loaded.'));};document.head.append(script);});
     return exportScript;
   }
   async function exportCsv(){
@@ -101,7 +101,7 @@
   const readVersion=()=>smallJson(database+dataPath+'/startup/sourceVersion.json',1024);
   function applySnapshot(value,mode='checking'){
     const decoded=api.decodeStartup(value,root),candidate=decoded.snapshot;
-    if(decoded.summary.categoryDimension!=='issue_position')throw Error('Issue Position snapshot is not available yet.');
+    if(decoded.summary.categoryDimension!=='issue_position'||decoded.summary.reportingBasis!=='approved_on'||!decoded.summary.claimSourceVersion)throw Error('Approved Issue Position snapshot is not available yet.');
     if(snapshot&&(Date.parse(candidate.generatedAt)<Date.parse(snapshot.generatedAt)||(candidate.generatedAt===snapshot.generatedAt&&candidate.exportVersion===snapshot.exportVersion)))return;
     const first=!summary;
     snapshot=candidate;summary=decoded.summary;automation=decoded.automation;
@@ -116,7 +116,7 @@
     });
     if(![...select.options].some(o=>o.value===selectedMonth))selectedMonth=years[0];select.value=selectedMonth;
     trendYear=selectedMonth.slice(0,4);
-    $('updated').textContent='Updated '+new Intl.DateTimeFormat('en-AU',{dateStyle:'medium',timeStyle:'short',timeZone:'Australia/Sydney'}).format(new Date(summary.generatedAt));
+    $('updated').textContent='Ticket data '+new Intl.DateTimeFormat('en-AU',{dateStyle:'medium',timeStyle:'short',timeZone:'Australia/Sydney'}).format(new Date(summary.ticketDataAsOf));
     $('content').hidden=false;$('loading').hidden=true;$('export').disabled=exporting;render();
     showCacheState(mode);
     if(first)requestAnimationFrame(()=>{document.documentElement.dataset.partsReadyMs=performance.now().toFixed(1);});

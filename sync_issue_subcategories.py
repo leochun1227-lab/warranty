@@ -62,7 +62,8 @@ class FirebaseStore:
             raise IssueAIError('Unexpected Firebase classification cache shape')
         return value
 
-    def publish(self, results, summary, previous, ticket_details=None, master=None):
+    def publish(self, results, summary, previous, ticket_details=None, master=None, validate_source=None):
+        if validate_source:validate_source()
         report_results,report,universe=(build_reporting_view(results,summary,master) if master is not None else (results,summary,None))
         if ticket_details is not None:
             enrich_parts_amounts(report_results,report,ticket_details)
@@ -87,6 +88,7 @@ class FirebaseStore:
             self.ref.update(dict(items[start:start+500]))
         # No deletion: absence in offset pagination is not proof that a ticket was deleted.
         # The public summary changes only after every result update has succeeded.
+        if validate_source:validate_source()
         self.ref.update({'summary':summary,'reportSummary':report,'startup':firebase_startup(startup),'automation':{'status':summary['runStatus'],
             'finishedAt':utc_now(),'runId':self.owner,'model':summary['configuredModel'],
             'retrievalComplete':True,'statusCounts':summary['statusCounts'],

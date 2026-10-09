@@ -17,6 +17,7 @@ REQUIRED_FILES = [
     "build_issue_exports.py",
     "build_failure_reporting.py",
     "issue_positions.py",
+    "issue_claim_source.py",
     "sync_issue_positions.py",
     "issue_ai_daily.py",
     "bootstrap_issue_ai.py",
