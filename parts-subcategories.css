@@ -28,6 +28,20 @@ h1{font-size:26px;font-weight:400;color:#64748b;letter-spacing:-.6px;margin:0;wh
 .card-chart{position:relative;padding-left:27px}.chart-axis{position:absolute;left:0;top:-5px;bottom:17px;display:flex;flex-direction:column;justify-content:space-between;font-size:9px;color:#95a0ad}.month-bars{height:140px;display:grid;grid-template-columns:repeat(var(--months),minmax(0,1fr));gap:3px;position:relative;background:linear-gradient(to bottom,#e8edf2 0 1px,transparent 1px calc(50% - 9px),#e8edf2 calc(50% - 9px) calc(50% - 8px),transparent calc(50% - 8px));}
 .month-bar{display:flex;flex-direction:column;min-width:0;align-items:center;border:0;background:transparent;padding:0;position:relative}.month-column{position:relative;width:100%;height:123px;display:flex;align-items:flex-end;justify-content:center;border-bottom:1px solid #dfe4ea}.month-fill{display:block;width:80%;max-width:20px;background:linear-gradient(180deg,#1f9bb3 0%,#8fd2dc 100%);border-radius:3px 3px 0 0}.month-bar:hover .month-fill,.month-bar.selected .month-fill{background:linear-gradient(180deg,#167e99 0%,#6abeca 100%)}.month-label{font-size:9px;color:#94a3b8;margin-top:4px}.month-bar.selected .month-label{color:#277d8d;font-weight:600}.month-value{position:absolute;left:50%;transform:translate(-50%,-3px);background:#fff;border:1px solid #e0e7ed;border-radius:3px;padding:1px 3px;font-size:9px;color:#526478;z-index:1;pointer-events:none}.month-bar:hover .month-value{z-index:2}.chart-caption{display:flex;justify-content:space-between;margin:7px 0 0 27px;color:#8491a3;font-size:10px}
 .failure-grid>.empty{grid-column:1/-1}.data-footer{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-top:14px;min-height:24px;font-size:11px;color:#8491a3}.data-state{display:flex;align-items:center;gap:12px}.run-status{color:#9b743b}.updated{white-space:nowrap}#export-status{color:#64748b}
+@media(min-width:1200px){
+  .main{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;padding-bottom:12px}
+  .page-head{flex-shrink:0}
+  #content{display:flex;flex-direction:column;flex:1}
+  .failure-grid{flex:1;grid-auto-rows:minmax(290px,1fr)}
+  .failure-card{display:flex;flex-direction:column}
+  .card-head,.card-stats,.chart-caption{flex-shrink:0}
+  .card-chart{display:flex;flex:1;min-height:140px}
+  .month-bars{flex:1;height:auto}
+  .month-bar{display:grid;grid-template-rows:minmax(123px,1fr) 17px}
+  .month-column{height:100%}
+  .month-label{align-self:start}
+  .data-footer{flex-shrink:0;margin-top:10px;min-height:13px}
+}
 @media(max-width:1199px){.failure-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.main{padding:18px}.head-actions{margin-left:auto}}
 @media(max-width:900px){.failure-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.main{padding:16px 12px}.mobile-nav-toggle{display:block;font-size:12px;color:#64748b;border:1px solid #dfe4ea;border-radius:4px;background:#fff;padding:6px 10px}h1{font-size:23px}.page-head{gap:12px}.heading-group{justify-content:space-between;gap:8px;width:100%}.date-filter select{min-width:104px;max-width:116px;font-size:12px}.head-actions{width:100%;justify-content:space-between;gap:8px;flex-wrap:wrap}.scope button{padding:6px 8px}.data-footer{flex-wrap:wrap;gap:5px}.updated{font-size:10px}}
