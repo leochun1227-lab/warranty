@@ -17,7 +17,11 @@ def load_position_config(service_account, env_file=None, *, root=None):
         bundle = next((p for p in (root / 'issue_position_bootstrap.json',
                                    root / '.issue-ai/bootstrap.json') if p.is_file()), None)
         if bundle:
-            packaged = unseal(json.loads(bundle.read_text(encoding='utf-8')), service_account)
+            try:
+                packaged = unseal(json.loads(bundle.read_text(encoding='utf-8')), service_account)
+            except IssueAIError as exc:
+                raise IssueAIError('Top10 credential bundle ' + bundle.name + ': ' +
+                                   str(exc).replace('Issue AI', 'Issue Position')) from None
             # Use a complete credential pair, never mix accounts.
             config = {key: packaged.get(key, '') for key in keys}
         else:

@@ -44,6 +44,8 @@ FILES = sorted(set(FILES) | (set(REQUIRED_FILES) - BASE_FILES) | {
     'pdv_dashboard/pdv_scope.py', 'pdv_dashboard/claim_trend_page.py',
     'tests/test_issue_update_package.py', 'build_issue_ai_update.py',
     'tests/test_issue_position_config.py',
+    'install_planning_top10_update.py', 'build_planning_top10_launcher.py',
+    'tests/test_planning_top10_installer.py',
     'dashboard-theme.css', 'dashboard-kpis.css', 'dashboard-overview.css',
     'flow-polish.css', 'model-overview.css', 'model-overview.js',
     'claim-overview.css', 'delivery-overview.css', 'timeline-overview.css',

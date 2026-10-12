@@ -241,7 +241,10 @@ def main() -> int:
         load_position_config(os.getenv('FIREBASE_SA_PATH', str(ROOT / 'firebase-service-account.json')))
         print("PASS Issue Position credentials (direct grouping; no enable flag or AI)")
     except Exception as exc:
-        failures.append("Issue Position configuration check failed (" + type(exc).__name__ + "). Copy issue_position_bootstrap.json from the update package; run sync_issue_positions.py --check-config.")
+        from issue_ai import IssueAIError
+        detail = str(exc) if isinstance(exc, IssueAIError) else type(exc).__name__
+        failures.append("Issue Position configuration check failed: " + detail +
+                        " Run sync_issue_positions.py --check-config for diagnosis.")
 
     for rel_dir in ("logs", "outputs", "generated_exports"):
         ok, err = check_writable_dir(ROOT / rel_dir)
