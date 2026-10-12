@@ -17,6 +17,7 @@ REQUIRED_FILES = [
     "build_issue_exports.py",
     "build_failure_reporting.py",
     "issue_positions.py",
+    "issue_position_config.py",
     "issue_claim_source.py",
     "sync_issue_positions.py",
     "issue_ai_daily.py",
@@ -234,21 +235,13 @@ def main() -> int:
     check_claim_trend_regressions(failures)
     check_repairer_output_consistency(failures, warnings)
 
-    # Optional feature: old installations keep working until planning is configured.
+    # Top10 is a required page; a skipped update must not be reported as success.
     try:
-        from issue_ai import load_config
-        from issue_positions import position_enabled, validate_position_config
-        issue_config = load_config()
-        if position_enabled(issue_config):
-            validate_position_config(issue_config)
-            print("PASS Issue Position C4C configuration (no AI)")
-        else:
-            if (ROOT / '.issue-ai' / 'bootstrap.json').is_file():
-                print("INFO Issue Position encrypted settings will be prepared automatically by the daily task.")
-            else:
-                print("INFO Issue Position is not enabled for this Windows account.")
+        from issue_position_config import load_position_config
+        load_position_config(os.getenv('FIREBASE_SA_PATH', str(ROOT / 'firebase-service-account.json')))
+        print("PASS Issue Position credentials (direct grouping; no enable flag or AI)")
     except Exception as exc:
-        failures.append("Issue Position configuration check failed (" + type(exc).__name__ + "). Run sync_issue_subcategories.py --check-config.")
+        failures.append("Issue Position configuration check failed (" + type(exc).__name__ + "). Copy issue_position_bootstrap.json from the update package; run sync_issue_positions.py --check-config.")
 
     for rel_dir in ("logs", "outputs", "generated_exports"):
         ok, err = check_writable_dir(ROOT / rel_dir)

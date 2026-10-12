@@ -65,7 +65,24 @@ def publication_errors(versions, claim, delivery, model):
     return errors
 
 
-def check_publications(analytics, source):
+def top10_publication_errors(versions, envelope):
+    try:
+        snapshot = json.loads(envelope['data']) if isinstance(envelope.get('data'), str) else envelope
+        if (snapshot.get('schema') != 'issue-startup-v2'
+                or snapshot.get('categoryDimension') != 'issue_position'
+                or snapshot.get('reportingBasis') != 'approved_on'
+                or snapshot.get('sourceVersion') != envelope.get('sourceVersion')
+                or snapshot.get('generatedAt') != envelope.get('generatedAt')
+                or json.loads(snapshot.get('claimSourceVersion', 'null')) !=
+                    [versions['team'], versions['core'], versions['so']]
+                or snapshot.get('ticketDataAsOf') != versions['core']):
+            raise ValueError('stale snapshot')
+    except (AttributeError, KeyError, TypeError, ValueError):
+        return ['Top10 Failure Parts: snapshot missing, invalid or behind Claim Trend; run sync_issue_positions.py --publish']
+    return []
+
+
+def check_publications(analytics, source, top10=None):
     versions = read_versions(analytics, source)
     # Read metadata only, not ticket details or the large legacy model cache.
     def metadata(ref, keys):
@@ -74,11 +91,13 @@ def check_publications(analytics, source):
     delivery = metadata(source.child("deliveryFlowHistory/startup"), ("schema", "sourceVersion"))
     model = metadata(analytics.child("pageAssets/modelSeries/modelMtmSummary"), ("deliverySchema", "generatedAt"))
     errors = publication_errors(versions, claim, delivery, model)
+    if top10 is not None:
+        errors.extend(top10_publication_errors(versions, top10.child('startup').get()))
     print("Source versions: " + json.dumps(versions))
     for error in errors:
         print("FAIL " + error)
     if not errors:
-        print("PASS all three dashboard publications match their source generations")
+        print("PASS all " + ('four' if top10 is not None else 'three') + " dashboard publications match their source generations")
     return errors
 
 
@@ -143,6 +162,7 @@ def main():
     mode.add_argument("--check", action="store_true", help="Read-only publication check (default)")
     mode.add_argument("--dry-run", action="store_true", help="Build and validate without publishing")
     mode.add_argument("--publish", action="store_true", help="Repair the three Firebase page snapshots")
+    parser.add_argument("--include-top10", action="store_true", help="Also require Top10 to match the current Claim Trend source")
     parser.add_argument("--firebase-db-url", default=os.getenv("FIREBASE_DB_URL", DEFAULT_DB_URL))
     parser.add_argument("--firebase-sa-path", default=os.getenv("FIREBASE_SA_PATH", str(ROOT / "firebase-service-account.json")))
     parser.add_argument("--firebase-root", default=os.getenv("FIREBASE_ROOT", "c4cTickets_test"))
@@ -160,8 +180,12 @@ def main():
     try:
         if args.publish or args.dry_run:
             rebuild(analytics, source, publish=args.publish)
+            if args.include_top10:
+                top10 = ReadReference(args.firebase_db_url, f'issueSubcategoryAnalysis/v1/{args.firebase_root}')
+                return 1 if check_publications(analytics, source, top10) else 0
             return 0
-        return 1 if check_publications(analytics, source) else 0
+        top10 = ReadReference(args.firebase_db_url, f'issueSubcategoryAnalysis/v1/{args.firebase_root}') if args.include_top10 else None
+        return 1 if check_publications(analytics, source, top10) else 0
     except subprocess.CalledProcessError as error:
         print("FAIL snapshot builder: " + (error.stderr or str(error)))
         return 1

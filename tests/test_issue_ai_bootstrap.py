@@ -110,8 +110,7 @@ class BootstrapTests(unittest.TestCase):
     def test_daily_auto_bootstrap_then_uses_same_interpreter_and_config(self):
         import sys
         config={**CONFIG,'envPath':str(self.target)}
-        with patch('bootstrap_issue_ai.ensure_private_configuration',return_value='created') as bootstrap, \
-             patch('issue_ai.load_config',return_value=config), \
+        with patch('issue_position_config.load_position_config',return_value=config) as bootstrap, \
              patch('issue_ai_daily.subprocess.run',return_value=Mock(returncode=0)) as runner:
             run_after_daily_fetch('c4cTickets_test','https://example.invalid','existing-sa.json')
         bootstrap.assert_called_once_with('existing-sa.json')
@@ -119,7 +118,7 @@ class BootstrapTests(unittest.TestCase):
         self.assertEqual(args[0],sys.executable)
         self.assertIn('--publish',args)
         self.assertTrue(args[1].endswith('sync_issue_positions.py'))
-        self.assertIn(str(self.target),args)
+        self.assertNotIn('--env-file',args)
         self.assertNotIn(CONFIG['OPENAI_API_KEY'],str(runner.call_args))
 
 

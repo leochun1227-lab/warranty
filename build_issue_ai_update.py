@@ -43,6 +43,7 @@ FILES = sorted(set(FILES) | (set(REQUIRED_FILES) - BASE_FILES) | {
     'run_pdv_dashboard_update.bat', 'pdv_dashboard/refresh.py',
     'pdv_dashboard/pdv_scope.py', 'pdv_dashboard/claim_trend_page.py',
     'tests/test_issue_update_package.py', 'build_issue_ai_update.py',
+    'tests/test_issue_position_config.py',
     'dashboard-theme.css', 'dashboard-kpis.css', 'dashboard-overview.css',
     'flow-polish.css', 'model-overview.css', 'model-overview.js',
     'claim-overview.css', 'delivery-overview.css', 'timeline-overview.css',
@@ -74,19 +75,27 @@ def validate_package_files(names):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--openai-env',help='Legacy option; no OpenAI settings are loaded or packaged')
-    parser.add_argument('--c4c-collection',required=True)
+    credentials=parser.add_mutually_exclusive_group(required=True)
+    credentials.add_argument('--c4c-collection')
+    credentials.add_argument('--reuse-package',help='Reuse verified encrypted C4C credentials from an existing update ZIP')
     parser.add_argument('--firebase-sa',default=str(ROOT/'firebase-service-account.json'))
     parser.add_argument('--output',default=str(ROOT/'outputs/issue_ai_deployment/planning_issue_ai_update.zip'))
     args=parser.parse_args()
     try:
-        username,password=collection_credentials(args.c4c_collection)
+        if args.reuse_package:
+            with zipfile.ZipFile(args.reuse_package) as previous:
+                name='issue_position_bootstrap.json' if 'issue_position_bootstrap.json' in previous.namelist() else '.issue-ai/bootstrap.json'
+                recovered=unseal(json.loads(previous.read(name)),args.firebase_sa)
+            username,password=recovered['C4C_ISSUE_USERNAME'],recovered['C4C_ISSUE_PASSWORD']
+        else:
+            username,password=collection_credentials(args.c4c_collection)
         config={'C4C_ISSUE_USERNAME':username,'C4C_ISSUE_PASSWORD':password,'C4C_ISSUE_POSITION_ENABLED':'1','C4C_ISSUE_AI_ENABLED':'0'}
         envelope=seal(config,args.firebase_sa)
         if unseal(envelope,args.firebase_sa)!=config:
             raise IssueAIError('Encrypted package verification failed')
         validate_package_files(FILES)
         files={f:(ROOT/f).read_bytes() for f in FILES}
-        files['.issue-ai/bootstrap.json']=json.dumps(envelope,indent=2).encode()
+        files['issue_position_bootstrap.json']=json.dumps(envelope,indent=2).encode()
         private=json.loads(Path(args.firebase_sa).read_text(encoding='utf-8-sig'))['private_key']
         forbidden=[password,private]
         for content in files.values():
@@ -105,7 +114,7 @@ def main():
         with zipfile.ZipFile(temporary) as archive:
             if archive.testzip() is not None:
                 raise IssueAIError('Update archive integrity check failed')
-            recovered=unseal(json.loads(archive.read('.issue-ai/bootstrap.json')),args.firebase_sa)
+            recovered=unseal(json.loads(archive.read('issue_position_bootstrap.json')),args.firebase_sa)
             if recovered!=config:
                 raise IssueAIError('Packaged settings could not be verified')
         temporary.replace(output)

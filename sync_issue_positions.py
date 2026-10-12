@@ -2,7 +2,8 @@
 import argparse,json,os,sys
 from pathlib import Path
 from issue_ai import ROOT,C4CReader,fetch_type,load_config,load_master,summarize,IssueAIError,private_dir
-from issue_positions import classify_positions,position_enabled,validate_position_config
+from issue_positions import classify_positions
+from issue_position_config import load_position_config
 from build_issue_exports import load_export_tickets
 from build_issue_startup import save_issue_startup
 from issue_claim_source import load_claim_master
@@ -20,11 +21,9 @@ def main(argv=None):
     args=ap.parse_args(argv);store=None
     try:
         if args.publish and args.sample_file:raise IssueAIError('Offline samples cannot be published as current production data')
-        config=load_config(args.env_file)
-        if not args.sample_file:validate_position_config(config)
+        config=load_position_config(args.firebase_sa_path,args.env_file) if not args.sample_file else {}
         if args.check_config:
             print('[ISSUE POSITION] C4C configuration valid; AI disabled.',flush=True);return 0
-        if args.publish and not position_enabled(config):raise IssueAIError('Issue Position update is not enabled')
         state=Path(args.state_dir or private_dir()/'state');state.mkdir(parents=True,exist_ok=True)
         source_meta={};validate_source=None
         master=load_master(args.master_csv,require_fresh=args.publish,require_approval=args.publish)

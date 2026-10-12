@@ -1,7 +1,10 @@
-Planning 每日更新：Issue Position 分类（2026-10-09）
+Planning 每日更新：Issue Position 分类（2026-10-12 修复版）
 
 更新方式
-将 planning_issue_ai_update.zip 解压覆盖原更新目录，保留原 Firebase service account。继续使用原 run_daily_5pm_mandt800_rejection_filter.bat，不需要另装程序或另建任务。
+将 planning_top10_fix_20261012.zip 完整解压覆盖 C:\Users\planning\Desktop\warranty-main，保留原 Firebase service account。确认根目录有 issue_position_bootstrap.json。不要只复制 Python 或 HTML 文件。
+然后双击原 run_daily_5pm_mandt800_rejection_filter.bat；本次完整更新完成后，Top10 会同步更新。无需手动填密码、修改 settings.env、配置 AI 或新建计划任务。不要和正在运行的每日任务同时执行。
+新版不再读取 Position/AI 启用开关。优先使用当前账号已有 C4C 凭据，缺失时用本机 Firebase 密钥解密更新包内的 issue_position_bootstrap.json；只在内存中读取接口用户名和密码。
+启动检查会验证凭据。凭据缺失、解密失败或 Top10 同步失败均返回失败，不再静默跳过。结尾必须出现 PASS all four dashboard publications match their source generations，包含 Top10 与当前 Claim Trend 同版本校验。
 本包是现有可运行目录的覆盖更新，不是独立安装包。保留原 SAP 抓取脚本和 outputs 中的既有数据；deployment_manifest.json 列出保留文件与更新文件校验值。
 本次已补齐每日快照生成、版本检查、回归检查及已有 PDV 更新入口的依赖。启动时先检查文件与环境；原每日流程发布 Claim Trend 快照后才生成 Top10，最后检查页面快照版本并执行 PDV 更新。任何步骤失败都会返回失败状态，保留日志。
 原 daily hook 文件名 issue_ai_daily.py 为兼容保留，但它实际运行 sync_issue_positions.py。旧 sync_issue_subcategories.py 的命令行入口同样转到 Issue Position 更新。

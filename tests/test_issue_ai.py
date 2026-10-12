@@ -414,10 +414,11 @@ class IssueTests(unittest.TestCase):
         p.write_text(p.read_text()+'1,title,2026-09-11,In Field Warranty Claims\n')
         with self.assertRaises(IssueAIError):load_master(p)
 
-    def test_daily_hook_disabled_does_not_invoke_paid_runner(self):
+    def test_daily_hook_missing_credentials_fails_without_invoking_runner(self):
         from issue_ai_daily import run_after_daily_fetch
-        with patch('issue_ai.load_config',return_value={}),patch('issue_ai_daily.subprocess.run') as run:
-            run_after_daily_fetch('tickets','db','key')
+        with patch('issue_position_config.load_position_config',side_effect=IssueAIError('missing credentials')),patch('issue_ai_daily.subprocess.run') as run:
+            with self.assertRaises(IssueAIError):
+                run_after_daily_fetch('tickets','db','key')
             run.assert_not_called()
 
     def test_firebase_publish_preserves_old_keys_and_only_publishes_summary_last(self):
