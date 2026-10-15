@@ -1,0 +1,400 @@
+{
+  "source": "C:\\Users\\Leo.Li\\AppData\\Local\\Temp\\ZF8C06456D7698BCB54F44D.xlsx",
+  "sheet": " 2026-10-13 17.42.10",
+  "header_row": 10,
+  "last_row": 35373,
+  "data_rows": 35362,
+  "headers": [
+    "Ticket",
+    "",
+    "Ticket ID",
+    "",
+    "Ticket Type",
+    "Agent",
+    "",
+    "Serial ID",
+    "Chassis Number",
+    "Account",
+    "",
+    "ERP Free Order ID",
+    "ERP Purchase Order ID",
+    "ERP Service Order ID",
+    "Created On",
+    "Dealer",
+    "Dealer Name",
+    "Country/Region",
+    "Date of Purchase",
+    "Claim Approved On",
+    "Service Requester Postal Code",
+    "Registered Product",
+    "",
+    "Product",
+    "",
+    "Status",
+    "Service Technician",
+    "",
+    "Additional Identifier",
+    "ClaimTotalAmount",
+    "Factory Parts Claim Total Amount",
+    "LabourHoursTotalAmount",
+    "Repairer Parts& Misc. Claim Total Amount",
+    "Changed On",
+    "Posting Date"
+  ],
+  "ticket_id_column": "D (B duplicates D; C is descriptive title despite Ticket ID header)",
+  "unique_ticket_ids": 35362,
+  "duplicate_id_count": 0,
+  "extra_duplicate_id_rows": 0,
+  "exact_duplicate_rows": 0,
+  "B_D_mismatches": 0,
+  "statuses": {
+    "Approved Claims Closed (Closed)": 6034,
+    "Unapproved Claims Closed (Closed)": 5407,
+    "Repairer Invoiced Processed": 13850,
+    "Van Recalled": 229,
+    "Repair in Progress": 6271,
+    "Repairer Invoiced Received": 2439,
+    "Partially Picked": 196,
+    "Sales Order Approved": 333,
+    "Suspended Claim": 9,
+    "Evidence Requested": 254,
+    "New Claim": 70,
+    "Quote Validation": 72,
+    "Claim Assessment": 125,
+    "Requires Authorization (Under $1,000)": 1,
+    "Supplier/Customer Payment Required": 12,
+    "Management Query": 35,
+    "Claim Approved": 19,
+    "Dispatch Parts": 4,
+    "Requires Authorization (Above $3,000)": 2
+  },
+  "types": {
+    "Pre Delivery Warranty Claims": 6881,
+    "In Field Warranty Claims": 28481
+  },
+  "approved_statuses": [
+    "Approved Claims Closed (Closed)",
+    "Dispatch Parts",
+    "Partially Picked",
+    "Repair in Progress",
+    "Repairer Invoiced Processed",
+    "Repairer Invoiced Received",
+    "Sales Order Approved"
+  ],
+  "eligible_count": 22773,
+  "eligible_by_year_type": [
+    {
+      "period": "2024",
+      "type": "In Field Warranty Claims",
+      "count": 4085
+    },
+    {
+      "period": "2024",
+      "type": "Pre Delivery Warranty Claims",
+      "count": 1197
+    },
+    {
+      "period": "2025",
+      "type": "In Field Warranty Claims",
+      "count": 6906
+    },
+    {
+      "period": "2025",
+      "type": "Pre Delivery Warranty Claims",
+      "count": 1480
+    },
+    {
+      "period": "2026",
+      "type": "In Field Warranty Claims",
+      "count": 7327
+    },
+    {
+      "period": "2026",
+      "type": "Pre Delivery Warranty Claims",
+      "count": 1778
+    }
+  ],
+  "eligible_2026_by_month_type": [
+    {
+      "period": "2026-01",
+      "type": "In Field Warranty Claims",
+      "count": 330
+    },
+    {
+      "period": "2026-01",
+      "type": "Pre Delivery Warranty Claims",
+      "count": 100
+    },
+    {
+      "period": "2026-02",
+      "type": "In Field Warranty Claims",
+      "count": 806
+    },
+    {
+      "period": "2026-02",
+      "type": "Pre Delivery Warranty Claims",
+      "count": 220
+    },
+    {
+      "period": "2026-03",
+      "type": "In Field Warranty Claims",
+      "count": 1027
+    },
+    {
+      "period": "2026-03",
+      "type": "Pre Delivery Warranty Claims",
+      "count": 144
+    },
+    {
+      "period": "2026-04",
+      "type": "In Field Warranty Claims",
+      "count": 858
+    },
+    {
+      "period": "2026-04",
+      "type": "Pre Delivery Warranty Claims",
+      "count": 256
+    },
+    {
+      "period": "2026-05",
+      "type": "In Field Warranty Claims",
+      "count": 1047
+    },
+    {
+      "period": "2026-05",
+      "type": "Pre Delivery Warranty Claims",
+      "count": 240
+    },
+    {
+      "period": "2026-06",
+      "type": "In Field Warranty Claims",
+      "count": 858
+    },
+    {
+      "period": "2026-06",
+      "type": "Pre Delivery Warranty Claims",
+      "count": 231
+    },
+    {
+      "period": "2026-07",
+      "type": "In Field Warranty Claims",
+      "count": 870
+    },
+    {
+      "period": "2026-07",
+      "type": "Pre Delivery Warranty Claims",
+      "count": 230
+    },
+    {
+      "period": "2026-08",
+      "type": "In Field Warranty Claims",
+      "count": 709
+    },
+    {
+      "period": "2026-08",
+      "type": "Pre Delivery Warranty Claims",
+      "count": 180
+    },
+    {
+      "period": "2026-09",
+      "type": "In Field Warranty Claims",
+      "count": 582
+    },
+    {
+      "period": "2026-09",
+      "type": "Pre Delivery Warranty Claims",
+      "count": 121
+    },
+    {
+      "period": "2026-10",
+      "type": "In Field Warranty Claims",
+      "count": 240
+    },
+    {
+      "period": "2026-10",
+      "type": "Pre Delivery Warranty Claims",
+      "count": 56
+    }
+  ],
+  "approved_status_missing_date_count": 6354,
+  "approved_status_missing_date_by_status": {
+    "Approved Claims Closed (Closed)": 3974,
+    "Repairer Invoiced Processed": 1212,
+    "Repairer Invoiced Received": 683,
+    "Repair in Progress": 483,
+    "Sales Order Approved": 2
+  },
+  "approved_status_missing_date_created_2026": 34,
+  "valid_approval_date_noneligible_statuses": {
+    "Unapproved Claims Closed (Closed)": 69,
+    "Van Recalled": 12,
+    "Suspended Claim": 1,
+    "Claim Approved": 3,
+    "Evidence Requested": 8,
+    "Management Query": 3,
+    "Quote Validation": 2,
+    "Claim Assessment": 1,
+    "Supplier/Customer Payment Required": 1
+  },
+  "amounts_all": {
+    "claim_total": 19964300.59,
+    "factory_parts": 3189726.62,
+    "labour": 14208335.1136,
+    "repairer_parts_misc": 2664101.35,
+    "factory_plus_repairer": 5853827.97,
+    "claim_minus_labour": 5755965.4764,
+    "difference": -97862.4936,
+    "rows_difference_gt_0_01": 810,
+    "difference_samples": [
+      {
+        "excel_row": 121,
+        "ticket_id": "34299",
+        "difference": -631.13
+      },
+      {
+        "excel_row": 140,
+        "ticket_id": "24434",
+        "difference": -465.11
+      },
+      {
+        "excel_row": 141,
+        "ticket_id": "19708",
+        "difference": -465.11
+      },
+      {
+        "excel_row": 144,
+        "ticket_id": "29173",
+        "difference": -415.28
+      },
+      {
+        "excel_row": 148,
+        "ticket_id": "23887",
+        "difference": -598.13
+      },
+      {
+        "excel_row": 149,
+        "ticket_id": "31202",
+        "difference": -598.13
+      },
+      {
+        "excel_row": 157,
+        "ticket_id": "14853",
+        "difference": -496.0
+      },
+      {
+        "excel_row": 165,
+        "ticket_id": "27257",
+        "difference": -652.57
+      }
+    ]
+  },
+  "amounts_eligible": {
+    "claim_total": 16540668.65,
+    "factory_parts": 2754679.72,
+    "labour": 11744864.0612,
+    "repairer_parts_misc": 2184414.08,
+    "factory_plus_repairer": 4939093.8,
+    "claim_minus_labour": 4795804.5888,
+    "difference": -143289.2112,
+    "rows_difference_gt_0_01": 701,
+    "difference_samples": [
+      {
+        "excel_row": 121,
+        "ticket_id": "34299",
+        "difference": -631.13
+      },
+      {
+        "excel_row": 140,
+        "ticket_id": "24434",
+        "difference": -465.11
+      },
+      {
+        "excel_row": 144,
+        "ticket_id": "29173",
+        "difference": -415.28
+      },
+      {
+        "excel_row": 148,
+        "ticket_id": "23887",
+        "difference": -598.13
+      },
+      {
+        "excel_row": 149,
+        "ticket_id": "31202",
+        "difference": -598.13
+      },
+      {
+        "excel_row": 157,
+        "ticket_id": "14853",
+        "difference": -496.0
+      },
+      {
+        "excel_row": 165,
+        "ticket_id": "27257",
+        "difference": -652.57
+      },
+      {
+        "excel_row": 173,
+        "ticket_id": "30629",
+        "difference": -446.9
+      }
+    ]
+  },
+  "amounts_eligible_2026": {
+    "claim_total": 6855813.21,
+    "factory_parts": 1191264.11,
+    "labour": 5230029.4888,
+    "repairer_parts_misc": 476003.46,
+    "factory_plus_repairer": 1667267.57,
+    "claim_minus_labour": 1625783.7212,
+    "difference": -41483.8488,
+    "rows_difference_gt_0_01": 214,
+    "difference_samples": [
+      {
+        "excel_row": 121,
+        "ticket_id": "34299",
+        "difference": -631.13
+      },
+      {
+        "excel_row": 144,
+        "ticket_id": "29173",
+        "difference": -415.28
+      },
+      {
+        "excel_row": 148,
+        "ticket_id": "23887",
+        "difference": -598.13
+      },
+      {
+        "excel_row": 149,
+        "ticket_id": "31202",
+        "difference": -598.13
+      },
+      {
+        "excel_row": 165,
+        "ticket_id": "27257",
+        "difference": -652.57
+      },
+      {
+        "excel_row": 173,
+        "ticket_id": "30629",
+        "difference": -446.9
+      },
+      {
+        "excel_row": 178,
+        "ticket_id": "25687",
+        "difference": -2393.72
+      },
+      {
+        "excel_row": 211,
+        "ticket_id": "28694",
+        "difference": -320.98
+      }
+    ]
+  },
+  "issue_position_columns": [],
+  "approval_date_range": [
+    "2024-04-22 07:38:53",
+    "2026-10-13 16:13:47"
+  ]
+}

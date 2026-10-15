@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="claim-overview.css?v=20261001-single-row">
+<link rel="stylesheet" href="claim-overview.css?v=20261015-pending-amount">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Cache-Control" content="no-store" />
@@ -314,7 +314,7 @@ body{
     <a class="navLink active" href="infieldpredelivery.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 9h8"/><path d="M8 13h5"/><path d="M15 17l2-2 2 2"/></svg><span>Claim Trend Overview</span></a>
     <div class="navDivider"></div>
 <div class="navSection">Analysis</div>
-<a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model-wise Distribution</span></a><a class="navLink" href="parts.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16"/><path d="M7 7v10"/><path d="M17 7v10"/><path d="M5 17h14"/><path d="M9 11h6"/></svg><span>Top10 Failure Parts</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket Timeline</span></a></aside>
+<a class="navLink" href="analysis.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 5h10l6 6v8H4z"/><path d="M14 5v6h6"/><path d="M8 17v-4M12 17v-7M16 17v-2"/></svg><span>Model-wise Distribution</span></a><a class="navLink" href="parts.html" hidden style="display:none!important"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 7h16"/><path d="M7 7v10"/><path d="M17 7v10"/><path d="M5 17h14"/><path d="M9 11h6"/></svg><span>Top10 Failure Parts</span></a><a class="navLink" href="ticketlifecycle.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 6h14"/><path d="M5 12h14"/><path d="M5 18h14"/><circle cx="8" cy="6" r="1.5"/><circle cx="16" cy="12" r="1.5"/><circle cx="11" cy="18" r="1.5"/></svg><span>Ticket Timeline</span></a></aside>
   <main class="main">
     <div class="toolbar">
       <h1 class="pageTitle">Claim Trend Overview</h1>
@@ -390,6 +390,7 @@ body{
             <div id="approvedDateNote" class="approvedDateNote" aria-live="polite"></div>
           </div>
           <div id="approvedTotals" class="grandTotals"></div>
+          <button id="toggleInFieldPending" type="button" aria-pressed="false" aria-controls="approvedSplitChart" hidden>Show In Field Pending</button>
         </div>
         <div class="dualChartGrid">
           <div class="dualChartCard">
@@ -425,6 +426,7 @@ body{
             <div id="amountDateNote" class="approvedDateNote" aria-live="polite"></div>
           </div>
           <div id="amountTotals" class="grandTotals"></div>
+          <button id="toggleAmountInFieldPending" type="button" aria-pressed="false" aria-controls="approvedAmountSplitChart" hidden>Show In Field Pending</button>
         </div>
         <div class="dualChartGrid">
           <div class="dualChartCard">
@@ -444,6 +446,7 @@ body{
             <div id="amountSplitLegend" class="legend"><span><i style="background:var(--blue)"></i>In Field</span><span><i style="background:var(--orange)"></i>Pre Delivery</span></div>
           </div>
         </div>
+        <p id="amountPendingNote" class="pendingAmountNote" hidden></p>
       </section>
 
       <section class="panel" id="unapproved">
@@ -510,7 +513,7 @@ body{
 </div>
 
 <script src="browser-page-cache.js?v=refresh-publication-v2"></script>
-<script src="claim-trend-ticket-metrics.js?v=3"></script>
+<script src="claim-trend-ticket-metrics.js?v=20261015-pending-amount"></script>
 <script>
 const FIREBASE="https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app";
 const ROOT="ctmTicketStatusMonitorV44";
@@ -1580,7 +1583,8 @@ function setTotals(targetId,items){
 function setLegend(targetId,items){
   const el=$(targetId);
   if(!el)return;
-  el.innerHTML=items.map(item=>`<span><i style="background:${item.color}"></i>${item.label}</span>`).join("");
+  const lineLegend=["approvedLegend","approvedSplitLegend","amountLegend","amountSplitLegend"].includes(targetId);
+  el.innerHTML=items.map(item=>`<span>${lineLegend?`<svg class="legendLine" width="36" height="12" viewBox="0 0 36 12" aria-hidden="true"><line x1="0" y1="6" x2="36" y2="6" stroke="${item.color}" stroke-width="2.4"${item.dashed?' stroke-dasharray="6 4"':''}/></svg>`:`<i style="background:${item.color}"></i>`}${item.label}</span>`).join("");
 }
 
 function sumValueRows(rows,key="total"){
@@ -1796,6 +1800,153 @@ function drawSplitCompareChart(canvasId,rows,opts={}){
   finishChartRender(c);
 }
 
+// Warranty Pending uses the current status feed, independently of approval dates.
+let pendingState={started:false,rows:null,error:false,version:""};
+let showInFieldPending=false;
+let pendingAmountState={started:false,rows:null,error:false};
+let showAmountInFieldPending=false;
+function loadPendingTickets(){
+  if(pendingState.started)return;
+  const state=pendingState;state.started=true;
+  (async()=>{
+    const path=`${ROOT}/automation/lastRunFinishedAt`;
+    const version=await readJson(path,4000);
+    if(!version)throw Error("Pending source version unavailable");
+    const tickets=await readJson(`${ROOT}/currentStatus`,30000);
+    const confirmed=await readJson(path,4000);
+    if(version!==confirmed)throw Error("Pending source changed; refresh to retry");
+    if(!tickets||typeof tickets!=="object")throw Error("Pending tickets unavailable");
+    const rows=ClaimTrendTicketMetrics.pendingMonthly(tickets);
+    if(pendingState!==state)return;
+    state.tickets=tickets;state.rows=rows;state.version=version;renderWithPageLoading(false);
+  })().catch(error=>{
+    if(pendingState!==state)return;
+    state.error=true;console.warn("Pending unavailable",error);renderWithPageLoading(false);
+  });
+}
+function loadPendingAmounts(){
+  if(pendingAmountState.started||!pendingState.tickets)return;
+  const state=pendingAmountState;state.started=true;
+  (async()=>{
+    const tickets=pendingState.tickets,version=pendingState.version;
+    const compactQuotes=arr(tickets).every(ticket=>Object.hasOwn(ticket,"quotedClaimAmount"));
+    const quotes=compactQuotes?tickets:await ensureRawTicketsLoaded();
+    const confirmed=await readJson(`${ROOT}/automation/lastRunFinishedAt`,4000);
+    if(version!==confirmed)throw Error("Pending source changed while loading amounts; refresh to retry");
+    const rows=ClaimTrendTicketMetrics.pendingAmountMonthly(tickets,quotes);
+    if(pendingAmountState!==state)return;
+    state.rows=rows;renderWithPageLoading(false);
+  })().catch(error=>{
+    if(pendingAmountState!==state)return;
+    state.error=true;console.warn("Pending amounts unavailable",error);renderWithPageLoading(false);
+  });
+}
+function renderPendingApproved(approvedRows){
+  // The standalone Quality generator shares this template; this feature is Warranty-only.
+  if(!document.body||document.body.classList.contains("pdv-trend-page"))return;
+  const toggle=$("toggleInFieldPending");
+  toggle.hidden=false;
+  toggle.textContent=showInFieldPending?"Hide In Field Pending":"Show In Field Pending";
+  toggle.setAttribute("aria-pressed",String(showInFieldPending));
+  toggle.onclick=()=>{showInFieldPending=!showInFieldPending;renderWithPageLoading(false);};
+  loadPendingTickets();
+  const ready=pendingState.rows!==null;
+  const index=new Map((pendingState.rows||[]).map(row=>[row.month,row]));
+  const rows=approvedRows.map(row=>({...row,pending:ready?Number(index.get(row.month)?.pendingIn||0)+Number(index.get(row.month)?.pendingPre||0):null}));
+  drawSingleLineChart("approvedChart",rows,"total",{color:"#16a34a",secondaryKey:ready?"pending":null});
+  $("approvedChart").setAttribute("role","img");
+  $("approvedChart").setAttribute("aria-label",`Approved by ${approvedDateLabel()}; Pending by Created On. `+rows.map(row=>`${row.month}: Approved ${row.total}, Pending ${row.pending===null?"unavailable":row.pending}`).join("; "));
+  setTotals("approvedTotalsAll",[
+    {label:"Approved · All Fields",value:num(sumValueRows(rows))},
+    {label:"Pending · All Fields",value:ready?num(sumValueRows(rows,"pending")):"—"}
+  ]);
+  setLegend("approvedLegend",[
+    {label:"Approved",color:"#16a34a"},
+    {label:ready?"Pending · Created On":pendingState.error?"Pending unavailable · refresh to retry":"Pending loading…",color:"#8b5cf6",dashed:true}
+  ]);
+  $("approvedLegend").setAttribute("style","visibility:visible!important;display:flex!important");
+  $("approvedLegend").title="Pending: current open Claims awaiting approval, grouped by Created On. Approved, closed, rejected and cancelled Claims are excluded. Not a historical month-end balance."+(pendingState.version?` Source updated: ${pendingState.version}`:"");
+  const [inKey,preKey]=approvedDateBasis==="created"?["approvedCreatedIn","approvedCreatedPre"]:["approvedIn","approvedPre"];
+  const splitRows=rowsForRange().map(row=>({...row,pendingIn:ready?Number(index.get(row.month)?.pendingIn||0):null,pendingPre:ready?Number(index.get(row.month)?.pendingPre||0):null}));
+  drawChart("approvedSplitChart",splitRows,inKey,preKey,{extraSeries:ready?[
+    ...(showInFieldPending?[{key:"pendingIn",color:"#db2777"}]:[]),{key:"pendingPre",color:"#8b5cf6"}
+  ]:[]});
+  $("approvedSplitChart").setAttribute("role","img");
+  $("approvedSplitChart").setAttribute("aria-label",`Approved by ${approvedDateLabel()}; Pending by Created On. `+splitRows.map(row=>`${row.month}: In Field approved ${Number(row[inKey]||0)}${showInFieldPending?`, pending ${row.pendingIn===null?"unavailable":row.pendingIn}`:""}; Pre Delivery approved ${Number(row[preKey]||0)}, pending ${row.pendingPre===null?"unavailable":row.pendingPre}`).join("; "));
+  setTotals("approvedTotalsSplit",[
+    {label:"Approved In Field",value:num(sumValueRows(splitRows,inKey))},
+    {label:"Approved Pre Delivery",value:num(sumValueRows(splitRows,preKey))},
+    {label:"Pending In Field",value:ready?num(sumValueRows(splitRows,"pendingIn")):"—"},
+    {label:"Pending Pre Delivery",value:ready?num(sumValueRows(splitRows,"pendingPre")):"—"}
+  ]);
+  $("approvedTotalsSplit").setAttribute("style","flex-wrap:wrap;row-gap:6px");
+  const pendingLabel=ready?"Pending":pendingState.error?"Pending unavailable":"Pending loading…";
+  setLegend("approvedSplitLegend",[
+    {label:"Approved In Field",color:"#156082"},{label:"Approved Pre Delivery",color:"#e97132"},
+    ...(showInFieldPending?[{label:`${pendingLabel} In Field`,color:"#db2777",dashed:true}]:[]),
+    {label:`${pendingLabel} Pre Delivery`,color:"#8b5cf6",dashed:true}
+  ]);
+  $("approvedSplitLegend").title=$("approvedLegend").title;
+}
+function renderPendingAmounts(approvedRows){
+  if(!document.body||document.body.classList.contains("pdv-trend-page"))return;
+  const toggle=$("toggleAmountInFieldPending");
+  toggle.hidden=false;
+  toggle.textContent=showAmountInFieldPending?"Hide In Field Pending":"Show In Field Pending";
+  toggle.setAttribute("aria-pressed",String(showAmountInFieldPending));
+  toggle.onclick=()=>{showAmountInFieldPending=!showAmountInFieldPending;renderWithPageLoading(false);};
+  loadPendingAmounts();
+  const ready=pendingAmountState.rows!==null;
+  const index=new Map((pendingAmountState.rows||[]).map(row=>[row.month,row]));
+  const enrich=row=>{
+    const p=index.get(row.month)||{};
+    const result={...row};
+    for(const field of ["In","Pre"]){
+      result[`known${field}`]=Number(p[`known${field}`]||0);
+      result[`missing${field}`]=Number(p[`missing${field}`]||0);
+      result[`pendingAmount${field}`]=!ready||(!result[`known${field}`]&&result[`missing${field}`])?null:Number(p[`amount${field}`]||0);
+    }
+    result.known=result.knownIn+result.knownPre;
+    result.missing=result.missingIn+result.missingPre;
+    result.pendingAmount=!ready||(!result.known&&result.missing)?null:Number(result.pendingAmountIn||0)+Number(result.pendingAmountPre||0);
+    return result;
+  };
+  const rows=approvedRows.map(enrich),splitRows=rowsForRange().map(enrich);
+  const [inKey,preKey]=amountDateBasis==="created"?["createdAmountIn","createdAmountPre"]:["approvedAmountIn","approvedAmountPre"];
+  const total=(field="")=>{
+    const known=sumValueRows(rows,`known${field}`),missing=sumValueRows(rows,`missing${field}`);
+    return !ready||(!known&&missing)?"—":moneyNum(sumValueRows(rows,`pendingAmount${field}`))+(missing?" *":"");
+  };
+  const pendingLabel=ready?"Pending Quote":pendingAmountState.error||pendingState.error?"Pending unavailable":"Pending loading…";
+  const quoteLabel=value=>Math.abs(Number(value))<1000?moneyNum(value):moneyK(value);
+  drawSingleLineChart("approvedAmountChart",rows,"total",{color:"#0f766e",yMax:niceCurrencyMax,pointFormatter:moneyK,secondaryKey:ready?"pendingAmount":null,secondaryFormatter:(value,row)=>quoteLabel(value)+(row.missing?"*":"")});
+  drawChart("approvedAmountSplitChart",splitRows,inKey,preKey,{yMax:niceCurrencyMax,pointFormatter:moneyK,extraSeries:ready?[
+    ...(showAmountInFieldPending?[{key:"pendingAmountIn",color:"#db2777",formatter:(value,row)=>quoteLabel(value)+(row.missingIn?"*":"")}]:[]),
+    {key:"pendingAmountPre",color:"#8b5cf6",formatter:(value,row)=>quoteLabel(value)+(row.missingPre?"*":"")}
+  ]:[]});
+  setTotals("amountTotalsAll",[{label:"Approved · All Fields",value:moneyNum(sumValueRows(rows))},{label:"Pending Quote · All Fields",value:total()}]);
+  setTotals("amountTotalsSplit",[
+    {label:"Approved In Field",value:moneyNum(sumValueRows(splitRows,inKey))},
+    {label:"Approved Pre Delivery",value:moneyNum(sumValueRows(splitRows,preKey))},
+    {label:"Pending Quote In Field",value:total("In")},{label:"Pending Quote Pre Delivery",value:total("Pre")}
+  ]);
+  setLegend("amountLegend",[{label:"Approved",color:"#0f766e"},{label:`${pendingLabel} · Created On`,color:"#8b5cf6",dashed:true}]);
+  $("amountLegend").setAttribute("style","visibility:visible!important;display:flex!important");
+  setLegend("amountSplitLegend",[
+    {label:"Approved In Field",color:"#156082"},{label:"Approved Pre Delivery",color:"#e97132"},
+    ...(showAmountInFieldPending?[{label:`${pendingLabel} In Field`,color:"#db2777",dashed:true}]:[]),
+    {label:`${pendingLabel} Pre Delivery`,color:"#8b5cf6",dashed:true}
+  ]);
+  const note=$("amountPendingNote");note.hidden=false;
+  const missing=sumValueRows(rows,"missing");
+  note.textContent="Pending Quote: current open Claims’ Claim Amount, grouped by Created On. Approved: SAP purchase order amount."+
+    (ready&&missing?` * Partial amount: ${num(missing)} Pending Claims have no Claim Amount (${num(sumValueRows(rows,"missingIn"))} In Field, ${num(sumValueRows(rows,"missingPre"))} Pre Delivery).`:"")+
+    (!ready?(pendingAmountState.error||pendingState.error?" Pending amounts unavailable; refresh to retry.":" Loading Pending amounts…"):"");
+  const description=row=>`Pending Quote ${row.pendingAmount===null?"unavailable":moneyNum(row.pendingAmount)}${row.missing?` (${row.missing} missing amounts)`:""}`;
+  $("approvedAmountChart").setAttribute("aria-label",rows.map(row=>`${row.month}: Approved ${moneyNum(row.total)}; ${description(row)}`).join("; "));
+  $("approvedAmountSplitChart").setAttribute("aria-label",splitRows.map(row=>`${row.month}: Approved In Field ${moneyNum(row[inKey])}, Pre Delivery ${moneyNum(row[preKey])}; ${showAmountInFieldPending?`Pending Quote In Field ${row.pendingAmountIn===null?"unavailable":moneyNum(row.pendingAmountIn)}; `:""}Pending Quote Pre Delivery ${row.pendingAmountPre===null?"unavailable":moneyNum(row.pendingAmountPre)}`).join("; "));
+}
+
 function drawSingleLineChart(canvasId,rows,key,opts={}){
   const c=$(canvasId);if(!c)return;
   const rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1,w=Math.max(1,rect.width),h=Math.max(1,rect.height);
@@ -1805,7 +1956,7 @@ function drawSingleLineChart(canvasId,rows,key,opts={}){
   ctx.clearRect(0,0,w,h);
   if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);finishChartRender(c);return}
   const left=18,right=18,top=20,bottom=84,plotW=w-left-right,plotH=h-top-bottom;
-  const maxRaw=Math.max(10,...rows.map(r=>Number(r[key]||0)));
+  const maxRaw=Math.max(10,...rows.flatMap(r=>[Number(r[key]||0),Number(r[opts.secondaryKey]||0)]));
   const yMax=typeof opts.yMax==="function"?opts.yMax(maxRaw):Math.ceil(maxRaw/100)*100;
   const pointFormatter=opts.pointFormatter||num;
   const color=opts.color||"#156082";
@@ -1831,6 +1982,22 @@ function drawSingleLineChart(canvasId,rows,key,opts={}){
     ctx.textAlign="center";
     ctx.fillText(pointFormatter(r[key]),px,textY);
   });
+  if(opts.secondaryKey){
+    ctx.strokeStyle="#8b5cf6";ctx.lineWidth=2.6;ctx.setLineDash([6,4]);ctx.beginPath();
+    let connected=false;
+    rows.forEach((row,i)=>{if(row[opts.secondaryKey]==null){connected=false;return;}const px=x(i),py=y(row[opts.secondaryKey]);if(connected)ctx.lineTo(px,py);else ctx.moveTo(px,py);connected=true;});
+    ctx.stroke();ctx.setLineDash([]);
+    rows.forEach((row,i)=>{
+      if(row[opts.secondaryKey]==null)return;
+      const px=x(i),py=y(row[opts.secondaryKey]);
+      ctx.fillStyle="#8b5cf6";ctx.beginPath();ctx.arc(px,py,3.2,0,Math.PI*2);ctx.fill();
+      ctx.font="500 11px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.textAlign="center";
+      const primaryLabelY=Math.max(16,Math.min(y(row[key])-10,h-54));
+      let labelY=py<y(row[key])?Math.max(16,py-10):Math.min(h-58,py+17);
+      if(Math.abs(labelY-primaryLabelY)<16)labelY=Math.min(h-58,Math.max(py,y(row[key]))+17);
+      ctx.fillText((opts.secondaryFormatter||pointFormatter)(row[opts.secondaryKey],row),px,labelY);
+    });
+  }
   ctx.strokeStyle="#d1d5db";
   ctx.fillStyle="#667085";
   ctx.textAlign="center";
@@ -1859,17 +2026,21 @@ function drawChart(canvasId,rows,inKey,preKey,opts={}){
   const rect=c.getBoundingClientRect(),dpr=devicePixelRatio||1,w=Math.max(1,rect.width),h=Math.max(1,rect.height);
   c.width=w*dpr;c.height=h*dpr;const ctx=c.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
   if(!rows.length){ctx.fillStyle="#64748b";ctx.textAlign="center";ctx.font="500 13px Segoe UI Variable,Aptos,Segoe UI,Arial";ctx.fillText("No monthly data found.",w/2,h/2);finishChartRender(c);return}
-  const left=18,right=18,top=20,bottom=84,plotW=w-left-right,plotH=h-top-bottom;
-  const maxRaw=Math.max(100,...rows.flatMap(r=>[Number(r[inKey]||0),Number(r[preKey]||0)]));
+  const extras=opts.extraSeries||[];
+  const left=18,right=18,top=20,bottom=extras.length?110:84,plotW=w-left-right,plotH=h-top-bottom;
+  const maxRaw=Math.max(100,...rows.flatMap(r=>[Number(r[inKey]||0),Number(r[preKey]||0),...extras.map(s=>Number(r[s.key]||0))]));
   const yMax=typeof opts.yMax==="function"?opts.yMax(maxRaw):Math.ceil(maxRaw/100)*100;
   const pointFormatter=opts.pointFormatter||((v)=>String(Number(v||0)));
   const x=i=>left+(rows.length<=1?plotW/2:plotW*i/(rows.length-1));
   const y=v=>top+plotH-plotH*(Number(v||0)/yMax);
-  const line=(key,color,off)=>{
-    ctx.strokeStyle=color;ctx.lineWidth=2.4;ctx.beginPath();
-    rows.forEach((r,i)=>{const px=x(i),py=y(r[key]);if(i)ctx.lineTo(px,py);else ctx.moveTo(px,py)});
-    ctx.stroke();
+  const labels=rows.map(()=>[]);
+  const line=(key,color,off,dashed=false,formatter=pointFormatter)=>{
+    ctx.strokeStyle=color;ctx.lineWidth=2.4;ctx.setLineDash(dashed?[6,4]:[]);ctx.beginPath();
+    let connected=false;
+    rows.forEach((r,i)=>{if(r[key]==null){connected=false;return;}const px=x(i),py=y(r[key]);if(connected)ctx.lineTo(px,py);else ctx.moveTo(px,py);connected=true;});
+    ctx.stroke();ctx.setLineDash([]);
     rows.forEach((r,i)=>{
+      if(r[key]==null)return;
       const px=x(i),py=y(r[key]);
       ctx.fillStyle=color;ctx.beginPath();ctx.arc(px,py,3.1,0,Math.PI*2);ctx.fill();
       let textY=py+off;
@@ -1879,10 +2050,42 @@ function drawChart(canvasId,rows,inKey,preKey,opts={}){
       ctx.fillStyle="#172033";
       ctx.font="500 11px Segoe UI Variable,Aptos,Segoe UI,Arial";
       ctx.textAlign="center";
-      ctx.fillText(pointFormatter(r[key]),px,textY);
+      if(extras.length)labels[i].push({text:formatter(r[key],r),y:textY,color});
+      else ctx.fillText(formatter(r[key],r),px,textY);
     })
   };
-  line(inKey,"#156082",-10);line(preKey,"#e97132",18);
+  line(inKey,"#156082",-10);line(preKey,"#e97132",extras.length?-10:18);
+  extras.forEach(series=>line(series.key,series.color,18,true,series.formatter||pointFormatter));
+  const seriesKeys=[inKey,preKey,...extras.map(series=>series.key)];
+  const placedLabels=[];
+  labels.forEach((items,i)=>{
+    items.forEach(item=>{
+      const halfWidth=ctx.measureText(item.text).width/2+3;
+      const labelLeft=x(i)-halfWidth,labelRight=x(i)+halfWidth;
+      // Check the whole text box against nearby line segments, not only other numbers.
+      const overlaps=baseline=>{
+        const labelTop=baseline-10,labelBottom=baseline+3;
+        if(placedLabels.some(box=>labelLeft<box.right&&labelRight>box.left&&labelTop<box.bottom+3&&labelBottom>box.top-3))return true;
+        return seriesKeys.some(key=>rows.some((row,j)=>{
+          const next=Math.min(j+1,rows.length-1),x1=x(j),x2=x(next);
+          if(row[key]==null||rows[next][key]==null)return false;
+          if(x2<labelLeft||x1>labelRight)return false;
+          const y1=y(row[key]),y2=y(rows[next][key]);
+          const at=px=>x1===x2?y1:y1+(y2-y1)*(px-x1)/(x2-x1);
+          const a=at(Math.max(labelLeft,x1)),b=at(Math.min(labelRight,x2));
+          return labelTop<Math.max(a,b)+5&&labelBottom>Math.min(a,b)-5;
+        }));
+      };
+      const preferred=item.y;
+      for(let distance=0;distance<h;distance+=3){
+        const candidates=distance?[preferred-distance,preferred+distance]:[preferred];
+        const clear=candidates.find(baseline=>baseline>=16&&baseline<=h-54&&!overlaps(baseline));
+        if(clear!==undefined){item.y=clear;break;}
+      }
+      placedLabels.push({left:labelLeft,right:labelRight,top:item.y-10,bottom:item.y+3});
+      ctx.fillStyle=item.color;ctx.fillText(item.text,x(i),item.y);
+    });
+  });
   // x labels + year separators
   ctx.strokeStyle="#d1d5db";ctx.fillStyle="#667085";ctx.textAlign="center";ctx.font="12px Segoe UI Variable,Aptos,Segoe UI,Arial";
   const step=Math.max(1,Math.ceil(rows.length/18));
@@ -2101,6 +2304,8 @@ function render(){
     {label:"In Field",value:num(sumMetricRows(claimClosedSplit,"inValue"))},
     {label:"Pre Delivery",value:num(sumMetricRows(claimClosedSplit,"preValue"))}
   ]);
+  renderPendingApproved(approvedRows);
+  renderPendingAmounts(amountRows);
 }
 
 function renderWithPageLoading(showLoading=false,label="Calculating dashboard..."){

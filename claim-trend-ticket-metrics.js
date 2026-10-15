@@ -215,5 +215,47 @@ function approvedMonthly(tickets){
   return Object.values(out).sort((a,b)=>a.month.localeCompare(b.month));
 }
 
-root.ClaimTrendTicketMetrics=Object.freeze({approvedMonthly,unapprovedMonthly,isApproved:ticketApprovedIncludingClosed,isActiveApproved:ticketApprovedActiveNow,isUnapprovedClosed:ticketUnapprovedClosedNow});
+const PENDING_CODES=new Set(["Z1","Z2","Z3","Z4","Z5","Z6","ZM","ZR","ZV","Y6","YA","YC"]);
+function isPending(ticket){
+  const code=clean(getField(ticket,["TicketStatus","TicketStatusCode","StatusCode","statusCode","code"])).toUpperCase();
+  const text=clean(getField(ticket,["TicketStatusText","ticketStatusText","statusText","StatusText","Status","status"])).toLowerCase();
+  return PENDING_CODES.has(code)&&!ticketClaimApprovedOn(ticket)&&!ticketResolvedOn(ticket)
+    &&!/closed|reject|cancel|completed/.test(text);
+}
+function pendingMonthly(tickets){
+  const months={},seen=new Set();
+  for(const node of arr(tickets)){
+    const ticket=ticketPayload(node)||{};
+    if(ticketIsPdi(ticket)||!isPending(ticket))continue;
+    if(!ticketIsPreDelivery(ticket)&&!ticketIsInField(ticket))continue;
+    const id=ticketId(ticket),month=monthKeyFromValue(ticketCreatedOn(ticket)||ticket.created);
+    if(!id||seen.has(id)||!month||month<"2025-01")continue;
+    seen.add(id);
+    const row=months[month]||(months[month]={month,pendingIn:0,pendingPre:0});
+    row[ticketIsPreDelivery(ticket)?"pendingPre":"pendingIn"]++;
+  }
+  return Object.values(months).sort((a,b)=>a.month.localeCompare(b.month));
+}
+function pendingAmountMonthly(tickets,quoteTickets=tickets){
+  const quotes=new Map(arr(quoteTickets).map(node=>{const ticket=ticketPayload(node)||{};return [ticketId(ticket),ticket];}));
+  const months={},seen=new Set();
+  for(const node of arr(tickets)){
+    const ticket=ticketPayload(node)||{},id=ticketId(ticket);
+    const month=monthKeyFromValue(ticketCreatedOn(ticket)||ticket.created);
+    if(!id||seen.has(id)||!month||month<"2025-01"||ticketIsPdi(ticket)||!isPending(ticket))continue;
+    if(!ticketIsPreDelivery(ticket)&&!ticketIsInField(ticket))continue;
+    seen.add(id);
+    const row=months[month]||(months[month]={month,amountIn:0,amountPre:0,knownIn:0,knownPre:0,missingIn:0,missingPre:0});
+    const field=ticketIsPreDelivery(ticket)?"Pre":"In",quote=quotes.get(id)||{};
+    // Do not substitute SAP/approved amounts or the compact snapshot's amount
+    // (which loses the difference between an empty quote and a real zero).
+    const raw=Object.hasOwn(quote,"quotedClaimAmount")?quote.quotedClaimAmount:getField(quote,["ClaimTotalAmount","Claim Total Amount","AmountIncludingTax"]);
+    const value=clean(raw).replace(/[$,\s]/g,"");
+    if(!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(value)||!Number.isFinite(Number(value))){row[`missing${field}`]++;continue;}
+    row[`known${field}`]++;
+    row[`amount${field}`]=Math.round((row[`amount${field}`]+Number(value))*100)/100;
+  }
+  return Object.values(months).sort((a,b)=>a.month.localeCompare(b.month));
+}
+root.ClaimTrendTicketMetrics=Object.freeze({approvedMonthly,unapprovedMonthly,pendingMonthly,pendingAmountMonthly,isPending,isApproved:ticketApprovedIncludingClosed,isActiveApproved:ticketApprovedActiveNow,isUnapprovedClosed:ticketUnapprovedClosedNow});
 })(globalThis);

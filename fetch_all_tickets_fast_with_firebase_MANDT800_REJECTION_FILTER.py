@@ -1454,6 +1454,11 @@ def split_ticket_row(row: Dict[str, Any]) -> Tuple[Dict[str, Any], Dict[str, Any
     if dealer_id:
         ticket_data["DealerID"] = dealer_id
 
+    # Preserve the C4C quote before SAP enrichment can clear AmountIncludingTax
+    # for tickets without a sales order. Empty means unknown, not zero.
+    ticket_data["quotedClaimAmount"] = first_clean_ticket_value(
+        ticket_data, "ClaimTotalAmount", "Claim Total Amount", "AmountIncludingTax"
+    )
     return ticket_data, role_data
 
 

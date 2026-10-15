@@ -1,0 +1,470 @@
+{
+  "excel_unique": 35362,
+  "excel_duplicate_rows": 0,
+  "excel_eligible": 22773,
+  "web_total": 22773,
+  "web_only": 0,
+  "excel_only": 0,
+  "status_counts": {
+    "Approved Claims Closed (Closed)": 6034,
+    "Unapproved Claims Closed (Closed)": 5407,
+    "Repairer Invoiced Processed": 13850,
+    "Van Recalled": 229,
+    "Repair in Progress": 6271,
+    "Repairer Invoiced Received": 2439,
+    "Partially Picked": 196,
+    "Sales Order Approved": 333,
+    "Suspended Claim": 9,
+    "Evidence Requested": 254,
+    "New Claim": 70,
+    "Quote Validation": 72,
+    "Claim Assessment": 125,
+    "Requires Authorization (Under $1,000)": 1,
+    "Supplier/Customer Payment Required": 12,
+    "Management Query": 35,
+    "Claim Approved": 19,
+    "Dispatch Parts": 4,
+    "Requires Authorization (Above $3,000)": 2
+  },
+  "difference_kinds": {
+    "fields": 22719
+  },
+  "field_difference_counts": {
+    "parts": 22719
+  },
+  "periods": [
+    {
+      "period": "2024",
+      "type": "both",
+      "excel": 5282,
+      "web": 5282,
+      "difference": 0,
+      "excel_parts": 1089053.98,
+      "web_parts": 3827994.83
+    },
+    {
+      "period": "2024",
+      "type": "Z006",
+      "excel": 4085,
+      "web": 4085,
+      "difference": 0,
+      "excel_parts": 900334.8,
+      "web_parts": 3091266.25
+    },
+    {
+      "period": "2024",
+      "type": "Z005",
+      "excel": 1197,
+      "web": 1197,
+      "difference": 0,
+      "excel_parts": 188719.18,
+      "web_parts": 736728.58
+    },
+    {
+      "period": "2025",
+      "type": "both",
+      "excel": 8386,
+      "web": 8386,
+      "difference": 0,
+      "excel_parts": 2182772.25,
+      "web_parts": 6722016.92
+    },
+    {
+      "period": "2025",
+      "type": "Z006",
+      "excel": 6906,
+      "web": 6906,
+      "difference": 0,
+      "excel_parts": 1922109.8,
+      "web_parts": 5795191.34
+    },
+    {
+      "period": "2025",
+      "type": "Z005",
+      "excel": 1480,
+      "web": 1480,
+      "difference": 0,
+      "excel_parts": 260662.45,
+      "web_parts": 926825.58
+    },
+    {
+      "period": "2026",
+      "type": "both",
+      "excel": 9105,
+      "web": 9105,
+      "difference": 0,
+      "excel_parts": 1667267.57,
+      "web_parts": 7407790.56
+    },
+    {
+      "period": "2026",
+      "type": "Z006",
+      "excel": 7327,
+      "web": 7327,
+      "difference": 0,
+      "excel_parts": 1384579.94,
+      "web_parts": 6115311.47
+    },
+    {
+      "period": "2026",
+      "type": "Z005",
+      "excel": 1778,
+      "web": 1778,
+      "difference": 0,
+      "excel_parts": 282687.63,
+      "web_parts": 1292479.09
+    },
+    {
+      "period": "2026-01",
+      "type": "both",
+      "excel": 430,
+      "web": 430,
+      "difference": 0,
+      "excel_parts": 133607.4,
+      "web_parts": 390904.19
+    },
+    {
+      "period": "2026-01",
+      "type": "Z006",
+      "excel": 330,
+      "web": 330,
+      "difference": 0,
+      "excel_parts": 107222.36,
+      "web_parts": 317619.28
+    },
+    {
+      "period": "2026-01",
+      "type": "Z005",
+      "excel": 100,
+      "web": 100,
+      "difference": 0,
+      "excel_parts": 26385.04,
+      "web_parts": 73284.91
+    },
+    {
+      "period": "2026-02",
+      "type": "both",
+      "excel": 1026,
+      "web": 1026,
+      "difference": 0,
+      "excel_parts": 230170.09,
+      "web_parts": 744131.67
+    },
+    {
+      "period": "2026-02",
+      "type": "Z006",
+      "excel": 806,
+      "web": 806,
+      "difference": 0,
+      "excel_parts": 196190.35,
+      "web_parts": 614952.86
+    },
+    {
+      "period": "2026-02",
+      "type": "Z005",
+      "excel": 220,
+      "web": 220,
+      "difference": 0,
+      "excel_parts": 33979.74,
+      "web_parts": 129178.81
+    },
+    {
+      "period": "2026-03",
+      "type": "both",
+      "excel": 1171,
+      "web": 1171,
+      "difference": 0,
+      "excel_parts": 266199.1,
+      "web_parts": 883636.15
+    },
+    {
+      "period": "2026-03",
+      "type": "Z006",
+      "excel": 1027,
+      "web": 1027,
+      "difference": 0,
+      "excel_parts": 245090.15,
+      "web_parts": 801840.19
+    },
+    {
+      "period": "2026-03",
+      "type": "Z005",
+      "excel": 144,
+      "web": 144,
+      "difference": 0,
+      "excel_parts": 21108.95,
+      "web_parts": 81795.96
+    },
+    {
+      "period": "2026-04",
+      "type": "both",
+      "excel": 1114,
+      "web": 1114,
+      "difference": 0,
+      "excel_parts": 182783.73,
+      "web_parts": 832182.72
+    },
+    {
+      "period": "2026-04",
+      "type": "Z006",
+      "excel": 858,
+      "web": 858,
+      "difference": 0,
+      "excel_parts": 155173.62,
+      "web_parts": 671256.19
+    },
+    {
+      "period": "2026-04",
+      "type": "Z005",
+      "excel": 256,
+      "web": 256,
+      "difference": 0,
+      "excel_parts": 27610.11,
+      "web_parts": 160926.53
+    },
+    {
+      "period": "2026-05",
+      "type": "both",
+      "excel": 1287,
+      "web": 1287,
+      "difference": 0,
+      "excel_parts": 226787.12,
+      "web_parts": 1069278.79
+    },
+    {
+      "period": "2026-05",
+      "type": "Z006",
+      "excel": 1047,
+      "web": 1047,
+      "difference": 0,
+      "excel_parts": 180948.23,
+      "web_parts": 866029.91
+    },
+    {
+      "period": "2026-05",
+      "type": "Z005",
+      "excel": 240,
+      "web": 240,
+      "difference": 0,
+      "excel_parts": 45838.89,
+      "web_parts": 203248.88
+    },
+    {
+      "period": "2026-06",
+      "type": "both",
+      "excel": 1089,
+      "web": 1089,
+      "difference": 0,
+      "excel_parts": 189271.83,
+      "web_parts": 887455.38
+    },
+    {
+      "period": "2026-06",
+      "type": "Z006",
+      "excel": 858,
+      "web": 858,
+      "difference": 0,
+      "excel_parts": 146881.7,
+      "web_parts": 685434.16
+    },
+    {
+      "period": "2026-06",
+      "type": "Z005",
+      "excel": 231,
+      "web": 231,
+      "difference": 0,
+      "excel_parts": 42390.13,
+      "web_parts": 202021.22
+    },
+    {
+      "period": "2026-07",
+      "type": "both",
+      "excel": 1100,
+      "web": 1100,
+      "difference": 0,
+      "excel_parts": 162420.43,
+      "web_parts": 973071.4
+    },
+    {
+      "period": "2026-07",
+      "type": "Z006",
+      "excel": 870,
+      "web": 870,
+      "difference": 0,
+      "excel_parts": 122154.27,
+      "web_parts": 800370.53
+    },
+    {
+      "period": "2026-07",
+      "type": "Z005",
+      "excel": 230,
+      "web": 230,
+      "difference": 0,
+      "excel_parts": 40266.16,
+      "web_parts": 172700.87
+    },
+    {
+      "period": "2026-08",
+      "type": "both",
+      "excel": 889,
+      "web": 889,
+      "difference": 0,
+      "excel_parts": 118744.95,
+      "web_parts": 754510.15
+    },
+    {
+      "period": "2026-08",
+      "type": "Z006",
+      "excel": 709,
+      "web": 709,
+      "difference": 0,
+      "excel_parts": 97828.64,
+      "web_parts": 609261.78
+    },
+    {
+      "period": "2026-08",
+      "type": "Z005",
+      "excel": 180,
+      "web": 180,
+      "difference": 0,
+      "excel_parts": 20916.31,
+      "web_parts": 145248.37
+    },
+    {
+      "period": "2026-09",
+      "type": "both",
+      "excel": 703,
+      "web": 703,
+      "difference": 0,
+      "excel_parts": 109673.4,
+      "web_parts": 621554.41
+    },
+    {
+      "period": "2026-09",
+      "type": "Z006",
+      "excel": 582,
+      "web": 582,
+      "difference": 0,
+      "excel_parts": 94411.67,
+      "web_parts": 540687.32
+    },
+    {
+      "period": "2026-09",
+      "type": "Z005",
+      "excel": 121,
+      "web": 121,
+      "difference": 0,
+      "excel_parts": 15261.73,
+      "web_parts": 80867.09
+    },
+    {
+      "period": "2026-10",
+      "type": "both",
+      "excel": 296,
+      "web": 296,
+      "difference": 0,
+      "excel_parts": 47609.52,
+      "web_parts": 251065.7
+    },
+    {
+      "period": "2026-10",
+      "type": "Z006",
+      "excel": 240,
+      "web": 240,
+      "difference": 0,
+      "excel_parts": 38678.95,
+      "web_parts": 207859.25
+    },
+    {
+      "period": "2026-10",
+      "type": "Z005",
+      "excel": 56,
+      "web": 56,
+      "difference": 0,
+      "excel_parts": 8930.57,
+      "web_parts": 43206.45
+    }
+  ],
+  "top10_2026": [
+    {
+      "code": "Z003",
+      "name": "Electrical System",
+      "tickets": 4751,
+      "web_parts": 4417969.06,
+      "excel_parts_same_tickets": 820753.06,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z001",
+      "name": "External Fixtures",
+      "tickets": 2761,
+      "web_parts": 2538895.46,
+      "excel_parts_same_tickets": 646317.39,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z006",
+      "name": "Interior Components",
+      "tickets": 1302,
+      "web_parts": 1268503.35,
+      "excel_parts_same_tickets": 243441.63,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z010",
+      "name": "Appliances",
+      "tickets": 802,
+      "web_parts": 763717.76,
+      "excel_parts_same_tickets": 214203.07,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z008",
+      "name": "Gas System",
+      "tickets": 719,
+      "web_parts": 406312.1,
+      "excel_parts_same_tickets": 89061.64,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z005",
+      "name": "Exterior Components",
+      "tickets": 684,
+      "web_parts": 1126496.64,
+      "excel_parts_same_tickets": 184302.77,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z004",
+      "name": "Mechanical",
+      "tickets": 535,
+      "web_parts": 615897.65,
+      "excel_parts_same_tickets": 182933.08,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z002",
+      "name": "Plumbing",
+      "tickets": 525,
+      "web_parts": 565965.1,
+      "excel_parts_same_tickets": 117267.54,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z014",
+      "name": "Repairer misc.",
+      "tickets": 213,
+      "web_parts": 281684.8,
+      "excel_parts_same_tickets": 36300.32,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z007",
+      "name": "Floor",
+      "tickets": 93,
+      "web_parts": 201364.3,
+      "excel_parts_same_tickets": 63058.31,
+      "missing_in_excel": 0
+    }
+  ]
+}

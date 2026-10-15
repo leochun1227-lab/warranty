@@ -1,0 +1,36 @@
+{
+  "finding": "Top10 Parts (AUD) receives total claim amount including tax when component fields are missing.",
+  "sample": {
+    "ticketId": "10000",
+    "liveSource": "c4cTickets_test/tickets/10000/ticket",
+    "liveMonetaryFields": {"AmountIncludingTax": "167.560000"},
+    "liveComponentFieldsPresent": false,
+    "webPartsAUD": "167.56",
+    "excelClaimTotalAUD": "152.33",
+    "excelFactoryPartsAUD": "6.88",
+    "excelLabourAUD": "118.18",
+    "excelRepairerPartsAndMiscAUD": "27.27",
+    "correctPartsAUD": "34.15"
+  },
+  "sourceMapping": [
+    {"file": "fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py", "line": 925, "behavior": "claim_total falls back to AmountIncludingTax when ClaimTotalAmount is absent"},
+    {"file": "fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py", "line": 926, "behavior": "repairer_parts_total falls back to claim_total when repairer component is absent"},
+    {"file": "fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py", "line": 969, "behavior": "missing factory parts component is written as 0"},
+    {"file": "build_issue_exports.py", "line": 12, "behavior": "Top10 adds Factory Parts Claim Total Amount and Repairer Parts Claim Total Amount from the generated CSV"}
+  ],
+  "workbookRepairerHeader": "Repairer Parts& Misc. Claim Total Amount",
+  "workbookRepairerHeaderSupportedByCurrentMapper": false,
+  "populationValidation": {
+    "eligibleTickets": 22773,
+    "webPartsExactlyEqualExcelParts": 54,
+    "webPartsExactlyEqualExcelClaimTotalTimes1Point1RoundedHalfUp": 21211,
+    "webPartsWithinOneCentOfExcelClaimTotalTimes1Point1": 21265
+  },
+  "proposedCorrection": [
+    "Remove the claim_total fallback from repairer parts mapping.",
+    "Preserve absent parts components as unknown rather than zero.",
+    "Support the authoritative Repairer Parts& Misc. Claim Total Amount field alias.",
+    "Supply authoritative factory and repairer component amounts before regenerating the report; existing sampled live core data has only AmountIncludingTax."
+  ],
+  "sourceFilesModified": false
+}

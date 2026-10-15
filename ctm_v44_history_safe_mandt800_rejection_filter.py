@@ -1271,6 +1271,10 @@ def build_snapshot(source_root: str) -> Dict[str, Dict[str, Any]]:
             "claimType": ticket_claim_type(ticket),
             "name": clean(ticket.get("TicketName")),
             "amount": parse_amount(ticket.get("AmountIncludingTax")),
+            # Only the preserved quote is trusted here; older snapshots load
+            # the original ticket fields in the browser until the next fetch.
+            **({"quotedClaimAmount": ticket["quotedClaimAmount"]}
+               if "quotedClaimAmount" in ticket else {}),
             "z1z8TimeConsumed": clean(ticket.get("Z1Z8TimeConsumed")),
             "erpPurchaseOrder": ticket_po_number(ticket),
             "salesOrder": clean(ticket.get("Sales Order") or ticket.get("SalesOrder") or ticket.get("salesOrder") or ticket.get("LookupSalesOrder") or ticket.get("lookupSalesOrder")),

@@ -495,7 +495,8 @@ test('all static pages parse and their local script dependencies exist', () => {
       }
     }
     if(['infieldpredelivery.html','repairs.html'].includes(file)){
-      assert.match(page,/<script src="claim-trend-ticket-metrics\.js\?v=3"><\/script>/);
+      const metricsVersion=file==='infieldpredelivery.html'?'20261015-pending-amount':'3';
+      assert.ok(page.includes(`<script src="claim-trend-ticket-metrics.js?v=${metricsVersion}"></script>`));
     }
   }
 });

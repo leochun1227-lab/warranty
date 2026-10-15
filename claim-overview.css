@@ -20,6 +20,9 @@
   #viewNote { color:#738094!important; font-size:12px!important; font-weight:400!important; }
   .panel { padding:14px 16px!important; border-radius:12px!important; box-shadow:none!important; }
   .panelHead { min-height:26px!important; margin-bottom:12px!important; align-items:center!important; }
+  #toggleInFieldPending,#toggleAmountInFieldPending { margin-left:auto; padding:6px 10px; border:1px solid #dbe3ec; border-radius:7px; background:#fff; color:#156082; font:500 12px "Segoe UI",sans-serif; cursor:pointer; white-space:nowrap; }
+  #toggleInFieldPending:hover,#toggleInFieldPending[aria-pressed="true"],#toggleAmountInFieldPending:hover,#toggleAmountInFieldPending[aria-pressed="true"] { background:#edf5fa; border-color:#9bbdce; }
+  .pdv-trend-page :is(#toggleInFieldPending,#toggleAmountInFieldPending,#amountPendingNote),html[data-claim-view="compare"] :is(#toggleInFieldPending,#toggleAmountInFieldPending,#amountPendingNote) { display:none!important; }
   .panelTitleWrap { flex-direction:row!important; align-items:center!important; flex-wrap:wrap!important; gap:16px!important; }
   .panelTitle { font-size:13px!important; font-weight:600!important; color:#334155!important; }
   .titleIcon { display:none!important; }
@@ -40,7 +43,14 @@
   .totalChip strong { font-size:15px!important; font-weight:600!important; color:#243247!important; }
   .chartWrap { height:235px!important; }
   .chartWrapTall { height:265px!important; }
+  body:not(.pdv-trend-page) :is(#approved,#amount) .chartWrap { height:310px!important; }
   .legend { font-size:11px!important; color:#64748b!important; margin-top:8px!important; }
+  .legend .legendLine { width:36px!important; height:12px!important; flex:0 0 36px; overflow:visible; }
+  body:not(.pdv-trend-page) :is(#approved,#amount) .dualChartHead { min-height:70px!important; flex-direction:column!important; justify-content:flex-start!important; align-items:stretch!important; gap:8px!important; }
+  body:not(.pdv-trend-page) :is(#approvedTotalsSplit,#amountTotalsSplit) { display:grid!important; grid-template-columns:repeat(2,max-content)!important; justify-content:end!important; gap:6px 12px!important; }
+  body:not(.pdv-trend-page) :is(#approved,#amount) .legend { min-height:36px!important; align-content:start!important; }
+  body:not(.pdv-trend-page) :is(#approvedSplitLegend,#amountSplitLegend) { display:grid!important; grid-template-columns:repeat(2,max-content)!important; gap:6px 12px!important; }
+  .pendingAmountNote { margin:10px 0 0; font:11px/1.5 "Segoe UI",sans-serif; color:#64748b; }
   html:not([data-claim-view="compare"]) .dualChartCard:first-child .legend { visibility:hidden!important; }
   html[data-claim-view="compare"] .dualChartGrid { grid-template-columns:1fr!important; }
   @media(max-width:1000px) {

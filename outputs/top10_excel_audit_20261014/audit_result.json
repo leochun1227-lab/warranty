@@ -1,0 +1,121 @@
+{
+  "website": "https://warranty-l9jw.onrender.com/parts.html",
+  "assessment": "Needs revision",
+  "coverage": "Ticket universe and monthly counts fully reconciled under existing policy; Top10 Issue Position source not independently verifiable from supplied Ticket-level Excel; desktop default and representative filters checked; mobile and file-download UI not checked",
+  "source_workbook": "C:/Users/Leo.Li/AppData/Local/Temp/ZF8C06456D7698BCB54F44D.xlsx",
+  "source_sheet": " 2026-10-13 17.42.10",
+  "source_header_row": 10,
+  "source_ticket_id_column": "B (D is identical)",
+  "source_parts_columns": [
+    "AE Factory Parts Claim Total Amount",
+    "AG Repairer Parts& Misc. Claim Total Amount"
+  ],
+  "reviewed_groups": 631,
+  "internal_group_count_or_amount_mismatches": 0,
+  "counts": {
+    "all_workbook_tickets": 35362,
+    "approved_with_date": 22773,
+    "2026": 9105,
+    "2026_in_field": 7327,
+    "2026_pre_delivery": 1778
+  },
+  "material_findings": [
+    {
+      "severity": "P1",
+      "issue": "Parts amount uses total claim including tax when component missing",
+      "scope": "22719 of 22773 approved ticket amounts differ; 9080 of 9105 in 2026",
+      "proposed_fix": "Read authoritative factory and repairer/misc part components; remove total claim fallback; keep absent components unknown and rebuild dependent summaries and exports",
+      "example": {
+        "ticket": "10000",
+        "excel_row": 7666,
+        "factory": 6.88,
+        "repairer_misc": 27.27,
+        "correct_parts": 34.15,
+        "web_parts": 167.56
+      }
+    }
+  ],
+  "changes": "Audit evidence files only; original workbook, application source and remote data unchanged",
+  "top10_2026_existing_membership_corrected_parts": [
+    {
+      "code": "Z003",
+      "name": "Electrical System",
+      "tickets": 4751,
+      "web_parts": 4417969.06,
+      "excel_parts_same_tickets": 820753.06,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z001",
+      "name": "External Fixtures",
+      "tickets": 2761,
+      "web_parts": 2538895.46,
+      "excel_parts_same_tickets": 646317.39,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z006",
+      "name": "Interior Components",
+      "tickets": 1302,
+      "web_parts": 1268503.35,
+      "excel_parts_same_tickets": 243441.63,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z010",
+      "name": "Appliances",
+      "tickets": 802,
+      "web_parts": 763717.76,
+      "excel_parts_same_tickets": 214203.07,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z008",
+      "name": "Gas System",
+      "tickets": 719,
+      "web_parts": 406312.1,
+      "excel_parts_same_tickets": 89061.64,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z005",
+      "name": "Exterior Components",
+      "tickets": 684,
+      "web_parts": 1126496.64,
+      "excel_parts_same_tickets": 184302.77,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z004",
+      "name": "Mechanical",
+      "tickets": 535,
+      "web_parts": 615897.65,
+      "excel_parts_same_tickets": 182933.08,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z002",
+      "name": "Plumbing",
+      "tickets": 525,
+      "web_parts": 565965.1,
+      "excel_parts_same_tickets": 117267.54,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z014",
+      "name": "Repairer misc.",
+      "tickets": 213,
+      "web_parts": 281684.8,
+      "excel_parts_same_tickets": 36300.32,
+      "missing_in_excel": 0
+    },
+    {
+      "code": "Z007",
+      "name": "Floor",
+      "tickets": 93,
+      "web_parts": 201364.3,
+      "excel_parts_same_tickets": 63058.31,
+      "missing_in_excel": 0
+    }
+  ]
+}
