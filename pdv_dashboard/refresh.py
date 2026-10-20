@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from claim_trend_page import pdv_page
 from pdv_scope import START_DATE, day, scoped_status, build_claim
+from claim_trend_snapshot import build_historical_trend, pending
 
 ROOT = Path(__file__).resolve().parent
 PUBLIC = ROOT / 'public'
@@ -116,14 +117,6 @@ def assemble_pages(warranty):
         page = (warranty/name).read_text(encoding='utf-8')
         page = re.sub(r'<aside class="sidebar">[\s\S]*?</aside>', '', page, count=1)
         page = page.replace('</head>', '<link rel="stylesheet" href="site.css"><script src="navigation.js" defer></script></head>')
-        page = page.replace('fetchClaimStartup("outputs/claim_trend_startup.json")',
-                            'fetchClaimStartup("'+DB+'/'+SITE+'/claimTrendStartup.json")')
-        start = page.index('async function readClaimStartupVersion(){')
-        end = page.index('\nfunction validClaimStartup',start)
-        page = page[:start]+'''async function readClaimStartupVersion(){
-  try { return await readJson("'''+SITE+'''/claimTrendStartup/sourceVersion",4000); }
-  catch { return ""; }
-}'''+page[end:]
         atomic(PUBLIC/name, pdv_page(page).encode('utf-8'))
 
 def resolve_warranty_root(explicit=None):
@@ -151,7 +144,7 @@ def check_environment(warranty, publish_only=False):
     print('PDV Warranty folder: '+str(warranty),flush=True)
     print('PDV updater folder: '+str(ROOT),flush=True)
 
-def refresh(warranty, publish_only=False):
+def refresh(warranty, publish_only=False, dry_run=False):
     check_environment(warranty,publish_only)
     print('Reading published warranty generations...', flush=True)
     startup = read(ISSUE+'/startup')
@@ -187,6 +180,19 @@ def refresh(warranty, publish_only=False):
         atomic(amount_cache,encode(amount_payload))
     claim,claim_details=build_claim(selected,amount_payload['rows'],approved,
         encode([issue['sourceVersion'],status_version,amount_version,START_DATE]).decode(),issue['generatedAt'])
+    historical_source = read('ctmTicketStatusMonitorV44/analytics/claimTrendStartup')
+    historical_versions = json.loads(historical_source['sourceVersion'])
+    if historical_versions[0] != amount_version:
+        raise ValueError('Historical Claim Trend and amount sources differ')
+    # Older status generations did not preserve quote fields. Resolve them once
+    # in the daily job, never on a page visit.
+    quote_rows = None
+    if any(pending(r) and 'quotedClaimAmount' not in r for r in status_payload['rows']):
+        quote_rows = read('c4cTickets_test/tickets')
+        if not isinstance(quote_rows, (dict, list)):
+            raise ValueError('Pending quote details unavailable')
+    historical = build_historical_trend(historical_source, status_payload['rows'],
+                                       amount_payload['rows'], status_version, quote_rows)
     names = json.loads((warranty/'issue_subcategories.json').read_text(encoding='utf-8'))['categories']
     cache = ROOT/'.cache'/version
     cache.mkdir(parents=True,exist_ok=True)
@@ -222,18 +228,32 @@ def refresh(warranty, publish_only=False):
     confirmed = read(ISSUE+'/startup/sourceVersion')
     if confirmed != issue['sourceVersion'] or status_version != read('ctmTicketStatusMonitorV44/automation/lastRunFinishedAt'):
         raise ValueError('Source changed during build; previous site retained')
+    verify_historical_sources(historical)
     overview['ticketSourceModifiedAt']=max(r.get('lastSeenAt','') for r in selected)
     overview['approvalSource']='Firebase currentStatus'
     overview['approvalSourceVersion']=status_version
     overview['claimSourceVersion']=claim['sourceVersion']
     content = encode(overview)
     generation = hashlib.sha256(content).hexdigest()[:20]
+    if dry_run:
+        atomic(ROOT/'test-results'/'historical-daily-preview.json', encode(historical))
+        print(f"PASS: validated daily chart result {historical['generation']}; {len(encode(historical)):,} bytes; no publication",flush=True)
+        return
     if not publish_only:
         assemble_pages(warranty)
-    publish_dashboard(warranty,overview,details,claim,generation,issue['sourceVersion'],claim_details)
+    publish_dashboard(warranty,overview,details,claim,generation,issue['sourceVersion'],claim_details,historical)
     print(f'PASS: {len(content):,} byte overview; complete generation {generation}',flush=True)
 
-def publish_dashboard(warranty,overview,details,claim,generation,source_version,claim_details):
+def verify_historical_sources(snapshot):
+    versions = [read('ctmTicketStatusMonitorV44/analytics/team/generatedAt'),
+                read('c4cTickets_test/ticketCoreSyncAt'), read('c4cTickets_test/ticketSoSyncAt')]
+    if (versions != json.loads(snapshot['sourceVersion'])
+            or read('ctmTicketStatusMonitorV44/automation/lastRunFinishedAt') != snapshot['statusVersion']
+            or read('ctmTicketStatusMonitorV44/analytics/claimTrendStartup/sourceVersion') != snapshot['sourceVersion']):
+        raise ValueError('Historical chart sources changed; previous publication retained')
+
+
+def publish_dashboard(warranty,overview,details,claim,generation,source_version,claim_details,historical):
     from firebase_admin import credentials,db,initialize_app,delete_app
     app=initialize_app(credentials.Certificate(str(warranty/'firebase-service-account.json')),
                        {'databaseURL':DB},name='pdv-dashboard-publisher')
@@ -254,9 +274,17 @@ def publish_dashboard(warranty,overview,details,claim,generation,source_version,
         claim_envelope={k:claim[k] for k in ('schema','generatedAt','sourceVersion','scopeStart','scopeBasis')}
         claim_envelope['detailPath']=SITE+'/generations/'+generation+'/claimDetails'
         claim_envelope['data']=encode({k:claim[k] for k in ('monthly','closedIndex')}).decode('utf-8')
-        ref.update({'startup':startup,'claimTrendStartup':claim_envelope})
+        historical_envelope={k:historical[k] for k in ('schema','publication','generation','generatedAt','sourceVersion','statusVersion')}
+        historical_envelope['data']=encode({k:historical[k] for k in ('monthly','closedIndex','pendingMonthly','pendingAmountMonthly')}).decode()
+        # The immutable result is complete before the latest pointer is advanced.
+        ref.child('historicalGenerations').child(historical['generation']).set(historical_envelope)
+        verify_historical_sources(historical)
+        ref.update({'startup':startup,'claimTrendStartup':claim_envelope,
+                    'historicalClaimTrendStartup':historical_envelope})
         if read(SITE+'/startup/generation')!=generation:
             raise ValueError('Firebase publication verification failed')
+        if read(SITE+'/historicalClaimTrendStartup/generation')!=historical['generation']:
+            raise ValueError('Historical chart publication verification failed')
         print('PASS: Firebase dashboard publication verified',flush=True)
     finally:
         delete_app(app)
@@ -265,6 +293,7 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--warranty-root',type=Path)
     parser.add_argument('--publish-only',action='store_true',help='Update Firebase data without rebuilding local website files')
+    parser.add_argument('--dry-run',action='store_true',help='Build and verify results without publishing or rebuilding pages')
     parser.add_argument('--check',action='store_true',help='Check local paths and Python dependencies without network or data updates')
     args=parser.parse_args()
     try:
@@ -273,6 +302,6 @@ if __name__=='__main__':
             check_environment(warranty,args.publish_only)
             print('PASS: PDV local paths and dependencies; no Firebase connection tested')
         else:
-            refresh(warranty,args.publish_only)
+            refresh(warranty,args.publish_only,args.dry_run)
     except Exception as exc:
         parser.exit(1,'ERROR: PDV update failed: '+str(exc)+'\n')

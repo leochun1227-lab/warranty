@@ -5,7 +5,7 @@ if not exist "%~dp0pdv_dashboard\refresh.py" (
   echo ERROR: PDV updater missing: "%~dp0pdv_dashboard\refresh.py"
   exit /b 1
 )
-for %%F in (pdv_scope.py claim_trend_page.py) do (
+for %%F in (pdv_scope.py claim_trend_page.py claim_trend_snapshot.py) do (
   if not exist "%~dp0pdv_dashboard\%%F" (
     echo ERROR: PDV companion file missing: "%~dp0pdv_dashboard\%%F"
     exit /b 1
