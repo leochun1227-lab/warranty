@@ -77,6 +77,16 @@ try{
   assert.ok(warm<2000);assert.deepEqual(await metrics(fast.page),expected);
   assert.ok(!fast.requests.some(p=>p.endsWith('/teamStartup')),'slow version check cannot hold cached figures');
   await fast.page.screenshot({path:path.join(output,'dashboard.png'),fullPage:true});
+  for(const metric of ['currentCritical','totalRemoved']){
+    await fast.page.locator(`[data-assign-metric="${metric}"]`).click();
+    await fast.page.locator('.teamAssignTrack[data-employee="Kylie Clayton"]').click();
+    await fast.page.waitForFunction(()=>employeeModalDetailState==='ready');
+    assert.deepEqual(await fast.page.locator('#employeeModalBackdrop .kpiValue').allTextContents(),['1','2','1','1']);
+    assert.match(await fast.page.locator('#empStatusDist').textContent(),/Waiting/);
+    assert.match(await fast.page.locator('#employeeModalContext').textContent(),/Sept? 2026/);
+    await fast.page.screenshot({path:path.join(output,`employee-${metric}.png`)});
+    await fast.page.locator('#employeeModalClose').click();
+  }
   const updated=structuredClone(fixture);
   updated.team.generatedAt='2026-10-08T00:00:00Z';
   updated.team.views.all.summary.criticalNow=2;

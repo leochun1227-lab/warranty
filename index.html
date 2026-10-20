@@ -4145,12 +4145,12 @@ body{
 <div id="employeeModalBackdrop" class="employeeModalBackdrop">
   <section class="employeeModal" role="dialog" aria-modal="true" aria-label="Employee workload details">
     <div class="employeeModalHead">
-      <div class="employeePickerWrap"><label class="employeePickerLabel" for="employeePicker">Employee</label><select id="employeePicker" class="employeePicker"></select></div>
+      <div class="employeePickerWrap"><label class="employeePickerLabel" for="employeePicker">Employee</label><select id="employeePicker" class="employeePicker"></select><div id="employeeModalContext" role="status"></div></div>
       <div class="employeeModalControls"><div id="employeeModalPeriod" class="employeeModalPeriod"></div><button id="employeeModalClose" class="employeeModalClose" type="button">X</button></div>
     </div>
     <section class="employeeModalKpis">
       <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Tickets in Progress</div><div id="empKpiCritical" class="kpiValue">0</div></div><div class="kpiIcon customTeal" aria-hidden="true">!</div></div><div id="empKpiCriticalTrend" class="kpiTrend"></div></div>
-      <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Handled Tickets</div><div id="empKpiHandled" class="kpiValue">0</div></div><div class="kpiIcon customGreen" aria-hidden="true">OK</div></div><div id="empKpiHandledTrend" class="kpiTrend"></div></div>
+      <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Removed Tickets</div><div id="empKpiHandled" class="kpiValue">0</div></div><div class="kpiIcon customGreen" aria-hidden="true">OK</div></div><div id="empKpiHandledTrend" class="kpiTrend"></div></div>
       <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Approved Tickets</div><div id="empKpiApprovedCost" class="kpiValue">0</div></div><div class="kpiIcon customGreen" aria-hidden="true">OK</div></div><div id="empKpiApprovedCostTrend" class="kpiTrend"></div></div>
       <div class="kpi"><div class="kpiTop"><div class="kpiMain"><div class="kpiLabel">Unapproved Tickets</div><div id="empKpiAvgCost" class="kpiValue">0</div></div><div class="kpiIcon customAmber" aria-hidden="true">!</div></div><div id="empKpiAvgCostTrend" class="kpiTrend"></div></div>
     </section>
@@ -6935,7 +6935,13 @@ function employeeTicketEmployee(entry){
 }
 function employeeAnalyticsStat(name){
   const view=currentEmployeeAnalyticsView();
-  return arrayFromMaybe(view&&view.stats).find(row=>clean(row.name)===clean(name))||null;
+  return arrayFromMaybe(view&&view.stats).find(row=>employeeStatusKey(row.name)===employeeStatusKey(name))||null;
+}
+function selectedEmployeeWorkloadRows(){
+  // Reuse the figures rendered on the chart, including a restored startup
+  // snapshot. Loading ticket details must not switch the dialog to a different
+  // aggregate or require dailySnapshots omitted from the compact cache.
+  return dashboardRenderCache.render(dashboardRenderSelection(),()=>teamAssignRowsWithDirectory());
 }
 function employeeNameMatches(row,name){
   const target=employeeStatusKey(name);
@@ -7028,50 +7034,45 @@ function employeeCriticalEntries(name,bounds){
   });
 }
 function employeeSummary(name,bounds){
+  const selected=periodBounds();
+  if(bounds.start===selected.start&&bounds.end===selected.end){
+    const row=selectedEmployeeWorkloadRows().find(row=>employeeStatusKey(row.name)===employeeStatusKey(name));
+    if(row)return {critical:Number(row.total||0),handled:Number(row.removed||0),approved:Number(row.approved||0),unapproved:Number(row.unapproved||0)};
+  }
+  // Comparisons use the requested period, never cumulative handled/decision
+  // totals from the final daily snapshot.
   const rowTotals=employeeApprovalTotalsFromRows(name,bounds);
   const stat=employeeAnalyticsStat(name);
-  const statTotals=employeeAnalyticsTotals(stat);
-  if(stat&&stat.dailySnapshots){
-    const chosen=employeeSnapshotAtOrBefore(stat,bounds.end);
-    if(chosen){
-      const approved=rowTotals.approved;
-      const unapproved=rowTotals.unapproved;
-      const approvedAmount=rowTotals.approvedAmount||Number(chosen.approvedAmount||0)||statTotals.approvedAmount;
-      const unapprovedAmount=0;
-      const approvedCostTickets=Number(chosen.approvedCostTickets||chosen.approvedPoCostTickets||chosen.openPoCostTickets||0);
-      const avgCost=rowTotals.avgCost||Number(chosen.avgCost||0)||(approvedCostTickets?approvedAmount/approvedCostTickets:0)||statTotals.avgCost;
-      return {
-        approved,
-        unapproved,
-        approvedAmount,
-        unapprovedAmount,
-        critical:Number(chosen.critical||0),
-        handled:Number(chosen.handled||0),
-        handlingSpeed:0,
-        avgCost,
-        ratio:pctValue(unapproved,approved)
-      };
-    }
-  }
-  const approved=rowTotals.approved;
-  const unapproved=rowTotals.unapproved;
-  const approvedAmount=rowTotals.approvedAmount||statTotals.approvedAmount;
-  const unapprovedAmount=0;
-  const avgCost=rowTotals.avgCost||statTotals.avgCost;
-  return {approved,unapproved,approvedAmount,unapprovedAmount,critical:0,handled:0,handlingSpeed:0,avgCost,ratio:pctValue(unapproved,approved)};
+  const snap=periodSnapshotForBounds(bounds.start,bounds.end);
+  const decisions=arrayFromMaybe(snap&&snap.employeeApprovalRows).find(row=>employeeStatusKey(row.name)===employeeStatusKey(name));
+  const approved=Number(decisions?decisions.approved:rowTotals.approved)||0;
+  const unapproved=Number(decisions?decisions.unapproved:rowTotals.unapproved)||0;
+  const chosen=employeeSnapshotAtOrBefore(stat,bounds.end);
+  const critical=dailyValueAtOrBefore(stat&&stat.criticalTrendDaily,bounds.end,chosen?Number(chosen.critical||0):employeeCriticalSnapshotRows(name,bounds).length);
+  const handled=approved+unapproved||sumEmployeeDaily(stat&&stat.removedDaily,bounds.start,bounds.end);
+  return {approved,unapproved,critical,handled};
 }
 function bucketRowsFromCounts(counts){
   return Object.entries(counts).map(([label,count])=>({label,count})).filter(x=>x.count>0).sort((a,b)=>b.count-a.count||a.label.localeCompare(b.label));
 }
 function employeeStatusRows(name,bounds){
-  const stat=employeeAnalyticsStat(name);
-  if(stat&&stat.statusCounts&&bounds.end>=latestDateForView())return bucketRowsFromCounts(stat.statusCounts);
-  return [];
+  const counts={};
+  employeeCriticalSnapshotRows(name,bounds).forEach(row=>{const label=clean(row.status)||"Unknown";counts[label]=(counts[label]||0)+1;});
+  return bucketRowsFromCounts(counts);
+}
+function employeeCriticalSnapshotRows(name,bounds){
+  return criticalSnapshotRowsAt(bounds.end).filter(row=>employeeStatusKey(employeeNameForSnapshotRow(row))===employeeStatusKey(name));
 }
 function employeeDurationRows(name,bounds){
-  const stat=employeeAnalyticsStat(name);
-  if(stat&&stat.durationCounts&&bounds.end>=latestDateForView())return bucketRowsFromCounts(stat.durationCounts);
-  return [];
+  const counts={"0-7days":0,"7-30days":0,"30-60days":0,"60+days":0,"Unknown":0};
+  const createdMap=rawCreatedOnDateByTicketId(),enterMap=criticalEnterDateByTicketId(bounds.end);
+  employeeCriticalSnapshotRows(name,bounds).forEach(row=>{
+    const start=criticalDurationStartDateForRow({...row,createdOn:row.createdOn||row.created},enterMap,createdMap);
+    const days=criticalDurationDaysFromStart(start.date,bounds.end);
+    const label=!start.date?"Unknown":days<=7?"0-7days":days<=30?"7-30days":days<=60?"30-60days":"60+days";
+    counts[label]++;
+  });
+  return Object.entries(counts).map(([label,count])=>({label,count})).filter(row=>row.count>0);
 }
 function employeeCostRows(name,bounds){
   const stat=employeeAnalyticsStat(name);
@@ -7113,35 +7114,14 @@ function employeeCriticalCountAtDate(name,date){
 function employeeCriticalTrendRows(name,bounds){
   const stat=employeeAnalyticsStat(name);
   if(!stat)return [];
-  const granularity=avgCostGranularity(bounds.start,bounds.end);
-  const source=granularity==="monthly"?stat.criticalTrendMonthly:(granularity==="weekly"?stat.criticalTrendWeekly:stat.criticalTrendDailyRows);
-  return arrayFromMaybe(source).filter(row=>{
-    const start=clean(row.periodStart||row.date);
-    const end=clean(row.periodEnd||row.date||start);
-    return start&&end&&end>=bounds.start&&start<=bounds.end;
-  }).map(row=>{
-    const pointDate=clean(row.periodEnd||row.date||row.periodStart);
-    const snap=employeeSnapshotAtOrBefore(stat,pointDate)||{};
-    const approved=Number(row.approved||snap.approved||0);
-    const unapproved=Number(row.unapproved||snap.unapproved||0);
-    const approvedAmount=Number(row.approvedAmount||snap.approvedAmount||0);
-    const approvedCostTickets=Number(row.approvedCostTickets||snap.approvedCostTickets||row.approvedPoCostTickets||snap.approvedPoCostTickets||row.openPoCostTickets||snap.openPoCostTickets||0);
-    const avgCost=Number(row.avgCost||snap.avgCost||0)||(approvedCostTickets?approvedAmount/approvedCostTickets:0);
-    return {
-      date:clean(row.date||row.periodEnd||row.periodStart),
-      periodStart:clean(row.periodStart||row.date),
-      periodEnd:clean(row.periodEnd||row.date),
-      count:Number(row.count||0),
-      handled:Number(row.handled||snap.handled||0),
-      approved,
-      unapproved,
-      approvedAmount,
-      approvedCostTickets,
-      unapprovedAmount:0,
-      avgCost,
-      granularity
-    };
-  });
+  // Daily stock exists in both full analytics and the compact startup cache.
+  // Weekly/monthly buckets can end outside the selected range.
+  const daily=compactCriticalTrendDailyForPageCache(stat);
+  if(!Object.keys(daily).length){
+    arrayFromMaybe(stat.criticalTrendDailyRows).forEach(row=>{const date=clean(row.date||row.periodEnd);if(date)daily[date]=Number(row.count||0);});
+  }
+  const dates=Object.keys(daily).filter(date=>date>=bounds.start&&date<=bounds.end).sort();
+  return dates.map(date=>({date,periodStart:date,periodEnd:date,count:Number(daily[date]||0)}));
 }
 function employeeCriticalTrendMarkup(rows){
   if(!rows.length)return '<div class="employeeTrendEmpty">No critical ticket history found.</div>';
@@ -7154,7 +7134,7 @@ function employeeCriticalTrendMarkup(rows){
   const area=`${left},${top+plotH} ${points} ${left+plotW},${top+plotH}`;
   const circles=rows.map((r,i)=>{
     const label=r.periodStart&&r.periodEnd&&r.periodStart!==r.periodEnd?`${formatSnapshotDateLabel(r.periodStart)} - ${formatSnapshotDateLabel(r.periodEnd)}`:formatSnapshotDateLabel(r.date);
-    const tip=`<b>${esc(label)}</b><div class="tipRow"><span>Tickets in progress</span><span>${num(r.count)}</span></div><div class="tipRow"><span>Approved</span><span>${num(r.approved||0)}</span></div><div class="tipRow"><span>Unapproved</span><span>${num(r.unapproved||0)}</span></div>`;
+    const tip=employeeCriticalTrendTip(r);
     const cx=xFor(i).toFixed(1),cy=yFor(r.count).toFixed(1);
     return `<circle class="employeeTrendHit" cx="${cx}" cy="${cy}" r="11" data-trend-tip="${esc(tip)}"></circle><circle class="employeeTrendPoint" cx="${cx}" cy="${cy}" r="3.4"></circle>`;
   }).join("");
@@ -7164,7 +7144,7 @@ function employeeCriticalTrendMarkup(rows){
 }
 function employeeCriticalTrendTip(row){
   const label=row.periodStart&&row.periodEnd&&row.periodStart!==row.periodEnd?`${formatSnapshotDateLabel(row.periodStart)} - ${formatSnapshotDateLabel(row.periodEnd)}`:formatSnapshotDateLabel(row.date);
-  return `<b>${esc(label)}</b><div class="tipRow"><span>Tickets in progress</span><span>${num(row.count)}</span></div><div class="tipRow"><span>Approved</span><span>${num(row.approved||0)}</span></div><div class="tipRow"><span>Unapproved</span><span>${num(row.unapproved||0)}</span></div>`;
+  return `<b>${esc(label)}</b><div class="tipRow"><span>Tickets in progress</span><span>${num(row.count)}</span></div>`;
 }
 function employeeCriticalTrendHitFromMouse(el,ev){
   const hits=el._trendHits||[];
@@ -7248,7 +7228,9 @@ function renderEmployeeDistribution(id,rows,emptyText){
 }
 function employeeAllOptionNames(){
   const rows=teamAssignRowsFromAnalytics();
-  return Array.from(new Set([...rows.map(r=>clean(r.name)).filter(validAssignName),...employeeDirectoryNames(),...DEFAULT_ACTIVE_EMPLOYEES])).sort((a,b)=>a.localeCompare(b));
+  const stats=arrayFromMaybe(currentEmployeeAnalyticsView()?.stats);
+  const names=[...rows.map(row=>row.name),...stats.map(row=>row.name),...employeeDirectoryNames(),...DEFAULT_ACTIVE_EMPLOYEES];
+  return Array.from(new Map(names.map(clean).filter(validAssignName).filter(name=>!isOtherTeamAssignRow(name)).map(name=>[employeeStatusKey(name),name])).values()).sort((a,b)=>a.localeCompare(b));
 }
 function employeeOptionNames(){
   return employeeAllOptionNames().filter(name=>!isEmployeeExited(name));
@@ -7264,13 +7246,16 @@ function renderEmployeePicker(){
 function renderEmployeeModalWithLoading(){
   renderEmployeeModal();
 }
+let employeeModalLoadSeq=0,employeeModalDetailState="ready";
 function renderEmployeeModal(){
   if(!selectedEmployeeName)return;
   renderEmployeeModalPeriod();
   renderEmployeePicker();
   const bounds=employeeBounds(),prev=previousPeriodBounds(bounds.start,bounds.end);
   const s=employeeSummary(selectedEmployeeName,bounds),p=employeeSummary(selectedEmployeeName,prev);
-  const show=employeeModalPeriod!=="all"||hasTicketFilter();
+  const show=employeeModalDetailState==="ready"&&(employeeModalPeriod!=="all"||hasTicketFilter());
+  const context=$("employeeModalContext");
+  if(context)context.textContent=`${formatSnapshotDateLabel(bounds.start)} – ${formatSnapshotDateLabel(bounds.end)}${employeeModalDetailState==="loading"?" · Loading details…":employeeModalDetailState==="error"?" · Details unavailable. Close and reopen to retry.":""}`;
   $("empKpiCritical").textContent=num(s.critical);
   $("empKpiHandled").textContent=num(s.handled);
   $("empKpiApprovedCost").textContent=num(s.approved);
@@ -7279,28 +7264,40 @@ function renderEmployeeModal(){
   setModalTrend("empKpiHandledTrend","exitedCritical",s.handled,p.handled,undefined,show);
   setModalTrend("empKpiApprovedCostTrend","approved",s.approved,p.approved,undefined,show);
   setModalTrend("empKpiAvgCostTrend","unapproved",s.unapproved,p.unapproved,undefined,show);
-  renderEmployeeDistribution("empStatusDist",employeeStatusRows(selectedEmployeeName,bounds),"No ticket status data found.");
-  renderEmployeeDistribution("empDurationDist",employeeDurationRows(selectedEmployeeName,bounds),"No critical duration data found.");
+  const pendingText=employeeModalDetailState==="loading"?"Loading details…":"Details unavailable. Close and reopen to retry.";
+  const ready=employeeModalDetailState==="ready";
+  renderEmployeeDistribution("empStatusDist",ready?employeeStatusRows(selectedEmployeeName,bounds):[],ready?"No ticket status data found.":pendingText);
+  renderEmployeeDistribution("empDurationDist",ready?employeeDurationRows(selectedEmployeeName,bounds):[],ready?"No critical duration data found.":pendingText);
   renderEmployeeCriticalTrend(selectedEmployeeName,bounds);
 }
 function openEmployeeModal(name){
   const requested=clean(name);
   const names=employeeOptionNames();
-  selectedEmployeeName=(!isEmployeeExited(requested)&&names.includes(requested))?requested:(names[0]||"");
+  selectedEmployeeName=!isEmployeeExited(requested)?(names.find(name=>employeeStatusKey(name)===employeeStatusKey(requested))||""):"";
   if(!selectedEmployeeName)return;
+  const request=++employeeModalLoadSeq;
+  employeeModalDetailState="loading";
   employeeModalPeriod="all";
   const modal=$("employeeModalBackdrop");
   if(modal)modal.classList.add("active");
   renderEmployeeModalWithLoading();
-  Promise.all([
-    hasFullEmployeeAnalytics()?Promise.resolve(employeeAnalytics):loadEmployeeAnalytics().then(v=>{employeeAnalytics=v;return v;}).catch(()=>null),
-    ensureRawTicketDetailsLoaded()
+  return Promise.all([
+    ensureFullTeamViewDetails(),
+    ensureCurrentPeriodSnapshotDetails(),
+    ensureKpiComparisonSnapshotDetails()
   ]).then(()=>{
+    if(request!==employeeModalLoadSeq)return;
+    employeeModalDetailState="ready";
     const active=$("employeeModalBackdrop")?.classList.contains("active");
     if(active&&selectedEmployeeName)renderEmployeeModalWithLoading();
-  }).catch(()=>{});
+  }).catch(err=>{
+    if(request!==employeeModalLoadSeq)return;
+    employeeModalDetailState="error";
+    console.warn("Employee workload details unavailable",err);
+    if($("employeeModalBackdrop")?.classList.contains("active"))renderEmployeeModalWithLoading();
+  });
 }
-function closeEmployeeModal(){const modal=$("employeeModalBackdrop");if(modal)modal.classList.remove("active");selectedEmployeeName="";}
+function closeEmployeeModal(){employeeModalLoadSeq++;const modal=$("employeeModalBackdrop");if(modal)modal.classList.remove("active");selectedEmployeeName="";}
 function openRepairCostBucketTickets(key,label){
   const bucket=repairCostBucketByKey(key);
   const rows=!bucket?[]:approvalBucketTicketRows("approved").filter(row=>{
