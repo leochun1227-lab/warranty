@@ -24,3 +24,33 @@ test('summary and detail IDs reconcile a state suffix without merging shops acro
   assert.equal(ctx.overviewRepairMatches({repairId:'Shop (NSW)|NSW',repairName:'Shop (NSW)'},row),false);
   assert.equal(ctx.overviewRepairMatches({repairId:'Other|QLD',repairName:'Other'},row),false);
 });
+
+test('monthly distribution keeps year and state boundaries and calculates weighted average costs',()=>{
+  const periods={
+    '2025-12':[{repairId:'a',repairName:'A',state:'QLD',confirmed_cost:999,ticket_count:1}],
+    '2026-01':[{repairId:'a',repairName:'A',state:'QLD',confirmed_cost:100,ticket_count:1},{repairId:'b',repairName:'B',state:'VIC',confirmed_cost:1000,ticket_count:2}],
+    '2026-02':[{repairId:'a',repairName:'A',state:'QLD',confirmed_cost:900,ticket_count:9},{repairId:'c',repairName:'C',state:'QLD',confirmed_cost:300,ticket_count:1}],
+  };
+  const result=ctx.overviewMonthlyRepairers(periods,2026,'total','avg_confirmed_cost','QLD');
+  assert.equal(result.months.length,12);
+  assert.equal(result.rows[0].repairId,'c');
+  const a=result.rows.find(r=>r.repairId==='a');
+  assert.equal(a.confirmed_cost,1000);
+  assert.equal(a.ticket_count,10);
+  assert.equal(a.avg_confirmed_cost,100);
+  assert.equal(a.months['2026-02'].ticket_count,9);
+  assert.equal(a.months['2026-03'],undefined);
+  assert.equal(periods['2026-01'][0].confirmed_cost,100,'input rows remain untouched');
+});
+
+test('monthly ranking uses the selected month before limiting rows',()=>{
+  const periods={
+    '2026-01':[{repairId:'a',repairName:'A',state:'QLD',confirmed_cost:900,ticket_count:9}],
+    '2026-02':[{repairId:'a',repairName:'A',state:'QLD',confirmed_cost:100,ticket_count:1},{repairId:'b',repairName:'B',state:'QLD',confirmed_cost:200,ticket_count:2}],
+  };
+  const result=ctx.overviewMonthlyRepairers(periods,2026,'2026-02','confirmed_cost','',1);
+  assert.equal(result.months.join(','),'2026-02');
+  assert.equal(result.rows.length,1);
+  assert.equal(result.rows[0].repairId,'b');
+  assert.equal(result.rows[0].confirmed_cost,200);
+});

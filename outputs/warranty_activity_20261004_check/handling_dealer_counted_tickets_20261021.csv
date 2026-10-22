@@ -1,0 +1,457 @@
+﻿period,dealership,warranty_handling_dealer_assign,ticket_id,ticket_type,created_on,claim_approved_on,current_status,submitted_count,approvals_count
+week,GRV,204642,17610,In Field Warranty Claims,2025-02-19,2026-09-29,Repair in Progress,0,1
+mtd,GRV,204642,19402,In Field Warranty Claims,2025-04-16,2026-10-21,Repairer Invoiced Processed,0,1
+mtd,Toowoomba,3135,28933,In Field Warranty Claims,2025-12-10,2026-10-05,Repairer Invoiced Processed,0,1
+week,Newcastle,3133,29993,In Field Warranty Claims,2026-01-18,2026-09-29,Repairer Invoiced Processed,0,1
+week,GRV,204642,30073,In Field Warranty Claims,2026-01-20,2026-09-29,Repairer Invoiced Processed,0,1
+mtd,Toowoomba,3135,30106,In Field Warranty Claims,2026-01-21,2026-10-06,Repairer Invoiced Processed,0,1
+mtd,GRV,204642,30502,In Field Warranty Claims,2026-02-01,2026-10-14,Repairer Invoiced Processed,0,1
+mtd,GRV,204642,31718,In Field Warranty Claims,2026-02-26,2026-10-13,Repairer Invoiced Processed,0,1
+mtd,Toowoomba,3135,32059,In Field Warranty Claims,2026-03-10,2026-10-06,Repairer Invoiced Processed,0,1
+mtd,GRV,204642,33368,In Field Warranty Claims,2026-04-09,2026-10-20,Repairer Invoiced Processed,0,1
+week,Newcastle,3133,34518,In Field Warranty Claims,2026-05-06,2026-09-29,Repair in Progress,0,1
+mtd,GRV,204642,36018,In Field Warranty Claims,2026-06-05,2026-10-05,Repairer Invoiced Processed,0,1
+week,Newcastle,3133,36767,In Field Warranty Claims,2026-06-23,2026-09-29,Repairer Invoiced Processed,0,1
+week,Toowoomba,3135,36907,In Field Warranty Claims,2026-06-25,2026-10-02,Repairer Invoiced Processed,0,1
+mtd,Toowoomba,3135,36907,In Field Warranty Claims,2026-06-25,2026-10-02,Repairer Invoiced Processed,0,1
+mtd,GRV,204642,37041,In Field Warranty Claims,2026-06-28,2026-10-08,Sales Order Approved,0,1
+week,Bundaberg,3138,37589,Pre Delivery Warranty Claims,2026-07-09,2026-09-30,Repairer Invoiced Processed,0,1
+week,Bundaberg,3138,38009,Pre Delivery Warranty Claims,2026-07-20,2026-10-01,Repair in Progress,0,1
+mtd,Bundaberg,3138,38009,Pre Delivery Warranty Claims,2026-07-20,2026-10-01,Repair in Progress,0,1
+mtd,Bundaberg,3138,38409,Pre Delivery Warranty Claims,2026-07-27,2026-10-05,Partially Picked,0,1
+mtd,GRV,204642,38434,In Field Warranty Claims,2026-07-27,2026-10-05,Repairer Invoiced Processed,0,1
+mtd,Bundaberg,3138,38540,In Field Warranty Claims,2026-07-29,2026-10-05,Partially Picked,0,1
+week,Brisbane,204670,38819,In Field Warranty Claims,2026-08-04,2026-10-02,Repairer Invoiced Processed,0,1
+mtd,Brisbane,204670,38819,In Field Warranty Claims,2026-08-04,2026-10-02,Repairer Invoiced Processed,0,1
+mtd,Toowoomba,3135,40591,In Field Warranty Claims,2026-08-27,2026-10-16,Partially Picked,0,1
+mtd,Toowoomba,3135,41074,In Field Warranty Claims,2026-09-02,2026-10-05,Repairer Invoiced Processed,0,1
+mtd,GRV,204642,41145,In Field Warranty Claims,2026-09-03,2026-10-06,Partially Picked,0,1
+week,Newcastle,3133,41237,In Field Warranty Claims,2026-09-04,2026-10-02,Repair in Progress,0,1
+mtd,Newcastle,3133,41237,In Field Warranty Claims,2026-09-04,2026-10-02,Repair in Progress,0,1
+mtd,Toowoomba,3135,41500,In Field Warranty Claims,2026-09-09,2026-10-14,Repair in Progress,0,1
+mtd,Brisbane,204670,41533,In Field Warranty Claims,2026-09-09,2026-10-05,Repairer Invoiced Processed,0,1
+week,Bundaberg,3138,41682,In Field Warranty Claims,2026-09-10,2026-10-02,Partially Picked,0,1
+mtd,Bundaberg,3138,41682,In Field Warranty Claims,2026-09-10,2026-10-02,Partially Picked,0,1
+week,Brisbane,204670,41773,Pre Delivery Warranty Claims,2026-09-11,2026-09-30,Repairer Invoiced Processed,0,1
+mtd,GRV,204642,41804,In Field Warranty Claims,2026-09-12,2026-10-13,Partially Picked,0,1
+week,GRV,204642,41864,In Field Warranty Claims,2026-09-14,2026-09-30,Sales Order Approved,0,1
+mtd,Bundaberg,3138,41923,Pre Delivery Warranty Claims,2026-09-15,2026-10-13,Repair in Progress,0,1
+mtd,Bundaberg,3138,42220,In Field Warranty Claims,2026-09-16,2026-10-12,Repair in Progress,0,1
+week,Bundaberg,3138,42223,Pre Delivery Warranty Claims,2026-09-16,2026-09-28,Repairer Invoiced Processed,0,1
+mtd,Toowoomba,3135,42224,In Field Warranty Claims,2026-09-16,2026-10-16,Repair in Progress,0,1
+mtd,Newcastle,3133,42289,In Field Warranty Claims,2026-09-17,2026-10-13,Repair in Progress,0,1
+week,Newcastle,3133,42413,In Field Warranty Claims,2026-09-18,2026-10-02,Repair in Progress,0,1
+mtd,Newcastle,3133,42413,In Field Warranty Claims,2026-09-18,2026-10-02,Repair in Progress,0,1
+week,Newcastle,3133,42415,In Field Warranty Claims,2026-09-18,2026-10-02,Repair in Progress,0,1
+mtd,Newcastle,3133,42415,In Field Warranty Claims,2026-09-18,2026-10-02,Repair in Progress,0,1
+week,Brisbane,204670,42429,In Field Warranty Claims,2026-09-19,2026-09-28,Repairer Invoiced Processed,0,1
+week,GRV,204642,42518,In Field Warranty Claims,2026-09-21,2026-09-28,Repair in Progress,0,1
+week,GRV,204642,42529,In Field Warranty Claims,2026-09-21,2026-09-28,Sales Order Approved,0,1
+week,Bundaberg,3138,42531,In Field Warranty Claims,2026-09-21,2026-09-30,Sales Order Approved,0,1
+mtd,Bundaberg,3138,42536,In Field Warranty Claims,2026-09-21,2026-10-12,Repair in Progress,0,1
+week,Toowoomba,3135,42557,In Field Warranty Claims,2026-09-21,2026-09-30,Repair in Progress,0,1
+week,Bundaberg,3138,42561,Pre Delivery Warranty Claims,2026-09-21,2026-09-28,Repairer Invoiced Processed,0,1
+mtd,Brisbane,204670,42614,In Field Warranty Claims,2026-09-22,2026-10-16,Sales Order Approved,0,1
+week,Brisbane,204670,42641,Pre Delivery Warranty Claims,2026-09-22,2026-09-29,Sales Order Approved,0,1
+week,Newcastle,3133,42682,In Field Warranty Claims,2026-09-22,2026-09-30,Repair in Progress,0,1
+mtd,Bundaberg,3138,42741,In Field Warranty Claims,2026-09-23,2026-10-12,Repair in Progress,0,1
+week,Newcastle,3133,42749,In Field Warranty Claims,2026-09-23,2026-09-29,Repair in Progress,0,1
+week,Newcastle,3133,42763,Pre Delivery Warranty Claims,2026-09-24,2026-10-01,Repairer Invoiced Processed,0,1
+mtd,Newcastle,3133,42763,Pre Delivery Warranty Claims,2026-09-24,2026-10-01,Repairer Invoiced Processed,0,1
+week,Newcastle,3133,42765,Pre Delivery Warranty Claims,2026-09-24,2026-10-01,Repairer Invoiced Processed,0,1
+mtd,Newcastle,3133,42765,Pre Delivery Warranty Claims,2026-09-24,2026-10-01,Repairer Invoiced Processed,0,1
+week,Newcastle,3133,42770,In Field Warranty Claims,2026-09-24,2026-10-01,Repair in Progress,0,1
+mtd,Newcastle,3133,42770,In Field Warranty Claims,2026-09-24,2026-10-01,Repair in Progress,0,1
+week,Newcastle,3133,42782,Pre Delivery Warranty Claims,2026-09-24,2026-10-01,Partially Picked,0,1
+mtd,Newcastle,3133,42782,Pre Delivery Warranty Claims,2026-09-24,2026-10-01,Partially Picked,0,1
+week,Bundaberg,3138,42796,In Field Warranty Claims,2026-09-27,2026-09-28,Repair in Progress,0,1
+mtd,Brisbane,204670,42851,In Field Warranty Claims,2026-09-24,2026-10-14,Repairer Invoiced Processed,0,1
+week,Brisbane,204670,42852,In Field Warranty Claims,2026-09-24,2026-09-29,Repair in Progress,0,1
+week,Brisbane,204670,42853,In Field Warranty Claims,2026-09-24,2026-09-29,Repairer Invoiced Processed,0,1
+week,Bundaberg,3138,42857,In Field Warranty Claims,2026-09-24,2026-09-29,Partially Picked,0,1
+week,Newcastle,3133,42858,In Field Warranty Claims,2026-09-24,2026-10-02,Repair in Progress,0,1
+mtd,Newcastle,3133,42858,In Field Warranty Claims,2026-09-24,2026-10-02,Repair in Progress,0,1
+week,Bundaberg,3138,42861,Pre Delivery Warranty Claims,2026-09-24,2026-09-28,Repairer Invoiced Processed,0,1
+week,Brisbane,204670,42876,In Field Warranty Claims,2026-09-25,2026-09-30,Repair in Progress,0,1
+week,Brisbane,204670,42899,In Field Warranty Claims,2026-09-25,2026-09-30,Repair in Progress,0,1
+week,Bundaberg,3138,42900,Pre Delivery Warranty Claims,2026-09-25,2026-09-30,Repairer Invoiced Processed,0,1
+week,Brisbane,204670,42951,In Field Warranty Claims,2026-09-28,,Unapproved Claims Closed (Closed),1,0
+week,Newcastle,3133,42958,Pre Delivery Warranty Claims,2026-09-28,,Management Query,1,0
+week,Brisbane,204670,42964,In Field Warranty Claims,2026-09-28,2026-09-28,Repairer Invoiced Processed,1,1
+week,Brisbane,204670,42988,In Field Warranty Claims,2026-09-28,2026-10-06,Partially Picked,1,0
+mtd,Brisbane,204670,42988,In Field Warranty Claims,2026-09-28,2026-10-06,Partially Picked,0,1
+week,Brisbane,204670,43030,In Field Warranty Claims,2026-09-28,2026-09-29,Repairer Invoiced Processed,1,1
+week,Newcastle,3133,43033,In Field Warranty Claims,2026-09-29,2026-09-29,Partially Picked,1,1
+week,Newcastle,3133,43035,In Field Warranty Claims,2026-09-29,2026-09-29,Repairer Invoiced Processed,1,1
+week,GRV,204642,43056,In Field Warranty Claims,2026-09-29,,Evidence Requested,1,0
+week,Bundaberg,3138,43057,In Field Warranty Claims,2026-09-29,,Evidence Requested,1,0
+week,Newcastle,3133,43060,In Field Warranty Claims,2026-09-29,2026-10-05,Sales Order Approved,1,0
+mtd,Newcastle,3133,43060,In Field Warranty Claims,2026-09-29,2026-10-05,Sales Order Approved,0,1
+week,Newcastle,3133,43061,In Field Warranty Claims,2026-09-29,2026-10-05,Repair in Progress,1,0
+mtd,Newcastle,3133,43061,In Field Warranty Claims,2026-09-29,2026-10-05,Repair in Progress,0,1
+week,Newcastle,3133,43066,In Field Warranty Claims,2026-09-29,2026-10-06,Partially Picked,1,0
+mtd,Newcastle,3133,43066,In Field Warranty Claims,2026-09-29,2026-10-06,Partially Picked,0,1
+week,GRV,204642,43067,In Field Warranty Claims,2026-09-29,2026-09-29,Repair in Progress,1,1
+week,GRV,204642,43068,In Field Warranty Claims,2026-09-29,2026-10-01,Partially Picked,1,1
+mtd,GRV,204642,43068,In Field Warranty Claims,2026-09-29,2026-10-01,Partially Picked,0,1
+week,Toowoomba,3135,43075,In Field Warranty Claims,2026-09-29,2026-09-29,Repair in Progress,1,1
+week,Brisbane,204670,43082,In Field Warranty Claims,2026-09-29,2026-09-29,Sales Order Approved,1,1
+week,Newcastle,3133,43088,In Field Warranty Claims,2026-09-29,,Quote Validation,1,0
+week,Brisbane,204670,43089,In Field Warranty Claims,2026-09-29,,Management Query,1,0
+week,Newcastle,3133,43102,In Field Warranty Claims,2026-09-29,2026-10-06,Repair in Progress,1,0
+mtd,Newcastle,3133,43102,In Field Warranty Claims,2026-09-29,2026-10-06,Repair in Progress,0,1
+week,Newcastle,3133,43145,In Field Warranty Claims,2026-09-29,2026-10-06,Partially Picked,1,0
+mtd,Newcastle,3133,43145,In Field Warranty Claims,2026-09-29,2026-10-06,Partially Picked,0,1
+week,Brisbane,204670,43157,In Field Warranty Claims,2026-09-29,2026-09-30,Repair in Progress,1,1
+week,Bundaberg,3138,43170,Pre Delivery Warranty Claims,2026-09-29,2026-09-29,Repairer Invoiced Processed,1,1
+week,Bundaberg,3138,43186,Pre Delivery Warranty Claims,2026-09-29,2026-09-30,Repairer Invoiced Processed,1,1
+week,GRV,204642,43208,In Field Warranty Claims,2026-09-30,2026-09-30,Sales Order Approved,1,1
+week,Brisbane,204670,43221,In Field Warranty Claims,2026-09-29,,Unapproved Claims Closed (Closed),1,0
+week,GRV,204642,43235,Pre Delivery Warranty Claims,2026-09-29,2026-09-30,Repair in Progress,1,1
+week,Newcastle,3133,43238,Pre Delivery Warranty Claims,2026-09-29,2026-10-06,Repairer Invoiced Processed,1,0
+mtd,Newcastle,3133,43238,Pre Delivery Warranty Claims,2026-09-29,2026-10-06,Repairer Invoiced Processed,0,1
+week,Newcastle,3133,43240,Pre Delivery Warranty Claims,2026-09-29,2026-10-06,Partially Picked,1,0
+mtd,Newcastle,3133,43240,Pre Delivery Warranty Claims,2026-09-29,2026-10-06,Partially Picked,0,1
+week,Bundaberg,3138,43253,In Field Warranty Claims,2026-09-29,2026-10-13,Repair in Progress,1,0
+mtd,Bundaberg,3138,43253,In Field Warranty Claims,2026-09-29,2026-10-13,Repair in Progress,0,1
+week,Newcastle,3133,43256,Pre Delivery Warranty Claims,2026-09-29,2026-10-06,Repairer Invoiced Processed,1,0
+mtd,Newcastle,3133,43256,Pre Delivery Warranty Claims,2026-09-29,2026-10-06,Repairer Invoiced Processed,0,1
+week,Brisbane,204670,43261,In Field Warranty Claims,2026-09-29,2026-09-30,Repairer Invoiced Processed,1,1
+week,Bundaberg,3138,43266,In Field Warranty Claims,2026-09-29,,Evidence Requested,1,0
+week,Newcastle,3133,43267,In Field Warranty Claims,2026-09-30,,Management Query,1,0
+week,Bundaberg,3138,43268,In Field Warranty Claims,2026-09-30,2026-09-30,Repair in Progress,1,1
+week,Bundaberg,3138,43277,In Field Warranty Claims,2026-09-30,2026-10-12,Repair in Progress,1,0
+mtd,Bundaberg,3138,43277,In Field Warranty Claims,2026-09-30,2026-10-12,Repair in Progress,0,1
+week,Toowoomba,3135,43278,In Field Warranty Claims,2026-09-30,2026-10-06,Partially Picked,1,0
+mtd,Toowoomba,3135,43278,In Field Warranty Claims,2026-09-30,2026-10-06,Partially Picked,0,1
+week,Toowoomba,3135,43291,In Field Warranty Claims,2026-09-30,2026-09-30,Repair in Progress,1,1
+week,Toowoomba,3135,43293,In Field Warranty Claims,2026-09-30,2026-09-30,Repair in Progress,1,1
+week,Toowoomba,3135,43295,In Field Warranty Claims,2026-09-30,2026-09-30,Repair in Progress,1,1
+week,Bundaberg,3138,43297,Pre Delivery Warranty Claims,2026-09-30,,Unapproved Claims Closed (Closed),1,0
+week,Toowoomba,3135,43299,In Field Warranty Claims,2026-09-30,2026-10-01,Repair in Progress,1,1
+mtd,Toowoomba,3135,43299,In Field Warranty Claims,2026-09-30,2026-10-01,Repair in Progress,0,1
+week,Toowoomba,3135,43311,In Field Warranty Claims,2026-09-30,2026-10-13,Repair in Progress,1,0
+mtd,Toowoomba,3135,43311,In Field Warranty Claims,2026-09-30,2026-10-13,Repair in Progress,0,1
+week,Toowoomba,3135,43312,In Field Warranty Claims,2026-09-30,2026-09-30,Partially Picked,1,1
+week,Bundaberg,3138,43314,Pre Delivery Warranty Claims,2026-09-30,2026-09-30,Repair in Progress,1,1
+week,Toowoomba,3135,43317,In Field Warranty Claims,2026-09-30,2026-09-30,Partially Picked,1,1
+week,Toowoomba,3135,43335,Pre Delivery Warranty Claims,2026-09-30,2026-10-01,Repair in Progress,1,1
+mtd,Toowoomba,3135,43335,Pre Delivery Warranty Claims,2026-09-30,2026-10-01,Repair in Progress,0,1
+week,Brisbane,204670,43347,In Field Warranty Claims,2026-09-30,2026-10-06,Repair in Progress,1,0
+mtd,Brisbane,204670,43347,In Field Warranty Claims,2026-09-30,2026-10-06,Repair in Progress,0,1
+week,GRV,204642,43348,In Field Warranty Claims,2026-09-30,2026-10-01,Repairer Invoiced Processed,1,1
+mtd,GRV,204642,43348,In Field Warranty Claims,2026-09-30,2026-10-01,Repairer Invoiced Processed,0,1
+week,Newcastle,3133,43366,In Field Warranty Claims,2026-09-30,2026-10-07,Partially Picked,1,0
+mtd,Newcastle,3133,43366,In Field Warranty Claims,2026-09-30,2026-10-07,Partially Picked,0,1
+week,GRV,204642,43405,In Field Warranty Claims,2026-09-30,2026-10-01,Repair in Progress,1,1
+mtd,GRV,204642,43405,In Field Warranty Claims,2026-09-30,2026-10-01,Repair in Progress,0,1
+week,Brisbane,204670,43411,In Field Warranty Claims,2026-09-30,2026-10-01,Repair in Progress,1,1
+mtd,Brisbane,204670,43411,In Field Warranty Claims,2026-09-30,2026-10-01,Repair in Progress,0,1
+week,Toowoomba,3135,43415,In Field Warranty Claims,2026-10-01,2026-10-02,Repair in Progress,1,1
+mtd,Toowoomba,3135,43415,In Field Warranty Claims,2026-10-01,2026-10-02,Repair in Progress,1,1
+week,Toowoomba,3135,43416,In Field Warranty Claims,2026-10-01,2026-10-01,Sales Order Approved,1,1
+mtd,Toowoomba,3135,43416,In Field Warranty Claims,2026-10-01,2026-10-01,Sales Order Approved,1,1
+week,Toowoomba,3135,43419,Pre Delivery Warranty Claims,2026-10-01,2026-10-02,Repair in Progress,1,1
+mtd,Toowoomba,3135,43419,Pre Delivery Warranty Claims,2026-10-01,2026-10-02,Repair in Progress,1,1
+week,Toowoomba,3135,43433,In Field Warranty Claims,2026-10-01,2026-10-01,Repair in Progress,1,1
+mtd,Toowoomba,3135,43433,In Field Warranty Claims,2026-10-01,2026-10-01,Repair in Progress,1,1
+week,Toowoomba,3135,43434,In Field Warranty Claims,2026-10-01,2026-10-01,Repair in Progress,1,1
+mtd,Toowoomba,3135,43434,In Field Warranty Claims,2026-10-01,2026-10-01,Repair in Progress,1,1
+week,Toowoomba,3135,43435,In Field Warranty Claims,2026-10-01,2026-10-02,Repair in Progress,1,1
+mtd,Toowoomba,3135,43435,In Field Warranty Claims,2026-10-01,2026-10-02,Repair in Progress,1,1
+week,Newcastle,3133,43453,Pre Delivery Warranty Claims,2026-10-01,2026-10-07,Repairer Invoiced Processed,1,0
+mtd,Newcastle,3133,43453,Pre Delivery Warranty Claims,2026-10-01,2026-10-07,Repairer Invoiced Processed,1,1
+week,Newcastle,3133,43454,In Field Warranty Claims,2026-10-01,2026-10-07,Repairer Invoiced Processed,1,0
+mtd,Newcastle,3133,43454,In Field Warranty Claims,2026-10-01,2026-10-07,Repairer Invoiced Processed,1,1
+week,GRV,204642,43456,In Field Warranty Claims,2026-10-01,,Management Query,1,0
+mtd,GRV,204642,43456,In Field Warranty Claims,2026-10-01,,Management Query,1,0
+week,Bundaberg,3138,43459,Pre Delivery Warranty Claims,2026-10-01,,Evidence Requested,1,0
+mtd,Bundaberg,3138,43459,Pre Delivery Warranty Claims,2026-10-01,,Evidence Requested,1,0
+week,Toowoomba,3135,43463,Pre Delivery Warranty Claims,2026-10-01,2026-10-02,Partially Picked,1,1
+mtd,Toowoomba,3135,43463,Pre Delivery Warranty Claims,2026-10-01,2026-10-02,Partially Picked,1,1
+week,Toowoomba,3135,43464,Pre Delivery Warranty Claims,2026-10-01,2026-10-02,Repair in Progress,1,1
+mtd,Toowoomba,3135,43464,Pre Delivery Warranty Claims,2026-10-01,2026-10-02,Repair in Progress,1,1
+week,Newcastle,3133,43465,In Field Warranty Claims,2026-10-01,2026-10-07,Partially Picked,1,0
+mtd,Newcastle,3133,43465,In Field Warranty Claims,2026-10-01,2026-10-07,Partially Picked,1,1
+week,Bundaberg,3138,43466,In Field Warranty Claims,2026-10-01,2026-10-01,Repairer Invoiced Processed,1,1
+mtd,Bundaberg,3138,43466,In Field Warranty Claims,2026-10-01,2026-10-01,Repairer Invoiced Processed,1,1
+week,Newcastle,3133,43470,In Field Warranty Claims,2026-10-01,,Evidence Requested,1,0
+mtd,Newcastle,3133,43470,In Field Warranty Claims,2026-10-01,,Evidence Requested,1,0
+week,Toowoomba,3135,43482,In Field Warranty Claims,2026-10-01,2026-10-02,Repair in Progress,1,1
+mtd,Toowoomba,3135,43482,In Field Warranty Claims,2026-10-01,2026-10-02,Repair in Progress,1,1
+week,Toowoomba,3135,43484,In Field Warranty Claims,2026-10-01,2026-10-02,Repair in Progress,1,1
+mtd,Toowoomba,3135,43484,In Field Warranty Claims,2026-10-01,2026-10-02,Repair in Progress,1,1
+week,Newcastle,3133,43487,Pre Delivery Warranty Claims,2026-10-01,2026-10-08,Repairer Invoiced Processed,1,0
+mtd,Newcastle,3133,43487,Pre Delivery Warranty Claims,2026-10-01,2026-10-08,Repairer Invoiced Processed,1,1
+week,Newcastle,3133,43496,In Field Warranty Claims,2026-10-01,2026-10-06,Repairer Invoiced Processed,1,0
+mtd,Newcastle,3133,43496,In Field Warranty Claims,2026-10-01,2026-10-06,Repairer Invoiced Processed,1,1
+week,Newcastle,3133,43504,Pre Delivery Warranty Claims,2026-10-01,2026-10-09,Repairer Invoiced Processed,1,0
+mtd,Newcastle,3133,43504,Pre Delivery Warranty Claims,2026-10-01,2026-10-09,Repairer Invoiced Processed,1,1
+week,Bundaberg,3138,43510,In Field Warranty Claims,2026-10-01,,Claim Assessment,1,0
+mtd,Bundaberg,3138,43510,In Field Warranty Claims,2026-10-01,,Claim Assessment,1,0
+week,Toowoomba,3135,43528,In Field Warranty Claims,2026-10-01,2026-10-02,Partially Picked,1,1
+mtd,Toowoomba,3135,43528,In Field Warranty Claims,2026-10-01,2026-10-02,Partially Picked,1,1
+week,Toowoomba,3135,43529,Pre Delivery Warranty Claims,2026-10-02,2026-10-02,Sales Order Approved,1,1
+mtd,Toowoomba,3135,43529,Pre Delivery Warranty Claims,2026-10-02,2026-10-02,Sales Order Approved,1,1
+week,GRV,204642,43531,In Field Warranty Claims,2026-10-01,,Unapproved Claims Closed (Closed),1,0
+mtd,GRV,204642,43531,In Field Warranty Claims,2026-10-01,,Unapproved Claims Closed (Closed),1,0
+week,Toowoomba,3135,43532,In Field Warranty Claims,2026-10-01,2026-10-06,Partially Picked,1,0
+mtd,Toowoomba,3135,43532,In Field Warranty Claims,2026-10-01,2026-10-06,Partially Picked,1,1
+week,Toowoomba,3135,43534,In Field Warranty Claims,2026-10-02,2026-10-02,Sales Order Approved,1,1
+mtd,Toowoomba,3135,43534,In Field Warranty Claims,2026-10-02,2026-10-02,Sales Order Approved,1,1
+week,Toowoomba,3135,43545,In Field Warranty Claims,2026-10-02,2026-10-02,Repair in Progress,1,1
+mtd,Toowoomba,3135,43545,In Field Warranty Claims,2026-10-02,2026-10-02,Repair in Progress,1,1
+week,GRV,204642,43548,In Field Warranty Claims,2026-10-02,,Evidence Requested,1,0
+mtd,GRV,204642,43548,In Field Warranty Claims,2026-10-02,,Evidence Requested,1,0
+week,Bundaberg,3138,43552,In Field Warranty Claims,2026-10-02,,Evidence Requested,1,0
+mtd,Bundaberg,3138,43552,In Field Warranty Claims,2026-10-02,,Evidence Requested,1,0
+week,Newcastle,3133,43554,In Field Warranty Claims,2026-10-02,2026-10-09,Repairer Invoiced Processed,1,0
+mtd,Newcastle,3133,43554,In Field Warranty Claims,2026-10-02,2026-10-09,Repairer Invoiced Processed,1,1
+week,Toowoomba,3135,43556,In Field Warranty Claims,2026-10-02,2026-10-06,Sales Order Approved,1,0
+mtd,Toowoomba,3135,43556,In Field Warranty Claims,2026-10-02,2026-10-06,Sales Order Approved,1,1
+week,Newcastle,3133,43561,In Field Warranty Claims,2026-10-02,2026-10-09,Repair in Progress,1,0
+mtd,Newcastle,3133,43561,In Field Warranty Claims,2026-10-02,2026-10-09,Repair in Progress,1,1
+week,Newcastle,3133,43563,In Field Warranty Claims,2026-10-02,,Evidence Requested,1,0
+mtd,Newcastle,3133,43563,In Field Warranty Claims,2026-10-02,,Evidence Requested,1,0
+week,Toowoomba,3135,43566,Pre Delivery Warranty Claims,2026-10-02,2026-10-02,Sales Order Approved,1,1
+mtd,Toowoomba,3135,43566,Pre Delivery Warranty Claims,2026-10-02,2026-10-02,Sales Order Approved,1,1
+week,Newcastle,3133,43575,In Field Warranty Claims,2026-10-02,,Evidence Requested,1,0
+mtd,Newcastle,3133,43575,In Field Warranty Claims,2026-10-02,,Evidence Requested,1,0
+week,GRV,204642,43583,In Field Warranty Claims,2026-10-02,,Evidence Requested,1,0
+mtd,GRV,204642,43583,In Field Warranty Claims,2026-10-02,,Evidence Requested,1,0
+week,Newcastle,3133,43586,In Field Warranty Claims,2026-10-02,2026-10-14,Repair in Progress,1,0
+mtd,Newcastle,3133,43586,In Field Warranty Claims,2026-10-02,2026-10-14,Repair in Progress,1,1
+mtd,Bundaberg,3138,43595,In Field Warranty Claims,2026-10-05,2026-10-05,Repair in Progress,1,1
+week,Bundaberg,3138,43601,Pre Delivery Warranty Claims,2026-10-02,2026-10-13,Repair in Progress,1,0
+mtd,Bundaberg,3138,43601,Pre Delivery Warranty Claims,2026-10-02,2026-10-13,Repair in Progress,1,1
+week,Brisbane,204670,43618,In Field Warranty Claims,2026-10-03,2026-10-05,Repairer Invoiced Processed,1,0
+mtd,Brisbane,204670,43618,In Field Warranty Claims,2026-10-03,2026-10-05,Repairer Invoiced Processed,1,1
+week,Brisbane,204670,43619,In Field Warranty Claims,2026-10-03,2026-10-05,Repair in Progress,1,0
+mtd,Brisbane,204670,43619,In Field Warranty Claims,2026-10-03,2026-10-05,Repair in Progress,1,1
+week,Brisbane,204670,43620,In Field Warranty Claims,2026-10-03,2026-10-07,Repair in Progress,1,0
+mtd,Brisbane,204670,43620,In Field Warranty Claims,2026-10-03,2026-10-07,Repair in Progress,1,1
+week,Brisbane,204670,43624,In Field Warranty Claims,2026-10-03,2026-10-05,Repair in Progress,1,0
+mtd,Brisbane,204670,43624,In Field Warranty Claims,2026-10-03,2026-10-05,Repair in Progress,1,1
+week,Brisbane,204670,43625,In Field Warranty Claims,2026-10-03,2026-10-05,Repair in Progress,1,0
+mtd,Brisbane,204670,43625,In Field Warranty Claims,2026-10-03,2026-10-05,Repair in Progress,1,1
+week,Brisbane,204670,43631,In Field Warranty Claims,2026-10-03,2026-10-05,Sales Order Approved,1,0
+mtd,Brisbane,204670,43631,In Field Warranty Claims,2026-10-03,2026-10-05,Sales Order Approved,1,1
+week,Brisbane,204670,43632,In Field Warranty Claims,2026-10-03,2026-10-05,Repair in Progress,1,0
+mtd,Brisbane,204670,43632,In Field Warranty Claims,2026-10-03,2026-10-05,Repair in Progress,1,1
+week,Brisbane,204670,43633,In Field Warranty Claims,2026-10-03,2026-10-05,Sales Order Approved,1,0
+mtd,Brisbane,204670,43633,In Field Warranty Claims,2026-10-03,2026-10-05,Sales Order Approved,1,1
+week,Newcastle,3133,43636,In Field Warranty Claims,2026-10-03,,Quote Validation,1,0
+mtd,Newcastle,3133,43636,In Field Warranty Claims,2026-10-03,,Quote Validation,1,0
+mtd,GRV,204642,43686,In Field Warranty Claims,2026-10-05,2026-10-16,Repair in Progress,1,1
+mtd,GRV,204642,43710,In Field Warranty Claims,2026-10-06,2026-10-07,Partially Picked,1,1
+mtd,Brisbane,204670,43711,In Field Warranty Claims,2026-10-05,2026-10-06,Repair in Progress,1,1
+mtd,GRV,204642,43712,In Field Warranty Claims,2026-10-05,2026-10-06,Sales Order Approved,1,1
+mtd,Brisbane,204670,43722,In Field Warranty Claims,2026-10-06,2026-10-06,Repairer Invoiced Processed,1,1
+mtd,Newcastle,3133,43726,Pre Delivery Warranty Claims,2026-10-06,2026-10-06,Repairer Invoiced Processed,1,1
+mtd,Newcastle,3133,43728,In Field Warranty Claims,2026-10-06,2026-10-12,Partially Picked,1,1
+mtd,Newcastle,3133,43749,In Field Warranty Claims,2026-10-06,2026-10-13,Repair in Progress,1,1
+mtd,Newcastle,3133,43753,In Field Warranty Claims,2026-10-06,2026-10-12,Repairer Invoiced Processed,1,1
+mtd,Newcastle,3133,43756,In Field Warranty Claims,2026-10-06,,Claim Assessment,1,0
+mtd,Newcastle,3133,43764,Pre Delivery Warranty Claims,2026-10-06,2026-10-13,Repair in Progress,1,1
+mtd,Newcastle,3133,43765,In Field Warranty Claims,2026-10-06,2026-10-07,Repair in Progress,1,1
+mtd,Bundaberg,3138,43767,In Field Warranty Claims,2026-10-06,,Evidence Requested,1,0
+mtd,Brisbane,204670,43770,In Field Warranty Claims,2026-10-07,,Evidence Requested,1,0
+mtd,Brisbane,204670,43773,In Field Warranty Claims,2026-10-06,2026-10-09,Repair in Progress,1,1
+mtd,Brisbane,204670,43777,In Field Warranty Claims,2026-10-07,2026-10-07,Repairer Invoiced Processed,1,1
+mtd,Bundaberg,3138,43782,In Field Warranty Claims,2026-10-07,,Evidence Requested,1,0
+mtd,Brisbane,204670,43787,In Field Warranty Claims,2026-10-07,2026-10-07,Repair in Progress,1,1
+mtd,GRV,204642,43793,In Field Warranty Claims,2026-10-07,2026-10-08,Partially Picked,1,1
+mtd,GRV,204642,43795,In Field Warranty Claims,2026-10-07,2026-10-08,Sales Order Approved,1,1
+mtd,GRV,204642,43796,In Field Warranty Claims,2026-10-07,2026-10-08,Partially Picked,1,1
+mtd,GRV,204642,43797,In Field Warranty Claims,2026-10-07,,Evidence Requested,1,0
+mtd,Brisbane,204670,43801,In Field Warranty Claims,2026-10-07,2026-10-07,Repairer Invoiced Processed,1,1
+mtd,GRV,204642,43811,In Field Warranty Claims,2026-10-07,2026-10-07,Repair in Progress,1,1
+mtd,GRV,204642,43823,In Field Warranty Claims,2026-10-07,2026-10-08,Repair in Progress,1,1
+mtd,Brisbane,204670,43824,In Field Warranty Claims,2026-10-07,2026-10-07,Partially Picked,1,1
+mtd,Newcastle,3133,43825,In Field Warranty Claims,2026-10-07,2026-10-08,Repairer Invoiced Processed,1,1
+mtd,Newcastle,3133,43826,Pre Delivery Warranty Claims,2026-10-07,2026-10-16,Repair in Progress,1,1
+mtd,Newcastle,3133,43832,Pre Delivery Warranty Claims,2026-10-07,2026-10-16,Repair in Progress,1,1
+mtd,GRV,204642,43834,In Field Warranty Claims,2026-10-07,2026-10-08,Repairer Invoiced Processed,1,1
+mtd,Newcastle,3133,43840,In Field Warranty Claims,2026-10-07,2026-10-13,Repairer Invoiced Processed,1,1
+mtd,Newcastle,3133,43852,In Field Warranty Claims,2026-10-07,,"Requires Authorization ($1,001 - $3,000)",1,0
+mtd,GRV,204642,43854,Pre Delivery Warranty Claims,2026-10-07,,Evidence Requested,1,0
+mtd,Bundaberg,3138,43855,In Field Warranty Claims,2026-10-07,,Evidence Requested,1,0
+mtd,Bundaberg,3138,43856,Pre Delivery Warranty Claims,2026-10-08,,Claim Assessment,1,0
+mtd,Toowoomba,3135,43857,In Field Warranty Claims,2026-10-08,2026-10-08,Partially Picked,1,1
+mtd,Toowoomba,3135,43858,In Field Warranty Claims,2026-10-08,2026-10-09,Partially Picked,1,1
+mtd,Toowoomba,3135,43859,In Field Warranty Claims,2026-10-08,2026-10-09,Repair in Progress,1,1
+mtd,Brisbane,204670,43861,In Field Warranty Claims,2026-10-07,2026-10-08,Repairer Invoiced Processed,1,1
+mtd,Toowoomba,3135,43862,In Field Warranty Claims,2026-10-07,2026-10-13,Sales Order Approved,1,1
+mtd,Bundaberg,3138,43864,In Field Warranty Claims,2026-10-08,,Evidence Requested,1,0
+mtd,Toowoomba,3135,43865,Pre Delivery Warranty Claims,2026-10-08,2026-10-08,Repair in Progress,1,1
+mtd,Toowoomba,3135,43866,In Field Warranty Claims,2026-10-08,2026-10-08,Repair in Progress,1,1
+mtd,GRV,204642,43870,In Field Warranty Claims,2026-10-08,,Evidence Requested,1,0
+mtd,Toowoomba,3135,43873,In Field Warranty Claims,2026-10-08,2026-10-08,Repair in Progress,1,1
+mtd,GRV,204642,43877,In Field Warranty Claims,2026-10-08,,Evidence Requested,1,0
+mtd,Newcastle,3133,43883,Pre Delivery Warranty Claims,2026-10-08,2026-10-16,Partially Picked,1,1
+mtd,Toowoomba,3135,43894,Pre Delivery Warranty Claims,2026-10-08,2026-10-09,Repair in Progress,1,1
+mtd,Toowoomba,3135,43897,In Field Warranty Claims,2026-10-08,2026-10-12,Sales Order Approved,1,1
+mtd,Newcastle,3133,43899,Pre Delivery Warranty Claims,2026-10-08,2026-10-16,Repair in Progress,1,1
+mtd,GRV,204642,43902,In Field Warranty Claims,2026-10-08,2026-10-12,Repair in Progress,1,1
+mtd,Brisbane,204670,43929,In Field Warranty Claims,2026-10-08,2026-10-09,Sales Order Approved,1,1
+mtd,Brisbane,204670,43931,In Field Warranty Claims,2026-10-08,,Unapproved Claims Closed (Closed),1,0
+mtd,Brisbane,204670,43935,In Field Warranty Claims,2026-10-08,2026-10-09,Repair in Progress,1,1
+mtd,Bundaberg,3138,43936,Pre Delivery Warranty Claims,2026-10-08,,Claim Assessment,1,0
+mtd,Brisbane,204670,43938,In Field Warranty Claims,2026-10-08,2026-10-09,Repair in Progress,1,1
+mtd,Brisbane,204670,43947,In Field Warranty Claims,2026-10-08,2026-10-09,Partially Picked,1,1
+mtd,GRV,204642,43948,Pre Delivery Warranty Claims,2026-10-08,,Evidence Requested,1,0
+mtd,Bundaberg,3138,43950,In Field Warranty Claims,2026-10-08,,Claim Assessment,1,0
+mtd,Bundaberg,3138,43951,In Field Warranty Claims,2026-10-08,,Claim Assessment,1,0
+mtd,GRV,204642,43954,In Field Warranty Claims,2026-10-09,,Evidence Requested,1,0
+mtd,Brisbane,204670,43958,In Field Warranty Claims,2026-10-09,2026-10-12,Repair in Progress,1,1
+mtd,Brisbane,204670,43974,In Field Warranty Claims,2026-10-09,2026-10-09,Repairer Invoiced Processed,1,1
+mtd,Bundaberg,3138,43978,Pre Delivery Warranty Claims,2026-10-09,,Claim Assessment,1,0
+mtd,Bundaberg,3138,43979,Pre Delivery Warranty Claims,2026-10-09,,Claim Assessment,1,0
+mtd,Brisbane,204670,43996,In Field Warranty Claims,2026-10-09,2026-10-12,Repair in Progress,1,1
+mtd,Bundaberg,3138,43999,Pre Delivery Warranty Claims,2026-10-09,,Claim Assessment,1,0
+mtd,Brisbane,204670,44002,In Field Warranty Claims,2026-10-09,2026-10-12,Repair in Progress,1,1
+mtd,Brisbane,204670,44005,In Field Warranty Claims,2026-10-09,,Unapproved Claims Closed (Closed),1,0
+mtd,Bundaberg,3138,44015,In Field Warranty Claims,2026-10-09,,Claim Assessment,1,0
+mtd,Bundaberg,3138,44016,Pre Delivery Warranty Claims,2026-10-09,,Claim Assessment,1,0
+mtd,Bundaberg,3138,44025,Pre Delivery Warranty Claims,2026-10-09,,Evidence Requested,1,0
+mtd,Brisbane,204670,44051,In Field Warranty Claims,2026-10-10,2026-10-13,Partially Picked,1,1
+mtd,Newcastle,3133,44059,Pre Delivery Warranty Claims,2026-10-11,2026-10-21,Sales Order Approved,1,1
+mtd,GRV,204642,44065,In Field Warranty Claims,2026-10-13,2026-10-13,Repairer Invoiced Processed,1,1
+mtd,GRV,204642,44069,In Field Warranty Claims,2026-10-13,2026-10-13,Partially Picked,1,1
+mtd,GRV,204642,44076,Pre Delivery Warranty Claims,2026-10-12,2026-10-12,Repair in Progress,1,1
+mtd,Newcastle,3133,44102,In Field Warranty Claims,2026-10-12,,Evidence Requested,1,0
+mtd,GRV,204642,44107,Pre Delivery Warranty Claims,2026-10-12,2026-10-13,Repair in Progress,1,1
+mtd,Newcastle,3133,44108,Pre Delivery Warranty Claims,2026-10-12,,Claim Assessment,1,0
+mtd,GRV,204642,44121,Pre Delivery Warranty Claims,2026-10-12,2026-10-12,Repair in Progress,1,1
+mtd,Toowoomba,3135,44129,In Field Warranty Claims,2026-10-12,2026-10-13,Repair in Progress,1,1
+mtd,Newcastle,3133,44148,In Field Warranty Claims,2026-10-13,,Claim Assessment,1,0
+mtd,Toowoomba,3135,44150,In Field Warranty Claims,2026-10-13,,Unapproved Claims Closed (Closed),1,0
+mtd,Newcastle,3133,44152,In Field Warranty Claims,2026-10-12,,Claim Assessment,1,0
+mtd,Toowoomba,3135,44159,In Field Warranty Claims,2026-10-13,2026-10-13,Partially Picked,1,1
+mtd,Brisbane,204670,44161,In Field Warranty Claims,2026-10-13,2026-10-13,Repairer Invoiced Processed,1,1
+mtd,Brisbane,204670,44163,In Field Warranty Claims,2026-10-13,2026-10-13,Repairer Invoiced Processed,1,1
+mtd,Bundaberg,3138,44165,In Field Warranty Claims,2026-10-13,2026-10-13,Repairer Invoiced Processed,1,1
+mtd,GRV,204642,44169,Pre Delivery Warranty Claims,2026-10-13,,Evidence Requested,1,0
+mtd,Newcastle,3133,44170,In Field Warranty Claims,2026-10-13,,Evidence Requested,1,0
+mtd,Toowoomba,3135,44171,In Field Warranty Claims,2026-10-13,2026-10-14,Repair in Progress,1,1
+mtd,Toowoomba,3135,44177,In Field Warranty Claims,2026-10-13,2026-10-14,Sales Order Approved,1,1
+mtd,Toowoomba,3135,44179,In Field Warranty Claims,2026-10-13,,Evidence Requested,1,0
+mtd,GRV,204642,44180,In Field Warranty Claims,2026-10-13,,Unapproved Claims Closed (Closed),1,0
+mtd,Brisbane,204670,44207,In Field Warranty Claims,2026-10-13,,Evidence Requested,1,0
+mtd,Brisbane,204670,44214,In Field Warranty Claims,2026-10-13,2026-10-14,Repair in Progress,1,1
+mtd,Toowoomba,3135,44222,In Field Warranty Claims,2026-10-13,,Evidence Requested,1,0
+mtd,GRV,204642,44223,In Field Warranty Claims,2026-10-13,2026-10-14,Repair in Progress,1,1
+mtd,GRV,204642,44225,In Field Warranty Claims,2026-10-13,2026-10-16,Repair in Progress,1,1
+mtd,Newcastle,3133,44239,In Field Warranty Claims,2026-10-13,2026-10-16,Sales Order Approved,1,1
+mtd,Brisbane,204670,44244,In Field Warranty Claims,2026-10-13,,Evidence Requested,1,0
+mtd,Newcastle,3133,44245,In Field Warranty Claims,2026-10-13,,Claim Assessment,1,0
+mtd,Bundaberg,3138,44246,Pre Delivery Warranty Claims,2026-10-13,,New Claim,1,0
+mtd,Toowoomba,3135,44248,Pre Delivery Warranty Claims,2026-10-14,2026-10-14,Sales Order Approved,1,1
+mtd,Toowoomba,3135,44249,In Field Warranty Claims,2026-10-14,2026-10-16,Repair in Progress,1,1
+mtd,GRV,204642,44254,In Field Warranty Claims,2026-10-14,2026-10-14,Repair in Progress,1,1
+mtd,Toowoomba,3135,44255,Pre Delivery Warranty Claims,2026-10-14,2026-10-14,Partially Picked,1,1
+mtd,Newcastle,3133,44257,In Field Warranty Claims,2026-10-14,,Evidence Requested,1,0
+mtd,GRV,204642,44258,In Field Warranty Claims,2026-10-14,,Management Query,1,0
+mtd,Newcastle,3133,44259,In Field Warranty Claims,2026-10-14,,Claim Assessment,1,0
+mtd,GRV,204642,44260,In Field Warranty Claims,2026-10-14,2026-10-16,Repair in Progress,1,1
+mtd,Newcastle,3133,44261,In Field Warranty Claims,2026-10-14,2026-10-15,Repair in Progress,1,1
+mtd,Bundaberg,3138,44264,Pre Delivery Warranty Claims,2026-10-14,,New Claim,1,0
+mtd,GRV,204642,44265,In Field Warranty Claims,2026-10-14,,Unapproved Claims Closed (Closed),1,0
+mtd,Toowoomba,3135,44266,In Field Warranty Claims,2026-10-14,2026-10-16,Repair in Progress,1,1
+mtd,Toowoomba,3135,44267,In Field Warranty Claims,2026-10-14,,Unapproved Claims Closed (Closed),1,0
+mtd,Bundaberg,3138,44268,Pre Delivery Warranty Claims,2026-10-14,,New Claim,1,0
+mtd,Bundaberg,3138,44269,Pre Delivery Warranty Claims,2026-10-14,,New Claim,1,0
+mtd,Bundaberg,3138,44270,In Field Warranty Claims,2026-10-14,,New Claim,1,0
+mtd,Newcastle,3133,44281,In Field Warranty Claims,2026-10-14,,Claim Assessment,1,0
+mtd,Newcastle,3133,44282,In Field Warranty Claims,2026-10-14,,Unapproved Claims Closed (Closed),1,0
+mtd,Newcastle,3133,44283,In Field Warranty Claims,2026-10-14,2026-10-16,Repair in Progress,1,1
+mtd,Bundaberg,3138,44285,Pre Delivery Warranty Claims,2026-10-14,,New Claim,1,0
+mtd,Newcastle,3133,44286,In Field Warranty Claims,2026-10-14,,Claim Assessment,1,0
+mtd,Newcastle,3133,44288,In Field Warranty Claims,2026-10-14,,Unapproved Claims Closed (Closed),1,0
+mtd,Newcastle,3133,44331,In Field Warranty Claims,2026-10-14,,Claim Assessment,1,0
+mtd,Bundaberg,3138,44332,In Field Warranty Claims,2026-10-14,,New Claim,1,0
+mtd,GRV,204642,44334,In Field Warranty Claims,2026-10-14,,Evidence Requested,1,0
+mtd,GRV,204642,44335,In Field Warranty Claims,2026-10-14,,Claim Assessment,1,0
+mtd,GRV,204642,44336,In Field Warranty Claims,2026-10-14,,New Claim,1,0
+mtd,Bundaberg,3138,44341,In Field Warranty Claims,2026-10-14,,New Claim,1,0
+mtd,GRV,204642,44343,In Field Warranty Claims,2026-10-14,2026-10-16,Repair in Progress,1,1
+mtd,GRV,204642,44344,In Field Warranty Claims,2026-10-14,,New Claim,1,0
+mtd,GRV,204642,44345,In Field Warranty Claims,2026-10-14,2026-10-16,Repair in Progress,1,1
+mtd,GRV,204642,44346,In Field Warranty Claims,2026-10-14,2026-10-16,Partially Picked,1,1
+mtd,GRV,204642,44353,In Field Warranty Claims,2026-10-14,,New Claim,1,0
+mtd,Newcastle,3133,44354,Pre Delivery Warranty Claims,2026-10-14,,Claim Assessment,1,0
+mtd,Newcastle,3133,44355,In Field Warranty Claims,2026-10-14,,Claim Assessment,1,0
+mtd,Newcastle,3133,44361,In Field Warranty Claims,2026-10-14,,Claim Assessment,1,0
+mtd,Toowoomba,3135,44382,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44385,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44404,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44406,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44407,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44410,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,Bundaberg,3138,44411,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44414,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44415,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44418,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44419,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44421,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44423,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44429,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44430,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44435,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44436,In Field Warranty Claims,2026-10-15,,Claim Assessment,1,0
+mtd,GRV,204642,44437,In Field Warranty Claims,2026-10-15,,Claim Assessment,1,0
+mtd,GRV,204642,44444,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44447,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44456,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44461,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44462,In Field Warranty Claims,2026-10-15,,New Claim,1,0
+mtd,GRV,204642,44481,Pre Delivery Warranty Claims,2026-10-16,,New Claim,1,0
+mtd,Toowoomba,3135,44491,In Field Warranty Claims,2026-10-16,,New Claim,1,0
+mtd,GRV,204642,44494,In Field Warranty Claims,2026-10-16,,New Claim,1,0
+mtd,GRV,204642,44496,In Field Warranty Claims,2026-10-16,,New Claim,1,0
+mtd,Brisbane,204670,44526,In Field Warranty Claims,2026-10-16,2026-10-16,Repair in Progress,1,1
+mtd,Brisbane,204670,44537,Pre Delivery Warranty Claims,2026-10-17,,New Claim,1,0
+mtd,Brisbane,204670,44539,In Field Warranty Claims,2026-10-17,,New Claim,1,0
+mtd,Brisbane,204670,44540,In Field Warranty Claims,2026-10-17,,New Claim,1,0
+mtd,Brisbane,204670,44541,In Field Warranty Claims,2026-10-16,,New Claim,1,0
+mtd,Brisbane,204670,44559,In Field Warranty Claims,2026-10-17,,New Claim,1,0
+mtd,Brisbane,204670,44560,In Field Warranty Claims,2026-10-17,,New Claim,1,0
+mtd,Brisbane,204670,44561,In Field Warranty Claims,2026-10-17,,New Claim,1,0
+mtd,Brisbane,204670,44562,In Field Warranty Claims,2026-10-17,,New Claim,1,0
+mtd,Brisbane,204670,44563,In Field Warranty Claims,2026-10-17,,New Claim,1,0
+mtd,Brisbane,204670,44571,In Field Warranty Claims,2026-10-17,,New Claim,1,0
+mtd,Brisbane,204670,44572,In Field Warranty Claims,2026-10-17,,New Claim,1,0
+mtd,Brisbane,204670,44585,In Field Warranty Claims,2026-10-18,,New Claim,1,0
+mtd,Newcastle,3133,44590,In Field Warranty Claims,2026-10-18,,Claim Assessment,1,0
+mtd,GRV,204642,44597,In Field Warranty Claims,2026-10-18,,New Claim,1,0
+mtd,Newcastle,3133,44611,In Field Warranty Claims,2026-10-18,,Claim Assessment,1,0
+mtd,Newcastle,3133,44617,In Field Warranty Claims,2026-10-19,,Claim Assessment,1,0
+mtd,GRV,204642,44618,Pre Delivery Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,GRV,204642,44619,Pre Delivery Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,GRV,204642,44643,Pre Delivery Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,Newcastle,3133,44644,Pre Delivery Warranty Claims,2026-10-19,,Claim Assessment,1,0
+mtd,GRV,204642,44652,Pre Delivery Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,Newcastle,3133,44653,Pre Delivery Warranty Claims,2026-10-19,,Claim Assessment,1,0
+mtd,GRV,204642,44654,In Field Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,Toowoomba,3135,44657,In Field Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,Newcastle,3133,44658,Pre Delivery Warranty Claims,2026-10-19,,Claim Assessment,1,0
+mtd,Toowoomba,3135,44686,In Field Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,Toowoomba,3135,44689,In Field Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,Brisbane,204670,44690,In Field Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,Toowoomba,3135,44696,In Field Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,Toowoomba,3135,44697,In Field Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,Toowoomba,3135,44698,In Field Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,Newcastle,3133,44700,In Field Warranty Claims,2026-10-19,,Claim Assessment,1,0
+mtd,Newcastle,3133,44706,Pre Delivery Warranty Claims,2026-10-20,2026-10-20,Sales Order Approved,1,1
+mtd,Toowoomba,3135,44711,In Field Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,Brisbane,204670,44721,In Field Warranty Claims,2026-10-19,,New Claim,1,0
+mtd,Toowoomba,3135,44746,In Field Warranty Claims,2026-10-20,,New Claim,1,0
+mtd,Toowoomba,3135,44747,In Field Warranty Claims,2026-10-20,,New Claim,1,0
+mtd,Bundaberg,3138,44750,In Field Warranty Claims,2026-10-20,,New Claim,1,0
+mtd,Bundaberg,3138,44756,In Field Warranty Claims,2026-10-20,,New Claim,1,0
+mtd,GRV,204642,44760,In Field Warranty Claims,2026-10-20,,New Claim,1,0
+mtd,Bundaberg,3138,44761,In Field Warranty Claims,2026-10-20,,New Claim,1,0
+mtd,Bundaberg,3138,44764,In Field Warranty Claims,2026-10-20,,New Claim,1,0
+mtd,GRV,204642,44769,In Field Warranty Claims,2026-10-20,,New Claim,1,0
+mtd,GRV,204642,44782,In Field Warranty Claims,2026-10-20,,Claim Assessment,1,0
+mtd,GRV,204642,44783,In Field Warranty Claims,2026-10-20,,Claim Assessment,1,0

@@ -1,0 +1,99 @@
+{
+  "source_sync_at": "2026-10-21T00:17:52+00:00",
+  "source": "c4cTickets_test/tickets",
+  "dealer_field": "WarrantyHandlingDealerID",
+  "dealer_field_label": "Warranty Handling Dealer(Assign)",
+  "periods_start_inclusive_end_exclusive": {
+    "week": [
+      "2026-09-28",
+      "2026-10-05"
+    ],
+    "mtd": [
+      "2026-10-01",
+      "2026-10-22"
+    ]
+  },
+  "dealers": {
+    "3135": "Toowoomba",
+    "3133": "Newcastle",
+    "3138": "Bundaberg",
+    "204642": "GRV",
+    "204670": "Brisbane"
+  },
+  "scope": [
+    "Z005",
+    "Z006"
+  ],
+  "approved_status_codes": [
+    "Y0",
+    "Y1",
+    "Y2",
+    "Y4",
+    "Y7",
+    "YB",
+    "Z9"
+  ],
+  "counts": {
+    "3135": {
+      "week": [
+        27,
+        25
+      ],
+      "mtd": [
+        49,
+        46
+      ]
+    },
+    "3133": {
+      "week": [
+        27,
+        15
+      ],
+      "mtd": [
+        55,
+        44
+      ]
+    },
+    "3138": {
+      "week": [
+        14,
+        15
+      ],
+      "mtd": [
+        34,
+        14
+      ]
+    },
+    "204642": {
+      "week": [
+        11,
+        11
+      ],
+      "mtd": [
+        75,
+        34
+      ]
+    },
+    "204670": {
+      "week": [
+        19,
+        14
+      ],
+      "mtd": [
+        48,
+        36
+      ]
+    }
+  },
+  "totals": {
+    "week": [
+      98,
+      80
+    ],
+    "mtd": [
+      261,
+      174
+    ]
+  },
+  "excluded_approval_status": []
+}

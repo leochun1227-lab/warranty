@@ -1,0 +1,88 @@
+{
+  "period_end": "2026-10-04",
+  "dealers": {
+    "3135": "Toowoomba",
+    "3133": "Newcastle",
+    "3138": "Bundaberg",
+    "204642": "GRV",
+    "204670": "Brisbane"
+  },
+  "counts": {
+    "3135": {
+      "week": [
+        23,
+        19
+      ],
+      "mtd": [
+        16,
+        15
+      ]
+    },
+    "3133": {
+      "week": [
+        21,
+        13
+      ],
+      "mtd": [
+        9,
+        9
+      ]
+    },
+    "3138": {
+      "week": [
+        12,
+        12
+      ],
+      "mtd": [
+        4,
+        2
+      ]
+    },
+    "204642": {
+      "week": [
+        32,
+        31
+      ],
+      "mtd": [
+        15,
+        9
+      ]
+    },
+    "204670": {
+      "week": [
+        14,
+        8
+      ],
+      "mtd": [
+        6,
+        2
+      ]
+    }
+  },
+  "totals": {
+    "week": [
+      102,
+      83
+    ],
+    "mtd": [
+      50,
+      37
+    ]
+  },
+  "source": "c4cTickets_test/tickets",
+  "source_sync_date": "2026-10-21",
+  "scope": [
+    "Z005",
+    "Z006"
+  ],
+  "approved_status_codes": [
+    "Y0",
+    "Y1",
+    "Y2",
+    "Y4",
+    "Y7",
+    "YB",
+    "Z9"
+  ],
+  "excluded_status": []
+}

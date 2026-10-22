@@ -1,0 +1,526 @@
+{
+  "counts": {
+    "firebase": {
+      "3135": {
+        "week": {
+          "submitted": 27,
+          "approvals": 25
+        },
+        "mtd": {
+          "submitted": 49,
+          "approvals": 46
+        }
+      },
+      "3133": {
+        "week": {
+          "submitted": 27,
+          "approvals": 15
+        },
+        "mtd": {
+          "submitted": 55,
+          "approvals": 44
+        }
+      },
+      "3138": {
+        "week": {
+          "submitted": 14,
+          "approvals": 15
+        },
+        "mtd": {
+          "submitted": 34,
+          "approvals": 14
+        }
+      },
+      "204642": {
+        "week": {
+          "submitted": 11,
+          "approvals": 11
+        },
+        "mtd": {
+          "submitted": 75,
+          "approvals": 34
+        }
+      },
+      "204670": {
+        "week": {
+          "submitted": 19,
+          "approvals": 14
+        },
+        "mtd": {
+          "submitted": 48,
+          "approvals": 36
+        }
+      }
+    },
+    "c4c": {
+      "3135": {
+        "week": {
+          "submitted": 27,
+          "approvals": 25
+        },
+        "mtd": {
+          "submitted": 50,
+          "approvals": 46
+        }
+      },
+      "3133": {
+        "week": {
+          "submitted": 27,
+          "approvals": 15
+        },
+        "mtd": {
+          "submitted": 57,
+          "approvals": 47
+        }
+      },
+      "3138": {
+        "week": {
+          "submitted": 14,
+          "approvals": 15
+        },
+        "mtd": {
+          "submitted": 37,
+          "approvals": 14
+        }
+      },
+      "204642": {
+        "week": {
+          "submitted": 11,
+          "approvals": 11
+        },
+        "mtd": {
+          "submitted": 78,
+          "approvals": 34
+        }
+      },
+      "204670": {
+        "week": {
+          "submitted": 19,
+          "approvals": 14
+        },
+        "mtd": {
+          "submitted": 49,
+          "approvals": 36
+        }
+      }
+    }
+  },
+  "totals": {
+    "firebase": {
+      "week": {
+        "submitted": 98,
+        "approvals": 80
+      },
+      "mtd": {
+        "submitted": 261,
+        "approvals": 174
+      }
+    },
+    "c4c": {
+      "week": {
+        "submitted": 98,
+        "approvals": 80
+      },
+      "mtd": {
+        "submitted": 271,
+        "approvals": 177
+      }
+    }
+  },
+  "changed_ticket_count": 13,
+  "changes": [
+    {
+      "ticket_id": "43852",
+      "before": {
+        "TicketType": "Z006",
+        "WarrantyHandlingDealerID": "3133",
+        "CreatedOn": "07/10/2026",
+        "ClaimApprovedOnDateTime": "",
+        "TicketStatus": "Z5"
+      },
+      "after": {
+        "TicketType": "Z006",
+        "WarrantyHandlingDealerID": "3133",
+        "CreatedOn": "07/10/2026",
+        "ClaimApprovedOnDateTime": "2026-10-21 14:04:10",
+        "TicketStatus": "Z9"
+      },
+      "removed": [],
+      "added": [
+        [
+          "3133",
+          "mtd",
+          "approvals"
+        ]
+      ],
+      "absent_from_c4c": false,
+      "absent_from_firebase": false
+    },
+    {
+      "ticket_id": "44108",
+      "before": {
+        "TicketType": "Z005",
+        "WarrantyHandlingDealerID": "3133",
+        "CreatedOn": "12/10/2026",
+        "ClaimApprovedOnDateTime": "",
+        "TicketStatus": "Z2"
+      },
+      "after": {
+        "TicketType": "Z005",
+        "WarrantyHandlingDealerID": "3133",
+        "CreatedOn": "12/10/2026",
+        "ClaimApprovedOnDateTime": "2026-10-21 12:51:22",
+        "TicketStatus": "Z9"
+      },
+      "removed": [],
+      "added": [
+        [
+          "3133",
+          "mtd",
+          "approvals"
+        ]
+      ],
+      "absent_from_c4c": false,
+      "absent_from_firebase": false
+    },
+    {
+      "ticket_id": "44281",
+      "before": {
+        "TicketType": "Z006",
+        "WarrantyHandlingDealerID": "3133",
+        "CreatedOn": "14/10/2026",
+        "ClaimApprovedOnDateTime": "",
+        "TicketStatus": "Z2"
+      },
+      "after": {
+        "TicketType": "Z006",
+        "WarrantyHandlingDealerID": "3133",
+        "CreatedOn": "14/10/2026",
+        "ClaimApprovedOnDateTime": "2026-10-21 14:30:50",
+        "TicketStatus": "Z9"
+      },
+      "removed": [],
+      "added": [
+        [
+          "3133",
+          "mtd",
+          "approvals"
+        ]
+      ],
+      "absent_from_c4c": false,
+      "absent_from_firebase": false
+    },
+    {
+      "ticket_id": "44803",
+      "before": {
+        "TicketType": null,
+        "WarrantyHandlingDealerID": null,
+        "CreatedOn": null,
+        "ClaimApprovedOnDateTime": null,
+        "TicketStatus": null
+      },
+      "after": {
+        "TicketType": "Z006",
+        "WarrantyHandlingDealerID": "204670",
+        "CreatedOn": "21/10/2026",
+        "ClaimApprovedOnDateTime": "",
+        "TicketStatus": "Z1"
+      },
+      "removed": [],
+      "added": [
+        [
+          "204670",
+          "mtd",
+          "submitted"
+        ]
+      ],
+      "absent_from_c4c": false,
+      "absent_from_firebase": true
+    },
+    {
+      "ticket_id": "44807",
+      "before": {
+        "TicketType": null,
+        "WarrantyHandlingDealerID": null,
+        "CreatedOn": null,
+        "ClaimApprovedOnDateTime": null,
+        "TicketStatus": null
+      },
+      "after": {
+        "TicketType": "Z005",
+        "WarrantyHandlingDealerID": "3138",
+        "CreatedOn": "21/10/2026",
+        "ClaimApprovedOnDateTime": "",
+        "TicketStatus": "Z1"
+      },
+      "removed": [],
+      "added": [
+        [
+          "3138",
+          "mtd",
+          "submitted"
+        ]
+      ],
+      "absent_from_c4c": false,
+      "absent_from_firebase": true
+    },
+    {
+      "ticket_id": "44808",
+      "before": {
+        "TicketType": null,
+        "WarrantyHandlingDealerID": null,
+        "CreatedOn": null,
+        "ClaimApprovedOnDateTime": null,
+        "TicketStatus": null
+      },
+      "after": {
+        "TicketType": "Z005",
+        "WarrantyHandlingDealerID": "3138",
+        "CreatedOn": "21/10/2026",
+        "ClaimApprovedOnDateTime": "",
+        "TicketStatus": "Z1"
+      },
+      "removed": [],
+      "added": [
+        [
+          "3138",
+          "mtd",
+          "submitted"
+        ]
+      ],
+      "absent_from_c4c": false,
+      "absent_from_firebase": true
+    },
+    {
+      "ticket_id": "44809",
+      "before": {
+        "TicketType": null,
+        "WarrantyHandlingDealerID": null,
+        "CreatedOn": null,
+        "ClaimApprovedOnDateTime": null,
+        "TicketStatus": null
+      },
+      "after": {
+        "TicketType": "Z006",
+        "WarrantyHandlingDealerID": "3138",
+        "CreatedOn": "21/10/2026",
+        "ClaimApprovedOnDateTime": "",
+        "TicketStatus": "Z1"
+      },
+      "removed": [],
+      "added": [
+        [
+          "3138",
+          "mtd",
+          "submitted"
+        ]
+      ],
+      "absent_from_c4c": false,
+      "absent_from_firebase": true
+    },
+    {
+      "ticket_id": "44811",
+      "before": {
+        "TicketType": null,
+        "WarrantyHandlingDealerID": null,
+        "CreatedOn": null,
+        "ClaimApprovedOnDateTime": null,
+        "TicketStatus": null
+      },
+      "after": {
+        "TicketType": "Z006",
+        "WarrantyHandlingDealerID": "204642",
+        "CreatedOn": "21/10/2026",
+        "ClaimApprovedOnDateTime": "",
+        "TicketStatus": "Z1"
+      },
+      "removed": [],
+      "added": [
+        [
+          "204642",
+          "mtd",
+          "submitted"
+        ]
+      ],
+      "absent_from_c4c": false,
+      "absent_from_firebase": true
+    },
+    {
+      "ticket_id": "44812",
+      "before": {
+        "TicketType": null,
+        "WarrantyHandlingDealerID": null,
+        "CreatedOn": null,
+        "ClaimApprovedOnDateTime": null,
+        "TicketStatus": null
+      },
+      "after": {
+        "TicketType": "Z006",
+        "WarrantyHandlingDealerID": "204642",
+        "CreatedOn": "21/10/2026",
+        "ClaimApprovedOnDateTime": "",
+        "TicketStatus": "Z1"
+      },
+      "removed": [],
+      "added": [
+        [
+          "204642",
+          "mtd",
+          "submitted"
+        ]
+      ],
+      "absent_from_c4c": false,
+      "absent_from_firebase": true
+    },
+    {
+      "ticket_id": "44815",
+      "before": {
+        "TicketType": null,
+        "WarrantyHandlingDealerID": null,
+        "CreatedOn": null,
+        "ClaimApprovedOnDateTime": null,
+        "TicketStatus": null
+      },
+      "after": {
+        "TicketType": "Z006",
+        "WarrantyHandlingDealerID": "204642",
+        "CreatedOn": "21/10/2026",
+        "ClaimApprovedOnDateTime": "",
+        "TicketStatus": "Z1"
+      },
+      "removed": [],
+      "added": [
+        [
+          "204642",
+          "mtd",
+          "submitted"
+        ]
+      ],
+      "absent_from_c4c": false,
+      "absent_from_firebase": true
+    },
+    {
+      "ticket_id": "44832",
+      "before": {
+        "TicketType": null,
+        "WarrantyHandlingDealerID": null,
+        "CreatedOn": null,
+        "ClaimApprovedOnDateTime": null,
+        "TicketStatus": null
+      },
+      "after": {
+        "TicketType": "Z006",
+        "WarrantyHandlingDealerID": "3133",
+        "CreatedOn": "21/10/2026",
+        "ClaimApprovedOnDateTime": "",
+        "TicketStatus": "Z2"
+      },
+      "removed": [],
+      "added": [
+        [
+          "3133",
+          "mtd",
+          "submitted"
+        ]
+      ],
+      "absent_from_c4c": false,
+      "absent_from_firebase": true
+    },
+    {
+      "ticket_id": "44833",
+      "before": {
+        "TicketType": null,
+        "WarrantyHandlingDealerID": null,
+        "CreatedOn": null,
+        "ClaimApprovedOnDateTime": null,
+        "TicketStatus": null
+      },
+      "after": {
+        "TicketType": "Z006",
+        "WarrantyHandlingDealerID": "3133",
+        "CreatedOn": "21/10/2026",
+        "ClaimApprovedOnDateTime": "",
+        "TicketStatus": "Z2"
+      },
+      "removed": [],
+      "added": [
+        [
+          "3133",
+          "mtd",
+          "submitted"
+        ]
+      ],
+      "absent_from_c4c": false,
+      "absent_from_firebase": true
+    },
+    {
+      "ticket_id": "44836",
+      "before": {
+        "TicketType": null,
+        "WarrantyHandlingDealerID": null,
+        "CreatedOn": null,
+        "ClaimApprovedOnDateTime": null,
+        "TicketStatus": null
+      },
+      "after": {
+        "TicketType": "Z006",
+        "WarrantyHandlingDealerID": "3135",
+        "CreatedOn": "21/10/2026",
+        "ClaimApprovedOnDateTime": "",
+        "TicketStatus": "Z1"
+      },
+      "removed": [],
+      "added": [
+        [
+          "3135",
+          "mtd",
+          "submitted"
+        ]
+      ],
+      "absent_from_c4c": false,
+      "absent_from_firebase": true
+    }
+  ],
+  "c4c_scans": [
+    {
+      "role": "1001",
+      "reported_count": 41010,
+      "rows_read": 41010,
+      "unique_ids": 41009,
+      "pages": 43,
+      "start": "2026-10-21T04:00:58.205462+00:00",
+      "end": "2026-10-21T04:10:48.002308+00:00"
+    },
+    {
+      "role": "40",
+      "reported_count": 42253,
+      "rows_read": 42253,
+      "unique_ids": 42250,
+      "pages": 44,
+      "start": "2026-10-21T04:00:58.206465+00:00",
+      "end": "2026-10-21T04:10:01.091990+00:00"
+    },
+    {
+      "role": "43",
+      "reported_count": 28283,
+      "rows_read": 28283,
+      "unique_ids": 28274,
+      "pages": 30,
+      "start": "2026-10-21T04:00:58.207466+00:00",
+      "end": "2026-10-21T04:06:22.270025+00:00"
+    }
+  ],
+  "firebase_sync_at": "2026-10-21T00:17:52+00:00",
+  "handling_dealer_field": "WarrantyHandlingDealerID",
+  "periods": {
+    "week": [
+      "2026-09-28",
+      "2026-10-05"
+    ],
+    "mtd": [
+      "2026-10-01",
+      "2026-10-22"
+    ]
+  },
+  "retrieval_limitation": "Read-only offset pagination, no transaction snapshot guarantee."
+}
