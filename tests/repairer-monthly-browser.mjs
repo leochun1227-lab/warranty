@@ -29,6 +29,32 @@ try{
   await page.goto(`http://127.0.0.1:${server.address().port}/repairs.html`);
   await page.waitForFunction(()=>document.querySelectorAll('#roShopTable tbody tr').length>0);
   await page.waitForFunction(()=>!document.getElementById('calcFloat')?.classList.contains('active'));
+  assert.equal(await page.locator('#overviewExportBtn').count(),0);
+  async function checkRankingExport(){
+    const visibleRows=await page.locator('#roShopTable tbody tr').evaluateAll(rows=>rows.map(row=>[...row.cells].map(cell=>cell.textContent.trim())));
+    const pending=page.waitForEvent('download');
+    await page.locator('#roShopExport').click();
+    const download=await pending;
+    assert.match(download.suggestedFilename(),/^top-repairers-.*\.xls$/);
+    const xml=await fs.promises.readFile(await download.path(),'utf8');
+    const exported=await page.evaluate(xml=>{
+      const doc=new DOMParser().parseFromString(xml,'text/xml');
+      const sheet=[...doc.getElementsByTagName('Worksheet')].find(node=>node.getAttribute('ss:Name')==='Top Repairers');
+      return [...sheet.getElementsByTagName('Row')].map(row=>[...row.getElementsByTagName('Data')].map(cell=>({value:cell.textContent,type:cell.getAttribute('ss:Type')})));
+    },xml);
+    assert.equal(exported[0].length,await page.locator('#roShopTable thead th').count());
+    assert.equal(exported.length-1,visibleRows.length);
+    exported.slice(1).forEach((row,i)=>row.forEach((cell,j)=>{
+      const displayed=visibleRows[i][j];
+      if(j===0)assert.equal(cell.value,displayed);
+      else if(displayed==='—')assert.equal(cell.value,'No data available');
+      else{
+        assert.equal(cell.type,'Number');
+        assert.ok(Math.abs(Number(cell.value)-Number(displayed.replaceAll(',','')))<0.0051);
+      }
+    }));
+  }
+  await checkRankingExport();
   assert.equal(await page.evaluate(()=>selectedRepairYear),2026);
   assert.equal(await page.locator('#roShopMonthly').getAttribute('aria-pressed'),'true');
   assert.equal(await page.locator('#roShopTable thead th').count(),14);
@@ -37,18 +63,22 @@ try{
   await page.locator('#roShopAll').click();
   await page.waitForFunction(()=>document.querySelectorAll('#roShopTable thead th').length===2);
   assert.equal(await page.locator('#roShopAll').getAttribute('aria-pressed'),'true');
+  await checkRankingExport();
   await page.locator('#roShopMonthly').click();
   await page.locator('#roShopMetric').selectOption('avg_confirmed_cost');
   await page.waitForFunction(()=>document.getElementById('roShopCaption').textContent.includes('Avg Cost'));
   await page.locator('#repairPeriodSelect').selectOption('2026-02');
   await page.waitForFunction(()=>document.querySelectorAll('#roShopTable thead th').length===3);
   assert.equal(await page.locator('#roShopTable thead th').nth(1).textContent(),'Feb');
+  await checkRankingExport();
   await page.locator('#repairPeriodSelect').selectOption('total');
   await page.locator('#roShopMetric').selectOption('confirmed_cost');
   await page.locator('#roMapToggle').click();
   await page.locator('#roStateBars button').first().click();
   await page.waitForFunction(()=>document.getElementById('roStateScope').textContent!=='(All states)');
   const filteredState=await page.locator('#roStateScope').textContent();
+  await page.locator('#roShopMetric').selectOption('ticket_count');
+  await checkRankingExport();
   await page.locator('#roAllStates').click();
   await page.waitForFunction(()=>document.getElementById('roStateScope').textContent==='(All states)');
   // Deterministic detail fixtures isolate month drill-down from source availability.
@@ -75,5 +105,5 @@ try{
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth);
   assert.equal(overflow,false,'horizontal scrolling stays inside the monthly table');
   assert.deepEqual(errors,[]);
-  console.log(JSON.stringify({checks:'2026 default, monthly default, All, metric, month filter, state filter, month drill-down, mobile overflow',filteredState,errors}));
+  console.log(JSON.stringify({checks:'2026 default, monthly default, All, metric, month filter, state filter, Excel downloads match displayed rankings, old export removed, month drill-down, mobile overflow',filteredState,errors}));
 }finally{if(browser)await browser.close();await new Promise(r=>server.close(r));}

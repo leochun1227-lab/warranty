@@ -47,7 +47,7 @@ function overviewMonthlyRepairers(periods,year,period,metric,stateCode,limit=8){
   const overview=document.createElement('div');overview.className='roGrid';
   overview.innerHTML=`
     <section class="roPanel"><div class="roHead"><h2>State Comparison</h2><div class="roActions"><button id="roAllStates" type="button">All states</button><button id="roMapToggle" type="button" aria-pressed="true">Bars</button><select id="roStateMetric" aria-label="State comparison metric"><option value="confirmed_cost">Cost</option><option value="ticket_count">Tickets</option><option value="avg_confirmed_cost">Avg Cost</option></select></div></div><div class="roCaption">Select a state to filter Top Repairers</div><div id="roStateBars" class="roBars" hidden></div><div id="roMap"></div></section>
-    <section class="roPanel roShopPanel"><div class="roHead"><h2>Top Repairers <span id="roStateScope"></span></h2><div class="roActions"><button id="roShopMonthly" type="button" aria-pressed="true">Monthly</button><button id="roShopAll" type="button" aria-pressed="false">All</button><select id="roShopMetric" aria-label="Repairer ranking metric"><option value="confirmed_cost">Cost</option><option value="ticket_count">Tickets</option><option value="avg_confirmed_cost">Avg Cost</option></select></div></div><div class="roCaption" id="roShopCaption"></div><div id="roShopTable" class="roTableScroll" tabindex="0" aria-label="Repairer monthly distribution"></div></section>
+    <section class="roPanel roShopPanel"><div class="roHead"><h2>Top Repairers <span id="roStateScope"></span></h2><div class="roActions"><button id="roShopMonthly" type="button" aria-pressed="true">Monthly</button><button id="roShopAll" type="button" aria-pressed="false">All</button><select id="roShopMetric" aria-label="Repairer ranking metric"><option value="confirmed_cost">Cost</option><option value="ticket_count">Tickets</option><option value="avg_confirmed_cost">Avg Cost</option></select><button id="roShopExport" type="button" disabled>Export Excel</button></div></div><div class="roCaption" id="roShopCaption"></div><div id="roShopTable" class="roTableScroll" tabindex="0" aria-label="Repairer monthly distribution"></div></section>
     <section class="roPanel"><div class="roHead"><h2>Repeated Repair Scenarios</h2><button id="roRepeatExport" type="button">Export Excel</button></div><div class="roCaption">All states · select a scenario to compare repairers</div><div id="roScenarios" class="roScenarios"></div><p class="roNote">Repeated requests are a review signal; they do not by themselves indicate poor repair quality.</p></section>
     <section class="roPanel"><div class="roHead"><h2>Repairers with Repeat Requests</h2></div><div id="roRepeatScope" class="roCaption"></div><div id="roRepeatBars" class="roBars"></div><p class="roNote">Repeat / total requests · rate. Ranked by repeat count.</p></section>`;
   main.append(overview);
@@ -66,12 +66,8 @@ function overviewMonthlyRepairers(periods,year,period,metric,stateCode,limit=8){
     box.innerHTML=rows.map((row,i)=>`<button type="button" class="roBar ${active(row)?'selected':''}" data-index="${i}" title="${esc(label(row))}"><span class="roBarName">${esc(label(row))}</span><span class="roBarTrack"><span style="width:${Math.max(0,value(row))/max*100}%"></span></span><span class="roBarNumber">${esc(formatted(row))}</span>${meta(row)?`<small class="roBarMeta">${esc(meta(row))}</small>`:''}</button>`).join('');
     box.querySelectorAll('button').forEach((btn,i)=>btn.onclick=()=>onClick(rows[i]));
   }
-  function renderShopTable(){
+  function shopTableData(){
     const monthly=shopView==='monthly';
-    el('roShopMonthly').classList.toggle('selected',monthly);
-    el('roShopAll').classList.toggle('selected',!monthly);
-    el('roShopMonthly').setAttribute('aria-pressed',String(monthly));
-    el('roShopAll').setAttribute('aria-pressed',String(!monthly));
     const periods={};
     for(const [month,payload] of Object.entries(precomputedRepairPeriods||{})){
       if(month.startsWith(`${selectedRepairYear}-`)&&Array.isArray(payload?.repairers))periods[month]=repairersToWorkingRows(payload.repairers);
@@ -88,8 +84,17 @@ function overviewMonthlyRepairers(periods,year,period,metric,stateCode,limit=8){
     const distribution=overviewMonthlyRepairers(periods,selectedRepairYear,selectedRepairPeriod,shopMetric,stateCode);
     const rows=monthly?distribution.rows:overviewRankRows(repairOverviewRepairerRows(),shopMetric,stateCode);
     const months=monthly?distribution.months:[];
-    const box=el('roShopTable');
     const metricLabel=shopMetric==='ticket_count'?'Tickets':shopMetric==='avg_confirmed_cost'?'Avg Cost (AUD)':'Cost (AUD)';
+    return {monthly,periods,rows,months,metricLabel};
+  }
+  function renderShopTable(){
+    const {monthly,periods,rows,months,metricLabel}=shopTableData();
+    el('roShopMonthly').classList.toggle('selected',monthly);
+    el('roShopAll').classList.toggle('selected',!monthly);
+    el('roShopMonthly').setAttribute('aria-pressed',String(monthly));
+    el('roShopAll').setAttribute('aria-pressed',String(!monthly));
+    el('roShopExport').disabled=repairInitialLoading||!rows.length;
+    const box=el('roShopTable');
     el('roShopCaption').textContent=`${selectedRepairYear} · ${monthly?'Monthly distribution':'All in selected period'} · Top 8 by ${metricLabel} · select a value for ticket details`;
     if(!rows.length){
       empty(box,repairInitialLoading?'Loading…':monthly&&!Object.keys(periods).length?'Monthly data is unavailable. Select All to view totals.':'No matching data for this period.');return;
@@ -166,6 +171,17 @@ function overviewMonthlyRepairers(periods,year,period,metric,stateCode,limit=8){
   el('roShopMetric').onchange=e=>{shopMetric=e.target.value;schedule();};
   el('roShopMonthly').onclick=()=>{shopView='monthly';schedule();};
   el('roShopAll').onclick=()=>{shopView='all';schedule();};
+  el('roShopExport').onclick=()=>{
+    const {monthly,periods,rows,months,metricLabel}=shopTableData();
+    if(repairInitialLoading||!rows.length)return;
+    exportWorkbook([
+      {name:'Summary',rows:[['Field','Value'],['Period',repairPeriodText()],['State',stateCode||'All states'],['View',monthly?'Monthly':'All'],['Metric',metricLabel],['Repairers exported',rows.length]]},
+      {name:'Top Repairers',rows:[
+        ['Repairer',...months,monthly?`Total ${metricLabel}`:metricLabel],
+        ...rows.map(row=>[nameOf(row),...months.map(month=>periods[month]?Number(row.months[month]?.[shopMetric]||0):'No data available'),Number(row[shopMetric]||0)])
+      ]}
+    ],`top-repairers-${repairPeriodFileSuffix()}-${stateCode||'all-states'}-${shopView}-${shopMetric}`);
+  };
   el('roAllStates').onclick=()=>{stateCode='';schedule();};
   el('roMapToggle').onclick=()=>{const show=el('roMap').hidden;el('roMap').hidden=!show;el('roStateBars').hidden=show;el('roMapToggle').textContent=show?'Bars':'Map';el('roMapToggle').setAttribute('aria-pressed',String(show));if(show)renderWeekPanel();};
   map?.addEventListener('click',event=>{const target=event.target.closest('[data-state]');if(target){stateCode=target.dataset.state;schedule();}});

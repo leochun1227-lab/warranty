@@ -3,10 +3,12 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const artifactToolPath =
-  process.env.ARTIFACT_TOOL_MODULE ||
-  "C:/Users/Leo.Li/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/@oai/artifact-tool/dist/artifact_tool.mjs";
-const { Presentation, PresentationFile } = await import(pathToFileURL(artifactToolPath).href);
+// Resolve the same project dependency used by the workbook generators on any
+// deployment machine. Retain the explicit module-path override for custom setups.
+const artifactToolModule = process.env.ARTIFACT_TOOL_MODULE
+  ? pathToFileURL(path.resolve(process.env.ARTIFACT_TOOL_MODULE)).href
+  : "@oai/artifact-tool";
+const { Presentation, PresentationFile } = await import(artifactToolModule);
 
 const summaryPath = path.join(__dirname, "generated_exports", "ticket_timeline_summary.json");
 const outPath = path.join(__dirname, "generated_exports", "ticket_timeline_price_mix_2026.pptx");
@@ -140,7 +142,7 @@ function addPriceBucket(slide, bucket, position) {
 function addHeader(slide, title, subtitle) {
   addText(slide, "2026 TICKET TIMELINE", { left: 64, top: 38, width: 280, height: 22 }, { fontSize: 12, bold: true, color: "#0f8f8c", charSpacing: 1.5 });
   addText(slide, title, { left: 64, top: 68, width: 860, height: 54 }, { fontSize: 36, bold: true, color: "#172033" });
-  addText(slide, subtitle, { left: 66, top: 120, width: 760, height: 30 }, { fontSize: 16, color: "#647287" });
+  addText(slide, subtitle, { left: 66, top: 120, width: 1150, height: 44 }, { fontSize: 16, color: "#647287" });
 }
 
 function addFooter(slide, pageNumber) {
@@ -157,7 +159,7 @@ function addFooter(slide, pageNumber) {
 function createCover(presentation, stages) {
   const slide = presentation.slides.add();
   slide.background.fill = "#f5f8fb";
-  addHeader(slide, "Price mix shows how ticket value relates to handling duration", "Each stage groups completed tickets by claim value, then shows the percentage of those tickets completed in each duration bucket.");
+  addHeader(slide, "Ticket value and handling duration", "Each stage groups completed tickets by claim value, then shows the percentage of those tickets completed in each duration bucket.");
 
   const cardW = 360;
   stages.forEach((stage, index) => {

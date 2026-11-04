@@ -1,0 +1,2798 @@
+{
+  "generatedAt": "2026-10-05T11:18:22",
+  "year": 2026,
+  "scope": {
+    "createdOnFilter": ">= 2026-01-01",
+    "qualificationFilter": "Created On in scope + matched PO + Claim Approved On present + not unapproved",
+    "denominatorRule": "Each segment uses its own valid rows only; missing dates for a segment are excluded from that segment denominator."
+  },
+  "source": {
+    "workbookPath": "generated_exports/ticket_timeline_segments_2025_2026.xlsx",
+    "analysisTicketJs": "outputs/analysis_ticket_csv.js",
+    "approvedCostJson": "outputs/analysis_approved_cost_by_ticket.json",
+    "partsClassifiedCsv": "outputs/parts_classified.csv",
+    "repairersJson": "outputs/repairers_2026/repairers_2026_data.json",
+    "amountSource": "SAP PO Short Text EKPO.NETWR",
+    "amountColumn": "sap_po_netwr_amount"
+  },
+  "totals": {
+    "qualifyingTickets": 6587,
+    "averageProcessDays": 86.11,
+    "anomalyRows": 4834
+  },
+  "stages": [
+    {
+      "key": "approval",
+      "avg": 22.12,
+      "median": 7.0,
+      "count": 7133,
+      "evidence": {
+        "standard": 22,
+        "count": 7133,
+        "createdCount": 12278,
+        "unfinishedCount": 5145,
+        "average": 22.12,
+        "trend": [
+          {
+            "label": "Jan",
+            "avg": 62.04,
+            "count": 628,
+            "created": 753,
+            "completed": 628,
+            "unfinished": 125,
+            "over": 517,
+            "roll3": 62.04,
+            "amountDistribution": {
+              "totalAmount": 387338.72,
+              "pricedTickets": 580,
+              "missingTickets": 48,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 71129.41,
+                  "pct": 18.4,
+                  "count": 326
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 209668.37,
+                  "pct": 54.1,
+                  "count": 222
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 81232.52,
+                  "pct": 21.0,
+                  "count": 28
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 25308.42,
+                  "pct": 6.5,
+                  "count": 4
+                }
+              ]
+            }
+          },
+          {
+            "label": "Feb",
+            "avg": 46.19,
+            "count": 845,
+            "created": 1014,
+            "completed": 845,
+            "unfinished": 169,
+            "over": 523,
+            "roll3": 54.11,
+            "amountDistribution": {
+              "totalAmount": 492767.09,
+              "pricedTickets": 783,
+              "missingTickets": 62,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 103543.42,
+                  "pct": 21.0,
+                  "count": 452
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 287450.31,
+                  "pct": 58.3,
+                  "count": 298
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 84332.86,
+                  "pct": 17.1,
+                  "count": 30
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 17440.5,
+                  "pct": 3.5,
+                  "count": 3
+                }
+              ]
+            }
+          },
+          {
+            "label": "Mar",
+            "avg": 31.36,
+            "count": 822,
+            "created": 1105,
+            "completed": 822,
+            "unfinished": 283,
+            "over": 368,
+            "roll3": 46.53,
+            "amountDistribution": {
+              "totalAmount": 477044.88,
+              "pricedTickets": 764,
+              "missingTickets": 58,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 97529.64,
+                  "pct": 20.4,
+                  "count": 428
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 297329.4,
+                  "pct": 62.3,
+                  "count": 308
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 76270.84,
+                  "pct": 16.0,
+                  "count": 27
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 5915.0,
+                  "pct": 1.2,
+                  "count": 1
+                }
+              ]
+            }
+          },
+          {
+            "label": "Apr",
+            "avg": 25.12,
+            "count": 835,
+            "created": 1018,
+            "completed": 835,
+            "unfinished": 183,
+            "over": 314,
+            "roll3": 34.22,
+            "amountDistribution": {
+              "totalAmount": 491471.47,
+              "pricedTickets": 774,
+              "missingTickets": 61,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 103267.86,
+                  "pct": 21.0,
+                  "count": 460
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 278991.8,
+                  "pct": 56.8,
+                  "count": 283
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 69411.55,
+                  "pct": 14.1,
+                  "count": 25
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 39800.26,
+                  "pct": 8.1,
+                  "count": 6
+                }
+              ]
+            }
+          },
+          {
+            "label": "May",
+            "avg": 14.13,
+            "count": 873,
+            "created": 1217,
+            "completed": 873,
+            "unfinished": 344,
+            "over": 168,
+            "roll3": 23.54,
+            "amountDistribution": {
+              "totalAmount": 488491.45,
+              "pricedTickets": 805,
+              "missingTickets": 68,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 98301.62,
+                  "pct": 20.1,
+                  "count": 448
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 293694.74,
+                  "pct": 60.1,
+                  "count": 322
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 90554.19,
+                  "pct": 18.5,
+                  "count": 34
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 5940.9,
+                  "pct": 1.2,
+                  "count": 1
+                }
+              ]
+            }
+          },
+          {
+            "label": "Jun",
+            "avg": 9.28,
+            "count": 827,
+            "created": 1258,
+            "completed": 827,
+            "unfinished": 431,
+            "over": 92,
+            "roll3": 16.18,
+            "amountDistribution": {
+              "totalAmount": 467289.06,
+              "pricedTickets": 742,
+              "missingTickets": 85,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 84983.97,
+                  "pct": 18.2,
+                  "count": 433
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 260152.48,
+                  "pct": 55.7,
+                  "count": 266
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 109210.61,
+                  "pct": 23.4,
+                  "count": 41
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 12942.0,
+                  "pct": 2.8,
+                  "count": 2
+                }
+              ]
+            }
+          },
+          {
+            "label": "Jul",
+            "avg": 5.51,
+            "count": 849,
+            "created": 1346,
+            "completed": 849,
+            "unfinished": 497,
+            "over": 52,
+            "roll3": 9.64,
+            "amountDistribution": {
+              "totalAmount": 541444.74,
+              "pricedTickets": 783,
+              "missingTickets": 66,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 96600.38,
+                  "pct": 17.8,
+                  "count": 456
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 268860.13,
+                  "pct": 49.7,
+                  "count": 271
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 152878.22,
+                  "pct": 28.2,
+                  "count": 52
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 23106.01,
+                  "pct": 4.3,
+                  "count": 4
+                }
+              ]
+            }
+          },
+          {
+            "label": "Aug",
+            "avg": 5.6,
+            "count": 862,
+            "created": 2018,
+            "completed": 862,
+            "unfinished": 1156,
+            "over": 78,
+            "roll3": 6.8,
+            "amountDistribution": {
+              "totalAmount": 530058.61,
+              "pricedTickets": 808,
+              "missingTickets": 54,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 106328.67,
+                  "pct": 20.1,
+                  "count": 481
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 262173.36,
+                  "pct": 49.5,
+                  "count": 272
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 151226.58,
+                  "pct": 28.5,
+                  "count": 53
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 10330.0,
+                  "pct": 1.9,
+                  "count": 2
+                }
+              ]
+            }
+          },
+          {
+            "label": "Sep",
+            "avg": 6.11,
+            "count": 570,
+            "created": 2323,
+            "completed": 570,
+            "unfinished": 1753,
+            "over": 16,
+            "roll3": 5.74,
+            "amountDistribution": {
+              "totalAmount": 314599.53,
+              "pricedTickets": 524,
+              "missingTickets": 46,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 70234.25,
+                  "pct": 22.3,
+                  "count": 315
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 167734.32,
+                  "pct": 53.3,
+                  "count": 184
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 60343.96,
+                  "pct": 19.2,
+                  "count": 22
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 16287.0,
+                  "pct": 5.2,
+                  "count": 3
+                }
+              ]
+            }
+          },
+          {
+            "label": "Oct",
+            "avg": 0.82,
+            "count": 22,
+            "created": 226,
+            "completed": 22,
+            "unfinished": 204,
+            "over": 0,
+            "roll3": 4.18,
+            "amountDistribution": {
+              "totalAmount": 10032.93,
+              "pricedTickets": 22,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 3566.14,
+                  "pct": 35.5,
+                  "count": 16
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 6466.79,
+                  "pct": 64.5,
+                  "count": 6
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 0,
+                  "pct": 0.0,
+                  "count": 0
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 0,
+                  "pct": 0.0,
+                  "count": 0
+                }
+              ]
+            }
+          }
+        ],
+        "distribution": [
+          [
+            "0-7",
+            50.6,
+            "#0f8f8c",
+            3606
+          ],
+          [
+            "8-14",
+            11.7,
+            "#4f8f42",
+            838
+          ],
+          [
+            "15-21",
+            7.1,
+            "#2474a6",
+            503
+          ],
+          [
+            "22-30",
+            6.7,
+            "#d88a18",
+            480
+          ],
+          [
+            "31-60",
+            12.3,
+            "#ef9f42",
+            876
+          ],
+          [
+            "60+",
+            11.6,
+            "#c9513f",
+            830
+          ]
+        ],
+        "amountDistribution": {
+          "totalAmount": 4200538.48,
+          "pricedTickets": 6585,
+          "missingTickets": 548,
+          "buckets": [
+            {
+              "label": "$0-500",
+              "color": "#5bb8b0",
+              "amount": 835485.36,
+              "pct": 19.9,
+              "count": 3815
+            },
+            {
+              "label": "$500-2k",
+              "color": "#4f87c7",
+              "amount": 2332521.7,
+              "pct": 55.5,
+              "count": 2432
+            },
+            {
+              "label": "$2k-5k",
+              "color": "#f0a33a",
+              "amount": 875461.33,
+              "pct": 20.8,
+              "count": 312
+            },
+            {
+              "label": "$5k+",
+              "color": "#c9513f",
+              "amount": 157070.09,
+              "pct": 3.7,
+              "count": 26
+            }
+          ]
+        },
+        "distributionAmount": {
+          "0-7": {
+            "totalAmount": 1937303.43,
+            "pricedTickets": 3242,
+            "missingTickets": 364,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 407029.82,
+                "pct": 21.0,
+                "count": 1944
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 1078869.04,
+                "pct": 55.7,
+                "count": 1140
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 407335.76,
+                "pct": 21.0,
+                "count": 150
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 44068.81,
+                "pct": 2.3,
+                "count": 8
+              }
+            ]
+          },
+          "8-14": {
+            "totalAmount": 493328.63,
+            "pricedTickets": 801,
+            "missingTickets": 37,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 112629.81,
+                "pct": 22.8,
+                "count": 474
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 266446.11,
+                "pct": 54.0,
+                "count": 291
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 90215.71,
+                "pct": 18.3,
+                "count": 32
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 24037.0,
+                "pct": 4.9,
+                "count": 4
+              }
+            ]
+          },
+          "15-21": {
+            "totalAmount": 290688.05,
+            "pricedTickets": 476,
+            "missingTickets": 27,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 63320.19,
+                "pct": 21.8,
+                "count": 282
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 173575.22,
+                "pct": 59.7,
+                "count": 179
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 40850.64,
+                "pct": 14.1,
+                "count": 13
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 12942.0,
+                "pct": 4.5,
+                "count": 2
+              }
+            ]
+          },
+          "22-30": {
+            "totalAmount": 261291.54,
+            "pricedTickets": 452,
+            "missingTickets": 28,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 65041.35,
+                "pct": 24.9,
+                "count": 277
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 155664.14,
+                "pct": 59.6,
+                "count": 160
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 40586.05,
+                "pct": 15.5,
+                "count": 15
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 0,
+                "pct": 0.0,
+                "count": 0
+              }
+            ]
+          },
+          "31-60": {
+            "totalAmount": 528458.25,
+            "pricedTickets": 826,
+            "missingTickets": 50,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 101957.37,
+                "pct": 19.3,
+                "count": 458
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 316830.75,
+                "pct": 60.0,
+                "count": 330
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 109670.13,
+                "pct": 20.8,
+                "count": 38
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 0,
+                "pct": 0.0,
+                "count": 0
+              }
+            ]
+          },
+          "60+": {
+            "totalAmount": 689468.58,
+            "pricedTickets": 788,
+            "missingTickets": 42,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 85506.82,
+                "pct": 12.4,
+                "count": 380
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 341136.44,
+                "pct": 49.5,
+                "count": 332
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 186803.04,
+                "pct": 27.1,
+                "count": 64
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 76022.28,
+                "pct": 11.0,
+                "count": 12
+              }
+            ]
+          }
+        },
+        "priceDurationMix": {
+          "pricedTickets": 6585,
+          "missingAmount": 548,
+          "buckets": [
+            {
+              "label": "$0-500",
+              "color": "#5bb8b0",
+              "count": 3815,
+              "average": 20.07,
+              "distribution": [
+                [
+                  "0-7",
+                  51.0,
+                  "#0f8f8c",
+                  1944
+                ],
+                [
+                  "8-14",
+                  12.4,
+                  "#4f8f42",
+                  474
+                ],
+                [
+                  "15-21",
+                  7.4,
+                  "#2474a6",
+                  282
+                ],
+                [
+                  "22-30",
+                  7.3,
+                  "#d88a18",
+                  277
+                ],
+                [
+                  "31-60",
+                  12.0,
+                  "#ef9f42",
+                  458
+                ],
+                [
+                  "60+",
+                  10.0,
+                  "#c9513f",
+                  380
+                ]
+              ]
+            },
+            {
+              "label": "$500-2k",
+              "color": "#4f87c7",
+              "count": 2432,
+              "average": 25.35,
+              "distribution": [
+                [
+                  "0-7",
+                  46.9,
+                  "#0f8f8c",
+                  1140
+                ],
+                [
+                  "8-14",
+                  12.0,
+                  "#4f8f42",
+                  291
+                ],
+                [
+                  "15-21",
+                  7.4,
+                  "#2474a6",
+                  179
+                ],
+                [
+                  "22-30",
+                  6.6,
+                  "#d88a18",
+                  160
+                ],
+                [
+                  "31-60",
+                  13.6,
+                  "#ef9f42",
+                  330
+                ],
+                [
+                  "60+",
+                  13.7,
+                  "#c9513f",
+                  332
+                ]
+              ]
+            },
+            {
+              "label": "$2k-5k",
+              "color": "#f0a33a",
+              "count": 312,
+              "average": 32.44,
+              "distribution": [
+                [
+                  "0-7",
+                  48.1,
+                  "#0f8f8c",
+                  150
+                ],
+                [
+                  "8-14",
+                  10.3,
+                  "#4f8f42",
+                  32
+                ],
+                [
+                  "15-21",
+                  4.2,
+                  "#2474a6",
+                  13
+                ],
+                [
+                  "22-30",
+                  4.8,
+                  "#d88a18",
+                  15
+                ],
+                [
+                  "31-60",
+                  12.2,
+                  "#ef9f42",
+                  38
+                ],
+                [
+                  "60+",
+                  20.5,
+                  "#c9513f",
+                  64
+                ]
+              ]
+            },
+            {
+              "label": "$5k+",
+              "color": "#c9513f",
+              "count": 26,
+              "average": 53.42,
+              "distribution": [
+                [
+                  "0-7",
+                  30.8,
+                  "#0f8f8c",
+                  8
+                ],
+                [
+                  "8-14",
+                  15.4,
+                  "#4f8f42",
+                  4
+                ],
+                [
+                  "15-21",
+                  7.7,
+                  "#2474a6",
+                  2
+                ],
+                [
+                  "22-30",
+                  0.0,
+                  "#d88a18",
+                  0
+                ],
+                [
+                  "31-60",
+                  0.0,
+                  "#ef9f42",
+                  0
+                ],
+                [
+                  "60+",
+                  46.2,
+                  "#c9513f",
+                  12
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "parts",
+      "avg": 20.14,
+      "median": 13.0,
+      "count": 4510,
+      "evidence": {
+        "standard": 21,
+        "count": 4510,
+        "createdCount": 6587,
+        "unfinishedCount": 2077,
+        "average": 20.14,
+        "trend": [
+          {
+            "label": "Jan",
+            "avg": 24.34,
+            "count": 383,
+            "created": 580,
+            "completed": 383,
+            "unfinished": 197,
+            "over": 149,
+            "roll3": 24.34,
+            "amountDistribution": {
+              "totalAmount": 252162.61,
+              "pricedTickets": 383,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 42473.44,
+                  "pct": 16.8,
+                  "count": 207
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 144220.81,
+                  "pct": 57.2,
+                  "count": 156
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 47426.35,
+                  "pct": 18.8,
+                  "count": 17
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 18042.01,
+                  "pct": 7.2,
+                  "count": 3
+                }
+              ]
+            }
+          },
+          {
+            "label": "Feb",
+            "avg": 24.99,
+            "count": 585,
+            "created": 783,
+            "completed": 585,
+            "unfinished": 198,
+            "over": 221,
+            "roll3": 24.66,
+            "amountDistribution": {
+              "totalAmount": 347407.62,
+              "pricedTickets": 585,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 71731.46,
+                  "pct": 20.6,
+                  "count": 335
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 220455.16,
+                  "pct": 63.5,
+                  "count": 232
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 37780.5,
+                  "pct": 10.9,
+                  "count": 15
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 17440.5,
+                  "pct": 5.0,
+                  "count": 3
+                }
+              ]
+            }
+          },
+          {
+            "label": "Mar",
+            "avg": 28.55,
+            "count": 582,
+            "created": 764,
+            "completed": 582,
+            "unfinished": 182,
+            "over": 221,
+            "roll3": 25.96,
+            "amountDistribution": {
+              "totalAmount": 368581.74,
+              "pricedTickets": 582,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 66958.48,
+                  "pct": 18.2,
+                  "count": 304
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 258402.2,
+                  "pct": 70.1,
+                  "count": 263
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 37306.06,
+                  "pct": 10.1,
+                  "count": 14
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 5915.0,
+                  "pct": 1.6,
+                  "count": 1
+                }
+              ]
+            }
+          },
+          {
+            "label": "Apr",
+            "avg": 24.35,
+            "count": 577,
+            "created": 774,
+            "completed": 577,
+            "unfinished": 197,
+            "over": 206,
+            "roll3": 25.96,
+            "amountDistribution": {
+              "totalAmount": 334554.2,
+              "pricedTickets": 577,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 74553.79,
+                  "pct": 22.3,
+                  "count": 335
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 217331.9,
+                  "pct": 65.0,
+                  "count": 229
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 27975.51,
+                  "pct": 8.4,
+                  "count": 11
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 14693.0,
+                  "pct": 4.4,
+                  "count": 2
+                }
+              ]
+            }
+          },
+          {
+            "label": "May",
+            "avg": 23.17,
+            "count": 576,
+            "created": 805,
+            "completed": 576,
+            "unfinished": 229,
+            "over": 225,
+            "roll3": 25.36,
+            "amountDistribution": {
+              "totalAmount": 322961.3,
+              "pricedTickets": 576,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 65336.06,
+                  "pct": 20.2,
+                  "count": 311
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 233135.52,
+                  "pct": 72.2,
+                  "count": 255
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 24489.72,
+                  "pct": 7.6,
+                  "count": 10
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 0,
+                  "pct": 0.0,
+                  "count": 0
+                }
+              ]
+            }
+          },
+          {
+            "label": "Jun",
+            "avg": 22.03,
+            "count": 512,
+            "created": 743,
+            "completed": 512,
+            "unfinished": 231,
+            "over": 174,
+            "roll3": 23.18,
+            "amountDistribution": {
+              "totalAmount": 308654.89,
+              "pricedTickets": 512,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 59370.13,
+                  "pct": 19.2,
+                  "count": 293
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 197187.89,
+                  "pct": 63.9,
+                  "count": 200
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 44420.33,
+                  "pct": 14.4,
+                  "count": 18
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 7676.54,
+                  "pct": 2.5,
+                  "count": 1
+                }
+              ]
+            }
+          },
+          {
+            "label": "Jul",
+            "avg": 12.55,
+            "count": 502,
+            "created": 783,
+            "completed": 502,
+            "unfinished": 281,
+            "over": 56,
+            "roll3": 19.25,
+            "amountDistribution": {
+              "totalAmount": 295130.63,
+              "pricedTickets": 502,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 60457.75,
+                  "pct": 20.5,
+                  "count": 294
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 189974.9,
+                  "pct": 64.4,
+                  "count": 194
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 32945.07,
+                  "pct": 11.2,
+                  "count": 12
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 11752.91,
+                  "pct": 4.0,
+                  "count": 2
+                }
+              ]
+            }
+          },
+          {
+            "label": "Aug",
+            "avg": 7.73,
+            "count": 518,
+            "created": 808,
+            "completed": 518,
+            "unfinished": 290,
+            "over": 51,
+            "roll3": 14.1,
+            "amountDistribution": {
+              "totalAmount": 267874.01,
+              "pricedTickets": 518,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 70442.49,
+                  "pct": 26.3,
+                  "count": 322
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 177551.77,
+                  "pct": 66.3,
+                  "count": 188
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 19879.75,
+                  "pct": 7.4,
+                  "count": 8
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 0,
+                  "pct": 0.0,
+                  "count": 0
+                }
+              ]
+            }
+          },
+          {
+            "label": "Sep",
+            "avg": 4.78,
+            "count": 274,
+            "created": 525,
+            "completed": 274,
+            "unfinished": 251,
+            "over": 12,
+            "roll3": 8.35,
+            "amountDistribution": {
+              "totalAmount": 150352.31,
+              "pricedTickets": 274,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 34219.52,
+                  "pct": 22.8,
+                  "count": 159
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 102068.47,
+                  "pct": 67.9,
+                  "count": 110
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 14064.32,
+                  "pct": 9.4,
+                  "count": 5
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 0,
+                  "pct": 0.0,
+                  "count": 0
+                }
+              ]
+            }
+          },
+          {
+            "label": "Oct",
+            "avg": 1.0,
+            "count": 1,
+            "created": 22,
+            "completed": 1,
+            "unfinished": 21,
+            "over": 0,
+            "roll3": 4.5,
+            "amountDistribution": {
+              "totalAmount": 540.0,
+              "pricedTickets": 1,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 0,
+                  "pct": 0.0,
+                  "count": 0
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 540.0,
+                  "pct": 100.0,
+                  "count": 1
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 0,
+                  "pct": 0.0,
+                  "count": 0
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 0,
+                  "pct": 0.0,
+                  "count": 0
+                }
+              ]
+            }
+          }
+        ],
+        "distribution": [
+          [
+            "0-7",
+            31.8,
+            "#0f8f8c",
+            1434
+          ],
+          [
+            "8-14",
+            26.5,
+            "#4f8f42",
+            1194
+          ],
+          [
+            "15-21",
+            12.6,
+            "#2474a6",
+            567
+          ],
+          [
+            "22-30",
+            8.4,
+            "#d88a18",
+            377
+          ],
+          [
+            "31-60",
+            13.5,
+            "#ef9f42",
+            609
+          ],
+          [
+            "60+",
+            7.3,
+            "#c9513f",
+            329
+          ]
+        ],
+        "amountDistribution": {
+          "totalAmount": 2648219.31,
+          "pricedTickets": 4510,
+          "missingTickets": 0,
+          "buckets": [
+            {
+              "label": "$0-500",
+              "color": "#5bb8b0",
+              "amount": 545543.12,
+              "pct": 20.6,
+              "count": 2560
+            },
+            {
+              "label": "$500-2k",
+              "color": "#4f87c7",
+              "amount": 1740868.62,
+              "pct": 65.7,
+              "count": 1828
+            },
+            {
+              "label": "$2k-5k",
+              "color": "#f0a33a",
+              "amount": 286287.61,
+              "pct": 10.8,
+              "count": 110
+            },
+            {
+              "label": "$5k+",
+              "color": "#c9513f",
+              "amount": 75519.96,
+              "pct": 2.9,
+              "count": 12
+            }
+          ]
+        },
+        "distributionAmount": {
+          "0-7": {
+            "totalAmount": 704950.85,
+            "pricedTickets": 1434,
+            "missingTickets": 0,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 188046.7,
+                "pct": 26.7,
+                "count": 914
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 450061.35,
+                "pct": 63.8,
+                "count": 498
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 53881.05,
+                "pct": 7.6,
+                "count": 20
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 12961.75,
+                "pct": 1.8,
+                "count": 2
+              }
+            ]
+          },
+          "8-14": {
+            "totalAmount": 634455.2,
+            "pricedTickets": 1194,
+            "missingTickets": 0,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 153088.47,
+                "pct": 24.1,
+                "count": 742
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 386051.75,
+                "pct": 60.8,
+                "count": 420
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 81344.98,
+                "pct": 12.8,
+                "count": 30
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 13970.0,
+                "pct": 2.2,
+                "count": 2
+              }
+            ]
+          },
+          "15-21": {
+            "totalAmount": 338135.42,
+            "pricedTickets": 567,
+            "missingTickets": 0,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 70315.38,
+                "pct": 20.8,
+                "count": 320
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 221420.38,
+                "pct": 65.5,
+                "count": 230
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 38723.12,
+                "pct": 11.5,
+                "count": 16
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 7676.54,
+                "pct": 2.3,
+                "count": 1
+              }
+            ]
+          },
+          "22-30": {
+            "totalAmount": 259301.57,
+            "pricedTickets": 377,
+            "missingTickets": 0,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 41268.34,
+                "pct": 15.9,
+                "count": 175
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 199059.74,
+                "pct": 76.8,
+                "count": 195
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 13945.99,
+                "pct": 5.4,
+                "count": 6
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 5027.5,
+                "pct": 1.9,
+                "count": 1
+              }
+            ]
+          },
+          "31-60": {
+            "totalAmount": 443951.63,
+            "pricedTickets": 609,
+            "missingTickets": 0,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 59581.84,
+                "pct": 13.4,
+                "count": 267
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 309065.19,
+                "pct": 69.6,
+                "count": 317
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 57462.44,
+                "pct": 12.9,
+                "count": 22
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 17842.16,
+                "pct": 4.0,
+                "count": 3
+              }
+            ]
+          },
+          "60+": {
+            "totalAmount": 267424.64,
+            "pricedTickets": 329,
+            "missingTickets": 0,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 33242.39,
+                "pct": 12.4,
+                "count": 142
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 175210.21,
+                "pct": 65.5,
+                "count": 168
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 40930.03,
+                "pct": 15.3,
+                "count": 16
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 18042.01,
+                "pct": 6.7,
+                "count": 3
+              }
+            ]
+          }
+        },
+        "priceDurationMix": {
+          "pricedTickets": 4510,
+          "missingAmount": 0,
+          "buckets": [
+            {
+              "label": "$0-500",
+              "color": "#5bb8b0",
+              "count": 2560,
+              "average": 17.67,
+              "distribution": [
+                [
+                  "0-7",
+                  35.7,
+                  "#0f8f8c",
+                  914
+                ],
+                [
+                  "8-14",
+                  29.0,
+                  "#4f8f42",
+                  742
+                ],
+                [
+                  "15-21",
+                  12.5,
+                  "#2474a6",
+                  320
+                ],
+                [
+                  "22-30",
+                  6.8,
+                  "#d88a18",
+                  175
+                ],
+                [
+                  "31-60",
+                  10.4,
+                  "#ef9f42",
+                  267
+                ],
+                [
+                  "60+",
+                  5.5,
+                  "#c9513f",
+                  142
+                ]
+              ]
+            },
+            {
+              "label": "$500-2k",
+              "color": "#4f87c7",
+              "count": 1828,
+              "average": 22.9,
+              "distribution": [
+                [
+                  "0-7",
+                  27.2,
+                  "#0f8f8c",
+                  498
+                ],
+                [
+                  "8-14",
+                  23.0,
+                  "#4f8f42",
+                  420
+                ],
+                [
+                  "15-21",
+                  12.6,
+                  "#2474a6",
+                  230
+                ],
+                [
+                  "22-30",
+                  10.7,
+                  "#d88a18",
+                  195
+                ],
+                [
+                  "31-60",
+                  17.3,
+                  "#ef9f42",
+                  317
+                ],
+                [
+                  "60+",
+                  9.2,
+                  "#c9513f",
+                  168
+                ]
+              ]
+            },
+            {
+              "label": "$2k-5k",
+              "color": "#f0a33a",
+              "count": 110,
+              "average": 29.24,
+              "distribution": [
+                [
+                  "0-7",
+                  18.2,
+                  "#0f8f8c",
+                  20
+                ],
+                [
+                  "8-14",
+                  27.3,
+                  "#4f8f42",
+                  30
+                ],
+                [
+                  "15-21",
+                  14.5,
+                  "#2474a6",
+                  16
+                ],
+                [
+                  "22-30",
+                  5.5,
+                  "#d88a18",
+                  6
+                ],
+                [
+                  "31-60",
+                  20.0,
+                  "#ef9f42",
+                  22
+                ],
+                [
+                  "60+",
+                  14.5,
+                  "#c9513f",
+                  16
+                ]
+              ]
+            },
+            {
+              "label": "$5k+",
+              "color": "#c9513f",
+              "count": 12,
+              "average": 44.17,
+              "distribution": [
+                [
+                  "0-7",
+                  16.7,
+                  "#0f8f8c",
+                  2
+                ],
+                [
+                  "8-14",
+                  16.7,
+                  "#4f8f42",
+                  2
+                ],
+                [
+                  "15-21",
+                  8.3,
+                  "#2474a6",
+                  1
+                ],
+                [
+                  "22-30",
+                  8.3,
+                  "#d88a18",
+                  1
+                ],
+                [
+                  "31-60",
+                  25.0,
+                  "#ef9f42",
+                  3
+                ],
+                [
+                  "60+",
+                  25.0,
+                  "#c9513f",
+                  3
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "repair",
+      "avg": 43.85,
+      "median": 33.0,
+      "count": 1753,
+      "evidence": {
+        "standard": 33,
+        "count": 1753,
+        "createdCount": 4510,
+        "unfinishedCount": 2757,
+        "average": 43.85,
+        "trend": [
+          {
+            "label": "Jan",
+            "avg": 56.94,
+            "count": 159,
+            "created": 383,
+            "completed": 159,
+            "unfinished": 224,
+            "over": 86,
+            "roll3": 56.94,
+            "amountDistribution": {
+              "totalAmount": 97905.89,
+              "pricedTickets": 159,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 17859.47,
+                  "pct": 18.2,
+                  "count": 94
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 55380.39,
+                  "pct": 56.6,
+                  "count": 58
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 18253.53,
+                  "pct": 18.6,
+                  "count": 6
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 6412.5,
+                  "pct": 6.5,
+                  "count": 1
+                }
+              ]
+            }
+          },
+          {
+            "label": "Feb",
+            "avg": 57.09,
+            "count": 278,
+            "created": 585,
+            "completed": 278,
+            "unfinished": 307,
+            "over": 172,
+            "roll3": 57.02,
+            "amountDistribution": {
+              "totalAmount": 165218.22,
+              "pricedTickets": 278,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 33983.54,
+                  "pct": 20.6,
+                  "count": 154
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 106197.77,
+                  "pct": 64.3,
+                  "count": 115
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 19670.66,
+                  "pct": 11.9,
+                  "count": 8
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 5366.25,
+                  "pct": 3.2,
+                  "count": 1
+                }
+              ]
+            }
+          },
+          {
+            "label": "Mar",
+            "avg": 55.55,
+            "count": 271,
+            "created": 582,
+            "completed": 271,
+            "unfinished": 311,
+            "over": 167,
+            "roll3": 56.53,
+            "amountDistribution": {
+              "totalAmount": 166567.25,
+              "pricedTickets": 271,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 33989.3,
+                  "pct": 20.4,
+                  "count": 148
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 116628.76,
+                  "pct": 70.0,
+                  "count": 118
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 10034.19,
+                  "pct": 6.0,
+                  "count": 4
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 5915.0,
+                  "pct": 3.6,
+                  "count": 1
+                }
+              ]
+            }
+          },
+          {
+            "label": "Apr",
+            "avg": 47.42,
+            "count": 280,
+            "created": 577,
+            "completed": 280,
+            "unfinished": 297,
+            "over": 160,
+            "roll3": 53.35,
+            "amountDistribution": {
+              "totalAmount": 155166.09,
+              "pricedTickets": 280,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 36945.56,
+                  "pct": 23.8,
+                  "count": 165
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 107382.53,
+                  "pct": 69.2,
+                  "count": 113
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 3570.0,
+                  "pct": 2.3,
+                  "count": 1
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 7268.0,
+                  "pct": 4.7,
+                  "count": 1
+                }
+              ]
+            }
+          },
+          {
+            "label": "May",
+            "avg": 41.52,
+            "count": 233,
+            "created": 576,
+            "completed": 233,
+            "unfinished": 343,
+            "over": 106,
+            "roll3": 48.16,
+            "amountDistribution": {
+              "totalAmount": 115643.21,
+              "pricedTickets": 233,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 27177.24,
+                  "pct": 23.5,
+                  "count": 137
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 85713.47,
+                  "pct": 74.1,
+                  "count": 95
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 2752.5,
+                  "pct": 2.4,
+                  "count": 1
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 0,
+                  "pct": 0.0,
+                  "count": 0
+                }
+              ]
+            }
+          },
+          {
+            "label": "Jun",
+            "avg": 33.28,
+            "count": 176,
+            "created": 512,
+            "completed": 176,
+            "unfinished": 336,
+            "over": 76,
+            "roll3": 40.74,
+            "amountDistribution": {
+              "totalAmount": 83035.96,
+              "pricedTickets": 176,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 25140.59,
+                  "pct": 30.3,
+                  "count": 117
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 51450.37,
+                  "pct": 62.0,
+                  "count": 56
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 6445.0,
+                  "pct": 7.8,
+                  "count": 3
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 0,
+                  "pct": 0.0,
+                  "count": 0
+                }
+              ]
+            }
+          },
+          {
+            "label": "Jul",
+            "avg": 27.31,
+            "count": 167,
+            "created": 502,
+            "completed": 167,
+            "unfinished": 335,
+            "over": 65,
+            "roll3": 34.04,
+            "amountDistribution": {
+              "totalAmount": 80233.48,
+              "pricedTickets": 167,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 18827.14,
+                  "pct": 23.5,
+                  "count": 103
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 59186.27,
+                  "pct": 73.8,
+                  "count": 63
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 2220.07,
+                  "pct": 2.8,
+                  "count": 1
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 0,
+                  "pct": 0.0,
+                  "count": 0
+                }
+              ]
+            }
+          },
+          {
+            "label": "Aug",
+            "avg": 21.18,
+            "count": 145,
+            "created": 518,
+            "completed": 145,
+            "unfinished": 373,
+            "over": 29,
+            "roll3": 27.26,
+            "amountDistribution": {
+              "totalAmount": 67485.44,
+              "pricedTickets": 145,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 20026.78,
+                  "pct": 29.7,
+                  "count": 99
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 43145.48,
+                  "pct": 63.9,
+                  "count": 44
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 4313.18,
+                  "pct": 6.4,
+                  "count": 2
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 0,
+                  "pct": 0.0,
+                  "count": 0
+                }
+              ]
+            }
+          },
+          {
+            "label": "Sep",
+            "avg": 10.02,
+            "count": 44,
+            "created": 274,
+            "completed": 44,
+            "unfinished": 230,
+            "over": 0,
+            "roll3": 19.5,
+            "amountDistribution": {
+              "totalAmount": 27296.23,
+              "pricedTickets": 44,
+              "missingTickets": 0,
+              "buckets": [
+                {
+                  "label": "$0-500",
+                  "color": "#5bb8b0",
+                  "amount": 6232.75,
+                  "pct": 22.8,
+                  "count": 28
+                },
+                {
+                  "label": "$500-2k",
+                  "color": "#4f87c7",
+                  "amount": 14735.3,
+                  "pct": 54.0,
+                  "count": 14
+                },
+                {
+                  "label": "$2k-5k",
+                  "color": "#f0a33a",
+                  "amount": 6328.18,
+                  "pct": 23.2,
+                  "count": 2
+                },
+                {
+                  "label": "$5k+",
+                  "color": "#c9513f",
+                  "amount": 0,
+                  "pct": 0.0,
+                  "count": 0
+                }
+              ]
+            }
+          },
+          {
+            "label": "Oct",
+            "avg": null,
+            "count": 0,
+            "created": 1,
+            "completed": 0,
+            "unfinished": 1,
+            "over": 0,
+            "roll3": 15.6,
+            "amountDistribution": {
+              "totalAmount": 0,
+              "pricedTickets": 0,
+              "missingTickets": 0,
+              "buckets": []
+            }
+          }
+        ],
+        "distribution": [
+          [
+            "0-7",
+            14.0,
+            "#0f8f8c",
+            246
+          ],
+          [
+            "8-14",
+            13.9,
+            "#4f8f42",
+            244
+          ],
+          [
+            "15-21",
+            10.8,
+            "#2474a6",
+            189
+          ],
+          [
+            "22-30",
+            9.2,
+            "#d88a18",
+            161
+          ],
+          [
+            "31-60",
+            25.4,
+            "#ef9f42",
+            446
+          ],
+          [
+            "60+",
+            26.6,
+            "#c9513f",
+            467
+          ]
+        ],
+        "amountDistribution": {
+          "totalAmount": 958551.77,
+          "pricedTickets": 1753,
+          "missingTickets": 0,
+          "buckets": [
+            {
+              "label": "$0-500",
+              "color": "#5bb8b0",
+              "amount": 220182.37,
+              "pct": 23.0,
+              "count": 1045
+            },
+            {
+              "label": "$500-2k",
+              "color": "#4f87c7",
+              "amount": 639820.34,
+              "pct": 66.7,
+              "count": 676
+            },
+            {
+              "label": "$2k-5k",
+              "color": "#f0a33a",
+              "amount": 73587.31,
+              "pct": 7.7,
+              "count": 28
+            },
+            {
+              "label": "$5k+",
+              "color": "#c9513f",
+              "amount": 24961.75,
+              "pct": 2.6,
+              "count": 4
+            }
+          ]
+        },
+        "distributionAmount": {
+          "0-7": {
+            "totalAmount": 130033.86,
+            "pricedTickets": 246,
+            "missingTickets": 0,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 34952.65,
+                "pct": 26.9,
+                "count": 163
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 71957.3,
+                "pct": 55.3,
+                "count": 76
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 15855.91,
+                "pct": 12.2,
+                "count": 6
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 7268.0,
+                "pct": 5.6,
+                "count": 1
+              }
+            ]
+          },
+          "8-14": {
+            "totalAmount": 107638.24,
+            "pricedTickets": 244,
+            "missingTickets": 0,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 32861.93,
+                "pct": 30.5,
+                "count": 168
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 70451.99,
+                "pct": 65.5,
+                "count": 74
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 4324.32,
+                "pct": 4.0,
+                "count": 2
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 0,
+                "pct": 0.0,
+                "count": 0
+              }
+            ]
+          },
+          "15-21": {
+            "totalAmount": 102586.67,
+            "pricedTickets": 189,
+            "missingTickets": 0,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 21488.72,
+                "pct": 20.9,
+                "count": 109
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 65865.57,
+                "pct": 64.2,
+                "count": 75
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 8819.88,
+                "pct": 8.6,
+                "count": 4
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 6412.5,
+                "pct": 6.3,
+                "count": 1
+              }
+            ]
+          },
+          "22-30": {
+            "totalAmount": 93271.5,
+            "pricedTickets": 161,
+            "missingTickets": 0,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 19740.46,
+                "pct": 21.2,
+                "count": 92
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 61499.09,
+                "pct": 65.9,
+                "count": 66
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 6116.95,
+                "pct": 6.6,
+                "count": 2
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 5915.0,
+                "pct": 6.3,
+                "count": 1
+              }
+            ]
+          },
+          "31-60": {
+            "totalAmount": 253872.71,
+            "pricedTickets": 446,
+            "missingTickets": 0,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 52928.2,
+                "pct": 20.8,
+                "count": 250
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 185110.69,
+                "pct": 72.9,
+                "count": 191
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 15833.82,
+                "pct": 6.2,
+                "count": 5
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 0,
+                "pct": 0.0,
+                "count": 0
+              }
+            ]
+          },
+          "60+": {
+            "totalAmount": 271148.79,
+            "pricedTickets": 467,
+            "missingTickets": 0,
+            "buckets": [
+              {
+                "label": "$0-500",
+                "color": "#5bb8b0",
+                "amount": 58210.41,
+                "pct": 21.5,
+                "count": 263
+              },
+              {
+                "label": "$500-2k",
+                "color": "#4f87c7",
+                "amount": 184935.7,
+                "pct": 68.2,
+                "count": 194
+              },
+              {
+                "label": "$2k-5k",
+                "color": "#f0a33a",
+                "amount": 22636.43,
+                "pct": 8.3,
+                "count": 9
+              },
+              {
+                "label": "$5k+",
+                "color": "#c9513f",
+                "amount": 5366.25,
+                "pct": 2.0,
+                "count": 1
+              }
+            ]
+          }
+        },
+        "priceDurationMix": {
+          "pricedTickets": 1753,
+          "missingAmount": 0,
+          "buckets": [
+            {
+              "label": "$0-500",
+              "color": "#5bb8b0",
+              "count": 1045,
+              "average": 42.52,
+              "distribution": [
+                [
+                  "0-7",
+                  15.6,
+                  "#0f8f8c",
+                  163
+                ],
+                [
+                  "8-14",
+                  16.1,
+                  "#4f8f42",
+                  168
+                ],
+                [
+                  "15-21",
+                  10.4,
+                  "#2474a6",
+                  109
+                ],
+                [
+                  "22-30",
+                  8.8,
+                  "#d88a18",
+                  92
+                ],
+                [
+                  "31-60",
+                  23.9,
+                  "#ef9f42",
+                  250
+                ],
+                [
+                  "60+",
+                  25.2,
+                  "#c9513f",
+                  263
+                ]
+              ]
+            },
+            {
+              "label": "$500-2k",
+              "color": "#4f87c7",
+              "count": 676,
+              "average": 46.0,
+              "distribution": [
+                [
+                  "0-7",
+                  11.2,
+                  "#0f8f8c",
+                  76
+                ],
+                [
+                  "8-14",
+                  10.9,
+                  "#4f8f42",
+                  74
+                ],
+                [
+                  "15-21",
+                  11.1,
+                  "#2474a6",
+                  75
+                ],
+                [
+                  "22-30",
+                  9.8,
+                  "#d88a18",
+                  66
+                ],
+                [
+                  "31-60",
+                  28.3,
+                  "#ef9f42",
+                  191
+                ],
+                [
+                  "60+",
+                  28.7,
+                  "#c9513f",
+                  194
+                ]
+              ]
+            },
+            {
+              "label": "$2k-5k",
+              "color": "#f0a33a",
+              "count": 28,
+              "average": 42.54,
+              "distribution": [
+                [
+                  "0-7",
+                  21.4,
+                  "#0f8f8c",
+                  6
+                ],
+                [
+                  "8-14",
+                  7.1,
+                  "#4f8f42",
+                  2
+                ],
+                [
+                  "15-21",
+                  14.3,
+                  "#2474a6",
+                  4
+                ],
+                [
+                  "22-30",
+                  7.1,
+                  "#d88a18",
+                  2
+                ],
+                [
+                  "31-60",
+                  17.9,
+                  "#ef9f42",
+                  5
+                ],
+                [
+                  "60+",
+                  32.1,
+                  "#c9513f",
+                  9
+                ]
+              ]
+            },
+            {
+              "label": "$5k+",
+              "color": "#c9513f",
+              "count": 4,
+              "average": 36.75,
+              "distribution": [
+                [
+                  "0-7",
+                  25.0,
+                  "#0f8f8c",
+                  1
+                ],
+                [
+                  "8-14",
+                  0.0,
+                  "#4f8f42",
+                  0
+                ],
+                [
+                  "15-21",
+                  25.0,
+                  "#2474a6",
+                  1
+                ],
+                [
+                  "22-30",
+                  25.0,
+                  "#d88a18",
+                  1
+                ],
+                [
+                  "31-60",
+                  0.0,
+                  "#ef9f42",
+                  0
+                ],
+                [
+                  "60+",
+                  25.0,
+                  "#c9513f",
+                  1
+                ]
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "closed",
+      "avg": null,
+      "median": null,
+      "count": 1753
+    }
+  ]
+}

@@ -42,6 +42,25 @@ def percentage(value, total):
     return round(value / total * 100, 2) if total else 0.0
 
 
+def repair_cost_rows(period):
+    distribution = period.get("repairCostDistribution")
+    if distribution is not None:
+        return rows(distribution)
+    # The producer emits [] for periods with no approved tickets. RTDB drops
+    # empty arrays, so distinguish that valid empty period from incomplete data.
+    summary = period.get("summary") or {}
+    if (summary.get("approvedTickets") is not None
+            and summary.get("approvedAmount") is not None
+            and count(summary["approvedTickets"]) == 0
+            and number(summary["approvedAmount"]) == 0):
+        return []
+    raise ValueError(
+        "Missing repairCostDistribution for the selected Dashboard period; "
+        "approvedTickets and approvedAmount do not confirm an empty period. "
+        "Rebuild Team Dashboard analytics before publishing the summary."
+    )
+
+
 def build_summary(team, completion):
     """Use the same precomputed sources as index.html and ticketlifecycle.html.
 
@@ -107,7 +126,7 @@ def build_summary(team, completion):
 
     costs = [{"key": row["key"], "label": row["label"],
               "count": count(row["count"]), "amount": round(number(row["total"]), 2)}
-             for row in rows(period["repairCostDistribution"])]
+             for row in repair_cost_rows(period)]
     cost_total = round(sum(row["amount"] for row in costs), 2)
     cost_count = sum(row["count"] for row in costs)
     for row in costs:

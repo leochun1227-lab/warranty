@@ -84,6 +84,36 @@ class SummaryTests(unittest.TestCase):
             publish_summary(ref, team=team, completion=completion)
         ref.child.assert_not_called()
 
+    def test_firebase_omitted_empty_cost_distribution(self):
+        for missing_value in ("absent", None):
+            with self.subTest(missing_value=missing_value):
+                team, completion = sources()
+                period = team["views"]["all"]["periodSnapshots"]["2026-09-01|2026-09-09"]
+                if missing_value == "absent":
+                    period.pop("repairCostDistribution")
+                else:
+                    period["repairCostDistribution"] = None
+                period["summary"] = {"approvedTickets": 0, "approvedAmount": 0}
+                result = publish_summary(MagicMock(), team=team, completion=completion)
+                cost = result["approvedRepairCostDistribution"]
+                self.assertEqual(cost["buckets"], [])
+                self.assertEqual(cost["totalTickets"], 0)
+                self.assertEqual(cost["totalAmount"], 0)
+
+    def test_missing_cost_distribution_never_fabricates_zero_costs(self):
+        for summary in ({}, {"approvedTickets": 1, "approvedAmount": 0},
+                        {"approvedTickets": 0, "approvedAmount": 200},
+                        {"approvedTickets": 1, "approvedAmount": 200}):
+            with self.subTest(summary=summary):
+                team, completion = sources()
+                period = team["views"]["all"]["periodSnapshots"]["2026-09-01|2026-09-09"]
+                period.pop("repairCostDistribution")
+                period["summary"] = summary
+                ref = MagicMock()
+                with self.assertRaisesRegex(ValueError, "Missing repairCostDistribution"):
+                    publish_summary(ref, team=team, completion=completion)
+                ref.child.assert_not_called()
+
     def test_publication_is_one_atomic_write(self):
         ref = MagicMock()
         team, completion = sources()

@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pre Delivery Quality Overview</title><link rel="stylesheet" href="site.css"><link rel="stylesheet" href="overview-screen.css"><script src="navigation.js" defer></script><script src="firebase-data.js" defer></script><script src="classification-guide.js" defer></script><script src="overview.js" defer></script></head>
+<body class="overview-page"><main class="overview-main">
+<header class="overview-head"><h1>Pre Delivery Quality Overview</h1><label><span class="sr-only">Year</span><select id="year" aria-label="Year"></select></label><label><span class="sr-only">Month</span><select id="month" aria-label="Month"><option value="all">All months</option></select></label><div class="head-right"><button id="refresh" type="button" title="Check the latest completed update">↻ Refresh</button><button id="export" type="button" disabled>Export Excel</button></div></header>
+<div id="level-switch" class="level-switch" role="group" aria-label="Classification level"><button id="show-l2" type="button" aria-pressed="true" aria-controls="l2-view">L2 · Components</button><button id="show-l3" type="button" aria-pressed="false" aria-controls="l3-view">L3 · Failure modes</button></div>
+<div id="status" role="status">Loading overview…</div>
+<div id="overview" hidden>
+<section class="metrics" aria-label="Approved Pre Delivery summary" id="metrics"></section>
+<div class="classification-board">
+  <section id="l2-view" class="system-map" aria-labelledby="map-title">
+    <div class="map-heading"><h2 id="map-title"><span class="level-tag">L2</span> Components</h2><span id="category-total" class="muted"></span></div>
+    <div id="system-cards" class="system-cards"></div>
+  </section>
+  <section id="l3-view" class="failure-map" hidden aria-labelledby="failure-title">
+    <div class="map-heading"><h2 id="failure-title"><span class="level-tag">L3</span> Failure modes</h2><span class="muted">QMS-WAR-003 · Version 03</span></div>
+    <div id="failure-modes" class="failure-guide-grid"></div>
+    <section class="source-modes"><div class="source-modes-heading"><h3>Other source categories</h3><span id="other-mode-total"></span></div><div class="source-usage-grid"><div><p class="source-usage-note">L3 reasons outside the seven reference modes</p><div id="other-failure-modes"></div></div><div class="position-usage"><h4>L1 usage · Other</h4><div id="position-usage"></div><p class="source-usage-note">Included in total Issues · L1 and L3 overlap; do not add together.</p></div></div></section>
+  </section>
+</div>
+<footer class="overview-footer"><span id="updated"></span><button id="show-definitions" type="button">Data & definitions</button></footer>
+</div></main>
+<dialog id="definitions"><div class="panel-heading"><h2>Data & definitions</h2><button id="close-definitions" aria-label="Close definitions">✕</button></div><p>Only Approved Claims and their Issues are included, grouped by Claim Created On, from 9 September 2026 inclusive. One Claim may contain multiple Issues.</p><p>Components retain their source System. Percentages use all Approved Issues in the selected period. The seven L3 definitions and examples come from QMS-WAR-003 Version 03 and are classification guidance, not Claim records. Source labels outside those seven categories remain separate without remapping.</p><p id="source-dates"></p><p id="production-note"></p></dialog>
+<dialog id="details"><div class="panel-heading"><h2 id="detail-title">Issue details</h2><button id="close-details" aria-label="Close issue details">✕</button></div><p id="detail-status" role="status"></p><div class="detail-scroll"><table><thead><tr><th>Ticket</th><th>Issue</th><th>System</th><th>Component</th><th>Failure mode</th><th>Approved</th></tr></thead><tbody id="detail-body"></tbody></table></div></dialog>
+</body></html>

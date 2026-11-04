@@ -61,7 +61,7 @@
   .repairer-overview-page .roDialog table{width:100%;border-collapse:collapse}
   .repairer-overview-page .roDialog :is(td,th){font:400 12px/1.4 'Segoe UI',sans-serif;padding:8px 10px;border-bottom:1px solid #edf0f4;text-align:left;white-space:nowrap}
   .repairer-overview-page .roDialog th{position:sticky;top:0;background:#f8fafc;color:#64748b;font-weight:600}
-  .repairer-overview-page .roDialog button:disabled{opacity:.5;cursor:wait}
+  .repairer-overview-page :is(.roGrid,.roDialog) button:disabled{opacity:.5;cursor:not-allowed}
   .repairer-overview-page #warrantyDataUpdatedBadge{bottom:3px!important;padding:0!important;border:0!important;box-shadow:none!important;background:transparent!important;font:400 9px 'Segoe UI',sans-serif!important;white-space:nowrap!important;max-width:calc(100vw - 265px)!important;overflow:hidden!important;text-overflow:ellipsis!important;color:#8491a3!important}
   @media(min-width:1120px) and (min-height:720px){
     .repairer-overview-page .main{height:100dvh!important}

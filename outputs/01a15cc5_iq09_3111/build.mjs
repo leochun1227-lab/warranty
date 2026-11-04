@@ -1,0 +1,30 @@
+import fs from 'node:fs/promises';
+import {Workbook,SpreadsheetFile} from '@oai/artifact-tool';
+const dir='C:/Users/Leo.Li/Documents/GitHub/warranty/outputs/01a15cc5_iq09_3111';
+const p=JSON.parse(await fs.readFile(`${dir}/iq09.json`,'utf8'));
+const wb=Workbook.create();
+const s=wb.worksheets.add('IQ09');
+const keep=p.headers.map((_,i)=>i).filter(i=>p.rows.some(r=>r[i]!==null&&r[i]!==''));
+const headers=keep.map(i=>p.headers[i]);
+const rows=p.rows.map(r=>keep.map(i=>i>=20&&r[i]?new Date(`${r[i]}T00:00:00Z`):r[i]));
+s.getRangeByIndexes(0,0,rows.length+1,headers.length).values=[headers,...rows];
+s.getRange(`A1:P${rows.length+1}`).format.font={name:'Arial',size:10};
+s.getRange(`A2:N${rows.length+1}`).setNumberFormat('@');
+s.getRange(`O2:P${rows.length+1}`).setNumberFormat('yyyy-mm-dd');
+s.getRange(`A1:P${rows.length+1}`).format.autofitColumns();
+s.getRange('B:B').format.columnWidth=49;
+s.getRange('H:H').format.columnWidth=30;
+s.getRange('J:J').format.columnWidth=50;
+s.getRange('A1:P1').format.wrapText=true;
+s.getRange('A1:P1').format.rowHeight=30;
+s.freezePanes.freezeRows(1);
+wb.recalculate();
+console.log((await wb.inspect({kind:'table',range:'IQ09!A1:P3',include:'values',tableMaxRows:3,tableMaxCols:16,maxChars:2500})).ndjson);
+console.log((await wb.inspect({kind:'match',searchTerm:'#REF!|#DIV/0!|#VALUE!|#NAME\\?|#NUM!',options:{useRegex:true,maxResults:10},maxChars:600})).ndjson);
+for(const [name,range] of [['preview','A1:H10'],['preview_right','I1:P10']]){
+ const image=await wb.render({sheetName:'IQ09',range,scale:1,format:'png'});
+ await fs.writeFile(`${dir}/${name}.png`,new Uint8Array(await image.arrayBuffer()));
+}
+const output=`${dir}/IQ09_3111_Z_D_20261022.xlsx`;
+await(await SpreadsheetFile.exportXlsx(wb)).save(output);
+console.log(JSON.stringify({rows:rows.length,output}));
