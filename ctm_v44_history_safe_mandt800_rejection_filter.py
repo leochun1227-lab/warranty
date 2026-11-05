@@ -51,6 +51,7 @@ except Exception:  # pragma: no cover - Python 3.8 fallback
 
 import firebase_admin
 from firebase_admin import credentials, db
+from daily_refresh_support import run_optional_step, run_warnings, start_run
 
 
 DEFAULT_DB_URL = "https://snowy-hr-report-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -4190,8 +4191,8 @@ def reset_baseline(
         print(f"[RESET] approvalState update skipped: {exc}")
 
     write_analytics(source_root, monitor_root, snap)
-    rebuild_delivery_flow_history(source_root, db_url=db_url, sa_path=sa_path)
-    rebuild_ticket_timeline_export()
+    run_optional_step("Delivery flow history", lambda: rebuild_delivery_flow_history(source_root, db_url=db_url, sa_path=sa_path))
+    run_optional_step("Ticket Timeline export", rebuild_ticket_timeline_export)
 
     critical_now = sum(1 for x in snap.values() if x.get("isCritical"))
     print(f"[RESET DONE] baseline tickets={len(snap)}, criticalNow={critical_now}, events=0")
@@ -4514,8 +4515,8 @@ def compare_and_write(
             "storage": f"firebase:/{monitor_root}",
         })
         write_analytics(source_root, monitor_root, snap, include_dealer=include_dealer)
-        rebuild_delivery_flow_history(source_root, db_url=db_url, sa_path=sa_path)
-        rebuild_ticket_timeline_export()
+        run_optional_step("Delivery flow history", lambda: rebuild_delivery_flow_history(source_root, db_url=db_url, sa_path=sa_path))
+        run_optional_step("Ticket Timeline export", rebuild_ticket_timeline_export)
         print(f"[COMPARE DONE] missing currentStatus recovered with membership events={len(history_patch)}, entered={entered}, exited={exited}")
         return
 
@@ -4683,8 +4684,8 @@ def compare_and_write(
     db.reference(monitor_root).child("meta").update(update_payload["meta"])
 
     write_analytics(source_root, monitor_root, snap, include_dealer=include_dealer)
-    rebuild_delivery_flow_history(source_root, db_url=db_url, sa_path=sa_path)
-    rebuild_ticket_timeline_export()
+    run_optional_step("Delivery flow history", lambda: rebuild_delivery_flow_history(source_root, db_url=db_url, sa_path=sa_path))
+    run_optional_step("Ticket Timeline export", rebuild_ticket_timeline_export)
 
     critical_now = sum(1 for x in snap.values() if x.get("isCritical"))
     print(
@@ -4714,7 +4715,7 @@ def run_company_fetch(company_file: str, db_url: str, sa_path: str, source_root:
     if result.returncode != 0:
         raise SystemExit(
             f"公司 fetch 失败，exit code={result.returncode}。本次不做 compare，避免错误日志。\n"
-            f"最常见原因：缺少 openpyxl。先运行 install_requirements.bat。"
+            f"请查看上方首个错误；核心抓取失败时保留现有看板，不用残缺数据继续比较。"
     )
     print("[FETCH DONE] Company fetch finished successfully.")
 
@@ -4723,8 +4724,7 @@ def rebuild_delivery_flow_history(source_root: str, db_url: str, sa_path: str) -
     """Rebuild the delivery-flow history snapshot that the Parts Delivery Flow page reads."""
     script = Path(__file__).resolve().with_name("delivery_flow_aggregator.py")
     if not script.exists():
-        print(f"[DELIVERY FLOW] Skipped: missing {script.name}")
-        return
+        raise FileNotFoundError(script)
 
     env = os.environ.copy()
     env["FIREBASE_DB_URL"] = db_url
@@ -4743,8 +4743,7 @@ def rebuild_ticket_timeline_export() -> None:
     """Refresh the static Ticket Timeline workbook and JSON summary after fetch/analytics runs."""
     script = Path(__file__).resolve().with_name("export_ticket_timeline_segments_2025_2026.py")
     if not script.exists():
-        print(f"[TICKET TIMELINE] Skipped: missing {script.name}")
-        return
+        raise FileNotFoundError(script)
 
     env = os.environ.copy()
     env["PYTHONUNBUFFERED"] = "1"
@@ -4787,7 +4786,8 @@ def parse_args() -> argparse.Namespace:
     return ap.parse_args()
 
 
-def run_once(args: argparse.Namespace) -> None:
+def run_once(args: argparse.Namespace) -> int:
+    start_run(Path(__file__).resolve().parent)
     if not args.skip_fetch:
         run_company_fetch(args.company_file, args.firebase_db_url, args.firebase_sa_path, args.source_root, args.monitor_root)
     else:
@@ -4795,27 +4795,39 @@ def run_once(args: argparse.Namespace) -> None:
 
     # First update critical history/currentStatus from the latest tickets.
     include_dealer = not args.skip_dealer_analytics
-    compare_and_write(
-        args.source_root,
-        args.monitor_root,
-        include_dealer=include_dealer,
-        db_url=args.firebase_db_url,
-        sa_path=args.firebase_sa_path,
-    )
+    def update_analytics():
+        compare_and_write(
+            args.source_root, args.monitor_root, include_dealer=include_dealer,
+            db_url=args.firebase_db_url, sa_path=args.firebase_sa_path,
+        )
+        return True
+    compare_completed = run_optional_step("Dashboard compare and analytics", update_analytics, default=False)
 
     # New issue analysis runs only after a real, successful core fetch. Analytics-only
     # rebuilds and baseline resets never trigger paid model calls.
     if not args.skip_fetch:
-        from issue_ai_daily import run_after_daily_fetch
-        run_after_daily_fetch(args.source_root, args.firebase_db_url, args.firebase_sa_path)
+        def update_positions():
+            from issue_ai_daily import run_after_daily_fetch
+            return run_after_daily_fetch(args.source_root, args.firebase_db_url, args.firebase_sa_path)
+        run_optional_step("Issue Position sync", update_positions)
 
-    db.reference(args.monitor_root).child("automation").update({
-        "lastRunFinishedAt": now_iso(),
+    warnings = run_warnings()
+    run_optional_step("Automation status", lambda: db.reference(args.monitor_root).child("automation").update({
+        **({"lastRunFinishedAt": now_iso()} if compare_completed else {}),
+        "lastAttemptFinishedAt": now_iso(),
         "lastRunMode": "once",
         "sourceRoot": args.source_root,
         "monitorRoot": args.monitor_root,
-        "status": "success",
-    })
+        "status": "success_with_warnings" if warnings else "success",
+        "warningCount": len(warnings),
+        "warningSteps": [item['step'] for item in warnings],
+    }))
+    warnings = run_warnings()
+    if warnings:
+        print(f"[DAILY PARTIAL] Core fetch completed; {len(warnings)} auxiliary warning(s). See {os.getenv('CTM_WARNING_FILE')}")
+    else:
+        print("[DAILY SUCCESS] Fetch and post-fetch steps completed.")
+    return 2 if warnings else 0
 
 
 def main() -> None:
@@ -4845,8 +4857,7 @@ def main() -> None:
         return
 
     if args.once:
-        run_once(args)
-        return
+        raise SystemExit(run_once(args))
 
     if args.auto:
         interval = max(300, int(args.interval_hours * 3600))

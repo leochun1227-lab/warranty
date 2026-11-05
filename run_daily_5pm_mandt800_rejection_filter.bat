@@ -48,9 +48,9 @@ if exist "%~dp0issue_position_bootstrap.json" echo Issue Position encrypted cred
 
 if exist "%~dp0check_deployment_readiness.py" (
   if "%PYTHON_CMD%"=="py -3" (
-    py -3 "%~dp0check_deployment_readiness.py" >> "%LOG_FILE%" 2>&1
+    py -3 "%~dp0check_deployment_readiness.py" --core-only >> "%LOG_FILE%" 2>&1
   ) else (
-    "%PYTHON_CMD%" "%~dp0check_deployment_readiness.py" >> "%LOG_FILE%" 2>&1
+    "%PYTHON_CMD%" "%~dp0check_deployment_readiness.py" --core-only >> "%LOG_FILE%" 2>&1
   )
   if errorlevel 1 (
     echo ERROR: Deployment readiness check failed.>> "%LOG_FILE%"
@@ -64,25 +64,25 @@ if "%PYTHON_CMD%"=="py -3" (
   "%PYTHON_CMD%" -u "%~dp0ctm_v44_history_safe_mandt800_rejection_filter.py" --once --company-file "%~dp0fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py" >> "%LOG_FILE%" 2>&1
 )
 set "ERR=%ERRORLEVEL%"
+rem Code 2 means core fetch completed with auxiliary warnings.
+if not "%ERR%"=="0" if not "%ERR%"=="2" goto finished
 
-if "%ERR%"=="0" (
   echo Verifying all four dashboard publications including Top10...>> "%LOG_FILE%"
   if "%PYTHON_CMD%"=="py -3" (
     py -3 "%~dp0refresh_dashboard_snapshots.py" --check --include-top10 >> "%LOG_FILE%" 2>&1
   ) else (
     "%PYTHON_CMD%" "%~dp0refresh_dashboard_snapshots.py" --check --include-top10 >> "%LOG_FILE%" 2>&1
   )
-  if errorlevel 1 set "ERR=1"
-)
+  if errorlevel 1 set "ERR=2"
 
 rem BEGIN OZZ PDV DASHBOARD
-rem Run only after the existing warranty refresh and publication checks succeed.
-if "%ERR%"=="0" (
+rem Always attempt PDV after a completed core fetch; PDV checks its own sources.
   echo Refreshing standalone Pre Delivery dashboard...>> "%LOG_FILE%"
   call "%~dp0run_pdv_dashboard_update.bat" >> "%LOG_FILE%" 2>&1
-  if errorlevel 1 set "ERR=1"
-)
+  if errorlevel 1 set "ERR=2"
 rem END OZZ PDV DASHBOARD
 
+:finished
+if "%ERR%"=="2" echo PARTIAL UPDATE: Core fetch completed; some auxiliary updates failed. See warnings above.>> "%LOG_FILE%"
 echo CTM V44 daily 5:00 PM run finished at %date% %time% with code %ERR%>> "%LOG_FILE%"
 exit /b %ERR%

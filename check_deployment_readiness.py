@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import argparse
 import json
 import os
 import shutil
@@ -27,6 +28,8 @@ REQUIRED_FILES = [
     "issue_subcategories.json",
     "ctm_v44_history_safe_mandt800_rejection_filter.py",
     "fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py",
+    "daily_refresh_support.py",
+    "vehicle_summary_publication.py",
     "rebuild_model_series_assets.py",
     "build_analysis_parts_failure_summary.py",
     "delivery_flow_aggregator.py",
@@ -39,6 +42,7 @@ REQUIRED_FILES = [
     "pdv_dashboard/refresh.py",
     "pdv_dashboard/pdv_scope.py",
     "pdv_dashboard/claim_trend_page.py",
+    "pdv_dashboard/claim_trend_snapshot.py",
     "browser-page-cache.js",
     "analysis.html",
     "build_analysis_model_mtm_cache.mjs",
@@ -181,7 +185,10 @@ def check_repairer_output_consistency(failures: list[str], warnings: list[str]) 
         print(f"PASS repairer output consistency: approved-cost tickets {summary_total or state_sum}")
 
 
-def main() -> int:
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--core-only', action='store_true', help='Check fetch prerequisites; auxiliary steps are checked when run')
+    args = parser.parse_args(argv)
     # Windows scheduled-task logs may use a legacy encoding. Preserve failure
     # diagnostics even when Node's test reporter emits Unicode status symbols.
     if hasattr(sys.stdout, "reconfigure"):
@@ -193,7 +200,13 @@ def main() -> int:
     print(f"Root: {ROOT}")
     print(f"Python: {sys.executable}")
 
-    for rel_path in REQUIRED_FILES:
+    core_files = {
+        'ctm_v44_history_safe_mandt800_rejection_filter.py',
+        'fetch_all_tickets_fast_with_firebase_MANDT800_REJECTION_FILTER.py',
+        'firebase-service-account.json', 'daily_refresh_support.py', 'vehicle_summary_publication.py',
+        'recall_postcodes.py', 'recall_models.py', 'recall_pagination.py', 'sap_material_prices.py',
+    }
+    for rel_path in sorted(core_files) if args.core_only else REQUIRED_FILES:
         path = ROOT / rel_path
         if path.exists():
             print(f"PASS file: {rel_path}")
@@ -202,13 +215,15 @@ def main() -> int:
             print(f"FAIL file: {rel_path}")
 
     for module_name, package_name in REQUIRED_MODULES:
+        if args.core_only and module_name == 'openpyxl':
+            continue
         if has_module(module_name):
             print(f"PASS python module: {module_name}")
         else:
             failures.append(f"Missing Python package: {package_name}")
             print(f"FAIL python module: {module_name}")
 
-    node = node_executable()
+    node = node_executable() if not args.core_only else 'deferred to auxiliary steps'
     if node:
         print(f"PASS node: {node}")
     else:
@@ -230,23 +245,25 @@ def main() -> int:
             failures.append(f"Could not inspect ODBC drivers: {exc}")
             print(f"FAIL ODBC: {exc}")
 
-    check_repair_page_contract(failures)
-    check_claim_trend_contract(failures)
-    check_claim_trend_regressions(failures)
-    check_repairer_output_consistency(failures, warnings)
+    if not args.core_only:
+        check_repair_page_contract(failures)
+        check_claim_trend_contract(failures)
+        check_claim_trend_regressions(failures)
+        check_repairer_output_consistency(failures, warnings)
 
     # Top10 is a required page; a skipped update must not be reported as success.
     try:
-        from issue_position_config import load_position_config
-        load_position_config(os.getenv('FIREBASE_SA_PATH', str(ROOT / 'firebase-service-account.json')))
-        print("PASS Issue Position credentials (direct grouping; no enable flag or AI)")
+        if not args.core_only:
+            from issue_position_config import load_position_config
+            load_position_config(os.getenv('FIREBASE_SA_PATH', str(ROOT / 'firebase-service-account.json')))
+            print("PASS Issue Position credentials (direct grouping; no enable flag or AI)")
     except Exception as exc:
         from issue_ai import IssueAIError
         detail = str(exc) if isinstance(exc, IssueAIError) else type(exc).__name__
         failures.append("Issue Position configuration check failed: " + detail +
                         " Run sync_issue_positions.py --check-config for diagnosis.")
 
-    for rel_dir in ("logs", "outputs", "generated_exports"):
+    for rel_dir in (("logs",) if args.core_only else ("logs", "outputs", "generated_exports")):
         ok, err = check_writable_dir(ROOT / rel_dir)
         if ok:
             print(f"PASS writable: {rel_dir}")

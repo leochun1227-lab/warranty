@@ -5,13 +5,13 @@ No SAP/C4C fetch or AI call. Publish startup only after details are complete.
 """
 from __future__ import annotations
 import argparse, base64, concurrent.futures, csv, gzip, hashlib, json, os, re
-import shutil, urllib.request
+import shutil, urllib.request, urllib.error, time
 from collections import Counter, defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from claim_trend_page import pdv_page
 from pdv_scope import START_DATE, day, scoped_status, build_claim
-from claim_trend_snapshot import build_historical_trend, pending
+from claim_trend_snapshot import build_historical_trend, build_cohort_monthly, claim_rows_from_tickets, pending
 
 ROOT = Path(__file__).resolve().parent
 PUBLIC = ROOT / 'public'
@@ -33,9 +33,26 @@ def atomic(path, content):
 
 def read(path):
     request=urllib.request.Request(DB + '/' + path + '.json',headers={'Accept-Encoding':'gzip'})
-    with urllib.request.urlopen(request, timeout=120) as response:
-        raw=response.read()
-        return json.loads(gzip.decompress(raw) if response.headers.get('Content-Encoding')=='gzip' else raw)
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(request, timeout=120) as response:
+                raw=response.read()
+                return json.loads(gzip.decompress(raw) if response.headers.get('Content-Encoding')=='gzip' else raw)
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as exc:
+            if isinstance(exc, urllib.error.HTTPError) and exc.code not in (408,429,500,502,503,504):
+                raise
+            if attempt == 2:
+                raise
+            print(f'WARN: Firebase read retry {attempt+1}/3 for {path}',flush=True)
+            time.sleep(2 ** attempt)
+
+
+def read_cache(path):
+    try:
+        value=json.loads(path.read_bytes())
+        return value if isinstance(value,dict) else {}
+    except (OSError, ValueError):
+        return {}
 
 def approved(row):
     return bool(row.get('Claim Approved On', '').strip()) and (
@@ -144,7 +161,7 @@ def check_environment(warranty, publish_only=False):
     print('PDV Warranty folder: '+str(warranty),flush=True)
     print('PDV updater folder: '+str(ROOT),flush=True)
 
-def refresh(warranty, publish_only=False, dry_run=False):
+def refresh(warranty, publish_only=False, dry_run=False, issue_results=None, allow_partial_issues=False):
     check_environment(warranty,publish_only)
     print('Reading published warranty generations...', flush=True)
     startup = read(ISSUE+'/startup')
@@ -158,7 +175,7 @@ def refresh(warranty, publish_only=False, dry_run=False):
     status_version=read('ctmTicketStatusMonitorV44/automation/lastRunFinishedAt')
     if not status_version:raise ValueError('Firebase approval generation is unavailable')
     status_cache=ROOT/'.cache'/'scope-status.json'
-    status_payload=json.loads(status_cache.read_bytes()) if status_cache.exists() else {}
+    status_payload=read_cache(status_cache)
     if status_payload.get('version') != status_version:
         current=read('ctmTicketStatusMonitorV44/currentStatus')
         current=current.values() if isinstance(current,dict) else current or []
@@ -171,7 +188,7 @@ def refresh(warranty, publish_only=False, dry_run=False):
     tickets=[[str(r['id']),day(r['created'])] for r in selected]
     amount_version=read('ctmTicketStatusMonitorV44/analytics/team/generatedAt')
     amount_cache=ROOT/'.cache'/'scope-amounts.json'
-    amount_payload=json.loads(amount_cache.read_bytes()) if amount_cache.exists() else {}
+    amount_payload=read_cache(amount_cache)
     if not amount_version:raise ValueError('Amount source version unavailable')
     if amount_payload.get('version') != amount_version:
         values=read('ctmTicketStatusMonitorV44/analytics/team/views/all/approvalTicketRows')
@@ -186,18 +203,32 @@ def refresh(warranty, publish_only=False, dry_run=False):
         raise ValueError('Historical Claim Trend and amount sources differ')
     # Older status generations did not preserve quote fields. Resolve them once
     # in the daily job, never on a page visit.
-    quote_rows = None
-    if any(pending(r) and 'quotedClaimAmount' not in r for r in status_payload['rows']):
-        quote_rows = read('c4cTickets_test/tickets')
-        if not isinstance(quote_rows, (dict, list)):
-            raise ValueError('Pending quote details unavailable')
-    historical = build_historical_trend(historical_source, status_payload['rows'],
-                                       amount_payload['rows'], status_version, quote_rows)
+    ticket_cache = ROOT/'.cache'/'historical-tickets.json'
+    ticket_payload = read_cache(ticket_cache)
+    ticket_version = historical_source['sourceVersion']
+    if ticket_payload.get('version') != ticket_version:
+        ticket_payload = {'version':ticket_version, 'rows':read('c4cTickets_test/tickets')}
+        atomic(ticket_cache, encode(ticket_payload))
+    quote_rows = ticket_payload['rows']
+    if not isinstance(quote_rows, (dict, list)):
+        raise ValueError('Historical Ticket details unavailable')
+    cohort_tickets = claim_rows_from_tickets(quote_rows)
+    population_path = Path(issue_results) if issue_results else Path(os.getenv('LOCALAPPDATA') or Path.home())/'WarrantyIssueAI'/'state'/'latest-position-result.json'
+    population = None
+    if population_path.is_file():
+        population = json.loads(population_path.read_text(encoding='utf-8'))
+        metadata = population['summary']
+        if (not metadata.get('retrievalComplete') or metadata.get('claimSourceVersion') != historical_source['sourceVersion']
+                or metadata.get('generatedAt') != issue['sourceVersion']):
+            raise ValueError('Complete daily Issue scan does not match the published Claim/Issue generation')
+    elif not allow_partial_issues:
+        raise ValueError('Complete daily Issue scan is missing: ' + str(population_path))
+    cohort_ids = {r['id'] for r in cohort_tickets if day(r['created']) >= '2025-01-01'}
     names = json.loads((warranty/'issue_subcategories.json').read_text(encoding='utf-8'))['categories']
     cache = ROOT/'.cache'/version
     cache.mkdir(parents=True,exist_ok=True)
     prefix = ISSUE+'/exports/'+version
-    shards = [r for r in manifest['shards'] if r[0]=='Z005' and r[1]>=START_DATE[:7]]
+    shards = [r for r in manifest['shards'] if r[0]=='Z005' and r[1]>='2025-01']
     periods = sorted({r[1] for r in shards})
     def cached_get(path):
         target = cache/(hashlib.sha256(path.encode()).hexdigest()+'.json')
@@ -217,6 +248,19 @@ def refresh(warranty, publish_only=False, dry_run=False):
     for row in shards:
         block=unpack(period_data[row[1]][row[3].replace('/','_')],row[5])
         issues.extend((str(block['tickets'][i[0]][0]),i) for i in block['issues'])
+    published_issues = [(tid, row) for tid, row in issues if tid in cohort_ids]
+    approved_cohorts = build_cohort_monthly(cohort_tickets, published_issues, approved)
+    if population:
+        cohort_issues = [(r['ticketId'], [0,r['issueId']]) for r in population['results'].values()
+                         if r['ticketType']=='Z005' and r['ticketId'] in cohort_ids]
+        cohort_monthly = build_cohort_monthly(cohort_tickets, cohort_issues, approved)
+        if [(r['month'],r['approvedIssues']) for r in cohort_monthly] != [(r['month'],r['approvedIssues']) for r in approved_cohorts]:
+            raise ValueError('Full daily scan and published Approved Issues do not reconcile')
+    else:
+        cohort_monthly = [{**r, 'totalIssues':None, 'pendingIssues':None} for r in approved_cohorts]
+        print('NOTICE: complete Issue scan unavailable; Total/Pending Issues are explicitly unavailable, not zero',flush=True)
+    historical = build_historical_trend(historical_source, status_payload['rows'],
+        amount_payload['rows'], status_version, quote_rows, cohort_monthly, issue['sourceVersion'],bool(population))
     print(f'Building {len(tickets):,} Pre Delivery Claims and {len(issues):,} Issues...',flush=True)
     overview,details = compile_overview(tickets,issues,master,names,issue['generatedAt'])
     for row in overview['monthly']:
@@ -251,6 +295,8 @@ def verify_historical_sources(snapshot):
             or read('ctmTicketStatusMonitorV44/automation/lastRunFinishedAt') != snapshot['statusVersion']
             or read('ctmTicketStatusMonitorV44/analytics/claimTrendStartup/sourceVersion') != snapshot['sourceVersion']):
         raise ValueError('Historical chart sources changed; previous publication retained')
+    if snapshot.get('issueSourceVersion') != read(ISSUE+'/startup/sourceVersion'):
+        raise ValueError('Historical Issue source changed; previous publication retained')
 
 
 def publish_dashboard(warranty,overview,details,claim,generation,source_version,claim_details,historical):
@@ -275,7 +321,8 @@ def publish_dashboard(warranty,overview,details,claim,generation,source_version,
         claim_envelope['detailPath']=SITE+'/generations/'+generation+'/claimDetails'
         claim_envelope['data']=encode({k:claim[k] for k in ('monthly','closedIndex')}).decode('utf-8')
         historical_envelope={k:historical[k] for k in ('schema','publication','generation','generatedAt','sourceVersion','statusVersion')}
-        historical_envelope['data']=encode({k:historical[k] for k in ('monthly','closedIndex','pendingMonthly','pendingAmountMonthly')}).decode()
+        historical_envelope['data']=encode({k:historical[k] for k in ('monthly','closedIndex','pendingMonthly','pendingAmountMonthly',
+            'cohortMonthly','cohortSchema','cohortBasis','issueSourceVersion','issuePopulationComplete','issueGeneratedAt')}).decode()
         # The immutable result is complete before the latest pointer is advanced.
         ref.child('historicalGenerations').child(historical['generation']).set(historical_envelope)
         verify_historical_sources(historical)
@@ -294,6 +341,8 @@ if __name__=='__main__':
     parser.add_argument('--warranty-root',type=Path)
     parser.add_argument('--publish-only',action='store_true',help='Update Firebase data without rebuilding local website files')
     parser.add_argument('--dry-run',action='store_true',help='Build and verify results without publishing or rebuilding pages')
+    parser.add_argument('--issue-results',type=Path,help='Complete Issue scan from the daily job (defaults to WarrantyIssueAI/state/latest-position-result.json)')
+    parser.add_argument('--allow-partial-issues',action='store_true',help='Explicit preview: preserve unknown Total/Pending Issues as null when the full daily scan is absent')
     parser.add_argument('--check',action='store_true',help='Check local paths and Python dependencies without network or data updates')
     args=parser.parse_args()
     try:
@@ -302,6 +351,6 @@ if __name__=='__main__':
             check_environment(warranty,args.publish_only)
             print('PASS: PDV local paths and dependencies; no Firebase connection tested')
         else:
-            refresh(warranty,args.publish_only,args.dry_run)
+            refresh(warranty,args.publish_only,args.dry_run,args.issue_results,args.allow_partial_issues)
     except Exception as exc:
         parser.exit(1,'ERROR: PDV update failed: '+str(exc)+'\n')

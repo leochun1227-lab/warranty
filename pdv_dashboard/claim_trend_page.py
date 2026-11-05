@@ -59,6 +59,26 @@ def use_published_trend(page):
     return page
 
 
+def use_cohort_charts(page):
+    page = page.replace('Tickets Created by Month</h2>', 'Monthly Claims</h2>')
+    page = page.replace('Approved Tickets</h2>', 'Monthly Issues / Defects</h2>')
+    # Keep dormant control IDs for the shared export/init helpers; the two core
+    # charts always use the parent Claim creation month.
+    start = page.index('<section class="panel" id="approved">')
+    end = page.index('</section>', start)
+    section = page[start:end].replace('<div class="approvedDateControls">', '<div class="approvedDateControls" hidden>')
+    section = section.replace('id="approvedDateNote" class="approvedDateNote"', 'id="approvedDateNote" hidden class="approvedDateNote"')
+    page = page[:start]+section+page[end:]
+    if 'id="issueAvailabilityNote"' not in page:
+        end = page.index('</section>', start)
+        page = page[:end]+'<p id="issueAvailabilityNote" class="pendingAmountNote" role="status" hidden></p>\n'+page[end:]
+    marker = 'function render(){'
+    direct = '\n  if(publishedTrendSnapshot){renderCohortDashboard();return;}'
+    if marker+direct not in page:
+        page = page.replace(marker, marker+direct, 1)
+    return page
+
+
 def pdv_page(page):
     for prefix in ('newClaim', 'approved', 'amount', 'unapproved', 'claimClosed'):
         page = remove_div(page, prefix + 'SplitCard')
@@ -137,4 +157,4 @@ def pdv_page(page):
                         '{name:"Tickets",rows:exportDetailSheetRows(rows)},...pendingExportSheets()')
     page = page.replace('Amount Including Tax is excluded.',
                         'Approved amounts use SAP amounts. Pending Claim Amount is reported separately in Pending Monthly.')
-    return use_published_trend(simplify_chart_copy(enlarge_chart_numbers(page)))
+    return use_cohort_charts(use_published_trend(simplify_chart_copy(enlarge_chart_numbers(page))))

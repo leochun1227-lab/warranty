@@ -8,6 +8,21 @@ from build_issue_exports import load_export_tickets
 from build_issue_startup import save_issue_startup
 from issue_claim_source import load_claim_master
 
+
+def fetch_type_with_recovery(reader, typ, progress):
+    """A changing offset-paginated source gets one fresh scan, never a partial merge."""
+    for attempt in range(2):
+        try:
+            return fetch_type(reader, typ, progress)
+        except IssueAIError as exc:
+            transient_scan = str(exc).startswith((
+                'C4C scan incomplete:', 'C4C ticket changed during pagination;',
+            ))
+            if attempt or not transient_scan:
+                raise
+            progress(f'{typ}: source changed/incomplete; discarding scan and retrying once from page 1')
+
+
 def main(argv=None):
     from sync_issue_subcategories import FirebaseStore,datetime_from_mtime
     ap=argparse.ArgumentParser(description=__doc__)
@@ -42,7 +57,7 @@ def main(argv=None):
         else:
             reader=C4CReader(config)
             for typ in ('Z005','Z006'):
-                rows,scan=fetch_type(reader,typ,progress);tickets.extend(rows);scans[typ]=scan
+                rows,scan=fetch_type_with_recovery(reader,typ,progress);tickets.extend(rows);scans[typ]=scan
         results,meta=classify_positions(tickets,master)
         summary={**summarize(results),**meta,**source_meta,'sourceRoot':args.source_root,'scans':scans,'retrievalComplete':not bool(args.sample_file),'masterSnapshotModifiedAt':source_meta.get('ticketDataAsOf') or datetime_from_mtime(args.master_csv)}
         target=state/'latest-position-result.json';temp=target.with_suffix('.json.tmp');temp.write_text(json.dumps({'summary':summary,'results':results},ensure_ascii=False),encoding='utf-8');temp.replace(target)

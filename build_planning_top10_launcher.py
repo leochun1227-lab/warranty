@@ -29,6 +29,7 @@ if errorlevel 1 set "REPAIR_PYTHON=py -3"
 %REPAIR_PYTHON% -c "COMMAND" "%~f0"
 if errorlevel 1 goto repair_failed
 call "%~dp0run_daily_5pm_mandt800_rejection_filter.bat"
+if "%ERRORLEVEL%"=="2" goto update_partial
 if errorlevel 1 goto update_failed
 echo SUCCESS: daily update, Top10 and PDV completed. Refresh the website.
 pause
@@ -41,6 +42,10 @@ exit /b 1
 echo Daily update failed. See logs\ctm_daily_5pm_YYYYMMDD.log for the failed step.
 pause
 exit /b 1
+:update_partial
+echo Core fetch completed with warnings. Some dashboard data may be older; see the daily log.
+pause
+exit /b 2
 '''.replace('COMMAND', command)
     encoded = base64.b64encode(payload.getvalue()).decode('ascii')
     # LF delimiter is fixed and read as bytes by the launcher itself.

@@ -41,7 +41,62 @@ def quote_amount(row):
         return None
 
 
-def build_historical_trend(startup, status_rows, amount_rows, status_version, quote_rows=None):
+def claim_rows_from_tickets(nodes):
+    rows = []
+    for node in entries(nodes):
+        row = node.get('ticket') or node
+        if not predelivery(row):
+            continue
+        rows.append({'id': str(first(row, 'TicketID', 'id')),
+            'claimType': 'Pre Delivery Warranty Claims',
+            'created': first(row, 'CreatedOnDateTime', 'CreatedOnDate', 'CreatedOn', 'Created On'),
+            'statusCode': first(row, 'TicketStatus', 'statusCode', 'StatusCode'),
+            'statusText': first(row, 'TicketStatusText', 'statusText', 'Status'),
+            'claimApprovedOn': first(row, 'ClaimApprovedOnDateTime', 'ClaimApprovedOn', 'Claim Approved On'),
+            'resolvedOn': first(row, 'ResolvedOnDateTime', 'ResolvedOn', 'Resolved On')})
+    return rows
+
+
+def build_cohort_monthly(status_rows, issue_rows, is_approved):
+    """Count Claims and their Issues in the Claim's creation month, once per source ID."""
+    monthly = defaultdict(lambda: dict(totalClaims=0, approvedClaims=0, pendingClaims=0,
+                                      totalIssues=0, approvedIssues=0, pendingIssues=0))
+    tickets = {}
+    for row in entries(status_rows):
+        if not predelivery(row):
+            continue
+        tid, created = str(first(row, 'id', 'TicketID')), day(first(row, 'created', 'CreatedOnDateTime'))
+        if not tid or not re.match(r'^\d{4}-\d{2}-\d{2}$', created) or created < '2025-01-01':
+            continue
+        if tid in tickets:
+            raise ValueError('Duplicate historical Claim: ' + tid)
+        approved_now = is_approved({'Status': first(row, 'statusText', 'TicketStatusText'),
+            'StatusCode': first(row, 'statusCode', 'TicketStatus'),
+            'Claim Approved On': day(first(row, 'claimApprovedOnDateTime', 'claimApprovedOn', 'ClaimApprovedOnDateTime'))})
+        pending_now = pending(row)
+        if approved_now and pending_now:
+            raise ValueError('Claim cannot be both approved and pending: ' + tid)
+        month = created[:7]
+        tickets[tid] = (month, approved_now, pending_now)
+        for key, value in [('totalClaims', 1), ('approvedClaims', approved_now), ('pendingClaims', pending_now)]:
+            monthly[month][key] += int(value)
+    seen = set()
+    for tid, issue in issue_rows:
+        tid = str(tid)
+        if tid not in tickets:
+            raise ValueError('Historical Issue has no matching dated Claim status: ' + tid)
+        key = (tid, str(issue[1]))
+        if key in seen:
+            raise ValueError('Duplicate historical Issue: ' + repr(key))
+        seen.add(key)
+        month, approved_now, pending_now = tickets[tid]
+        for field, value in [('totalIssues', 1), ('approvedIssues', approved_now), ('pendingIssues', pending_now)]:
+            monthly[month][field] += int(value)
+    return [{'month': month, **counts} for month, counts in sorted(monthly.items())]
+
+
+def build_historical_trend(startup, status_rows, amount_rows, status_version, quote_rows=None,
+                           cohort_monthly=None, issue_source_version=None, issues_complete=True, issue_generated_at=None):
     snapshot = dict(startup)
     if isinstance(snapshot.get('data'), str):
         snapshot.update(json.loads(snapshot.pop('data')))
@@ -90,5 +145,15 @@ def build_historical_trend(startup, status_rows, amount_rows, status_version, qu
                     monthly=[monthly[m] for m in sorted(monthly)],
                     pendingMonthly=[pending_months[m] for m in sorted(pending_months)],
                     pendingAmountMonthly=[quote_months[m] for m in sorted(quote_months)])
+    if cohort_monthly is not None:
+        snapshot.update(cohortMonthly=cohort_monthly, issueSourceVersion=issue_source_version,
+                        cohortBasis='claim_created_on', cohortSchema='claims-issues-v1',
+                        issuePopulationComplete=issues_complete, issueGeneratedAt=issue_generated_at or issue_source_version)
+        for row in cohort_monthly:
+            source = monthly.get(row['month'], {})
+            if row['totalClaims'] != source.get('createdPre', 0) or row['approvedClaims'] != source.get('approvedCreatedPre', 0):
+                raise ValueError('Historical Claim cohorts do not reconcile for ' + row['month'])
+            if row['pendingClaims'] != pending_months.get(row['month'], {}).get('pendingPre', 0):
+                raise ValueError('Historical Pending cohorts do not reconcile for ' + row['month'])
     snapshot['generation'] = hashlib.sha256(json.dumps(snapshot, sort_keys=True, separators=(',', ':')).encode()).hexdigest()[:20]
     return snapshot

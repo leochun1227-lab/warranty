@@ -237,7 +237,10 @@ class IssueTests(unittest.TestCase):
         func=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='run_once')
         func.args.args[0].annotation=None;func.returns=None
         fetch,compare,db=Mock(),Mock(),Mock()
-        scope={'run_company_fetch':fetch,'compare_and_write':compare,'db':db,'now_iso':lambda:'now'}
+        scope={'run_company_fetch':fetch,'compare_and_write':compare,'db':db,'now_iso':lambda:'now',
+               'start_run':Mock(),'run_warnings':lambda:[],
+               'run_optional_step':lambda label,action,default=None:action(),
+               'Path':Path,'__file__':str(path),'os':__import__('os')}
         exec(compile(ast.Module(body=[func],type_ignores=[]),str(path),'exec'),scope)
         args=SimpleNamespace(skip_fetch=False,skip_dealer_analytics=False,company_file='company',firebase_db_url='db',firebase_sa_path='sa',source_root='source',monitor_root='monitor')
         with patch('issue_ai_daily.run_after_daily_fetch') as hook:

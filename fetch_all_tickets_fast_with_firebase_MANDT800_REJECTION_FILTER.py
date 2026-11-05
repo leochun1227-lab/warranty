@@ -30,6 +30,8 @@ from recall_postcodes import preserve_recall_postcodes
 from recall_models import enrich_recall_models
 from recall_pagination import fetch_all_recall_claims, validate_recall_replacement
 from firebase_admin.exceptions import InvalidArgumentError
+from daily_refresh_support import run_optional_step, run_warnings, start_run
+from vehicle_summary_publication import is_size_error, publish_vehicle_summary
 from sap_material_prices import CNY_TO_AUD_RATE, enrich_detail_rows, fetch_material_price_map, preferred_line_cost_aud
 
 
@@ -1098,13 +1100,13 @@ def _update_bisect(path: str, items: List[Tuple[str, Any]]):
         _ref_update_once(path, dict(items))
         return
     except Exception as e:
-        msg = str(e)
-        if "exceeds the maximum size" not in msg and not isinstance(e, InvalidArgumentError):
+        if not is_size_error(e):
             raise
+        size_error = e
 
     if len(items) == 1:
         k, _ = items[0]
-        raise RuntimeError(f"[FB] single path too large to update: {k}")
+        raise RuntimeError(f"[FB] single path too large to update: {k}: {size_error}") from size_error
 
     mid = len(items) // 2
     _update_bisect(path, items[:mid])
@@ -1119,12 +1121,12 @@ def fb_update_with_retry(path: str, payload: dict, tries: int = 5):
             return
         except Exception as e:
             last_err = e
-            msg = str(e)
-
-            if "exceeds the maximum size" in msg or isinstance(e, InvalidArgumentError):
+            if is_size_error(e):
                 items = list(payload.items())
                 _update_bisect(path, items)
                 return
+            if isinstance(e, InvalidArgumentError):
+                raise
 
             wait = 1.2 * (2 ** i)
             logger.warning("[FB] update failed (try %s/%s), wait %.1fs, err=%s", i + 1, tries, wait, e)
@@ -3138,25 +3140,30 @@ def upload_payload_in_batches(path: str, payload_all: Dict[str, Any], label: str
 
     updates_batch: Dict[str, Any] = {}
     batch_no = 0
+    batch_bytes = 2  # Opening/closing braces in json.dumps(..., ensure_ascii=False).
 
     def flush_batch():
-        nonlocal updates_batch, batch_no
+        nonlocal updates_batch, batch_no, batch_bytes
         if not updates_batch:
             return
         batch_no += 1
         logger.info(
             "[%s] batch=%s paths=%s bytes~=%s",
-            label, batch_no, len(updates_batch), _rough_bytes(updates_batch)
+            label, batch_no, len(updates_batch), batch_bytes
         )
         fb_update_with_retry(path, updates_batch)
         logger.info("[%s] batch=%s done", label, batch_no)
         updates_batch = {}
+        batch_bytes = 2
 
     for k, v in payload_all.items():
+        # Count each entry once, rather than serializing the whole growing batch
+        # on every iteration (quadratic work for thousands of ticket paths).
+        batch_bytes += _rough_bytes({k: v}) - 2 + (2 if updates_batch else 0)
         updates_batch[k] = v
         if (
             len(updates_batch) >= MAX_PATHS_PER_UPDATE
-            or _rough_bytes(updates_batch) >= MAX_BYTES_PER_UPDATE
+            or batch_bytes >= MAX_BYTES_PER_UPDATE
         ):
             flush_batch()
 
@@ -4285,8 +4292,7 @@ def rebuild_model_series_assets_after_fetch():
 
     script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "rebuild_model_series_assets.py")
     if not os.path.exists(script_path):
-        logger.warning("Model-series asset rebuild skipped. Script not found: %s", script_path)
-        return
+        raise FileNotFoundError(script_path)
 
     logger.info("Step 10/11: Rebuilding analysis assets from updated Firebase tickets ...")
     env = os.environ.copy()
@@ -4326,8 +4332,7 @@ def rebuild_dashboard_analytics_after_fetch() -> bool:
 
     script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ctm_v44_history_safe_mandt800_rejection_filter.py")
     if not os.path.exists(script_path):
-        logger.warning("Analytics rebuild skipped. Script not found: %s", script_path)
-        return False
+        raise FileNotFoundError(script_path)
 
     logger.info("Step 11/11: Rebuilding dashboard history and analytics from updated Firebase tickets ...")
     env = os.environ.copy()
@@ -4366,8 +4371,7 @@ def rebuild_ticket_timeline_export_after_fetch() -> None:
 
     script_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "export_ticket_timeline_segments_2025_2026.py")
     if not os.path.exists(script_path):
-        logger.warning("Ticket Timeline export skipped. Script not found: %s", script_path)
-        return
+        raise FileNotFoundError(script_path)
 
     logger.info("Refreshing Ticket Timeline workbook, JSON, and price-mix PPT after fetch ...")
     env = os.environ.copy()
@@ -4387,6 +4391,8 @@ def recall_claims_only_requested() -> bool:
 
 
 def main():
+    if not os.getenv("CTM_WARNING_FILE"):
+        start_run(ROOT_DIR)
     if not USERNAME or not PASSWORD:
         raise SystemExit("è¯·å…ˆè®¾ç½® C4C_USERNAME / C4C_PASSWORD")
     recall_only = recall_claims_only_requested()
@@ -4505,13 +4511,15 @@ def main():
             else [],
         ),
     )
-    vehicle_base_summary = run_hana_operation(
-        "vehicle base summary",
-        lambda conn: fetch_vehicle_base_summary(conn, cutoff_yyyymmdd="19000101"),
+    vehicle_base_summary = run_optional_step(
+        "Vehicle base summary query",
+        lambda: run_hana_operation("vehicle base summary",
+            lambda conn: fetch_vehicle_base_summary(conn, cutoff_yyyymmdd="19000101")),
     )
-    approved_cost_payload = run_hana_operation(
-        "approved cost SAP PO short text sidecar",
-        build_approved_cost_sap_po_short_text_sidecar,
+    approved_cost_payload = run_optional_step(
+        "Approved cost sidecar query",
+        lambda: run_hana_operation("approved cost SAP PO short text sidecar",
+            build_approved_cost_sap_po_short_text_sidecar),
     )
 
     logger.info("Matched SO item rows for current ERPFreeOrder tickets: %s", len(so_item_df))
@@ -4519,8 +4527,8 @@ def main():
     logger.info("Vehicle dispatch matches by sales order fallback: %s", len(sales_order_dispatch_df))
     logger.info(
         "Vehicle base summary rows: %s, total historical vehicles: %s",
-        vehicle_base_summary.get("totalRows", 0),
-        vehicle_base_summary.get("totalVehicles", 0),
+        (vehicle_base_summary or {}).get("totalRows", 0),
+        (vehicle_base_summary or {}).get("totalVehicles", 0),
     )
 
     logger.info("Step 7/9: Building final output for refreshed HANA tickets ...")
@@ -4550,48 +4558,46 @@ def main():
     logger.info("Step 8/9: Uploading refreshed SO fields to Firebase ...")
     upload_ticket_fields_to_firebase(final_df, material_price_map=material_price_map)
     upload_vehicle_dispatch_to_firebase(vehicle_dispatch_df)
-    write_vehicle_base_summary(vehicle_base_summary)
-    write_analysis_ticket_base_csv(new_snapshot, final_df)
-    refresh_analysis_offline_assets(vehicle_base_summary, approved_cost_payload=approved_cost_payload)
+    if vehicle_base_summary:
+        run_optional_step("Vehicle base local cache", lambda: write_vehicle_base_summary(vehicle_base_summary))
+    run_optional_step("Analysis ticket CSV", lambda: write_analysis_ticket_base_csv(new_snapshot, final_df))
+    run_optional_step("Offline analysis assets", lambda: refresh_analysis_offline_assets(
+        vehicle_base_summary, approved_cost_payload=approved_cost_payload))
     if approved_cost_payload:
         logger.info("Step 8A/9: Writing Approved Cost SAP PO Short Text sidecar to Firebase ...")
-        write_approved_cost_sidecar(approved_cost_payload)
+        run_optional_step("Approved cost sidecar upload", lambda: write_approved_cost_sidecar(approved_cost_payload))
     # Also push to Firebase so analysis.html can consume it there (it already
     # reads other analysis data from `analysisVehicleBaseSummary` / RTDB).
-    try:
-        fb_update_with_retry("analysisVehicleBaseSummary", vehicle_base_summary)
-        logger.info(
-            "Pushed vehicle base summary to Firebase: %s vehicles across %s series",
-            vehicle_base_summary.get("totalVehicles", 0),
-            len(vehicle_base_summary.get("seriesBase", {})),
-        )
-    except Exception as exc:
-        logger.warning("Failed to push vehicle base summary to Firebase: %s", exc)
+    if vehicle_base_summary:
+        run_optional_step("Vehicle base summary publication", lambda: publish_vehicle_summary(
+            db.reference("analysisVehicleBaseSummary"), vehicle_base_summary))
 
-    hana_cost_payload = build_hana_cost_sidecar(
+    hana_cost_payload = run_optional_step("Delivery cost sidecar build", lambda: build_hana_cost_sidecar(
         final_df,
         as_of_date=datetime.now(timezone.utc).date(),
         material_price_map=material_price_map,
-    )
+    ))
     if hana_cost_payload:
         logger.info("Step 8B/9: Writing HANA-derived delivery-flow cost sidecar to Firebase ...")
-        write_hana_cost_sidecar(hana_cost_payload)
+        run_optional_step("Delivery cost sidecar upload", lambda: write_hana_cost_sidecar(hana_cost_payload))
 
     logger.info("Step 9/9: Updating changed ticket hash snapshot ...")
     hash_payload = build_snapshot_hash_payload(changed_hash_payload)
     upload_payload_in_batches(FIREBASE_ROOT, hash_payload, label="FB HASH SNAPSHOT")
 
-    export_excel_single_sheet(final_df)
+    run_optional_step("Excel export", lambda: export_excel_single_sheet(final_df))
 
-    rebuild_model_series_assets_after_fetch()
-    analytics_rebuilt = rebuild_dashboard_analytics_after_fetch()
+    run_optional_step("Model-series asset rebuild", rebuild_model_series_assets_after_fetch)
+    analytics_rebuilt = run_optional_step("Dashboard analytics rebuild", rebuild_dashboard_analytics_after_fetch)
     if not analytics_rebuilt:
-        rebuild_ticket_timeline_export_after_fetch()
+        run_optional_step("Ticket Timeline export", rebuild_ticket_timeline_export_after_fetch)
 
     close_thread_session()
 
     logger.info("Done. Firebase updated. Excel export is disabled by default for automation.")
     logger.info("Total elapsed: %.1fs", time.time() - total_started)
+    if run_warnings():
+        logger.warning("Core fetch completed with auxiliary warnings; see %s", os.getenv("CTM_WARNING_FILE"))
 
 if __name__ == "__main__":
     main()

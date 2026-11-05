@@ -50,11 +50,19 @@ DEFAULT_FIREBASE_SA_PATH = os.getenv(
     str(ROOT / "firebase-service-account.json"),
 )
 DEFAULT_FIREBASE_ROOT = os.getenv("FIREBASE_ROOT", "c4cTickets_test")
-DEFAULT_LOCAL_TICKET_CSV = str(
-    ROOT / "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv"
-    if (ROOT / "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv").exists()
-    else ROOT / "SAPAnalyticsReport(ZF8C06456D7698BCB54F44D).csv"
-)
+def default_local_ticket_csv(root=ROOT):
+    for relative in (
+        "outputs/analysis_ticket_base.csv",
+        "SAPAnalyticsReport_ZF8C06456D7698BCB54F44D_.csv",
+        "SAPAnalyticsReport(ZF8C06456D7698BCB54F44D).csv",
+    ):
+        path = root / relative
+        if path.is_file():
+            return str(path)
+    return ""
+
+
+DEFAULT_LOCAL_TICKET_CSV = default_local_ticket_csv()
 
 DATE_FORMATS = (
     "%Y-%m-%d",
@@ -257,6 +265,11 @@ def load_tickets_from_csv(csv_path: str) -> pd.DataFrame:
             return ""
 
         def pick_numeric_ticket_id(row: List[str]) -> str:
+            # The generated CSV has an explicit ID column. A numeric Ticket
+            # subject must never take precedence over this canonical ID.
+            explicit = pick(row, "C4C Ticket ID", "TicketID")
+            if explicit:
+                return explicit if re.fullmatch(r"\d+", explicit) else ""
             for idx, raw_value in enumerate(row):
                 value = clean(raw_value)
                 if not value or not re.fullmatch(r"\d+", value):
@@ -354,6 +367,7 @@ def merge_ticket_sources(primary_df: pd.DataFrame, secondary_df: pd.DataFrame) -
         merged = {col: clean(row.get(col)) for col in TICKET_COLUMNS}
         merged["Claim Scope"] = classify_claim_scope(merged.get("Claim Scope"), merged.get("Ticket Type"))
         merged_rows.append(merged)
+        seen.add(ticket_id)
 
     return normalize_ticket_df(pd.DataFrame(merged_rows))
 
@@ -930,6 +944,9 @@ def main() -> int:
                 logger.info("Tickets enriched from local CSV: %s -> %s", before_rows, len(ticket_df))
         except Exception as exc:
             logger.warning("Local CSV load failed; continuing without local enrichment: %s", exc)
+
+    if ticket_df.empty:
+        raise RuntimeError("No ticket source was loaded; preserving the previous failure-timing export")
 
     ticket_failure_df = build_ticket_failure_timing_df(ticket_df, sold_vehicle_df)
     unmatched_ticket_df = ticket_failure_df[ticket_failure_df["Matched Vehicle Key"] == ""].copy() if not ticket_failure_df.empty else pd.DataFrame()

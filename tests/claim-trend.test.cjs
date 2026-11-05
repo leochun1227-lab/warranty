@@ -34,6 +34,20 @@ function ticket(overrides = {}) {
     ChassisNumber: '000123', ChangeOnDateTime: '2026-03-02 08:00:00', ...overrides};
 }
 
+test('new publication advances preset ranges across months and years, preserving custom selections', () => {
+  const a=app();
+  a.run('syncControls=()=>{}; latestVisibleMonth=()=>"2027-01"; MONTHLY=[{month:"2025-01"},{month:"2026-10"}]; activeStart="2026-01"; activeEnd="2026-10"; MONTHLY.push({month:"2026-11"});');
+  for(const [preset,start] of [['year','2026-01'],['last12','2025-12'],['all','2025-01']]){
+    a.context.preset=preset;
+    a.run('rangePreset=preset;refreshPresetRange()');
+    assert.deepEqual(a.json('[activeStart,activeEnd]'),[start,'2026-11']);
+  }
+  a.run('rangePreset="custom";activeStart="2026-02";activeEnd="2026-10";refreshPresetRange()');
+  assert.deepEqual(a.json('[activeStart,activeEnd]'),['2026-02','2026-10']);
+  a.run('MONTHLY.push({month:"2027-01"});rangePreset="year";preferredDefaultYear=()=>"2027";refreshPresetRange()');
+  assert.deepEqual(a.json('[activeStart,activeEnd]'),['2027-01','2027-01']);
+});
+
 test('creation grouping includes approved closed tickets and excludes PDI, unapproved and missing approval dates', () => {
   const a = app();
   a.context.tickets = [ticket(), {ticket: ticket()}, ticket({TicketID:'2',TicketTypeText:'Pre Delivery',CreatedOn:'2026-02-01'}),

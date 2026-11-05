@@ -2371,6 +2371,17 @@ function presetMonthRange(preset,bounds=dataBounds()){
   return {start:bounds.min,end:bounds.max};
 }
 
+function refreshPresetRange(){
+  // Cached figures may have initialized the range before a new month arrived.
+  // Explicit custom ranges remain the user's selection.
+  if(rangePreset!=="custom"){
+    const range=presetMonthRange(rangePreset);
+    activeStart=range.start;activeEnd=range.end;
+    customRange=rangePreset!=="year";
+  }
+  syncControls();
+}
+
 function syncDateHelp(noteId,buttonIds){
   buttonIds.forEach(id=>$(id).setAttribute("title",$(noteId).textContent));
 }
@@ -2558,6 +2569,7 @@ async function loadClaimStartup(){
       // Amounts grouped by creation date are loaded separately on demand.
       amountTicketRows=null;amountTicketsById=new Map();amountDateBasis="approved";
       RAW_TICKETS=[];rawTicketsLoaded=false;claimSourceVersionsPromise=null;
+      refreshPresetRange();
       syncAmountDateControls();renderWithPageLoading(false);
     }
     shown=snapshot;
