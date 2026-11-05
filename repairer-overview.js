@@ -56,7 +56,7 @@ function overviewMonthlyRepairers(periods,year,period,metric,stateCode,limit=8){
   dialog.innerHTML=`<div class="roHead"><div><h2 id="roDetailTitle">Ticket details</h2><p id="roDetailScope" class="roCaption"></p></div><div class="roActions"><button id="roDetailExport" type="button" disabled>Download Excel</button><button id="roDetailClose" type="button" aria-label="Close ticket details">Close</button></div></div><div id="roDetailBody" class="roDetailBody" aria-live="polite"></div>`;
   document.body.append(dialog);
   const el=id=>document.getElementById(id);
-  let stateCode='',stateMetric='confirmed_cost',shopMetric='confirmed_cost',shopView='monthly',scenarioKey='',queued=false,detailVersion=0,detailRows=[],detailName='',detailMonth='';
+  let stateCode='',stateMetric='confirmed_cost',shopMetric='confirmed_cost',shopView='monthly',scenarioKey='',queued=false,detailVersion=0,detailRows=[],detailName='',detailMonth='',shopExporting=false;
   const amount=(v,metric)=>metric==='ticket_count'?num(v):money(v);
   const nameOf=row=>repairerDisplayNameFromRow(row)||row.repairName||'Unknown repairer';
   const empty=(box,message)=>{box.innerHTML=`<p class="roEmpty">${esc(message)}</p>`;};
@@ -93,7 +93,7 @@ function overviewMonthlyRepairers(periods,year,period,metric,stateCode,limit=8){
     el('roShopAll').classList.toggle('selected',!monthly);
     el('roShopMonthly').setAttribute('aria-pressed',String(monthly));
     el('roShopAll').setAttribute('aria-pressed',String(!monthly));
-    el('roShopExport').disabled=repairInitialLoading||!rows.length;
+    el('roShopExport').disabled=shopExporting||repairInitialLoading||!rows.length;
     const box=el('roShopTable');
     el('roShopCaption').textContent=`${selectedRepairYear} · ${monthly?'Monthly distribution':'All in selected period'} · Top 8 by ${metricLabel} · select a value for ticket details`;
     if(!rows.length){
@@ -171,16 +171,20 @@ function overviewMonthlyRepairers(periods,year,period,metric,stateCode,limit=8){
   el('roShopMetric').onchange=e=>{shopMetric=e.target.value;schedule();};
   el('roShopMonthly').onclick=()=>{shopView='monthly';schedule();};
   el('roShopAll').onclick=()=>{shopView='all';schedule();};
-  el('roShopExport').onclick=()=>{
-    const {monthly,periods,rows,months,metricLabel}=shopTableData();
-    if(repairInitialLoading||!rows.length)return;
-    exportWorkbook([
-      {name:'Summary',rows:[['Field','Value'],['Period',repairPeriodText()],['State',stateCode||'All states'],['View',monthly?'Monthly':'All'],['Metric',metricLabel],['Repairers exported',rows.length]]},
-      {name:'Top Repairers',rows:[
-        ['Repairer',...months,monthly?`Total ${metricLabel}`:metricLabel],
-        ...rows.map(row=>[nameOf(row),...months.map(month=>periods[month]?Number(row.months[month]?.[shopMetric]||0):'No data available'),Number(row[shopMetric]||0)])
-      ]}
-    ],`top-repairers-${repairPeriodFileSuffix()}-${stateCode||'all-states'}-${shopView}-${shopMetric}`);
+  el('roShopExport').onclick=async()=>{
+    const {periods,rows,metricLabel}=shopTableData();
+    if(shopExporting||repairInitialLoading||!rows.length)return;
+    const exportState=stateCode,rankingLabel=`${metricLabel} (${repairPeriodText()})`;
+    shopExporting=true;
+    const button=el('roShopExport');button.disabled=true;
+    try{
+      await withDownloadFloat(async()=>{
+        const source=await loadApprovalExportRecords();
+        const sheets=buildApprovalExportSheets({...source,periods,repairers:rows.map(row=>({...row,repairName:nameOf(row)})),rankingLabel,stateCode:exportState});
+        exportWorkbook(sheets,`Monthly_Approval_Amounts_2025_2026_${exportState||'all-states'}`,{includeNamingRules:false});
+      });
+    }catch(error){alert(error.message||'Unable to export monthly approvals. Please retry.');}
+    finally{shopExporting=false;schedule();}
   };
   el('roAllStates').onclick=()=>{stateCode='';schedule();};
   el('roMapToggle').onclick=()=>{const show=el('roMap').hidden;el('roMap').hidden=!show;el('roStateBars').hidden=show;el('roMapToggle').textContent=show?'Bars':'Map';el('roMapToggle').setAttribute('aria-pressed',String(show));if(show)renderWeekPanel();};

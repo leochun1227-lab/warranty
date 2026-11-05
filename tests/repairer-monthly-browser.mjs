@@ -30,29 +30,49 @@ try{
   await page.waitForFunction(()=>document.querySelectorAll('#roShopTable tbody tr').length>0);
   await page.waitForFunction(()=>!document.getElementById('calcFloat')?.classList.contains('active'));
   assert.equal(await page.locator('#overviewExportBtn').count(),0);
+  // Isolate the workbook/UI checks from live approval history availability.
+  await page.evaluate(()=>{
+    loadApprovalExportRecords=async()=>({asOf:'2026-11-05',records:[
+      {id:'fixture-2025',decisionKey:'approved',date:'2025-01-06',amount:125.5,dealer:'204642',repairer:{repairName:'Fixture',state:'QLD'}},
+      {id:'fixture-2026',decisionKey:'approved',date:'2026-01-06',amount:225.5,dealer:'204642',repairer:{repairName:'Fixture',state:'QLD'}},
+    ]});
+  });
   async function checkRankingExport(){
-    const visibleRows=await page.locator('#roShopTable tbody tr').evaluateAll(rows=>rows.map(row=>[...row.cells].map(cell=>cell.textContent.trim())));
+    const visibleNames=await page.locator('#roShopTable tbody tr th').allTextContents();
     const pending=page.waitForEvent('download');
     await page.locator('#roShopExport').click();
     const download=await pending;
-    assert.match(download.suggestedFilename(),/^top-repairers-.*\.xls$/);
+    assert.match(download.suggestedFilename(),/^Monthly_Approval_Amounts_2025_2026_.*\.xls$/);
     const xml=await fs.promises.readFile(await download.path(),'utf8');
     const exported=await page.evaluate(xml=>{
       const doc=new DOMParser().parseFromString(xml,'text/xml');
-      const sheet=[...doc.getElementsByTagName('Worksheet')].find(node=>node.getAttribute('ss:Name')==='Top Repairers');
-      return [...sheet.getElementsByTagName('Row')].map(row=>[...row.getElementsByTagName('Data')].map(cell=>({value:cell.textContent,type:cell.getAttribute('ss:Type')})));
+      if(doc.getElementsByTagName('parsererror').length)throw Error('Invalid workbook XML');
+      return [...doc.getElementsByTagName('Worksheet')].map(sheet=>({
+        name:sheet.getAttribute('ss:Name'),rows:[...sheet.getElementsByTagName('Row')].map(row=>[...row.getElementsByTagName('Data')].map(cell=>({value:cell.textContent,type:cell.getAttribute('ss:Type')}))),
+      }));
     },xml);
-    assert.equal(exported[0].length,await page.locator('#roShopTable thead th').count());
-    assert.equal(exported.length-1,visibleRows.length);
-    exported.slice(1).forEach((row,i)=>row.forEach((cell,j)=>{
-      const displayed=visibleRows[i][j];
-      if(j===0)assert.equal(cell.value,displayed);
-      else if(displayed==='—')assert.equal(cell.value,'No data available');
-      else{
+    assert.deepEqual(exported.map(s=>s.name),['Monthly Approvals','Top 8 Repairers']);
+    assert.deepEqual(exported[0].rows.slice(6,9).map(r=>r[0].value),['Green RV','Leisure Lion','Caravan Hub']);
+    assert.equal(Number(exported[0].rows[6][1].value),125.5);
+    for(const sheet of exported){
+      assert.equal(sheet.rows.filter(row=>row[0]?.value==='2025').length,1);
+      assert.equal(sheet.rows.filter(row=>row[0]?.value==='2026').length,1);
+    }
+    const sheet=exported[1],header=sheet.rows.findIndex(row=>row[0]?.value==='2026')+1;
+    assert.deepEqual(sheet.rows.slice(6,6+visibleNames.length).map(r=>r[0].value),visibleNames);
+    assert.deepEqual(sheet.rows.slice(header+1,header+1+visibleNames.length).map(r=>r[0].value),visibleNames);
+    const expected=await page.evaluate(names=>{
+      return names.map(name=>Object.entries(precomputedRepairPeriods).filter(([month])=>/^2026-/.test(month)).sort(([a],[b])=>a.localeCompare(b)).map(([month,payload])=>{
+        const rows=repairersToWorkingRows(payload.repairers);
+        return rows.filter(row=>repairerDisplayNameFromRow(row)===name).reduce((sum,row)=>sum+Number(row.confirmed_cost||0),0);
+      }));
+    },visibleNames);
+    sheet.rows.slice(header+1,header+1+visibleNames.length).forEach((row,i)=>{
+      row.slice(3).forEach((cell,j)=>{
         assert.equal(cell.type,'Number');
-        assert.ok(Math.abs(Number(cell.value)-Number(displayed.replaceAll(',','')))<0.0051);
-      }
-    }));
+        assert.ok(Math.abs(Number(cell.value)-expected[i][j])<0.0051);
+      });
+    });
   }
   await checkRankingExport();
   assert.equal(await page.evaluate(()=>selectedRepairYear),2026);
@@ -105,5 +125,5 @@ try{
   const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth);
   assert.equal(overflow,false,'horizontal scrolling stays inside the monthly table');
   assert.deepEqual(errors,[]);
-  console.log(JSON.stringify({checks:'2026 default, monthly default, All, metric, month filter, state filter, Excel downloads match displayed rankings, old export removed, month drill-down, mobile overflow',filteredState,errors}));
+  console.log(JSON.stringify({checks:'2026 default, monthly default, All, metric, month/state filters, two export sheets with 2025/2026 sections, three dealer groups, selected Top 8, monthly amounts reconcile, month drill-down, mobile overflow',filteredState,errors}));
 }finally{if(browser)await browser.close();await new Promise(r=>server.close(r));}

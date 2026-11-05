@@ -4891,15 +4891,15 @@ function trimEmptyExportColumns(rows){
   if(!keep.length)return source;
   return source.map(row=>keep.map(col=>Array.isArray(row)?row[col]:""));
 }
-function exportWorkbook(sheets,filename){
+function exportWorkbook(sheets,filename,{includeNamingRules=true}={}){
   const withRules=(sheets||[]).slice();
-  if(!withRules.some(sheet=>clean(sheet?.name).toLowerCase()==="repairer naming rules")){
+  if(includeNamingRules&&!withRules.some(sheet=>clean(sheet?.name).toLowerCase()==="repairer naming rules")){
     withRules.push({name:"Repairer Naming Rules",rows:buildRepairerNamingRulesExportRows()});
   }
   const valid=withRules
     .filter(sheet=>sheet&&Array.isArray(sheet.rows)&&sheet.rows.length)
-    .map(sheet=>({...sheet,rows:trimEmptyExportColumns(sheet.rows)}))
-    .filter(sheet=>Array.isArray(sheet.rows)&&sheet.rows.length&&sheet.rows[0]?.length);
+    .map(sheet=>({...sheet,rows:sheet.approvalLayout?sheet.rows:trimEmptyExportColumns(sheet.rows)}))
+    .filter(sheet=>Array.isArray(sheet.rows)&&sheet.rows.some(row=>row?.length));
   if(!valid.length){alert("No export data found for the selected filters.");return}
   const workbook=`<?xml version="1.0"?>
 <?mso-application progid="Excel.Sheet"?>
@@ -4907,8 +4907,28 @@ function exportWorkbook(sheets,filename){
  xmlns:o="urn:schemas-microsoft-com:office:office"
  xmlns:x="urn:schemas-microsoft-com:office:excel"
  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
-<Styles><Style ss:ID="Header"><Font ss:Bold="1"/><Interior ss:Color="#EEF6FF" ss:Pattern="Solid"/></Style></Styles>
-${valid.map(sheet=>`<Worksheet ss:Name="${xmlEscape(xlsSheetName(sheet.name))}"><Table>${sheet.rows.map((row,i)=>`<Row>${row.map(cell=>`<Cell${i===0?' ss:StyleID="Header"':''}><Data ss:Type="${typeof cell==="number"&&Number.isFinite(cell)?"Number":"String"}">${xmlEscape(cell)}</Data></Cell>`).join("")}</Row>`).join("")}</Table></Worksheet>`).join("")}
+<Styles><Style ss:ID="Header"><Font ss:Bold="1"/><Interior ss:Color="#EEF6FF" ss:Pattern="Solid"/></Style>
+<Style ss:ID="ApprovalBody"><Font ss:FontName="Arial" ss:Size="10" ss:Color="#111111"/><Alignment ss:Vertical="Center"/></Style>
+<Style ss:ID="ApprovalCell" ss:Parent="ApprovalBody"><Borders><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#777777"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#777777"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#777777"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#777777"/></Borders></Style>
+<Style ss:ID="ApprovalTitle" ss:Parent="ApprovalBody"><Font ss:FontName="Arial" ss:Size="14" ss:Bold="1"/></Style>
+<Style ss:ID="ApprovalNote" ss:Parent="ApprovalBody"><Font ss:FontName="Arial" ss:Size="10" ss:Italic="1" ss:Color="#555555"/><Alignment ss:Vertical="Center" ss:WrapText="1"/></Style>
+<Style ss:ID="ApprovalYear" ss:Parent="ApprovalBody"><Font ss:FontName="Arial" ss:Size="11" ss:Bold="1"/><Alignment ss:Horizontal="Left"/></Style>
+<Style ss:ID="ApprovalHeader" ss:Parent="ApprovalCell"><Interior ss:Color="#F3F3F3" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center"/></Style>
+<Style ss:ID="ApprovalAmount" ss:Parent="ApprovalCell"><NumberFormat ss:Format="#,##0.00;(#,##0.00);&quot;–&quot;"/><Alignment ss:Horizontal="Right" ss:Vertical="Center"/></Style>
+</Styles>
+${valid.map(sheet=>{
+  const width=Math.max(...sheet.rows.map(row=>row.length));
+  const columns=sheet.approvalLayout?`<Column ss:Width="230"/>${Array.from({length:width-1},()=>'<Column ss:Width="100"/>').join('')}`:'';
+  const rows=sheet.rows.map((row,i)=>{
+    const rowStyle=sheet.rowStyles?.[i];
+    const merge=sheet.approvalLayout&&['ApprovalTitle','ApprovalNote'].includes(rowStyle);
+    return `<Row${sheet.approvalLayout?` ss:Height="${rowStyle==='ApprovalTitle'?28:rowStyle==='ApprovalNote'?30:22}"`:''}>${row.map((cell,j)=>{
+      const style=sheet.approvalLayout?(rowStyle||(j?'ApprovalAmount':'ApprovalCell')):(i===0?'Header':'');
+      return `<Cell${style?` ss:StyleID="${style}"`:''}${merge&&j===0?` ss:MergeAcross="${width-1}"`:''}><Data ss:Type="${typeof cell==='number'&&Number.isFinite(cell)?'Number':'String'}">${xmlEscape(cell)}</Data></Cell>`;
+    }).join('')}</Row>`;
+  }).join('');
+  return `<Worksheet ss:Name="${xmlEscape(xlsSheetName(sheet.name))}"><Table>${columns}${rows}</Table>${sheet.approvalLayout?'<WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><DoNotDisplayGridlines/></WorksheetOptions>':''}</Worksheet>`;
+}).join('')}
 </Workbook>`;
   const blob=new Blob([workbook],{type:"application/vnd.ms-excel;charset=utf-8"});
   const url=URL.createObjectURL(blob);
@@ -8030,6 +8050,7 @@ window.addEventListener("resize",()=>{drawRange();renderWeekPanel()});
 load();
 
 </script>
-<script src="repairer-overview.js?v=20261104-export"></script>
+<script src="repairer-approval-export.js?v=20261105"></script>
+<script src="repairer-overview.js?v=20261105-export"></script>
 </body>
 </html>
