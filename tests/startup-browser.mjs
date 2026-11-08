@@ -69,7 +69,7 @@ try{
   assert.deepEqual(await metrics(fast.page),expected,'prebuilt figures equal original calculation');
   assert.ok(!fast.requests.some(p=>/\/team\/views\//.test(p)),'first visit must not download detail history');
   const cold=await fast.page.evaluate(()=>Number(document.documentElement.dataset.teamLoadingHiddenMs));
-  await fast.page.waitForFunction(async()=>!!(await WarrantyPageCache.getPageRecord('team-dashboard:render-snapshot-v20')));
+  await fast.page.waitForFunction(async()=>!!(await WarrantyPageCache.getPageRecord('team-dashboard:render-snapshot-v21')));
   versionDelay=5000;fast.requests.length=0;
   await fast.page.reload({waitUntil:'domcontentloaded'});
   await fast.page.waitForFunction(()=>document.documentElement.dataset.teamLoadingHiddenMs,{timeout:2000});

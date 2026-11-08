@@ -5,16 +5,42 @@ const vm=require('node:vm');
 const path=require('node:path');
 const html=fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 function between(a,b){return html.slice(html.indexOf(a),html.indexOf(b,html.indexOf(a)));}
-test('deployed Team snapshot is available on the production hostname',async()=>{
+test('production ignores the bundled snapshot while localhost can use it',async()=>{
   const requests=[],snapshot={schema:'team-startup-v1',generatedAt:'team-v1',sourceVersion:'meta-v1',page:{renderSnapshot:{values:{}},team:{views:{all:{}}}}};
   const context=vm.createContext({location:{hostname:'warranty-l9jw.onrender.com'},AbortSignal,
     fetch:async(url)=>{requests.push(url);return {ok:true,json:async()=>snapshot};}
   });
   vm.runInContext(between('async function readLocalTeamStartup(){','function claimExistsInTeam'),context);
   const record=await vm.runInContext('readLocalTeamStartup()',context);
-  assert.equal(record.version,'meta-v1');
-  assert.equal(record.value,snapshot.page);
+  assert.equal(record,null);
+  assert.deepEqual(requests,[]);
+  assert.doesNotMatch(html,/<link[^>]+href="outputs\/team_dashboard_startup.json"/);
+  context.location.hostname='localhost';
+  const local=await vm.runInContext('readLocalTeamStartup()',context);
+  assert.equal(local.version,'meta-v1');
+  assert.equal(local.value,snapshot.page);
   assert.deepEqual(requests,['outputs/team_dashboard_startup.json']);
+});
+
+test('fresh publications advance the default month and preserve an older month explicitly selected',async()=>{
+  for(const [month,startupAvailable,expected] of [['2026-10',true,'2026-11'],['2026-10',false,'2026-11'],['2026-09',true,'2026-09']]){
+    const requests=[],newTeam={generatedAt:'new-team',month:'2026-11',views:{all:{}}};
+    const startup={schema:'team-startup-v1',generatedAt:'new-team',page:{team:newTeam,activeMonth:'2026-11',activeClaim:'all',renderSnapshot:{}}};
+    const context=vm.createContext({MONITOR_ROOT:'monitor',team:{month:'2026-10'},activeMonth:month,activeClaim:'all',
+      teamDetailSourcePromises:new Map(),dashboardRenderCache:{clear(){}},
+      readJson:async p=>{requests.push(p);return p.endsWith('/teamStartup')?(startupAvailable?startup:null):p.endsWith('/team/generatedAt')?'new-team':newTeam;},
+      teamPageVersion:async()=> 'new-meta',chooseActiveClaimAfterTeamRefresh:()=> 'all',
+      loadPageElementAdjustLocal:()=>({}),loadEmployeeStatusMappingRemote:async()=>{},loadPageElementAdjustRemote:async()=>{},
+      renderAllWithLoading:async()=>{},saveTeamPageState:()=>{},window:{WarrantyPageCache:{showBadge(){}}},
+    });
+    context.defaultDashboardMonth=()=>context.team.month;
+    context.restoreTeamPageState=page=>{context.team=page.team;context.activeMonth=page.activeMonth;return true;};
+    vm.runInContext(between('async function loadFreshTeamDashboard(', 'async function load(){'),context);
+    await context.loadFreshTeamDashboard('new-meta');
+    assert.equal(context.activeMonth,expected);
+    assert.equal(context.team.generatedAt,'new-team');
+    assert.equal(requests.some(p=>p.endsWith('/teamDashboard')),!startupAvailable||month==='2026-09');
+  }
 });
 function app({saved=new Map(),read=async()=>[],confirmed='v1'}={}){
   const requests=[],writes=[],view={};

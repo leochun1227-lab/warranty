@@ -6,7 +6,6 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>Warranty Team</title>
-<link rel="preload" href="outputs/team_dashboard_startup.json" as="fetch" crossorigin>
 <link rel="stylesheet" href="dashboard-overview.css?v=20261007-compact-header">
 <style>
 :root{--bg:#f3f6fb;--card:#fff;--ink:#0f172a;--muted:#607089;--line:#dbe3ee;--nav:#0b1222;--blue:#3b82f6;--orange:#fb6b1d;--green:#16a34a;--shadow:0 10px 28px rgba(15,23,42,.06)}
@@ -9122,7 +9121,7 @@ function validateTicketsInProgressAlignment(){
 function deltaInfoMetric(metric,curr,prev){const delta=Number(curr||0)-Number(prev||0);if(delta===0)return{cls:"flat",arrow:"-",text:"0"};const isGood=(metric==="exited")?delta>0:delta<0;return{cls:isGood?"up":"down",arrow:delta>0?"^":"v",text:num(Math.abs(delta))};}
 function tipRow(label,color,value,delta){return `<div class="tipRow"><span class="tipLeft" style="color:${color}">${esc(label)}</span><span class="tipRight"><span class="tipValue">${num(value)}</span><span class="tipDelta ${delta.cls}">${delta.arrow} ${delta.text}</span></span></div>`}
 function bindTooltip(){const c=$("trendChart"),tip=$("tooltip");if(!c||c.dataset.bound)return;c.dataset.bound="1";c.addEventListener("mousemove",ev=>{if(!c._points||!c._points.length)return;const rect=c.getBoundingClientRect(),x=ev.clientX-rect.left;const hit=c._points.reduce((b,p)=>Math.abs(p.x-x)<Math.abs(b.x-x)?p:b,c._points[0]);const prev=hit.idx>0?c._points[hit.idx-1].p:null;const pointEndRaw=clean(hit.p.periodEnd||hit.p.date||hit.p.periodStart);const pointEnd=shortDateLabel(pointEndRaw);const cumulativeStart=shortDateLabel(periodStartDate(periodEndDate()));const cumulativeRange=hit.p.isOpeningPoint?`Opening (${pointEnd})`:(cumulativeStart&&pointEnd?`${cumulativeStart} to ${pointEnd}`:(pointEnd||cumulativeStart));const addedDelta=deltaInfoMetric("entered",hit.p.cumulativeEnteredCritical,prev?prev.cumulativeEnteredCritical:hit.p.cumulativeEnteredCritical);const removedDelta=deltaInfoMetric("exited",hit.p.cumulativeExitedCritical,prev?prev.cumulativeExitedCritical:hit.p.cumulativeExitedCritical);const criticalDelta=deltaInfoMetric("critical",hit.p.criticalTotal,prev?prev.criticalTotal:hit.p.criticalTotal);tip.innerHTML=`<b>${esc(cumulativeRange)}</b>${tipRow("Added to Waiting","#3b82f6",hit.p.cumulativeEnteredCritical,addedDelta)}${tipRow("Removed","#16a34a",hit.p.cumulativeExitedCritical,removedDelta)}${tipRow("Tickets in Progress Remaining","#fb6b1d",hit.p.criticalTotal,criticalDelta)}`;tip.style.display="block";tip.style.left=(ev.clientX+14)+"px";tip.style.top=(ev.clientY+14)+"px"});c.addEventListener("mouseleave",()=>tip.style.display="none")}
-const TEAM_PAGE_CACHE_SCHEMA="render-snapshot-v20";
+const TEAM_PAGE_CACHE_SCHEMA="render-snapshot-v21";
 const TEAM_PAGE_CACHE_KEY=`team-dashboard:${TEAM_PAGE_CACHE_SCHEMA}`;
 const dashboardRenderCache=DashboardRenderCache.create();
 function dashboardRenderSelection(){return JSON.stringify([activeClaim,selectedDashboardMonth(),activePeriod,teamAssignMetric,JSON.stringify(employeeStatusMapping)]);}
@@ -9320,8 +9319,9 @@ async function readTeamPageCacheRecord(){
   }
 }
 async function readLocalTeamStartup(){
-  // Ship the generated snapshot with the site so a first visit on any device
-  // can paint immediately. load() still checks the live team's generation.
+  // Generated files on the refresh computer are not updated on the static host.
+  // Production uses the version-checked Firebase startup; keep this local-only.
+  if(!["localhost","127.0.0.1","[::1]"].includes(location.hostname))return null;
   try{
     const response=await fetch("outputs/team_dashboard_startup.json",{cache:"no-cache",signal:AbortSignal.timeout(2000)});
     if(!response.ok)return null;
@@ -9340,11 +9340,14 @@ function chooseActiveClaimAfterTeamRefresh(previousClaim){
   return canonicalClaimKey(team.defaultView||"all");
 }
 async function loadFreshTeamDashboard(version,quiet=false){
+  // Advance an automatic latest-month selection with the source generation,
+  // while retaining a deliberately selected older month.
+  const followLatestMonth=!activeMonth||activeMonth===defaultDashboardMonth();
   const startup=await readJson(MONITOR_ROOT+"/analytics/teamStartup").catch(()=>null);
   if(typeof startup?.page==="string"){
     try{startup.page=JSON.parse(startup.page);}catch(error){startup.page=null;}
   }
-  const startupMatchesSelection=(!activeMonth||activeMonth===startup?.page?.activeMonth)&&activeClaim===(startup?.page?.activeClaim||"all");
+  const startupMatchesSelection=(followLatestMonth||activeMonth===startup?.page?.activeMonth)&&activeClaim===(startup?.page?.activeClaim||"all");
   if(startupMatchesSelection&&startup?.schema==="team-startup-v1"&&startup.page?.renderSnapshot&&startup.generatedAt){
     const [teamGeneratedAt,confirmed]=await Promise.all([
       readJson(MONITOR_ROOT+"/analytics/team/generatedAt"),teamPageVersion()
@@ -9369,6 +9372,7 @@ async function loadFreshTeamDashboard(version,quiet=false){
   const previousClaim=activeClaim;
   team=data;
   activeClaim=chooseActiveClaimAfterTeamRefresh(previousClaim);
+  if(followLatestMonth)activeMonth=defaultDashboardMonth();
   employeeAnalytics=null;
   pageElementAdjustStore=loadPageElementAdjustLocal();
   await Promise.all([loadEmployeeStatusMappingRemote(),loadPageElementAdjustRemote()]);
