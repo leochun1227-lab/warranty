@@ -24,8 +24,7 @@ function fixture(){
   ]}}}};
 }
 
-async function app(){
-  const input=fixture();
+async function app(input=fixture()){
   const {buildDashboardStartup}=await import('../build_dashboard_startup.mjs');
   const cached=buildDashboardStartup(input).page;
   const elements=new Map();
@@ -119,4 +118,87 @@ test('closing the dialog prevents a late request from changing a later dialog',a
   a.run('closeEmployeeModal()');finish();await pending;
   assert.equal(a.run('selectedEmployeeName'),'');
   assert.equal(a.element('employeeModalBackdrop').classList.contains('active'),false);
+});
+
+test('monthly approvals retain history when the dashboard month changes and average over the directory',async()=>{
+  const a=await app();
+  const before=a.run('employeeMonthlyApprovalData()');
+  const kylie=before.rows.find(row=>row.name===name);
+  assert.equal(kylie.values['2026-10'],2);
+  assert.equal(kylie.values['2026-09'],4);
+  assert.equal(kylie.values['2026-08'],null,'missing history is not zero');
+  assert.equal(before.headcount,6,'zero-approval active employees count in the denominator');
+  assert.equal(before.columns[0].total,2,'exclude unapproved decisions');
+  assert.equal(before.columns[0].average,2/6);
+  a.run('activeMonth="2026-09"');
+  assert.equal(JSON.stringify(a.run('employeeMonthlyApprovalData()')),JSON.stringify(before));
+  assert.equal(kylie.change.text,'-50.0%');
+  assert.equal(before.rows.find(row=>row.name==='Chloe Bolger').change.text,'0.0%');
+  assert.equal(a.run('typeof employeeMonthlyChange'),'undefined','business calculations are absent from the browser');
+  a.run('currentView().periodSnapshots={};currentCriticalStatusRows=()=>{throw Error("browser must not aggregate");};');
+  assert.equal(JSON.stringify(a.run('employeeMonthlyApprovalData()')),JSON.stringify(before));
+  const exported=a.run('employeeMonthlyApprovalExportRows()');
+  assert.equal(exported.find(row=>row[0]===name).at(-1),'-50.0%');
+});
+
+test('monthly columns cross year boundaries and keep Other out of headcount',async()=>{
+  const input=fixture();
+  input.team.views.all.trend=[{date:'2027-01-12'}];
+  input.team.views.all.periodSnapshots['2027-01-01|2027-01-12']={employeeApprovalRows:[{name:'Kylie Clayton',approved:6},{name:'Leanne Pulford',approved:3}]};
+  const a=await app(input);
+  const data=a.run('employeeMonthlyApprovalData()');
+  assert.equal(data.current,'2027-01');
+  assert.equal(data.previous,'2026-12');
+  assert.equal(data.prior,'2026-11');
+  assert.equal(data.columns[0].total,9);
+  assert.equal(data.columns[0].average,1.5);
+  assert.equal(data.rows.find(row=>row.name==='Other').values['2027-01'],3);
+});
+
+test('status columns show each state with proportional heights and accessible ticket links',async()=>{
+  const a=await app();
+  const markup=a.run(`statusColumnChartMarkup(publishedDashboardPanels().remainingStatus['2026-10'].rows)`);
+  assert.match(markup,/height:100%/);
+  assert.match(markup,/height:50%/);
+  assert.match(markup,/data-status-group="1"/);
+  assert.match(markup,/aria-label="In Review: 1 tickets/);
+  assert.doesNotMatch(markup,/<svg/);
+  assert.match(a.run('statusColumnChartMarkup([])'),/No tickets in progress/);
+  assert.match(a.run('statusColumnChartMarkup(null)'),/awaiting a data refresh/);
+});
+
+test('all categories and months have server-calculated status percentages and monthly comparisons',async()=>{
+  const input=fixture();
+  input.team.views.inField=structuredClone(input.team.views.all);
+  input.team.views.inField.periodSnapshots['2026-09-01|2026-09-30'].employeeApprovalRows=[{name,approved:0}];
+  input.team.views.preDelivery=structuredClone(input.team.views.all);
+  delete input.team.views.preDelivery.periodSnapshots['2026-09-01|2026-09-30'];
+  const {buildDashboardStartup}=await import('../build_dashboard_startup.mjs');
+  const result=buildDashboardStartup(input).page.team.dashboardPanelCache;
+  assert.equal(result.generatedAt,input.team.generatedAt);
+  assert.deepEqual(Object.keys(result.views),['all','inField','preDelivery']);
+  assert.equal(result.views.inField.monthlyApprovals.rows.find(row=>row.name===name).change.text,'N/A');
+  assert.equal(result.views.preDelivery.monthlyApprovals.rows.find(row=>row.name===name).change.text,'—');
+  const status=result.views.all.remainingStatus;
+  assert.equal(status['2026-09'].rows[0].count,1);
+  assert.equal(status['2026-10'].rows[0].count,2);
+  assert.equal(status['2026-10'].rows[0].percent,2/3*100);
+  assert.equal(status['2026-10'].rows[1].heightPct,50);
+});
+
+test('legacy startup hydrates the published cache once and refuses another source generation',async()=>{
+  const a=await app();
+  const cache=a.run('team.dashboardPanelCache');
+  a.run('delete team.dashboardPanelCache');
+  let requests=0;
+  a.c.readJson=async()=>{requests++;return {schema:1,data:JSON.stringify(cache)};};
+  await a.run('ensureDashboardPanelCache()');
+  await a.run('ensureDashboardPanelCache()');
+  assert.equal(requests,1);
+  assert.equal(a.run('employeeMonthlyApprovalData().current'),'2026-10');
+  a.run('team.generatedAt="new-source";delete team.dashboardPanelCache');
+  await a.run('ensureDashboardPanelCache()');
+  assert.equal(a.run('employeeMonthlyApprovalData()'),null);
+  assert.match(a.run('employeeMonthlyApprovalExportRows()[0][0]'),/cache unavailable/);
+  assert.doesNotMatch(html,/<script[^>]*src=["'][^"']*dashboard-panel-calculations/);
 });

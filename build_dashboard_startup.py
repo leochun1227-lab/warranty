@@ -15,13 +15,22 @@ def publish_dashboard_startup(analytics_ref, team, employee, employee_directory)
     snapshot = json.loads(result.stdout)
     if snapshot.get("schema") != "team-startup-v1" or snapshot.get("generatedAt") != team["generatedAt"]:
         raise ValueError("Invalid dashboard startup snapshot")
-    save_local_startup(root, snapshot)
+    panels = snapshot["page"]["team"]["dashboardPanelCache"]
+    if panels.get("schema") != 1 or panels.get("generatedAt") != team["generatedAt"]:
+        raise ValueError("Invalid dashboard panel cache")
     # Atomic replacement: readers see a complete old or complete new page.
     # Do not sanitize its JSON-string cache keys; store the page as a JSON string
     # so Firebase cannot rewrite calculation arguments or turn arrays into maps.
     payload = {**snapshot, "page": json.dumps(snapshot["page"], ensure_ascii=False, separators=(",", ":"))}
-    analytics_ref.child("teamStartup").set(payload)
+    analytics_ref.update({"teamStartup": payload, "teamPanelCache": panel_cache_payload(panels)})
+    save_local_startup(root, snapshot)
     return snapshot
+
+
+def panel_cache_payload(panels):
+    # Preserve missing values, arrays and employee names exactly in RTDB.
+    return {"schema": 1, "generatedAt": panels["generatedAt"],
+            "data": json.dumps(panels, ensure_ascii=False, separators=(",", ":"), allow_nan=False)}
 
 
 def save_local_startup(root, snapshot):

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 // Execute the same calculation functions as the page, without a browser,
 // network, DOM rendering, or a second copy of the business rules.
-export function buildDashboardStartup(input) {
+export function buildDashboardStartup(input,{panelsOnly=false}={}) {
   if (!input.team?.views?.all || !input.team.generatedAt || !input.employee) throw new Error('Incomplete dashboard inputs');
   const elements=new Map();
   let page;
@@ -22,6 +22,8 @@ export function buildDashboardStartup(input) {
   if(start<0||end<0)throw new Error('Dashboard calculation boundaries changed');
   vm.runInContext(fs.readFileSync(new URL('./dashboard-render-cache.js',import.meta.url),'utf8'),context);
   vm.runInContext(html.slice(start,end),context,{timeout:10000});
+  vm.runInContext(fs.readFileSync(new URL('./dashboard-panel-calculations.js',import.meta.url),'utf8'),context);
+  context.panelsOnly=panelsOnly;
   vm.runInContext(`
     team=input.team;employeeAnalytics=input.employee;
     employeeStatusMapping=normalizeEmployeeDirectory(input.employeeDirectory||{});
@@ -29,9 +31,13 @@ export function buildDashboardStartup(input) {
       view.__fullExportDetailsLoaded=true;
       for(const snapshot of Object.values(view.periodSnapshots||{}))snapshot.__fullExportDetailsLoaded=true;
     }
-    prepareDashboardRenderSnapshot();
-    saveTeamPageState(team.generatedAt);
+    team.dashboardPanelCache=buildDashboardPanelCache();
+    if(!panelsOnly){
+      prepareDashboardRenderSnapshot();
+      saveTeamPageState(team.generatedAt);
+    }
   `,context,{timeout:120000});
+  if(panelsOnly)return JSON.parse(vm.runInContext('JSON.stringify(team.dashboardPanelCache)',context));
   if(!page?.renderSnapshot?.values)throw new Error('Dashboard snapshot was not produced');
   const result={schema:'team-startup-v1',generatedAt:input.team.generatedAt,page};
   if(Buffer.byteLength(JSON.stringify(result))>12*1024*1024)throw new Error('Dashboard startup exceeds 12 MiB; publication was not replaced');
@@ -40,5 +46,5 @@ export function buildDashboardStartup(input) {
 
 if(process.argv[1]===fileURLToPath(import.meta.url)){
   const input=JSON.parse(fs.readFileSync(0,'utf8'));
-  process.stdout.write(JSON.stringify(buildDashboardStartup(input)));
+  process.stdout.write(JSON.stringify(buildDashboardStartup(input,{panelsOnly:process.argv.includes('--panels-only')})));
 }

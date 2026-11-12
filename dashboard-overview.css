@@ -1,6 +1,34 @@
 /* A desktop overview that follows the reading order: KPIs, trends, breakdowns.
    This layer precedes the legacy layers so its important sizing rules win. */
 @layer dashboardOverview{
+  .team-overview-page #statusMix.statusColumnChart{display:block!important;overflow-x:auto!important;overflow-y:hidden!important;width:100%!important;min-height:145px!important;align-self:stretch!important;padding:0 0 2px!important;scrollbar-width:thin}
+  .team-overview-page .statusColumns{display:grid;grid-template-columns:repeat(var(--status-count),minmax(42px,1fr));min-width:calc(var(--status-count) * 50px - 8px);height:100%;min-height:145px;padding-top:24px;gap:8px}
+  .team-overview-page .statusColumn{display:grid;grid-template-rows:minmax(65px,1fr) 44px;gap:6px;background:transparent;border:0;padding:0;color:#475569;font:inherit;cursor:pointer;min-width:0}
+  .team-overview-page .statusColumn:focus-visible{outline:2px solid #2563eb;outline-offset:-2px;border-radius:4px}
+  .team-overview-page .statusColumnPlot{display:flex;align-items:flex-end;justify-content:center;border-bottom:1px solid #cbd5e1;background:repeating-linear-gradient(to top,transparent 0,transparent calc(25% - 1px),#f1f5f9 calc(25% - 1px),#f1f5f9 25%)}
+  .team-overview-page .statusColumnBar{display:block;position:relative;width:65%;max-width:48px;min-height:1px;border-radius:3px 3px 0 0}
+  .team-overview-page .statusColumn:hover .statusColumnBar{filter:brightness(1.12)}
+  .team-overview-page .statusColumnValue{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);padding-bottom:5px;color:#334155;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+  .team-overview-page .statusColumnLabel{font-size:9px;line-height:1.4;overflow-wrap:anywhere;text-align:center}
+  .team-overview-page .employeeWorkloadMetricBlock .teamAssignLegend{flex-wrap:wrap!important;gap:4px 14px!important;justify-content:flex-start!important}
+  .team-overview-page #teamAssignGrid.is-monthly{display:block!important;overflow:auto!important;max-height:360px!important;min-height:0!important;padding:0!important;border:1px solid #e2e8f0;border-radius:6px;scrollbar-width:thin}
+  .team-overview-page .employeeMonthlyTable{width:100%;border-collapse:separate;border-spacing:0;font-size:11px;color:#475569;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .team-overview-page .employeeMonthlyTable :is(th,td){padding:4px 9px;text-align:right;border-bottom:1px solid #e8edf3;background:#fff;line-height:1.3}
+  .team-overview-page .employeeMonthlyTable th:first-child{position:sticky;left:0;z-index:2;text-align:left;min-width:138px;font-weight:400;border-right:1px solid #e2e8f0}
+  .team-overview-page .employeeMonthlyTable thead th{position:sticky;top:0;z-index:3;font-weight:600;background:#f8fafc}
+  .team-overview-page .employeeMonthlyTable thead th:first-child{z-index:4}
+  .team-overview-page .employeeMonthlyTable small{display:block;font-size:9px;font-weight:400;margin-top:2px;color:#64748b}
+  .team-overview-page .employeeMonthlyTable .approvalMonth-current{background:#f0fdf4;color:#166534;font-weight:600}
+  .team-overview-page .employeeMonthlyTable .approvalMonth-previous{background:#eff6ff;color:#1d4ed8}
+  .team-overview-page .employeeMonthlyTable .approvalMonth-prior{background:#fffbeb;color:#92400e}
+  .team-overview-page .employeeMonthlyTable .approvalChange{font-weight:600}
+  .team-overview-page .employeeMonthlyTable .approvalChange.up{color:#15803d}
+  .team-overview-page .employeeMonthlyTable .approvalChange.down{color:#be123c}
+  .team-overview-page .employeeMonthlyTable :is(td,th):last-child{position:sticky;right:0;border-left:1px solid #e2e8f0;z-index:2;min-width:106px}
+  .team-overview-page .employeeMonthlyTable thead th:last-child{z-index:3}
+  .team-overview-page .employeeMonthlyTable tfoot :is(th,td){font-weight:600;border-top:1px solid #cbd5e1}
+  .team-overview-page .employeeMonthlyTable tfoot tr:last-child :is(th,td){border-bottom:0}
+  .team-overview-page .employeeMonthlyNote{flex-basis:100%;font-size:10px;line-height:1.4;white-space:normal}
   .team-overview-page .pageTitle{font-weight:400!important;color:#64748b!important}
   .team-overview-page .pageTop .sidebarFilterLabel{font-weight:400!important;color:#7b8798!important}
   .team-overview-page .pageTop .sidebarFilterSelect{font-weight:400!important;color:#64748b!important}

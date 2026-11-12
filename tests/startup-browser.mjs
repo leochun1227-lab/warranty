@@ -40,7 +40,7 @@ const fixture={team:{generatedAt:'2026-10-07T00:00:00Z',minDate:'2026-08-01',def
   },topDealers:[{dealer:'Dealer A',criticalTickets:1}],statusMix:[{label:'Waiting',count:1}]
 }}},employee:{views:{all:{stats:[]}}},employeeDirectory:{}};
 const built=buildDashboardStartup(fixture);
-const source={ctmTicketStatusMonitorV44:{analytics:{teamDashboard:fixture.team,team:fixture.team,employee:fixture.employee,meta:{generatedAt:fixture.team.generatedAt},teamStartup:null},employeeDirectory:{}}};
+const source={ctmTicketStatusMonitorV44:{analytics:{teamDashboard:fixture.team,team:fixture.team,employee:fixture.employee,meta:{generatedAt:fixture.team.generatedAt},teamStartup:null,teamPanelCache:{schema:1,generatedAt:fixture.team.generatedAt,data:JSON.stringify(built.page.team.dashboardPanelCache)}},employeeDirectory:{}}};
 const metrics=page=>page.locator('.kpi, #teamAssignGrid, #employeeApprovalBars, #criticalLogRows, #speedRows, #dealerBars, #statusMix, #trendSideSummary, #modelFailure90Total, #ticketCount').allTextContents();
 let versionDelay=0;
 const contexts=[];
@@ -77,7 +77,7 @@ try{
   assert.ok(warm<2000);assert.deepEqual(await metrics(fast.page),expected);
   assert.ok(!fast.requests.some(p=>p.endsWith('/teamStartup')),'slow version check cannot hold cached figures');
   await fast.page.screenshot({path:path.join(output,'dashboard.png'),fullPage:true});
-  for(const metric of ['currentCritical','totalRemoved']){
+  for(const metric of ['currentCritical']){
     await fast.page.locator(`[data-assign-metric="${metric}"]`).click();
     await fast.page.locator('.teamAssignTrack[data-employee="Kylie Clayton"]').click();
     await fast.page.waitForFunction(()=>employeeModalDetailState==='ready');
@@ -87,6 +87,10 @@ try{
     await fast.page.screenshot({path:path.join(output,`employee-${metric}.png`)});
     await fast.page.locator('#employeeModalClose').click();
   }
+  await fast.page.locator('[data-assign-metric="totalRemoved"]').click();
+  assert.equal(await fast.page.locator('.employeeMonthlyTable').count(),1);
+  assert.match(await fast.page.locator('.employeeMonthlyTable').textContent(),/Team total/);
+  assert.equal(await fast.page.locator('#statusMix .statusColumn').count(),1);
   const updated=structuredClone(fixture);
   updated.team.generatedAt='2026-10-08T00:00:00Z';
   updated.team.views.all.summary.criticalNow=2;

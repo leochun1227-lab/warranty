@@ -54,6 +54,8 @@ REQUIRED_FILES = [
     "build_dashboard_summary_api.py",
     "build_dashboard_startup.py",
     "build_dashboard_startup.mjs",
+    "dashboard-panel-calculations.js",
+    "publish_dashboard_panel_cache.py",
     "dashboard-render-cache.js",
     "model-cache-assets.mjs",
     "build_parts_classification.mjs",
