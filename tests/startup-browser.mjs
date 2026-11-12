@@ -40,7 +40,7 @@ const fixture={team:{generatedAt:'2026-10-07T00:00:00Z',minDate:'2026-08-01',def
   },topDealers:[{dealer:'Dealer A',criticalTickets:1}],statusMix:[{label:'Waiting',count:1}]
 }}},employee:{views:{all:{stats:[]}}},employeeDirectory:{}};
 const built=buildDashboardStartup(fixture);
-const source={ctmTicketStatusMonitorV44:{analytics:{teamDashboard:fixture.team,team:fixture.team,employee:fixture.employee,meta:{generatedAt:fixture.team.generatedAt},teamStartup:null,teamPanelCache:{schema:1,generatedAt:fixture.team.generatedAt,data:JSON.stringify(built.page.team.dashboardPanelCache)}},employeeDirectory:{}}};
+const source={ctmTicketStatusMonitorV44:{analytics:{teamDashboard:fixture.team,team:fixture.team,employee:fixture.employee,meta:{generatedAt:fixture.team.generatedAt},teamStartup:null,teamPanelCacheV2:{schema:2,generatedAt:fixture.team.generatedAt,data:JSON.stringify(built.page.team.dashboardPanelCache)}},employeeDirectory:{}}};
 const metrics=page=>page.locator('.kpi, #teamAssignGrid, #employeeApprovalBars, #criticalLogRows, #speedRows, #dealerBars, #statusMix, #trendSideSummary, #modelFailure90Total, #ticketCount').allTextContents();
 let versionDelay=0;
 const contexts=[];

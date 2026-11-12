@@ -121,37 +121,55 @@ test('closing the dialog prevents a late request from changing a later dialog',a
 });
 
 test('monthly approvals retain history when the dashboard month changes and average over the directory',async()=>{
-  const a=await app();
+  const input=fixture();
+  input.team.views.all.periodSnapshots['2026-08-01|2026-08-31']={employeeApprovalRows:[{name,approved:2}]};
+  input.team.views.all.periodSnapshots['2026-07-01|2026-07-31']={};
+  const a=await app(input);
   const before=a.run('employeeMonthlyApprovalData()');
   const kylie=before.rows.find(row=>row.name===name);
   assert.equal(kylie.values['2026-10'],2);
   assert.equal(kylie.values['2026-09'],4);
-  assert.equal(kylie.values['2026-08'],null,'missing history is not zero');
+  assert.equal(kylie.values['2026-07'],null,'missing history is not zero');
+  assert.deepEqual(Array.from(before.columns,col=>col.month),['2026-07','2026-08','2026-09','2026-10']);
   assert.equal(before.headcount,6,'zero-approval active employees count in the denominator');
-  assert.equal(before.columns[0].total,2,'exclude unapproved decisions');
-  assert.equal(before.columns[0].average,2/6);
+  assert.equal(before.columns.at(-1).total,2,'exclude unapproved decisions');
+  assert.equal(before.columns.at(-1).average,2/6);
   a.run('activeMonth="2026-09"');
   assert.equal(JSON.stringify(a.run('employeeMonthlyApprovalData()')),JSON.stringify(before));
-  assert.equal(kylie.change.text,'-50.0%');
+  assert.equal(kylie.change.text,'+100.0%','September full month vs August, not October MTD vs September');
+  assert.equal(before.totals.change.text,'+100.0%');
+  assert.equal(before.average.change.text,'+100.0%');
   assert.equal(before.rows.find(row=>row.name==='Chloe Bolger').change.text,'0.0%');
   assert.equal(a.run('typeof employeeMonthlyChange'),'undefined','business calculations are absent from the browser');
   a.run('currentView().periodSnapshots={};currentCriticalStatusRows=()=>{throw Error("browser must not aggregate");};');
   assert.equal(JSON.stringify(a.run('employeeMonthlyApprovalData()')),JSON.stringify(before));
   const exported=a.run('employeeMonthlyApprovalExportRows()');
-  assert.equal(exported.find(row=>row[0]===name).at(-1),'-50.0%');
+  assert.equal(exported.find(row=>row[0]===name).at(-1),'+100.0%');
+  assert.equal(exported[0].at(-1),'2026-09 vs 2026-08 % (full months)');
+  assert.equal(exported[1][0],'Team total');
+  assert.match(exported[2][0],/^Average \/ employee/);
+  const box={},legend={};a.c.monthlyBox=box;a.c.monthlyLegend=legend;
+  a.run('renderEmployeeMonthlyApprovals(monthlyBox,monthlyLegend)');
+  assert.ok(box.innerHTML.indexOf('Team total')<box.innerHTML.indexOf('Average / employee'));
+  assert.ok(box.innerHTML.indexOf('Average / employee')<box.innerHTML.indexOf('Chloe Bolger'));
+  assert.match(box.innerHTML,/2026-09 vs 2026-08/);
+  assert.doesNotMatch(box.innerHTML,/<tfoot>/);
 });
 
 test('monthly columns cross year boundaries and keep Other out of headcount',async()=>{
   const input=fixture();
   input.team.views.all.trend=[{date:'2027-01-12'}];
   input.team.views.all.periodSnapshots['2027-01-01|2027-01-12']={employeeApprovalRows:[{name:'Kylie Clayton',approved:6},{name:'Leanne Pulford',approved:3}]};
+  input.team.views.all.periodSnapshots['2026-12-01|2026-12-31']={employeeApprovalRows:[{name,approved:4}]};
+  input.team.views.all.periodSnapshots['2026-11-01|2026-11-30']={employeeApprovalRows:[{name,approved:2}]};
   const a=await app(input);
   const data=a.run('employeeMonthlyApprovalData()');
   assert.equal(data.current,'2027-01');
   assert.equal(data.previous,'2026-12');
   assert.equal(data.prior,'2026-11');
-  assert.equal(data.columns[0].total,9);
-  assert.equal(data.columns[0].average,1.5);
+  assert.equal(data.columns.at(-1).total,9);
+  assert.equal(data.columns.at(-1).average,1.5);
+  assert.equal(data.rows.find(row=>row.name===name).change.text,'+100.0%');
   assert.equal(data.rows.find(row=>row.name==='Other').values['2027-01'],3);
 });
 
@@ -170,7 +188,7 @@ test('status columns show each state with proportional heights and accessible ti
 test('all categories and months have server-calculated status percentages and monthly comparisons',async()=>{
   const input=fixture();
   input.team.views.inField=structuredClone(input.team.views.all);
-  input.team.views.inField.periodSnapshots['2026-09-01|2026-09-30'].employeeApprovalRows=[{name,approved:0}];
+  input.team.views.inField.periodSnapshots['2026-08-01|2026-08-31']={employeeApprovalRows:[{name,approved:0}]};
   input.team.views.preDelivery=structuredClone(input.team.views.all);
   delete input.team.views.preDelivery.periodSnapshots['2026-09-01|2026-09-30'];
   const {buildDashboardStartup}=await import('../build_dashboard_startup.mjs');
@@ -189,9 +207,10 @@ test('all categories and months have server-calculated status percentages and mo
 test('legacy startup hydrates the published cache once and refuses another source generation',async()=>{
   const a=await app();
   const cache=a.run('team.dashboardPanelCache');
-  a.run('delete team.dashboardPanelCache');
+  a.run('team.dashboardPanelCache={...team.dashboardPanelCache,schema:1}');
+  assert.equal(a.run('employeeMonthlyApprovalData()'),null,'old MTD comparison cache is never shown');
   let requests=0;
-  a.c.readJson=async()=>{requests++;return {schema:1,data:JSON.stringify(cache)};};
+  a.c.readJson=async path=>{requests++;assert.match(path,/teamPanelCacheV2$/);return {schema:2,data:JSON.stringify(cache)};};
   await a.run('ensureDashboardPanelCache()');
   await a.run('ensureDashboardPanelCache()');
   assert.equal(requests,1);

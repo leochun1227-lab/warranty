@@ -1,7 +1,7 @@
 """Backfill the two dashboard panel caches from existing Firebase analytics.
 
 Normal daily refreshes publish these through publish_dashboard_startup().
-This command updates only teamPanelCache; it never changes source tickets.
+This command updates only teamPanelCacheV2; it never changes source tickets.
 """
 import argparse
 import calendar
@@ -54,11 +54,11 @@ def publish_existing_panel_cache(analytics_ref, employee_directory):
         capture_output=True, text=True, encoding="utf-8", check=True, timeout=180, cwd=ROOT,
     )
     panels = json.loads(result.stdout)
-    if panels.get("schema") != 1 or panels.get("generatedAt") != generation:
+    if panels.get("schema") != 2 or panels.get("generatedAt") != generation:
         raise ValueError("Invalid panel calculation result")
     if any(analytics_ref.child(path).get() != generation for path in ("team/generatedAt", "teamDashboard/generatedAt")):
         raise ValueError("Team analytics changed during calculation; cache was not published")
-    analytics_ref.child("teamPanelCache").set(panel_cache_payload(panels))
+    analytics_ref.child("teamPanelCacheV2").set(panel_cache_payload(panels))
     return panels
 
 
@@ -73,7 +73,7 @@ def main():
     panels = publish_existing_panel_cache(root.child("analytics"), root.child("employeeDirectory").get() or {})
     output = ROOT / "outputs" / "team_panel_cache.json"
     output.write_text(json.dumps(panels, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
-    print(json.dumps({"published": "analytics/teamPanelCache", "generatedAt": panels["generatedAt"],
+    print(json.dumps({"published": "analytics/teamPanelCacheV2", "generatedAt": panels["generatedAt"],
                       "views": {key: {"approvalMonths": len(value["monthlyApprovals"]["columns"]),
                                       "statusMonths": len(value["remainingStatus"])} for key, value in panels["views"].items()}}, indent=2))
 

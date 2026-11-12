@@ -10,7 +10,7 @@ class StartupPublicationTests(unittest.TestCase):
     def test_one_atomic_write_preserves_json_cache_keys_and_leading_zero_ids(self):
         ref = Mock()
         snapshot = {"schema": "team-startup-v1", "generatedAt": "v1", "page": {
-            "team": {"dashboardPanelCache": {"schema": 1, "generatedAt": "v1", "views": {}}},
+            "team": {"dashboardPanelCache": {"schema": 2, "generatedAt": "v1", "views": {}}},
             "renderSnapshot": {"values": {'["criticalRows",["2026-09-30"]]': [{"id": "0001", "amount": 0}]}}
         }}
         with patch("build_dashboard_startup.save_local_startup"), patch("rebuild_model_series_assets.resolve_node_executable", return_value="node"), patch(
@@ -19,7 +19,7 @@ class StartupPublicationTests(unittest.TestCase):
             publish_dashboard_startup(ref, {"generatedAt": "v1"}, {}, {})
         ref.child.assert_not_called()
         writes = ref.update.call_args.args[0]
-        self.assertEqual(json.loads(writes["teamPanelCache"]["data"]), snapshot["page"]["team"]["dashboardPanelCache"])
+        self.assertEqual(json.loads(writes["teamPanelCacheV2"]["data"]), snapshot["page"]["team"]["dashboardPanelCache"])
         payload = writes["teamStartup"]
         self.assertEqual(json.loads(payload["page"]), snapshot["page"])
 
@@ -46,7 +46,7 @@ class StartupPublicationTests(unittest.TestCase):
     def test_panel_cache_generation_must_match_before_atomic_publication(self):
         ref = Mock()
         snapshot = {"schema": "team-startup-v1", "generatedAt": "v1", "page": {
-            "team": {"dashboardPanelCache": {"schema": 1, "generatedAt": "old", "views": {}}}}}
+            "team": {"dashboardPanelCache": {"schema": 2, "generatedAt": "old", "views": {}}}}}
         with patch("build_dashboard_startup.save_local_startup") as save, patch(
             "rebuild_model_series_assets.resolve_node_executable", return_value="node"
         ), patch("build_dashboard_startup.subprocess.run", return_value=Mock(stdout=json.dumps(snapshot))), self.assertRaises(ValueError):
