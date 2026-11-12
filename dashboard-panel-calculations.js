@@ -12,11 +12,23 @@ function buildDashboardPanelCache(){
       activeClaim=key;
       const view=currentView(),latest=latestDateForView();
       const monthlyApprovals=buildEmployeeMonthlyApprovalData();
-      const remainingStatus={};
+      const remainingStatus={},repairCostDistribution={};
       const statusMonths=new Set([...availableDashboardMonths(),...monthlyApprovals.columns.map(col=>col.month)]);
       for(const month of Array.from(statusMonths).filter(month=>month<=latest.slice(0,7)).sort()){
         const end=month===latest.slice(0,7)?latest:monthEndISO(month);
         const snapshot=periodSnapshotForBounds(monthStartISO(month),end);
+        let costs=snapshot?.repairCostDistribution;
+        if(costs==null&&snapshot?.approvalTicketRows!=null)costs=repairCostDistributionFromApprovedRows(monthStartISO(month),end);
+        if(costs==null&&snapshot?.summary?.approvedTickets===0)costs=[];
+        if(costs!=null){
+          const definitions=repairCostBucketDefs();
+          const rows=arrayFromMaybe(costs).map(row=>{
+            const bucket=definitions.find(bucket=>bucket.label===row.label);
+            return {key:bucket?repairCostBucketKey(bucket):clean(row.key),label:clean(row.label),count:Number(row.count||0),total:Number(row.total||0)};
+          });
+          const total=rows.reduce((sum,row)=>sum+row.total,0),maximum=Math.max(1,...rows.map(row=>row.total));
+          repairCostDistribution[month]={end,total,rows:rows.map(row=>({...row,percent:total?row.total/total*100:0,heightPct:row.total/maximum*100}))};
+        }
         const daily=view.dailyCriticalRows||{};
         let source=null;
         if(Object.prototype.hasOwnProperty.call(daily,end))source=arrayFromMaybe(daily[end]);
@@ -41,10 +53,10 @@ function buildDashboardPanelCache(){
           remainingStatus[month]={end,rows:buildRemainingStatusColumns(rows)};
         }
       }
-      views[key]={monthlyApprovals,remainingStatus};
+      views[key]={monthlyApprovals,remainingStatus,repairCostDistribution};
     }
   }finally{activeClaim=previousClaim;activeMonth=previousMonth;}
-  return {schema:2,approvalHistoryStart:"2026-06",generatedAt:team.generatedAt,views};
+  return {schema:2,approvalHistoryStart:"2026-06",repairCostColumns:1,generatedAt:team.generatedAt,views};
 }
 function buildEmployeeMonthlyApprovalData(){
   // Read calendar-month snapshots directly: never use the selected-period

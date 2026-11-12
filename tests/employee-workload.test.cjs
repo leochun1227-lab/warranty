@@ -185,6 +185,30 @@ test('status columns show each state with proportional heights and accessible ti
   assert.match(a.run('statusColumnChartMarkup(null)'),/awaiting a data refresh/);
 });
 
+test('repair cost columns use published amounts, percentages and bucket links without browser aggregation',async()=>{
+  const input=fixture();
+  input.team.views.all.periodSnapshots['2026-10-01|2026-10-20'].repairCostDistribution=[
+    {key:'0',label:'$0',count:2,total:0},
+    {key:'100-500',label:'$100 - $500',count:3,total:600},
+    {key:'2500-inf',label:'>$2.5k',count:1,total:3000}
+  ];
+  const a=await app(input);
+  const data=a.run('publishedDashboardPanels().repairCostDistribution["2026-10"]');
+  assert.equal(data.total,3600);
+  assert.equal(data.rows[1].heightPct,20);
+  assert.equal(data.rows[2].percent,3000/3600*100);
+  assert.equal(data.rows[0].key,'0-0.01');
+  assert.equal(data.rows[2].key,'2500-Infinity');
+  a.run('repairCostDistributionRows=()=>{throw Error("browser must not aggregate");};renderRepairCostDistribution()');
+  const markup=a.element('criticalLogRows').innerHTML;
+  assert.match(markup,/height:20%/);
+  assert.match(markup,/data-repair-cost-key="2500-Infinity"/);
+  assert.match(markup,/3 tickets/);
+  assert.doesNotMatch(markup,/<svg/);
+  assert.match(a.run('repairCostColumnChartMarkup(null)'),/awaiting a data refresh/);
+  assert.match(a.run('repairCostColumnChartMarkup({rows:[]})'),/No repair cost data/);
+});
+
 test('all categories and months have server-calculated status percentages and monthly comparisons',async()=>{
   const input=fixture();
   input.team.views.inField=structuredClone(input.team.views.all);
