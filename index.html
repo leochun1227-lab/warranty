@@ -8699,7 +8699,7 @@ function teamAssignRowsWithDirectory(){
 }
 function publishedDashboardPanels(){
   const cache=team&&team.dashboardPanelCache;
-  return cache?.schema===2&&cache.generatedAt===team.generatedAt?cache.views?.[activeTeamViewKey()]||null:null;
+  return cache?.schema===2&&cache.approvalHistoryStart==="2026-06"&&cache.generatedAt===team.generatedAt?cache.views?.[activeTeamViewKey()]||null:null;
 }
 function employeeMonthlyApprovalData(){return publishedDashboardPanels()?.monthlyApprovals||null;}
 function employeeMonthlyApprovalExportRows(){
@@ -9196,13 +9196,13 @@ ticketMovementBridge=dashboardRenderCache.wrap("movement",ticketMovementBridge,v
 let dashboardSourceVersion="";
 const teamDetailSourcePromises=new Map();
 async function ensureDashboardPanelCache(){
-  if(team?.dashboardPanelCache?.schema===2&&team.dashboardPanelCache.generatedAt===team.generatedAt)return;
+  if(team?.dashboardPanelCache?.schema===2&&team.dashboardPanelCache.approvalHistoryStart==="2026-06"&&team.dashboardPanelCache.generatedAt===team.generatedAt)return;
   const source=team;
   try{
-    const payload=await loadTeamDetailSource(`panels:v2:${source.generatedAt}`,()=>readJson(`${MONITOR_ROOT}/analytics/teamPanelCacheV2`),value=>value===null||typeof value==="object");
+    const payload=await loadTeamDetailSource(`panels:v2:june-start:${source.generatedAt}`,()=>readJson(`${MONITOR_ROOT}/analytics/teamPanelCacheV2`),value=>value===null||typeof value==="object");
     const cache=typeof payload?.data==="string"?JSON.parse(payload.data):null;
     if(source!==team)return;
-    if(cache?.schema===2&&cache.generatedAt===source.generatedAt&&cache.views)source.dashboardPanelCache=cache;
+    if(cache?.schema===2&&cache.approvalHistoryStart==="2026-06"&&cache.generatedAt===source.generatedAt&&cache.views)source.dashboardPanelCache=cache;
   }catch(err){console.warn("Published dashboard panel cache unavailable",err);}
 }
 function loadTeamDetailSource(key,fetchSource,validate){

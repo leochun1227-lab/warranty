@@ -13,7 +13,9 @@ function buildDashboardPanelCache(){
       const view=currentView(),latest=latestDateForView();
       const monthlyApprovals=buildEmployeeMonthlyApprovalData();
       const remainingStatus={};
-      for(const {month,end} of monthlyApprovals.columns){
+      const statusMonths=new Set([...availableDashboardMonths(),...monthlyApprovals.columns.map(col=>col.month)]);
+      for(const month of Array.from(statusMonths).filter(month=>month<=latest.slice(0,7)).sort()){
+        const end=month===latest.slice(0,7)?latest:monthEndISO(month);
         const snapshot=periodSnapshotForBounds(monthStartISO(month),end);
         const daily=view.dailyCriticalRows||{};
         let source=null;
@@ -42,7 +44,7 @@ function buildDashboardPanelCache(){
       views[key]={monthlyApprovals,remainingStatus};
     }
   }finally{activeClaim=previousClaim;activeMonth=previousMonth;}
-  return {schema:2,generatedAt:team.generatedAt,views};
+  return {schema:2,approvalHistoryStart:"2026-06",generatedAt:team.generatedAt,views};
 }
 function buildEmployeeMonthlyApprovalData(){
   // Read calendar-month snapshots directly: never use the selected-period
@@ -57,7 +59,8 @@ function buildEmployeeMonthlyApprovalData(){
   });
   const names=employeeDirectoryNames().filter(name=>!isEmployeeExited(name)&&!isOtherTeamAssignRow(name));
   const employees=new Map(names.map(name=>[employeeStatusKey(name),{name,values:{}}]));
-  const columns=Array.from(months).filter(month=>month<=current).sort().map(month=>{
+  // May 2026 is a partial source month; approval history begins in June.
+  const columns=Array.from(months).filter(month=>month>="2026-06"&&month<=current).sort().map(month=>{
     const end=month===current?latest:monthEndISO(month);
     const snapshot=periodSnapshotForBounds(monthStartISO(month),end);
     const known=!!snapshot&&(snapshot.employeeApprovalRows!=null||snapshot.summary?.approvedTickets===0);
