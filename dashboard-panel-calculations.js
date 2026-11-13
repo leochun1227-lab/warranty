@@ -27,7 +27,8 @@ function buildDashboardPanelCache(){
             return {key:bucket?repairCostBucketKey(bucket):clean(row.key),label:clean(row.label),count:Number(row.count||0),total:Number(row.total||0)};
           });
           const total=rows.reduce((sum,row)=>sum+row.total,0),maximum=Math.max(1,...rows.map(row=>row.total));
-          repairCostDistribution[month]={end,total,rows:rows.map(row=>({...row,percent:total?row.total/total*100:0,heightPct:row.total/maximum*100}))};
+          const ticketCount=rows.reduce((sum,row)=>sum+row.count,0),maximumTickets=Math.max(1,...rows.map(row=>row.count));
+          repairCostDistribution[month]={end,total,ticketCount,rows:rows.map(row=>({...row,percent:total?row.total/total*100:0,heightPct:row.total/maximum*100,ticketPercent:ticketCount?row.count/ticketCount*100:0,ticketHeightPct:row.count/maximumTickets*100}))};
         }
         const daily=view.dailyCriticalRows||{};
         let source=null;
@@ -56,7 +57,7 @@ function buildDashboardPanelCache(){
       views[key]={monthlyApprovals,remainingStatus,repairCostDistribution};
     }
   }finally{activeClaim=previousClaim;activeMonth=previousMonth;}
-  return {schema:2,approvalHistoryStart:"2026-06",repairCostColumns:1,generatedAt:team.generatedAt,views};
+  return {schema:2,approvalHistoryStart:"2026-06",repairCostColumns:1,repairCostMetric:"tickets",generatedAt:team.generatedAt,views};
 }
 function buildEmployeeMonthlyApprovalData(){
   // Read calendar-month snapshots directly: never use the selected-period

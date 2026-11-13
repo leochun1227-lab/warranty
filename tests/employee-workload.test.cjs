@@ -185,7 +185,7 @@ test('status columns show each state with proportional heights and accessible ti
   assert.match(a.run('statusColumnChartMarkup(null)'),/awaiting a data refresh/);
 });
 
-test('repair cost columns use published amounts, percentages and bucket links without browser aggregation',async()=>{
+test('repair cost columns show cached ticket counts and keep cost totals in tooltips',async()=>{
   const input=fixture();
   input.team.views.all.periodSnapshots['2026-10-01|2026-10-20'].repairCostDistribution=[
     {key:'0',label:'$0',count:2,total:0},
@@ -195,18 +195,24 @@ test('repair cost columns use published amounts, percentages and bucket links wi
   const a=await app(input);
   const data=a.run('publishedDashboardPanels().repairCostDistribution["2026-10"]');
   assert.equal(data.total,3600);
-  assert.equal(data.rows[1].heightPct,20);
-  assert.equal(data.rows[2].percent,3000/3600*100);
+  assert.equal(data.ticketCount,6);
+  assert.equal(data.rows[1].ticketHeightPct,100);
+  assert.equal(data.rows[2].ticketHeightPct,1/3*100);
+  assert.equal(data.rows[2].ticketPercent,1/6*100);
   assert.equal(data.rows[0].key,'0-0.01');
   assert.equal(data.rows[2].key,'2500-Infinity');
   a.run('repairCostDistributionRows=()=>{throw Error("browser must not aggregate");};renderRepairCostDistribution()');
   const markup=a.element('criticalLogRows').innerHTML;
-  assert.match(markup,/height:20%/);
+  assert.match(markup,/height:100%/);
+  assert.match(markup,/<span class="statusColumnValue">3<\/span>/);
+  assert.doesNotMatch(markup,/<span class="statusColumnValue">[^<]*\$/);
+  assert.match(markup,/Total approved cost: \$3,000/);
   assert.match(markup,/data-repair-cost-key="2500-Infinity"/);
   assert.match(markup,/3 tickets/);
   assert.doesNotMatch(markup,/<svg/);
   assert.match(a.run('repairCostColumnChartMarkup(null)'),/awaiting a data refresh/);
-  assert.match(a.run('repairCostColumnChartMarkup({rows:[]})'),/No repair cost data/);
+  assert.match(a.run('repairCostColumnChartMarkup({rows:[{count:2,total:500,heightPct:100}]})'),/awaiting a data refresh/);
+  assert.match(a.run('repairCostColumnChartMarkup({rows:[],ticketCount:0})'),/No repair cost data/);
 });
 
 test('all categories and months have server-calculated status percentages and monthly comparisons',async()=>{

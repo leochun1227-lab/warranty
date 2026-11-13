@@ -3,7 +3,7 @@
 @layer dashboardOverview{
   .team-overview-page :is(#statusMix,#criticalLogRows).statusColumnChart{display:block!important;overflow-x:auto!important;overflow-y:hidden!important;width:100%!important;min-height:145px!important;align-self:stretch!important;padding:0 0 2px!important;scrollbar-width:thin}
   .team-overview-page .repairCostColumns{flex:1!important}
-  .team-overview-page .repairCostColumns .statusColumnValue{font-size:10px;white-space:nowrap}
+  .team-overview-page .repairCostColumns .statusColumnValue{font-size:12px;white-space:nowrap}
   .team-overview-page .statusColumns{display:grid;grid-template-columns:repeat(var(--status-count),minmax(42px,1fr));min-width:calc(var(--status-count) * 50px - 8px);height:100%;min-height:145px;padding-top:24px;gap:8px}
   .team-overview-page .statusColumn{display:grid;grid-template-rows:minmax(65px,1fr) 44px;gap:6px;background:transparent;border:0;padding:0;color:#475569;font:inherit;cursor:pointer;min-width:0}
   .team-overview-page .statusColumn:focus-visible{outline:2px solid #2563eb;outline-offset:-2px;border-radius:4px}
