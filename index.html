@@ -5828,7 +5828,7 @@ function updateDashboardCopy(){
   const snapshotText=selectedSnapshotText();
   updateTrendPanelCopy();
   const repairPanelTitle=document.querySelector(".repairCostPanel>.panelTitleRow .panelTitle");
-  if(repairPanelTitle){repairPanelTitle.textContent=teamAssignMetric==="totalRemoved"?"Employee Workload · Monthly Approved":`Employee Workload (${shortMonth})`;repairPanelTitle.title=teamAssignMetric==="totalRemoved"?"Monthly approval history · independent of the month filter":periodText;}
+  if(repairPanelTitle){repairPanelTitle.textContent=teamAssignMetric==="totalRemoved"?"Employee Workload · Approved + Unapproved":`Employee Workload (${shortMonth})`;repairPanelTitle.title=teamAssignMetric==="totalRemoved"?"Monthly approved + unapproved history · independent of the month filter":periodText;}
   const repairCostTitle=document.querySelector(".repairCostDistributionPanel .panelTitle");
   if(repairCostTitle){repairCostTitle.textContent=`Approved Repair Cost Distribution (${shortMonth})`;repairCostTitle.title=periodText;}
   const avgTitle=document.querySelector(".avgCostTrendPanel .panelTitle");
@@ -8246,7 +8246,7 @@ function employeeWorkloadLightExportSheets(){
   const {start,end}=periodBounds();
   const bridge=ticketMovementBridgeSnapshotForExport(start,end);
   return [
-    {name:"Monthly Approved",rows:employeeMonthlyApprovalExportRows()},
+    {name:"Approved + Unapproved",rows:employeeMonthlyWorkloadExportRows()},
     {name:"Employee Workload",rows:employeeWorkloadLightSummaryRows(bridge)},
     {name:"Removed",rows:employeeRemovedLightRows(bridge)},
     {name:"Tickets in Progress",rows:employeeCurrentCriticalLightRows()},
@@ -8680,27 +8680,27 @@ function teamAssignRowsWithDirectory(){
 }
 function publishedDashboardPanels(){
   const cache=team&&team.dashboardPanelCache;
-  return cache?.schema===2&&cache.approvalHistoryStart==="2026-06"&&cache.generatedAt===team.generatedAt?cache.views?.[activeTeamViewKey()]||null:null;
+  return cache?.schema===3&&cache.approvalHistoryStart==="2026-06"&&cache.generatedAt===team.generatedAt?cache.views?.[activeTeamViewKey()]||null:null;
 }
-function employeeMonthlyApprovalData(){return publishedDashboardPanels()?.monthlyApprovals||null;}
-function employeeMonthlyApprovalExportRows(){
-  return employeeMonthlyApprovalData()?.exportRows||[["Monthly approval cache unavailable. Refresh after the next data update."]];
+function employeeMonthlyWorkloadData(){return publishedDashboardPanels()?.monthlyWorkload||null;}
+function employeeMonthlyWorkloadExportRows(){
+  return employeeMonthlyWorkloadData()?.exportRows||[["Monthly workload cache unavailable. Refresh after the next data update."]];
 }
-function renderEmployeeMonthlyApprovals(box,legend){
-  const data=employeeMonthlyApprovalData();
-  if(!data){box.innerHTML=`<div class="teamAssignEmpty">Monthly approval data is awaiting a data refresh.</div>`;if(legend)legend.innerHTML="";return;}
+function renderEmployeeMonthlyWorkload(box,legend){
+  const data=employeeMonthlyWorkloadData();
+  if(!data){box.innerHTML=`<div class="teamAssignEmpty">Monthly workload data is awaiting a data refresh.</div>`;if(legend)legend.innerHTML="";return;}
   const cell=(value,average)=>value==null?"—":average?numFixed(value,1):num(value);
   const rowMarkup=({name,values,change},average=false)=>{
     return `<tr><th scope="row">${esc(name)}</th>${data.columns.map(col=>`<td class="approvalMonth-${col.tone}">${cell(values[col.month],average)}</td>`).join("")}<td class="approvalChange ${change.tone}">${change.text}</td></tr>`;
   };
-  box.innerHTML=`<table class="employeeMonthlyTable" aria-label="Monthly approved tickets by employee"><thead><tr><th scope="col">Employee</th>${data.columns.map(col=>`<th scope="col" class="approvalMonth-${col.tone}" title="${esc(monthDisplayLabel(col.month))}">${esc(new Date(`${col.month}-01T00:00:00Z`).toLocaleDateString("en-AU",{month:"short",timeZone:"UTC"}))}${col.month===data.current?' <small>MTD</small>':""}</th>`).join("")}<th scope="col" title="(Last full month − preceding full month) / preceding full month × 100; N/A when the preceding month is zero">MoM %<small>${esc(data.previous)} vs ${esc(data.prior)}</small></th></tr></thead><tbody class="employeeMonthlySummary">${rowMarkup(data.totals)}${rowMarkup(data.average,true)}</tbody><tbody>${data.rows.map(row=>rowMarkup(row)).join("")}</tbody></table>`;
+  box.innerHTML=`<table class="employeeMonthlyTable" aria-label="Monthly approved + unapproved tickets by employee"><thead><tr><th scope="col">Employee</th>${data.columns.map(col=>`<th scope="col" class="approvalMonth-${col.tone}" title="${esc(monthDisplayLabel(col.month))}">${esc(new Date(`${col.month}-01T00:00:00Z`).toLocaleDateString("en-AU",{month:"short",timeZone:"UTC"}))}${col.month===data.current?' <small>MTD</small>':""}</th>`).join("")}<th scope="col" title="(Last full month − preceding full month) / preceding full month × 100; N/A when the preceding month is zero">MoM %<small>${esc(data.previous)} vs ${esc(data.prior)}</small></th></tr></thead><tbody class="employeeMonthlySummary">${rowMarkup(data.totals)}${rowMarkup(data.average,true)}</tbody><tbody>${data.rows.map(row=>rowMarkup(row)).join("")}</tbody></table>`;
   if(legend)legend.innerHTML=`<span><i style="background:#dbeafe"></i>Last month</span><span><i style="background:#fef3c7"></i>2 months ago</span>`;
 }
 function renderTeamAssignActions(){
   const box=$("teamAssignActions");
   if(!box)return;
   const options=[
-    {key:"totalRemoved",label:"Monthly Approved",title:"Monthly approved tickets · all available months"},
+    {key:"totalRemoved",label:"Approved + Unapproved",title:"Monthly approved + unapproved tickets · all available months"},
     {key:"currentCritical",label:"Tickets in Progress",title:`Tickets in Progress (On ${selectedSnapshotText()})`}
   ];
   if(!options.some(o=>o.key===teamAssignMetric))teamAssignMetric="totalRemoved";
@@ -8860,8 +8860,8 @@ function renderTeamAssignChart(){
   const monthly=teamAssignMetric==="totalRemoved";
   box.classList.toggle("is-monthly",monthly);
   const title=document.querySelector(".repairCostPanel>.panelTitleRow .panelTitle");
-  if(title){title.textContent=monthly?"Employee Workload · Monthly Approved":`Employee Workload (${kpiMonthLabel(periodEndDate())})`;title.title=monthly?"Monthly approval history · independent of the month filter":selectedPeriodText();}
-  if(monthly){renderEmployeeMonthlyApprovals(box,legend);renderEmployeeStatusMapping();return;}
+  if(title){title.textContent=monthly?"Employee Workload · Approved + Unapproved":`Employee Workload (${kpiMonthLabel(periodEndDate())})`;title.title=monthly?"Monthly approved + unapproved history · independent of the month filter":selectedPeriodText();}
+  if(monthly){renderEmployeeMonthlyWorkload(box,legend);renderEmployeeStatusMapping();return;}
   if(legend)legend.innerHTML=`<span><i style="background:${teamAssignMetricColor()}"></i>${esc(teamAssignMetricTitle())}</span>`;
   const rows=visibleTeamAssignRows(teamAssignRowsWithDirectory());
   if(!rows.length){box.innerHTML=`<div class="teamAssignEmpty">No C4C Assign To workload found for this period.</div>`;renderEmployeeStatusMapping();return;}
@@ -9177,13 +9177,13 @@ ticketMovementBridge=dashboardRenderCache.wrap("movement",ticketMovementBridge,v
 let dashboardSourceVersion="";
 const teamDetailSourcePromises=new Map();
 async function ensureDashboardPanelCache(){
-  if(team?.dashboardPanelCache?.schema===2&&team.dashboardPanelCache.approvalHistoryStart==="2026-06"&&team.dashboardPanelCache.repairCostMetric==="tickets"&&team.dashboardPanelCache.generatedAt===team.generatedAt)return;
+  if(team?.dashboardPanelCache?.schema===3&&team.dashboardPanelCache.approvalHistoryStart==="2026-06"&&team.dashboardPanelCache.repairCostMetric==="tickets"&&team.dashboardPanelCache.generatedAt===team.generatedAt)return;
   const source=team;
   try{
-    const payload=await loadTeamDetailSource(`panels:v2:cost-ticket-columns:${source.generatedAt}`,()=>readJson(`${MONITOR_ROOT}/analytics/teamPanelCacheV2`),value=>value===null||typeof value==="object");
+    const payload=await loadTeamDetailSource(`panels:v3:handled-tickets:${source.generatedAt}`,()=>readJson(`${MONITOR_ROOT}/analytics/teamPanelCacheV3`),value=>value===null||typeof value==="object");
     const cache=typeof payload?.data==="string"?JSON.parse(payload.data):null;
     if(source!==team)return;
-    if(cache?.schema===2&&cache.approvalHistoryStart==="2026-06"&&cache.repairCostMetric==="tickets"&&cache.generatedAt===source.generatedAt&&cache.views)source.dashboardPanelCache=cache;
+    if(cache?.schema===3&&cache.approvalHistoryStart==="2026-06"&&cache.repairCostMetric==="tickets"&&cache.generatedAt===source.generatedAt&&cache.views)source.dashboardPanelCache=cache;
   }catch(err){console.warn("Published dashboard panel cache unavailable",err);}
 }
 function loadTeamDetailSource(key,fetchSource,validate){

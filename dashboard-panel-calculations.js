@@ -11,9 +11,9 @@ function buildDashboardPanelCache(){
     for(const key of Object.keys(team.views||{})){
       activeClaim=key;
       const view=currentView(),latest=latestDateForView();
-      const monthlyApprovals=buildEmployeeMonthlyApprovalData();
+      const monthlyWorkload=buildEmployeeMonthlyWorkloadData();
       const remainingStatus={},repairCostDistribution={};
-      const statusMonths=new Set([...availableDashboardMonths(),...monthlyApprovals.columns.map(col=>col.month)]);
+      const statusMonths=new Set([...availableDashboardMonths(),...monthlyWorkload.columns.map(col=>col.month)]);
       for(const month of Array.from(statusMonths).filter(month=>month<=latest.slice(0,7)).sort()){
         const end=month===latest.slice(0,7)?latest:monthEndISO(month);
         const snapshot=periodSnapshotForBounds(monthStartISO(month),end);
@@ -54,12 +54,12 @@ function buildDashboardPanelCache(){
           remainingStatus[month]={end,rows:buildRemainingStatusColumns(rows)};
         }
       }
-      views[key]={monthlyApprovals,remainingStatus,repairCostDistribution};
+      views[key]={monthlyWorkload,remainingStatus,repairCostDistribution};
     }
   }finally{activeClaim=previousClaim;activeMonth=previousMonth;}
-  return {schema:2,approvalHistoryStart:"2026-06",repairCostColumns:1,repairCostMetric:"tickets",generatedAt:team.generatedAt,views};
+  return {schema:3,approvalHistoryStart:"2026-06",repairCostColumns:1,repairCostMetric:"tickets",generatedAt:team.generatedAt,views};
 }
-function buildEmployeeMonthlyApprovalData(){
+function buildEmployeeMonthlyWorkloadData(){
   // Read calendar-month snapshots directly: never use the selected-period
   // fallback or cumulative employee totals for historical monthly counts.
   const latest=latestDateForView(),current=monthKeyFromDate(latest);
@@ -76,16 +76,30 @@ function buildEmployeeMonthlyApprovalData(){
   const columns=Array.from(months).filter(month=>month>="2026-06"&&month<=current).sort().map(month=>{
     const end=month===current?latest:monthEndISO(month);
     const snapshot=periodSnapshotForBounds(monthStartISO(month),end);
-    const known=!!snapshot&&(snapshot.employeeApprovalRows!=null||snapshot.summary?.approvedTickets===0);
-    let total=0;
+    const known=!!snapshot&&(snapshot.employeeApprovalRows!=null||(snapshot.summary?.approvedTickets===0&&snapshot.summary?.unapprovedTickets===0));
+    let total=0,assignedApproved=0,assignedUnapproved=0;
     if(known)arrayFromMaybe(snapshot.employeeApprovalRows).forEach(row=>{
       const name=teamAssignDisplayName(row.name||row.employee||row.owner),key=employeeStatusKey(name);
       const approved=Number(row.approved??row.approvedTickets??0)||0;
+      const unapproved=Number(row.unapproved??row.unapprovedTickets??0)||0;
       if(!employees.has(key))employees.set(key,{name,values:{}});
       const employee=employees.get(key);
-      employee.values[month]=(employee.values[month]||0)+approved;
-      total+=approved;
+      employee.values[month]=(employee.values[month]||0)+approved+unapproved;
+      assignedApproved+=approved;
+      assignedUnapproved+=unapproved;
+      total+=approved+unapproved;
     });
+    // Match the Removed decision total, including tickets without a named owner.
+    if(known){
+      const missing=Math.max(0,Number(snapshot.summary?.approvedTickets||0)-assignedApproved)+Math.max(0,Number(snapshot.summary?.unapprovedTickets||0)-assignedUnapproved);
+      if(missing){
+        const name=teamAssignDisplayName("Other"),key=employeeStatusKey(name);
+        if(!employees.has(key))employees.set(key,{name,values:{}});
+        const other=employees.get(key);
+        other.values[month]=(other.values[month]||0)+missing;
+        total+=missing;
+      }
+    }
     return {month,end,known,total:known?total:null,average:known&&names.length?total/names.length:null,
       tone:month===current?"current":month===previous?"previous":month===prior?"prior":""};
   });
@@ -96,7 +110,7 @@ function buildEmployeeMonthlyApprovalData(){
   const average={name:"Average / employee",values:Object.fromEntries(columns.map(col=>[col.month,col.average]))};
   [...rows,totals,average].forEach(row=>{row.change=employeeMonthlyChange(row.values[previous],row.values[prior]);});
   const data={columns,rows,current,previous,prior,latest,comparison:{current:previous,previous:prior},headcount:names.length,totals,average};
-  data.exportRows=buildEmployeeMonthlyApprovalExportRows(data);
+  data.exportRows=buildEmployeeMonthlyWorkloadExportRows(data);
   return data;
 }
 function employeeMonthlyChange(current,previous){
@@ -105,7 +119,7 @@ function employeeMonthlyChange(current,previous){
   const value=(current-previous)/previous*100;
   return {text:`${value>0?"+":""}${value.toFixed(1)}%`,tone:value>0?"up":value<0?"down":"flat"};
 }
-function buildEmployeeMonthlyApprovalExportRows(data){
+function buildEmployeeMonthlyWorkloadExportRows(data){
   const makeRow=(name,values)=>[name,...data.columns.map(col=>values[col.month]??""),employeeMonthlyChange(values[data.previous],values[data.prior]).text];
   const totals=Object.fromEntries(data.columns.map(col=>[col.month,col.total]));
   const averages=Object.fromEntries(data.columns.map(col=>[col.month,col.average]));

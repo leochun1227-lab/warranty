@@ -120,40 +120,55 @@ test('closing the dialog prevents a late request from changing a later dialog',a
   assert.equal(a.element('employeeModalBackdrop').classList.contains('active'),false);
 });
 
-test('monthly approvals retain history when the dashboard month changes and average over the directory',async()=>{
+test('monthly workload includes approved and unapproved in totals, averages, full-month changes and exports',async()=>{
   const input=fixture();
-  input.team.views.all.periodSnapshots['2026-08-01|2026-08-31']={employeeApprovalRows:[{name,approved:2}]};
+  input.team.views.all.periodSnapshots['2026-08-01|2026-08-31']={employeeApprovalRows:[{name,approved:2,unapproved:2}]};
+  input.team.views.all.periodSnapshots['2026-09-01|2026-09-30'].employeeApprovalRows[0].unapproved=2;
   input.team.views.all.periodSnapshots['2026-07-01|2026-07-31']={};
   const a=await app(input);
-  const before=a.run('employeeMonthlyApprovalData()');
+  const before=a.run('employeeMonthlyWorkloadData()');
   const kylie=before.rows.find(row=>row.name===name);
-  assert.equal(kylie.values['2026-10'],2);
-  assert.equal(kylie.values['2026-09'],4);
+  assert.equal(kylie.values['2026-10'],3);
+  assert.equal(kylie.values['2026-09'],6);
   assert.equal(kylie.values['2026-07'],null,'missing history is not zero');
   assert.deepEqual(Array.from(before.columns,col=>col.month),['2026-07','2026-08','2026-09','2026-10']);
   assert.equal(before.headcount,6,'zero-approval active employees count in the denominator');
-  assert.equal(before.columns.at(-1).total,2,'exclude unapproved decisions');
-  assert.equal(before.columns.at(-1).average,2/6);
+  assert.equal(before.columns.at(-1).total,3,'include approved and unapproved decisions');
+  assert.equal(before.columns.at(-1).average,3/6);
   a.run('activeMonth="2026-09"');
-  assert.equal(JSON.stringify(a.run('employeeMonthlyApprovalData()')),JSON.stringify(before));
-  assert.equal(kylie.change.text,'+100.0%','September full month vs August, not October MTD vs September');
-  assert.equal(before.totals.change.text,'+100.0%');
-  assert.equal(before.average.change.text,'+100.0%');
+  assert.equal(JSON.stringify(a.run('employeeMonthlyWorkloadData()')),JSON.stringify(before));
+  assert.equal(kylie.change.text,'+50.0%','September vs August full-month handled totals');
+  assert.equal(before.totals.change.text,'+50.0%');
+  assert.equal(before.average.change.text,'+50.0%');
   assert.equal(before.rows.find(row=>row.name==='Chloe Bolger').change.text,'0.0%');
   assert.equal(a.run('typeof employeeMonthlyChange'),'undefined','business calculations are absent from the browser');
   a.run('currentView().periodSnapshots={};currentCriticalStatusRows=()=>{throw Error("browser must not aggregate");};');
-  assert.equal(JSON.stringify(a.run('employeeMonthlyApprovalData()')),JSON.stringify(before));
-  const exported=a.run('employeeMonthlyApprovalExportRows()');
-  assert.equal(exported.find(row=>row[0]===name).at(-1),'+100.0%');
+  assert.equal(JSON.stringify(a.run('employeeMonthlyWorkloadData()')),JSON.stringify(before));
+  const exported=a.run('employeeMonthlyWorkloadExportRows()');
+  assert.equal(exported.find(row=>row[0]===name).at(-1),'+50.0%');
+  assert.equal(exported.find(row=>row[0]===name).at(-2),3);
   assert.equal(exported[0].at(-1),'2026-09 vs 2026-08 % (full months)');
   assert.equal(exported[1][0],'Team total');
   assert.match(exported[2][0],/^Average \/ employee/);
   const box={},legend={};a.c.monthlyBox=box;a.c.monthlyLegend=legend;
-  a.run('renderEmployeeMonthlyApprovals(monthlyBox,monthlyLegend)');
+  a.run('renderEmployeeMonthlyWorkload(monthlyBox,monthlyLegend)');
   assert.ok(box.innerHTML.indexOf('Team total')<box.innerHTML.indexOf('Average / employee'));
   assert.ok(box.innerHTML.indexOf('Average / employee')<box.innerHTML.indexOf('Chloe Bolger'));
   assert.match(box.innerHTML,/2026-09 vs 2026-08/);
   assert.doesNotMatch(box.innerHTML,/<tfoot>/);
+  assert.match(box.innerHTML,/Monthly approved \+ unapproved tickets by employee/);
+});
+
+test('monthly handled totals include unapproved-only months and unattributed decisions in Other',async()=>{
+  const input=fixture();
+  input.team.views.all.periodSnapshots['2026-10-01|2026-10-20']={summary:{approvedTickets:0,unapprovedTickets:5},employeeApprovalRows:[{name,approved:0,unapproved:3}]};
+  input.team.views.all.periodSnapshots['2026-08-01|2026-08-31']={summary:{approvedTickets:0,unapprovedTickets:2}};
+  const a=await app(input),data=a.run('employeeMonthlyWorkloadData()');
+  assert.equal(data.totals.values['2026-10'],5);
+  assert.equal(data.average.values['2026-10'],5/6);
+  assert.equal(data.rows.find(row=>row.name===name).values['2026-10'],3);
+  assert.equal(data.rows.find(row=>row.name==='Other').values['2026-10'],2);
+  assert.equal(data.totals.values['2026-08'],null,'missing employee detail is not a zero month');
 });
 
 test('monthly columns cross year boundaries and keep Other out of headcount',async()=>{
@@ -163,7 +178,7 @@ test('monthly columns cross year boundaries and keep Other out of headcount',asy
   input.team.views.all.periodSnapshots['2026-12-01|2026-12-31']={employeeApprovalRows:[{name,approved:4}]};
   input.team.views.all.periodSnapshots['2026-11-01|2026-11-30']={employeeApprovalRows:[{name,approved:2}]};
   const a=await app(input);
-  const data=a.run('employeeMonthlyApprovalData()');
+  const data=a.run('employeeMonthlyWorkloadData()');
   assert.equal(data.current,'2027-01');
   assert.equal(data.previous,'2026-12');
   assert.equal(data.prior,'2026-11');
@@ -225,8 +240,8 @@ test('all categories and months have server-calculated status percentages and mo
   const result=buildDashboardStartup(input).page.team.dashboardPanelCache;
   assert.equal(result.generatedAt,input.team.generatedAt);
   assert.deepEqual(Object.keys(result.views),['all','inField','preDelivery']);
-  assert.equal(result.views.inField.monthlyApprovals.rows.find(row=>row.name===name).change.text,'N/A');
-  assert.equal(result.views.preDelivery.monthlyApprovals.rows.find(row=>row.name===name).change.text,'—');
+  assert.equal(result.views.inField.monthlyWorkload.rows.find(row=>row.name===name).change.text,'N/A');
+  assert.equal(result.views.preDelivery.monthlyWorkload.rows.find(row=>row.name===name).change.text,'—');
   const status=result.views.all.remainingStatus;
   assert.equal(status['2026-09'].rows[0].count,1);
   assert.equal(status['2026-10'].rows[0].count,2);
@@ -237,17 +252,17 @@ test('all categories and months have server-calculated status percentages and mo
 test('legacy startup hydrates the published cache once and refuses another source generation',async()=>{
   const a=await app();
   const cache=a.run('team.dashboardPanelCache');
-  a.run('team.dashboardPanelCache={...team.dashboardPanelCache,schema:1}');
-  assert.equal(a.run('employeeMonthlyApprovalData()'),null,'old MTD comparison cache is never shown');
+  a.run('team.dashboardPanelCache={...team.dashboardPanelCache,schema:2}');
+  assert.equal(a.run('employeeMonthlyWorkloadData()'),null,'old approved-only cache is never shown');
   let requests=0;
-  a.c.readJson=async path=>{requests++;assert.match(path,/teamPanelCacheV2$/);return {schema:2,data:JSON.stringify(cache)};};
+  a.c.readJson=async path=>{requests++;assert.match(path,/teamPanelCacheV3$/);return {schema:3,data:JSON.stringify(cache)};};
   await a.run('ensureDashboardPanelCache()');
   await a.run('ensureDashboardPanelCache()');
   assert.equal(requests,1);
-  assert.equal(a.run('employeeMonthlyApprovalData().current'),'2026-10');
+  assert.equal(a.run('employeeMonthlyWorkloadData().current'),'2026-10');
   a.run('team.generatedAt="new-source";delete team.dashboardPanelCache');
   await a.run('ensureDashboardPanelCache()');
-  assert.equal(a.run('employeeMonthlyApprovalData()'),null);
-  assert.match(a.run('employeeMonthlyApprovalExportRows()[0][0]'),/cache unavailable/);
+  assert.equal(a.run('employeeMonthlyWorkloadData()'),null);
+  assert.match(a.run('employeeMonthlyWorkloadExportRows()[0][0]'),/cache unavailable/);
   assert.doesNotMatch(html,/<script[^>]*src=["'][^"']*dashboard-panel-calculations/);
 });
